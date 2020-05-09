@@ -144,7 +144,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			set
 			{
 				if (value != 0 && !_metaArea.ContainsPointer(value))
-					throw new ArgumentException("Invalid pointer");
+					throw new ArgumentException("Invalid address for this cache file.");
 
 				_firstElementAddr = value;
 				NotifyPropertyChanged("FirstElementAddress");

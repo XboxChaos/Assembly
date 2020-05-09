@@ -52,7 +52,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override void Accept(IMetaFieldVisitor visitor)
 		{
-			if (DataType == "int")
+			if (DataType == "color32")
 				visitor.VisitColourInt(this);
 			else
 				visitor.VisitColourFloat(this);

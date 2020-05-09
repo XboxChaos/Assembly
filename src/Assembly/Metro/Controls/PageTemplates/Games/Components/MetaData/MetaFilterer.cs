@@ -86,6 +86,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				FilterNumber(field, field.Value);
 		}
 
+		public void VisitUint64(Uint64Data field)
+		{
+			if (!FilterString(field, field.Name))
+				FilterNumber(field, field.Value);
+		}
+
+		public void VisitInt64(Int64Data field)
+		{
+			if (!FilterString(field, field.Name))
+				FilterNumber(field, field.Value);
+		}
+
 		public void VisitFloat32(Float32Data field)
 		{
 			if (!FilterString(field, field.Name))
@@ -345,6 +357,30 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 					if (!FilterNumber(field, field.B))
 						if (!FilterNumber(field, field.C))
 							FilterNumber(field, field.D);
+				}
+			}
+		}
+
+		public void VisitQuat16(Quaternion16Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					if (!FilterNumber(field, field.B))
+						if (!FilterNumber(field, field.C))
+							FilterNumber(field, field.D);
+				}
+			}
+		}
+
+		public void VisitPoint16(Point16Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					FilterNumber(field, field.B);
 				}
 			}
 		}

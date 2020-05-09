@@ -135,6 +135,12 @@ namespace Blamite.Plugins
 				case "int32":
 					visitor.VisitInt32(name, offset, visible, pluginLine, tooltip);
 					break;
+				case "uint64":
+					visitor.VisitUInt64(name, offset, visible, pluginLine, tooltip);
+					break;
+				case "int64":
+					visitor.VisitInt64(name, offset, visible, pluginLine, tooltip);
+					break;
 				case "float32":
 				case "float":
 					visitor.VisitFloat32(name, offset, visible, pluginLine, tooltip);
@@ -175,6 +181,12 @@ namespace Blamite.Plugins
 					break;
 				case "rect16":
 					visitor.VisitRect16(name, offset, visible, pluginLine, tooltip);
+					break;
+				case "quat16":
+					visitor.VisitQuat16(name, offset, visible, pluginLine, tooltip);
+					break;
+				case "point16":
+					visitor.VisitPoint16(name, offset, visible, pluginLine, tooltip);
 					break;
 				case "stringid":
 					visitor.VisitStringID(name, offset, visible, pluginLine, tooltip);

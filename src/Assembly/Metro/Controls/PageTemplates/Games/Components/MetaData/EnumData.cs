@@ -99,16 +99,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			get
 			{
-				switch (App.AssemblyStorage.AssemblySettings.PluginsEnumPrefix)
-				{
-					default:
-					case Helpers.Settings.EnumPrefix.None:
-						return _name;
-					case Helpers.Settings.EnumPrefix.Decimal:
-						return _value.ToString() + ". " + _name;
-					case Helpers.Settings.EnumPrefix.Hexidecimal:
-						return _value.ToString("X") + ". " + _name;
-				}
+				return _name;
 			}
 			set
 			{

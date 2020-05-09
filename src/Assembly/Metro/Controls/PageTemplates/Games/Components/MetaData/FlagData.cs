@@ -158,11 +158,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private readonly FlagData _parent;
 		private string _name;
 		private string _tooltip;
+		private int _index;
 
 		public BitData(FlagData parent, string name, int index, string tooltip)
 		{
 			_parent = parent;
 			_name = name;
+			_index = index;
 			_mask = (ulong)1U << index;
 			_tooltip = tooltip;
 		}
@@ -207,6 +209,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 				// Changing the parent value causes a refresh,
 				// so no need to call NotifyPropertyChanged
+			}
+		}
+
+		public int Index
+		{
+			get { return _index; }
+			set
+			{
+				_index = value;
+				NotifyPropertyChanged("Index");
 			}
 		}
 

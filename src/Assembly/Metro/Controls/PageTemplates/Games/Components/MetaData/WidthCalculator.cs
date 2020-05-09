@@ -84,6 +84,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			AddWidth(_intControl.Width);
 		}
 
+		public void VisitUint64(Uint64Data field)
+		{
+			AddWidth(_intControl.Width);
+		}
+
+		public void VisitInt64(Int64Data field)
+		{
+			AddWidth(_intControl.Width);
+		}
+
 		public void VisitFloat32(Float32Data field)
 		{
 			AddWidth(_intControl.Width);
@@ -132,12 +142,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			AddWidth(_tagControl.Width);
 		}
 
-		public void VisitPoint2(Vector2Data field)
+		public void VisitPoint2(Point2Data field)
 		{
 			AddWidth(_multi2Value.Width);
 		}
 
-		public void VisitPoint3(Vector3Data field)
+		public void VisitPoint3(Point3Data field)
 		{
 			AddWidth(_multi3Value.Width);
 		}
@@ -149,30 +159,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public void VisitVector3(Vector3Data field)
 		{
-			AddWidth(_multi2Value.Width);
+			AddWidth(_multi3Value.Width);
 		}
 
 		public void VisitVector4(Vector4Data field)
-		{
-			AddWidth(_multi4Value.Width);
-		}
-
-		public void VisitPoint2(Point2Data field)
-		{
-			AddWidth(_multi2Value.Width);
-		}
-
-		public void VisitPoint3(Point3Data field)
-		{
-			AddWidth(_multi2Value.Width);
-		}
-
-		public void VisitPlane2(Plane2Data field)
-		{
-			AddWidth(_multi2Value.Width);
-		}
-
-		public void VisitPlane3(Plane3Data field)
 		{
 			AddWidth(_multi4Value.Width);
 		}
@@ -192,12 +182,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			AddWidth(_multi3Value.Width);
 		}
 
-		public void VisitPlane2(Vector3Data field)
+		public void VisitPlane2(Plane2Data field)
 		{
 			AddWidth(_plane2Value.Width);
 		}
 
-		public void VisitPlane3(Vector4Data field)
+		public void VisitPlane3(Plane3Data field)
 		{
 			AddWidth(_plane3Value.Width);
 		}
@@ -205,6 +195,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void VisitRect16(RectangleData field)
 		{
 			AddWidth(_multi4Value.Width);
+		}
+
+		public void VisitQuat16(Quaternion16Data field)
+		{
+			AddWidth(_multi4Value.Width);
+		}
+
+		public void VisitPoint16(Point16Data field)
+		{
+			AddWidth(_multi2Value.Width);
 		}
 
 		public void VisitColourInt(ColorData field)

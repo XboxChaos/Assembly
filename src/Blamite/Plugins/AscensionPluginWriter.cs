@@ -88,6 +88,18 @@ namespace Blamite.Plugins
 			WriteBasicValue("int32", name, offset, visible);
 		}
 
+		public void VisitUInt64(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			WriteBasicValue("uint32", name + " a", offset, visible);
+			WriteBasicValue("uint32", name + " b", offset, visible);
+		}
+
+		public void VisitInt64(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			WriteBasicValue("int32", name + " a", offset, visible);
+			WriteBasicValue("int32", name + " b", offset, visible);
+		}
+
 		public void VisitFloat32(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 			WriteBasicValue("float", name, offset, visible);
@@ -171,6 +183,20 @@ namespace Blamite.Plugins
 			WriteBasicValue("int16", name + " l", offset + 2, visible);
 			WriteBasicValue("int16", name + " b", offset + 4, visible);
 			WriteBasicValue("int16", name + " r", offset + 6, visible);
+		}
+
+		public void VisitQuat16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			WriteBasicValue("int16", name + " i", offset, visible);
+			WriteBasicValue("int16", name + " j", offset + 2, visible);
+			WriteBasicValue("int16", name + " k", offset + 4, visible);
+			WriteBasicValue("int16", name + " d", offset + 6, visible);
+		}
+
+		public void VisitPoint16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			WriteBasicValue("int16", name + " x", offset, visible);
+			WriteBasicValue("int16", name + " y", offset + 2, visible);
 		}
 
 		public void VisitStringID(string name, uint offset, bool visible, uint pluginLine, string tooltip)

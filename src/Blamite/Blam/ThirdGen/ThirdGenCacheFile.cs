@@ -381,53 +381,31 @@ namespace Blamite.Blam.ThirdGen
 
 		private void LoadScriptFiles(IReader reader)
 		{
-			if (_tags != null && _buildInfo.Layouts.HasLayout("hsdt"))
-			{
-
-				ITag[] scripttags = _tags.FindTagsByGroup("hsdt").ToArray();
-
-				ITag scnr = _tags.FindTagByGroup("scnr");
-				if (scnr == null)
-				{
-					ScriptFiles = new IScriptFile[0];
-					return;
-				}
-
-				int tagCount = scripttags.Length;
-
-				ScriptFiles = new IScriptFile[tagCount];
-
-				for(int i = 0; i < tagCount; i++)
-				{
-					ITag aHS = scripttags[i];
-					string tagname = _fileNames.GetTagName(aHS.Index);
-					ScriptFiles[i] = new ThirdGenScenarioScriptFile(scnr, aHS, tagname, MetaArea, StringIDs, _buildInfo, _expander, Allocator);
-				}
-
-				return;
-			}
-			else if (_tags != null && _buildInfo.Layouts.HasLayout("scnr"))
-			{
-				ITag scnr = _tags.FindTagByGroup("scnr");
-                ITag mdlg = _tags.FindTagByGroup("mdlg");
-				if (scnr != null)
-				{
-					if(_buildInfo.Layouts.HasLayout("mdlg") && mdlg != null)
-					{
-						ScriptFiles = new IScriptFile[1];
-						ScriptFiles[0] = new ThirdGenScenarioScriptFile(scnr, scnr, mdlg, ScenarioName, MetaArea, StringIDs, _buildInfo, _expander, Allocator);
-						return;
-					}
-					else
-					{
-						ScriptFiles = new IScriptFile[1];
-						ScriptFiles[0] = new ThirdGenScenarioScriptFile(scnr, scnr, ScenarioName, MetaArea, StringIDs, _buildInfo, _expander, Allocator);
-						return;
-					}
-
-				}
-			}
 			ScriptFiles = new IScriptFile[0];
+
+			if (_tags != null)
+			{
+				List<ThirdGenScenarioScriptFile> l_scriptfiles = new List<ThirdGenScenarioScriptFile>();
+
+				if (_buildInfo.Layouts.HasLayout("hsdt"))
+				{
+					ITag mainScenario = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
+					if (mainScenario == null)
+						return;
+
+					foreach (ITag hs in _tags.FindTagsByGroup("hsdt"))
+						l_scriptfiles.Add(new ThirdGenScenarioScriptFile(mainScenario, hs, _fileNames.GetTagName(hs.Index), MetaArea, StringIDs, _buildInfo, _expander));
+				}
+				else if (_buildInfo.Layouts.HasLayout("scnr"))
+				{
+					foreach (ITag hs in _tags.FindTagsByGroup("scnr"))
+						l_scriptfiles.Add(new ThirdGenScenarioScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, StringIDs, _buildInfo, _expander));
+				}
+				else
+					return;
+
+				ScriptFiles = l_scriptfiles.ToArray();
+			}
 		}
 
 		private void LoadSimulationDefinitions(IReader reader)

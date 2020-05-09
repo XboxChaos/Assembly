@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:local="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"
-             mc:Ignorable="d" Height="28" Width="774" HorizontalAlignment="Left">
+             mc:Ignorable="d" Height="28" Width="801" HorizontalAlignment="Left">
 	<UserControl.Resources>
 		<local:CustomBooleanToVisibilityConverter x:Key="cb2v" />
 	</UserControl.Resources>
@@ -19,14 +19,19 @@
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="100"/>
 		</Grid.ColumnDefinitions>
 
 		<DockPanel Grid.Column="0" Background="Transparent">
 			<DockPanel.ToolTip>
-				<StackPanel>
-					<TextBlock Text="{Binding Name}" />
-					<TextBlock Text="{Binding ToolTip}" Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}, ConverterParameter={x:Static Visibility.Collapsed}}" />
+				<StackPanel MaxWidth="500">
+					<TextBlock Text="{Binding Name}" TextWrapping="WrapWithOverflow" FontWeight="Bold" />
+					<TextBlock Text="{Binding Offset, StringFormat='Field Offset: 0x{0:X}'}" Foreground="#CCC" />
+					<TextBlock Text="{Binding FieldAddress, StringFormat='Address: 0x{0:X}'}" Foreground="#CCC" />
+					<TextBlock Text="{Binding PluginLine, StringFormat='Plugin Line: {0}'}" Foreground="#CCC" />
+					<TextBlock Text="{Binding ToolTip}" TextWrapping="WrapWithOverflow" 
+							   Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}, ConverterParameter={x:Static Visibility.Collapsed}}" />
 				</StackPanel>
 			</DockPanel.ToolTip>
 			<TextBlock Text="?" Foreground="{DynamicResource ExtryzeAccentBrush}" FontSize="12" FontWeight="Bold" Margin="0,0,2,0"
@@ -54,7 +59,7 @@
 			</TextBlock.Style>
 		</TextBlock>
 
-		<TextBox Grid.Column="2" x:Name="txtAValue" Text="{Binding A}" VerticalAlignment="Center" />
+		<TextBox Grid.Column="2" x:Name="txtAValue" Text="{Binding A}" Language="" VerticalAlignment="Center" />
 
 		<TextBlock Grid.Column="3" x:Name="lblBValueName" TextAlignment="Right" Width="12" VerticalAlignment="Center" Margin="4,0,4,0">
 			<TextBlock.Style>
@@ -74,7 +79,7 @@
 			</TextBlock.Style>
 		</TextBlock>
 
-		<TextBox Grid.Column="4" x:Name="txtBValue" Text="{Binding B}" VerticalAlignment="Center" />
+		<TextBox Grid.Column="4" x:Name="txtBValue" Text="{Binding B}" Language="" VerticalAlignment="Center" />
 
 		<TextBlock Grid.Column="5" x:Name="lblCValueName" TextAlignment="Right" Width="12" VerticalAlignment="Center" Margin="4,0,4,0">
 			<TextBlock.Style>
@@ -94,7 +99,7 @@
 			</TextBlock.Style>
 		</TextBlock>
 
-		<TextBox Grid.Column="6" x:Name="txtCValue" Text="{Binding C}" VerticalAlignment="Center" />
+		<TextBox Grid.Column="6" x:Name="txtCValue" Text="{Binding C}" Language="" VerticalAlignment="Center" />
 
 		<TextBlock Grid.Column="7" x:Name="lblDValueName" TextAlignment="Right" Width="12" VerticalAlignment="Center">
 			<TextBlock.Style>
@@ -112,9 +117,53 @@
 			</TextBlock.Style>
 		</TextBlock>
 
-		<TextBox Grid.Column="8" x:Name="txtDValue" Text="{Binding D}" VerticalAlignment="Center" />
+		<TextBox Grid.Column="8" x:Name="txtDValue" Text="{Binding D}" Language="" VerticalAlignment="Center" />
 
-		<TextBlock Grid.Column="9" x:Name="lblType" Text="{Binding Type}" Style="{DynamicResource GenericTextblock}"
+		<ToggleButton Grid.Column="9" x:Name="btnOptions" VerticalAlignment="Center" Margin="5,0,0,0" IsChecked="False" ToolTip="Click to view options relating to this field." Checked="BtnOptions_Checked">
+			<Path VerticalAlignment="Center" Margin="2" Fill="#989898" Style="{StaticResource GearIcon}" />
+			<ToggleButton.Style>
+				<Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+					<Setter Property="IsEnabled" Value="False"/>
+					<Style.Triggers>
+						<DataTrigger Binding="{Binding Type}" Value="quaternion">
+							<Setter Property="IsEnabled" Value="True"/>
+						</DataTrigger>
+						<DataTrigger Binding="{Binding Type}" Value="quaternion16">
+							<Setter Property="IsEnabled" Value="True"/>
+						</DataTrigger>
+					</Style.Triggers>
+				</Style>
+			</ToggleButton.Style>
+		</ToggleButton>
+		<Popup x:Name="popOptions" IsOpen="{Binding IsChecked, ElementName=btnOptions}" PlacementTarget="{x:Reference btnOptions}" StaysOpen="False">
+			<Border BorderThickness="1" Background="#1b1b1c" BorderBrush="#333337" Padding="20,8">
+				<StackPanel>
+					<TextBlock Text="Quaternion Converter" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#CCC" />
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="16" />
+							<ColumnDefinition Width="150" />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+
+						<TextBlock Grid.Row="0" Text="y" Style="{StaticResource GenericTextblock}" ToolTip="Yaw" TextAlignment="Right" Margin="0,0,4,0" VerticalAlignment="Center" />
+						<TextBlock Grid.Row="1" Text="p" Style="{StaticResource GenericTextblock}" ToolTip="Pitch" TextAlignment="Right" Margin="0,0,4,0" VerticalAlignment="Center" />
+						<TextBlock Grid.Row="2" Text="r" Style="{StaticResource GenericTextblock}" ToolTip="Roll" TextAlignment="Right" Margin="0,0,4,0" VerticalAlignment="Center" />
+
+						<TextBox Grid.Row="0" Grid.Column="1" x:Name="txtConvY" Margin="0,3" Language="" TextChanged="TxtConv_TextChanged" />
+						<TextBox Grid.Row="1" Grid.Column="1" x:Name="txtConvP" Margin="0,3" Language="" TextChanged="TxtConv_TextChanged" />
+						<TextBox Grid.Row="2" Grid.Column="1" x:Name="txtConvR" Margin="0,3" Language="" TextChanged="TxtConv_TextChanged" />
+					</Grid>
+					<TextBlock Grid.Row="3" Grid.ColumnSpan="2" Text="Updates automatically." HorizontalAlignment="Center" FontSize="10" Foreground="#CCC" />
+				</StackPanel>
+			</Border>
+		</Popup>
+
+		<TextBlock Grid.Column="10" x:Name="lblType" Text="{Binding Type}" Style="{DynamicResource GenericTextblock}"
 				           VerticalAlignment="Center" Margin="10,0,0,0" />
 	</Grid>
 </UserControl>

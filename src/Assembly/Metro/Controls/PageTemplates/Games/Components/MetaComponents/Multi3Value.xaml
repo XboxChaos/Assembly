@@ -22,9 +22,13 @@
 
 		<DockPanel Grid.Column="0" Background="Transparent">
 			<DockPanel.ToolTip>
-				<StackPanel>
-					<TextBlock Text="{Binding Name}" />
-					<TextBlock Text="{Binding ToolTip}" Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}, ConverterParameter={x:Static Visibility.Collapsed}}" />
+				<StackPanel MaxWidth="500">
+					<TextBlock Text="{Binding Name}" TextWrapping="WrapWithOverflow" FontWeight="Bold" />
+					<TextBlock Text="{Binding Offset, StringFormat='Field Offset: 0x{0:X}'}" Foreground="#CCC" />
+					<TextBlock Text="{Binding FieldAddress, StringFormat='Address: 0x{0:X}'}" Foreground="#CCC" />
+					<TextBlock Text="{Binding PluginLine, StringFormat='Plugin Line: {0}'}" Foreground="#CCC" />
+					<TextBlock Text="{Binding ToolTip}" TextWrapping="WrapWithOverflow" 
+							   Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}, ConverterParameter={x:Static Visibility.Collapsed}}" />
 				</StackPanel>
 			</DockPanel.ToolTip>
 			<TextBlock Text="?" Foreground="{DynamicResource ExtryzeAccentBrush}" FontSize="12" FontWeight="Bold" Margin="0,0,2,0"
@@ -52,7 +56,7 @@
 			</TextBlock.Style>
 		</TextBlock>
 
-		<TextBox Grid.Column="2" x:Name="txtAValue" Text="{Binding A}" VerticalAlignment="Center"/>
+		<TextBox Grid.Column="2" x:Name="txtAValue" Text="{Binding A}" Language="" VerticalAlignment="Center"/>
 
 		<TextBlock Grid.Column="3" x:Name="lblBValueName" TextAlignment="Right" MinWidth="12" VerticalAlignment="Center" Margin="4,0,4,0">
 			<TextBlock.Style>
@@ -72,7 +76,7 @@
 			</TextBlock.Style>
 		</TextBlock>
 
-		<TextBox Grid.Column="4" x:Name="txtBValue" Text="{Binding B}" VerticalAlignment="Center" />
+		<TextBox Grid.Column="4" x:Name="txtBValue" Text="{Binding B}" Language="" VerticalAlignment="Center" />
 
 		<TextBlock Grid.Column="5" x:Name="lblCValueName" TextAlignment="Right" Width="12" VerticalAlignment="Center" Margin="4,0,4,0">
 			<TextBlock.Style>
@@ -92,7 +96,7 @@
 			</TextBlock.Style>
 		</TextBlock>
 
-		<TextBox Grid.Column="6" x:Name="txtCValue" Text="{Binding C}" VerticalAlignment="Center" />
+		<TextBox Grid.Column="6" x:Name="txtCValue" Text="{Binding C}" Language="" VerticalAlignment="Center" />
 
 
 		<TextBlock Grid.Column="7" x:Name="lblType" Text="{Binding Type}" Style="{DynamicResource GenericTextblock}"

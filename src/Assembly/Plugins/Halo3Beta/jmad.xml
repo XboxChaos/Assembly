@@ -40,9 +40,7 @@
 			<bit name="Hinge" index="1" />
 			<bit name="No Movement" index="2" />
 		</flags8>
-		<float32 name="Base Vector i" offset="0xC" visible="true" />
-		<float32 name="Base Vector j" offset="0x10" visible="true" />
-		<float32 name="Base Vector k" offset="0x14" visible="true" />
+		<vector3 name="Base Vector" offset="0xC" visible="true" />
 		<float32 name="Vector Range" offset="0x18" visible="true" />
 		<float32 name="z Position" offset="0x1C" visible="true" />
 	</tagblock>
@@ -85,16 +83,14 @@
 		<int16 name="Down Pitch Frame Count" offset="0x18" visible="true" />
 		<int16 name="Up Pitch Frame Count" offset="0x1A" visible="true" />
 	</tagblock>
-	<tagblock name="Legs" offset="0x44" visible="true" elementSize="0x1C">
-		<stringId name="Foot Marker" offset="0x0" visible="true" />
-		<float32 name="Foot min" offset="0x4" visible="true" />
-		<float32 name="Foot max" offset="0x8" visible="true" />
-		<stringid name="Ankle Marker" offset="0xC" visible="true" />
-		<float32 name="Ankle min" offset="0x10" visible="true" />
-		<float32 name="Ankle max" offset="0x14" visible="true" />
-		<enum16 name="Anchors" offset="0x18" visible="true">
-			<option name="False" value="0x0" />
-			<option name="true" value="0x1" />
+	<tagblock name="Foot Markers" offset="0x44" visible="true" elementSize="0x1C">
+		<stringId name="Foot Marker Name" offset="0x0" visible="true" />
+		<rangef name="Foot ik Range" offset="0x4" visible="true" />
+		<stringid name="Ankle Marker Name" offset="0xC" visible="true" />
+		<rangef name="Ankle ik Range" offset="0x10" visible="true" />
+		<enum16 name="Default State" offset="0x18" visible="true">
+			<option name="Off" value="0x0" />
+			<option name="On" value="0x1" />
 		</enum16>
 		<int16 name="Unknown" offset="0x1A" visible="false" />
 	</tagblock>
@@ -156,17 +152,7 @@
 			<bit name="Do Not Inherit For Player Graphs" index="2" />
 			<bit name="Has Errors Or Warnings" index="3" />
 			<bit name="Keep Raw Data In Tag" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
+			<bit name="Allow Ball-Roll On Foot" index="5" tooltip="prevents foot-ik from settling" />
 		</flags16>
 		<flags16 name="Internal Flags" offset="0x16" visible="true">
 			<bit name="Bit 0" index="0" />
@@ -190,8 +176,8 @@
 		<int32 name="Production Checksum" offset="0x1C" visible="true" />
 		<int16 name="Unknown" offset="0x20" visible="false" />
 		<int16 name="Unknown" offset="0x22" visible="false" />
-		<int16 name="Previous Variant Sibling" offset="0x24" visible="true" />
-		<int16 name="Next Variant Sibling" offset="0x26" visible="true" />
+		<int16 name="Parent Animation Index" offset="0x24" visible="true" />
+		<int16 name="Next Animation Index" offset="0x26" visible="true" />
 		<int16 name="Raw Information Group Index" offset="0x28" visible="true" />
 		<int16 name="Raw Information Member Index" offset="0x2A" visible="true" />
 		<tagblock name="Frame Events" offset="0x2C" visible="true" elementSize="0x4">
@@ -233,7 +219,17 @@
 			<stringid name="Marker Name" offset="0x4" visible="true" />
 		</tagblock>
 		<tagblock name="Dialogue Events" offset="0x50" visible="true" elementSize="0x4">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+			<enum16 name="Dialogue Event" offset="0x0" visible="true">
+				<option name="Bump" value="0x0" />
+				<option name="Dive" value="0x1" />
+				<option name="Evade" value="0x2" />
+				<option name="Lift" value="0x3" />
+				<option name="Sigh" value="0x4" />
+				<option name="Contempt" value="0x5" />
+				<option name="Anger" value="0x6" />
+				<option name="Fear" value="0x7" />
+				<option name="Relief" value="0x8" />
+			</enum16>
 			<int16 name="Frame" offset="0x2" visible="true" />
 		</tagblock>
 		<tagblock name="Object-Space Parent Nodes" offset="0x5C" visible="true" elementSize="0x1C">
@@ -243,31 +239,22 @@
 				<bit name="Translation" index="1" />
 				<bit name="Scale" index="2" />
 			</flags16>
-			<int16 name="Rotation x" offset="0x4" visible="true" />
-			<int16 name="Rotation y" offset="0x6" visible="true" />
-			<int16 name="Rotation z" offset="0x8" visible="true" />
-			<int16 name="Rotation w" offset="0xA" visible="true" />
-			<float32 name="Default Translation x" offset="0xC" visible="true" />
-			<float32 name="Default Translation y" offset="0x10" visible="true" />
-			<float32 name="Default Translation z" offset="0x14" visible="true" />
+			<quat16 name="Rotation" offset="0x4" visible="true" />
+			<point3 name="Default Translation" offset="0xC" visible="true" />
 			<float32 name="Default Scale" offset="0x18" visible="true" />
 		</tagblock>
-		<tagblock name="Leg Anchoring" offset="0x68" visible="true" elementSize="0x10">
-			<int16 name="Leg Index" offset="0x0" visible="true" />
+		<tagblock name="Foot Tracking" offset="0x68" visible="true" elementSize="0x10">
+			<int16 name="Foot Index" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
-			<tagblock name="Unknown" offset="0x4" visible="true" elementSize="0x14">
-				<int16 name="Frame 1a" offset="0x0" visible="true" />
-				<int16 name="Frame 2a" offset="0x2" visible="true" />
-				<int16 name="Frame 1b" offset="0x4" visible="true" />
-				<int16 name="Frame 2b" offset="0x6" visible="true" />
-				<undefined name="Unknown" offset="0x8" visible="false" />
-				<undefined name="Unknown" offset="0xC" visible="false" />
-				<undefined name="Unknown" offset="0x10" visible="false" />
+			<tagblock name="Cycles" offset="0x4" visible="true" elementSize="0x14">
+				<int16 name="Start Locking" offset="0x0" visible="true" />
+				<int16 name="Locked" offset="0x2" visible="true" />
+				<int16 name="Start Unlocking" offset="0x4" visible="true" />
+				<int16 name="Unlocked" offset="0x6" visible="true" />
+				<point3 name="Lock Point" offset="0x8" visible="true" />
 			</tagblock>
 		</tagblock>
-		<float32 name="Heading i" offset="0x74" visible="true" />
-		<float32 name="Heading j" offset="0x78" visible="true" />
-		<float32 name="Heading k" offset="0x7C" visible="true" />
+		<vector3 name="Heading" offset="0x74" visible="true" />
 		<float32 name="Average Translation Magnitude" offset="0x80" visible="true" />
 		<degree name="Average Pivot Yaw" offset="0x84" visible="true" />
 	</tagblock>
@@ -298,14 +285,14 @@
 				</tagblock>
 				<tagblock name="Transitions" offset="0x28" visible="true" elementSize="0x18" sort="true">
 					<stringid name="Full Name" offset="0x0" visible="true" />
-					<stringid name="State Name" offset="0x4" visible="true" />
+					<stringid name="State Name" offset="0x4" visible="true" tooltip="name of the state this transition starts in" />
 					<int16 name="Unknown" offset="0x8" visible="false" />
 					<int8 name="Index A" offset="0xA" visible="true" />
 					<int8 name="Index B" offset="0xB" visible="true" />
 					<tagblock name="Destinations" offset="0xC" visible="true" elementSize="0x14">
 						<stringid name="Full Name" offset="0x0" visible="true" />
-						<stringid name="Mode Name" offset="0x4" visible="true" />
-						<stringid name="State Name" offset="0x8" visible="true" />
+						<stringid name="Mode Name" offset="0x4" visible="true" tooltip="name of the mode this transition ends in" />
+						<stringid name="State Name" offset="0x8" visible="true" tooltip="name of the state this transition ends in" />
 						<enum8 name="Frame Event Link" offset="0xC" visible="true">
 							<option name="No Keyframe" value="0x0" />
 							<option name="Keyframe Type A" value="0x1" />
@@ -322,27 +309,32 @@
 				</tagblock>
 			</tagblock>
 			<tagblock name="Weapon ik" offset="0x10" visible="true" elementSize="0x8">
-				<stringid name="Marker" offset="0x0" visible="true" />
-				<stringid name="Attach To Marker" offset="0x4" visible="true" />
+				<stringid name="Marker" offset="0x0" visible="true" tooltip="the marker name on the object being attached" />
+				<stringid name="Attach To Marker" offset="0x4" visible="true" tooltip="the marker name object (weapon, vehicle, etc.) the above marker is being attached to" />
 			</tagblock>
 		</tagblock>
 		<tagblock name="Mode ik" offset="0x10" visible="true" elementSize="0x8">
-			<stringid name="Marker" offset="0x0" visible="true" />
-			<stringid name="Attach To Marker" offset="0x4" visible="true" />
+			<stringid name="Marker" offset="0x0" visible="true" tooltip="the marker name on the object being attached" />
+			<stringid name="Attach To Marker" offset="0x4" visible="true" tooltip="the marker name object (weapon, vehicle, etc.) the above marker is being attached to" />
 		</tagblock>
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
+		<tagblock name="Foot Defaults" offset="0x1C" visible="true" elementSize="0x4">
+			<int16 name="Foot Index" offset="0x0" visible="true" />
+			<enum16 name="Default State" offset="0x2" visible="true">
+				<option name="Off" value="0x0" />
+				<option name="On" value="0x1" />
+			</enum16>
+		</tagblock>
 	</tagblock>
+	<comment title="SPECIAL CASES" />
 	<tagblock name="Vehicle Suspension" offset="0x68" visible="true" elementSize="0x28">
 		<stringid name="Label" offset="0x0" visible="true" />
 		<int16 name="Graph Index" offset="0x4" visible="true" />
 		<int16 name="Animation" offset="0x6" visible="true" />
-		<stringid name="Marker Name" offset="0x8" visible="true" />
-		<float32 name="Mass Point Offset" offset="0xC" visible="true" />
+		<stringid name="Marker Name" offset="0x8" visible="true" tooltip="this marker should be parented to the vehicle root node" />
+		<float32 name="Mass Point Offset" offset="0xC" visible="true" tooltip="distance along the vehicle's up direction to move the wheel from the marker location" />
 		<float32 name="Full Extension Ground Depth" offset="0x10" visible="true" />
 		<float32 name="Full Compression Ground Depth" offset="0x14" visible="true" />
-		<comment title="Destroyed Suspension" />
+		<comment title="Destroyed Suspension">Only Necessary for suspensions with a destroyed state</comment>
 		<stringid name="Region Name" offset="0x18" visible="true" />
 		<float32 name="Mass Point Offset" offset="0x1C" visible="true" />
 		<float32 name="Expression Ground Depth" offset="0x20" visible="true" />
@@ -992,20 +984,11 @@ To reference an inherited graph, set the Graph Index value of the animation(s) y
 	<dataref name="Last Import Results" offset="0xD8" visible="true" />
 	<tagblock name="Additional Node Data" offset="0xEC" visible="true" elementSize="0x3C">
 		<stringid name="Node Name" offset="0x0" visible="true" />
-		<float32 name="Default Rotation i" offset="0x4" visible="true" />
-		<float32 name="Default Rotation j" offset="0x8" visible="true" />
-		<float32 name="Default Rotation k" offset="0xC" visible="true" />
-		<float32 name="Default Rotation w" offset="0x10" visible="true" />
-		<float32 name="Default Translation x" offset="0x14" visible="true" />
-		<float32 name="Default Translation y" offset="0x18" visible="true" />
-		<float32 name="Default Translation z" offset="0x1C" visible="true" />
+		<vector4 name="Default Rotation" offset="0x4" visible="true" />
+		<point3 name="Default Translation" offset="0x14" visible="true" />
 		<float32 name="Default Scale" offset="0x20" visible="true" />
-		<float32 name="Min Bounds x" offset="0x24" visible="true" />
-		<float32 name="Min Bounds y" offset="0x28" visible="true" />
-		<float32 name="Min Bounds z" offset="0x2C" visible="true" />
-		<float32 name="Max Bounds x" offset="0x30" visible="true" />
-		<float32 name="Max Bounds y" offset="0x34" visible="true" />
-		<float32 name="Max Bounds z" offset="0x38" visible="true" />
+		<point3 name="Minimum Bounds" offset="0x24" visible="true" />
+		<point3 name="Maximum Bounds" offset="0x30" visible="true" />
 	</tagblock>
 	<tagblock name="Tag Resource Groups" offset="0xF8" visible="true" elementSize="0xC">
 		<int32 name="Reference Count" offset="0x0" visible="true" />

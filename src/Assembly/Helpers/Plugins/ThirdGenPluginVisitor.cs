@@ -126,6 +126,18 @@ namespace Assembly.Helpers.Plugins
 				AddValue(new RectangleData(name, offset, 0, "rectangle16", 0, 0, 0, 0, pluginLine, tooltip));
 		}
 
+		public void VisitQuat16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new Quaternion16Data(name, offset, 0, "quaternion16", 0, 0, 0, 0, pluginLine, tooltip));
+		}
+
+		public void VisitPoint16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new Point16Data(name, offset, 0, "point16", 0, 0, pluginLine, tooltip));
+		}
+
 		public void VisitDegree(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 			if (visible || _showInvisibles)
@@ -135,13 +147,13 @@ namespace Assembly.Helpers.Plugins
 		public void VisitColorInt(string name, uint offset, bool visible, bool alpha, uint pluginLine, string tooltip)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new ColorData(name, offset, 0, alpha, "int", Colors.Transparent, pluginLine, tooltip));
+				AddValue(new ColorData(name, offset, 0, alpha, "color32", Colors.Transparent, pluginLine, tooltip));
 		}
 
 		public void VisitColorF(string name, uint offset, bool visible, bool alpha, uint pluginLine, string tooltip)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new ColorData(name, offset, 0, alpha, "float", Colors.Transparent, pluginLine, tooltip));
+				AddValue(new ColorData(name, offset, 0, alpha, "colorf", Colors.Transparent, pluginLine, tooltip));
 		}
 
 		public void VisitStringID(string name, uint offset, bool visible, uint pluginLine, string tooltip)
@@ -385,6 +397,18 @@ namespace Assembly.Helpers.Plugins
 		{
 			if (visible || _showInvisibles)
 				AddValue(new Int32Data(name, offset, 0, "int32", 0, pluginLine, tooltip));
+		}
+
+		public void VisitUInt64(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new Uint64Data(name, offset, 0, "uint64", 0, pluginLine, tooltip));
+		}
+
+		public void VisitInt64(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new Int64Data(name, offset, 0, "int64", 0, pluginLine, tooltip));
 		}
 
 		public void VisitFloat32(string name, uint offset, bool visible, uint pluginLine, string tooltip)

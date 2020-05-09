@@ -671,6 +671,7 @@ namespace Assembly.Windows
 				Content = (patchLocation != null) ? new PatchControl(patchLocation) : new PatchControl()
 			};
 			documentManager.Children.Add(newPatchTab);
+			newPatchTab.Closing += PatchControl_Closing;
 			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newPatchTab);
 		}
 
@@ -912,6 +913,14 @@ namespace Assembly.Windows
 		{
 			LayoutDocument ld = (LayoutDocument)sender;
 			HaloMap mp = (HaloMap)ld.Content;
+
+			mp.Dispose();
+		}
+
+		private void PatchControl_Closing(object sender, CancelEventArgs e)
+		{
+			LayoutDocument ld = (LayoutDocument)sender;
+			PatchControl mp = (PatchControl)ld.Content;
 
 			mp.Dispose();
 		}

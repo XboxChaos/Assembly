@@ -51,6 +51,8 @@ namespace Blamite.Plugins
 		void VisitInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 		void VisitUInt32(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 		void VisitInt32(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitUInt64(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitInt64(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 		void VisitFloat32(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 		void VisitUndefined(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 
@@ -65,6 +67,8 @@ namespace Blamite.Plugins
 		void VisitPlane2(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 		void VisitPlane3(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 		void VisitRect16(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitQuat16(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitPoint16(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 		void VisitStringID(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 		void VisitTagReference(string name, uint offset, bool visible, bool withGroup, bool showJumpTo, uint pluginLine, string tooltip);
 		void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine, string tooltip);

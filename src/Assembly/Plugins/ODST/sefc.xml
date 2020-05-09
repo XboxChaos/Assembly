@@ -39,18 +39,17 @@
 			<bit name="Disable Camera Falloffs" index="5" />
 			<bit name="Only Affects Attached Object" index="6" />
 			<bit name="Draw Precisely One" index="7" />
-			<bit name="Use Player Travel Direction" index="8" />
 		</flags16>
 		<flags16 name="Hidden Flags" offset="0x6" visible="true">
 			<bit name="Update Thread" index="0" />
 			<bit name="Render Thread" index="1" />
 		</flags16>
 		<comment title="DISTANCE FALLOFF">controls the maximum distance and the distance falloff of this effect</comment>
-		<float32 name="Maximum Distance" offset="0x8" visible="true" />
+		<float32 name="Maximum Distance" offset="0x8" visible="true" tooltip="the maximum distance this screen effect will affect" />
 		<dataref name="Distance Falloff Function" offset="0xC" visible="true" />
 		<comment title="TIME EVOLUTION">controls the lifetime and time falloff of this effect</comment>
-		<float32 name="Delay" offset="0x20" visible="true" />
-		<float32 name="Lifetime" offset="0x24" visible="true" />
+		<float32 name="Delay" offset="0x20" visible="true" tooltip="the effect will start after this many seconds (ignored if the play sequentially flag is set)" />
+		<float32 name="Lifetime" offset="0x24" visible="true" tooltip="the effect is destroyed after this many seconds (0 = never dies)" />
 		<dataref name="Time Falloff Function" offset="0x28" visible="true" />
 		<comment title="ANGLE FALLOFF">controls the falloff of this effect based on how close you are to looking directly at it</comment>
 		<dataref name="Angle Falloff Function" offset="0x3C" visible="true" />
@@ -60,29 +59,29 @@
 		<dataref name="Object Falloff Function" offset="0x58" visible="true" />
 		<comment title="EFFECTS">a selection of effects to choose from
 in the case of overlapping effects, the maximum will be taken</comment>
-		<float32 name="Exposure Boost" offset="0x6C" visible="true" />
-		<float32 name="Hue Left" offset="0x70" visible="true" />
-		<float32 name="Hue Right" offset="0x74" visible="true" />
-		<float32 name="Saturation" offset="0x78" visible="true" />
-		<float32 name="Desaturation" offset="0x7C" visible="true" />
-		<float32 name="Contrast Enhance" offset="0x80" visible="true" />
-		<float32 name="Gamma Enhance" offset="0x84" visible="true" />
-		<float32 name="Gamma Reduce" offset="0x88" visible="true" />
-		<colorf name="Color Filter" offset="0x8C" alpha="false" visible="true" />
-		<colorf name="Color Floor" offset="0x98" alpha="false" visible="true" />
-		<float32 name="Tron" offset="0xA4" visible="true" />
+		<float32 name="Exposure Boost" offset="0x6C" visible="true" tooltip="increase in exposure" />
+		<float32 name="Hue Left" offset="0x70" visible="true" tooltip="shifts hue R-&gt;G-&gt;B" />
+		<float32 name="Hue Right" offset="0x74" visible="true" tooltip="shifts hue B-&gt;G-&gt;R" />
+		<float32 name="Saturation" offset="0x78" visible="true" tooltip="increases saturation" />
+		<float32 name="Desaturation" offset="0x7C" visible="true" tooltip="decreases saturation" />
+		<float32 name="Contrast Enhance" offset="0x80" visible="true" tooltip="contrast increase" />
+		<float32 name="Gamma Enhance" offset="0x84" visible="true" tooltip="gamma increase" />
+		<float32 name="Gamma Reduce" offset="0x88" visible="true" tooltip="gamma decrease" />
+		<colorf name="Color Filter" offset="0x8C" alpha="false" visible="true" tooltip="this color is multiplied on top" />
+		<colorf name="Color Floor" offset="0x98" alpha="false" visible="true" tooltip="this color is subtracted" />
+		<float32 name="Tron" offset="0xA4" visible="true" tooltip="adds a full-screen tron effect" />
 		<float32 name="Drunk" offset="0xA8" visible="true" />
 		<undefined name="Unknown" offset="0xAC" visible="false" />
 		<undefined name="Unknown" offset="0xB0" visible="false" />
 		<undefined name="Unknown" offset="0xB4" visible="false" />
-		<float32 name="Horizontal Blur" offset="0xB8" visible="true" />
-		<float32 name="Vertical Blur" offset="0xBC" visible="true" />
-		<float32 name="Vision Mode" offset="0xC0" visible="true" />
+		<float32 name="Horizontal Blur" offset="0xB8" visible="true" tooltip="blurs the entire screen" />
+		<float32 name="Vertical Blur" offset="0xBC" visible="true" tooltip="blurs the entire screen" />
+		<float32 name="Vision Mode" offset="0xC0" visible="true" tooltip="turns on the global vision mode" />
 		<undefined name="Unknown" offset="0xC4" visible="false" />
-		<float32 name="HUD Fade" offset="0xC8" visible="true" />
-		<float32 name="FOV In" offset="0xCC" visible="true" />
-		<float32 name="FOV Out" offset="0xD0" visible="true" />
-		<float32 name="Screen Shake" offset="0xD4" visible="true" />
-		<tagRef name="Screen Shader" offset="0xD8" visible="true" />
+		<float32 name="HUD Fade" offset="0xC8" visible="true" tooltip="fades the chud" />
+		<float32 name="FOV In" offset="0xCC" visible="true" tooltip="zooms in the field of view" />
+		<float32 name="FOV Out" offset="0xD0" visible="true" tooltip="zooms out the field of view" />
+		<float32 name="Screen Shake" offset="0xD4" visible="true" tooltip="shakes the entire screen" />
+		<tagRef name="Screen Shader" offset="0xD8" visible="true" tooltip="applies this shader to the entire screen" />
 	</tagblock>
 </plugin>

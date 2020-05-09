@@ -10,7 +10,7 @@ using Blamite.Serialization;
 using Blamite.Serialization.Settings;
 using Blamite.IO;
 using Blamite.Patching;
-using Blamite.RTE.MCC;
+using Blamite.RTE.ThirdGen;
 
 namespace Assembly.Metro.Controls.PageTemplates
 {
@@ -804,10 +804,6 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 		#endregion
 
-		#region Patch Convertion Functions
-
-		#endregion
-
 		#region Patch Poking Functions
 
 		private Patch currentPatchToPoke;
@@ -922,7 +918,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 				
 
-				var gameRTE = new MCCRTEProvider(pokeInfo);
+				var gameRTE = new ThirdGenMCCRTEProvider(pokeInfo);
 				var gameStream = gameRTE.GetMetaStream();
 
 				if (currentPatchToPoke.MetaChangesIndex >= 0)
@@ -1021,5 +1017,14 @@ namespace Assembly.Metro.Controls.PageTemplates
 		#endregion
 
 		// ReSharper restore UnusedMember.Global
+
+		public void Dispose()
+		{
+			if (currentPatch != null && currentPatch.SegmentChanges != null)
+				currentPatch.SegmentChanges.Clear();
+
+			if (currentPatchToPoke != null && currentPatchToPoke.SegmentChanges != null)
+				currentPatchToPoke.SegmentChanges.Clear();
+		}
 	}
 }

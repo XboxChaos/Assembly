@@ -148,7 +148,9 @@ namespace Blamite.Injection
 			}
 			if (lowerName.Contains("interop pointer"))
 			{
-				ReadReferences(offset, (b, o) => ReadInteropPointer(b, o));
+				ReadReferences(offset, (b, o)
+					=> ReadInteropPointer(b, o,
+					lowerName.Contains("shader") ? 5 : 1));
 			}
 			if (lowerName.Contains("scenario interop index"))
 			{
@@ -175,6 +177,15 @@ namespace Blamite.Injection
 		public void VisitInt32(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 			VisitUInt32(name, offset, visible, pluginLine, tooltip);
+		}
+
+		public void VisitUInt64(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+		}
+
+		public void VisitInt64(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			VisitUInt64(name, offset, visible, pluginLine, tooltip);
 		}
 
 		public void VisitFloat32(string name, uint offset, bool visible, uint pluginLine, string tooltip)
@@ -226,6 +237,14 @@ namespace Blamite.Injection
 		}
 
 		public void VisitRect16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+		}
+
+		public void VisitQuat16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+		}
+
+		public void VisitPoint16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 		}
 
@@ -537,7 +556,7 @@ namespace Blamite.Injection
 				return;
 		}
 
-		private void ReadInteropPointer(DataBlock block, uint offset)
+		private void ReadInteropPointer(DataBlock block, uint offset, int refCount)
 		{
 			// Read the address
 			SeekToOffset(block, offset);
@@ -545,10 +564,15 @@ namespace Blamite.Injection
 
 			long expand = _cacheFile.PointerExpander.Expand(address);
 
-			if (!_cacheFile.MetaArea.ContainsBlockPointer(expand, 24)) return;
+			int length = _dataRefLayout.Size * refCount;
 
-			var newBlock = ReadDataBlock(expand, 24, 1, 16, false);
-			ReadDataReference(newBlock, 0, 16);
+			if (!_cacheFile.MetaArea.ContainsBlockPointer(expand, length)) return;
+
+			var newBlock = ReadDataBlock(expand, length, 1, 16, false);
+			for (int i = 0; i < refCount; i++)
+			{
+				ReadDataReference(newBlock, (uint)(i * _dataRefLayout.Size), 16);
+			}
 
 			//get the type from the table
 			uint loc = block.OriginalAddress;

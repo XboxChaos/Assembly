@@ -124,7 +124,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			get { return _radianmin; }
 			set
 			{
-				_radianmax = value;
+				_radianmin = value;
 				NotifyPropertyChanged("RadianMin");
 				NotifyPropertyChanged("Min");
 			}
@@ -147,7 +147,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			{
 				_radianmax = value;
 				NotifyPropertyChanged("RadianMax");
-				NotifyPropertyChanged("ValueMax");
+				NotifyPropertyChanged("Max");
 			}
 		}
 

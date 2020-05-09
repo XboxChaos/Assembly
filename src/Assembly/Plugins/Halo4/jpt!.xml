@@ -6,13 +6,13 @@
 		<revision author="Lord Zedd" version="3">Now with comments.</revision>
 		<revision author="Lord Zedd" version="4">thanks h5</revision>
 	</revisions>
-	<tagref name="Area Of Effect Behavior Equipment" offset="0x0" visible="true" />
+	<tagref name="Area Of Effect Behavior Equipment" offset="0x0" visible="true" tooltip="if a reference is here, area of effect damage will attach the equipment to the target" />
 	<rangef name="Radius" offset="0x10" visible="true" />
 	<float32 name="Cutoff Scale" offset="0x18" visible="true" />
 	<flags32 name="Flags" offset="0x1C" visible="true">
 		<bit name="Don't Scale Damage By Distance" index="0" />
-		<bit name="Area Damage Players Only" index="1" />
-		<bit name="Affects Model Targets" index="2" />
+		<bit name="Area Damage Players Only" index="1" tooltip="area of effect damage only affects players" />
+		<bit name="Affects Model Targets" index="2" tooltip="distribute the damage amongst the model targets. this is the default behavior for aoe damage, but can be set here for direct damage." />
 		<bit name="Explosive Area Of Effect" index="3" />
 	</flags32>
 	<enum16 name="Side Effect" offset="0x20" visible="true">
@@ -38,7 +38,7 @@
 		<option name="Assassinated" value="0xD" />
 	</enum16>
 	<enum32 name="Death Vocalization" offset="0x24" visible="true">
-		<option name="Default" value="0x0" />
+		<option name="Default" value="0x0" tooltip="uses code to figure out what vocalization to use" />
 		<option name="dth" value="0x1" />
 		<option name="dth_fall" value="0x2" />
 		<option name="dth_mjr" value="0x3" />
@@ -54,9 +54,9 @@
 	<flags32 name="Flags" offset="0x28" visible="true">
 		<bit name="Does Not Hurt Owner" index="0" />
 		<bit name="Can Cause Headshots" index="1" />
-		<bit name="Ignores Headshot Obstructions" index="2" />
+		<bit name="Ignores Headshot Obstructions" index="2" tooltip="arms, held weapons, attachments" />
 		<bit name="Pings Resistant Units" index="3" />
-		<bit name="Does Not Hurt Friends" index="4" />
+		<bit name="Does Not Hurt Friends" index="4" tooltip="affects aoe only" />
 		<bit name="Does Not Ping Units" index="5" />
 		<bit name="Detonates Explosives" index="6" />
 		<bit name="Only Hurts Shields" index="7" />
@@ -78,8 +78,8 @@
 		<bit name="Does Not Hurt Boarders" index="23" />
 		<bit name="Does Not Cause Biped Area Of Effect Effect" index="24" />
 		<bit name="Bit 25" index="25" />
-		<bit name="Apply Tree Of Life" index="26" />
-		<bit name="Hurt Only Friends" index="27" />
+		<bit name="Apply Tree Of Life" index="26" tooltip="as if a tree of life was near 'victim'" />
+		<bit name="Hurt Only Friends" index="27" tooltip="affects aoe only" />
 		<bit name="Causes Incineration Dissolve" index="28" />
 		<bit name="Causes Incineration Dissolve On Headshot" index="29" />
 		<bit name="Does Not Hurt Damage Source" index="30" />
@@ -87,7 +87,7 @@
 	</flags32>
 	<flags32 name="Secondary Flags" offset="0x2C" visible="true">
 		<bit name="Causes Incineration Dissolve To Dead Units" index="0" />
-		<bit name="Force Hard Ping As Attachment Feedback" index="1" />
+		<bit name="Force Hard Ping As Attachment Feedback" index="1" tooltip="force a hard ping as a notification to the player that the sticky grenade has attached" />
 		<bit name="Bit 2" index="2" />
 		<bit name="Bit 3" index="3" />
 		<bit name="Bit 4" index="4" />
@@ -119,31 +119,31 @@
 		<bit name="Bit 30" index="30" />
 		<bit name="Bit 31" index="31" />
 	</flags32>
-	<float32 name="Headshot Damage Multiplier" offset="0x30" visible="true" />
-	<float32 name="Area Of Effect Core Radius" offset="0x34" visible="true" />
+	<float32 name="Headshot Damage Multiplier" offset="0x30" visible="true" tooltip="ignored if zero or if headshot flag is not set above; otherwise, makes headshot not instantly lethal, but multiplies damage done to head by this much. 2 does 2x damage to head for headshot.  note that head still has different health than body." />
+	<float32 name="Area Of Effect Core Radius" offset="0x34" visible="true" tooltip="if &gt;0 then higher fidelity obstruction collision checks are performed. This field has no other ramifications." />
 	<float32 name="Damage Lower Bound" offset="0x38" visible="true" />
 	<rangef name="Damage Upper Bound" offset="0x3C" visible="true" />
 	<dataref name="Damage Falloff Function" offset="0x44" visible="true" />
 	<degree name="Damage Inner Cone Angle" offset="0x58" visible="true" />
 	<degree name="Damage Outer Cone Angle" offset="0x5C" visible="true" />
-	<float32 name="Active Camoflage Damage" offset="0x60" visible="true" />
-	<float32 name="Stun" offset="0x64" visible="true" />
-	<float32 name="Maximum Stun" offset="0x68" visible="true" />
-	<float32 name="Stun Time" offset="0x6C" visible="true" />
-	<int32 name="Damage Stun" offset="0x70" visible="true" />
+	<float32 name="Active Camoflage Damage" offset="0x60" visible="true" tooltip="how much more visible this damage makes a player who is active camouflaged" />
+	<float32 name="Stun" offset="0x64" visible="true" tooltip="amount of stun added to damaged unit" />
+	<float32 name="Maximum Stun" offset="0x68" visible="true" tooltip="damaged unit's stun will never exceed this amount" />
+	<float32 name="Stun Time" offset="0x6C" visible="true" tooltip="duration of stun due to this damage" />
+	<int32 name="Damage Stun" offset="0x70" visible="true" tooltip="how long we stun recovering current body damage" />
 	<float32 name="Instantaneous Acceleration" offset="0x74" visible="true" />
-	<float32 name="Alt Instantaneous Acceleration" offset="0x78" visible="true" />
-	<float32 name="Acceleration Cap" offset="0x7C" visible="true" />
+	<float32 name="Alternate Instantaneous Acceleration" offset="0x78" visible="true" tooltip="This field can be used for an alternative acceleration if the corresponding flags are set, e.g. check vehicle-&gt;flags.vehicle wants reduced weapon impulse when airborne" />
+	<float32 name="Acceleration Cap" offset="0x7C" visible="true" tooltip="set to zero to disable cap" />
 	<comment title="Rider Damage Scales" />
 	<float32 name="Rider Direct Damage Scale" offset="0x80" visible="true" />
 	<float32 name="Rider Maximum Transfer Damage" offset="0x84" visible="true" />
 	<float32 name="Rider Minimum Transfer Damage" offset="0x88" visible="true" />
 	<float32 name="Vehicle Damage Multiplier" offset="0x8C" visible="true" />
-	<float32 name="Soft Ping Pain Screen Scale" offset="0x90" visible="true" />
+	<float32 name="Soft Ping Pain Screen Scale" offset="0x90" visible="true" tooltip="The maximum amount to apply the pain screen pose overlay" />
 	<stringid name="General Damage" offset="0x94" visible="true" />
 	<stringid name="Specific Damage" offset="0x98" visible="true" />
 	<tagblock name="Custom Response Labels" offset="0x9C" visible="true" elementSize="0x4">
-		<stringid name="Custom Label" offset="0x0" visible="true" />
+		<stringid name="Custom Label" offset="0x0" visible="true" tooltip="label used to control what damage response will fire." />
 	</tagblock>
 	<float32 name="AI Stun Radius" offset="0xA8" visible="true" />
 	<rangef name="AI Stun Bounds" offset="0xAC" visible="true" />
@@ -174,8 +174,8 @@
 		<tagRef name="Sound" offset="0x0" visible="true" />
 		<flags16 name="Damage Types" offset="0x10" visible="true">
 			<bit name="None" index="0" />
-			<bit name="Lethal Instantaneous" index="1" />
-			<bit name="Lethal" index="2" />
+			<bit name="Lethal Instantaneous" index="1" tooltip="headshots and assassinations" />
+			<bit name="Lethal" index="2" tooltip="excludes headshots and assassinations" />
 			<bit name="Non Lethal" index="3" />
 		</flags16>
 		<flags16 name="Object Types" offset="0x12" visible="true">

@@ -166,6 +166,48 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	}
 
 	/// <summary>
+	///     Unsigned 64-bit integer.
+	/// </summary>
+	public class Uint64Data : NumberData<ulong>
+	{
+		public Uint64Data(string name, uint offset, long address, string type, ulong value, uint pluginLine, string tooltip)
+			: base(name, offset, address, type, value, pluginLine, tooltip)
+		{
+		}
+
+		public override void Accept(IMetaFieldVisitor visitor)
+		{
+			visitor.VisitUint64(this);
+		}
+
+		public override MetaField CloneValue()
+		{
+			return new Uint64Data(Name, Offset, FieldAddress, Type, Value, PluginLine, ToolTip);
+		}
+	}
+
+	/// <summary>
+	///     Signed 64-bit integer.
+	/// </summary>
+	public class Int64Data : NumberData<long>
+	{
+		public Int64Data(string name, uint offset, long address, string type, long value, uint pluginLine, string tooltip)
+			: base(name, offset, address, type, value, pluginLine, tooltip)
+		{
+		}
+
+		public override void Accept(IMetaFieldVisitor visitor)
+		{
+			visitor.VisitInt64(this);
+		}
+
+		public override MetaField CloneValue()
+		{
+			return new Int64Data(Name, Offset, FieldAddress, Type, Value, PluginLine, ToolTip);
+		}
+	}
+
+	/// <summary>
 	///     32-bit floating-point number.
 	/// </summary>
 	public class Float32Data : NumberData<float>
