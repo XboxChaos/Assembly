@@ -26,15 +26,14 @@ namespace Blamite.Blam.Scripting.Compiler
 
         // script tables
         private StringTable _strings = new StringTable();
-        private List<ExpressionBase> _expressions = new List<ExpressionBase>();
+        private List<ScriptExpression> _expressions = new List<ScriptExpression>();
         private List<Script> _scripts = new List<Script>();
         private List<ScriptGlobal> _globals = new List<ScriptGlobal>();
         private List<ITag> _references = new List<ITag>();
 
         // utility
         private const UInt32 _randomAddress = 0xCDCDCDCD;  // used for expressions where the string address doesn't point to the string table
-        private ushort _currentSalt;
-        private ushort _currentExpressionIndex;
+        private DatumIndex _currentIndex;
         private Stack<Int32> _openDatums = new Stack<Int32>();
         private Stack<string> _expectedTypes = new Stack<string>();
 
@@ -67,8 +66,9 @@ namespace Blamite.Blam.Scripting.Compiler
             _seatMappings = seatMappings;
             _logger = logger;
 
-            _currentSalt = SaltGenerator.GetSalt("script node");
-            _currentExpressionIndex = 0;
+            UInt16 salt = SaltGenerator.GetSalt("script node");
+            UInt16 index = 0;
+            _currentIndex = new DatumIndex(salt, index);
         }
 
         public ScriptData Result()
