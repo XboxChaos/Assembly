@@ -9,24 +9,27 @@ namespace Blamite.Blam.Scripting
 	/// </summary>
 	public class ScriptExpression
 	{
-		private DatumIndex _nextIndex = DatumIndex.Null;
-		private int _stringTableOffset;
-
 		public ScriptExpression()
 		{
 		}
 
-		public ScriptExpression(DatumIndex index, UInt16 opcode, Int16 valType, ScriptExpressionType expType, 
-			DatumIndex nextExp, int strOffset, object value, Int16 line)
+		public ScriptExpression(DatumIndex index, ushort opcode, ushort valType, ScriptExpressionType expType,
+			uint strOffset, object value, Int16 line)
 		{
 			Index = index;
 			Opcode = opcode;
 			ReturnType = valType;
 			Type = expType;
-			_nextIndex = nextExp;
-			_stringTableOffset = strOffset;
-			ConvertValue(value);
+			Next = DatumIndex.Null;
+			StringOffset = strOffset;
+			SetValue(value);
 			LineNumber = line;
+		}
+
+		public ScriptExpression(DatumIndex index, ushort opcode, ushort valType, ScriptExpressionType expType, 
+			DatumIndex nextExp, uint strOffset, object value, Int16 line) : this(index, opcode, valType, expType, strOffset, value, line)
+		{
+			Next = nextExp;
 		}
 
 		internal ScriptExpression(StructureValueCollection values, ushort index, StringTableReader stringReader, int stringTableSize)
@@ -52,12 +55,17 @@ namespace Blamite.Blam.Scripting
 		/// <summary>
 		///     Gets or sets the type of the expression's return value.
 		/// </summary>
-		public short ReturnType { get; set; }
+		public ushort ReturnType { get; set; }
 
 		/// <summary>
 		///     Gets or sets the string associated with the expression. Can be null.
 		/// </summary>
 		public string StringValue { get; set; }
+
+		/// <summary>
+		///		Gets or sets the string offset of the expression.
+		/// </summary>
+		public uint StringOffset { get; set; }
 
 		/// <summary>
 		///     Gets or sets the value of the expression.
@@ -72,32 +80,37 @@ namespace Blamite.Blam.Scripting
 		/// <summary>
 		///     Gets or sets the expression to execute after this one. Can be null.
 		/// </summary>
-		public ScriptExpression Next { get; set; }
+		public ScriptExpression NextExpression { get; set; }
+
+		/// <summary>
+		///		Gets or sets the datum index to the next expression.
+		/// </summary>
+		public DatumIndex Next { get; set; }
 
 		internal void ResolveReferences(ScriptExpressionTable allExpressions)
 		{
-			if (_nextIndex.IsValid)
-				Next = allExpressions.FindExpression(_nextIndex);
+			if (Next.IsValid)
+				NextExpression = allExpressions.FindExpression(Next);
 		}
 
 		internal void ResolveStrings(CachedStringTable requestedStrings)
 		{
-			StringValue = requestedStrings.GetString(_stringTableOffset);
+			StringValue = requestedStrings.GetString(StringOffset);
 		}
 
 		private void Load(StructureValueCollection values, ushort index, StringTableReader stringReader, int stringTableSize)
 		{
 			Index = new DatumIndex((ushort) values.GetInteger("datum index salt"), index);
 			Opcode = (ushort) values.GetInteger("opcode");
-			ReturnType = (short) values.GetInteger("value type");
+			ReturnType = (ushort) values.GetInteger("value type");
 			Type = (ScriptExpressionType) values.GetInteger("expression type");
-			_nextIndex = new DatumIndex(values.GetInteger("next expression index"));
-			_stringTableOffset = (int) values.GetIntegerOrDefault("string table offset", 0);
+			Next = new DatumIndex(values.GetInteger("next expression index"));
+			StringOffset = (uint)values.GetIntegerOrDefault("string table offset", 0);
 			Value = (uint)values.GetInteger("value");
 			LineNumber = (short) values.GetIntegerOrDefault("source line", 1);
 
-            if(_stringTableOffset < stringTableSize)
-			    stringReader.RequestString(_stringTableOffset);
+            if(StringOffset < stringTableSize)
+			    stringReader.RequestString(StringOffset);
 		}
 
 		/// <summary>
@@ -108,15 +121,17 @@ namespace Blamite.Blam.Scripting
 		{
 			writer.WriteUInt16(Index.Salt);
 			writer.WriteUInt16(Opcode);
-			writer.WriteInt16(ReturnType);
+			writer.WriteUInt16(ReturnType);
 			writer.WriteInt16((short)Type);
-			writer.WriteUInt32(_nextIndex.Value);
-			writer.WriteInt32(_stringTableOffset);
+			writer.WriteUInt32(Next.Value);
+			writer.WriteUInt32(StringOffset);
 			writer.WriteUInt32(Value);
 			writer.WriteInt16(LineNumber);
+			// zero could be part of the line number
+			writer.WriteUInt16(0);
 		}
 
-		private void ConvertValue(object data)
+		public void SetValue(object data)
 		{
 			uint result = 0xFFFFFFFF;
 			switch(data)
@@ -141,6 +156,10 @@ namespace Blamite.Blam.Scripting
 					result = ByteArrToValue(byArr);
 					break;
 
+				case float fl:
+					result = BitConverter.ToUInt32(BitConverter.GetBytes(fl), 0);
+					break;
+
 				case StringID sid:
 					result = sid.Value;
 					break;
@@ -159,6 +178,13 @@ namespace Blamite.Blam.Scripting
 			}
 
 			Value = result;
+		}
+
+		public ScriptExpression Clone()
+		{
+			var clone = (ScriptExpression)this.MemberwiseClone();
+			clone.Next = new DatumIndex(Next.Salt, Next.Index);
+			return clone;
 		}
 
 		private uint UInt16ArrToValue(ushort[] data)

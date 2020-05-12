@@ -5,25 +5,25 @@ namespace Blamite.Blam.Scripting
 {
 	public class StringTableReader
 	{
-		private readonly SortedSet<int> _requestedStrings = new SortedSet<int>();
+		private readonly SortedSet<uint> _requestedStrings = new SortedSet<uint>();
 
-		public void RequestString(int offset)
+		public void RequestString(uint offset)
 		{
 			_requestedStrings.Add(offset);
 		}
 
 		public void ReadRequestedStrings(IReader reader, int tableOffset, CachedStringTable output)
 		{
-			int lastEnd = -1;
-			foreach (int offset in _requestedStrings)
+			uint lastEnd = 0;
+			foreach (uint offset in _requestedStrings)
 			{
-				if (offset <= lastEnd)
+				if (offset == 0 && offset <= lastEnd)
 					continue;
 
 				reader.SeekTo(tableOffset + offset);
 				string str = reader.ReadWin1252();
 				output.CacheString(offset, str);
-				lastEnd = offset + str.Length;
+				lastEnd = offset + (uint)str.Length;
 			}
 		}
 	}

@@ -78,6 +78,25 @@ namespace Blamite.Blam
 		{
 			Salt++;
 			Index++;
+
+			// Reset Salt
+			if (Salt == 0xFFFF)
+				Salt = 0x8000;
+		}
+
+		/// <summary>
+		///		Returns the Datum Index that will follow this one.
+		/// </summary>
+		/// <returns></returns>
+		public DatumIndex Next()
+		{
+			ushort nextSalt = Salt++;
+			ushort nextIndex = Index++;
+
+			if (nextSalt == 0xFFFF)
+				nextSalt = 0x8000;
+
+			return new DatumIndex(nextSalt, nextIndex);
 		}
 
 		public override bool Equals(object obj)

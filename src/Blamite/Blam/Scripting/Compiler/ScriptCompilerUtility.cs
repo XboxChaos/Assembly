@@ -70,35 +70,35 @@ namespace Blamite.Blam.Scripting.Compiler
                         var exp = _expressions[i];
                         writer.WriteStartElement("Expression");
                         writer.WriteAttributeString("Num", i.ToString());
-                        writer.WriteAttributeString("Salt", exp.Salt.ToString());
-                        writer.WriteAttributeString("Opcode", exp.OpCode.ToString());
-                        writer.WriteAttributeString("ValueType", exp.ValueType.ToString());                       
-                        switch (exp.ExpressionType)
+                        writer.WriteAttributeString("Salt", exp.Index.Salt.ToString());
+                        writer.WriteAttributeString("Opcode", exp.Opcode.ToString());
+                        writer.WriteAttributeString("ValueType", exp.ReturnType.ToString());                       
+                        switch (exp.Type)
                         {
-                            case 8:
+                            case ScriptExpressionType.Group:
                                 writer.WriteAttributeString("ExpressionType", "Call");
                                 break;
-                            case 9:
+                            case ScriptExpressionType.Expression:
                                 writer.WriteAttributeString("ExpressionType", "Expression");
                                 break;
-                            case 10:
+                            case ScriptExpressionType.ScriptReference:
                                 writer.WriteAttributeString("ExpressionType", "ScriptRef");
                                 break;
-                            case 13:
+                            case ScriptExpressionType.GlobalsReference:
                                 writer.WriteAttributeString("ExpressionType", "GlobalRef");
                                 break;
-                            case 29:
-                                writer.WriteAttributeString("ExpressionType", "ScriptVar");
+                            case ScriptExpressionType.ParameterReference:
+                                writer.WriteAttributeString("ExpressionType", "ScriptPar");
                                 break;
 
                         }
-                        writer.WriteAttributeString("NextSalt", exp.NextExpression.Salt.ToString());
-                        writer.WriteAttributeString("NextIndex", exp.NextExpression.Index.ToString());
-                        writer.WriteAttributeString("StringAddr", exp.StringAddress.ToString());
-                        writer.WriteAttributeString("Value", exp.ValueToString);
+                        writer.WriteAttributeString("NextSalt", exp.Next.Salt.ToString());
+                        writer.WriteAttributeString("NextIndex", exp.Next.Index.ToString());
+                        writer.WriteAttributeString("StringOff", exp.StringOffset.ToString());
+                        writer.WriteAttributeString("Value", exp.Value.ToString());
                         writer.WriteAttributeString("LineNum", exp.LineNumber.ToString());
-                        if(exp.StringAddress != _randomAddress)
-                            writer.WriteAttributeString("String", _strings.GetString(exp.StringAddress));
+                        if(exp.StringOffset != _randomAddress)
+                            writer.WriteAttributeString("String", _strings.GetString(exp.StringOffset));
                         writer.WriteEndElement();
                     }
                     writer.WriteEndElement();
@@ -126,14 +126,14 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <summary>
         /// Increments the current Datum.
         /// </summary>
-        private void IncrementDatum()
-        {
-            _currentExpressionIndex++;
-            _currentSalt++;
+        //private void IncrementDatum()
+        //{
+        //    _currentExpressionIndex++;
+        //    _currentSalt++;
 
-            if (_currentSalt == 0xFFFF)
-                _currentSalt = 0x8000;
-        }
+        //    if (_currentSalt == 0xFFFF)
+        //        _currentSalt = 0x8000;
+        //}
 
         private void DeclarationsToXML()
         {
@@ -210,7 +210,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 }
 
 
-                _expressions[index].NextExpression = DatumIndex.Null;
+                _expressions[index].Next = DatumIndex.Null;
             }
 
             else
@@ -229,7 +229,7 @@ namespace Blamite.Blam.Scripting.Compiler
                     _logger.WriteLine("LINK", $"Index: {index}");
 
                 if (index != -1)        // -1 means that this expression belongs to a global declaration
-                    _expressions[index].NextExpression = new DatumIndex(_currentSalt, _currentExpressionIndex);
+                    _expressions[index].Next = _currentIndex;
             }
 
             else
@@ -240,7 +240,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// Pushes the current Datum index to the Datum stack and adds the expression to the table.
         /// </summary>
         /// <param name="expression"></param>
-        private void OpenDatumAndAdd(ExpressionBase expression)
+        private void OpenDatumAndAdd(ScriptExpression expression)
         {
             Int32 openIndex = _expressions.Count;
             if (PrintDebugInfo)

@@ -52,8 +52,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             _streamManager = streamManager;
             _cashefile = casheFile;
             _casheName = casheName;
-            //_showInfo = App.AssemblyStorage.AssemblySettings.ShowScriptInfo;
-            _showInfo = true;
+            _showInfo = App.AssemblyStorage.AssemblySettings.ShowScriptInfo;
 
 
             InitializeComponent();
@@ -453,10 +452,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                         writer.WriteAttributeString("Opcode", exp.Opcode.ToString());
                         writer.WriteAttributeString("ValueType", exp.ReturnType.ToString());
                         writer.WriteAttributeString("ExpType", exp.Type.ToString());
-                        if (exp.Next != null)
+                        if (exp.NextExpression != null)
                         {
-                            writer.WriteAttributeString("Next_Salt", exp.Next.Index.Salt.ToString());
-                            writer.WriteAttributeString("Next_Index", exp.Next.Index.Index.ToString());
+                            writer.WriteAttributeString("Next_Salt", exp.NextExpression.Index.Salt.ToString());
+                            writer.WriteAttributeString("Next_Index", exp.NextExpression.Index.Index.ToString());
                         }
                         else
                         {

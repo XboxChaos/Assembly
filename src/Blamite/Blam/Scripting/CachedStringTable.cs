@@ -8,14 +8,14 @@ namespace Blamite.Blam.Scripting
 	/// </summary>
 	public class CachedStringTable
 	{
-		private readonly Dictionary<int, string> _strings = new Dictionary<int, string>();
+		private readonly Dictionary<uint, string> _strings = new Dictionary<uint, string>();
 
 		/// <summary>
 		///     Caches a string in the table.
 		/// </summary>
 		/// <param name="offset">The string's offset in the table.</param>
 		/// <param name="str">The string.</param>
-		public void CacheString(int offset, string str)
+		public void CacheString(uint offset, string str)
 		{
 			_strings[offset] = str;
 		}
@@ -25,7 +25,7 @@ namespace Blamite.Blam.Scripting
 		/// </summary>
 		/// <param name="offset">The offset of the string to retrieve.</param>
 		/// <returns>The string if it has been cached, or null otherwise.</returns>
-		public string GetString(int offset)
+		public string GetString(uint offset)
 		{
 			string result;
 			if (_strings.TryGetValue(offset, out result))

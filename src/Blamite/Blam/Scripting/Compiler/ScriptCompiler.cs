@@ -32,14 +32,14 @@ namespace Blamite.Blam.Scripting.Compiler
         private List<ITag> _references = new List<ITag>();
 
         // utility
-        private const UInt32 _randomAddress = 0xCDCDCDCD;  // used for expressions where the string address doesn't point to the string table
+        private const uint _randomAddress = 0xCDCDCDCD;  // used for expressions where the string address doesn't point to the string table
         private DatumIndex _currentIndex;
         private Stack<Int32> _openDatums = new Stack<Int32>();
         private Stack<string> _expectedTypes = new Stack<string>();
 
         // branching
         private ushort _branchBoolIndex = 0;
-        private Dictionary<string, ExpressionBase[]> _genBranches = new Dictionary<string, ExpressionBase[]>();
+        private Dictionary<string, ScriptExpression[]> _genBranches = new Dictionary<string, ScriptExpression[]>();
 
         // equality
         private bool _equality = false;
@@ -137,20 +137,8 @@ namespace Blamite.Blam.Scripting.Compiler
             for (int i = 0; i < exp_count - 1; i++)
                 PushTypes("ANY");
 
-            // Create FunctionCall entry
-            ScriptFunctionInfo info = _opcodes.GetFunctionInfo("begin").First();
-            FunctionCall funcCall = new FunctionCall();
-            funcCall.Salt = _currentSalt;
-            funcCall.OpCode = info.Opcode;
-            funcCall.ValueType = _opcodes.GetTypeInfo(retType).Opcode;
-            funcCall.NextExpression = DatumIndex.Null; // closed
-            funcCall.LineNumber = 0;
-            IncrementDatum();
-            funcCall.Value = new DatumIndex(_currentSalt, _currentExpressionIndex); // points to name
-            _expressions.Add(funcCall);
-
-            // Create function_name entry
-            AddFunctionName("begin", funcCall.OpCode, 0);
+            // Create Begin FunctionCall entry
+            CreateInitialBegin(_opcodes.GetTypeInfo(retType).Opcode);
         }
 
         /// <summary>
@@ -186,7 +174,7 @@ namespace Blamite.Blam.Scripting.Compiler
             glo.Name = context.ID().GetText();
             string valType = context.VALUETYPE().GetText();
             glo.Type = (short)_opcodes.GetTypeInfo(valType).Opcode;
-            glo.ExpressionIndex = new DatumIndex(_currentSalt, _currentExpressionIndex);
+            glo.ExpressionIndex = _currentIndex;
             _globals.Add(glo);
 
             if (PrintDebugInfo)
@@ -242,49 +230,47 @@ namespace Blamite.Blam.Scripting.Compiler
 
             // handle calls
             ScriptFunctionInfo info = RetrieveFunctionInfo(name, contextParamCount, context.Start.Line);
+
             // equality
             EqualityPush(info.ReturnType);
             PushCallParameters(info, context, contextParamCount, expectedType);
 
-            // Create Function Call Expression
-            FunctionCall funcCall = new FunctionCall();
-            funcCall.Salt = _currentSalt;
-            funcCall.OpCode = info.Opcode;
-            funcCall.LineNumber = (short)context.Start.Line;
+
+            ushort returnType;
 
             // Calculate return type
             if(info.ReturnType == expectedType) // default case - matching types
             {
-                funcCall.ValueType = _opcodes.GetTypeInfo(expectedType).Opcode;
+                returnType = _opcodes.GetTypeInfo(expectedType).Opcode;
             }
             else if(expectedType == "ANY")  // ANY
             {
                 if(info.ReturnType == "passthrough" || info.Group == "SleepUntil")    // convert passthrough and sleep_until to void if the compiler doesn't expect any particular return type
                 {
-                    funcCall.ValueType = _opcodes.GetTypeInfo("void").Opcode;
+                    returnType = _opcodes.GetTypeInfo("void").Opcode;
                 }
                 else
                 {
-                    funcCall.ValueType = _opcodes.GetTypeInfo(info.ReturnType).Opcode;
+                    returnType = _opcodes.GetTypeInfo(info.ReturnType).Opcode;
                 }
             }
             else if(expectedType == "NUMBER" && Casting.IsNumType(info.ReturnType))     // NUMBER
             {
-                funcCall.ValueType = _opcodes.GetTypeInfo(info.ReturnType).Opcode;
+                returnType = _opcodes.GetTypeInfo(info.ReturnType).Opcode;
             }
             else if(info.ReturnType == "passthrough")   // passthrough
             {
-                funcCall.ValueType = _opcodes.GetTypeInfo(expectedType).Opcode;
+                returnType = _opcodes.GetTypeInfo(expectedType).Opcode;
             }
             else if (Casting.CanBeCasted(info.ReturnType, expectedType, expectedType ,_opcodes))     // casting
             {
                 if (expectedType == "object_list")   // special cases
                 {
-                    funcCall.ValueType = _opcodes.GetTypeInfo("object_list").Opcode;
+                    returnType = _opcodes.GetTypeInfo("object_list").Opcode;
                 }
                 else
                 {
-                    funcCall.ValueType = _opcodes.GetTypeInfo(expectedType).Opcode;
+                    returnType = _opcodes.GetTypeInfo(expectedType).Opcode;
                 }
             }
             else
@@ -292,11 +278,8 @@ namespace Blamite.Blam.Scripting.Compiler
                 throw new CompilerException($"The compiler expected a function with the return type \"{expectedType}\" while processing \"{name}\"." +
                     $" It encountered \"{info.ReturnType}\".",context);
             }
-            
-            IncrementDatum();
-            funcCall.Value = new DatumIndex(_currentSalt, _currentExpressionIndex);
-            OpenDatumAndAdd(funcCall);
-            AddFunctionName(name, funcCall.OpCode, funcCall.LineNumber);
+
+            CreateFunctionCall(returnType, info, (short)context.Start.Line);
         }
 
         /// <summary>
@@ -331,19 +314,10 @@ namespace Blamite.Blam.Scripting.Compiler
             }
 
             PushTypes("boolean", "ANY");
-
             ScriptFunctionInfo info = _opcodes.GetFunctionInfo("branch").First();
-            UInt16 op = info.Opcode;
+            CreateFunctionCall(_opcodes.GetTypeInfo("void").Opcode, info, (short)context.Start.Line);
 
-            // create the branch function call and its name expression
-            FunctionCall call = new FunctionCall(_currentSalt, op, _opcodes.GetTypeInfo("void").Opcode, (short)context.Start.Line);
-            IncrementDatum();
-            call.Value = new DatumIndex(_currentSalt, _currentExpressionIndex);
-            OpenDatumAndAdd(call);
-
-            AddFunctionName("branch", op, (short)context.Start.Line);
-
-            _branchBoolIndex = _currentExpressionIndex;
+            _branchBoolIndex = _currentIndex.Index;
         }
 
         public override void ExitBranch(BS_ReachParser.BranchContext context)
@@ -366,7 +340,7 @@ namespace Blamite.Blam.Scripting.Compiler
             string toScript = param.funcID().GetText();
             string genName = fromScript + "_to_" + toScript;
 
-            ExpressionBase[] expressions = new ExpressionBase[2];
+            ScriptExpression[] expressions = new ScriptExpression[2];
             // grab boolean expression
             var bol = _expressions[_branchBoolIndex].Clone();
             expressions[0] = bol;
@@ -375,7 +349,7 @@ namespace Blamite.Blam.Scripting.Compiler
             expressions[1] = sr;
             // modify the original script ref. the opcode points to the generated script
             int genScriptIndex = _scriptLookup.Count;
-            _expressions[_expressions.Count - 2].OpCode = (ushort)genScriptIndex;
+            _expressions[_expressions.Count - 2].Opcode = (ushort)genScriptIndex;
             // add the generated script to the lookup
             ScriptDeclInfo decl = new ScriptDeclInfo(genName, "static", "void");
             _scriptLookup.Add(decl);
@@ -421,8 +395,11 @@ namespace Blamite.Blam.Scripting.Compiler
             if(txt == "none")
             {                
                 UInt16 opc = _opcodes.GetTypeInfo(valType).Opcode;
-                Expression32 exp = new Expression32(_currentSalt, opc, opc, _strings.Cache(txt), (short)context.Start.Line);
-                IncrementDatum();
+                UInt32 value = 0xFFFFFFFF;
+                var exp = new ScriptExpression(_currentIndex, opc, opc, ScriptExpressionType.Expression,
+                    _strings.Cache(txt), value, (short)context.Start.Line);
+
+                _currentIndex.Increment();
                 OpenDatumAndAdd(exp);
                 return;
             }
@@ -442,20 +419,24 @@ namespace Blamite.Blam.Scripting.Compiler
             throw new CompilerException($"Failed to process \"{txt}\".", context);
         }
 
+        //todo: implement casting?
         private bool IsGlobalReference(RuleContext context, string expReturnType, short line)
         {
-            //todo: implement casting?
-
             string text = context.GetText();
 
             // check if this literal is an engine global
             GlobalInfo engineGlobal = _opcodes.GetGlobalInfo(text);
             if (engineGlobal != null)
             {
-                string retType = engineGlobal.ReturnType;
-                ushort opc = GetGlobalOpCode(context, retType);
-                var exp = new EngineGlobalReference(_currentSalt, opc, _opcodes.GetTypeInfo(retType).Opcode, _strings.Cache(text), engineGlobal.MaskedOpcode, line);
-                IncrementDatum();
+                ushort retType = _opcodes.GetTypeInfo(engineGlobal.ReturnType).Opcode;
+                ushort opc = GetGlobalOpCode(context, engineGlobal.ReturnType);
+
+                ushort[] val = new ushort[2];
+                val[0] = 0xFFFF;
+                val[1] = engineGlobal.MaskedOpcode;
+
+                var exp = new ScriptExpression(_currentIndex, opc, retType, ScriptExpressionType.GlobalsReference, _strings.Cache(text), val, line);
+                _currentIndex.Increment();
                 OpenDatumAndAdd(exp);
                 return true;
             }
@@ -490,8 +471,9 @@ namespace Blamite.Blam.Scripting.Compiler
                     }
 
                     ushort opc = GetGlobalOpCode(context, retType);
-                    var exp = new GlobalReference(_currentSalt, opc, _opcodes.GetTypeInfo(retType).Opcode, _strings.Cache(text), index, line);
-                    IncrementDatum();
+                    var exp = new ScriptExpression(_currentIndex, opc, _opcodes.GetTypeInfo(retType).Opcode, ScriptExpressionType.GlobalsReference, 
+                        _strings.Cache(text), (uint)index, line);
+                    _currentIndex.Increment();
                     OpenDatumAndAdd(exp);
                     return true;
                 }
@@ -541,23 +523,23 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             string name = context.funcID().GetText();
 
-            int index = -1;
+            int op = -1;
 
             // try to find a matching script
             if (expectedReturnType == "NUMBER")
             {
-                index = _scriptLookup.FindIndex(s => s.Name == name && s.Parameters.Count == expectedParamCount && Casting.IsNumType(s.ReturnType));
+                op = _scriptLookup.FindIndex(s => s.Name == name && s.Parameters.Count == expectedParamCount && Casting.IsNumType(s.ReturnType));
             }
             else
             {
-                index = _scriptLookup.FindIndex(s => s.Name == name && s.Parameters.Count == expectedParamCount);
+                op = _scriptLookup.FindIndex(s => s.Name == name && s.Parameters.Count == expectedParamCount);
             }
 
             // a matching script wasn't found...not a script reference
-            if (index == -1)
+            if (op == -1)
                 return false;
 
-            ScriptDeclInfo info = _scriptLookup[index];
+            ScriptDeclInfo info = _scriptLookup[op];
             string retType;
 
             // check if the script satisfies the return type requirement
@@ -597,13 +579,8 @@ namespace Blamite.Blam.Scripting.Compiler
 
             // create Script Reference node
             ushort valType = _opcodes.GetTypeInfo(retType).Opcode;
-            ScriptReference scrRef = new ScriptReference(_currentSalt, (ushort)index, valType, (short)context.Start.Line);
+            CreateScriptReference(name, (ushort)op, valType, (short)context.Start.Line);
 
-            IncrementDatum();
-            scrRef.Value = new DatumIndex(_currentSalt, _currentExpressionIndex);     // close Value: Index to name                                                                                     
-            OpenDatumAndAdd(scrRef);                                                  // open next expression Datum
-
-            AddFunctionName(name, scrRef.OpCode, scrRef.LineNumber);
             return true;
         }
 
@@ -660,10 +637,10 @@ namespace Blamite.Blam.Scripting.Compiler
             EqualityPush(_variables[index].ValueType);
 
             // create script parameter reference
-            ScriptVariableReference exp = new ScriptVariableReference(_currentSalt, opcode, valop, _strings.Cache(name), (short)context.Start.Line);
-            exp.Value = index;
+            var exp = new ScriptExpression(_currentIndex, opcode, valop, ScriptExpressionType.ParameterReference,
+                _strings.Cache(name), (uint)index, (short)context.Start.Line);
 
-            IncrementDatum();
+            _currentIndex.Increment();
             //open next expression Datum
             OpenDatumAndAdd(exp);
 
@@ -677,7 +654,7 @@ namespace Blamite.Blam.Scripting.Compiler
             scr.Name = context.scriptID().GetText();
             scr.ExecutionType = (short)_opcodes.GetScriptTypeOpcode(context.SCRIPTTYPE().GetText());
             scr.ReturnType = (short)_opcodes.GetTypeInfo(context.retType().GetText()).Opcode;
-            scr.RootExpressionIndex = new DatumIndex(_currentSalt, _currentExpressionIndex);
+            scr.RootExpressionIndex = _currentIndex;
             var paramContext = context.scriptParams();
 
             //process parameters
@@ -706,16 +683,16 @@ namespace Blamite.Blam.Scripting.Compiler
             return scr;
         }
 
-        private void AddFunctionName(string name, ushort opCode, short lineNumber)
-        {
-            // create function_name node
-            Expression32 funcName = new Expression32(_currentSalt, opCode, _opcodes.GetTypeInfo("function_name").Opcode, _strings.Cache(name), lineNumber);
-            funcName.Value = 0;
+        //private void AddFunctionName(string name, ushort opCode, short lineNumber)
+        //{
+        //    // create function_name node
+        //    Expression32 funcName = new Expression32(_currentIndex, opCode, _opcodes.GetTypeInfo("function_name").Opcode, _strings.Cache(name), lineNumber);
+        //    funcName.Value = 0;
 
-            IncrementDatum();
-            //open next expression Datum
-            OpenDatumAndAdd(funcName);
-        }
+        //    _currentIndex.Increment();
+        //    //open next expression Datum
+        //    OpenDatumAndAdd(funcName);
+        //}
 
         /// <summary>
         /// Calculates the value types for the parameters of a function and pushes them to the stack.
@@ -859,56 +836,120 @@ namespace Blamite.Blam.Scripting.Compiler
                 scr.Name = branch.Key;
                 scr.ReturnType = (short)_opcodes.GetTypeInfo("void").Opcode;
                 scr.ExecutionType = (short)_opcodes.GetScriptTypeOpcode("static");
-                scr.RootExpressionIndex = new DatumIndex(_currentSalt, _currentExpressionIndex);
+                scr.RootExpressionIndex = _currentIndex;
                 _scripts.Add(scr);
 
                 // create the begin call
                 ScriptFunctionInfo beginInfo = _opcodes.GetFunctionInfo("begin").First();
-                FunctionCall begin = new FunctionCall(_currentSalt, beginInfo.Opcode, _opcodes.GetTypeInfo("void").Opcode, 0);
-                begin.NextExpression = DatumIndex.Null;
-                IncrementDatum();
-                begin.Value = new DatumIndex(_currentSalt, _currentExpressionIndex);
+                var begin = new ScriptExpression(_currentIndex, beginInfo.Opcode, _opcodes.GetTypeInfo("void").Opcode,
+                    ScriptExpressionType.Group, _randomAddress, _currentIndex.Next(), 0);
+                _currentIndex.Increment();
                 _expressions.Add(begin);
 
                 // create the begin name
-                Expression32 beginName = new Expression32(_currentSalt, beginInfo.Opcode, _opcodes.GetTypeInfo("function_name").Opcode, _strings.Cache("begin"), 0);
-                beginName.Value = 0;
-                IncrementDatum();
-                beginName.NextExpression = new DatumIndex(_currentSalt, _currentExpressionIndex);
+                var beginName = new ScriptExpression(_currentIndex, beginInfo.Opcode, _opcodes.GetTypeInfo("function_name").Opcode,
+                    ScriptExpressionType.Expression, _currentIndex.Next(), _strings.Cache("begin"), (uint)0, 0);
+                _currentIndex.Increment();
                 _expressions.Add(beginName);
 
                 // create the sleep_until call
                 ScriptFunctionInfo sleepInfo = _opcodes.GetFunctionInfo("sleep_until").First();
-                FunctionCall sleepCall = new FunctionCall(_currentSalt, sleepInfo.Opcode, _opcodes.GetTypeInfo("void").Opcode, 0);
+                var sleepCall = new ScriptExpression(_currentIndex, sleepInfo.Opcode, _opcodes.GetTypeInfo("void").Opcode,
+                    ScriptExpressionType.Group, _randomAddress, _currentIndex.Next(), 0);
+
                 // link to the script reference
-                ushort srIndex = (ushort)(_currentSalt + 3);
+                ushort srIndex = (ushort)(_currentIndex.Index + 3);
                 ushort srSalt = IndexToSalt(srIndex);
-                sleepCall.NextExpression = new DatumIndex(srSalt, srIndex);
-                IncrementDatum();
-                sleepCall.Value = new DatumIndex(_currentSalt, _currentExpressionIndex);
+                sleepCall.Next = new DatumIndex(srSalt, srIndex);
+                _currentIndex.Increment();
                 _expressions.Add(sleepCall);
 
                 // create the sleep_until name
-                Expression32 sleepName = new Expression32(_currentSalt, sleepInfo.Opcode, _opcodes.GetTypeInfo("function_name").Opcode, _strings.Cache("sleep_until"), 0);
-                sleepName.Value = 0;
-                IncrementDatum();
-                sleepName.NextExpression = new DatumIndex(_currentSalt, _currentExpressionIndex);
+                var sleepName = new ScriptExpression(_currentIndex, sleepInfo.Opcode, _opcodes.GetTypeInfo("function_name").Opcode,
+                    ScriptExpressionType.Expression, _currentIndex.Next(), _strings.Cache("sleep_until"), (uint)0, 0);
+                _currentIndex.Increment();
                 _expressions.Add(sleepName);
 
                 // adjust the boolean expression
-                ExpressionBase bo = branch.Value[0];
-                bo.Salt = _currentSalt;
-                bo.NextExpression = DatumIndex.Null;
-                IncrementDatum();
+                ScriptExpression bo = branch.Value[0];
+                bo.Index = _currentIndex;
+                bo.Next = DatumIndex.Null;
+                _currentIndex.Increment();
                 _expressions.Add(bo);
 
                 // adjust the script reference
-                ExpressionBase sr = branch.Value[1];
-                sr.Salt = _currentSalt;
-                sr.NextExpression = DatumIndex.Null;
-                IncrementDatum();
+                ScriptExpression sr = branch.Value[1];
+                sr.Index = _currentIndex;
+                sr.Next = DatumIndex.Null;
+                _currentIndex.Increment();
                 _expressions.Add(sr);
             }
+        }
+
+        private void CreateInitialBegin(ushort returnType)
+        {
+            ScriptFunctionInfo info = _opcodes.GetFunctionInfo("begin").First();
+            ushort op = info.Opcode;
+            short line = 0;
+
+            DatumIndex current = _currentIndex;
+
+            _currentIndex.Increment();
+
+            DatumIndex next = _currentIndex;
+
+
+            // create the begin call
+            var call = new ScriptExpression(current, op, returnType, ScriptExpressionType.Group, _randomAddress, next, line);
+            _expressions.Add(call);
+
+            // create the function name
+            ushort valType = _opcodes.GetTypeInfo("function_name").Opcode;
+            var funcName = new ScriptExpression(next, op, valType, ScriptExpressionType.Expression, 
+                _strings.Cache("begin"), (uint)0, line);
+            OpenDatumAndAdd(funcName);
+        }
+
+        private void CreateFunctionCall(ushort returnType, ScriptFunctionInfo funcInfo, short lineNumber)
+        {
+            ushort op = funcInfo.Opcode;
+
+            DatumIndex current = _currentIndex;
+
+            _currentIndex.Increment();
+
+            DatumIndex next = _currentIndex;
+
+
+            ScriptExpression call = new ScriptExpression(current, op, returnType, ScriptExpressionType.Group, 
+                _randomAddress, next, lineNumber);
+            OpenDatumAndAdd(call);
+
+            ushort nameType = _opcodes.GetTypeInfo("function_name").Opcode;
+            ScriptExpression funcName = new ScriptExpression(next, op, nameType, ScriptExpressionType.Expression, 
+                _strings.Cache(funcInfo.Name), (uint)0, lineNumber);
+            _currentIndex.Increment();
+            OpenDatumAndAdd(funcName);
+        }
+
+        private void CreateScriptReference(string name, ushort op, ushort valType, short lineNumber)
+        {
+            DatumIndex current = _currentIndex;
+
+            _currentIndex.Increment();
+
+            DatumIndex next = _currentIndex;
+
+
+            ScriptExpression scrRef = new ScriptExpression(current, op, valType, ScriptExpressionType.ScriptReference,
+                _randomAddress, next, lineNumber);
+            OpenDatumAndAdd(scrRef);
+
+            ushort nameType = _opcodes.GetTypeInfo("function_name").Opcode;
+            ScriptExpression funcName = new ScriptExpression(next, op, nameType, ScriptExpressionType.Expression, 
+                _strings.Cache(name), (uint)0, lineNumber);
+            _currentIndex.Increment();
+            OpenDatumAndAdd(funcName);
         }
     }
 }

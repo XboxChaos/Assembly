@@ -99,7 +99,7 @@ namespace Blamite.Blam.Scripting
 				_h4 = false;
 			}
 
-			ScriptExpression sibling = expression.Next;
+			ScriptExpression sibling = expression.NextExpression;
 			while (sibling != null)
 			{
 				if (wroteAnything && !_nextExpressionIsVar)
@@ -136,7 +136,7 @@ namespace Blamite.Blam.Scripting
 					wroteAnything = HandleExpression(sibling, output);
 				}
 
-				sibling = sibling.Next;
+				sibling = sibling.NextExpression;
 				currentArg++;
 			}
 

@@ -27,7 +27,7 @@ namespace Blamite.Blam.Scripting.Compiler
                         if(type != initialType && ProcessLiteral(context, type, initialType))
                         {
                             // overwrite the value type of the added expression node with the casted type
-                            _expressions[_expressions.Count - 1].ValueType = _opcodes.GetTypeInfo(initialType).Opcode;
+                            _expressions[_expressions.Count - 1].ReturnType = _opcodes.GetTypeInfo(initialType).Opcode;
                             return true;
                         }
                     }
@@ -178,19 +178,23 @@ namespace Blamite.Blam.Scripting.Compiler
                 return false;
 
             var opCode = _opcodes.GetTypeInfo("boolean").Opcode;
-            var exp = new Expression8(_currentSalt, opCode, opCode, _randomAddress, (short)context.Start.Line);
+            byte val;
+
             if (txt == "true")
             {
-                exp.Values[0] = 1;
+                val = 1;
             }
             else if (txt == "false")
             {
-                exp.Values[0] = 0;
+                val = 0;
             }
             else
                 return false;
 
-            IncrementDatum();
+            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression,
+                _randomAddress, val, (short)context.Start.Line);
+
+            _currentIndex.Increment();
             OpenDatumAndAdd(exp);
 
             EqualityPush("boolean");
@@ -206,10 +210,10 @@ namespace Blamite.Blam.Scripting.Compiler
             if (index == -1)
                 return false;
 
-            Expression32 exp = new Expression32(_currentSalt, info.Opcode, _opcodes.GetTypeInfo(castTo).Opcode, _strings.Cache(txt), (short)context.Start.Line);
-            exp.Value = index;
+            var exp = new ScriptExpression(_currentIndex, info.Opcode, _opcodes.GetTypeInfo(castTo).Opcode, ScriptExpressionType.Expression,
+                _strings.Cache(txt), (uint)index, (short)context.Start.Line);
 
-            IncrementDatum();
+            _currentIndex.Increment();
             OpenDatumAndAdd(exp);
 
             EqualityPush(valueType);
@@ -220,15 +224,15 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             string txt = context.GetText().Trim('"');
             ScriptValueType info = _opcodes.GetTypeInfo(expectedValueType);
-            var index = info.GetEnumIndex(txt);
+            var val = info.GetEnumIndex(txt);
 
-            if (index == -1)
+            if (val == -1)
                 return false;
+   
+            var exp = new ScriptExpression(_currentIndex, info.Opcode, info.Opcode, ScriptExpressionType.Expression, 
+                _strings.Cache(txt), (ushort)val, (short)context.Start.Line);
 
-            Expression16 exp = new Expression16(_currentSalt, info.Opcode, info.Opcode, _strings.Cache(txt), (short)context.Start.Line);
-            exp.Values[0] = (Int16)index;
-
-            IncrementDatum();
+            _currentIndex.Increment();
             OpenDatumAndAdd(exp);
 
             EqualityPush(expectedValueType);
@@ -266,17 +270,18 @@ namespace Blamite.Blam.Scripting.Compiler
         private bool IsObject_Name(BS_ReachParser.LitContext context, string valueType, string castTo)
         {
             string name = context.GetText().Trim('"');
-            int index = Array.FindIndex(_scriptContext.ObjectReferences, o => o.Name == name);
+            int val = Array.FindIndex(_scriptContext.ObjectReferences, o => o.Name == name);
             // not found
-            if (index == -1)
+            if (val == -1)
                 return false;
 
             // create expression node
             ushort op = _opcodes.GetTypeInfo(valueType).Opcode;
-            Expression16 obj = new Expression16(_currentSalt, op, _opcodes.GetTypeInfo(castTo).Opcode, _strings.Cache(name), (short)context.Start.Line);
-            obj.Values[0] = (Int16)index;
-            IncrementDatum();
-            OpenDatumAndAdd(obj);
+            var exp = new ScriptExpression(_currentIndex, op, _opcodes.GetTypeInfo(castTo).Opcode, ScriptExpressionType.Expression, 
+                _strings.Cache(name), (ushort)val, (short)context.Start.Line);
+
+            _currentIndex.Increment();
+            OpenDatumAndAdd(exp);
 
             EqualityPush(valueType);
             return true;
@@ -293,7 +298,8 @@ namespace Blamite.Blam.Scripting.Compiler
             string[] subStrings = txt.Split(new char[] { '/' }, 2, StringSplitOptions.RemoveEmptyEntries);
             var opCode = _opcodes.GetTypeInfo("ai").Opcode;
             var valType = _opcodes.GetTypeInfo(expectedValueType).Opcode;
-            Expression8 exp = new Expression8();
+
+            byte[] values = new byte[4];
 
             #region value generation
             if (subStrings[0] != "none")       // special case
@@ -309,10 +315,10 @@ namespace Blamite.Blam.Scripting.Compiler
                         if (loc != -1)
                         {
                             // squad/location
-                            exp.Values[0] = 128;
-                            exp.Values[1] = (byte)index;
-                            exp.Values[2] = 0;
-                            exp.Values[3] = (byte)loc;
+                            values[0] = 128;
+                            values[1] = (byte)index;
+                            values[2] = 0;
+                            values[3] = (byte)loc;
                         }
                         else
                             return false;
@@ -320,10 +326,10 @@ namespace Blamite.Blam.Scripting.Compiler
                     else
                     {
                         // squad
-                        exp.Values[0] = 32;
-                        exp.Values[1] = 0;
-                        exp.Values[2] = 0;
-                        exp.Values[3] = (byte)index;
+                        values[0] = 32;
+                        values[1] = 0;
+                        values[2] = 0;
+                        values[3] = (byte)index;
                     }
                 }
                 else
@@ -332,10 +338,10 @@ namespace Blamite.Blam.Scripting.Compiler
                     index = Array.FindIndex(_scriptContext.AISquadGroups, gr => gr.Name == subStrings[0]);
                     if (index != -1)
                     {
-                        exp.Values[0] = 64;
-                        exp.Values[1] = 0;
-                        exp.Values[2] = 0;
-                        exp.Values[3] = (byte)index;
+                        values[0] = 64;
+                        values[1] = 0;
+                        values[2] = 0;
+                        values[3] = (byte)index;
                     }
                     else
                     {
@@ -350,10 +356,10 @@ namespace Blamite.Blam.Scripting.Compiler
                                 if (role != -1)
                                 {
                                     // objective/role
-                                    exp.Values[0] = 192;
-                                    exp.Values[1] = (byte)role;
-                                    exp.Values[2] = 0;
-                                    exp.Values[3] = (byte)index;
+                                    values[0] = 192;
+                                    values[1] = (byte)role;
+                                    values[2] = 0;
+                                    values[3] = (byte)index;
                                 }
                                 else
                                     return false;
@@ -361,10 +367,10 @@ namespace Blamite.Blam.Scripting.Compiler
                             else
                             {
                                 // objective
-                                exp.Values[0] = 223;
-                                exp.Values[1] = 255;
-                                exp.Values[2] = 0;
-                                exp.Values[3] = (byte)index;
+                                values[0] = 223;
+                                values[1] = 255;
+                                values[2] = 0;
+                                values[3] = (byte)index;
                             }
                         }
                         else
@@ -373,10 +379,9 @@ namespace Blamite.Blam.Scripting.Compiler
                 }
             }
             #endregion
+            var exp = new ScriptExpression(_currentIndex, opCode, valType, ScriptExpressionType.Expression, _strings.Cache(txt), values, (short)context.Start.Line);
 
-            exp.SetCommonValues(_currentSalt, opCode, valType, _strings.Cache(txt), (short)context.Start.Line);
-
-            IncrementDatum();
+            _currentIndex.Increment();
             OpenDatumAndAdd(exp);
 
             EqualityPush(expectedValueType);
@@ -386,53 +391,52 @@ namespace Blamite.Blam.Scripting.Compiler
         private bool IsIndex16(BS_ReachParser.LitContext context, string expectedValueType)
         {
             string name = context.GetText().Trim('"');
-            int index = -1;
+            int val = -1;
             switch (expectedValueType)
             {
                 case "script":
                 case "ai_command_script":
-                    index = _scriptLookup.FindIndex(s => s.Name == name);
+                    val = _scriptLookup.FindIndex(s => s.Name == name);
                     break;
 
                 case "trigger_volume":
-                    index = Array.FindIndex(_scriptContext.TriggerVolumes, t => t.Name == name);
+                    val = Array.FindIndex(_scriptContext.TriggerVolumes, t => t.Name == name);
                     break;
 
                 case "cutscene_flag":
-                    index = Array.FindIndex(_scriptContext.CutsceneFlags, t => t.Name == name);
+                    val = Array.FindIndex(_scriptContext.CutsceneFlags, t => t.Name == name);
                     break;
 
                 case "cutscene_camera_point":
-                    index = Array.FindIndex(_scriptContext.CutsceneCameraPoints, t => t.Name == name);
+                    val = Array.FindIndex(_scriptContext.CutsceneCameraPoints, t => t.Name == name);
                     break;
 
                 case "cutscene_title":
-                    index = Array.FindIndex(_scriptContext.CutsceneTitles, t => t.Name == name);
+                    val = Array.FindIndex(_scriptContext.CutsceneTitles, t => t.Name == name);
                     break;
 
                 case "starting_profile":
-                    index = Array.FindIndex(_scriptContext.StartingProfiles, t => t.Name == name);
+                    val = Array.FindIndex(_scriptContext.StartingProfiles, t => t.Name == name);
                     break;
 
                 case "zone_set":
-                    index = Array.FindIndex(_scriptContext.ZoneSets, t => t.Name == name);
+                    val = Array.FindIndex(_scriptContext.ZoneSets, t => t.Name == name);
                     break;
 
                 case "designer_zone":
-                    index = Array.FindIndex(_scriptContext.DesignerZones, t => t.Name == name);
+                    val = Array.FindIndex(_scriptContext.DesignerZones, t => t.Name == name);
                     break;
             }
             // no match
-            if (index == -1)
+            if (val == -1)
                 return false;
 
             var opCode = _opcodes.GetTypeInfo(expectedValueType).Opcode;
-            Expression16 exp = new Expression16(_currentSalt, opCode, opCode, _strings.Cache(name), (short)context.Start.Line);
-            exp.Values[0] = (Int16)index;
+            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
+                _strings.Cache(name), (ushort)val, (short)context.Start.Line);
 
-            IncrementDatum();
+            _currentIndex.Increment();
             OpenDatumAndAdd(exp);
-
 
             EqualityPush(expectedValueType);
             return true;
@@ -446,10 +450,13 @@ namespace Blamite.Blam.Scripting.Compiler
                 return false; // not found
 
             var opCode = _opcodes.GetTypeInfo("device_group").Opcode;
-            Expression16 exp = new Expression16(_currentSalt, opCode, opCode, _strings.Cache(name), (short)context.Start.Line);
-            exp.Values[0] = (Int16)(-6812 + index); // guessing. no idea what this value represents. could be a salt.
-            exp.Values[1] = (Int16)index;
-            IncrementDatum();
+
+            // value stores a device group datum
+            ushort device_salt = (ushort)(SaltGenerator.GetSalt("device groups") + index);
+            DatumIndex value = new DatumIndex(device_salt, (ushort)index);
+
+            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, _strings.Cache(name), value, (short)context.Start.Line);
+            _currentIndex.Increment();
             OpenDatumAndAdd(exp);
 
             EqualityPush("device_group");
@@ -481,10 +488,14 @@ namespace Blamite.Blam.Scripting.Compiler
 
                 // create point_reference
                 var opCode = _opcodes.GetTypeInfo("point_reference").Opcode;
-                Expression16 exp = new Expression16(_currentSalt, opCode, opCode, _strings.Cache(txt), (short)context.Start.Line);
-                exp.Values[0] = (Int16)set;
-                exp.Values[1] = (Int16)point;
-                IncrementDatum();
+
+                ushort[] value = new ushort[2];
+                value[0] = (ushort)set;
+                value[1] = (ushort)point;
+
+                var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
+                    _strings.Cache(txt), value, (short)context.Start.Line);
+                _currentIndex.Increment();
                 OpenDatumAndAdd(exp);
 
                 EqualityPush("point_reference");
@@ -505,10 +516,10 @@ namespace Blamite.Blam.Scripting.Compiler
                 return false;
 
             var opCode = _opcodes.GetTypeInfo("folder").Opcode;
-            Expression32 exp = new Expression32(_currentSalt, opCode, opCode, _strings.Cache(name), (short)context.Start.Line);
-            exp.Value = index;
+            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
+                _strings.Cache(name), (uint)index, (short)context.Start.Line);
 
-            IncrementDatum();
+            _currentIndex.Increment();
             OpenDatumAndAdd(exp);
 
             EqualityPush("folder");
@@ -519,9 +530,8 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             string txt = context.GetText().Trim('"');
             string[] subStrings = txt.Split(new char[] { '.' }, 2, StringSplitOptions.RemoveEmptyEntries);
-            DatumIndex index;
+            DatumIndex datum;
             ITag tagRef;
-
 
             // strings with optional tag class suffixes have priority
             if (subStrings.LongCount() == 2)
@@ -531,7 +541,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 ITag tag = _cashefile.Tags.FindTagByName(subStrings[0], cla, _cashefile.FileNames);
                 if (tag != null)
                 {
-                    index = tag.Index;
+                    datum = tag.Index;
                     tagRef = tag;
                 }
                 else
@@ -553,22 +563,24 @@ namespace Blamite.Blam.Scripting.Compiler
 
                 if (tag != null)
                 {
-                    index = tag.Index;
+                    datum = tag.Index;
                     tagRef = tag;
                 }
                 else
                     return false;                    
             }
 
-            // add the referenced tag to the tagref table
-            _references.Add(tagRef);
+            // add the referenced tag to the tagref table if it wasn't included yet.
+            if(!_references.Contains(tagRef))
+                _references.Add(tagRef);
 
-            // create expression
+            // create expression.
             var opCode = _opcodes.GetTypeInfo(expectedValueType).Opcode;
-            TagReferenceExpression exp = new TagReferenceExpression(_currentSalt, opCode, opCode, _strings.Cache(txt), (short)context.Start.Line);
-            exp.Value = index;
 
-            IncrementDatum();
+            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression,
+                _strings.Cache(txt), datum, (short)context.Start.Line);
+
+            _currentIndex.Increment();
             OpenDatumAndAdd(exp);
 
             EqualityPush(expectedValueType);
@@ -600,22 +612,28 @@ namespace Blamite.Blam.Scripting.Compiler
                 }
             }
             // don't create an expression node when the line doesn't exist and the compiler is trying to guess the value type
-            if(any && !exists)
-            {
-                return false;
-            }
+            //if(any && !exists)
+            //{
+            //    return false;
+            //}
 
             var opCode = _opcodes.GetTypeInfo("ai_line").Opcode;
-            ExpressionU32 exp = new ExpressionU32(_currentSalt, opCode, opCode, _strings.Cache(name), (short)context.Start.Line);
+            uint value;
+
             if(exists)
             {
-                exp.Value = _cashefile.StringIDs.FindStringID(name).Value;
+                value = _cashefile.StringIDs.FindStringID(name).Value;
+            }
+            else
+            {
+                value = 0xFFFFFFFF;
             }
 
+            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression,
+                _strings.Cache(name), value, (short)context.Start.Line);
 
-            IncrementDatum();
+            _currentIndex.Increment();
             OpenDatumAndAdd(exp);
-
             EqualityPush("ai_line");
             return true;
         }
@@ -627,10 +645,12 @@ namespace Blamite.Blam.Scripting.Compiler
 
             string txt = context.GetText().Trim('"');
             var opCode = _opcodes.GetTypeInfo("string").Opcode;
-            Expression32 exp = new Expression32(_currentSalt, opCode, opCode, _strings.Cache(txt), (short)context.Start.Line);
-            exp.Value = (int)exp.StringAddress;
+            uint value = _strings.Cache(txt);
 
-            IncrementDatum();
+            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression,
+                value, value, (short)context.Start.Line);
+
+            _currentIndex.Increment();
             OpenDatumAndAdd(exp);
 
             EqualityPush("string");
@@ -641,15 +661,16 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             string txt = context.GetText();
             var opCode = _opcodes.GetTypeInfo("long").Opcode;
-            Expression32 exp = new Expression32(_currentSalt, opCode, opCode, _randomAddress, (short)context.Start.Line);
-            Int32 result;
-            if (!Int32.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result))
+            Int32 value;
+            if (!Int32.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out value))
             {
                 return false;
             }
 
-            exp.Value = result;
-            IncrementDatum();
+            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
+                _randomAddress, (uint)value, (short)context.Start.Line);
+
+            _currentIndex.Increment();
             OpenDatumAndAdd(exp);
             EqualityPush("long");
             return true;
@@ -659,14 +680,16 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             string txt = context.GetText();
             var opCode = _opcodes.GetTypeInfo("short").Opcode;
-            Expression16 exp = new Expression16(_currentSalt, opCode, opCode, _randomAddress, (short)context.Start.Line);
-            Int16 result;
-            if (!Int16.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result))
+            Int16 value;
+            if (!Int16.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out value))
             {
                 return false;
             }
-            exp.Values[0] = result;
-            IncrementDatum();
+
+            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
+                _randomAddress, (ushort)value, (short)context.Start.Line);
+
+            _currentIndex.Increment();
             OpenDatumAndAdd(exp);
             EqualityPush("short");
             return true;
@@ -676,15 +699,16 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             string txt = context.GetText();
             var opCode = _opcodes.GetTypeInfo("real").Opcode;
-            var exp = new RealExpression(_currentSalt, opCode, opCode, (short)context.Start.Line);
-            float result;
-            if (!float.TryParse(txt, NumberStyles.Float, CultureInfo.InvariantCulture, out result))
+            float value;
+            if (!float.TryParse(txt, NumberStyles.Float, CultureInfo.InvariantCulture, out value))
             {
                 return false;
             }
 
-            exp.Value = result;
-            IncrementDatum();
+            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
+                _randomAddress, value, (short)context.Start.Line);
+
+            _currentIndex.Increment();
             OpenDatumAndAdd(exp);
             EqualityPush("real");
             return true;
@@ -700,9 +724,11 @@ namespace Blamite.Blam.Scripting.Compiler
             }
 
             var opCode = _opcodes.GetTypeInfo("string_id").Opcode;
-            StringIDExpression exp = new StringIDExpression(_currentSalt, opCode, opCode, _strings.Cache(txt), (short)context.Start.Line);
-            exp.Value = id;
-            IncrementDatum();
+
+            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
+                _strings.Cache(txt), id, (short)context.Start.Line);
+
+            _currentIndex.Increment();
             OpenDatumAndAdd(exp);
             EqualityPush("string_id");
             return true;
@@ -712,9 +738,11 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             string txt = context.GetText().Trim('"');
             var opCode = _opcodes.GetTypeInfo("string_id").Opcode;
-            StringIDExpression exp = new StringIDExpression(_currentSalt, opCode, opCode, _strings.Cache(txt), (short)context.Start.Line);
-            exp.Value = _cashefile.StringIDs.FindOrAddStringID(txt);
-            IncrementDatum();
+            StringID id = _cashefile.StringIDs.FindOrAddStringID(txt);
+            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression,
+                _strings.Cache(txt), id, (short)context.Start.Line);
+
+            _currentIndex.Increment();
             OpenDatumAndAdd(exp);
             EqualityPush("string_id");
         }
@@ -722,9 +750,8 @@ namespace Blamite.Blam.Scripting.Compiler
         private void CreateUnitSeatMapping(BS_ReachParser.LitContext context)
         {
             string txt = context.GetText();           
-            Int32 contextIndex;
 
-            if (!Int32.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out contextIndex))
+            if (!Int32.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out int contextIndex))
             {
                 throw new ArgumentException($"Failed to parse unit seat mapping index. Text: {txt}. Line: {context.Start.Line}");
             }
@@ -737,15 +764,19 @@ namespace Blamite.Blam.Scripting.Compiler
             UnitSeatMapping mapping;
             if(!_seatMappings.TryGetValue(contextIndex, out mapping))
             {
-                throw new ArgumentException($"Failed to retrieve the unit seat mapping information. Please ensure that the xml file contains the mapping. Index: {contextIndex}. Line: {context.Start.Line}");
+                throw new ArgumentException($"Failed to retrieve the unit seat mapping information. " +
+                    $"Please ensure that the xml file contains the mapping. Index: {contextIndex}. Line: {context.Start.Line}");
             }
 
             var opCode = _opcodes.GetTypeInfo("unit_seat_mapping").Opcode;
-            Expression16 exp = new Expression16(_currentSalt, opCode, opCode, _strings.Cache(mapping.Name), (short)context.Start.Line);
-            exp.Values[0] = mapping.Count;
-            exp.Values[1] = mapping.Index;
+            ushort[] values = new ushort[2];
+            values[0] = (ushort)mapping.Count;
+            values[1] = (ushort)mapping.Index;
 
-            IncrementDatum();
+            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
+                _strings.Cache(mapping.Name), values, (short)context.Start.Line);
+
+            _currentIndex.Increment();
             OpenDatumAndAdd(exp);
             EqualityPush("unit_seat_mapping");
 

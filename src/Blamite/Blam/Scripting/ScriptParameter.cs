@@ -1,5 +1,6 @@
 ﻿using Blamite.Serialization;
 using Blamite.IO;
+using System.Collections.Generic;
 
 namespace Blamite.Blam.Scripting
 {
@@ -27,7 +28,22 @@ namespace Blamite.Blam.Scripting
 		/// </summary>
 		public short Type { get; set; }
 
-        public void Write(IWriter writer)
+		public override bool Equals(object obj)
+		{
+			return obj is ScriptParameter parameter &&
+				   Name == parameter.Name &&
+				   Type == parameter.Type;
+		}
+
+		public override int GetHashCode()
+		{
+			var hashCode = -243844509;
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+			hashCode = hashCode * -1521134295 + Type.GetHashCode();
+			return hashCode;
+		}
+
+		public void Write(IWriter writer)
         {
             writer.WriteAscii(Name, 0x20);
             writer.WriteInt16(Type);
@@ -39,6 +55,7 @@ namespace Blamite.Blam.Scripting
 			Name = values.GetString("name");
 			Type = (short) values.GetInteger("type");
 		}
+
 
 	}
 }
