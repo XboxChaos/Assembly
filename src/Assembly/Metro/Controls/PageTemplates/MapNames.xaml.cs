@@ -16,6 +16,8 @@ namespace Assembly.Metro.Controls.PageTemplates
 			listH2c.ItemsSource = Halo2.Where(e => e.Type == MapType.Campaign);
 			listH2m.ItemsSource = Halo2.Where(e => e.Type == MapType.Multiplayer);
 
+			listH2a.ItemsSource = Halo2A;
+
 			listH3c.ItemsSource = Halo3.Where(e => e.Type == MapType.Campaign);
 			listH3m.ItemsSource = Halo3.Where(e => e.Type == MapType.Multiplayer);
 
@@ -98,6 +100,20 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 			new MapEntry("derelict", "Desolation", MapType.Multiplayer),
 			new MapEntry("highplains", "Tombstone", MapType.Multiplayer),
+		};
+
+		private List<MapEntry> Halo2A = new List<MapEntry>()
+		{
+			new MapEntry("ca_ascension.map", "Zenith", MapType.Multiplayer),
+			new MapEntry("ca_coagulation", "Bloodline", MapType.Multiplayer),
+			new MapEntry("ca_forge_skybox01", "Skyward", MapType.Multiplayer),
+			new MapEntry("ca_forge_skybox02", "Nebula", MapType.Multiplayer),
+			new MapEntry("ca_forge_skybox03", "Awash", MapType.Multiplayer),
+			new MapEntry("ca_lockout", "Lockdown", MapType.Multiplayer),
+			new MapEntry("ca_relic", "Remnant", MapType.Multiplayer),
+			new MapEntry("ca_sanctuary", "Shrine", MapType.Multiplayer),
+			new MapEntry("ca_warlock", "Warlord", MapType.Multiplayer),
+			new MapEntry("ca_zanzibar", "Stonetown", MapType.Multiplayer),
 		};
 
 		private List<MapEntry> Halo3 = new List<MapEntry>()
