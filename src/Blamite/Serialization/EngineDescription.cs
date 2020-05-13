@@ -138,6 +138,11 @@ namespace Blamite.Serialization
 		/// </summary>
 		public int PokingOffset { get; private set; }
 
+		/// <summary>
+		///		Whether the cache file itself uses compression.
+		/// </summary>
+		public bool UsesCompression { get; private set; }
+
 		private void LoadSettings()
 		{
 			LoadEngineSettings();
@@ -149,6 +154,8 @@ namespace Blamite.Serialization
 			HeaderSize = Settings.GetSetting<int>("engineInfo/headerSize");
 			SegmentAlignment = Settings.GetSettingOrDefault("engineInfo/segmentAlignment", 0x1000);
 			ExpandMagic = Settings.GetSettingOrDefault("engineInfo/expandMagic", 0);
+
+			UsesCompression = Settings.GetSettingOrDefault("engineInfo/usesCompression", false);
 
 			if (Settings.PathExists("engineInfo/pokingOffset"))
 				PokingOffset = Settings.GetSettingOrDefault("engineInfo/pokingOffset", 0);
