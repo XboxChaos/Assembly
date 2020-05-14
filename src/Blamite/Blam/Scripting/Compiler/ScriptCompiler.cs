@@ -16,7 +16,7 @@ namespace Blamite.Blam.Scripting.Compiler
         private ICacheFile _cashefile;
         private OpcodeLookup _opcodes;
         private ScriptContext _scriptContext;
-        private Dictionary<long, UnitSeatMapping> _seatMappings;
+        private Dictionary<string, UnitSeatMapping> _seatMappings;
         private List<ScriptDeclInfo> _scriptLookup = new List<ScriptDeclInfo>();
         private List<GlobalDeclInfo> _globalLookup = new List<GlobalDeclInfo>();
         private List<ParameterInfo> _variables = new List<ParameterInfo>();
@@ -54,7 +54,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
 
 
-        public ScriptCompiler(ICacheFile casheFile, ScriptContext context, OpcodeLookup opCodes, Dictionary<long, UnitSeatMapping> seatMappings, IProgress<int> progress, Logger logger)
+        public ScriptCompiler(ICacheFile casheFile, ScriptContext context, OpcodeLookup opCodes, Dictionary<string, UnitSeatMapping> seatMappings, IProgress<int> progress, Logger logger)
         {
             _progress = progress;
             _cashefile = casheFile;
@@ -210,7 +210,6 @@ namespace Blamite.Blam.Scripting.Compiler
                 _logger.WriteLine("CALL", $"Enter: {context.funcID().GetText()} , Line: {context.Start.Line}");
             }
 
-
             LinkDatum();
 
             // retrieve information from the context.
@@ -230,7 +229,6 @@ namespace Blamite.Blam.Scripting.Compiler
             // equality
             EqualityPush(info.ReturnType);
             PushCallParameters(info, context, contextParamCount, expectedType);
-
 
             ushort returnType;
 
@@ -415,7 +413,7 @@ namespace Blamite.Blam.Scripting.Compiler
             throw new CompilerException($"Failed to process \"{txt}\".", context);
         }
 
-        //todo: implement casting?
+        //TODO: implement casting?
         private bool IsGlobalReference(RuleContext context, string expReturnType, short line)
         {
             string text = context.GetText();

@@ -285,7 +285,7 @@ namespace Blamite.Blam.Scripting
 					// but since seat mapping names aren't stored anywhere,
 					// it would be tricky to resolve them unless we just use an index for now
 					if (expression.Value != 0xFFFFFFFF)
-						output.Write(expression.Value & 0xFFFF);
+						output.Write(expression.StringValue);
 					else
 						output.Write("none");
 					break;

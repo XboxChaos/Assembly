@@ -748,23 +748,22 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private void CreateUnitSeatMapping(BS_ReachParser.LitContext context)
         {
-            string txt = context.GetText();           
+            string txt = context.GetText().Trim('"');           
 
-            if (!Int32.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out int contextIndex))
+            //if (!int.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out int contextIndex))
+            //{
+            //    throw new ArgumentException($"Failed to parse unit seat mapping index. Text: {txt}. Line: {context.Start.Line}");
+            //}
+
+            if(!_seatMappings.TryGetValue(txt, out UnitSeatMapping mapping))
             {
-                throw new ArgumentException($"Failed to parse unit seat mapping index. Text: {txt}. Line: {context.Start.Line}");
+                throw new CompilerException($"Failed to retrieve the unit seat mapping information. " +
+                    $"Please ensure that the xml file contains the mapping.", context);
             }
 
-            if (contextIndex < 0 || contextIndex >= _scriptContext.UnitSeatMappingCount)
+            if (mapping.Index < 0 || mapping.Index >= _scriptContext.UnitSeatMappingCount)
             {
-                throw new ArgumentException($"Invalid unit seat mapping index. Index: {contextIndex}. Line: {context.Start.Line}");
-            }
-
-            UnitSeatMapping mapping;
-            if(!_seatMappings.TryGetValue(contextIndex, out mapping))
-            {
-                throw new ArgumentException($"Failed to retrieve the unit seat mapping information. " +
-                    $"Please ensure that the xml file contains the mapping. Index: {contextIndex}. Line: {context.Start.Line}");
+                throw new ArgumentException($"Invalid unit seat mapping index. Index: {mapping.Index}. Line: {context.Start.Line}");
             }
 
             var opCode = _opcodes.GetTypeInfo("unit_seat_mapping").Opcode;

@@ -332,7 +332,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                 parser.BuildParseTree = true;
                 IParseTree tree = parser.hsc();
                 ScriptContext scrContext = _scriptFile.LoadContext(reader);
-                Dictionary<long, UnitSeatMapping> seats = LoadSeatMappings();
+                Dictionary<string, UnitSeatMapping> seats = LoadSeatMappings();
                  ScriptCompiler compiler = new ScriptCompiler(_cashefile, scrContext, _opcodes, seats, progress, logger);
                 ParseTreeWalker.Default.Walk(compiler, tree);
                 return compiler.Result();
@@ -478,6 +478,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             }
         }
 
+        // remove later
         private void DumpEngineGlobalsToXML()
         {
             ScriptTable scripts;
@@ -538,6 +539,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             Dispatcher.Invoke(new Action(() => MetroMessageBox.Show($"{occurences} expressions matching the criteria were found.\nThe output was saved in \"{path}\".")));
         }
 
+        // remove later
         private void DumpSpecialGlobalsToXML()
         {
             ScriptTable scripts;
@@ -679,7 +681,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             }
         }
 
-        private Dictionary<long, UnitSeatMapping> LoadSeatMappings()
+        private Dictionary<string, UnitSeatMapping> LoadSeatMappings()
         {
             string folder = _buildInfo.SeatMappings;
             string filename = _casheName + "_Mappings.xml";
@@ -688,20 +690,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             XDocument doc = XDocument.Load(path);
             var mappings = doc.Element("UnitSeatMappings").Elements("Mapping");
 
-            Dictionary<long, UnitSeatMapping> result = new Dictionary<long, UnitSeatMapping>();
+            Dictionary<string, UnitSeatMapping> result = new Dictionary<string, UnitSeatMapping>();
             foreach (XElement mapping in mappings)
             {
                 long index = XMLUtil.GetNumericAttribute(mapping, "Index");
                 long count = XMLUtil.GetNumericAttribute(mapping, "Count");
                 string name = XMLUtil.GetStringAttribute(mapping, "Name");
 
-                if (result.ContainsKey(index))
+                if (result.ContainsKey(name))
                 {
-                    throw new Exception($"Duplicate unit seat mapping index: {index}");
+                    throw new Exception($"Duplicate unit seat mapping names: {name}");
                 }
 
-                UnitSeatMapping seat = new UnitSeatMapping((Int16)index, (Int16)count, name);
-                result.Add(index, seat);
+                UnitSeatMapping seat = new UnitSeatMapping((short)index, (short)count, name);
+                result.Add(name, seat);
             }
 
             return result;
