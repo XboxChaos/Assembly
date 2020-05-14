@@ -90,8 +90,8 @@ namespace Blamite.Blam
 		/// <returns></returns>
 		public DatumIndex Next()
 		{
-			ushort nextSalt = Salt++;
-			ushort nextIndex = Index++;
+			ushort nextSalt = (ushort)(Salt + 1);
+			ushort nextIndex = (ushort)(Index + 1);
 
 			if (nextSalt == 0xFFFF)
 				nextSalt = 0x8000;

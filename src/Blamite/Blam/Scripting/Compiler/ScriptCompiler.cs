@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Antlr4.Runtime;
-using System.Xml;
-using Blamite.Blam.Scripting.Compiler.Expressions;
 using System.Diagnostics;
 
 namespace Blamite.Blam.Scripting.Compiler
@@ -12,7 +9,7 @@ namespace Blamite.Blam.Scripting.Compiler
     public partial class ScriptCompiler : BS_ReachBaseListener
     {
         // debug
-        public Boolean PrintDebugInfo = true;
+        public bool PrintDebugInfo = true;
         private Logger _logger;
 
         // lookups
@@ -34,7 +31,7 @@ namespace Blamite.Blam.Scripting.Compiler
         // utility
         private const uint _randomAddress = 0xCDCDCDCD;  // used for expressions where the string address doesn't point to the string table
         private DatumIndex _currentIndex;
-        private Stack<Int32> _openDatums = new Stack<Int32>();
+        private Stack<int> _openDatums = new Stack<int>();
         private Stack<string> _expectedTypes = new Stack<string>();
 
         // branching
@@ -98,7 +95,6 @@ namespace Blamite.Blam.Scripting.Compiler
         public override void ExitHsc(BS_ReachParser.HscContext context)
         {
             GenerateBranches();
-
             DeclarationsToXML();
             ExpressionsToXML();
             StringsToFile();
@@ -305,7 +301,7 @@ namespace Blamite.Blam.Scripting.Compiler
             }
 
             LinkDatum();
-            string expectedType = PopType();    // just ignore the type for now
+            _ = PopType();    // just ignore the type for now
 
             // branch excepts two parameters
             if (context.expr().Count() != 2)
@@ -893,11 +889,8 @@ namespace Blamite.Blam.Scripting.Compiler
             short line = 0;
 
             DatumIndex current = _currentIndex;
-
             _currentIndex.Increment();
-
             DatumIndex next = _currentIndex;
-
 
             // create the begin call
             var call = new ScriptExpression(current, op, returnType, ScriptExpressionType.Group, _randomAddress, next, line);
@@ -907,6 +900,7 @@ namespace Blamite.Blam.Scripting.Compiler
             ushort valType = _opcodes.GetTypeInfo("function_name").Opcode;
             var funcName = new ScriptExpression(next, op, valType, ScriptExpressionType.Expression, 
                 _strings.Cache("begin"), (uint)0, line);
+            _currentIndex.Increment();
             OpenDatumAndAdd(funcName);
         }
 
@@ -915,11 +909,8 @@ namespace Blamite.Blam.Scripting.Compiler
             ushort op = funcInfo.Opcode;
 
             DatumIndex current = _currentIndex;
-
             _currentIndex.Increment();
-
             DatumIndex next = _currentIndex;
-
 
             ScriptExpression call = new ScriptExpression(current, op, returnType, ScriptExpressionType.Group, 
                 _randomAddress, next, lineNumber);
@@ -935,11 +926,8 @@ namespace Blamite.Blam.Scripting.Compiler
         private void CreateScriptReference(string name, ushort op, ushort valType, short lineNumber)
         {
             DatumIndex current = _currentIndex;
-
             _currentIndex.Increment();
-
             DatumIndex next = _currentIndex;
-
 
             ScriptExpression scrRef = new ScriptExpression(current, op, valType, ScriptExpressionType.ScriptReference,
                 _randomAddress, next, lineNumber);

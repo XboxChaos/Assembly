@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Globalization;
-using Blamite.Blam.Scripting.Compiler.Expressions;
 
 namespace Blamite.Blam.Scripting.Compiler
 {

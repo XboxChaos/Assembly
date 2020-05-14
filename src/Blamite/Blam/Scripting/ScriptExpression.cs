@@ -141,7 +141,7 @@ namespace Blamite.Blam.Scripting
 					break;
 
 				case ushort u16:
-					result = (uint)(u16 << 16) | 0xFFFF;
+					result = (uint)(0xFFFF << 16 | u16);
 					break;
 
 				case ushort[] u16Arr:
@@ -149,7 +149,7 @@ namespace Blamite.Blam.Scripting
 					break;
 
 				case byte by:
-					result = (uint)(by << 24) | 0xFFFFFF;
+					result = (uint)(0xFFFFFF << 8 | by);
 					break;
 
 				case byte[] byArr:
@@ -198,7 +198,7 @@ namespace Blamite.Blam.Scripting
 			}
 			else if (len == 1)
 			{
-				result = (uint)(data[0] << 16) | 0xFFFF;
+				result = (uint)(data[0] << 16 | 0xFFFF);
 			}
 			else
 				throw new ArgumentException("Unable to convert the array to an expression value.");
@@ -230,11 +230,14 @@ namespace Blamite.Blam.Scripting
 
 				case 2:
 					upper = (uint)(data[0] << 24 | data[1] << 16);
-					result = upper | 0xFFFF;
+					lower = 0xFFFF;
+					result = upper | lower;
 					break;
 
 				case 1:
-					result = (uint)data[0] << 24 | 0xFFFFFF;
+					upper = (uint)(data[0] << 24 | 0xFF << 16);
+					lower = 0xFFFF;
+					result = upper | lower;
 					break;
 
 				default:

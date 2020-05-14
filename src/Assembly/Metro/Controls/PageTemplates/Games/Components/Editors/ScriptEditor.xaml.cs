@@ -230,6 +230,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                 case "Halo: Reach":
                 case "Halo: Reach MCC":
                 case "Halo: Reach MCC Update 1":
+                    bool saved = false;
                     string folder = "Compiler";
                     if (!Directory.Exists(folder))
                         Directory.CreateDirectory(folder);
@@ -239,14 +240,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                     using (StreamWriter sw = File.CreateText(filePath))
                     {
                         Logger log = new Logger(sw);
-
                         string hsc = txtScript.Text;
                         var progress = new Progress<int>(v =>
                         {
                             progressBar.Value = v;
 
                         });
-
                         try
                         {
 
@@ -269,10 +268,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                                         _scriptFile.SaveScripts(data, stream);
                                         _cashefile.SaveChanges(stream);
                                     }
+                                    saved = true;
                                 }
                             });
-                            _metaRefresh();
-                            StatusUpdater.Update("Scripts saved");
                         }
                         catch (AggregateException ex)
                         {
@@ -294,6 +292,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                                 }
                             });
                         }
+                    }
+
+                    if (saved)
+                    {
+                        _metaRefresh();
+                        StatusUpdater.Update("Scripts saved");
                     }
 
                     progressBar.Value = 0;

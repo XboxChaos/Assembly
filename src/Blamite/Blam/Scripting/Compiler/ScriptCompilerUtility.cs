@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Antlr4.Runtime;
 using System.Xml;
-using Blamite.Blam.Scripting.Compiler.Expressions;
 using Blamite.IO;
 using System.IO;
-using System.Diagnostics;
 
 namespace Blamite.Blam.Scripting.Compiler
 {
@@ -69,10 +65,10 @@ namespace Blamite.Blam.Scripting.Compiler
                     {
                         var exp = _expressions[i];
                         writer.WriteStartElement("Expression");
-                        writer.WriteAttributeString("Num", i.ToString());
-                        writer.WriteAttributeString("Salt", exp.Index.Salt.ToString());
-                        writer.WriteAttributeString("Opcode", exp.Opcode.ToString());
-                        writer.WriteAttributeString("ValueType", exp.ReturnType.ToString());                       
+                        writer.WriteAttributeString("Num", i.ToString("X4"));
+                        writer.WriteAttributeString("Salt", exp.Index.Salt.ToString("X4"));
+                        writer.WriteAttributeString("Opcode", exp.Opcode.ToString("X4"));
+                        writer.WriteAttributeString("ValueType", exp.ReturnType.ToString("X4"));                       
                         switch (exp.Type)
                         {
                             case ScriptExpressionType.Group:
@@ -92,11 +88,11 @@ namespace Blamite.Blam.Scripting.Compiler
                                 break;
 
                         }
-                        writer.WriteAttributeString("NextSalt", exp.Next.Salt.ToString());
-                        writer.WriteAttributeString("NextIndex", exp.Next.Index.ToString());
-                        writer.WriteAttributeString("StringOff", exp.StringOffset.ToString());
-                        writer.WriteAttributeString("Value", exp.Value.ToString());
-                        writer.WriteAttributeString("LineNum", exp.LineNumber.ToString());
+                        writer.WriteAttributeString("NextSalt", exp.Next.Salt.ToString("X4"));
+                        writer.WriteAttributeString("NextIndex", exp.Next.Index.ToString("X4"));
+                        writer.WriteAttributeString("StringOff", exp.StringOffset.ToString("X"));
+                        writer.WriteAttributeString("Value", exp.Value.ToString("X8"));
+                        writer.WriteAttributeString("LineNum", exp.LineNumber.ToString("X4"));
                         if(exp.StringOffset != _randomAddress)
                             writer.WriteAttributeString("String", _strings.GetString(exp.StringOffset));
                         writer.WriteEndElement();

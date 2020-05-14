@@ -21,8 +21,7 @@ namespace Blamite.Blam
 		/// <exception cref="NotSupportedException">Thrown if the cache file's target engine is not supported.</exception>
 		public static ICacheFile LoadCacheFile(IReader reader, EngineDatabase engineDb)
 		{
-			EngineDescription tempDesc;
-			return LoadCacheFile(reader, engineDb, out tempDesc);
+			return LoadCacheFile(reader, engineDb, out _);
 		}
 
 		/// <summary>

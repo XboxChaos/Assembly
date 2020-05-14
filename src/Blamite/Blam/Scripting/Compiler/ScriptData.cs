@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Blamite.Blam.Scripting.Compiler.Expressions;
+﻿using System.Collections.Generic;
 
 namespace Blamite.Blam.Scripting.Compiler
 {
