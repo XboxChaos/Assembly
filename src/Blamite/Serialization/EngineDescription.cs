@@ -143,6 +143,11 @@ namespace Blamite.Serialization
 		/// </summary>
 		public bool UsesCompression { get; private set; }
 
+		/// <summary>
+		///		MCC sometimes ships maps with hashes 0'd out, in some cases adding a hash can cause issues.
+		/// </summary>
+		public bool UsesHashes { get; private set; }
+
 		private void LoadSettings()
 		{
 			LoadEngineSettings();
@@ -156,6 +161,7 @@ namespace Blamite.Serialization
 			ExpandMagic = Settings.GetSettingOrDefault("engineInfo/expandMagic", 0);
 
 			UsesCompression = Settings.GetSettingOrDefault("engineInfo/usesCompression", false);
+			UsesHashes = Settings.GetSettingOrDefault("engineInfo/usesHashes", false);
 
 			if (Settings.PathExists("engineInfo/pokingOffset"))
 				PokingOffset = Settings.GetSettingOrDefault("engineInfo/pokingOffset", 0);
