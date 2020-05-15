@@ -83,12 +83,6 @@ namespace Assembly.Windows
 
 			ProcessCommandLineArgs(Environment.GetCommandLineArgs());
 
-			if (!App.AssemblyStorage.AssemblySettings.ShownCheatingDialog)
-			{
-				ShowCheatingDialog();
-				App.AssemblyStorage.AssemblySettings.ShownCheatingDialog = true;
-			}
-
 			if (App.AssemblyStorage.AssemblySettings.ApplicationUpdateOnStartup)
 				await CheckForUpdates();
 		}
@@ -309,7 +303,7 @@ namespace Assembly.Windows
 		private void ShowCheatingDialog()
 		{
 			MetroMessageBox.Show("Assembly",
-				"Assembly is not a cheating tool. While you will never be prevented from using it to give yourself an unfair advantage on Xbox Live, do not expect to receive help if you ask how to do so. Discussion of cheating on Xbox Chaos will immediately result in a permanent ban from the website.\n\nThis dialog will only show once.");
+				"Assembly is not a cheating tool. While you will never be prevented from using it to give yourself an unfair advantage on Xbox Live, do not expect to receive help if you ask how to do so.\n\nThis dialog will only show once.");
 		}
 
 		#region Waste of Space, idk man
@@ -944,6 +938,15 @@ namespace Assembly.Windows
 			PatchControl mp = (PatchControl)ld.Content;
 
 			mp.Dispose();
+		}
+
+		private void Window_Loaded(object sender, RoutedEventArgs e)
+		{
+			if (!App.AssemblyStorage.AssemblySettings.ShownCheatingDialog)
+			{
+				ShowCheatingDialog();
+				App.AssemblyStorage.AssemblySettings.ShownCheatingDialog = true;
+			}
 		}
 	}
 }
