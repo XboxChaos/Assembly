@@ -41,8 +41,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private Endian _endian;
         private Action _metaRefresh;
 
-        private const uint _randomAddress = 0xCDCDCDCD;  // used for expressions where the string address doesn't point to the string table
-
 
         public ScriptEditor(Action metaRefresh, EngineDescription buildInfo, IScriptFile scriptFile, IStreamManager streamManager, ICacheFile casheFile, string casheName, Endian endian)
         {
@@ -449,37 +447,28 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                     {
                         var exp = expressions[i];
 
-                        writer.WriteStartElement("Expression");
-                        writer.WriteAttributeString("Num", i.ToString("X4"));
-                        writer.WriteAttributeString("Salt", exp.Index.Salt.ToString("X4"));
-                        writer.WriteAttributeString("Opcode", exp.Opcode.ToString("X4"));
-                        writer.WriteAttributeString("ValueType", exp.ReturnType.ToString("X4"));
-                        switch (exp.Type)
-                        {
-                            case ScriptExpressionType.Group:
-                                writer.WriteAttributeString("ExpressionType", "Call");
-                                break;
-                            case ScriptExpressionType.Expression:
-                                writer.WriteAttributeString("ExpressionType", "Expression");
-                                break;
-                            case ScriptExpressionType.ScriptReference:
-                                writer.WriteAttributeString("ExpressionType", "ScriptRef");
-                                break;
-                            case ScriptExpressionType.GlobalsReference:
-                                writer.WriteAttributeString("ExpressionType", "GlobalRef");
-                                break;
-                            case ScriptExpressionType.ParameterReference:
-                                writer.WriteAttributeString("ExpressionType", "ScriptPar");
-                                break;
+                        var bytes = BitConverter.GetBytes(exp.Value);
+                        ushort second16 = BitConverter.ToUInt16(bytes, 0);
+                        ushort first16 = BitConverter.ToUInt16(bytes, 2);
 
+                        writer.WriteStartElement("Expression");
+                        writer.WriteAttributeString("Index", i.ToString());
+                        writer.WriteAttributeString("Opcode", exp.Opcode.ToString());
+                        writer.WriteAttributeString("ValueType", exp.ReturnType.ToString());
+                        writer.WriteAttributeString("ExpType", exp.Type.ToString());
+                        if (exp.NextExpression != null)
+                        {
+                            writer.WriteAttributeString("Next_Salt", exp.NextExpression.Index.Salt.ToString());
+                            writer.WriteAttributeString("Next_Index", exp.NextExpression.Index.Index.ToString());
                         }
-                        writer.WriteAttributeString("NextSalt", exp.Next.Salt.ToString("X4"));
-                        writer.WriteAttributeString("NextIndex", exp.Next.Index.ToString("X4"));
-                        writer.WriteAttributeString("StringOff", exp.StringOffset.ToString("X"));
+                        else
+                        {
+                            writer.WriteAttributeString("Next_Salt", short.MaxValue.ToString());
+                            writer.WriteAttributeString("Next_Index", short.MaxValue.ToString());
+                        }
+
+                        writer.WriteAttributeString("String", exp.StringValue);
                         writer.WriteAttributeString("Value", exp.Value.ToString("X8"));
-                        writer.WriteAttributeString("LineNum", exp.LineNumber.ToString("X4"));
-                        if (exp.StringOffset != _randomAddress && exp.StringValue != null)
-                            writer.WriteAttributeString("String", exp.StringValue);
                         writer.WriteEndElement();
                     }
                     writer.WriteEndElement();
