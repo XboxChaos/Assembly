@@ -167,6 +167,11 @@ namespace Assembly.Windows
 			AddTabModule(TabGenre.VoxelConverter);
 		}
 
+		private void menuMCCCompress_Click(object sender, RoutedEventArgs e)
+		{
+			AddTabModule(TabGenre.MapCompressor, true);
+		}
+
 		internal void SessionManager_SessionDied(object sender, SessionDiedEventArgs e)
 		{
 			Dispatcher.InvokeAsync((Action)delegate
@@ -525,7 +530,8 @@ namespace Assembly.Windows
 			VoxelConverter,
 			PostGenerator,
 			MapNames,
-			NetworkPoking
+			NetworkPoking,
+			MapCompressor
 		}
 
 		public void ExternalTabClose(TabGenre tabGenre)
@@ -567,7 +573,7 @@ namespace Assembly.Windows
 		/// <param name="cacheLocation">Path to the Blam Cache File</param>
 		public void AddCacheTabModule(string cacheLocation)
 		{
-			if (TabModuleFindExisting(cacheLocation))
+			if (ContentModuleExists(cacheLocation))
 				return;
 
 			var newCacheTab = new LayoutDocument
@@ -605,7 +611,7 @@ namespace Assembly.Windows
 		/// <param name="imageLocation">Path to the BLF file</param>
 		public void AddImageTabModule(string imageLocation)
 		{
-			if (TabModuleFindExisting(imageLocation))
+			if (ContentModuleExists(imageLocation))
 				return;
 
 			var newMapImageTab = new LayoutDocument
@@ -625,7 +631,7 @@ namespace Assembly.Windows
 		/// <param name="infooLocation">Path to the MapInfo file</param>
 		public void AddInfooTabModule(string infooLocation)
 		{
-			if (TabModuleFindExisting(infooLocation))
+			if (ContentModuleExists(infooLocation))
 				return;
 
 			var newMapInfoTab = new LayoutDocument
@@ -645,7 +651,7 @@ namespace Assembly.Windows
 		/// <param name="campaignLocation">Path to the Campaign file</param>
 		public void AddCampaignTabModule(string campaignLocation)
 		{
-			if (TabModuleFindExisting(campaignLocation))
+			if (ContentModuleExists(campaignLocation))
 				return;
 
 			var newCampaignTab = new LayoutDocument
@@ -675,13 +681,20 @@ namespace Assembly.Windows
 			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newPatchTab);
 		}
 
-		private bool TabModuleFindExisting(string contentId)
+		/// <summary>
+		/// Iterates all tabs and child windows for an instance of the given file.
+		/// </summary>
+		/// <param name="contentId">The file path to check for.</param>
+		/// <param name="focus">If a windor or tab is found, should it be brought to focus? Default is true.</param>
+		/// <returns>Whether the file is currently open.</returns>
+		public bool ContentModuleExists(string contentId, bool focus = true)
 		{
 			// Check module isn't already open in the main window
 			foreach (LayoutContent tab in documentManager.Children.Where(tab => tab.ContentId == contentId))
 			{
 				//focus existing
-				documentManager.SelectedContentIndex = documentManager.IndexOfChild(tab);
+				if (focus)
+					documentManager.SelectedContentIndex = documentManager.IndexOfChild(tab);
 				return true;
 			}
 			// Check module isn't already open as a floating window
@@ -691,8 +704,11 @@ namespace Assembly.Windows
 				if (mod.RootDocument.ContentId == contentId)
 				{
 					//focus existing
-					mod.RootDocument.IsActive = true;
-					windo.Focus();
+					if (focus)
+					{
+						mod.RootDocument.IsActive = true;
+						windo.Focus();
+					}
 					return true;
 				}
 			}
@@ -753,6 +769,11 @@ namespace Assembly.Windows
 				case TabGenre.MapNames:
 					tab.Title = "Map Names";
 					tab.Content = new MapNames();
+					break;
+
+				case TabGenre.MapCompressor:
+					tab.Title = "Map Compressor";
+					tab.Content = new MapCompressor();
 					break;
 			}
 

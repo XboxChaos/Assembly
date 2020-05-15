@@ -47,7 +47,7 @@ namespace Blamite.Blam.SecondGen.Structures
 			EngineDescription buildInfo)
 		{
 			if ((uint)headerValues.GetInteger("magic") != CharConstant.FromString("tags"))
-				throw new ArgumentException("Invalid index table header magic");
+				throw new ArgumentException("Invalid index table header magic. This map could be compressed, try the Compressor in the Tools menu before reporting.");
 
 			// Groups
 			var numGroups = (int) headerValues.GetInteger("number of tag groups");
