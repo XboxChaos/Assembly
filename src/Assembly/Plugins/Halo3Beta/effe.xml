@@ -70,9 +70,21 @@
 			</enum16>
 			<int16 name="Location Index" offset="0x4" visible="true" />
 			<int16 name="Unknown" offset="0x6" visible="false" />
-			<comment title="Anticipated Tag Group Note">For objects, use "obje" instead of the group.</comment>
-			<ascii name="Anticipated Tag Group" offset="0x8" visible="true" length="0x4" />
-			<tagRef name="Spawned Tag" offset="0xC" visible="true" />
+			<enum32 name="Runtime Base Group Tag" offset="0x8" visible="true" tooltip="This should be set to match the below &quot;Type&quot; tag reference, any object should use &quot;object&quot;.">
+				<option name="char - character" value="0x63686172" />
+				<option name="cntl - contrail_system" value="0x636E746C" />
+				<option name="coln - colony" value="0x636F6C6E" />
+				<option name="decs - decal_system" value="0x64656373" />
+				<option name="jpt! - damage_effect" value="0x6A707421" />
+				<option name="lens - lens_flare" value="0x6C656E73" />
+				<option name="ligh - light" value="0x6C696768" />
+				<option name="ltvl - light_volume_system" value="0x6C74766C" />
+				<option name="obje - object" value="0x6F626A65" />
+				<option name="rwrd - render_water_ripple" value="0x72777264" />
+				<option name="shit - shield_impact" value="0x73686974" />
+				<option name="snd! - sound" value="0x736E6421" />
+			</enum32>
+			<tagRef name="Type" offset="0xC" visible="true" tooltip="The above &quot;Runtime Base Group Tag&quot; field should match this reference."/>
 			<float32 name="Velocity Bounds min" offset="0x1C" visible="true" />
 			<float32 name="Velocity Bounds max" offset="0x20" visible="true" />
 			<degree name="Velocity Cone Angle" offset="0x24" visible="true" />
