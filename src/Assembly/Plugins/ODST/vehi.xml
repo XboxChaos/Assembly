@@ -845,30 +845,35 @@
 		<undefined name="Unknown" offset="0x38" visible="true" />
 		<undefined name="Unknown" offset="0x3C" visible="true" />
 	</tagblock>
-	<tagblock name="Dropship Motion Properties" offset="0x344" visible="true" elementSize="0x4C">
-		<float32 name="Forward Acceleration" offset="0x0" visible="true" />
-		<float32 name="Backward Acceleration" offset="0x4" visible="true" />
-		<float32 name="Unknown" offset="0x8" visible="true" />
-		<float32 name="Unknown" offset="0xC" visible="true" />
-		<float32 name="Left Strafe Acceleration" offset="0x10" visible="true" />
-		<float32 name="Right Strafe Acceleration" offset="0x14" visible="true" />
-		<float32 name="Unknown" offset="0x18" visible="true" />
-		<float32 name="Unknown" offset="0x1C" visible="true" />
-		<float32 name="Lift Acceleration" offset="0x20" visible="true" />
-		<float32 name="Drop Acceleration" offset="0x24" visible="true" />
-		<float32 name="Unknown" offset="0x28" visible="true" />
-		<float32 name="Unknown" offset="0x2C" visible="true" />
-		<float32 name="Unknown" offset="0x30" visible="true" />
-		<float32 name="Unknown" offset="0x34" visible="true" />
-		<float32 name="Unknown" offset="0x38" visible="true" />
-		<float32 name="Unknown" offset="0x3C" visible="true" />
-		<degree name="Unknown" offset="0x40" visible="true" />
-		<float32 name="Unknown" offset="0x44" visible="true" />
-		<degree name="Unknown" offset="0x48" visible="true" />
+	<tagblock name="Type - Human Plane" offset="0x344" visible="true" elementSize="0x4C">
+		<float32 name="Maximum Forward Speed" offset="0x0" visible="true" />
+		<float32 name="Maximum Reverse Speed" offset="0x4" visible="true" />
+		<float32 name="Speed Acceleration" offset="0x8" visible="true" />
+		<float32 name="Speed Deceleration" offset="0xC" visible="true" />
+		<float32 name="Maximum Left Slide" offset="0x10" visible="true" />
+		<float32 name="Maximum Right Slide" offset="0x14" visible="true" />
+		<float32 name="Slide Acceleration" offset="0x18" visible="true" />
+		<float32 name="Slide Deceleration" offset="0x1C" visible="true" />
+		<float32 name="Maximum Up Rise" offset="0x20" visible="true" />
+		<float32 name="Maximum Down Rise" offset="0x24" visible="true" />
+		<float32 name="Rise Acceleration" offset="0x28" visible="true" />
+		<float32 name="Rise Deceleration" offset="0x2C" visible="true" />
+		<float32 name="Flying Torque Scale" offset="0x30" visible="true" />
+		<float32 name="Air Friction Deceleration" offset="0x34" visible="true" />
+		<float32 name="Thrust Scale" offset="0x38" visible="true" />
+		<float32 name="Turn Rate Scale" offset="0x3C" visible="true" />
+		<degree name="Maximum Roll" offset="0x40" visible="true" />
+		<float32 name="Interpolation Scale" offset="0x44" visible="true" />
+		<degree name="Max Angle" offset="0x48" visible="true" />
 	</tagblock>
-	<tagblock name="Antigravity Motion Properties" offset="0x350" visible="true" elementSize="0x70">
-		<degree name="Steering Overdampen Cusp Angle" offset="0x0" visible="true" />
-		<float32 name="Steering Overdamen Exponent" offset="0x4" visible="true" />
+	<tagblock name="Type - Alien Scout" offset="0x350" visible="true" elementSize="0x70">
+		<comment title="Steering Control">When the steering is off by more than the cusp angle
+the steering will overcompensate more and more.  when it
+is less, it overcompensates less and less.  the exponent
+should be something in the neighborhood of 2.0</comment>
+		<degree name="Overdampen Cusp Angle" offset="0x0" visible="true" />
+		<float32 name="Overdampen Exponent" offset="0x4" visible="true" />
+		<comment title="Velocity Control Variables" />
 		<float32 name="Maximum Forward Speed" offset="0x8" visible="true" />
 		<float32 name="Maximum Reverse Speed" offset="0xC" visible="true" />
 		<float32 name="Speed Acceleration" offset="0x10" visible="true" />
@@ -879,52 +884,70 @@
 		<float32 name="Slide Deceleration" offset="0x24" visible="true" />
 		<int8 name="Unknown" offset="0x28" visible="false" />
 		<int8 name="Unknown" offset="0x29" visible="false" />
-		<int8 name="Unknown" offset="0x2A" visible="false" />
+		<flags8 name="Flags" offset="0x2A" visible="true">
+			<bit name="Locked Camera" index="0" />
+		</flags8>
 		<int8 name="Unknown" offset="0x2B" visible="false" />
-		<float32 name="Traction" offset="0x2C" visible="true" />
-		<undefined name="Unknown" offset="0x30" visible="true" />
-		<float32 name="Turning Rate" offset="0x34" visible="true" />
-		<stringid name="Unknown" offset="0x38" visible="true" />
-		<float32 name="Unknown" offset="0x3C" visible="true" />
-		<float32 name="Unknown" offset="0x40" visible="true" />
-		<float32 name="Unknown" offset="0x44" visible="true" />
-		<float32 name="Unknown" offset="0x48" visible="true" />
-		<stringid name="Unknown" offset="0x4C" visible="true" />
-		<float32 name="Unknown" offset="0x50" visible="true" />
-		<float32 name="Unknown" offset="0x54" visible="true" />
-		<float32 name="Unknown" offset="0x58" visible="true" />
-		<float32 name="Unknown" offset="0x5C" visible="true" />
-		<float32 name="Unknown" offset="0x60" visible="true" />
-		<float32 name="Unknown" offset="0x64" visible="true" />
-		<float32 name="Unknown" offset="0x68" visible="true" />
-		<degree name="Unknown" offset="0x6C" visible="true" />
+		<float32 name="Drag Coeficient" offset="0x2C" visible="true" />
+		<float32 name="Constant Deceleration" offset="0x30" visible="true" />
+		<float32 name="Torque Scale" offset="0x34" visible="true" />
+		<comment title="Engine Gravity Variables" />
+		<stringid name="Object Function Damage Region" offset="0x38" visible="true" tooltip="this is the name of the region by which we gauge the overall damage of the vehicle" />
+		<float32 name="Min Anti Gravity Engine Speed" offset="0x3C" visible="true" tooltip="speed at which engine position function  moves.  value of 1 means goes from 0-1 in 1 second" />
+		<float32 name="Max Anti Gravity Engine Speed" offset="0x40" visible="true" tooltip="speed at which engine position function  moves.  value of 1 means goes from 0-1 in 1 second" />
+		<float32 name="Engine Speed Acceleration" offset="0x44" visible="true" tooltip="strictly used for object function. in 0-1 space" />
+		<float32 name="Maximum Vehicle Speed" offset="0x48" visible="true" tooltip="function is capped by speed of the vehicle. So when we slow down for any reason we see the function go down" />
+		<comment title="Contrail Gravity Variables" />
+		<stringid name="Object Function Damage Region" offset="0x4C" visible="true" tooltip="this is the name of the region by which we gauge the overall damage of the vehicle" />
+		<float32 name="Min Anti Gravity Engine Speed" offset="0x50" visible="true" tooltip="speed at which engine position function  moves.  value of 1 means goes from 0-1 in 1 second" />
+		<float32 name="Max Anti Gravity Engine Speed" offset="0x54" visible="true" tooltip="speed at which engine position function  moves.  value of 1 means goes from 0-1 in 1 second" />
+		<float32 name="Engine Speed Acceleration" offset="0x58" visible="true" tooltip="strictly used for object function. in 0-1 space" />
+		<float32 name="Maximum Vehicle Speed" offset="0x5C" visible="true" tooltip="function is capped by speed of the vehicle. So when we slow down for any reason we see the function go down" />
+		<comment title="Contrail Gravity Variables" />
+		<rangef name="Engine Rotation Function" offset="0x60" visible="true" />
+		<comment title="steering animation and interpolation">This data controls the depiction of steering 
+through animation - not the vehicles ability to turn
+interpolation scale= how much we interpolate between steering poses.
+max angle= max animated steering angle change allowed per tick.</comment>
+		<float32 name="Interpolation Scale" offset="0x68" visible="true" />
+		<degree name="Max Angle" offset="0x6C" visible="true" />
 	</tagblock>
-	<tagblock name="Jet Engine Motion Properties" offset="0x35C" visible="true" elementSize="0x64">
-		<degree name="Steering Overdampen Cusp Angle" offset="0x0" visible="true" />
-		<float32 name="Steering Overdamen Exponent" offset="0x4" visible="true" />
+	<tagblock name="Type - Alien Fighter" offset="0x35C" visible="true" elementSize="0x64">
+		<comment title="Steering Control">When the steering is off by more than the cusp angle
+the steering will overcompensate more and more.  when it
+is less, it overcompensates less and less.  the exponent
+should be something in the neighborhood of 2.0</comment>
+		<degree name="Overdampen Cusp Angle" offset="0x0" visible="true" />
+		<float32 name="Overdampen Exponent" offset="0x4" visible="true" />
+		<comment title="Turning Control" />
 		<degree name="Maximum Left Turn" offset="0x8" visible="true" />
 		<degree name="Maximum Right Turn (negative)" offset="0xC" visible="true" />
 		<degree name="Turn Rate" offset="0x10" visible="true" />
-		<float32 name="Flying Speed" offset="0x14" visible="true" />
-		<float32 name="Acceleration" offset="0x18" visible="true" />
+		<comment title="Velocity Control Variables" />
+		<float32 name="Maximum Foward Speed" offset="0x14" visible="true" />
+		<float32 name="Maximum Reverse Speed" offset="0x18" visible="true" />
 		<float32 name="Speed Acceleration" offset="0x1C" visible="true" />
 		<float32 name="Speed Deceleration" offset="0x20" visible="true" />
-		<float32 name="Pitch Left Speed" offset="0x24" visible="true" />
-		<float32 name="Pitch Right Speed" offset="0x28" visible="true" />
-		<float32 name="Pitch Rate" offset="0x2C" visible="true" />
-		<float32 name="Unpitch Rate" offset="0x30" visible="true" />
-		<float32 name="Flight Stability" offset="0x34" visible="true" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<float32 name="Nose Angle" offset="0x3C" visible="true" />
-		<float32 name="Unknown" offset="0x40" visible="false" />
-		<float32 name="Unknown" offset="0x44" visible="false" />
-		<float32 name="Unknown" offset="0x48" visible="false" />
-		<float32 name="Falling Speed" offset="0x4C" visible="true" />
-		<float32 name="Falling Speed 2" offset="0x50" visible="true" />
-		<float32 name="Unknown" offset="0x54" visible="false" />
-		<float32 name="Unknown" offset="0x58" visible="true" />
-		<float32 name="Idle Rise" offset="0x5C" visible="true" />
-		<float32 name="Idle Forward" offset="0x60" visible="true" />
+		<float32 name="Maximum Left Slide" offset="0x24" visible="true" />
+		<float32 name="Maximum Right Slide" offset="0x28" visible="true" />
+		<float32 name="Slide Acceleration" offset="0x2C" visible="true" />
+		<float32 name="Slide Deceleration" offset="0x30" visible="true" />
+		<comment title="Torque Scale" />
+		<float32 name="Flying Torque Scale" offset="0x34" visible="true" />
+		<comment title="Fixed Gun Offset" />
+		<float32 name="Fixed Gun Yaw" offset="0x38" visible="true" />
+		<float32 name="Fixed Gun Pitch" offset="0x3C" visible="true" />
+		<comment title="Alien Fighter Trick Variables" />
+		<float32 name="Maximum Trick Frequency" offset="0x40" visible="true" />
+		<float32 name="Loop Trick Duration" offset="0x44" visible="true" />
+		<float32 name="Roll Trick Duration" offset="0x48" visible="true" />
+		<comment title="Alien Fighter Fake Flight Control" />
+		<float32 name="Zero Gravity Speed" offset="0x4C" visible="true" />
+		<float32 name="Full Gravity Speed" offset="0x50" visible="true" />
+		<float32 name="Strafe Boost Scale" offset="0x54" visible="true" />
+		<float32 name="Off Stick Deceleration Scale" offset="0x58" visible="true" />
+		<float32 name="Cruising Throttle" offset="0x5C" visible="true" />
+		<float32 name="Dive Speed Scale" offset="0x60" visible="true" />
 	</tagblock>
 	<tagblock name="Turret Properties" offset="0x368" visible="true" elementSize="0x4">
 		<undefined name="Unknown" offset="0x0" visible="true" />

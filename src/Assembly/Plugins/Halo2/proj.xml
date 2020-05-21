@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Halo2" baseSize="0x1A4">
 	<!-- Automatically generated plugin -->
 	<revisions>
@@ -102,15 +102,21 @@
 		<dataref name="Default Function" offset="0x14" visible="true" />
 		<stringId name="Scale By" offset="0x1C" visible="true" />
 	</tagblock>
+	<comment title="Applying Collision Damage">For things that want to cause more or less collision damage
+	</comment>
 	<float32 name="Apply Collision Damage Scale" offset="0x6C" visible="true" />
-	<float32 name="Min Game Acceleration" offset="0x70" visible="true" />
-	<float32 name="Max Game Acceleration" offset="0x74" visible="true" />
-	<float32 name="Min Game Scale" offset="0x78" visible="true" />
-	<float32 name="Max Game Scale" offset="0x7C" visible="true" />
-	<float32 name="Min Absolute Acceleration" offset="0x80" visible="true" />
-	<float32 name="Max Absolute Acceleration" offset="0x84" visible="true" />
-	<float32 name="Min Absolute Scale" offset="0x88" visible="true" />
-	<float32 name="Max Absolute Scale" offset="0x8C" visible="true" />
+	<comment title="Game Collision Damage Parameters">0 - means take default value from globals.globals
+	</comment>
+	<float32 name="Min Game Acc (default)" offset="0x70" visible="true" />
+	<float32 name="Max Game Acc (default)" offset="0x74" visible="true" />
+	<float32 name="Min Game Scale (default)" offset="0x78" visible="true" />
+	<float32 name="Max Game Scale (default)" offset="0x7C" visible="true" />
+	<comment title="Absolute Collision Damage Parameters">0 - means take default value from globals.globals
+	</comment>
+	<float32 name="Min Absolute Acc (default)" offset="0x80" visible="true" />
+	<float32 name="Max Absolute Acc (default)" offset="0x84" visible="true" />
+	<float32 name="Min Absolute Scale (default)" offset="0x88" visible="true" />
+	<float32 name="Max Absolute Scale (default)" offset="0x8C" visible="true" />
 	<int16 name="HUD Text Message Index" offset="0x90" visible="true" />
 	<int16 name="Unknown" offset="0x92" visible="false" />
 	<tagblock name="Attachments" offset="0x94" visible="true" elementSize="0x18">
@@ -215,10 +221,10 @@
 	</enum16>
 	<float32 name="AI Perception Radius" offset="0xC4" visible="true" />
 	<float32 name="Collision Radius" offset="0xC8" visible="true" />
+	<comment title="Detonation" />
 	<float32 name="Arming Time" offset="0xCC" visible="true" />
 	<float32 name="Danger Radius" offset="0xD0" visible="true" />
-	<float32 name="Timer min" offset="0xD4" visible="true" />
-	<float32 name="Timer max" offset="0xD8" visible="true" />
+	<rangef name="Timer" offset="0xD4" visible="true" />
 	<float32 name="Minimum Velocity" offset="0xDC" visible="true" />
 	<float32 name="Maximum Range" offset="0xE0" visible="true" />
 	<enum16 name="Detonation Noise" offset="0xE4" visible="true">
@@ -286,31 +292,32 @@
 	<int8 name="Unknown" offset="0x12B" visible="false" />
 	<tagRef name="Attached Super Detonation Damage" offset="0x12C" visible="true" />
 	<float32 name="Material Effect Radius" offset="0x134" visible="true" />
+	<comment title="Flyby/Impact" />
 	<tagRef name="Flyby Sound" offset="0x138" visible="true" />
 	<tagRef name="Impact Effect" offset="0x140" visible="true" />
 	<tagRef name="Impact Damage" offset="0x148" visible="true" />
+	<comment title="Boarding Fields" />
 	<float32 name="Boarding Detonation Time" offset="0x150" visible="true" />
 	<tagRef name="Boarding Detonation Damage" offset="0x154" visible="true" />
 	<tagRef name="Boarding Attached Detonation Damage" offset="0x15C" visible="true" />
+	<comment title="Physics" />
 	<float32 name="Air Gravity Scale" offset="0x164" visible="true" />
-	<float32 name="Air Damage Range min" offset="0x168" visible="true" />
-	<float32 name="Air Damage Range max" offset="0x16C" visible="true" />
+	<rangef name="Air Damage Range" offset="0x168" visible="true" />
 	<float32 name="Water Gravity Scale" offset="0x170" visible="true" />
-	<float32 name="Water Damage Range min" offset="0x174" visible="true" />
-	<float32 name="Water Damage Range max" offset="0x178" visible="true" />
+	<rangef name="Water Damage Range" offset="0x174" visible="true" />
 	<float32 name="Initial Velocity" offset="0x17C" visible="true" />
 	<float32 name="Final Velocity" offset="0x180" visible="true" />
 	<degree name="Guided Angular Velocity Lower" offset="0x184" visible="true" />
 	<degree name="Guided Angular Velocity Upper" offset="0x188" visible="true" />
-	<float32 name="Acceleration Range min" offset="0x18C" visible="true" />
-	<float32 name="Acceleration Range max" offset="0x190" visible="true" />
-	<float32 name="Unknown" offset="0x194" visible="false" />
+	<rangef name="Acceleration Range" offset="0x18C" visible="true" />
+	<float32 name="Runtime Acceleration Bound Inverse " offset="0x194" visible="true" />
 	<float32 name="Targeted Leading Fraction" offset="0x198" visible="true" />
 	<tagblock name="Material Responses" offset="0x19C" visible="true" elementSize="0x58">
 		<flags16 name="Flags" offset="0x0" visible="true">
 			<bit name="Cannot Be Overpenetrated" index="0" />
 		</flags16>
-		<comment title="Default Result" />
+		<comment title="Default Result">(If the potential result, below, fails to happen)
+		</comment>
 		<enum16 name="Response" offset="0x2" visible="true">
 			<option name="Impact (Detonate)" value="0x0" />
 			<option name="Fizzle" value="0x1" />
@@ -320,7 +327,7 @@
 			<option name="Bounce (Dud)" value="0x5" />
 			<option name="Fizzle (Ricochet)" value="0x6" />
 		</enum16>
-		<tagRef name="Old Effect" offset="0x4" visible="true" />
+		<tagRef name="DO NOT USE (OLD Effect)" offset="0x4" visible="true" />
 		<stringId name="Material Name" offset="0xC" visible="true" />
 		<int16 name="Global Material Index" offset="0x10" visible="true" />
 		<int16 name="Unknown" offset="0x12" visible="false" />
@@ -339,11 +346,9 @@
 			<bit name="Never Against Units" index="1" />
 		</flags16>
 		<float32 name="Chance Fraction" offset="0x18" visible="true" />
-		<degree name="Between min" offset="0x1C" visible="true" />
-		<degree name="Between max" offset="0x20" visible="true" />
-		<float32 name="And min" offset="0x24" visible="true" />
-		<float32 name="And max" offset="0x28" visible="true" />
-		<tagRef name="Old Effect" offset="0x2C" visible="true" />
+		<rangeD name="Between" offset="0x1C" visible="true" />
+		<rangef name="And" offset="0x24" visible="true" />
+		<tagRef name="DO NOT USE (OLD Effect)" offset="0x2C" visible="true" />
 		<comment title="Misc" />
 		<enum16 name="Scale Effects By" offset="0x34" visible="true">
 			<option name="Damage" value="0x0" />
@@ -352,7 +357,7 @@
 		<int16 name="Unknown" offset="0x36" visible="false" />
 		<degree name="Angular Noise" offset="0x38" visible="true" />
 		<float32 name="Velocity Noise" offset="0x3C" visible="true" />
-		<tagRef name="Old Detonation Effect" offset="0x40" visible="true" />
+		<tagRef name="DO NOT USE (OLD Effect)" offset="0x40" visible="true" />
 		<comment title="Penetration" />
 		<float32 name="Initial Friction" offset="0x48" visible="true" />
 		<float32 name="Maximum Distance" offset="0x4C" visible="true" />
