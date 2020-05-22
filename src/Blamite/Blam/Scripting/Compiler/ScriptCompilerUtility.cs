@@ -153,9 +153,9 @@ namespace Blamite.Blam.Scripting.Compiler
                 {
                     writer.WriteStartElement("global");
                     writer.WriteAttributeString("Name", glo.Name);
-                    writer.WriteAttributeString("RetType", glo.Type.ToString());
-                    writer.WriteAttributeString("Salt", glo.ExpressionIndex.Salt.ToString());
-                    writer.WriteAttributeString("Index", glo.ExpressionIndex.Index.ToString());
+                    writer.WriteAttributeString("RetType", glo.Type.ToString("X4"));
+                    writer.WriteAttributeString("Salt", glo.ExpressionIndex.Salt.ToString("X4"));
+                    writer.WriteAttributeString("Index", glo.ExpressionIndex.Index.ToString("X4"));
                     writer.WriteEndElement();
                 }
                 writer.WriteEndElement();
@@ -166,10 +166,10 @@ namespace Blamite.Blam.Scripting.Compiler
                 {
                     writer.WriteStartElement("script");
                     writer.WriteAttributeString("Name", scr.Name);
-                    writer.WriteAttributeString("Type", scr.ExecutionType.ToString());
-                    writer.WriteAttributeString("RetType", scr.ReturnType.ToString());
-                    writer.WriteAttributeString("Salt", scr.RootExpressionIndex.Salt.ToString());
-                    writer.WriteAttributeString("Index", scr.RootExpressionIndex.Index.ToString());
+                    writer.WriteAttributeString("Type", scr.ExecutionType.ToString("X4"));
+                    writer.WriteAttributeString("RetType", scr.ReturnType.ToString("X4"));
+                    writer.WriteAttributeString("Salt", scr.RootExpressionIndex.Salt.ToString("X4"));
+                    writer.WriteAttributeString("Index", scr.RootExpressionIndex.Index.ToString("X4"));
 
                     if (scr.Parameters.Count > 0)
                     {
@@ -177,7 +177,7 @@ namespace Blamite.Blam.Scripting.Compiler
                         {
                             writer.WriteStartElement("parameter");
                             writer.WriteAttributeString("Name", p.Name);
-                            writer.WriteAttributeString("Type", p.Type.ToString());
+                            writer.WriteAttributeString("Type", p.Type.ToString("X4"));
                             writer.WriteEndElement();
                         }
                     }

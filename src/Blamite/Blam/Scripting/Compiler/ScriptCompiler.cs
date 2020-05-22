@@ -718,7 +718,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
                     case "BeginCount":
                         PushTypes(expectedReturnType, contextParameterCount - 1);
-                        PushTypes("NUMBER");
+                        PushTypes("long");
                         break;
 
                     case "If":

@@ -180,6 +180,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                 code.WriteLine();
                 code.WriteLine(")");
                 code.WriteLine();
+
+                code.Indent = 0;
                 counter++;
             }
 
@@ -232,6 +234,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                 case "Halo: Reach":
                 case "Halo: Reach MCC":
                 case "Halo: Reach MCC Update 1":
+                case "Halo: Reach MCC Update 2":
                     bool saved = false;
                     string folder = "Compiler";
                     if (!Directory.Exists(folder))
