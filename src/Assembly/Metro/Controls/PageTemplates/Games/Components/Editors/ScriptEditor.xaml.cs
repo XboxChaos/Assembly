@@ -58,9 +58,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
 
             InitializeComponent();
-
             List<Task> tasks = new List<Task>();
-            tasks.Add(Task.Run(() => { DecompileScripts(); }));
+
+            switch (_buildInfo.Name)
+            {
+                case "Halo: Reach":
+                case "Halo: Reach MCC":
+                case "Halo: Reach MCC Update 1":
+                case "Halo: Reach MCC Update 2":
+                    tasks.Add(Task.Run(() => { DecompileReach(); }));
+                    break;
+                default:
+                    tasks.Add(Task.Run(() => { DecompileScripts(); }));
+                    break;      
+            }
+
             //tasks.Add(Task.Run(() => { GenerateSeatMappings(); }));
             //tasks.Add(Task.Run(() => { DumpEngineGlobalsToXML(); }));
             // tasks.Add(Task.Run(() => { DumpSpecialGlobalsToXML(); }));
@@ -188,6 +200,32 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             DateTime endTime = DateTime.Now;
             TimeSpan duration = endTime.Subtract(startTime);
             generator.WriteComment("Decompilation finished in ~" + duration.TotalSeconds + "s", code);
+
+            Dispatcher.Invoke(new Action(delegate { txtScript.Text = code.InnerWriter.ToString(); }));
+        }
+
+        private void DecompileReach()
+        {
+            DateTime startTime = DateTime.Now;
+
+            ScriptTable scripts;
+            using (IReader reader = ((IStreamManager)_streamManager).OpenRead())
+            {
+                scripts = _scriptFile.LoadScripts(reader);
+                if (scripts == null)
+                    return;
+            }
+
+            OpcodeLookup opcodes = _buildInfo.ScriptInfo;
+            var code = new IndentedTextWriter(new StringWriter(CultureInfo.InvariantCulture));
+            var decompiler = new BlamScriptDecompiler(code, scripts, opcodes, _endian);
+
+            decompiler.Decompile(_showInfo);
+
+            DateTime endTime = DateTime.Now;
+            TimeSpan duration = endTime.Subtract(startTime);
+            decompiler.WriteComment("Decompilation finished in ~" + duration.TotalSeconds + "s");
+
 
             Dispatcher.Invoke(new Action(delegate { txtScript.Text = code.InnerWriter.ToString(); }));
         }
