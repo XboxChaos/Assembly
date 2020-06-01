@@ -4,13 +4,17 @@ hsc : (gloDecl|scriDecl)+ ;
 
 gloDecl : LP 'global' VALUETYPE ID expr RP ;
 
-scriDecl : LP 'script' SCRIPTTYPE retType scriptID scriptParams? (call | gloRef | branch)+ RP ;
+scriDecl : LP 'script' SCRIPTTYPE retType scriptID scriptParams? (call | gloRef | branch | cond)+ RP ;
 
 scriptParams : LP VALUETYPE ID (',' VALUETYPE ID)* RP ;
+
+cond : LP 'cond' condGroup+ RP ;
 
 branch : LP 'branch' expr* RP ;
 
 call : LP funcID expr* RP ;
+
+condGroup : LP expr expr RP ;
 
 scriptID 
         :       ID
@@ -32,7 +36,7 @@ funcID
         ;
 gloRef  :       ID; 
 
-expr    :   lit | call | branch;
+expr    :   lit | call | branch | cond;
 
 retType : 'void' | VALUETYPE ;
 

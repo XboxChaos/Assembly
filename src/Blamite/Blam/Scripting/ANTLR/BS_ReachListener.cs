@@ -71,6 +71,16 @@ public interface IBS_ReachListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitScriptParams([NotNull] BS_ReachParser.ScriptParamsContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.cond"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCond([NotNull] BS_ReachParser.CondContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.cond"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCond([NotNull] BS_ReachParser.CondContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="BS_ReachParser.branch"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -90,6 +100,16 @@ public interface IBS_ReachListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitCall([NotNull] BS_ReachParser.CallContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.condGroup"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCondGroup([NotNull] BS_ReachParser.CondGroupContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.condGroup"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCondGroup([NotNull] BS_ReachParser.CondGroupContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="BS_ReachParser.scriptID"/>.
 	/// </summary>

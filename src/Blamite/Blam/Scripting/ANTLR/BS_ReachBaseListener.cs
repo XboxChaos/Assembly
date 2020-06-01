@@ -83,6 +83,18 @@ public partial class BS_ReachBaseListener : IBS_ReachListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitScriptParams([NotNull] BS_ReachParser.ScriptParamsContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.cond"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCond([NotNull] BS_ReachParser.CondContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.cond"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCond([NotNull] BS_ReachParser.CondContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="BS_ReachParser.branch"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -106,6 +118,18 @@ public partial class BS_ReachBaseListener : IBS_ReachListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitCall([NotNull] BS_ReachParser.CallContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.condGroup"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCondGroup([NotNull] BS_ReachParser.CondGroupContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.condGroup"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCondGroup([NotNull] BS_ReachParser.CondGroupContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="BS_ReachParser.scriptID"/>.
 	/// <para>The default implementation does nothing.</para>
