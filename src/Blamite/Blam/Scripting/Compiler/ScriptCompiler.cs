@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
-using System.Diagnostics;
 
 namespace Blamite.Blam.Scripting.Compiler
 {
@@ -350,6 +349,32 @@ namespace Blamite.Blam.Scripting.Compiler
 
             _genBranches.Add(genName, expressions);
             CloseDatum();
+        }
+
+        public override void EnterCondGroup(BS_ReachParser.CondGroupContext context)
+        {
+            if (PrintDebugInfo)
+            {
+                _logger.WriteLine("Cond", $"Enter , Line: {GetLineNumber(context)}");
+            }
+
+            LinkDatum();
+            string expectedType = PopType();
+            ushort expectedOp = _opcodes.GetTypeInfo(expectedType).Opcode;
+            ushort funcNameOp = _opcodes.GetTypeInfo("function_name").Opcode;
+            var ifInfo = _opcodes.GetFunctionInfo("if")[0];
+
+            ScriptExpression compIf = new ScriptExpression(_currentIndex, ifInfo.Opcode, expectedOp, 
+                ScriptExpressionType.Group, _randomAddress, _currentIndex.Next(), 0);
+
+            _currentIndex.Increment();
+            OpenDatumAndAdd(compIf);
+
+            ScriptExpression compIfName = new ScriptExpression(_currentIndex, ifInfo.Opcode, funcNameOp, ScriptExpressionType.Expression,
+                _strings.Cache(ifInfo.Name), (uint)0, GetLineNumber(context));
+
+            _currentIndex.Increment();
+            OpenDatumAndAdd(compIfName);
         }
 
         public override void EnterGloRef(BS_ReachParser.GloRefContext context)

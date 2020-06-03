@@ -331,5 +331,10 @@ namespace Blamite.Blam.Scripting.Compiler
             }
             return null;
         }
+
+        private short GetLineNumber(ParserRuleContext context)
+        {
+            return (short)context.Start.Line;
+        }
     }
 }
