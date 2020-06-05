@@ -303,7 +303,7 @@ namespace Blamite.Blam.Scripting
 			_output.Write($"({info.Name}");
 
 			// handle regular begin calls.
-			if (info.Name.StartsWith("begin")|| info.Name == "or" || info.Name == "and")
+			if (info.Name.StartsWith("begin")|| info.Name == "or" || info.Name == "and" || info.Name == "branch")
 			{
 				FollowRootIndex(nameIndex, true, BranchType.Multiline);
 				_output.Indent = startIndent;
@@ -394,13 +394,14 @@ namespace Blamite.Blam.Scripting
 		/// <returns>Returns true if code was generated.</returns>
 		private bool GenerateScriptReference(ScriptExpression expression, bool newLine)
 		{
-			string scriptName = _scripts.Scripts[expression.Opcode].Name;
+			// we need to retrieve the script's name from its function_name expression. Otherwise branch calls will become corrupt.
+			DatumIndex nameIndex = new DatumIndex(expression.Value);
+			var nameExp =_scripts.Expressions.FindExpression(nameIndex);
 
-			// write the call's opening parenthesis.
-			_output.Write($"({scriptName}");
+			// write the call's opening parenthesis and name.
+			_output.Write($"({nameExp.StringValue}");
 
 			// write code
-			DatumIndex nameIndex = new DatumIndex(expression.Value);
 			FollowRootIndex(nameIndex, false, BranchType.Call);
 
 			// write the call's closing parenthesis.
