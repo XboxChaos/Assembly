@@ -14,7 +14,7 @@ branch : LP 'branch' expr* RP ;
 
 call : LP funcID expr* RP ;
 
-condGroup : LP expr expr RP ;
+condGroup : LP expr expr+ RP ;
 
 scriptID 
         :       ID

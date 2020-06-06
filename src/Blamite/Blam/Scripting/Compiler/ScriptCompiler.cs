@@ -37,6 +37,12 @@ namespace Blamite.Blam.Scripting.Compiler
         private ushort _branchBoolIndex = 0;
         private Dictionary<string, ScriptExpression[]> _genBranches = new Dictionary<string, ScriptExpression[]>();
 
+        // cond
+        private string _condType;
+        private Stack<int> _condIndeces = new Stack<int>();
+
+
+
         // equality
         private bool _equality = false;
 
@@ -117,7 +123,7 @@ namespace Blamite.Blam.Scripting.Compiler
             _scripts.Add(scr);
 
             var retType = context.retType().GetText();
-            var exp_count = context.gloRef().Count() + context.call().Count() + context.branch().Count();
+            var exp_count = context.gloRef().Count() + context.call().Count() + context.branch().Count() + context.cond().Count();
 
             // if the function has a return type, the last call or global reference must match it.
             if (retType == "void")
@@ -214,7 +220,7 @@ namespace Blamite.Blam.Scripting.Compiler
             // retrieve information from the context.
             string name = context.funcID().GetText();
             string expectedType = PopType();
-            Int32 contextParamCount = context.expr().Count();
+            int contextParamCount = context.expr().Count();
 
             // handle script references
             if (IsScriptReference(context, expectedType, contextParamCount))
@@ -246,6 +252,10 @@ namespace Blamite.Blam.Scripting.Compiler
                 {
                     returnType = _opcodes.GetTypeInfo(info.ReturnType).Opcode;
                 }
+            }
+            else if(expectedType == "void")
+            {
+                returnType = _opcodes.GetTypeInfo("void").Opcode;
             }
             else if(expectedType == "NUMBER" && Casting.IsNumType(info.ReturnType))     // NUMBER
             {
@@ -351,30 +361,111 @@ namespace Blamite.Blam.Scripting.Compiler
             CloseDatum();
         }
 
+        public override void EnterCond(BS_ReachParser.CondContext context)
+        {
+            if (PrintDebugInfo)
+            {
+                _logger.WriteLine("COND", $"Enter, Line: {GetLineNumber(context)}");
+            }
+
+            // tell the groups what type to expect.
+            _condType = PopType();
+
+            if (_condType == "ANY")
+                _condType = "void";
+
+            // push the index to the first group, so that we can open it later on.
+            _condIndeces.Push(_expressions.Count);
+        }
+
+        public override void ExitCond(BS_ReachParser.CondContext context)
+        {
+            if (PrintDebugInfo)
+            {
+                _logger.WriteLine("COND", $"Exit, Line: {GetLineNumber(context)}");
+            }
+
+            // Link to the compiler begin of the last open cond group.
+            LinkDatum();
+
+            // Add the final expression of the cond construct. Not sure why the official Blam Script compiler adds these.
+            ushort typeOp = _opcodes.GetTypeInfo(_condType).Opcode;
+            ScriptExpression exp = new ScriptExpression(_currentIndex, typeOp, typeOp, ScriptExpressionType.Expression, DatumIndex.Null ,
+               _randomAddress, (uint)0, 0);
+
+            _currentIndex.Increment();
+            AddExpression(exp);
+
+            // open the first group.
+            int firstGroupIndex = _condIndeces.Pop();
+            OpenDatum(firstGroupIndex);
+        }
+
         public override void EnterCondGroup(BS_ReachParser.CondGroupContext context)
         {
             if (PrintDebugInfo)
             {
-                _logger.WriteLine("Cond", $"Enter , Line: {GetLineNumber(context)}");
+                _logger.WriteLine("COND GROUP", $"Enter, Line: {GetLineNumber(context)}");
             }
 
+            // Link to the previous expression or cond group.
             LinkDatum();
-            string expectedType = PopType();
-            ushort expectedOp = _opcodes.GetTypeInfo(expectedType).Opcode;
+
+            ushort expectedOp = _opcodes.GetTypeInfo(_condType).Opcode;
             ushort funcNameOp = _opcodes.GetTypeInfo("function_name").Opcode;
             var ifInfo = _opcodes.GetFunctionInfo("if")[0];
+
+            // push the types of the group members.
+            PushTypes(_condType, context.expr().Count() - 1);
+            PushTypes("boolean");
 
             ScriptExpression compIf = new ScriptExpression(_currentIndex, ifInfo.Opcode, expectedOp, 
                 ScriptExpressionType.Group, _randomAddress, _currentIndex.Next(), 0);
 
+            // Keep the if call closed. We will open the initial one later on.
             _currentIndex.Increment();
-            OpenDatumAndAdd(compIf);
+            AddExpression(compIf);
 
             ScriptExpression compIfName = new ScriptExpression(_currentIndex, ifInfo.Opcode, funcNameOp, ScriptExpressionType.Expression,
                 _strings.Cache(ifInfo.Name), (uint)0, GetLineNumber(context));
 
             _currentIndex.Increment();
             OpenDatumAndAdd(compIfName);
+
+            // Push the index to the condition so that we can modify it later on.
+            _condIndeces.Push(_expressions.Count);
+        }
+
+        public override void ExitCondGroup(BS_ReachParser.CondGroupContext context)
+        {
+            if (PrintDebugInfo)
+            {
+                _logger.WriteLine("COND GROUP", $"Exit, Line: {GetLineNumber(context)}");
+            }
+
+            // close the final value expression.
+            CloseDatum();
+
+            int index = _condIndeces.Pop();
+            ushort funcNameOp = _opcodes.GetTypeInfo("function_name").Opcode;
+            var beginInfo = _opcodes.GetFunctionInfo("begin")[0];
+
+            // Grab the index to value expression of the cond group. Modify the condition expression afterwards.
+            // Next has to point to the begin group, which is added by the compiler.
+            var valueExpDatum = _expressions[index].Next;
+            _expressions[index].Next = _currentIndex;
+
+            ScriptExpression compilerBegin = new ScriptExpression(_currentIndex, beginInfo.Opcode, _opcodes.GetTypeInfo(_condType).Opcode,
+                ScriptExpressionType.Group, _randomAddress, _currentIndex.Next(), 0);
+
+            _currentIndex.Increment();
+            OpenDatumAndAdd(compilerBegin);
+
+            ScriptExpression compilerBeginName = new ScriptExpression(_currentIndex, beginInfo.Opcode, funcNameOp, ScriptExpressionType.Expression, valueExpDatum, 
+                _strings.Cache(beginInfo.Name), (uint)0, 0);
+
+            _currentIndex.Increment();
+            AddExpression(compilerBeginName);
         }
 
         public override void EnterGloRef(BS_ReachParser.GloRefContext context)
@@ -502,12 +593,12 @@ namespace Blamite.Blam.Scripting.Compiler
         private ushort GetGlobalOpCode(RuleContext context, string retType)
         {
             ushort opcode = _opcodes.GetTypeInfo(retType).Opcode;
-            var grandparent = GetParentContext(context, BS_ReachParser.RULE_call) as BS_ReachParser.CallContext;
+            var grandparent = GetParentContext(context, BS_ReachParser.RULE_call);
 
             // "set" and (In)Equality functions are special
-            if (grandparent != null)
+            if (grandparent is BS_ReachParser.CallContext call)
             {
-                string funcName = grandparent.funcID().GetText();
+                string funcName = call.funcID().GetText();
                 List<ScriptFunctionInfo> funcInfo = _opcodes.GetFunctionInfo(funcName);
 
                 if (funcInfo != null)
@@ -752,11 +843,7 @@ namespace Blamite.Blam.Scripting.Compiler
                         break;
 
                     case "Cond":
-                        for (int i = 0; i < (contextParameterCount / 2); i++)
-                        {
-                            PushTypes("boolean", "ANY");
-                        }
-                        break;
+                        throw new CompilerException("A cond call was not regognized by the parser.", context);
 
                     case "Set":
                             PushTypes("GLOBALREFERENCE");

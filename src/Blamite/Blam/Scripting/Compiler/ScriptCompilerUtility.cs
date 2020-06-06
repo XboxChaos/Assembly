@@ -245,6 +245,22 @@ namespace Blamite.Blam.Scripting.Compiler
             _expressions.Add(expression);
         }
 
+        private void OpenDatum()
+        {
+            int openIndex = _expressions.Count;
+            _openDatums.Push(openIndex);
+        }
+
+        private void OpenDatum(int index)
+        {
+            _openDatums.Push(index);
+        }
+
+        private void AddExpression(ScriptExpression expression)
+        {
+            _expressions.Add(expression);
+        }
+
         /// <summary>
         /// Calculates the salt value of an index and returns it.
         /// </summary>
