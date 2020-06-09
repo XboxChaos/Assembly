@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Blamite.Blam.Scripting
 {
-    public class GlobalInfo
+    public class GlobalInfo : IScriptingConstantInfo
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="GlobalInfo" /> class.
@@ -18,7 +18,18 @@ namespace Blamite.Blam.Scripting
             Name = name;
             ReturnType = returnType;
             Opcode = opcode;
-            MaskedOpcode = (ushort)(opcode | 0x8000);
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="GlobalInfo" /> class. Used for map globals.
+        /// </summary>
+        /// <param name="context">The parser rule context of the global.</param>
+        /// <param name="index">The index of the map global.</param>
+        public GlobalInfo(BS_ReachParser.GloDeclContext context, ushort index)
+        {
+            Name = context.ID().GetText();
+            ReturnType = context.VALUETYPE().GetText();
+            Opcode = index;
         }
 
         /// <summary>
@@ -43,6 +54,6 @@ namespace Blamite.Blam.Scripting
         ///     Gets the masked opcode of the global.
         /// </summary>
         /// <value>The opcode of the function.</value>
-        public ushort MaskedOpcode { get; private set; }
+        public ushort MaskedOpcode { get => (ushort)(Opcode | 0x8000); }
     }
 }

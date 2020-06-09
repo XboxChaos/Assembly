@@ -22,7 +22,7 @@ namespace Blamite.Blam.Scripting.Compiler
             if (infos.Count > 1)
                 result = infos.Find(i => i.ParameterTypes.Count() == parameterCount);
             else
-                result = infos.First();
+                result = infos[0];
 
             return result;
         }

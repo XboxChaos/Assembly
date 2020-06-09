@@ -16,8 +16,8 @@ namespace Blamite.Blam.Scripting.Compiler
         private OpcodeLookup _opcodes;
         private ScriptContext _scriptContext;
         private Dictionary<string, UnitSeatMapping> _seatMappings;
-        private List<ScriptDeclInfo> _scriptLookup = new List<ScriptDeclInfo>();
-        private List<GlobalDeclInfo> _globalLookup = new List<GlobalDeclInfo>();
+        private List<ScriptInfo> _scriptLookup = new List<ScriptInfo>();
+        private Dictionary<string, GlobalInfo> _mapGlobalsLookup = new Dictionary<string, GlobalInfo>();
         private List<ParameterInfo> _variables = new List<ParameterInfo>();
 
         // script tables
@@ -40,8 +40,6 @@ namespace Blamite.Blam.Scripting.Compiler
         // cond
         private string _condType;
         private Stack<int> _condIndeces = new Stack<int>();
-
-
 
         // equality
         private bool _equality = false;
@@ -85,10 +83,10 @@ namespace Blamite.Blam.Scripting.Compiler
         public override void EnterHsc(BS_ReachParser.HscContext context)
         {
             if (context.gloDecl() != null)
-                _globalLookup = context.gloDecl().Select(g => new GlobalDeclInfo(g)).ToList();
+                _mapGlobalsLookup = context.gloDecl().Select((g, index) => new GlobalInfo(g, (ushort)index)).ToDictionary(g => g.Name);
 
             if (context.scriDecl() != null)
-                _scriptLookup = context.scriDecl().Select(s => new ScriptDeclInfo(s)).ToList();
+                _scriptLookup = context.scriDecl().Select(s => new ScriptInfo(s)).ToList();
 
             _declarationCount = context.scriDecl().Count() + context.gloDecl().Count();
         }
@@ -122,23 +120,33 @@ namespace Blamite.Blam.Scripting.Compiler
             Script scr = ScriptFromContext(context);
             _scripts.Add(scr);
 
-            var retType = context.retType().GetText();
-            var exp_count = context.gloRef().Count() + context.call().Count() + context.branch().Count() + context.cond().Count();
+            string retType = context.retType().GetText();
+            int expCount = context.gloRef().Count() + context.call().Count() + context.branch().Count() + context.cond().Count();
 
-            // if the function has a return type, the last call or global reference must match it.
-            if (retType == "void")
-            {
-                PushTypes("ANY");
-            }
-            else
-            {
-                PushTypes(retType);
-            }
-            // push the remaining parameters
-            for (int i = 0; i < exp_count - 1; i++)
-                PushTypes("ANY");
+            //// if the function has a return type, the last call or global reference must match it.
+            //if (retType == "void")
+            //{
+            //    PushTypes("ANY");
+            //}
+            //else
+            //{
+            //    PushTypes(retType);
+            //}
+            //// push the remaining parameters
+            //for (int i = 0; i < exp_count - 1; i++)
+            //    PushTypes("ANY");
 
             // Create Begin FunctionCall entry
+
+
+            // The final expression must match the return type of this script.
+            PushTypes(retType);
+            // The other expressions can be of any type.
+            if(expCount > 1)
+            {
+                PushTypes("ANY", expCount -1);
+            }
+
             CreateInitialBegin(_opcodes.GetTypeInfo(retType).Opcode);
         }
 
@@ -222,65 +230,65 @@ namespace Blamite.Blam.Scripting.Compiler
             string expectedType = PopType();
             int contextParamCount = context.expr().Count();
 
-            // handle script references
+            // handle script references.
             if (IsScriptReference(context, expectedType, contextParamCount))
             {
                 return;
             }
 
-            // handle calls
+            // handle calls.
             ScriptFunctionInfo info = RetrieveFunctionInfo(name, contextParamCount, context.Start.Line);
 
             // equality
             EqualityPush(info.ReturnType);
             PushCallParameters(info, context, contextParamCount, expectedType);
 
-            ushort returnType;
+            ushort returnType = GetTypeOpCode(info, expectedType, context);
 
-            // Calculate return type
-            if(info.ReturnType == expectedType) // default case - matching types
-            {
-                returnType = _opcodes.GetTypeInfo(expectedType).Opcode;
-            }
-            else if(expectedType == "ANY")  // ANY
-            {
-                if(info.ReturnType == "passthrough" || info.Group == "SleepUntil")    // convert passthrough and sleep_until to void if the compiler doesn't expect any particular return type
-                {
-                    returnType = _opcodes.GetTypeInfo("void").Opcode;
-                }
-                else
-                {
-                    returnType = _opcodes.GetTypeInfo(info.ReturnType).Opcode;
-                }
-            }
-            else if(expectedType == "void")
-            {
-                returnType = _opcodes.GetTypeInfo("void").Opcode;
-            }
-            else if(expectedType == "NUMBER" && Casting.IsNumType(info.ReturnType))     // NUMBER
-            {
-                returnType = _opcodes.GetTypeInfo(info.ReturnType).Opcode;
-            }
-            else if(info.ReturnType == "passthrough")   // passthrough
-            {
-                returnType = _opcodes.GetTypeInfo(expectedType).Opcode;
-            }
-            else if (Casting.CanBeCasted(info.ReturnType, expectedType, expectedType ,_opcodes))     // casting
-            {
-                if (expectedType == "object_list")   // special cases
-                {
-                    returnType = _opcodes.GetTypeInfo("object_list").Opcode;
-                }
-                else
-                {
-                    returnType = _opcodes.GetTypeInfo(expectedType).Opcode;
-                }
-            }
-            else
-            {
-                throw new CompilerException($"The compiler expected a function with the return type \"{expectedType}\" while processing \"{name}\"." +
-                    $" It encountered \"{info.ReturnType}\".",context);
-            }
+            //// Calculate return type
+            //if(info.ReturnType == expectedType) // default case - matching types
+            //{
+            //    returnType = _opcodes.GetTypeInfo(expectedType).Opcode;
+            //}
+            //else if(expectedType == "ANY")  // ANY
+            //{
+            //    if(info.ReturnType == "passthrough" || info.Group == "SleepUntil")    // convert passthrough and sleep_until to void if the compiler doesn't expect any particular return type
+            //    {
+            //        returnType = _opcodes.GetTypeInfo("void").Opcode;
+            //    }
+            //    else
+            //    {
+            //        returnType = _opcodes.GetTypeInfo(info.ReturnType).Opcode;
+            //    }
+            //}
+            //else if(expectedType == "void")
+            //{
+            //    returnType = _opcodes.GetTypeInfo("void").Opcode;
+            //}
+            //else if(expectedType == "NUMBER" && Casting.IsNumType(info.ReturnType))     // NUMBER
+            //{
+            //    returnType = _opcodes.GetTypeInfo(info.ReturnType).Opcode;
+            //}
+            //else if(info.ReturnType == "passthrough")   // passthrough
+            //{
+            //    returnType = _opcodes.GetTypeInfo(expectedType).Opcode;
+            //}
+            //else if (Casting.CanBeCasted(info.ReturnType, expectedType, expectedType ,_opcodes))     // casting
+            //{
+            //    if (expectedType == "object_list")   // special cases
+            //    {
+            //        returnType = _opcodes.GetTypeInfo("object_list").Opcode;
+            //    }
+            //    else
+            //    {
+            //        returnType = _opcodes.GetTypeInfo(expectedType).Opcode;
+            //    }
+            //}
+            //else
+            //{
+            //    throw new CompilerException($"The compiler expected a function with the return type \"{expectedType}\" while processing \"{name}\"." +
+            //        $" It encountered \"{info.ReturnType}\".",context);
+            //}
 
             CreateFunctionCall(returnType, info, (short)context.Start.Line);
         }
@@ -354,7 +362,7 @@ namespace Blamite.Blam.Scripting.Compiler
             int genScriptIndex = _scriptLookup.Count;
             _expressions[_expressions.Count - 2].Opcode = (ushort)genScriptIndex;
             // add the generated script to the lookup
-            ScriptDeclInfo decl = new ScriptDeclInfo(genName, "static", "void");
+            ScriptInfo decl = new ScriptInfo(genName, "static", "void");
             _scriptLookup.Add(decl);
 
             _genBranches.Add(genName, expressions);
@@ -479,9 +487,9 @@ namespace Blamite.Blam.Scripting.Compiler
 
             string retType = PopType();
 
-            if (!IsGlobalReference(context, retType, (short)context.Start.Line))
+            if (!IsGlobalReference(context, retType))
             {
-
+                throw new CompilerException("The parser detected a Globals Reference, but the expression doesn't seem to be one.", context);
             }
         }
 
@@ -504,8 +512,8 @@ namespace Blamite.Blam.Scripting.Compiler
             // handle "none" expressions
             if(txt == "none")
             {                
-                UInt16 opc = _opcodes.GetTypeInfo(valType).Opcode;
-                UInt32 value = 0xFFFFFFFF;
+                ushort opc = _opcodes.GetTypeInfo(valType).Opcode;
+                uint value = 0xFFFFFFFF;
                 var exp = new ScriptExpression(_currentIndex, opc, opc, ScriptExpressionType.Expression,
                     _strings.Cache(txt), value, (short)context.Start.Line);
 
@@ -519,7 +527,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 return;
 
             // handle global references
-            if (IsGlobalReference(context, valType, (short)context.Start.Line))
+            if (IsGlobalReference(context, valType))
                 return;
             
             // handle regular expressions
@@ -529,71 +537,51 @@ namespace Blamite.Blam.Scripting.Compiler
             throw new CompilerException($"Failed to process \"{txt}\".", context);
         }
 
-        //TODO: implement casting?
-        private bool IsGlobalReference(RuleContext context, string expReturnType, short line)
+        private bool IsGlobalReference(ParserRuleContext context, string expReturnType)
         {
             string text = context.GetText();
+            GlobalInfo globalInfo = _opcodes.GetGlobalInfo(text);
+            object value;
 
-            // check if this literal is an engine global
-            GlobalInfo engineGlobal = _opcodes.GetGlobalInfo(text);
-            if (engineGlobal != null)
+            // engine global.
+            if(globalInfo != null)
             {
-                ushort retType = _opcodes.GetTypeInfo(engineGlobal.ReturnType).Opcode;
-                ushort opc = GetGlobalOpCode(context, engineGlobal.ReturnType);
+                ushort[] arr = { 0xFFFF, globalInfo.MaskedOpcode };
+                value = arr;
 
-                ushort[] val = new ushort[2];
-                val[0] = 0xFFFF;
-                val[1] = engineGlobal.MaskedOpcode;
-
-                var exp = new ScriptExpression(_currentIndex, opc, retType, ScriptExpressionType.GlobalsReference, _strings.Cache(text), val, line);
-                _currentIndex.Increment();
-                OpenDatumAndAdd(exp);
-                return true;
+            }
+            // map global.
+            else if(_mapGlobalsLookup.ContainsKey(text))
+            {
+                globalInfo = _mapGlobalsLookup[text];
+                value = (uint)globalInfo.Opcode;
+            }
+            // not a global...
+            else if (expReturnType == "GLOBALREFERENCE")
+            {
+                throw new CompilerException($"GLOBALREFERENCE: No matching global could be found.", context);
             }
             else
             {
-                int index = _globalLookup.FindIndex(glo => glo.Name == text);
-
-                // not found
-                if (index == -1)
-                {
-                    if (expReturnType == "GLOBALREFERENCE")
-                        throw new ArgumentException($"GLOBALREFERENCE: No matching global could be found. Name: \"{text}\". Line: {line}");
-                    else
-                        return false;
-                }
-                else
-                {
-                    string retType;
-
-                    // calculate return type
-                    if(Casting.IsFlexType(expReturnType) || expReturnType == _globalLookup[index].ValueType)    // default case
-                    {
-                        retType = _globalLookup[index].ValueType;
-                    }
-                    else if (Casting.CanBeCasted(_globalLookup[index].ValueType, expReturnType, expReturnType, _opcodes))        // casting
-                    {
-                        retType = expReturnType;
-                    }
-                    else
-                    {
-                        throw new CompilerException($"The global \"{text}\" can't be casted from \"{_globalLookup[index]}\" to \"{expReturnType}\".", context.GetText(), (int)line);
-                    }
-
-                    ushort opc = GetGlobalOpCode(context, retType);
-                    var exp = new ScriptExpression(_currentIndex, opc, _opcodes.GetTypeInfo(retType).Opcode, ScriptExpressionType.GlobalsReference, 
-                        _strings.Cache(text), (uint)index, line);
-                    _currentIndex.Increment();
-                    OpenDatumAndAdd(exp);
-                    return true;
-                }
+                return false;
             }
+
+            ushort typeOp = GetTypeOpCode(globalInfo, expReturnType, context);
+            ushort opc = GetGlobalOpCode(typeOp, context);
+
+            ScriptExpression exp = new ScriptExpression(_currentIndex, opc, typeOp, ScriptExpressionType.GlobalsReference,
+                _strings.Cache(text), value, (short)context.Start.Line);
+
+            _currentIndex.Increment();
+            OpenDatumAndAdd(exp);
+
+            return true;
         }
 
-        private ushort GetGlobalOpCode(RuleContext context, string retType)
+        private ushort GetGlobalOpCode(ushort retTypeOpCode, RuleContext context)
         {
-            ushort opcode = _opcodes.GetTypeInfo(retType).Opcode;
             var grandparent = GetParentContext(context, BS_ReachParser.RULE_call);
+            ushort opcode = retTypeOpCode;
 
             // "set" and (In)Equality functions are special
             if (grandparent is BS_ReachParser.CallContext call)
@@ -616,20 +604,45 @@ namespace Blamite.Blam.Scripting.Compiler
                         {
                             _logger.WriteLine("SET", $"Set Push!");
                         }
-
-                        PushTypes(retType); // the next parameter must have the same return type as this global
+                        // the next parameter must have the same return type as this global
+                        PushTypes(_opcodes.GetTypeInfo(retTypeOpCode).Name);
                         _set = false;
                     }
                 }
             }
 
             // equality
-            EqualityPush(retType);
+            EqualityPush(_opcodes.GetTypeInfo(retTypeOpCode).Name);
 
             return opcode;
         }
 
-        private bool IsScriptReference(BS_ReachParser.CallContext context, string expectedReturnType, Int32 expectedParamCount)
+        private ushort GetTypeOpCode(IScriptingConstantInfo info, string expectedType, ParserRuleContext context)
+        {
+            string calculatedType = expectedType switch
+            {
+                "ANY" when info.ReturnType == "passthrough" => "void",
+                "ANY" => info.ReturnType,
+                "NUMBER" when Casting.IsNumType(info.ReturnType) => info.ReturnType,
+                "NUMBER" when !Casting.IsNumType(info.ReturnType) => "",
+                "void" => "void",
+                "GLOBALREFERENCE" => info.ReturnType,
+                _ when expectedType == info.ReturnType => expectedType,
+                _ when info.ReturnType == "passthrough" => expectedType,
+                _ when Casting.CanBeCasted(info.ReturnType, expectedType, expectedType, _opcodes) => expectedType,
+                _ => ""
+            };
+
+            if (calculatedType == "")
+            {
+                throw new CompilerException($"The compiler failed to calculate the return type of an expression. It expected the return type \"{expectedType}\" while processing \"{info.Name}\"." +
+                    $" It encountered the return type \"{info.ReturnType}\".", context);
+            }
+
+            return _opcodes.GetTypeInfo(calculatedType).Opcode;
+        }
+
+        private bool IsScriptReference(BS_ReachParser.CallContext context, string expectedReturnType, int expectedParamCount)
         {
             string name = context.funcID().GetText();
 
@@ -649,7 +662,7 @@ namespace Blamite.Blam.Scripting.Compiler
             if (op == -1)
                 return false;
 
-            ScriptDeclInfo info = _scriptLookup[op];
+            ScriptInfo info = _scriptLookup[op];
             string retType;
 
             // check if the script satisfies the return type requirement
@@ -793,17 +806,6 @@ namespace Blamite.Blam.Scripting.Compiler
             return scr;
         }
 
-        //private void AddFunctionName(string name, ushort opCode, short lineNumber)
-        //{
-        //    // create function_name node
-        //    Expression32 funcName = new Expression32(_currentIndex, opCode, _opcodes.GetTypeInfo("function_name").Opcode, _strings.Cache(name), lineNumber);
-        //    funcName.Value = 0;
-
-        //    _currentIndex.Increment();
-        //    //open next expression Datum
-        //    OpenDatumAndAdd(funcName);
-        //}
-
         /// <summary>
         /// Calculates the value types for the parameters of a function and pushes them to the stack.
         /// </summary>
@@ -828,8 +830,14 @@ namespace Blamite.Blam.Scripting.Compiler
                 switch (info.Group)
                 {
                     case "Begin":
-                        PushTypes(expectedReturnType);  // the last evaluated expression
-                        PushTypes("ANY", contextParameterCount -1);
+                        // the last evaluated expression.
+                        PushTypes(expectedReturnType);
+
+                        if (info.Name.Contains("random"))
+                            PushTypes(expectedReturnType, contextParameterCount - 1);
+                        else
+                            PushTypes("ANY", contextParameterCount - 1);
+
                         break;
 
                     case "BeginCount":
@@ -838,7 +846,8 @@ namespace Blamite.Blam.Scripting.Compiler
                         break;
 
                     case "If":
-                        PushTypes("ANY", contextParameterCount - 1);
+                        //PushTypes("ANY", contextParameterCount - 1);
+                        PushTypes(expectedReturnType, contextParameterCount - 1);
                         PushTypes("boolean");
                         break;
 

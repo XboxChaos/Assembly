@@ -5,15 +5,15 @@ using System.Text;
 
 namespace Blamite.Blam.Scripting.Compiler
 {
-    public class GlobalDeclInfo
+    public class GlobalDeclarationInfo
     {
         public string Name { get; private set; }
-        public string ValueType { get; private set; }
+        public string ReturnType { get; private set; }
 
-        public GlobalDeclInfo(BS_ReachParser.GloDeclContext context)
+        public GlobalDeclarationInfo(BS_ReachParser.GloDeclContext context)
         {
             Name = context.ID().GetText();
-            ValueType = context.VALUETYPE().GetText();
+            ReturnType = context.VALUETYPE().GetText();
         }
     }
 }

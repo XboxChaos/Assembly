@@ -3,7 +3,7 @@
 	/// <summary>
 	///     Contains information about a built-in scripting function.
 	/// </summary>
-	public class ScriptFunctionInfo
+	public class ScriptFunctionInfo : IScriptingConstantInfo
 	{
 		/// <summary>
 		///     Initializes a new instance of the <see cref="ScriptFunctionInfo" /> class.
