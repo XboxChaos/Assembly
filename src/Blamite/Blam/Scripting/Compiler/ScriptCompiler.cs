@@ -115,7 +115,6 @@ namespace Blamite.Blam.Scripting.Compiler
             if(PrintDebugInfo)
                _logger.WriteLine("SCRIPT", $"Enter: {context.scriptID().GetText()} ,  Line: {context.Start.Line}");
 
-
             // create new script object and add it to the table
             Script scr = ScriptFromContext(context);
             _scripts.Add(scr);
@@ -123,29 +122,14 @@ namespace Blamite.Blam.Scripting.Compiler
             string retType = context.retType().GetText();
             int expCount = context.gloRef().Count() + context.call().Count() + context.branch().Count() + context.cond().Count();
 
-            //// if the function has a return type, the last call or global reference must match it.
-            //if (retType == "void")
-            //{
-            //    PushTypes("ANY");
-            //}
-            //else
-            //{
-            //    PushTypes(retType);
-            //}
-            //// push the remaining parameters
-            //for (int i = 0; i < exp_count - 1; i++)
-            //    PushTypes("ANY");
-
-            // Create Begin FunctionCall entry
-
-
             // The final expression must match the return type of this script.
             PushTypes(retType);
             // The other expressions can be of any type.
-            if(expCount > 1)
+            if (expCount > 1)
             {
-                PushTypes("ANY", expCount -1);
+                PushTypes("void", expCount - 1);
             }
+            //PushTypes(retType, expCount);
 
             CreateInitialBegin(_opcodes.GetTypeInfo(retType).Opcode);
         }
@@ -244,51 +228,6 @@ namespace Blamite.Blam.Scripting.Compiler
             PushCallParameters(info, context, contextParamCount, expectedType);
 
             ushort returnType = GetTypeOpCode(info, expectedType, context);
-
-            //// Calculate return type
-            //if(info.ReturnType == expectedType) // default case - matching types
-            //{
-            //    returnType = _opcodes.GetTypeInfo(expectedType).Opcode;
-            //}
-            //else if(expectedType == "ANY")  // ANY
-            //{
-            //    if(info.ReturnType == "passthrough" || info.Group == "SleepUntil")    // convert passthrough and sleep_until to void if the compiler doesn't expect any particular return type
-            //    {
-            //        returnType = _opcodes.GetTypeInfo("void").Opcode;
-            //    }
-            //    else
-            //    {
-            //        returnType = _opcodes.GetTypeInfo(info.ReturnType).Opcode;
-            //    }
-            //}
-            //else if(expectedType == "void")
-            //{
-            //    returnType = _opcodes.GetTypeInfo("void").Opcode;
-            //}
-            //else if(expectedType == "NUMBER" && Casting.IsNumType(info.ReturnType))     // NUMBER
-            //{
-            //    returnType = _opcodes.GetTypeInfo(info.ReturnType).Opcode;
-            //}
-            //else if(info.ReturnType == "passthrough")   // passthrough
-            //{
-            //    returnType = _opcodes.GetTypeInfo(expectedType).Opcode;
-            //}
-            //else if (Casting.CanBeCasted(info.ReturnType, expectedType, expectedType ,_opcodes))     // casting
-            //{
-            //    if (expectedType == "object_list")   // special cases
-            //    {
-            //        returnType = _opcodes.GetTypeInfo("object_list").Opcode;
-            //    }
-            //    else
-            //    {
-            //        returnType = _opcodes.GetTypeInfo(expectedType).Opcode;
-            //    }
-            //}
-            //else
-            //{
-            //    throw new CompilerException($"The compiler expected a function with the return type \"{expectedType}\" while processing \"{name}\"." +
-            //        $" It encountered \"{info.ReturnType}\".",context);
-            //}
 
             CreateFunctionCall(returnType, info, (short)context.Start.Line);
         }
@@ -623,6 +562,8 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 "ANY" when info.ReturnType == "passthrough" => "void",
                 "ANY" => info.ReturnType,
+                // cast globals in arithmetic functions to real.
+                "NUMBER" when info is GlobalInfo && Casting.IsNumType(info.ReturnType) => "real",
                 "NUMBER" when Casting.IsNumType(info.ReturnType) => info.ReturnType,
                 "NUMBER" when !Casting.IsNumType(info.ReturnType) => "",
                 "void" => "void",
@@ -832,12 +773,10 @@ namespace Blamite.Blam.Scripting.Compiler
                     case "Begin":
                         // the last evaluated expression.
                         PushTypes(expectedReturnType);
-
                         if (info.Name.Contains("random"))
                             PushTypes(expectedReturnType, contextParameterCount - 1);
                         else
-                            PushTypes("ANY", contextParameterCount - 1);
-
+                            PushTypes("void", contextParameterCount - 1);
                         break;
 
                     case "BeginCount":
@@ -846,8 +785,14 @@ namespace Blamite.Blam.Scripting.Compiler
                         break;
 
                     case "If":
-                        //PushTypes("ANY", contextParameterCount - 1);
-                        PushTypes(expectedReturnType, contextParameterCount - 1);
+                        if(expectedReturnType == "ANY")
+                        {
+                            PushTypes("void", contextParameterCount - 1);
+                        }
+                        else
+                        {
+                            PushTypes(expectedReturnType, contextParameterCount - 1);
+                        }
                         PushTypes("boolean");
                         break;
 
@@ -864,7 +809,8 @@ namespace Blamite.Blam.Scripting.Compiler
                         break;
 
                     case "Arithmetic":
-                        PushTypes("NUMBER", contextParameterCount);
+                        //PushTypes("NUMBER", contextParameterCount);
+                        PushTypes("real", contextParameterCount);
                         break;
 
                     case "Equality":
@@ -887,7 +833,7 @@ namespace Blamite.Blam.Scripting.Compiler
                     case "SleepUntil":
                         if (contextParameterCount == 3)
                         {
-                            PushTypes("short", "NUMBER");
+                            PushTypes("short", "long");
                         }
                         else if(contextParameterCount == 2)
                         {
@@ -936,10 +882,9 @@ namespace Blamite.Blam.Scripting.Compiler
 
                     default:
                         throw new CompilerException($"Unimplemented function group: {info.Group}", context);
-                    #endregion
-
                 }
             }
+            #endregion
         }
 
         private void GenerateBranches()
