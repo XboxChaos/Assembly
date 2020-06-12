@@ -158,7 +158,7 @@ namespace Blamite.Serialization
 		{
 			HeaderSize = Settings.GetSetting<int>("engineInfo/headerSize");
 			SegmentAlignment = Settings.GetSettingOrDefault("engineInfo/segmentAlignment", 0x1000);
-			ExpandMagic = Settings.GetSettingOrDefault("engineInfo/expandMagic", 0);
+			ExpandMagic = Settings.GetSettingOrDefault("engineInfo/expandMagic", -1);
 
 			UsesCompression = Settings.GetSettingOrDefault("engineInfo/usesCompression", false);
 			UsesHashes = Settings.GetSettingOrDefault("engineInfo/usesHashes", true);

@@ -30,15 +30,22 @@ namespace Blamite.RTE.SecondGen
 			if (gameProcess == null)
 				return null;
 
-			long pointer = RetrievePointer(gameProcess);
+			PokingInformation info = RetrieveInformation(gameProcess);
+
+			if (!info.HeaderAddress.HasValue)
+				throw new NotImplementedException("Second Generation poking requires a HeaderAddress value.");
+			if (!info.MagicAddress.HasValue)
+				throw new NotImplementedException("Second Generation poking requires a MagicAddress value.");
+			if (!info.SharedMagicAddress.HasValue)
+				throw new NotImplementedException("Second Generation poking requires a SharedMagicAddress value.");
 
 			var gameMemory = new ProcessModuleMemoryStream(gameProcess, _buildInfo.GameModule);
-			var mapInfo = new MapPointerReader(gameMemory, _buildInfo, pointer);
+			var mapInfo = new SecondGenMapPointerReader(gameMemory, _buildInfo, info);
 
 			long metaAddress;
 			if (cacheFile.Type != CacheFileType.Shared)
 			{
-				metaAddress = mapInfo.CurrentMetaAddress;
+				metaAddress = mapInfo.CurrentCacheAddress;
 
 				// The map isn't shared, so make sure the map names match
 				if (mapInfo.MapName != cacheFile.InternalName)
@@ -49,11 +56,11 @@ namespace Blamite.RTE.SecondGen
 			}
 			else
 			{
-				metaAddress = mapInfo.SharedMetaAddress;
+				metaAddress = mapInfo.SharedCacheAddress;
 
 				// Make sure the shared and current map pointers are different,
 				// or that the current map is the shared map
-				if (mapInfo.MapType != CacheFileType.Shared && mapInfo.CurrentMetaAddress == mapInfo.SharedMetaAddress)
+				if (mapInfo.MapType != CacheFileType.Shared && mapInfo.CurrentCacheAddress == mapInfo.SharedCacheAddress)
 				{
 					gameMemory.Close();
 					return null;
@@ -63,6 +70,5 @@ namespace Blamite.RTE.SecondGen
 			var metaStream = new OffsetStream(gameMemory, metaAddress - cacheFile.MetaArea.BasePointer);
 			return new EndianStream(metaStream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
 		}
-
 	}
 }

@@ -59,7 +59,7 @@ namespace Blamite.Util
 		/// <returns>The attribute's value, or the default value if the attribute was not found.</returns>
 		/// <exception cref="FormatException">Thrown if the attribute does not represent an integer.</exception>
 		/// <seealso cref="ParseNumber" />
-		public static long GetNumericAttribute(XElement element, string name, int defaultValue)
+		public static long GetNumericAttribute(XElement element, string name, long defaultValue)
 		{
 			XAttribute attribute = element.Attribute(name);
 			if (attribute == null)

@@ -204,10 +204,12 @@
     <Compile Include="Extensions\BitArrayExtensions.cs" />
     <Compile Include="IO\IPointerExpander.cs" />
     <Compile Include="Native\ProcessModuleMemoryStream.cs" />
+    <Compile Include="RTE\MapPointerReader.cs" />
     <Compile Include="RTE\MCCRTEProvider.cs" />
-    <Compile Include="RTE\SecondGen\MapPointerReader.cs" />
+    <Compile Include="RTE\SecondGen\SecondGenMapPointerReader.cs" />
     <Compile Include="RTE\SecondGen\SecondGenMCCRTEProvider.cs" />
     <Compile Include="RTE\SecondGen\SecondGenRTEProvider.cs" />
+    <Compile Include="RTE\ThirdGen\ThirdGenMapPointerReader.cs" />
     <Compile Include="RTE\ThirdGen\ThirdGenMCCRTEProvider.cs" />
     <Compile Include="Serialization\PokingCollection.cs" />
     <Compile Include="Serialization\GroupNameCollection.cs" />
@@ -218,6 +220,7 @@
     <Compile Include="Serialization\MapInfo\XMLEngineDatabaseLoader.cs" />
     <Compile Include="Serialization\MapInfo\XMLMultiplayerObjectSetLoader.cs" />
     <Compile Include="Serialization\MapInfo\XMLMaxTeamSetLoader.cs" />
+    <Compile Include="Serialization\PokingInformation.cs" />
     <Compile Include="Serialization\Settings\XMLPokingLoader.cs" />
     <Compile Include="Serialization\Settings\XMLGroupNameLoader.cs" />
     <Compile Include="Serialization\Settings\XMLLocaleSymbolLoader.cs" />
@@ -433,6 +436,22 @@
     <Content Include="Formats\Halo3Beta\Layouts\H3B_Layouts_Scenario.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Formats\Halo3MCC\H3MCC_Poking.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo3MCC\H3MCC_StringIDs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo3MCC\H3MCC_LocaleSymbols.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo3MCC\Layouts\H3MCC_Layouts_Core.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo3MCC\Layouts\H3MCC_Layouts_Resources.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Formats\Halo3\H3_LocaleSymbols.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -623,6 +642,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

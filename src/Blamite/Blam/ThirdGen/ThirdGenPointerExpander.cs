@@ -8,14 +8,14 @@ namespace Blamite.Blam.ThirdGen
 {
 	public class ThirdGenPointerExpander : IPointerExpander
 	{
-		private uint _magic;
+		private int _magic;
 
-		public ThirdGenPointerExpander(uint magic)
+		public ThirdGenPointerExpander(int magic)
 		{
 			_magic = magic;
 		}
 
-		public bool IsValid { get { return _magic != 0; } }
+		public bool IsValid { get { return _magic != -1; } }
 
 		public long Expand(uint pointer)
 		{

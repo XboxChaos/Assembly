@@ -43,7 +43,7 @@ namespace Blamite.Blam.ThirdGen
 			_endianness = reader.Endianness;
 			_buildInfo = buildInfo;
 			_segmenter = new FileSegmenter(buildInfo.SegmentAlignment);
-			_expander = new ThirdGenPointerExpander((uint)buildInfo.ExpandMagic);
+			_expander = new ThirdGenPointerExpander(buildInfo.ExpandMagic);
 			Allocator = new MetaAllocator(this, 0x10000);
 			Load(reader, buildString);
 		}

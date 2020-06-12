@@ -48,17 +48,27 @@ namespace Blamite.RTE.SecondGen
 				return null;
 
 			string version = gameProcess.MainModule.FileVersionInfo.FileVersion;
-			long pointer = _buildInfo.Poking.RetrievePointer(version);
-			if (pointer == -1)
-				throw new InvalidOperationException("Game version " + version + " does not have a pointer defined in the Formats folder.");
+
+			PokingInformation info = _buildInfo.Poking.RetrieveInformation(version);
+			if (info == null)
+				throw new InvalidOperationException("Game version " + version + " does not have poking information defined in the Formats folder.");
+
+			if (!info.HeaderAddress.HasValue)
+				throw new NotImplementedException("Second Generation poking requires a HeaderAddress value.");
+			if (!info.MagicAddress.HasValue)
+				throw new NotImplementedException("Second Generation poking requires a MagicAddress value.");
+			if (!info.SharedMagicAddress.HasValue)
+				throw new NotImplementedException("Second Generation poking requires a SharedMagicAddress value.");
+
+			long pointer = info.HeaderPointer.Value;
 
 			var gameMemory = new ProcessMemoryStream(gameProcess);
-			var mapInfo = new MapPointerReader(gameMemory, _buildInfo, pointer);
+			var mapInfo = new SecondGenMapPointerReader(gameMemory, _buildInfo, info);
 
 			long metaAddress;
 			if (cacheFile.Type != CacheFileType.Shared)
 			{
-				metaAddress = mapInfo.CurrentMetaAddress;
+				metaAddress = mapInfo.CurrentCacheAddress;
 
 				// The map isn't shared, so make sure the map names match
 				if (mapInfo.MapName != cacheFile.InternalName)
@@ -69,11 +79,11 @@ namespace Blamite.RTE.SecondGen
 			}
 			else
 			{
-				metaAddress = mapInfo.SharedMetaAddress;
+				metaAddress = mapInfo.SharedCacheAddress;
 
 				// Make sure the shared and current map pointers are different,
 				// or that the current map is the shared map
-				if (mapInfo.MapType != CacheFileType.Shared && mapInfo.CurrentMetaAddress == mapInfo.SharedMetaAddress)
+				if (mapInfo.MapType != CacheFileType.Shared && mapInfo.CurrentCacheAddress == mapInfo.SharedCacheAddress)
 				{
 					gameMemory.Close();
 					return null;

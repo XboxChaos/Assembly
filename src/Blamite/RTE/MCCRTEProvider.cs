@@ -9,9 +9,9 @@ namespace Blamite.RTE
 {
 	public abstract class MCCRTEProvider : IRTEProvider
 	{
-		internal readonly EngineDescription _buildInfo;
+		protected readonly EngineDescription _buildInfo;
 
-		internal MCCRTEProvider(EngineDescription engine)
+		protected MCCRTEProvider(EngineDescription engine)
 		{
 			_buildInfo = engine;
 		}
@@ -27,7 +27,7 @@ namespace Blamite.RTE
 
 		public abstract IStream GetMetaStream(ICacheFile cacheFile = null);
 
-		internal bool CheckBuildInfo()
+		protected bool CheckBuildInfo()
 		{
 			if (string.IsNullOrEmpty(_buildInfo.GameExecutable))
 				throw new InvalidOperationException("No gameExecutable value found in Engines.xml for engine " + _buildInfo.Name + ".");
@@ -39,38 +39,37 @@ namespace Blamite.RTE
 			return true;
 		}
 
-		internal long RetrievePointer(Process gameProcess)
+		protected PokingInformation RetrieveInformation(Process gameProcess)
 		{
 #if X86
 			throw new InvalidOperationException("Cannot access a 64bit process with a 32bit program.");
 #else
 			//verify version, and check for anticheat at the same time
 			string version = "";
-			long pointer = -1;
+			PokingInformation info = null;
 			try
 			{
 				version = gameProcess.MainModule.FileVersionInfo.FileVersion;
 
 				//TODO: make winstore support not horrible
 				if (version == null)
-					pointer = _buildInfo.Poking.RetrieveLastPointer();
+					info = _buildInfo.Poking.RetrieveLatestInfo();
 				else
-					pointer = _buildInfo.Poking.RetrievePointer(version);
+					info = _buildInfo.Poking.RetrieveInformation(version);
 
-				if (pointer == 0)
-					throw new InvalidOperationException("Game version " + version + " does not have a pointer defined in the Formats folder.");
+				if (info == null)
+					throw new InvalidOperationException("Game version " + version + " does not have poking information defined in the Formats folder.");
 			}
 			catch (System.ComponentModel.Win32Exception)
 			{
 				throw new InvalidOperationException("Cannot access game process. This could be due to Anti-Cheat or lack of admin privileges.");
 			}
 
-			return pointer;
+			return info;
 #endif
 		}
 
-
-		internal Process FindGameProcess()
+		protected Process FindGameProcess()
 		{
 			Process[] processes = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(_buildInfo.GameExecutable));
 
@@ -85,9 +84,6 @@ namespace Blamite.RTE
 			else
 				return null;
 		}
-
-		
-
 
 	}
 }
