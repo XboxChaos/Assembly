@@ -1003,6 +1003,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			injs.KeepSounds = (_cacheFile.HeaderSize == 0x1E000);
 			injs.UniqueShaders = (_cacheFile.HeaderSize > 0x3000 && _cacheFile.Endianness == Endian.BigEndian);
 
+			// H3 MCC currently doesnt store a checksum for uncompressed resources, so this must be unticked
+			injs.FindRaw = !(_cacheFile.HeaderSize == 0x3000 && _cacheFile.Endianness == Endian.LittleEndian);
+
 			injs.ShowDialog();
 
 			if (injs.DialogResult.HasValue && injs.DialogResult.Value)

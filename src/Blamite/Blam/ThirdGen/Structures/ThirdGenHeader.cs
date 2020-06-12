@@ -253,10 +253,11 @@ namespace Blamite.Blam.ThirdGen.Structures
 			segmenter.DefineSegment(0, HeaderSize, 1, SegmentResizeOrigin.Beginning); // Define a segment for the header
 			_eofSegment = segmenter.WrapEOF((int) values.GetInteger("file size"));
 
+			Type = (CacheFileType)values.GetInteger("type");
+
 			LoadInteropData(values);
 			RawTable = CalculateRawTableSegment(segmenter);
 
-			Type = (CacheFileType) values.GetInteger("type");
 			InternalName = values.GetString("internal name");
 			ScenarioName = values.GetString("scenario name");
 			XDKVersion = (int) values.GetInteger("xdk version");
@@ -284,6 +285,16 @@ namespace Blamite.Blam.ThirdGen.Structures
 			// TODO: fix this shit for the h3beta
 			SectionOffsetMasks = headerValues.GetArray("offset masks").Select(v => (uint)v.GetInteger("mask")).ToArray();
 			Sections = headerValues.GetArray("sections").Select(v => new ThirdGenInteropSection(v)).ToArray();
+
+			// H3 MCC currently doesn't store section data for campaign/shared, so it must be hacked together
+			if (_expander.IsValid && (Type == CacheFileType.Shared || Type == CacheFileType.SinglePlayerShared))
+			{
+				if (Sections[(int)ThirdGenInteropSectionType.Resource].Size == 0)
+				{
+					Sections[(int)ThirdGenInteropSectionType.Resource].VirtualAddress = (uint)HeaderSize;
+					Sections[(int)ThirdGenInteropSectionType.Resource].Size = (uint)FileSize - (uint)HeaderSize;
+				}
+			}
 
 			DebugPointerConverter = MakePointerConverter(ThirdGenInteropSectionType.Debug);
 			ResourcePointerConverter = MakePointerConverter(ThirdGenInteropSectionType.Resource);
