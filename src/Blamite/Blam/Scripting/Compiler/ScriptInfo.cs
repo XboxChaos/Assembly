@@ -5,19 +5,26 @@ using System.Text;
 
 namespace Blamite.Blam.Scripting.Compiler
 {
-    public class ScriptInfo
+    public class ScriptInfo : IScriptingConstantInfo
     {
         public string Name { get; private set; }
         public string ScriptType { get; private set; }
         public string ReturnType { get; private set; }
         public List<ParameterInfo> Parameters { get; private set; }
 
-        public ScriptInfo(BS_ReachParser.ScriDeclContext context)
+        /// <summary>
+        ///     Gets the opcode of the global.
+        /// </summary>
+        /// <value>The opcode of the function.</value>
+        public ushort Opcode { get; private set; }
+
+        public ScriptInfo(BS_ReachParser.ScriDeclContext context, ushort index)
         {
             Name = context.scriptID().GetText();
             ScriptType = context.SCRIPTTYPE().GetText();
             ReturnType = context.retType().GetText();
             Parameters = new List<ParameterInfo>();
+            Opcode = index;
 
             if (context.scriptParams() != null)
             {
@@ -37,12 +44,13 @@ namespace Blamite.Blam.Scripting.Compiler
             }                
         }
 
-        public ScriptInfo(string name, string scriptType, string returnType)
+        public ScriptInfo(string name, string scriptType, string returnType, ushort index)
         {
             Name = name;
             ScriptType = scriptType;
             ReturnType = returnType;
             Parameters = new List<ParameterInfo>();
+            Opcode = index;
         }
     }
 }

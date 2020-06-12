@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using System.Xml;
@@ -12,15 +13,15 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private ScriptFunctionInfo RetrieveFunctionInfo(string function, int parameterCount, int line)
         {
-            var infos = _opcodes.GetFunctionInfo(function);
+            List<ScriptFunctionInfo> infos = _opcodes.GetFunctionInfo(function);
             if (infos == null)
                 throw new CompilerException($"The opcode for function \"{function}\" with parameter count \"{parameterCount}\" couldn't be retrieved. Please ensure that this is a valid function name."
                                         +"\nAlternatively, a script declaration could be missing in your .hsc file." , function, line);
 
             ScriptFunctionInfo result;
-            // overloaded functions exist. select the right one based on its parameter count
+            // overloaded functions exist. select the right one based on its parameter count and whether the function is implemented or not.
             if (infos.Count > 1)
-                result = infos.Find(i => i.ParameterTypes.Count() == parameterCount);
+                result = infos.Find(i => !i.Implemented && i.ParameterTypes.Count() == parameterCount);
             else
                 result = infos[0];
 

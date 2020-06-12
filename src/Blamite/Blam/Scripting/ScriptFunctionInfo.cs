@@ -13,7 +13,7 @@
 		/// <param name="returnType">The return type of the function.</param>
 		/// <param name="flags">The flags for the function.</param>
 		/// <param name="parameterTypes">The parameter types for the function.</param>
-		public ScriptFunctionInfo(string name, ushort opcode, string returnType, uint flags, string group, string[] parameterTypes)
+		public ScriptFunctionInfo(string name, ushort opcode, string returnType, uint flags, string group, string[] parameterTypes, bool isNull)
 		{
 			Name = name;
 			ReturnType = returnType;
@@ -21,6 +21,7 @@
 			Flags = flags;
             Group = group;
 			ParameterTypes = parameterTypes;
+			Implemented = isNull;
 		}
 
 		/// <summary>
@@ -58,5 +59,10 @@
 		/// </summary>
 		/// <value>The parameter types for the function.</value>
 		public string[] ParameterTypes { get; private set; }
+
+		/// <summary>
+		///		Is true if the function exists in this game version and is implemented.
+		/// </summary>
+		public bool Implemented { get; private set; }
 	}
 }

@@ -74,9 +74,10 @@ namespace Blamite.Serialization.Settings
 				string returnType = XMLUtil.GetStringAttribute(element, "returnType", "void");
 				var flags = (uint) XMLUtil.GetNumericAttribute(element, "flags", 0);
                 string group = XMLUtil.GetStringAttribute(element, "group", null);
+				bool isNull = XMLUtil.GetBoolAttribute(element, "null", false);
 				string[] parameterTypes = element.Descendants("arg").Select(e => XMLUtil.GetStringAttribute(e, "type")).ToArray();
 
-				var info = new ScriptFunctionInfo(name, opcode, returnType, flags, group, parameterTypes);
+				var info = new ScriptFunctionInfo(name, opcode, returnType, flags, group, parameterTypes, isNull);
 				lookup.RegisterFunction(info);
 			}
 		}

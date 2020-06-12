@@ -393,7 +393,7 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 case "script":
                 case "ai_command_script":
-                    val = _scriptLookup.FindIndex(s => s.Name == name);
+                    val = _scriptLookup.Values.First(i => i.Name == name).Opcode;
                     break;
 
                 case "trigger_volume":

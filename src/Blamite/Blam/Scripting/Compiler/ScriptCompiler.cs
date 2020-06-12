@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using System.Diagnostics;
 
 namespace Blamite.Blam.Scripting.Compiler
 {
@@ -16,7 +17,7 @@ namespace Blamite.Blam.Scripting.Compiler
         private OpcodeLookup _opcodes;
         private ScriptContext _scriptContext;
         private Dictionary<string, UnitSeatMapping> _seatMappings;
-        private List<ScriptInfo> _scriptLookup = new List<ScriptInfo>();
+        private Dictionary<string, ScriptInfo> _scriptLookup = new Dictionary<string, ScriptInfo>();
         private Dictionary<string, GlobalInfo> _mapGlobalsLookup = new Dictionary<string, GlobalInfo>();
         private List<ParameterInfo> _variables = new List<ParameterInfo>();
 
@@ -86,7 +87,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 _mapGlobalsLookup = context.gloDecl().Select((g, index) => new GlobalInfo(g, (ushort)index)).ToDictionary(g => g.Name);
 
             if (context.scriDecl() != null)
-                _scriptLookup = context.scriDecl().Select(s => new ScriptInfo(s)).ToList();
+                _scriptLookup = context.scriDecl().Select((s, index) => new ScriptInfo(s, (ushort)index)).ToDictionary(s => s.Name + "_" + s.Parameters.Count);
 
             _declarationCount = context.scriDecl().Count() + context.gloDecl().Count();
         }
@@ -260,11 +261,11 @@ namespace Blamite.Blam.Scripting.Compiler
             // branch excepts two parameters
             if (context.expr().Count() != 2)
             {
-                throw new CompilerException("A branch statement had an unexpected number of parameters.", context);
+                throw new CompilerException("A branch call had an unexpected number of parameters.", context);
             }
 
-            PushTypes("boolean", "ANY");
-            ScriptFunctionInfo info = _opcodes.GetFunctionInfo("branch").First();
+            PushTypes("boolean", "SCRIPTREFERENCE");
+            ScriptFunctionInfo info = _opcodes.GetFunctionInfo("branch")[0];
             CreateFunctionCall(_opcodes.GetTypeInfo("void").Opcode, info, (short)context.Start.Line);
 
             _branchBoolIndex = _currentIndex.Index;
@@ -294,15 +295,16 @@ namespace Blamite.Blam.Scripting.Compiler
             // grab boolean expression
             var bol = _expressions[_branchBoolIndex].Clone();
             expressions[0] = bol;
+            
             // grab script ref
-            var sr = _expressions[_expressions.Count - 2].Clone();
+            var sr = _expressions[bol.Next.Index].Clone();
             expressions[1] = sr;
             // modify the original script ref. the opcode points to the generated script
-            int genScriptIndex = _scriptLookup.Count;
-            _expressions[_expressions.Count - 2].Opcode = (ushort)genScriptIndex;
+            _expressions[bol.Next.Index].Opcode = (ushort)_scriptLookup.Count;
             // add the generated script to the lookup
-            ScriptInfo decl = new ScriptInfo(genName, "static", "void");
-            _scriptLookup.Add(decl);
+            ScriptInfo decl = new ScriptInfo(genName, "static", "void", (ushort)_scriptLookup.Count);
+            string infoKey = decl.Name + "_" + 0;
+            _scriptLookup[infoKey] = decl;
 
             _genBranches.Add(genName, expressions);
             CloseDatum();
@@ -567,7 +569,8 @@ namespace Blamite.Blam.Scripting.Compiler
                 "NUMBER" when Casting.IsNumType(info.ReturnType) => info.ReturnType,
                 "NUMBER" when !Casting.IsNumType(info.ReturnType) => "",
                 "void" => "void",
-                "GLOBALREFERENCE" => info.ReturnType,
+                "GLOBALREFERENCE" when info is GlobalInfo => info.ReturnType,
+                "SCRIPTREFERENCE" when info is ScriptInfo => info.ReturnType,
                 _ when expectedType == info.ReturnType => expectedType,
                 _ when info.ReturnType == "passthrough" => expectedType,
                 _ when Casting.CanBeCasted(info.ReturnType, expectedType, expectedType, _opcodes) => expectedType,
@@ -585,54 +588,23 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private bool IsScriptReference(BS_ReachParser.CallContext context, string expectedReturnType, int expectedParamCount)
         {
-            string name = context.funcID().GetText();
+            string key = context.funcID().GetText() + "_" + expectedParamCount;
 
-            int op = -1;
+            ScriptInfo info;
 
-            // try to find a matching script
-            if (expectedReturnType == "NUMBER")
+            if(!_scriptLookup.TryGetValue(key, out info))
             {
-                op = _scriptLookup.FindIndex(s => s.Name == name && s.Parameters.Count == expectedParamCount && Casting.IsNumType(s.ReturnType));
-            }
-            else
-            {
-                op = _scriptLookup.FindIndex(s => s.Name == name && s.Parameters.Count == expectedParamCount);
-            }
-
-            // a matching script wasn't found...not a script reference
-            if (op == -1)
-                return false;
-
-            ScriptInfo info = _scriptLookup[op];
-            string retType;
-
-            // check if the script satisfies the return type requirement
-            if(expectedReturnType != "ANY" && expectedReturnType != info.ReturnType)
-            {
-                // NUMBER
-                if(expectedReturnType == "NUMBER" && Casting.IsNumType(info.ReturnType))
-                {
-                    retType = info.ReturnType;
-                }
-                // casting
-                else if(Casting.CanBeCasted(info.ReturnType, expectedReturnType, expectedReturnType, _opcodes))
-                {
-                    retType = expectedReturnType;
-                }
-                // the script didn't satisfy the requirement
+                if (expectedReturnType == "SCRIPTREFERENCE")
+                    throw new CompilerException("The compiler expected a Script Reference but was unable to find a matching one. " +
+                        "Please check your script declarations and your spelling.", context);
                 else
-                {
                     return false;
-                }
             }
-            // ANY and matching types
-            else
-            {
-                retType = info.ReturnType;
-            }
+
+            ushort retType = GetTypeOpCode(info, expectedReturnType, context);
 
             // check for equality functions
-            EqualityPush(retType);
+            EqualityPush(_opcodes.GetTypeInfo(retType).Name);
 
             // handle parameters. Push them to the stack
             if (expectedParamCount > 0)
@@ -643,7 +615,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
             // create Script Reference node
             ushort valType = _opcodes.GetTypeInfo(retType).Opcode;
-            CreateScriptReference(name, (ushort)op, valType, (short)context.Start.Line);
+            CreateScriptReference(info.Name, info.Opcode, valType, (short)context.Start.Line);
 
             return true;
         }
