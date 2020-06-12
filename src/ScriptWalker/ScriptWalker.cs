@@ -3,6 +3,7 @@ using Blamite.Blam.Scripting;
 using Blamite.Blam.Util;
 using Blamite.Serialization;
 using System.CodeDom.Compiler;
+using System.Text;
 
 namespace ScriptWalker
 {
@@ -127,15 +128,18 @@ namespace ScriptWalker
         {
             bool areEqual = true;
 
+            // the opcodes always have to match.
             areEqual = areEqual && (origExp.Opcode == modExp.Opcode);
             areEqual = areEqual && (origExp.ReturnType == modExp.ReturnType);
 
             switch (_op.GetTypeInfo(origExp.ReturnType).Name)
             {
+                case "void":
                 case "boolean":
                 case "real":
                 case "short":
                 case "long":
+                    // ignore random strings.
                     areEqual = areEqual && (origExp.Value == modExp.Value);
                     break;
 
@@ -365,14 +369,37 @@ namespace ScriptWalker
 
         private string ExpressionToString(ScriptExpression exp)
         {
-            return $"Index: \"{exp.Index.Index.ToString("X4")}\" " +
-                $"Salt: \"{exp.Index.Salt.ToString("X4")}\" " +
-                $"OP: \"{exp.Opcode.ToString("X4")}\" " +
-                $"ReturnType: \"{exp.ReturnType.ToString("X4")}\" " +
-                $"ExpType: \"{exp.Type.ToString()}\" " +
-                $"NextSalt: \"{exp.Next.Salt.ToString("X4")}\" " +
-                $"NextIndex: \"{exp.Next.Index.ToString("X4")}\" " +
-                $"Value: \"{exp.Value.ToString("X4")}\"";
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"Index: \"{exp.Index.Index.ToString("X4")}\"");
+            sb.Append($" Salt: \"{exp.Index.Salt.ToString("X4")}\"");
+            sb.Append($" OP: \"{exp.Opcode.ToString("X4")}\"");
+            sb.Append($" ReturnType: \"{exp.ReturnType.ToString("X4")}\"");
+            sb.Append($" ExpType: \"{exp.Type.ToString()}\"");
+            sb.Append($" NextSalt: \"{exp.Next.Salt.ToString("X4")}\"");
+            sb.Append($" NextIndex: \"{exp.Next.Index.ToString("X4")}\"");
+            sb.Append($" Value: \"{exp.Value.ToString("X4")}\"");
+            sb.Append($" Line: \"{exp.LineNumber.ToString()}\"");
+
+            if (exp.Type == ScriptExpressionType.Group)
+            {
+                sb.Append($" Name: \"{_op.GetFunctionInfo(exp.Opcode).Name}\"");
+            }
+            else if(exp.Type == ScriptExpressionType.Expression)
+            {
+                string retType = _op.GetTypeInfo(exp.ReturnType).Name;
+                if(retType != "unparsed" &&
+                    retType != "passthrough" &&
+                    retType != "void" &&
+                    retType != "boolean" &&
+                    retType != "real" &&
+                    retType != "short" &&
+                    retType != "long")
+                {
+                    sb.Append($" String: \"{exp.StringValue}\"");
+                }
+            }
+
+            return sb.ToString();
         }
 
         private void WriteScriptObject()
