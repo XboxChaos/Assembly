@@ -10,52 +10,6 @@
 		<type opcode="0x5" name="stub" />
 	</scriptTypes>
 
-  <typecasting>
-    <to name="object" castOnly="true">
-      <from>object_name</from>
-      <from>player</from>
-      <from>ai</from>
-      <from>vehicle</from>
-      <from>weapon</from>
-      <from>device</from>
-      <from>scenery</from>
-      <from>effect_scenery</from>
-      <from>unit</from>
-    </to>
-    <to name="object_list" castOnly="true">
-      <from>object</from>
-    </to>
-    <to name="unit" castOnly="true">
-      <from>unit_name</from>
-      <from>ai</from>
-      <from>vehicle</from>
-      <from>player</from>
-    </to>
-    <to name="vehicle" castOnly="true">
-      <from>vehicle_name</from>
-      <from>ai</from>
-    </to>
-    <to name="weapon" castOnly="true">
-      <from>weapon_name</from>
-    </to>
-    <to name="device" castOnly="true">
-      <from>device_name</from>
-    </to>
-    <to name="scenery" castOnly="true">
-      <from>scenery_name</from>
-    </to>
-    <to name="effect_scenery" castOnly="true">
-      <from>effect_scenery_name</from>
-    </to>
-    <to name="player">
-      <from>unit</from>
-    </to>
-    <to name="boolean">
-      <from>short</from>
-      <from>long</from>
-    </to>
-  </typecasting>
-
 	<valueTypes version="1">
 		<type opcode="0x00" name="unparsed" size="0" />
 		<type opcode="0x01" name="special_form" size="0" />
@@ -405,8 +359,8 @@
 	<functions>
 		<function opcode="0x000" name="begin" returnType="passthrough" flags="2" group="Begin" />
 		<function opcode="0x001" name="begin_random" returnType="passthrough" flags="2" group="Begin" />
-		<function opcode="0x002" name="begin_count" returnType="passthrough" flags="2" group="BeginCount"/>
-		<function opcode="0x003" name="begin_random_count" returnType="passthrough" flags="2" group="BeginCount"/>
+		<function opcode="0x002" name="begin_count" returnType="passthrough" flags="2" />
+		<function opcode="0x003" name="begin_random_count" returnType="passthrough" flags="2" />
 		<function opcode="0x004" name="if" returnType="passthrough" flags="2" group="If" />
 		<function opcode="0x005" name="cond" returnType="passthrough" flags="2" group="Cond" />
 		<function opcode="0x006" name="set" returnType="passthrough" flags="2" group="Set" />
@@ -427,18 +381,18 @@
 		<function opcode="0x015" name="&lt;=" returnType="boolean" flags="2" group="Inequality" />
 		<function opcode="0x016" name="sleep" returnType="void" flags="2" group="Sleep" />
 		<function opcode="0x017" name="sleep_forever" returnType="void" flags="2" group="SleepForever" />
-		<function opcode="0x018" name="sleep_until" returnType="boolean" flags="2" group="SleepUntil"/>
-		<function opcode="0x019" name="sleep_until_game_ticks" returnType="boolean" flags="2" group="SleepUntilGameTicks"/><!-- MCC -->
-		<function opcode="0x01A" name="wake" returnType="void" flags="2" group="Wake"/>
-		<function opcode="0x01B" name="cinematic_sleep" returnType="void" flags="2" group="CinematicSleep"/><!-- MCC -->
-		<function opcode="0x01C" name="inspect" returnType="void" flags="2" group="Inspect"/>
-		<function opcode="0x01D" name="branch" returnType="void" flags="2" group="Branch"/>
-		<function opcode="0x01E" name="unit" returnType="unit" flags="2" group="ObjectCast"/>
-		<function opcode="0x01F" name="vehicle" returnType="vehicle" flags="2" group="ObjectCast"/>
-		<function opcode="0x020" name="weapon" returnType="weapon" flags="2" group="ObjectCast"/>
-		<function opcode="0x021" name="device" returnType="device" flags="2" group="ObjectCast"/>
-		<function opcode="0x022" name="scenery" returnType="scenery" flags="2" group="ObjectCast"/>
-		<function opcode="0x023" name="effect_scenery" returnType="effect_scenery" flags="2" group="ObjectCast"/>
+		<function opcode="0x018" name="sleep_until" returnType="boolean" flags="2" />
+		<function opcode="0x019" name="sleep_until_game_ticks" returnType="boolean" flags="2" /><!-- MCC -->
+		<function opcode="0x01A" name="wake" returnType="void" flags="2" />
+		<function opcode="0x01B" name="cinematic_sleep" returnType="void" flags="2" /><!-- MCC -->
+		<function opcode="0x01C" name="inspect" returnType="void" flags="2" />
+		<function opcode="0x01D" name="branch" returnType="void" flags="2" />
+		<function opcode="0x01E" name="unit" returnType="unit" flags="2" />
+		<function opcode="0x01F" name="vehicle" returnType="vehicle" flags="2" />
+		<function opcode="0x020" name="weapon" returnType="weapon" flags="2" />
+		<function opcode="0x021" name="device" returnType="device" flags="2" />
+		<function opcode="0x022" name="scenery" returnType="scenery" flags="2" />
+		<function opcode="0x023" name="effect_scenery" returnType="effect_scenery" flags="2" />
 		<function opcode="0x024" name="evaluate" returnType="void" argc="1">
 			<arg type="script" />
 		</function>
@@ -687,7 +641,7 @@
 			<arg type="object" />
 			<arg type="team" />
 		</function>
-		<function opcode="0x06F" name="object_buckling_magnitude_get" returnType="real" argc="1">
+		<function opcode="0x06F" name="hs_object_buckling_magnitude_get" returnType="real" argc="1">
 			<arg type="object" />
 		</function>
 		<function opcode="0x070" name="object_function_set" returnType="void" argc="2">
@@ -996,7 +950,7 @@
 		</function>
 		<function opcode="0x0C6" name="havok_dump_world_close_movie" returnType="void" null="true" />
 		<function opcode="0x0C7" name="havok_profile_start" returnType="void" null="true" />
-		<function opcode="0x0C8" name="havok_profile_end" returnType="void" null="true" />
+		<function opcode="0x0C8" name="havok_profile_stop" returnType="void" null="true" />
 		<function opcode="0x0C9" name="havok_profile_range" returnType="void" null="true" argc="2">
 			<arg type="long" />
 			<arg type="long" />
@@ -1499,7 +1453,7 @@
 			<arg type="unit" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x14D" name="unit_exit_vehicle" returnType="boolean" argc="2">
+		<function opcode="0x14D" name="unit_test_seat" returnType="boolean" argc="2">
 			<arg type="unit" />
 			<arg type="unit_seat_mapping" />
 		</function>
@@ -1669,7 +1623,7 @@
 			<arg type="device" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x17B" name="" returnType="void" argc="2">
+		<function opcode="0x17B" name="device_ignore_player_set" returnType="void" argc="2">
 			<arg type="device" />
 			<arg type="boolean" />
 		</function>
@@ -2299,70 +2253,70 @@
 			<arg type="string" />
 			<arg type="string" />
 		</function>
-		<function opcode="0x233" name="ai_create_runtime_squad" returnType="boolean" null="true" argc="1">
+		<function opcode="0x233" name="mantini_create_runtime_squad" returnType="boolean" null="true" argc="1">
 			<arg type="string" />
 		</function>
-		<function opcode="0x234" name="ai_create_runtime_point_set" returnType="boolean" null="true" argc="1">
+		<function opcode="0x234" name="mantini_create_runtime_point_set" returnType="boolean" null="true" argc="1">
 			<arg type="string" />
 		</function>
-		<function opcode="0x235" name="ai_add_runtime_point_to_set" returnType="boolean" null="true" argc="6">
+		<function opcode="0x235" name="mantini_add_runtime_point_to_set" returnType="boolean" null="true" argc="6">
 			<arg type="string" />
 			<arg type="string" />
 			<arg type="real" />
 			<arg type="real" />
-			<arg type="real" />
-			<arg type="real" />
-		</function>
-		<function opcode="0x236" name="ai_add_runtime_point_to_set_from_camera" returnType="boolean" null="true" argc="4">
-			<arg type="string" />
-			<arg type="string" />
 			<arg type="real" />
 			<arg type="real" />
 		</function>
-		<function opcode="0x237" name="ai_add_starting_location_to_squad" returnType="boolean" null="true" argc="4">
+		<function opcode="0x236" name="mantini_add_runtime_point_to_set_from_camera" returnType="boolean" null="true" argc="4">
+			<arg type="string" />
+			<arg type="string" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x237" name="mantini_add_starting_location_to_squad" returnType="boolean" null="true" argc="4">
 			<arg type="string" />
 			<arg type="string" />
 			<arg type="long" />
 			<arg type="point_reference" />
 		</function>
-		<function opcode="0x238" name="ai_add_starting_location_to_squad_from_camera" returnType="boolean" null="true" argc="4">
+		<function opcode="0x238" name="mantini_add_starting_location_to_squad_from_camera" returnType="boolean" null="true" argc="4">
 			<arg type="string" />
 			<arg type="string" />
 			<arg type="long" />
 			<arg type="real" />
 		</function>
-		<function opcode="0x239" name="ai_add_cell_to_runtime_squad" returnType="long" argc="2">
+		<function opcode="0x239" name="mantini_add_cell_to_runtime_squad" returnType="long" argc="2">
 			<arg type="string" />
 			<arg type="string" />
 		</function>
-		<function opcode="0x23A" name="ai_get_runtime_squad_cell_count" returnType="long" null="true" argc="1">
+		<function opcode="0x23A" name="mantini_get_runtime_squad_cell_count" returnType="long" null="true" argc="1">
 			<arg type="string" />
 		</function>
-		<function opcode="0x23B" name="ai_set_squad_team" returnType="boolean" null="true" argc="2">
+		<function opcode="0x23B" name="mantini_set_squad_team" returnType="boolean" null="true" argc="2">
 			<arg type="string" />
 			<arg type="team" />
 		</function>
-		<function opcode="0x23C" name="ai_set_spawn_point_weapons" returnType="boolean" null="true" argc="3">
+		<function opcode="0x23C" name="mantini_set_spawn_point_weapons" returnType="boolean" null="true" argc="3">
 			<arg type="ai" />
 			<arg type="string" />
 			<arg type="string" />
 		</function>
-		<function opcode="0x23D" name="ai_set_spawn_point_vehicle" returnType="boolean" null="true" argc="2">
+		<function opcode="0x23D" name="mantini_set_spawn_point_vehicle" returnType="boolean" null="true" argc="2">
 			<arg type="ai" />
 			<arg type="string" />
 		</function>
-		<function opcode="0x23E" name="ai_set_spawn_point_variants" returnType="boolean" null="true" argc="3">
+		<function opcode="0x23E" name="mantini_set_spawn_point_variants" returnType="boolean" null="true" argc="3">
 			<arg type="ai" />
 			<arg type="string_id" />
 			<arg type="string_id" />
 		</function>
-		<function opcode="0x23F" name="ai_set_squad_cell_spawn_count" returnType="boolean" null="true" argc="3">
+		<function opcode="0x23F" name="mantini_set_squad_cell_spawn_count" returnType="boolean" null="true" argc="3">
 			<arg type="string" />
 			<arg type="long" />
 			<arg type="long" />
 		</function>
-		<function opcode="0x240" name="ai_clear_runtime_squads" returnType="boolean" null="true" />
-		<function opcode="0x241" name="ai_remove_pointset" returnType="boolean" null="true" argc="1">
+		<function opcode="0x240" name="mantini_clear_runtime_squads" returnType="boolean" null="true" />
+		<function opcode="0x241" name="mantini_remove_pointset" returnType="boolean" null="true" argc="1">
 			<arg type="string" />
 		</function>
 		<function opcode="0x242" name="ai_verify_tags" returnType="void" null="true" /><!-- MCC removed one before here -->
@@ -2374,7 +2328,7 @@
 			<arg type="string" />
 			<arg type="object" />
 		</function>
-		<function opcode="0x245" name="play_vocalization_on_team" returnType="void" argc="1">
+		<function opcode="0x245" name="ai_play_vocalization" returnType="void" argc="1">
 			<arg type="string_id" />
 		</function>
 		<function opcode="0x246" name="play_vocalization_on_team" returnType="void" argc="2">
@@ -2393,7 +2347,7 @@
 			<arg type="object" />
 			<arg type="ai_line" />
 		</function>
-		<function opcode="0x24A" name="ai_play_line_on_object" returnType="real" argc="3">
+		<function opcode="0x24A" name="ai_play_line_on_object_for_team" returnType="real" argc="3">
 			<arg type="object" />
 			<arg type="ai_line" />
 			<arg type="mp_team" />
@@ -2422,7 +2376,7 @@
 		</function>
 		<function opcode="0x250" name="campaign_metagame_enabled" returnType="boolean" />
 		<function opcode="0x251" name="campaign_survival_enabled" returnType="boolean" />
-		<function opcode="0x252" name="thespian_performance_activate" returnType="void" null="true" argc="1">
+		<function opcode="0x252" name="thespian_performance_test" returnType="void" null="true" argc="1">
 			<arg type="string_id" />
 		</function>
 		<function opcode="0x253" name="thespian_folder_activate" returnType="void" argc="1">
@@ -2493,7 +2447,7 @@
 			<arg type="unit" />
 			<arg type="short" />
 		</function>
-		<function opcode="0x26A" name="ai_player_set_no_fireteam_max" returnType="void" argc="1">
+		<function opcode="0x26A" name="ai_player_set_fireteam_no_max" returnType="void" argc="1">
 			<arg type="unit" />
 		</function>
 		<function opcode="0x26B" name="ai_player_set_fireteam_max_squad_absorb_distance" returnType="void" argc="2">
@@ -3322,7 +3276,7 @@
 		<function opcode="0x321" name="cs_push_stance" returnType="void" flags="1" argc="1">
 			<arg type="string_id" />
 		</function>
-		<function opcode="0x322" name="vs_movement_mode" returnType="void" argc="2">
+		<function opcode="0x322" name="vs_push_stance" returnType="void" argc="2">
 			<arg type="ai" />
 			<arg type="string_id" />
 		</function>
@@ -3847,7 +3801,7 @@
 			<arg type="string" />
 		</function>
 		<function opcode="0x3E3" name="texture_cache_test_malloc" returnType="void" null="true" />
-		<function opcode="0x3E4" name="tags_verify_all" returnType="void" null="true" />
+		<function opcode="0x3E4" name="debug_memory" returnType="void" null="true" />
 		<function opcode="0x3E5" name="debug_memory_by_file" returnType="void" null="true" />
 		<function opcode="0x3E6" name="debug_memory_for_file" returnType="void" null="true" argc="1">
 			<arg type="string" />
@@ -3912,10 +3866,10 @@
 		<function opcode="0x3FA" name="cinematic_transition_fade_out_from_game" returnType="short" argc="1">
 			<arg type="cinematic_transition_definition" />
 		</function>
-		<function opcode="0x3FB" name="cinematic_transition_in_to_cinematic" returnType="short" argc="1">
+		<function opcode="0x3FB" name="cinematic_transition_fade_in_to_cinematic" returnType="short" argc="1">
 			<arg type="cinematic_transition_definition" />
 		</function>
-		<function opcode="0x3FC" name="cinematic_transition_out_from_cinematic" returnType="short" argc="1">
+		<function opcode="0x3FC" name="cinematic_transition_fade_out_from_cinematic" returnType="short" argc="1">
 			<arg type="cinematic_transition_definition" />
 		</function>
 		<function opcode="0x3FD" name="cinematic_transition_fade_in_to_game" returnType="short" argc="1">
@@ -4372,8 +4326,8 @@
 		</function>
 		<function opcode="0x49C" name="survival_mode_get_time_limit" returnType="long" />
 		<function opcode="0x49D" name="survival_mode_get_set_count" returnType="long" />
-		<function opcode="0x49E" name="survival_mode_get_round_count" returnType="long" />
-		<function opcode="0x49F" name="survival_mode_get_wave_count" returnType="long" />
+		<function opcode="0x49E" name="survival_mode_get_bonus_lives_awarded" returnType="long" />
+		<function opcode="0x49F" name="survival_mode_get_bonus_target" returnType="long" />
 		<function opcode="0x4A0" name="survival_mode_get_shared_team_life_count" returnType="long" />
 		<function opcode="0x4A1" name="survival_mode_get_elite_life_count" returnType="long" />
 		<function opcode="0x4A2" name="survival_mode_max_lives" returnType="long" />
@@ -4607,7 +4561,7 @@
 		<function opcode="0x4E2" name="hud_enable_training" returnType="void" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x4E3" name="player_training_activate_flashlight" returnType="void" />
+		<function opcode="0x4E3" name="player_training_activate_night_vision" returnType="void" />
 		<function opcode="0x4E4" name="player_training_activate_crouch" returnType="void" />
 		<function opcode="0x4E5" name="player_training_activate_stealth" returnType="void" />
 		<function opcode="0x4E6" name="player_training_activate_equipment" returnType="void" null="true" />
@@ -4618,10 +4572,10 @@
 		<function opcode="0x4E9" name="" returnType="void" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x4EA" name="chud_show_all" returnType="void" argc="1">
+		<function opcode="0x4EA" name="chud_show" returnType="void" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x4EB" name="" returnType="void" argc="1">
+		<function opcode="0x4EB" name="chud_show_weapon_stats" returnType="void" argc="1">
 			<arg type="boolean" />
 		</function>
 		<function opcode="0x4EC" name="chud_show_crosshair" returnType="void" argc="1">
@@ -4800,7 +4754,7 @@
 			<arg type="string_id" />
 		</function>
 		<function opcode="0x515" name="cls" returnType="void" null="true" />
-		<function opcode="0x516" name="error_overflow_suppression" returnType="void" null="true" argc="1">
+		<function opcode="0x516" name="events_spam_suppression_enable" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
 		<function opcode="0x517" name="error_geometry_show" returnType="void" null="true" argc="1">
@@ -4948,7 +4902,7 @@
 		<function opcode="0x543" name="player_invert_look" returnType="void" argc="1">
 			<arg type="player" />
 		</function>
-		<function opcode="0x544" name="controller_unlock_solo_levels" returnType="long" argc="1">
+		<function opcode="0x544" name="user_interface_controller_get_last_level_played" returnType="long" argc="1">
 			<arg type="short" />
 		</function>
 		<function opcode="0x545" name="controller_set_look_inverted" returnType="void" null="true" argc="2">
@@ -6057,13 +6011,13 @@
 			<arg type="string" />
 		</function>
 		<function opcode="0x6AD" name="" returnType="void" null="true" />
-		<function opcode="0x6AE" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x6AE" name="net_leaderboard_clear_hopper_all_users" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
-		<function opcode="0x6AF" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x6AF" name="net_leaderboard_clear_global_unarbitrated_all_users" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
-		<function opcode="0x6B0" name="" returnType="void" null="true" />
+		<function opcode="0x6B0" name="test_sapien_crash" returnType="void" null="true" />
 		<function opcode="0x6B1" name="decorators_split" returnType="void" null="true" argc="2">
 			<arg type="long" />
 			<arg type="real" />
@@ -6253,7 +6207,7 @@
 			<arg type="string_id" />
 			<arg type="short" />
 		</function>
-		<function opcode="0x6EC" name="film_manager_set_reproduction_mode" returnType="void" argc="1">
+		<function opcode="0x6EC" name="saved_film_set_repro_mode" returnType="void" argc="1">
 			<arg type="boolean" />
 		</function>
 		<function opcode="0x6ED" name="font_set_emergency" returnType="void" />
@@ -6432,7 +6386,7 @@
 		<function opcode="0x722" name="is_object_being_lased" returnType="boolean" argc="1">
 			<arg type="object" />
 		</function>
-		<function opcode="0x723" name="simulation_profiler_detail_level" returnType="long" null="true" argc="1">
+		<function opcode="0x723" name="simulation_profiler_detail_level" returnType="long" argc="1">
 			<arg type="long" />
 		</function>
 		<function opcode="0x724" name="simulation_profiler_enable_downstream_processing" returnType="boolean" null="true" argc="1">
@@ -6906,6 +6860,11 @@
 			<arg type="player" />
 		</function>
 		<function opcode="0x7CA" name="" returnType="boolean" />
+		<function opcode="0x7CB" name="" returnType="void" null="true" argc="2">
+			<arg type="string" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x7CC" name="" returnType="boolean" />
 	</functions>
 
 	<globals>
@@ -8392,7 +8351,7 @@
 		<global opcode="0x5C8" name="command_buffers_released_per_frame" null="true" type="long" />
 		<global opcode="0x5C9" name="command_buffer_release_threshold" null="true" type="real" />
 		<global opcode="0x5CA" name="" null="true" type="boolean" />
-		<global opcode="0x5CB" name="" type="boolean" />
+		<global opcode="0x5CB" name="use_command_buffer_fixups" type="boolean" />
 		<global opcode="0x5CC" name="" null="true" type="boolean" />
 		<global opcode="0x5CD" name="motion_blur_max" type="real" />
 		<global opcode="0x5CE" name="motion_blur_scale" type="real" />
@@ -8547,7 +8506,7 @@
 		<global opcode="0x663" name="" null="true" type="long" />
 		<global opcode="0x664" name="" null="true" type="boolean" />
 		<global opcode="0x665" name="" null="true" type="boolean" />
-		<global opcode="0x666" name="" type="boolean" />
+		<global opcode="0x666" name="clients_always_respect_action_priority_for_weapon_switch" type="boolean" />
 		<global opcode="0x667" name="" null="true" type="real" />
 		<global opcode="0x668" name="" null="true" type="boolean" />
 		<global opcode="0x669" name="" null="true" type="boolean" />
@@ -8647,5 +8606,14 @@
 		<global opcode="0x6C7" name="" null="true" type="boolean" />
 		<global opcode="0x6C8" name="" null="true" type="boolean" />
 		<global opcode="0x6C9" name="" null="true" type="boolean" />
+		<global opcode="0x6CA" name="" null="true" type="boolean" />
+		<global opcode="0x6CB" name="" null="true" type="real" />
+		<global opcode="0x6CC" name="" null="true" type="boolean" />
+		<global opcode="0x6CD" name="" null="true" type="real" />
+		<global opcode="0x6CE" name="" null="true" type="boolean" />
+		<global opcode="0x6CF" name="" type="boolean" />
+		<global opcode="0x6D0" name="" type="boolean" />
+		<global opcode="0x6D1" name="" type="boolean" />
+		<global opcode="0x6D2" name="" type="boolean" />
 	</globals>
 </BlamScript>
