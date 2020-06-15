@@ -10,14 +10,16 @@ namespace Blamite.Blam.Scripting
 		private readonly bool _quoted;
 		private readonly int _size;
 		private readonly string _tag;
+		private readonly bool _object;
 
-		public ScriptValueType(string name, ushort opcode, int size, bool quoted, string tag)
+		public ScriptValueType(string name, ushort opcode, int size, bool quoted, string tag, bool obj)
 		{
 			_name = name;
 			_opcode = opcode;
 			_size = size;
 			_quoted = quoted;
 			_tag = tag;
+			_object = obj;
 		}
 
 		public string Name
@@ -43,6 +45,11 @@ namespace Blamite.Blam.Scripting
 		public string TagGroup
 		{
 			get { return _tag; }
+		}
+
+		public bool Object
+		{
+			get { return _object; }
 		}
 
 		public void AddEnumValue(string name)

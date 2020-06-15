@@ -67,9 +67,8 @@ namespace Blamite.Blam.Scripting.Compiler
             _seatMappings = seatMappings;
             _logger = logger;
 
-            UInt16 salt = SaltGenerator.GetSalt("script node");
-            UInt16 index = 0;
-            _currentIndex = new DatumIndex(salt, index);
+            ushort intialSalt = SaltGenerator.GetSalt("script node");
+            _currentIndex = new DatumIndex(intialSalt, 0);
         }
 
         public ScriptData Result()

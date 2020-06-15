@@ -47,7 +47,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public static bool CanBeCasted(string from, string to, string initialTo, OpcodeLookup op)
         {
-            if(IsNumType(from) && IsNumType(to))
+            if((IsNumType(from) && IsNumType(initialTo)) || (op.GetTypeInfo(from).Object && op.GetTypeInfo(initialTo).Object))
             {
                 return true;
             }

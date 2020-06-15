@@ -53,7 +53,8 @@ namespace Blamite.Serialization.Settings
 				int size = (int)XMLUtil.GetNumericAttribute(element, "size");
 				bool quoted = XMLUtil.GetBoolAttribute(element, "quoted", false);
 				string tag = XMLUtil.GetStringAttribute(element, "tag", null);
-				var valueType = new ScriptValueType(name, opcode, size, quoted, tag);
+				bool obj = XMLUtil.GetBoolAttribute(element, "object", false);
+				var valueType = new ScriptValueType(name, opcode, size, quoted, tag, obj);
                 foreach(XElement option in element.Descendants("enum"))
                 {
                     valueType.AddEnumValue(option.Value);
