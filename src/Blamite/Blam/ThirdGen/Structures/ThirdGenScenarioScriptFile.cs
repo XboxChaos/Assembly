@@ -27,7 +27,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private ScriptObjectTagBlock _aiObjects;
 		private ScriptObjectTagBlock _aiSquadGroups;
 		private ScriptObjectTagBlock _aiSquadSingleLocations;
-		private ScriptObjectTagBlock _aiSquads;
+        private ScriptObjectTagBlock _aiSquadGroupLocations;
+        private ScriptObjectTagBlock _aiSquads;
 
 		private ScriptObjectTagBlock _cutsceneCameraPoints;
 		private ScriptObjectTagBlock _cutsceneFlags;
@@ -179,6 +180,8 @@ namespace Blamite.Blam.ThirdGen.Structures
             _aiSquadGroups = new ScriptObjectTagBlock("number of ai squad groups", "ai squad groups table address",
                 "ai squad group element");
             _aiSquads = new ScriptObjectTagBlock("number of ai squads", "ai squads table address", "ai squad element");
+            _aiSquadGroupLocations = new ScriptObjectTagBlock("number of group locations", "group locations table address",
+                "ai squad group location element");
             _aiSquadSingleLocations = new ScriptObjectTagBlock("number of single locations", "single locations table address",
                 "ai squad single location element");
             _aiObjects = new ScriptObjectTagBlock("number of ai objects", "ai objects table address", "ai object element");
@@ -194,6 +197,7 @@ namespace Blamite.Blam.ThirdGen.Structures
             _pointSetPoints = new ScriptObjectTagBlock("number of points", "points table address", "point set point element");
 
             _aiSquads.RegisterChild(_aiSquadSingleLocations);
+            _aiSquads.RegisterChild(_aiSquadGroupLocations);
             _aiObjects.RegisterChild(_aiObjectWaves);
             _pointSets.RegisterChild(_pointSetPoints);
 
@@ -234,6 +238,7 @@ namespace Blamite.Blam.ThirdGen.Structures
                 ObjectFolders = ReadObjects(reader, scnrValues, _objectFolders),
                 PointSets = ReadPointSets(reader, scnrValues),
                 AISquadSingleLocations = _aiSquadSingleLocations,
+                AISquadGroupLocations = _aiSquadGroupLocations,
                 AIObjectWaves = _aiObjectWaves,
                 PointSetPoints = _pointSetPoints,
 

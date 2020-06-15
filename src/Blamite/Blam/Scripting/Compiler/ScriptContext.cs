@@ -60,6 +60,12 @@
 		public ScriptObjectTagBlock AISquadSingleLocations { get; set; }
 
 		/// <summary>
+		///     Gets or sets the block to read AI squad group locations from.
+		/// </summary>
+		/// <value>The block to read AI squad group locations from.</value>
+		public ScriptObjectTagBlock AISquadGroupLocations { get; set; }
+
+		/// <summary>
 		///     Gets or sets available AI objectives.
 		/// </summary>
 		/// <value>Available AI objects.</value>

@@ -305,20 +305,35 @@ namespace Blamite.Blam.Scripting.Compiler
                 int index = Array.FindIndex(_scriptContext.AISquads, sq => sq.Name == subStrings[0]);
                 if (index != -1)
                 {
-                    var children = _scriptContext.AISquads[index].GetChildren(_scriptContext.AISquadSingleLocations);
                     if (subStrings.LongCount() == 2)
                     {
-                        int loc = Array.FindIndex(children, c => c.Name == subStrings[1]);
-                        if (loc != -1)
+                        var singleLocations = _scriptContext.AISquads[index].GetChildren(_scriptContext.AISquadSingleLocations);
+                        int singleIndex = Array.FindIndex(singleLocations, c => c.Name == subStrings[1]);
+                        if (singleIndex != -1)
                         {
-                            // squad/location
+                            // squad/single_location
                             values[0] = 128;
                             values[1] = (byte)index;
                             values[2] = 0;
-                            values[3] = (byte)loc;
+                            values[3] = (byte)singleIndex;
                         }
                         else
-                            return false;
+                        {
+                            var groupLocations = _scriptContext.AISquads[index].GetChildren(_scriptContext.AISquadGroupLocations);
+                            int groupIndex = Array.FindIndex(groupLocations, c => c.Name == subStrings[1]);
+                            if(groupIndex != -1)
+                            {
+                                // squad/group_location
+                                values[0] = 160;
+                                values[1] = (byte)index;
+                                values[2] = 0;
+                                values[3] = (byte)groupIndex;
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
                     }
                     else
                     {
@@ -658,8 +673,8 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             string txt = context.GetText();
             var opCode = _opcodes.GetTypeInfo("long").Opcode;
-            Int32 value;
-            if (!Int32.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out value))
+            int value;
+            if (!int.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out value))
             {
                 return false;
             }
@@ -677,8 +692,8 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             string txt = context.GetText();
             var opCode = _opcodes.GetTypeInfo("short").Opcode;
-            Int16 value;
-            if (!Int16.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out value))
+            short value;
+            if (!short.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out value))
             {
                 return false;
             }
