@@ -124,6 +124,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_propertyNames.Add("B"); // MultiValues
 			_propertyNames.Add("C"); // MultiValues
 			_propertyNames.Add("D"); // MultiValues
+			_propertyNames.Add("Salt"); // Datum
+			_propertyNames.Add("Index"); // Datum
 		}
 	}
 }

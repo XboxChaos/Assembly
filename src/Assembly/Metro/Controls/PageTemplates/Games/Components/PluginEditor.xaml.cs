@@ -193,6 +193,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			
 			RegisterMetaTag("rect16", "4 16-bit values representing the sides of a rectangle (top, left, bottom, right)");
 
+			RegisterMetaTag("datum", "32-bit datum value");
+
 			CompletableXMLTag color = RegisterMetaTag("color32", "Integer color value");
 			CompletableXMLTag colorf = RegisterMetaTag("colorf", "Floating-point color value");
 			var colorAlpha = new CompletableXMLAttribute("alpha",

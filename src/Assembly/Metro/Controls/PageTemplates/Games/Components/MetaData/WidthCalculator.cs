@@ -32,6 +32,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private static readonly Plane2Value _plane2Value = new Plane2Value();
 		private static readonly Plane3Value _plane3Value = new Plane3Value();
 		private static readonly RangeValue _rangeValue = new RangeValue();
+		private static readonly DatumValue _datumValue = new DatumValue();
 		private double _totalWidth;
 
 		public double TotalWidth
@@ -235,6 +236,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void VisitRangeDegree(RangeDegreeData field)
 		{
 			AddWidth(_rangeValue.Width);
+		}
+
+		public void VisitDatum(DatumData field)
+		{
+			AddWidth(_datumValue.Width);
 		}
 
 		public void Add(MetaField field)

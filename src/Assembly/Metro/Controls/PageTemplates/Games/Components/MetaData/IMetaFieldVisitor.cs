@@ -40,5 +40,6 @@
 		void VisitRangeUint16(RangeUint16Data field);
 		void VisitRangeFloat32(RangeFloat32Data field);
 		void VisitRangeDegree(RangeDegreeData field);
+		void VisitDatum(DatumData field);
 	}
 }

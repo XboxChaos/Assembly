@@ -463,6 +463,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_writer.WriteFloat(field.RadianMax);
 		}
 
+		public void VisitDatum(DatumData field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteUInt32((uint)(field.Salt << 16) | field.Index);
+		}
+
 		public void WriteFields(IList<MetaField> fields)
 		{
 			foreach (MetaField t in fields)

@@ -342,6 +342,10 @@ namespace Blamite.Plugins
 					// Do nothing, I really don't understand the point of this
 					break;
 
+				case "datum":
+					visitor.VisitDatum(name, offset, visible, pluginLine, tooltip);
+					break;
+
 				default:
 					throw new ArgumentException("Unknown element \"" + elementName + "\"." + PositionInfo(reader));
 			}

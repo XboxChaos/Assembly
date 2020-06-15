@@ -352,6 +352,11 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
+		public void VisitDatum(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			WriteBasicValue("datum", name, offset, visible, tooltip);
+		}
+
 		private void WriteValueStart(string element, string name, uint offset, bool visible, string tooltip)
 		{
 			_output.WriteStartElement(element);

@@ -144,7 +144,6 @@ namespace Blamite.Injection
 			if (lowerName.Contains("global cache shader index"))
 			{
 				ReadReferences(offset, GlobalShaderFixup);
-
 			}
 			if (lowerName.Contains("interop pointer"))
 			{
@@ -387,6 +386,20 @@ namespace Blamite.Injection
 				var fixupStrings = strings.Strings.Select(CreateFixupString).ToArray();
 				var fixup = new DataBlockUnicListFixup(i, (int)(offset + i * 4), fixupStrings);
 				_blockStack.Peek()[0].UnicListFixups.Add(fixup); // These will never be in tag blocks and I don't want to deal with it
+			}
+		}
+
+		public void VisitDatum(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			// haxhaxhaxhax
+			// TODO: Fix this if/when cross-tag references are added to plugins
+			var lowerName = name.ToLower();
+			if (lowerName.Contains("asset index")
+				|| lowerName.Contains("resource index")
+				|| lowerName.Contains("asset datum")
+				|| lowerName.Contains("resource datum"))
+			{
+				ReadReferences(offset, ReadResourceFixup);
 			}
 		}
 

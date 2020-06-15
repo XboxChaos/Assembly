@@ -424,6 +424,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
+		public void VisitDatum(DatumData field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.Salt))
+				{
+					FilterNumber(field, field.Index);
+				}
+			}
+		}
+
 		public void FilterFields(IEnumerable<MetaField> fields, string filter)
 		{
 			_filter = filter.ToLower();

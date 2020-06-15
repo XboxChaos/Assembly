@@ -289,6 +289,9 @@ namespace Blamite.Plugins
 				case "ranged":
 					visitor.VisitRangeDegree(name, offset, visible, pluginLine, tooltip);
 					break;
+				case "datum":
+					visitor.VisitDatum(name, offset, visible, pluginLine, tooltip);
+					break;
 
 				default:
 					throw new ArgumentException("Unknown element \"" + elementName + "\"." + PositionInfo(reader));

@@ -214,6 +214,12 @@ namespace Assembly.Helpers.Plugins
 			}
 		}
 
+		public void VisitDatum(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new DatumData(name, offset, 0, 0, 0, pluginLine, tooltip));
+		}
+
 		#region Range
 
 		public void VisitRangeUInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip)

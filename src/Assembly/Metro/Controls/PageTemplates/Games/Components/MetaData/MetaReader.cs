@@ -469,6 +469,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			field.RadianMax = _reader.ReadFloat();
 		}
 
+		public void VisitDatum(DatumData field)
+		{
+			SeekToOffset(field.Offset);
+			uint value = _reader.ReadUInt32();
+			field.Salt = (ushort)((value >> 16) & 0xFFFF);
+			field.Index = (ushort)(value & 0xFFFF);
+		}
+
 		public void VisitTagBlockEntry(WrappedTagBlockEntry field)
 		{
 		}

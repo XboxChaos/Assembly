@@ -316,5 +316,10 @@ namespace Blamite.Plugins
 		{
 			Debug.WriteLine(Indent() + "Unicode string list \"{0}\" at {1}, visible = {2}, languages = {3}, tooltip = {4}", name, offset, visible, languages, tooltip);
 		}
+
+		public void VisitDatum(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			PrintBasicValue("Datum", name, offset, visible, tooltip);
+		}
 	}
 }
