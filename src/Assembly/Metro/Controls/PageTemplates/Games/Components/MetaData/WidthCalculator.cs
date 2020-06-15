@@ -223,7 +223,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			AddWidth(_shader.Width);
 		}
 
-		public void VisitRangeUint16(RangeUint16Data field)
+		public void VisitRangeInt16(RangeInt16Data field)
 		{
 			AddWidth(_rangeValue.Width);
 		}

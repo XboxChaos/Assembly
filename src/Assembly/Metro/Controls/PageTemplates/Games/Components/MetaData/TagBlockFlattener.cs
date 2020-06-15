@@ -442,7 +442,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 		}
 
-		public void VisitRangeUint16(RangeUint16Data field)
+		public void VisitRangeInt16(RangeInt16Data field)
 		{
 		}
 

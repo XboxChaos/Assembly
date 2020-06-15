@@ -353,7 +353,7 @@ namespace Blamite.Injection
 			ReadReferences(offset, (b, o) => ReadShader(b, o, type));
 		}
 
-		public void VisitRangeUInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		public void VisitRangeInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 		}
 

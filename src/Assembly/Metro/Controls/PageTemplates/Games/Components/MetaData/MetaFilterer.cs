@@ -391,7 +391,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				FilterString(field, field.DatabasePath);
 		}
 
-		public void VisitRangeUint16(RangeUint16Data field)
+		public void VisitRangeInt16(RangeInt16Data field)
 		{
 			if (!FilterString(field, field.Name))
 			{

@@ -448,11 +448,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				field.Shader = _cache.ShaderStreamer.ReadShader(_reader, field.Type);
 		}
 
-		public void VisitRangeUint16(RangeUint16Data field)
+		public void VisitRangeInt16(RangeInt16Data field)
 		{
 			SeekToOffset(field.Offset);
-			field.Min = _reader.ReadUInt16();
-			field.Max = _reader.ReadUInt16();
+			field.Min = _reader.ReadInt16();
+			field.Max = _reader.ReadInt16();
 		}
 
 		public void VisitRangeFloat32(RangeFloat32Data field)

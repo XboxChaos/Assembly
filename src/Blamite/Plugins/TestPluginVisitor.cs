@@ -297,7 +297,7 @@ namespace Blamite.Plugins
 			Debug.WriteLine(Indent() + "Shader \"{0}\" at {1}, visible = {2}, type = {3}, tooltip = {4}", name, offset, visible, type, tooltip);
 		}
 
-		public void VisitRangeUInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		public void VisitRangeInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 			PrintBasicValue("Range16", name, offset, visible, tooltip);
 		}

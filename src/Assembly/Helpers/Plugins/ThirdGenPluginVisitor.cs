@@ -222,10 +222,10 @@ namespace Assembly.Helpers.Plugins
 
 		#region Range
 
-		public void VisitRangeUInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		public void VisitRangeInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new RangeUint16Data(name, offset, 0, "range16", 0, 0, pluginLine, tooltip));
+				AddValue(new RangeInt16Data(name, offset, 0, "range16", 0, 0, pluginLine, tooltip));
 		}
 
 		public void VisitRangeFloat32(string name, uint offset, bool visible, uint pluginLine, string tooltip)

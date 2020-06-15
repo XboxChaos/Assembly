@@ -339,10 +339,10 @@ namespace Blamite.Plugins
 			WriteBasicValue("uint32", name, offset, visible);
 		}
 
-		public void VisitRangeUInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		public void VisitRangeInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
-			WriteBasicValue("uint16", name + " min", offset, visible);
-			WriteBasicValue("uint16", name + " max", offset + 4, visible);
+			WriteBasicValue("int16", name + " min", offset, visible);
+			WriteBasicValue("int16", name + " max", offset + 2, visible);
 		}
 
 		public void VisitRangeFloat32(string name, uint offset, bool visible, uint pluginLine, string tooltip)

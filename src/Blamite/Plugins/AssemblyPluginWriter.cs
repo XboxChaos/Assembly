@@ -330,7 +330,7 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
-		public void VisitRangeUInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		public void VisitRangeInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 			WriteBasicValue("range16", name, offset, visible, tooltip);
 		}
