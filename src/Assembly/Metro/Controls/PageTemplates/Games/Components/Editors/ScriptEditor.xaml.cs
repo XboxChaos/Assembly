@@ -219,14 +219,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             OpcodeLookup opcodes = _buildInfo.ScriptInfo;
             var code = new IndentedTextWriter(new StringWriter(CultureInfo.InvariantCulture));
             var decompiler = new BlamScriptDecompiler(code, scripts, opcodes, _endian);
-
+            decompiler.WriteComment("Decompiled with Assembly");
+            decompiler.WriteComment("Source file: " + _scriptFile.Name);
+            decompiler.WriteComment("Start time: " + startTime);
+            decompiler.WriteComment("Remember that all script code is property of Bungie/343 Industries.");
+            decompiler.WriteComment("You have no rights. Play nice.");
             decompiler.Decompile(_showInfo);
-
             DateTime endTime = DateTime.Now;
             TimeSpan duration = endTime.Subtract(startTime);
             decompiler.WriteComment("Decompilation finished in ~" + duration.TotalSeconds + "s");
-
-
             Dispatcher.Invoke(new Action(delegate { txtScript.Text = code.InnerWriter.ToString(); }));
         }
 
