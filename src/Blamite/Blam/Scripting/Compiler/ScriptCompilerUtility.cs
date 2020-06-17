@@ -54,8 +54,10 @@ namespace Blamite.Blam.Scripting.Compiler
                 }
                 string fileName = Path.Combine(folder, _cashefile.InternalName + "_expressions.xml");
 
-                var settings = new XmlWriterSettings();
-                settings.Indent = true;
+                var settings = new XmlWriterSettings
+                {
+                    Indent = true
+                };
 
                 using (var writer = XmlWriter.Create(fileName, settings))
                 {
@@ -120,18 +122,6 @@ namespace Blamite.Blam.Scripting.Compiler
 
         }
 
-        /// <summary>
-        /// Increments the current Datum.
-        /// </summary>
-        //private void IncrementDatum()
-        //{
-        //    _currentExpressionIndex++;
-        //    _currentSalt++;
-
-        //    if (_currentSalt == 0xFFFF)
-        //        _currentSalt = 0x8000;
-        //}
-
         private void DeclarationsToXML()
         {
             string folder = "Compiler";
@@ -141,8 +131,10 @@ namespace Blamite.Blam.Scripting.Compiler
             }
             string fileName = Path.Combine(folder, _cashefile.InternalName + "_Declarations.xml");
 
-            var settings = new XmlWriterSettings();
-            settings.Indent = true;
+            var settings = new XmlWriterSettings
+            {
+                Indent = true
+            };
             using (var writer = XmlWriter.Create(fileName, settings))
             {
                 writer.WriteStartDocument();
@@ -239,7 +231,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="expression"></param>
         private void OpenDatumAndAdd(ScriptExpression expression)
         {
-            Int32 openIndex = _expressions.Count;
+            int openIndex = _expressions.Count;
             if (PrintDebugInfo)
                 _logger.WriteLine("OPEN", $"Index: {openIndex}");
             _openDatums.Push(openIndex);

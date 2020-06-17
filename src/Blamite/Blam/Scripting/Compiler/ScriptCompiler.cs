@@ -10,37 +10,37 @@ namespace Blamite.Blam.Scripting.Compiler
     {
         // debug
         public bool PrintDebugInfo = true;
-        private Logger _logger;
+        private readonly Logger _logger;
 
         // lookups
-        private ICacheFile _cashefile;
-        private OpcodeLookup _opcodes;
-        private ScriptContext _scriptContext;
-        private Dictionary<string, UnitSeatMapping> _seatMappings;
+        private readonly ICacheFile _cashefile;
+        private readonly OpcodeLookup _opcodes;
+        private readonly ScriptContext _scriptContext;
+        private readonly Dictionary<string, UnitSeatMapping> _seatMappings;
         private Dictionary<string, ScriptInfo> _scriptLookup = new Dictionary<string, ScriptInfo>();
         private Dictionary<string, GlobalInfo> _mapGlobalsLookup = new Dictionary<string, GlobalInfo>();
-        private List<ParameterInfo> _variables = new List<ParameterInfo>();
+        private readonly List<ParameterInfo> _variables = new List<ParameterInfo>();
 
         // script tables
-        private StringTable _strings = new StringTable();
-        private List<ScriptExpression> _expressions = new List<ScriptExpression>();
-        private List<Script> _scripts = new List<Script>();
-        private List<ScriptGlobal> _globals = new List<ScriptGlobal>();
-        private List<ITag> _references = new List<ITag>();
+        private readonly StringTable _strings = new StringTable();
+        private readonly List<ScriptExpression> _expressions = new List<ScriptExpression>();
+        private readonly List<Script> _scripts = new List<Script>();
+        private readonly List<ScriptGlobal> _globals = new List<ScriptGlobal>();
+        private readonly List<ITag> _references = new List<ITag>();
 
         // utility
         private const uint _randomAddress = 0xCDCDCDCD;  // used for expressions where the string address doesn't point to the string table
         private DatumIndex _currentIndex;
-        private Stack<int> _openDatums = new Stack<int>();
-        private Stack<string> _expectedTypes = new Stack<string>();
+        private readonly Stack<int> _openDatums = new Stack<int>();
+        private readonly Stack<string> _expectedTypes = new Stack<string>();
 
         // branching
         private ushort _branchBoolIndex = 0;
-        private Dictionary<string, ScriptExpression[]> _genBranches = new Dictionary<string, ScriptExpression[]>();
+        private readonly Dictionary<string, ScriptExpression[]> _genBranches = new Dictionary<string, ScriptExpression[]>();
 
         // cond
         private string _condType;
-        private Stack<int> _condIndeces = new Stack<int>();
+        private readonly Stack<int> _condIndeces = new Stack<int>();
 
         // equality
         private bool _equality = false;
@@ -49,7 +49,7 @@ namespace Blamite.Blam.Scripting.Compiler
         private bool _set = false;
 
         // progress
-        private IProgress<int> _progress;
+        private readonly IProgress<int> _progress;
         private int _declarationCount = 0;
         private int _processedDeclarations = 0;
 
@@ -163,11 +163,14 @@ namespace Blamite.Blam.Scripting.Compiler
             }
 
             //create a new Global and add it to the table
-            ScriptGlobal glo = new ScriptGlobal();
-            glo.Name = context.ID().GetText();
             string valType = context.VALUETYPE().GetText();
-            glo.Type = (short)_opcodes.GetTypeInfo(valType).Opcode;
-            glo.ExpressionIndex = _currentIndex;
+            ScriptGlobal glo = new ScriptGlobal()
+            {
+                Name = context.ID().GetText(),
+                Type = (short)_opcodes.GetTypeInfo(valType).Opcode,
+                ExpressionIndex = _currentIndex,
+            };
+
             _globals.Add(glo);
 
             if (PrintDebugInfo)
@@ -450,7 +453,7 @@ namespace Blamite.Blam.Scripting.Compiler
             string valType = PopType();
 
             // handle "none" expressions
-            if(txt == "none")
+            if(txt == "none" && valType != "ai_line")
             {                
                 ushort opc = _opcodes.GetTypeInfo(valType).Opcode;
                 uint value = 0xFFFFFFFF;
@@ -471,7 +474,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 return;
             
             // handle regular expressions
-            if (ProcessLiteral(context, valType, valType))
+            if (ProcessLiteral(context, valType))
                 return;
 
             throw new CompilerException($"Failed to process \"{txt}\".", context);
@@ -572,7 +575,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 "SCRIPTREFERENCE" when info is ScriptInfo => info.ReturnType,
                 _ when expectedType == info.ReturnType => expectedType,
                 _ when info.ReturnType == "passthrough" => expectedType,
-                _ when Casting.CanBeCasted(info.ReturnType, expectedType, expectedType, _opcodes) => expectedType,
+                _ when Casting.CanBeCasted(info.ReturnType, expectedType, _opcodes) => expectedType,
                 _ => ""
             };
 
@@ -589,9 +592,7 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             string key = context.funcID().GetText() + "_" + expectedParamCount;
 
-            ScriptInfo info;
-
-            if(!_scriptLookup.TryGetValue(key, out info))
+            if(!_scriptLookup.TryGetValue(key, out ScriptInfo info))
             {
                 if (expectedReturnType == "SCRIPTREFERENCE")
                     throw new CompilerException("The compiler expected a Script Reference but was unable to find a matching one. " +
@@ -642,7 +643,7 @@ namespace Blamite.Blam.Scripting.Compiler
             // casting
             else
             {
-                if(Casting.CanBeCasted(_variables[index].ValueType, expectedReturnType, expectedReturnType, _opcodes))
+                if(Casting.CanBeCasted(_variables[index].ValueType, expectedReturnType, _opcodes))
                 {
                     valType = expectedReturnType;
                 }
@@ -656,8 +657,7 @@ namespace Blamite.Blam.Scripting.Compiler
             ushort opcode = valop;
 
             // (In)Equality functions are special
-            var grandparent = context.Parent.Parent as BS_ReachParser.CallContext;
-            if (grandparent != null)
+            if(context.Parent.Parent is BS_ReachParser.CallContext grandparent)
             {
                 string funcName = grandparent.funcID().GetText();
                 var funcInfo = _opcodes.GetFunctionInfo(funcName);
@@ -685,11 +685,14 @@ namespace Blamite.Blam.Scripting.Compiler
         private Script ScriptFromContext(BS_ReachParser.ScriDeclContext context)
         {
             // Create new Script
-            Script scr = new Script();
-            scr.Name = context.scriptID().GetText();
-            scr.ExecutionType = (short)_opcodes.GetScriptTypeOpcode(context.SCRIPTTYPE().GetText());
-            scr.ReturnType = (short)_opcodes.GetTypeInfo(context.retType().GetText()).Opcode;
-            scr.RootExpressionIndex = _currentIndex;
+            Script scr = new Script
+            {
+                Name = context.scriptID().GetText(),
+                ExecutionType = (short)_opcodes.GetScriptTypeOpcode(context.SCRIPTTYPE().GetText()),
+                ReturnType = (short)_opcodes.GetTypeInfo(context.retType().GetText()).Opcode,
+                RootExpressionIndex = _currentIndex
+            };
+
             var paramContext = context.scriptParams();
 
             //process parameters
@@ -705,9 +708,12 @@ namespace Blamite.Blam.Scripting.Compiler
                 // create parameters from the extracted strings
                 for (int i = 0; i < names.Count(); i++)
                 {
-                    var param = new ScriptParameter();
-                    param.Name = names[i];
-                    param.Type = (short)_opcodes.GetTypeInfo(valTypes[i]).Opcode;
+                    ScriptParameter param = new ScriptParameter
+                    {
+                        Name = names[i],
+                        Type = (short)_opcodes.GetTypeInfo(valTypes[i]).Opcode
+                    };
+
                     scr.Parameters.Add(param);
                     // create variable lookup
                     var info = new ParameterInfo(names[i], valTypes[i]);
@@ -863,11 +869,14 @@ namespace Blamite.Blam.Scripting.Compiler
             foreach(var branch in _genBranches)
             {
                 // create script entry
-                Script scr = new Script();
-                scr.Name = branch.Key;
-                scr.ReturnType = (short)_opcodes.GetTypeInfo("void").Opcode;
-                scr.ExecutionType = (short)_opcodes.GetScriptTypeOpcode("static");
-                scr.RootExpressionIndex = _currentIndex;
+                Script scr = new Script
+                {
+                    Name = branch.Key,
+                    ReturnType = (short)_opcodes.GetTypeInfo("void").Opcode,
+                    ExecutionType = (short)_opcodes.GetScriptTypeOpcode("static"),
+                    RootExpressionIndex = _currentIndex,
+                };
+
                 _scripts.Add(scr);
 
                 // create the begin call

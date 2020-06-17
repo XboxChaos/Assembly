@@ -133,50 +133,20 @@ namespace Blamite.Blam.Scripting
 
 		public void SetValue(object data)
 		{
-			uint result = 0xFFFFFFFF;
-			switch(data)
+			uint result = data switch
 			{
-				case uint u32:
-					result = u32;
-					break;
-
-				case ushort u16:
-					result = (uint)(0xFFFF << 16 | u16);
-					break;
-
-				case ushort[] u16Arr:
-					result = UInt16ArrToValue(u16Arr);
-					break;
-
-				case byte by:
-					result = (uint)(0xFFFFFF << 8 | by);
-					break;
-
-				case byte[] byArr:
-					result = ByteArrToValue(byArr);
-					break;
-
-				case float fl:
-					result = BitConverter.ToUInt32(BitConverter.GetBytes(fl), 0);
-					break;
-
-				case StringID sid:
-					result = sid.Value;
-					break;
-
-				case DatumIndex datum:
-					result = datum.Value;
-					break;
-
-				case ITag tag:
-					result = tag.Index.Value;
-					break;
-
-				default:
-					throw new NotImplementedException($"Unable to convert an object of the type {data.GetType()} " +
-						$"to an expression value.");
-			}
-
+				uint u32 => u32,
+				ushort u16 => (uint)(0xFFFF << 16 | u16),
+				ushort[] u16Arr => UInt16ArrToValue(u16Arr),
+				byte by => (uint)(0xFFFFFF << 8 | by),
+				byte[] byArr => ByteArrToValue(byArr),
+				float fl => BitConverter.ToUInt32(BitConverter.GetBytes(fl), 0),
+				StringID sid => sid.Value,
+				DatumIndex datum => datum.Value,
+				ITag tag => tag.Index.Value,
+				_ => throw new NotImplementedException($"Unable to convert an object of the type {data.GetType()} " +
+					$"to an expression value."),
+			};
 			Value = result;
 		}
 
