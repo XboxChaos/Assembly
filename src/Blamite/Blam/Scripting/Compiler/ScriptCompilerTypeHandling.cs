@@ -1,37 +1,64 @@
 ﻿using System;
 using System.Linq;
 using System.Globalization;
+using System.Collections.Generic;
+using Blamite.Util;
 
 namespace Blamite.Blam.Scripting.Compiler
 {
     public partial class ScriptCompiler : BS_ReachBaseListener
     {
-        private bool ProcessLiteral(BS_ReachParser.LitContext context, string expectedValueType, string initialType)
+        private bool ProcessLiteral(BS_ReachParser.LitContext context, string expectedValueType)
         {
             CastInfo info = _opcodes.GetTypeCast(expectedValueType);
-            if(info != null)
-            {                
-                if(!info.CastOnly && HandleValueType(context, expectedValueType))
+            // types which can be casted to.
+            if (info != null)
+            {
+                // check if casting is necessary.
+                if (HandleValueType(context, expectedValueType))
                 {
                     return true;
                 }
+                // casting
                 else
                 {
-                    foreach(string type in info.From)
-                    {   
-                        
-                        // recursion                                       
-                        if(type != initialType && ProcessLiteral(context, type, initialType))
+                    FIFOStack<string> remainingTypes = new FIFOStack<string>();
+                    List<string> processedTypes = new List<string>();
+
+                    // push immediate casts.
+                    foreach (string type in info.From)
+                    {
+                        remainingTypes.Push(type);
+                    }
+
+                    while (remainingTypes.Count > 0)
+                    {
+                        // check if this is the right value type.
+                        string typeToProcess = remainingTypes.Pop();
+                        if (HandleValueType(context, typeToProcess))
                         {
-                            // overwrite the value type of the added expression node with the casted type
-                            _expressions[_expressions.Count - 1].ReturnType = _opcodes.GetTypeInfo(initialType).Opcode;
+                            // overwrite the value type of the added expression node with the casted type.
+                            _expressions[_expressions.Count - 1].ReturnType = _opcodes.GetTypeInfo(expectedValueType).Opcode;
                             return true;
+                        }
+                        processedTypes.Add(typeToProcess);
+                        info = _opcodes.GetTypeCast(typeToProcess);
+                        if (info !=  null)
+                        {
+                            // push nested casts.
+                            foreach (string type in info.From)
+                            {
+                                if (!remainingTypes.Contains(type) && !processedTypes.Contains(type))
+                                {
+                                    remainingTypes.Push(type);
+                                }
+                            }
                         }
                     }
                     return false;
                 }
-
             }
+            // this type can't be casted to.
             else
             {
                 return HandleValueType(context, expectedValueType);
@@ -54,7 +81,6 @@ namespace Blamite.Blam.Scripting.Compiler
                         throw new CompilerException($"The Compiler encountered the literal {name} which could be of ANY value type." +
                                 "Guessing the value type would lead to too many inaccuracies.", context);
                     }
-
 
                 case "NUMBER": 
                     return IsNumber(context);
@@ -94,7 +120,7 @@ namespace Blamite.Blam.Scripting.Compiler
                     return IsIndex16(context, expectedValueType);
 
                 case "ai_line":
-                    return IsAiLine(context, false);
+                    return IsAiLine(context);
 
                 case "point_reference":
                     return IsPointReference(context);
@@ -164,7 +190,14 @@ namespace Blamite.Blam.Scripting.Compiler
                     return (IsObject_Name(context, expectedValueType, expectedValueType));
 
                 default:
-                    throw new NotImplementedException($"Unimplemented Value Type: \"{expectedValueType}\". Line: {context.Start.Line}");
+                    if(_opcodes.GetTypeInfo(expectedValueType) != null)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        throw new CompilerException($"Unknown Value Type: \"{expectedValueType}\".", context);
+                    }                   
             }
         }
 
@@ -243,10 +276,9 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 string txt = context.GetText();
 
-                Int32 num;
-                if (!Int32.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out num))
+                if (!int.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out int num))
                     throw new ArgumentException($"Failed to parse Long. Text: {txt}");
-                if(num >= Int16.MinValue && num <= Int16.MaxValue)
+                if(num >= short.MinValue && num <= short.MaxValue)
                 {
                     return IsShort(context);
                 }
@@ -599,7 +631,7 @@ namespace Blamite.Blam.Scripting.Compiler
             return true;
         }
 
-        private bool IsAiLine(BS_ReachParser.LitContext context, bool any)
+        private bool IsAiLine(BS_ReachParser.LitContext context)
         {
             string name = context.GetText().Trim('"');
             // check if this is a simple line reference
@@ -623,16 +655,11 @@ namespace Blamite.Blam.Scripting.Compiler
                     }
                 }
             }
-            // don't create an expression node when the line doesn't exist and the compiler is trying to guess the value type
-            //if(any && !exists)
-            //{
-            //    return false;
-            //}
 
             var opCode = _opcodes.GetTypeInfo("ai_line").Opcode;
             uint value;
 
-            if(exists)
+            if(exists || name == "none")
             {
                 value = _cashefile.StringIDs.FindStringID(name).Value;
             }
@@ -673,8 +700,7 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             string txt = context.GetText();
             var opCode = _opcodes.GetTypeInfo("long").Opcode;
-            int value;
-            if (!int.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out value))
+            if (!int.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out int value))
             {
                 return false;
             }
@@ -692,8 +718,7 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             string txt = context.GetText();
             var opCode = _opcodes.GetTypeInfo("short").Opcode;
-            short value;
-            if (!short.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out value))
+            if (!short.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out short value))
             {
                 return false;
             }
@@ -711,8 +736,7 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             string txt = context.GetText();
             var opCode = _opcodes.GetTypeInfo("real").Opcode;
-            float value;
-            if (!float.TryParse(txt, NumberStyles.Float, CultureInfo.InvariantCulture, out value))
+            if (!float.TryParse(txt, NumberStyles.Float, CultureInfo.InvariantCulture, out float value))
             {
                 return false;
             }
@@ -723,26 +747,6 @@ namespace Blamite.Blam.Scripting.Compiler
             _currentIndex.Increment();
             OpenDatumAndAdd(exp);
             EqualityPush("real");
-            return true;
-        }
-
-        private bool IsSID(BS_ReachParser.LitContext context)
-        {
-            string txt = context.GetText().Trim('"');
-            var id = _cashefile.StringIDs.FindStringID(txt);
-            if(id == StringID.Null)
-            {
-                return false;
-            }
-
-            var opCode = _opcodes.GetTypeInfo("string_id").Opcode;
-
-            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
-                _strings.Cache(txt), id, (short)context.Start.Line);
-
-            _currentIndex.Increment();
-            OpenDatumAndAdd(exp);
-            EqualityPush("string_id");
             return true;
         }
 
@@ -762,11 +766,6 @@ namespace Blamite.Blam.Scripting.Compiler
         private void CreateUnitSeatMapping(BS_ReachParser.LitContext context)
         {
             string txt = context.GetText().Trim('"');           
-
-            //if (!int.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out int contextIndex))
-            //{
-            //    throw new ArgumentException($"Failed to parse unit seat mapping index. Text: {txt}. Line: {context.Start.Line}");
-            //}
 
             if(!_seatMappings.TryGetValue(txt, out UnitSeatMapping mapping))
             {
@@ -793,70 +792,70 @@ namespace Blamite.Blam.Scripting.Compiler
 
         }
 
-        /// <summary>
-        /// Attempts to predict and create a suitable expression node, solely based on the parser context. 
-        /// ONLY USE THIS IF THERE IS ABSOLUTELY NO OTHER INFORMATION TO WORK OFF OF!
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns>true if a expression node could be created and false if not.</returns>
-        private bool GuessValueType(BS_ReachParser.LitContext context)
-        {
-            string txt = context.GetText().Trim('"');
-            if (context.BOOLIT() != null)
-            {
-                return IsBoolean(context);
-            }
-            else if(context.FLOAT() != null || context.INT() != null)
-            {
-                return IsNumber(context);
-            }
-            #region Hail Mary!
-            else
-            {
-                bool result = IsEnum32(context, "player", "player")
-                    || IsEnum32(context, "game_difficulty", "game_difficulty")
-                    || IsEnum32(context, "team", "team")
-                    || IsEnum32(context, "mp_team", "mp_team")
-                    || IsEnum32(context, "controller", "controller")
-                    || IsEnum32(context, "actor_type", "actor_type")
-                    || IsEnum32(context, "model_state", "model_state")
-                    || IsEnum32(context, "event", "event")
-                    || IsEnum32(context, "character_physics", "character_physics")
-                    || IsEnum32(context, "skull", "skull")
-                    || IsEnum32(context, "firing_point_evaluator", "firing_point_evaluator")
-                    || IsEnum32(context, "damage_region", "damage_region")
-                    || IsEnum32(context, "actor_type", "actor_type")
-                    || IsEnum32(context, "model_state", "model_state")
-                    || IsEnum32(context, "event", "event")
-                    || IsEnum32(context, "character_physics", "character_physics")
-                    || IsEnum16(context, "button_preset")
-                    || IsEnum16(context, "joystick_preset")
-                    || IsEnum16(context, "player_color")
-                    || IsEnum16(context, "player_model_choice")
-                    || IsEnum16(context, "voice_output_setting")
-                    || IsEnum16(context, "voice_mask")
-                    || IsEnum16(context, "subtitle_setting")
-                    || IsIndex16(context, "script")
-                    //|| IsIndex16(context, "ai_command_script")
-                    || IsIndex16(context, "trigger_volume")
-                    || IsIndex16(context, "cutscene_flag")
-                    || IsIndex16(context, "cutscene_camera_point")
-                    || IsIndex16(context, "cutscene_title")
-                    || IsIndex16(context, "starting_profile")
-                    || IsIndex16(context, "zone_set")
-                    || IsIndex16(context, "designer_zone")
-                    || IsObject_Name(context, "Object_name", "Object_name")
-                    || IsAI(context, "ai")
-                    || IsAiLine(context, true)
-                    || IsPointReference(context)
-                    || IsFolder(context)
-                    || IsDeviceGroup(context)
-                    || IsTagref(context, "any_tag")
-                    || IsSID(context)
-                    || IsString(context);
-                return result;
-            }
-            #endregion
-        }
+        ///// <summary>
+        ///// Attempts to predict and create a suitable expression node, solely based on the parser context. 
+        ///// ONLY USE THIS IF THERE IS ABSOLUTELY NO OTHER INFORMATION TO WORK OFF OF!
+        ///// </summary>
+        ///// <param name="context"></param>
+        ///// <returns>true if a expression node could be created and false if not.</returns>
+        //private bool GuessValueType(BS_ReachParser.LitContext context)
+        //{
+        //    string txt = context.GetText().Trim('"');
+        //    if (context.BOOLIT() != null)
+        //    {
+        //        return IsBoolean(context);
+        //    }
+        //    else if(context.FLOAT() != null || context.INT() != null)
+        //    {
+        //        return IsNumber(context);
+        //    }
+        //    #region Hail Mary!
+        //    else
+        //    {
+        //        bool result = IsEnum32(context, "player", "player")
+        //            || IsEnum32(context, "game_difficulty", "game_difficulty")
+        //            || IsEnum32(context, "team", "team")
+        //            || IsEnum32(context, "mp_team", "mp_team")
+        //            || IsEnum32(context, "controller", "controller")
+        //            || IsEnum32(context, "actor_type", "actor_type")
+        //            || IsEnum32(context, "model_state", "model_state")
+        //            || IsEnum32(context, "event", "event")
+        //            || IsEnum32(context, "character_physics", "character_physics")
+        //            || IsEnum32(context, "skull", "skull")
+        //            || IsEnum32(context, "firing_point_evaluator", "firing_point_evaluator")
+        //            || IsEnum32(context, "damage_region", "damage_region")
+        //            || IsEnum32(context, "actor_type", "actor_type")
+        //            || IsEnum32(context, "model_state", "model_state")
+        //            || IsEnum32(context, "event", "event")
+        //            || IsEnum32(context, "character_physics", "character_physics")
+        //            || IsEnum16(context, "button_preset")
+        //            || IsEnum16(context, "joystick_preset")
+        //            || IsEnum16(context, "player_color")
+        //            || IsEnum16(context, "player_model_choice")
+        //            || IsEnum16(context, "voice_output_setting")
+        //            || IsEnum16(context, "voice_mask")
+        //            || IsEnum16(context, "subtitle_setting")
+        //            || IsIndex16(context, "script")
+        //            //|| IsIndex16(context, "ai_command_script")
+        //            || IsIndex16(context, "trigger_volume")
+        //            || IsIndex16(context, "cutscene_flag")
+        //            || IsIndex16(context, "cutscene_camera_point")
+        //            || IsIndex16(context, "cutscene_title")
+        //            || IsIndex16(context, "starting_profile")
+        //            || IsIndex16(context, "zone_set")
+        //            || IsIndex16(context, "designer_zone")
+        //            || IsObject_Name(context, "Object_name", "Object_name")
+        //            || IsAI(context, "ai")
+        //            || IsAiLine(context)
+        //            || IsPointReference(context)
+        //            || IsFolder(context)
+        //            || IsDeviceGroup(context)
+        //            || IsTagref(context, "any_tag")
+        //            || IsSID(context)
+        //            || IsString(context);
+        //        return result;
+        //    }
+        //    #endregion
+        //}
     }
 }

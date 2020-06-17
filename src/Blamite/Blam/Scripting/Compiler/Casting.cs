@@ -11,70 +11,46 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private static readonly List<string> _flexTypes = new List<string>() { "ANY", "NUMBER", "GLOBALREFERENCE" };
 
-        //private static readonly Dictionary<string, string[]> _types = new Dictionary<string, string[]>()
-        //{
-        //    {"object", new string[]{"object_name", "player", "ai", "unit", "vehicle", "weapon", "device" , "scenery", "effect_scenery"} },
-        //    {"object_list", new string[]{"unit", "object", "vehicle"} },
-        //    {"unit", new string[]{"unit_name", "player", "ai", "vehicle", "object"} },
-        //    {"vehicle", new string[]{"vehicle_name", "ai"} },
-        //    {"weapon", new string[]{"weapon_name"} },
-        //    {"device", new string[]{"device_name"} },
-        //    {"scenery", new string[]{"scenery_name"} },
-        //    {"effect_scenery", new string[]{"effect_scenery_name"} },
-        //    {"real", new string[]{"short", "long"} },
-        //    {"short", new string[]{"real", "long"} },
-        //    {"long", new string[]{"real", "short"} },
-        //    {"player", new string[]{"unit"} },
-        //    {"boolean", new string[]{"short", "long"} }
-
-        //};
-
-        //public static bool CanBeCasted(string from, string to)
-        //{
-        //    bool found;
-        //    string[] children;
-        //    found = _types.TryGetValue(to, out children);
-        //    if(found)
-        //    {
-        //        return children.Contains(from);
-        //    }
-        //    else
-        //    {
-        //        return false;
-        //    }
-
-        //}
-
-        public static bool CanBeCasted(string from, string to, string initialTo, OpcodeLookup op)
+        public static bool CanBeCasted(string from, string to, OpcodeLookup op)
         {
-            if((IsNumType(from) && IsNumType(initialTo)) || (op.GetTypeInfo(from).Object && op.GetTypeInfo(initialTo).Object))
+            if ((IsNumType(from) && IsNumType(to)) || (op.GetTypeInfo(from).Object && op.GetTypeInfo(to).Object))
             {
                 return true;
             }
 
-            CastInfo info = op.GetTypeCast(to);
             // check if this type supports casting
+            CastInfo info = op.GetTypeCast(to);
             if (info != null)
             {
-                // check if the type is contained in the list
-                if(info.From.Contains(from))
-                {
-                    return true;
-                }
-                else
-                {
-                    // it wasn't contained...last chance...attempt to cast to one of it's intermediate types
-                    foreach(string child in info.From)
-                    {
-                        // recursion
-                        if(child != initialTo && CanBeCasted(from, child, initialTo, op))
-                        {
-                            return true;
-                        }
-                    }
+                List<string> casts = new List<string>();
+                List<string> processedTypes = new List<string>();
+                int addedTypes = info.From.Count;
+                casts.AddRange(info.From);
 
-                    return false;
+                // generate a list of all possible casts.
+                while (addedTypes > 0)
+                {
+                    int added = 0;
+                    string[] difference = casts.Except(processedTypes).ToArray();
+                    foreach (string cast in difference)
+                    {
+                        info = op.GetTypeCast(cast);
+                        if (info != null)
+                        {
+                            foreach (var type in info.From)
+                            {
+                                if (!casts.Contains(type))
+                                {
+                                    casts.Add(type);
+                                    added++;
+                                }
+                            }
+                        }
+                        processedTypes.Add(cast);
+                    }
+                    addedTypes = added;
                 }
+                return casts.Contains(from);
             }
             else
             {
