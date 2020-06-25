@@ -84,19 +84,10 @@ namespace Blamite.Blam
 				Salt = 0x8000;
 		}
 
-		/// <summary>
-		///		Returns the Datum Index that will follow this one.
-		/// </summary>
-		/// <returns></returns>
-		public DatumIndex Next()
-		{
-			ushort nextSalt = (ushort)(Salt + 1);
-			ushort nextIndex = (ushort)(Index + 1);
-
-			if (nextSalt == 0xFFFF)
-				nextSalt = 0x8000;
-
-			return new DatumIndex(nextSalt, nextIndex);
+		public DatumIndex Next 
+		{ 
+			get { return new DatumIndex((ushort)(Salt + 1), (ushort)(Index + 1)); }
+				
 		}
 
 		public override bool Equals(object obj)

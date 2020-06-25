@@ -3,17 +3,17 @@
 	/// <summary>
 	///     Contains information about a built-in scripting function.
 	/// </summary>
-	public class ScriptFunctionInfo : IScriptingConstantInfo
+	public class FunctionInfo : IScriptingConstantInfo
 	{
 		/// <summary>
-		///     Initializes a new instance of the <see cref="ScriptFunctionInfo" /> class.
+		///     Initializes a new instance of the <see cref="FunctionInfo" /> class.
 		/// </summary>
 		/// <param name="name">The name of the function.</param>
 		/// <param name="opcode">The opcode of the function.</param>
 		/// <param name="returnType">The return type of the function.</param>
 		/// <param name="flags">The flags for the function.</param>
 		/// <param name="parameterTypes">The parameter types for the function.</param>
-		public ScriptFunctionInfo(string name, ushort opcode, string returnType, uint flags, string group, string[] parameterTypes, bool isNull)
+		public FunctionInfo(string name, ushort opcode, string returnType, uint flags, string group, string[] parameterTypes, bool isNull)
 		{
 			Name = name;
 			ReturnType = returnType;

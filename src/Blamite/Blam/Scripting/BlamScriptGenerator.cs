@@ -60,7 +60,7 @@ namespace Blamite.Blam.Scripting
 
 					if (!_nextFunctionIsScript)
 					{
-						ScriptFunctionInfo info = _opcodes.GetFunctionInfo(expression.Opcode);
+						FunctionInfo info = _opcodes.GetFunctionInfo(expression.Opcode);
 						if (info != null)
 						{
 							if (info.Name.StartsWith("begin"))
@@ -272,7 +272,7 @@ namespace Blamite.Blam.Scripting
 					}
 					else
 					{
-						ScriptFunctionInfo info = _opcodes.GetFunctionInfo(expression.Opcode);
+						FunctionInfo info = _opcodes.GetFunctionInfo(expression.Opcode);
 						if (info == null)
 							output.Write("UNNAMED_OPCODE_" + expression.Opcode.ToString("X4") + "#" + expression.StringValue);
 						else

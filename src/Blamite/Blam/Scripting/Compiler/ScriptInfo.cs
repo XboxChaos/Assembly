@@ -29,16 +29,19 @@ namespace Blamite.Blam.Scripting.Compiler
             if (context.scriptParams() != null)
             {
                 string[] names = context.scriptParams().ID().Select(n => n.GetText()).ToArray();
-                string[] valTypes = context.scriptParams().VALUETYPE().Select(v => v.GetText()).ToArray();
+                string[] valueTypes = context.scriptParams().VALUETYPE().Select(v => v.GetText()).ToArray();
                 // extract strings from the context
 
-                if (names.Count() != valTypes.Count())
+                if (names.Count() != valueTypes.Count())
+                {
                     throw new InvalidOperationException($"Failed to create parameter information for Script \"{Name}\" - Mismatched parameter arrays. Line: {context.Start.Line}");
 
-                // create parameters from the extracted strings
-                for (int i = 0; i < names.Count(); i++)
+                }
+
+                // Create parameters from the extracted strings
+                for (ushort i = 0; i < names.Count(); i++)
                 {
-                    var param = new ParameterInfo(names[i], valTypes[i]);
+                    var param = new ParameterInfo(names[i], valueTypes[i], i);
                     Parameters.Add(param);
                 }
             }                

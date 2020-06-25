@@ -8,7 +8,7 @@ namespace Blamite.Blam.Scripting.Compiler
 {
     public partial class ScriptCompiler : BS_ReachBaseListener
     {
-        private bool ProcessLiteral(BS_ReachParser.LitContext context, string expectedValueType)
+        private bool ProcessLiteral(string expectedValueType, BS_ReachParser.LitContext context)
         {
             CastInfo info = _opcodes.GetTypeCast(expectedValueType);
             // types which can be casted to.
@@ -224,8 +224,7 @@ namespace Blamite.Blam.Scripting.Compiler
             var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression,
                 _randomAddress, val, (short)context.Start.Line);
 
-            _currentIndex.Increment();
-            OpenDatumAndAdd(exp);
+            OpenDatumAddExpressionIncrement(exp);
 
             EqualityPush("boolean");
             return true;
@@ -243,8 +242,7 @@ namespace Blamite.Blam.Scripting.Compiler
             var exp = new ScriptExpression(_currentIndex, info.Opcode, _opcodes.GetTypeInfo(castTo).Opcode, ScriptExpressionType.Expression,
                 _strings.Cache(txt), (uint)index, (short)context.Start.Line);
 
-            _currentIndex.Increment();
-            OpenDatumAndAdd(exp);
+            OpenDatumAddExpressionIncrement(exp);
 
             EqualityPush(valueType);
             return true;
@@ -262,8 +260,7 @@ namespace Blamite.Blam.Scripting.Compiler
             var exp = new ScriptExpression(_currentIndex, info.Opcode, info.Opcode, ScriptExpressionType.Expression, 
                 _strings.Cache(txt), (ushort)val, (short)context.Start.Line);
 
-            _currentIndex.Increment();
-            OpenDatumAndAdd(exp);
+            OpenDatumAddExpressionIncrement(exp);
 
             EqualityPush(expectedValueType);
             return true;
@@ -309,8 +306,7 @@ namespace Blamite.Blam.Scripting.Compiler
             var exp = new ScriptExpression(_currentIndex, op, _opcodes.GetTypeInfo(castTo).Opcode, ScriptExpressionType.Expression, 
                 _strings.Cache(name), (ushort)val, (short)context.Start.Line);
 
-            _currentIndex.Increment();
-            OpenDatumAndAdd(exp);
+            OpenDatumAddExpressionIncrement(exp);
 
             EqualityPush(valueType);
             return true;
@@ -425,8 +421,7 @@ namespace Blamite.Blam.Scripting.Compiler
             #endregion
             var exp = new ScriptExpression(_currentIndex, opCode, valType, ScriptExpressionType.Expression, _strings.Cache(txt), values, (short)context.Start.Line);
 
-            _currentIndex.Increment();
-            OpenDatumAndAdd(exp);
+            OpenDatumAddExpressionIncrement(exp);
 
             EqualityPush(expectedValueType);
             return true;
@@ -479,8 +474,7 @@ namespace Blamite.Blam.Scripting.Compiler
             var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
                 _strings.Cache(name), (ushort)val, (short)context.Start.Line);
 
-            _currentIndex.Increment();
-            OpenDatumAndAdd(exp);
+            OpenDatumAddExpressionIncrement(exp);
 
             EqualityPush(expectedValueType);
             return true;
@@ -500,8 +494,7 @@ namespace Blamite.Blam.Scripting.Compiler
             DatumIndex value = new DatumIndex(device_salt, (ushort)index);
 
             var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, _strings.Cache(name), value, (short)context.Start.Line);
-            _currentIndex.Increment();
-            OpenDatumAndAdd(exp);
+            OpenDatumAddExpressionIncrement(exp);
 
             EqualityPush("device_group");
             return true;
@@ -539,8 +532,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
                 var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
                     _strings.Cache(txt), value, (short)context.Start.Line);
-                _currentIndex.Increment();
-                OpenDatumAndAdd(exp);
+                OpenDatumAddExpressionIncrement(exp);
 
                 EqualityPush("point_reference");
                 return true;
@@ -563,8 +555,7 @@ namespace Blamite.Blam.Scripting.Compiler
             var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
                 _strings.Cache(name), (uint)index, (short)context.Start.Line);
 
-            _currentIndex.Increment();
-            OpenDatumAndAdd(exp);
+            OpenDatumAddExpressionIncrement(exp);
 
             EqualityPush("folder");
             return true;
@@ -580,9 +571,9 @@ namespace Blamite.Blam.Scripting.Compiler
             // strings with optional tag class suffixes have priority
             if (subStrings.LongCount() == 2)
             {
-                var ids = _cashefile.StringIDs;
-                ITagGroup cla = _cashefile.TagGroups.Single(c => ids.GetString(c.Description) == subStrings[1]);
-                ITag tag = _cashefile.Tags.FindTagByName(subStrings[0], cla, _cashefile.FileNames);
+                var ids = _cacheFile.StringIDs;
+                ITagGroup cla = _cacheFile.TagGroups.Single(c => ids.GetString(c.Description) == subStrings[1]);
+                ITag tag = _cacheFile.Tags.FindTagByName(subStrings[0], cla, _cacheFile.FileNames);
                 if (tag != null)
                 {
                     datum = tag.Index;
@@ -600,9 +591,9 @@ namespace Blamite.Blam.Scripting.Compiler
 
                 ITag tag;
                 if (classMagic == "BLAM")
-                    tag = _cashefile.Tags.FindTagByName(subStrings[0], _cashefile.FileNames);
+                    tag = _cacheFile.Tags.FindTagByName(subStrings[0], _cacheFile.FileNames);
                 else
-                    tag = _cashefile.Tags.FindTagByName(subStrings[0], classMagic, _cashefile.FileNames);
+                    tag = _cacheFile.Tags.FindTagByName(subStrings[0], classMagic, _cacheFile.FileNames);
 
 
                 if (tag != null)
@@ -624,8 +615,7 @@ namespace Blamite.Blam.Scripting.Compiler
             var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression,
                 _strings.Cache(txt), datum, (short)context.Start.Line);
 
-            _currentIndex.Increment();
-            OpenDatumAndAdd(exp);
+            OpenDatumAddExpressionIncrement(exp);
 
             EqualityPush(expectedValueType);
             return true;
@@ -634,9 +624,9 @@ namespace Blamite.Blam.Scripting.Compiler
         private bool IsAiLine(BS_ReachParser.LitContext context)
         {
             string name = context.GetText().Trim('"');
-            // check if this is a simple line reference
+            // Check if this is a simple line reference.
             bool exists = _scriptContext.AILines.Any(s => s.Name == name);
-            // check if a variant was specified
+            // Check if a variant was specified.
             if (!exists)
             {
                 var split = name.Split('_');
@@ -661,7 +651,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
             if(exists || name == "none")
             {
-                value = _cashefile.StringIDs.FindStringID(name).Value;
+                value = _cacheFile.StringIDs.FindStringID(name).Value;
             }
             else
             {
@@ -671,8 +661,7 @@ namespace Blamite.Blam.Scripting.Compiler
             var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression,
                 _strings.Cache(name), value, (short)context.Start.Line);
 
-            _currentIndex.Increment();
-            OpenDatumAndAdd(exp);
+            OpenDatumAddExpressionIncrement(exp);
             EqualityPush("ai_line");
             return true;
         }
@@ -689,8 +678,7 @@ namespace Blamite.Blam.Scripting.Compiler
             var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression,
                 value, value, (short)context.Start.Line);
 
-            _currentIndex.Increment();
-            OpenDatumAndAdd(exp);
+            OpenDatumAddExpressionIncrement(exp);
 
             EqualityPush("string");
             return true;
@@ -708,8 +696,7 @@ namespace Blamite.Blam.Scripting.Compiler
             var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
                 _randomAddress, (uint)value, (short)context.Start.Line);
 
-            _currentIndex.Increment();
-            OpenDatumAndAdd(exp);
+            OpenDatumAddExpressionIncrement(exp);
             EqualityPush("long");
             return true;
         }
@@ -726,8 +713,7 @@ namespace Blamite.Blam.Scripting.Compiler
             var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
                 _randomAddress, (ushort)value, (short)context.Start.Line);
 
-            _currentIndex.Increment();
-            OpenDatumAndAdd(exp);
+            OpenDatumAddExpressionIncrement(exp);
             EqualityPush("short");
             return true;
         }
@@ -744,8 +730,7 @@ namespace Blamite.Blam.Scripting.Compiler
             var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
                 _randomAddress, value, (short)context.Start.Line);
 
-            _currentIndex.Increment();
-            OpenDatumAndAdd(exp);
+            OpenDatumAddExpressionIncrement(exp);
             EqualityPush("real");
             return true;
         }
@@ -754,12 +739,11 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             string txt = context.GetText().Trim('"');
             var opCode = _opcodes.GetTypeInfo("string_id").Opcode;
-            StringID id = _cashefile.StringIDs.FindOrAddStringID(txt);
+            StringID id = _cacheFile.StringIDs.FindOrAddStringID(txt);
             var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression,
                 _strings.Cache(txt), id, (short)context.Start.Line);
 
-            _currentIndex.Increment();
-            OpenDatumAndAdd(exp);
+            OpenDatumAddExpressionIncrement(exp);
             EqualityPush("string_id");
         }
 
@@ -786,12 +770,9 @@ namespace Blamite.Blam.Scripting.Compiler
             var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
                 _strings.Cache(mapping.Name), values, (short)context.Start.Line);
 
-            _currentIndex.Increment();
-            OpenDatumAndAdd(exp);
+            OpenDatumAddExpressionIncrement(exp);
             EqualityPush("unit_seat_mapping");
-
         }
-
         ///// <summary>
         ///// Attempts to predict and create a suitable expression node, solely based on the parser context. 
         ///// ONLY USE THIS IF THERE IS ABSOLUTELY NO OTHER INFORMATION TO WORK OFF OF!

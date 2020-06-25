@@ -14,7 +14,7 @@ namespace Blamite.Blam.Scripting
 		}
 
 		public ScriptExpression(DatumIndex index, ushort opcode, ushort valType, ScriptExpressionType expType,
-			uint strOffset, object value, Int16 line)
+			uint strOffset, object value, short line)
 		{
 			Index = index;
 			Opcode = opcode;

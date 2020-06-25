@@ -4,11 +4,11 @@ namespace Blamite.Blam.Scripting
 {
 	public class OpcodeLookup
 	{
-		private readonly Dictionary<string, List<ScriptFunctionInfo>> _functionLookupByName =
-			new Dictionary<string, List<ScriptFunctionInfo>>();
+		private readonly Dictionary<string, List<FunctionInfo>> _functionLookupByName =
+			new Dictionary<string, List<FunctionInfo>>();
 
-		private readonly Dictionary<ushort, ScriptFunctionInfo> _functionLookupByOpcode =
-			new Dictionary<ushort, ScriptFunctionInfo>();
+		private readonly Dictionary<ushort, FunctionInfo> _functionLookupByOpcode =
+			new Dictionary<ushort, FunctionInfo>();
 
         private readonly Dictionary<string, GlobalInfo> _globalLookupByName =
             new Dictionary<string, GlobalInfo>();
@@ -35,14 +35,14 @@ namespace Blamite.Blam.Scripting
 			_typeLookupByOpcode[type.Opcode] = type;
 		}
 
-		public void RegisterFunction(ScriptFunctionInfo func)
+		public void RegisterFunction(FunctionInfo func)
 		{
 			_functionLookupByOpcode[func.Opcode] = func;
 
-			List<ScriptFunctionInfo> functions;
+			List<FunctionInfo> functions;
 			if (!_functionLookupByName.TryGetValue(func.Name, out functions))
 			{
-				functions = new List<ScriptFunctionInfo>();
+				functions = new List<FunctionInfo>();
 				_functionLookupByName[func.Name] = functions;
 			}
 			functions.Add(func);
@@ -91,17 +91,17 @@ namespace Blamite.Blam.Scripting
 			return null;
 		}
 
-		public ScriptFunctionInfo GetFunctionInfo(ushort opcode)
+		public FunctionInfo GetFunctionInfo(ushort opcode)
 		{
-			ScriptFunctionInfo result;
+			FunctionInfo result;
 			if (_functionLookupByOpcode.TryGetValue(opcode, out result))
 				return result;
 			return null;
 		}
 
-		public List<ScriptFunctionInfo> GetFunctionInfo(string name)
+		public List<FunctionInfo> GetFunctionInfo(string name)
 		{
-			List<ScriptFunctionInfo> result;
+			List<FunctionInfo> result;
 			if (_functionLookupByName.TryGetValue(name, out result))
 				return result;
 			return null;

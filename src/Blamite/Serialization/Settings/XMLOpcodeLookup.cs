@@ -78,7 +78,7 @@ namespace Blamite.Serialization.Settings
 				bool isNull = XMLUtil.GetBoolAttribute(element, "null", false);
 				string[] parameterTypes = element.Descendants("arg").Select(e => XMLUtil.GetStringAttribute(e, "type")).ToArray();
 
-				var info = new ScriptFunctionInfo(name, opcode, returnType, flags, group, parameterTypes, isNull);
+				var info = new FunctionInfo(name, opcode, returnType, flags, group, parameterTypes, isNull);
 				lookup.RegisterFunction(info);
 			}
 		}

@@ -9,7 +9,7 @@ namespace Blamite.Blam.Scripting.Compiler
     {
         private static readonly List<string> _numTypes = new List<string> { "real", "short", "long" };
 
-        private static readonly List<string> _flexTypes = new List<string>() { "ANY", "NUMBER", "GLOBALREFERENCE" };
+        private static readonly List<string> _flexTypes = new List<string>() { "ANY", "NUMBER", "GLOBALSREFERENCE" };
 
         public static bool CanBeCasted(string from, string to, OpcodeLookup op)
         {
@@ -18,7 +18,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 return true;
             }
 
-            // check if this type supports casting
+            // Check if this type supports casting
             CastInfo info = op.GetTypeCast(to);
             if (info != null)
             {
@@ -27,7 +27,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 int addedTypes = info.From.Count;
                 casts.AddRange(info.From);
 
-                // generate a list of all possible casts.
+                // Generate a list of all possible casts.
                 while (addedTypes > 0)
                 {
                     int added = 0;
@@ -50,6 +50,7 @@ namespace Blamite.Blam.Scripting.Compiler
                     }
                     addedTypes = added;
                 }
+                // Check if this generated list contains this cast.
                 return casts.Contains(from);
             }
             else

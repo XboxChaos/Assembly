@@ -10,15 +10,21 @@ namespace Blamite.Blam.Scripting.Compiler
 {
     public partial class ScriptCompiler : BS_ReachBaseListener
     {
-
-        private ScriptFunctionInfo RetrieveFunctionInfo(string function, int parameterCount, int line)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="function"></param>
+        /// <param name="parameterCount"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        private FunctionInfo RetrieveFunctionInfo(string function, int parameterCount, int line)
         {
-            List<ScriptFunctionInfo> infos = _opcodes.GetFunctionInfo(function);
+            List<FunctionInfo> infos = _opcodes.GetFunctionInfo(function);
             if (infos == null)
                 throw new CompilerException($"The opcode for function \"{function}\" with parameter count \"{parameterCount}\" couldn't be retrieved. Please ensure that this is a valid function name."
                                         +"\nAlternatively, a script declaration could be missing in your .hsc file." , function, line);
 
-            ScriptFunctionInfo result;
+            FunctionInfo result;
             // overloaded functions exist. select the right one based on its parameter count and whether the function is implemented or not.
             if (infos.Count > 1)
                 result = infos.Find(i => !i.Implemented && i.ParameterTypes.Count() == parameterCount);
@@ -52,7 +58,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 {
                     Directory.CreateDirectory(folder);
                 }
-                string fileName = Path.Combine(folder, _cashefile.InternalName + "_expressions.xml");
+                string fileName = Path.Combine(folder, _cacheFile.InternalName + "_expressions.xml");
 
                 var settings = new XmlWriterSettings
                 {
@@ -114,7 +120,7 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 Directory.CreateDirectory(folder);
             }
-            var path = Path.Combine(folder, _cashefile.InternalName + "_Strings.bin");
+            var path = Path.Combine(folder, _cacheFile.InternalName + "_Strings.bin");
             using (EndianWriter writer = new EndianWriter(new FileStream(path, FileMode.Create), Endian.BigEndian))
             {
                 _strings.Write(writer);
@@ -129,7 +135,7 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 Directory.CreateDirectory(folder);
             }
-            string fileName = Path.Combine(folder, _cashefile.InternalName + "_Declarations.xml");
+            string fileName = Path.Combine(folder, _cacheFile.InternalName + "_Declarations.xml");
 
             var settings = new XmlWriterSettings
             {
@@ -192,7 +198,7 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 var index = _openDatums.Pop();
 
-                if (PrintDebugInfo)
+                if (OutputDebugInfo)
                 {
                     _logger.WriteLine("CLOSE", $"Index: {index}");
                     _logger.WriteNewLine();
@@ -214,7 +220,7 @@ namespace Blamite.Blam.Scripting.Compiler
             if (_openDatums.Count > 0)
             {
                 var index = _openDatums.Pop();
-                if (PrintDebugInfo)
+                if (OutputDebugInfo)
                     _logger.WriteLine("LINK", $"Index: {index}");
 
                 if (index != -1)        // -1 means that this expression belongs to a global declaration
@@ -229,11 +235,15 @@ namespace Blamite.Blam.Scripting.Compiler
         /// Pushes the current Datum index to the Datum stack and adds the expression to the table.
         /// </summary>
         /// <param name="expression"></param>
-        private void OpenDatumAndAdd(ScriptExpression expression)
+        private void OpenDatumAddExpressionIncrement(ScriptExpression expression)
         {
             int openIndex = _expressions.Count;
-            if (PrintDebugInfo)
+            if (OutputDebugInfo)
+            {
                 _logger.WriteLine("OPEN", $"Index: {openIndex}");
+            }
+
+            _currentIndex.Increment();
             _openDatums.Push(openIndex);
             _expressions.Add(expression);
         }
@@ -249,8 +259,9 @@ namespace Blamite.Blam.Scripting.Compiler
             _openDatums.Push(index);
         }
 
-        private void AddExpression(ScriptExpression expression)
+        private void AddExpressionIncrement(ScriptExpression expression)
         {
+            _currentIndex.Increment();
             _expressions.Add(expression);
         }
 
@@ -277,7 +288,7 @@ namespace Blamite.Blam.Scripting.Compiler
             var rev = types.Reverse();
             foreach(string type in rev)
             {
-                if(PrintDebugInfo)
+                if(OutputDebugInfo)
                 {
                     _logger.WriteLine("TYPE", $"Push: {type}");
                 }
@@ -289,7 +300,7 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             for(int i = 0; i < count; i++)
             {
-                if (PrintDebugInfo)
+                if (OutputDebugInfo)
                 {
                     _logger.WriteLine("TYPE", $"Push: {type}");
                 }
@@ -309,7 +320,7 @@ namespace Blamite.Blam.Scripting.Compiler
         private string PopType()
         {
             string str = _expectedTypes.Pop();
-            if (PrintDebugInfo)
+            if (OutputDebugInfo)
             {
                 _logger.WriteLine("TYPE", $"Pop: {str}");
             }

@@ -13,13 +13,13 @@ namespace Blamite.Blam.Scripting.Compiler
         private readonly Logger _logger;
 
         // lookups
-        private readonly ICacheFile _cashefile;
+        private readonly ICacheFile _cacheFile;
         private readonly OpcodeLookup _opcodes;
         private readonly ScriptContext _scriptContext;
         private readonly Dictionary<string, UnitSeatMapping> _seatMappings;
         private Dictionary<string, ScriptInfo> _scriptLookup = new Dictionary<string, ScriptInfo>();
         private Dictionary<string, GlobalInfo> _mapGlobalsLookup = new Dictionary<string, GlobalInfo>();
-        private readonly List<ParameterInfo> _variables = new List<ParameterInfo>();
+        private readonly Dictionary<string, ParameterInfo> _parameterLookup = new Dictionary<string, ParameterInfo>();
 
         // script tables
         private readonly StringTable _strings = new StringTable();
@@ -36,10 +36,10 @@ namespace Blamite.Blam.Scripting.Compiler
 
         // branching
         private ushort _branchBoolIndex = 0;
-        private readonly Dictionary<string, ScriptExpression[]> _genBranches = new Dictionary<string, ScriptExpression[]>();
+        private readonly Dictionary<string, ScriptExpression[]> _generatedBranches = new Dictionary<string, ScriptExpression[]>();
 
         // cond
-        private string _condType;
+        private string _condReturnType;
         private readonly Stack<int> _condIndeces = new Stack<int>();
 
         // equality
@@ -61,7 +61,7 @@ namespace Blamite.Blam.Scripting.Compiler
         public ScriptCompiler(ICacheFile casheFile, ScriptContext context, OpcodeLookup opCodes, Dictionary<string, UnitSeatMapping> seatMappings, IProgress<int> progress, Logger logger)
         {
             _progress = progress;
-            _cashefile = casheFile;
+            _cacheFile = casheFile;
             _scriptContext = context;
             _opcodes = opCodes;
             _seatMappings = seatMappings;
@@ -76,6 +76,8 @@ namespace Blamite.Blam.Scripting.Compiler
             return _result;
         }
 
+        public bool OutputDebugInfo { get; set; } = false;
+
         /// <summary>
         /// Generate script and global lookups.
         /// </summary>
@@ -83,10 +85,16 @@ namespace Blamite.Blam.Scripting.Compiler
         public override void EnterHsc(BS_ReachParser.HscContext context)
         {
             if (context.gloDecl() != null)
+            {
                 _mapGlobalsLookup = context.gloDecl().Select((g, index) => new GlobalInfo(g, (ushort)index)).ToDictionary(g => g.Name);
 
+            }
+
             if (context.scriDecl() != null)
+            {
                 _scriptLookup = context.scriDecl().Select((s, index) => new ScriptInfo(s, (ushort)index)).ToDictionary(s => s.Name + "_" + s.Parameters.Count);
+
+            }
 
             _declarationCount = context.scriDecl().Count() + context.gloDecl().Count();
         }
@@ -113,9 +121,12 @@ namespace Blamite.Blam.Scripting.Compiler
         public override void EnterScriDecl(BS_ReachParser.ScriDeclContext context)
         {
             if(PrintDebugInfo)
-               _logger.WriteLine("SCRIPT", $"Enter: {context.scriptID().GetText()} ,  Line: {context.Start.Line}");
+            {
+                _logger.WriteLine("SCRIPT", $"Enter: {context.scriptID().GetText()} ,  Line: {GetLineNumber(context)}");
 
-            // create new script object and add it to the table
+            }
+
+            // Create new script object and add it to the table
             Script scr = ScriptFromContext(context);
             _scripts.Add(scr);
 
@@ -129,9 +140,8 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 PushTypes("void", expCount - 1);
             }
-            //PushTypes(retType, expCount);
 
-            CreateInitialBegin(_opcodes.GetTypeInfo(retType).Opcode);
+            CreateInitialBegin(retType);
         }
 
         /// <summary>
@@ -142,11 +152,11 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             if (PrintDebugInfo)
             {
-                _logger.WriteLine("SCRIPT", $"Exit: {context.scriptID().GetText()} , Line: {context.Start.Line}");
+                _logger.WriteLine("SCRIPT", $"Exit: {context.scriptID().GetText()} , Line: {GetLineNumber(context)}");
                 _logger.WriteNewLine();
             }
 
-            _variables.Clear();
+            _parameterLookup.Clear();
             CloseDatum();
             ReportProgress();
         }
@@ -159,15 +169,15 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             if (PrintDebugInfo)
             {
-                _logger.WriteLine("GLOBAL", $"Enter: {context.ID().GetText()} , Line: {context.Start.Line}");
+                _logger.WriteLine("GLOBAL", $"Enter: {context.ID().GetText()} , Line: {GetLineNumber(context)}");
             }
 
-            //create a new Global and add it to the table
-            string valType = context.VALUETYPE().GetText();
+            // Create a new Global and add it to the table.
+            string valueType = context.VALUETYPE().GetText();
             ScriptGlobal glo = new ScriptGlobal()
             {
                 Name = context.ID().GetText(),
-                Type = (short)_opcodes.GetTypeInfo(valType).Opcode,
+                Type = (short)_opcodes.GetTypeInfo(valueType).Opcode,
                 ExpressionIndex = _currentIndex,
             };
 
@@ -176,9 +186,9 @@ namespace Blamite.Blam.Scripting.Compiler
             if (PrintDebugInfo)
             {
                 _logger.WriteLine("GLOBAL", $"Open: -1");
-                _logger.WriteLine("GLOBAL", $"Type Push: {valType}");
+                _logger.WriteLine("GLOBAL", $"Type Push: {valueType}");
             }
-            PushTypes(valType);
+            PushTypes(valueType);
             _openDatums.Push(-1);
         }
 
@@ -207,32 +217,27 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             if (PrintDebugInfo)
             {
-                _logger.WriteLine("CALL", $"Enter: {context.funcID().GetText()} , Line: {context.Start.Line}");
+                _logger.WriteLine("CALL", $"Enter: {context.funcID().GetText()} , Line: {GetLineNumber(context)}");
             }
 
             LinkDatum();
 
-            // retrieve information from the context.
+            // Retrieve information from the context.
             string name = context.funcID().GetText();
             string expectedType = PopType();
-            int contextParamCount = context.expr().Count();
+            int contextParameterCount = context.expr().Count();
 
-            // handle script references.
-            if (IsScriptReference(context, expectedType, contextParamCount))
+            // Handle script references.
+            if (IsScriptReference(expectedType, contextParameterCount, context))
             {
                 return;
             }
 
-            // handle calls.
-            ScriptFunctionInfo info = RetrieveFunctionInfo(name, contextParamCount, context.Start.Line);
-
-            // equality
+            FunctionInfo info = RetrieveFunctionInfo(name, contextParameterCount, GetLineNumber(context));
+            ushort returnTypeOpcode = DetermineReturnTypeOpcode(info, expectedType, context);
             EqualityPush(info.ReturnType);
-            PushCallParameters(info, context, contextParamCount, expectedType);
-
-            ushort returnType = GetTypeOpCode(info, expectedType, context);
-
-            CreateFunctionCall(returnType, info, (short)context.Start.Line);
+            PushCallParameters(info, contextParameterCount, expectedType, context);
+            CreateFunctionCall(info, returnTypeOpcode, GetLineNumber(context));
         }
 
         /// <summary>
@@ -244,7 +249,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
             if (PrintDebugInfo)
             {
-                _logger.WriteLine("CALL", $"Exit: {context.funcID().GetText()} , Line: {context.Start.Line}");
+                _logger.WriteLine("CALL", $"Exit: {context.funcID().GetText()} , Line: {GetLineNumber(context)}");
             }
 
             CloseDatum();
@@ -254,11 +259,11 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             if (PrintDebugInfo)
             {
-                _logger.WriteLine("BRANCH", $"Enter , Line: {context.Start.Line}");
+                _logger.WriteLine("BRANCH", $"Enter , Line: {GetLineNumber(context)}");
             }
 
             LinkDatum();
-            _ = PopType();    // just ignore the type for now
+            _ = PopType();    // Just ignore the type for now.
 
             // branch excepts two parameters
             if (context.expr().Count() != 2)
@@ -267,8 +272,8 @@ namespace Blamite.Blam.Scripting.Compiler
             }
 
             PushTypes("boolean", "SCRIPTREFERENCE");
-            ScriptFunctionInfo info = _opcodes.GetFunctionInfo("branch")[0];
-            CreateFunctionCall(_opcodes.GetTypeInfo("void").Opcode, info, (short)context.Start.Line);
+            FunctionInfo info = _opcodes.GetFunctionInfo("branch").First();
+            CreateFunctionCall(info, _opcodes.GetTypeInfo("void").Opcode, GetLineNumber(context));
 
             _branchBoolIndex = _currentIndex.Index;
         }
@@ -280,35 +285,33 @@ namespace Blamite.Blam.Scripting.Compiler
                 _logger.WriteLine("BRANCH", $"Exit , Line: {context.Start.Line}");
             }
 
-            // generate the script name
+            // Generate the script name.
             BS_ReachParser.ScriDeclContext scriptContext = GetParentScriptContext(context);
             string fromScript = scriptContext.scriptID().GetText();
 
             var parameters = context.expr();
             if (parameters[1].call() == null)
             {
-                throw new CompilerException("A branch statements second parameter was not a script name.", context);
+                throw new CompilerException("A branch statements second parameter was not a script.", context);
             }
             var param = parameters[1].call();
             string toScript = param.funcID().GetText();
-            string genName = fromScript + "_to_" + toScript;
+            string generatedName = fromScript + "_to_" + toScript;
 
             ScriptExpression[] expressions = new ScriptExpression[2];
-            // grab boolean expression
-            var bol = _expressions[_branchBoolIndex].Clone();
-            expressions[0] = bol;
-            
-            // grab script ref
-            var sr = _expressions[bol.Next.Index].Clone();
-            expressions[1] = sr;
-            // modify the original script ref. the opcode points to the generated script
-            _expressions[bol.Next.Index].Opcode = (ushort)_scriptLookup.Count;
-            // add the generated script to the lookup
-            ScriptInfo decl = new ScriptInfo(genName, "static", "void", (ushort)_scriptLookup.Count);
-            string infoKey = decl.Name + "_" + 0;
-            _scriptLookup[infoKey] = decl;
+            var condition = _expressions[_branchBoolIndex].Clone();
+            var scriptReference = _expressions[condition.Next.Index].Clone();
+            expressions[0] = condition;
+            expressions[1] = scriptReference;
+            // Modify the original script reference. The opcode points to the generated script.
+            _expressions[condition.Next.Index].Opcode = (ushort)_scriptLookup.Count;
 
-            _genBranches.Add(genName, expressions);
+            // Add the generated script to the lookup.
+            ScriptInfo info = new ScriptInfo(generatedName, "static", "void", (ushort)_scriptLookup.Count);
+            string infoKey = info.Name + "_" + 0;
+            _scriptLookup[infoKey] = info;
+            _generatedBranches[generatedName] = expressions;
+
             CloseDatum();
         }
 
@@ -319,13 +322,14 @@ namespace Blamite.Blam.Scripting.Compiler
                 _logger.WriteLine("COND", $"Enter, Line: {GetLineNumber(context)}");
             }
 
-            // tell the groups what type to expect.
-            _condType = PopType();
+            // Tell the groups what type to expect.
+            _condReturnType = PopType();
 
-            if (_condType == "ANY")
-                _condType = "void";
+            // Is this still necessary?
+            //if (_condReturnType == "ANY")
+            //    _condReturnType = "void";
 
-            // push the index to the first group, so that we can open it later on.
+            // Push the index to the first group, so that we can open it later on.
             _condIndeces.Push(_expressions.Count);
         }
 
@@ -336,18 +340,25 @@ namespace Blamite.Blam.Scripting.Compiler
                 _logger.WriteLine("COND", $"Exit, Line: {GetLineNumber(context)}");
             }
 
-            // Link to the compiler begin of the last open cond group.
+            // Link to the compiler generated begin call of the last open cond group.
             LinkDatum();
 
             // Add the final expression of the cond construct. Not sure why the official Blam Script compiler adds these.
-            ushort typeOp = _opcodes.GetTypeInfo(_condType).Opcode;
-            ScriptExpression exp = new ScriptExpression(_currentIndex, typeOp, typeOp, ScriptExpressionType.Expression, DatumIndex.Null ,
-               _randomAddress, (uint)0, 0);
+            ushort typeOpcode = _opcodes.GetTypeInfo(_condReturnType).Opcode;
+            var expression = new ScriptExpression
+            {
+                Index = _currentIndex,
+                Opcode = typeOpcode,
+                ReturnType = typeOpcode,
+                Type = ScriptExpressionType.Expression,
+                Next = DatumIndex.Null,
+                StringOffset = _randomAddress,
+                Value = 0,
+                LineNumber = 0
+            };
+            AddExpressionIncrement(expression);
 
-            _currentIndex.Increment();
-            AddExpression(exp);
-
-            // open the first group.
+            // Open the first group.
             int firstGroupIndex = _condIndeces.Pop();
             OpenDatum(firstGroupIndex);
         }
@@ -362,26 +373,38 @@ namespace Blamite.Blam.Scripting.Compiler
             // Link to the previous expression or cond group.
             LinkDatum();
 
-            ushort expectedOp = _opcodes.GetTypeInfo(_condType).Opcode;
-            ushort funcNameOp = _opcodes.GetTypeInfo("function_name").Opcode;
-            var ifInfo = _opcodes.GetFunctionInfo("if")[0];
-
             // push the types of the group members.
-            PushTypes(_condType, context.expr().Count() - 1);
+            PushTypes(_condReturnType, context.expr().Count() - 1);
             PushTypes("boolean");
 
-            ScriptExpression compIf = new ScriptExpression(_currentIndex, ifInfo.Opcode, expectedOp, 
-                ScriptExpressionType.Group, _randomAddress, _currentIndex.Next(), 0);
+            var ifInfo = _opcodes.GetFunctionInfo("if")[0];
+            var compilerIf = new ScriptExpression
+            {
+                Index = _currentIndex,
+                Opcode = ifInfo.Opcode,
+                ReturnType = _opcodes.GetTypeInfo(_condReturnType).Opcode,
+                Type = ScriptExpressionType.Group,
+                Next = DatumIndex.Null,
+                StringOffset = _randomAddress,
+                LineNumber = 0
+            };
+            compilerIf.SetValue(_currentIndex.Next);
 
             // Keep the if call closed. We will open the initial one later on.
-            _currentIndex.Increment();
-            AddExpression(compIf);
+            AddExpressionIncrement(compilerIf);
 
-            ScriptExpression compIfName = new ScriptExpression(_currentIndex, ifInfo.Opcode, funcNameOp, ScriptExpressionType.Expression,
-                _strings.Cache(ifInfo.Name), (uint)0, GetLineNumber(context));
-
-            _currentIndex.Increment();
-            OpenDatumAndAdd(compIfName);
+            var compilerIfName = new ScriptExpression
+            {
+                Index = _currentIndex,
+                Opcode = ifInfo.Opcode,
+                ReturnType = _opcodes.GetTypeInfo("function_name").Opcode,
+                Type = ScriptExpressionType.Expression,
+                Next = DatumIndex.Null,
+                StringOffset = _strings.Cache(ifInfo.Name),
+                Value = 0,
+                LineNumber = GetLineNumber(context)
+            };
+            OpenDatumAddExpressionIncrement(compilerIfName);
 
             // Push the index to the condition so that we can modify it later on.
             _condIndeces.Push(_expressions.Count);
@@ -394,43 +417,55 @@ namespace Blamite.Blam.Scripting.Compiler
                 _logger.WriteLine("COND GROUP", $"Exit, Line: {GetLineNumber(context)}");
             }
 
-            // close the final value expression.
+            // Close the final value expression.
             CloseDatum();
 
             int index = _condIndeces.Pop();
-            ushort funcNameOp = _opcodes.GetTypeInfo("function_name").Opcode;
             var beginInfo = _opcodes.GetFunctionInfo("begin")[0];
 
             // Grab the index to value expression of the cond group. Modify the condition expression afterwards.
-            // Next has to point to the begin group, which is added by the compiler.
-            var valueExpDatum = _expressions[index].Next;
+            // Next has to point to the begin call, which is added by the compiler.
+            var valueExpressionDatum = _expressions[index].Next;
             _expressions[index].Next = _currentIndex;
 
-            ScriptExpression compilerBegin = new ScriptExpression(_currentIndex, beginInfo.Opcode, _opcodes.GetTypeInfo(_condType).Opcode,
-                ScriptExpressionType.Group, _randomAddress, _currentIndex.Next(), 0);
+            var compilerBeginCall = new ScriptExpression
+            {
+                Index = _currentIndex,
+                Opcode = beginInfo.Opcode,
+                ReturnType = _opcodes.GetTypeInfo(_condReturnType).Opcode,
+                Type = ScriptExpressionType.Group,
+                Next = DatumIndex.Null,
+                StringOffset = _randomAddress,
+                LineNumber = 0
+            };
+            compilerBeginCall.SetValue(_currentIndex.Next);
+            OpenDatumAddExpressionIncrement(compilerBeginCall);
 
-            _currentIndex.Increment();
-            OpenDatumAndAdd(compilerBegin);
-
-            ScriptExpression compilerBeginName = new ScriptExpression(_currentIndex, beginInfo.Opcode, funcNameOp, ScriptExpressionType.Expression, valueExpDatum, 
-                _strings.Cache(beginInfo.Name), (uint)0, 0);
-
-            _currentIndex.Increment();
-            AddExpression(compilerBeginName);
+            var compilerBeginName = new ScriptExpression
+            {
+                Index = _currentIndex,
+                Opcode = beginInfo.Opcode,
+                ReturnType = _opcodes.GetTypeInfo("function_name").Opcode,
+                Type = ScriptExpressionType.Expression,
+                Next = valueExpressionDatum,
+                StringOffset = _strings.Cache(beginInfo.Name),
+                Value = 0,
+                LineNumber = 0
+            };
+            AddExpressionIncrement(compilerBeginName);
         }
 
         public override void EnterGloRef(BS_ReachParser.GloRefContext context)
         {
             if (PrintDebugInfo)
             {
-                _logger.WriteLine("GloRef", $"Enter: {context.GetText()} , Line: {context.Start.Line}");
+                _logger.WriteLine("GloRef", $"Enter: {context.GetText()} , Line: {GetLineNumber(context)}");
             }
 
             LinkDatum();
+            string expectedType = PopType();
 
-            string retType = PopType();
-
-            if (!IsGlobalReference(context, retType))
+            if (!IsGlobalsReference(expectedType, context))
             {
                 throw new CompilerException("The parser detected a Globals Reference, but the expression doesn't seem to be one.", context);
             }
@@ -444,63 +479,69 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             if (PrintDebugInfo)
             {
-                _logger.WriteLine("LITERAL", $"Enter: {context.GetText()} , Line: {context.Start.Line}");
+                _logger.WriteLine("LITERAL", $"Enter: {context.GetText()} , Line: {GetLineNumber(context)}");
             }
 
             LinkDatum();
 
-            string txt = context.GetText();
-            string valType = PopType();
+            string text = context.GetText();
+            string expectedType = PopType();
 
-            // handle "none" expressions
-            if(txt == "none" && valType != "ai_line")
+            // Handle "none" expressions. The Value field of ai_line expressions stores their string offset.
+            // Therefore the Value is not -1 if the expression is "none".
+            if(text == "none" && expectedType != "ai_line")
             {                
-                ushort opc = _opcodes.GetTypeInfo(valType).Opcode;
-                uint value = 0xFFFFFFFF;
-                var exp = new ScriptExpression(_currentIndex, opc, opc, ScriptExpressionType.Expression,
-                    _strings.Cache(txt), value, (short)context.Start.Line);
-
-                _currentIndex.Increment();
-                OpenDatumAndAdd(exp);
+                ushort opcode = _opcodes.GetTypeInfo(expectedType).Opcode;
+                var expression = new ScriptExpression
+                {
+                    Index = _currentIndex,
+                    Opcode = opcode,
+                    ReturnType = opcode,
+                    Type = ScriptExpressionType.Expression,
+                    Next = DatumIndex.Null,
+                    StringOffset = _strings.Cache(text),
+                    Value = 0xFFFFFFFF,
+                    LineNumber = GetLineNumber(context)
+                };
+                OpenDatumAddExpressionIncrement(expression);
                 return;
             }
 
             // handle script variable references
-            if (IsScriptVariable(context, valType))
+            if (IsScriptParameter(expectedType, context))
                 return;
 
             // handle global references
-            if (IsGlobalReference(context, valType))
+            if (IsGlobalsReference(expectedType, context))
                 return;
             
             // handle regular expressions
-            if (ProcessLiteral(context, valType))
+            if (ProcessLiteral(expectedType, context))
                 return;
 
-            throw new CompilerException($"Failed to process \"{txt}\".", context);
+            throw new CompilerException($"Failed to process \"{text}\".", context);
         }
 
-        private bool IsGlobalReference(ParserRuleContext context, string expReturnType)
+        private bool IsGlobalsReference(string expectedType, ParserRuleContext context)
         {
             string text = context.GetText();
             GlobalInfo globalInfo = _opcodes.GetGlobalInfo(text);
             object value;
 
-            // engine global.
+            // Engine global.
             if(globalInfo != null)
             {
                 ushort[] arr = { 0xFFFF, globalInfo.MaskedOpcode };
                 value = arr;
-
             }
-            // map global.
+            // Map global.
             else if(_mapGlobalsLookup.ContainsKey(text))
             {
                 globalInfo = _mapGlobalsLookup[text];
                 value = (uint)globalInfo.Opcode;
             }
-            // not a global...
-            else if (expReturnType == "GLOBALREFERENCE")
+            // Not a global...
+            else if (expectedType == "GLOBALREFERENCE")
             {
                 throw new CompilerException($"GLOBALREFERENCE: No matching global could be found.", context);
             }
@@ -509,28 +550,34 @@ namespace Blamite.Blam.Scripting.Compiler
                 return false;
             }
 
-            ushort typeOp = GetTypeOpCode(globalInfo, expReturnType, context);
-            ushort opc = GetGlobalOpCode(typeOp, context);
-
-            ScriptExpression exp = new ScriptExpression(_currentIndex, opc, typeOp, ScriptExpressionType.GlobalsReference,
-                _strings.Cache(text), value, (short)context.Start.Line);
-
-            _currentIndex.Increment();
-            OpenDatumAndAdd(exp);
+            ushort returnTypeOpcode = DetermineReturnTypeOpcode(globalInfo, expectedType, context);
+            ushort opcode = GetGlobalOpCode(returnTypeOpcode, context);
+            var expression = new ScriptExpression
+            {
+                Index = _currentIndex,
+                Opcode = opcode,
+                ReturnType = returnTypeOpcode,
+                Type = ScriptExpressionType.GlobalsReference,
+                Next = DatumIndex.Null,
+                StringOffset = _strings.Cache(text),
+                LineNumber = GetLineNumber(context)
+            };
+            expression.SetValue(value);
+            OpenDatumAddExpressionIncrement(expression);
 
             return true;
         }
 
-        private ushort GetGlobalOpCode(ushort retTypeOpCode, RuleContext context)
+        private ushort GetGlobalOpCode(ushort expectedTypeOpcode, RuleContext context)
         {
-            var grandparent = GetParentContext(context, BS_ReachParser.RULE_call);
-            ushort opcode = retTypeOpCode;
+            RuleContext grandparent = GetParentContext(context, BS_ReachParser.RULE_call);
+            ushort opcode = expectedTypeOpcode;
 
-            // "set" and (In)Equality functions are special
+            // "set" and (in)equality functions are special.
             if (grandparent is BS_ReachParser.CallContext call)
             {
                 string funcName = call.funcID().GetText();
-                List<ScriptFunctionInfo> funcInfo = _opcodes.GetFunctionInfo(funcName);
+                List<FunctionInfo> funcInfo = _opcodes.GetFunctionInfo(funcName);
 
                 if (funcInfo != null)
                 {
@@ -538,7 +585,6 @@ namespace Blamite.Blam.Scripting.Compiler
                     {
                         opcode = 0;
                     }
-
                     else if (_set && funcInfo[0].Group == "Set")
                     {
                         opcode = 0xFFFF;
@@ -547,26 +593,24 @@ namespace Blamite.Blam.Scripting.Compiler
                         {
                             _logger.WriteLine("SET", $"Set Push!");
                         }
-                        // the next parameter must have the same return type as this global
-                        PushTypes(_opcodes.GetTypeInfo(retTypeOpCode).Name);
+                        // The next parameter must have the same return type as this global
+                        PushTypes(_opcodes.GetTypeInfo(expectedTypeOpcode).Name);
                         _set = false;
                     }
                 }
             }
-
-            // equality
-            EqualityPush(_opcodes.GetTypeInfo(retTypeOpCode).Name);
+            EqualityPush(_opcodes.GetTypeInfo(expectedTypeOpcode).Name);
 
             return opcode;
         }
 
-        private ushort GetTypeOpCode(IScriptingConstantInfo info, string expectedType, ParserRuleContext context)
+        private ushort DetermineReturnTypeOpcode(IScriptingConstantInfo info, string expectedType, ParserRuleContext context)
         {
             string calculatedType = expectedType switch
             {
                 "ANY" when info.ReturnType == "passthrough" => "void",
                 "ANY" => info.ReturnType,
-                // cast globals in arithmetic functions to real.
+                // Cast globals in arithmetic functions to real.
                 "NUMBER" when info is GlobalInfo && Casting.IsNumType(info.ReturnType) => "real",
                 "NUMBER" when Casting.IsNumType(info.ReturnType) => info.ReturnType,
                 "NUMBER" when !Casting.IsNumType(info.ReturnType) => "",
@@ -588,10 +632,9 @@ namespace Blamite.Blam.Scripting.Compiler
             return _opcodes.GetTypeInfo(calculatedType).Opcode;
         }
 
-        private bool IsScriptReference(BS_ReachParser.CallContext context, string expectedReturnType, int expectedParamCount)
+        private bool IsScriptReference(string expectedReturnType, int expectedParameterCount, BS_ReachParser.CallContext context)
         {
-            string key = context.funcID().GetText() + "_" + expectedParamCount;
-
+            string key = context.funcID().GetText() + "_" + expectedParameterCount;
             if(!_scriptLookup.TryGetValue(key, out ScriptInfo info))
             {
                 if (expectedReturnType == "SCRIPTREFERENCE")
@@ -601,60 +644,60 @@ namespace Blamite.Blam.Scripting.Compiler
                     return false;
             }
 
-            ushort retType = GetTypeOpCode(info, expectedReturnType, context);
+            ushort returnTypeOpcode = DetermineReturnTypeOpcode(info, expectedReturnType, context);
 
-            // check for equality functions
-            EqualityPush(_opcodes.GetTypeInfo(retType).Name);
+            // Check for equality functions.
+            EqualityPush(_opcodes.GetTypeInfo(returnTypeOpcode).Name);
 
-            // handle parameters. Push them to the stack
-            if (expectedParamCount > 0)
+            // Push the parameters to the type stack.
+            if (expectedParameterCount > 0)
             {
-                string[] types = info.Parameters.Select(p=> p.ValueType).ToArray();
-                PushTypes(types);
+                string[] parameterTypes = info.Parameters.Select(p=> p.ReturnType).ToArray();
+                PushTypes(parameterTypes);
             }
 
-            // create Script Reference node
-            ushort valType = _opcodes.GetTypeInfo(retType).Opcode;
-            CreateScriptReference(info.Name, info.Opcode, valType, (short)context.Start.Line);
+            // Create a script reference node.
+            CreateScriptReference(info, returnTypeOpcode, GetLineNumber(context));
 
             return true;
         }
 
-        private bool IsScriptVariable(BS_ReachParser.LitContext context, string expectedReturnType)
+        private bool IsScriptParameter(string expectedReturnType, BS_ReachParser.LitContext context)
         {
-            // this script doesn't have parameters
-            if (_variables.Count == 0)
-                return false;
-
-            string name = context.GetText();
-            int index = _variables.FindIndex(v=>v.Name == name);
-
-            // no match
-            if (index == -1)
-                return false;
-
-            string valType;
-
-            // casting is not required
-            if(Casting.IsFlexType(expectedReturnType) || expectedReturnType == _variables[index].ValueType)
+            // This script doesn't have parameters.
+            if (_parameterLookup.Count == 0)
             {
-                valType = _variables[index].ValueType;
-            }
-            // casting
-            else
-            {
-                if(Casting.CanBeCasted(_variables[index].ValueType, expectedReturnType, _opcodes))
-                {
-                    valType = expectedReturnType;
-                }
-                else
-                {
-                    throw new CompilerException($"The variable  \"{name}\" can't be casted from \"{_variables[index].ValueType}\" to \"{expectedReturnType}\".", context);
-                }
+                return false;
             }
 
-            ushort valop = _opcodes.GetTypeInfo(valType).Opcode;
-            ushort opcode = valop;
+            string text = context.GetText().Trim('"');
+
+            // The script doesn't have a parameter with this name.
+            if (!_parameterLookup.TryGetValue(text, out ParameterInfo info))
+            {
+                return false;
+            }
+
+            //// Casting is not required.
+            //if(Casting.IsFlexType(expectedReturnType) || expectedReturnType == info.ReturnType)
+            //{
+            //    returnType = info.ReturnType;
+            //}
+            //// Casting.
+            //else
+            //{
+            //    if(Casting.CanBeCasted(info.ReturnType, expectedReturnType, _opcodes))
+            //    {
+            //        returnType = expectedReturnType;
+            //    }
+            //    else
+            //    {
+            //        throw new CompilerException($"The parameter  \"{text}\" can't be casted from \"{info.ReturnType}\" to \"{expectedReturnType}\".", context);
+            //    }
+            //}
+
+            ushort returnTypeOpcode = DetermineReturnTypeOpcode(info, expectedReturnType, context);
+            ushort opcode = returnTypeOpcode;
 
             // (In)Equality functions are special
             if(context.Parent.Parent is BS_ReachParser.CallContext grandparent)
@@ -669,15 +712,20 @@ namespace Blamite.Blam.Scripting.Compiler
                     }
                 }
             }
-            EqualityPush(_variables[index].ValueType);
 
-            // create script parameter reference
-            var exp = new ScriptExpression(_currentIndex, opcode, valop, ScriptExpressionType.ParameterReference,
-                _strings.Cache(name), (uint)index, (short)context.Start.Line);
-
-            _currentIndex.Increment();
-            //open next expression Datum
-            OpenDatumAndAdd(exp);
+            var expression = new ScriptExpression
+            {
+                Index = _currentIndex,
+                Opcode = opcode,
+                ReturnType = returnTypeOpcode,
+                Type = ScriptExpressionType.ParameterReference,
+                Next = DatumIndex.Null,
+                StringOffset = _strings.Cache(info.Name),
+                Value = info.Opcode,
+                LineNumber = GetLineNumber(context)
+            };
+            EqualityPush(info.ReturnType);
+            OpenDatumAddExpressionIncrement(expression);
 
             return true;
         }
@@ -685,7 +733,7 @@ namespace Blamite.Blam.Scripting.Compiler
         private Script ScriptFromContext(BS_ReachParser.ScriDeclContext context)
         {
             // Create new Script
-            Script scr = new Script
+            Script script = new Script
             {
                 Name = context.scriptID().GetText(),
                 ExecutionType = (short)_opcodes.GetScriptTypeOpcode(context.SCRIPTTYPE().GetText()),
@@ -693,35 +741,37 @@ namespace Blamite.Blam.Scripting.Compiler
                 RootExpressionIndex = _currentIndex
             };
 
-            var paramContext = context.scriptParams();
+            var parameterContext = context.scriptParams();
 
-            //process parameters
-            if (paramContext != null)
+            // TODO: Modify the grammar and add a parameter context.
+            // Process parameters.
+            if (parameterContext != null)
             {
                 // extract strings from the context
-                var names = paramContext.ID().Select(n => n.GetText()).ToArray();
-                var valTypes = paramContext.VALUETYPE().Select(v => v.GetText()).ToArray();
+                var names = parameterContext.ID().Select(n => n.GetText()).ToArray();
+                var valueTypes = parameterContext.VALUETYPE().Select(v => v.GetText()).ToArray();
 
-                if (names.Count() != valTypes.Count())
-                    throw new CompilerException($"Failed to parse Script \"{scr.Name}\" - Mismatched parameter arrays.", context);
+                if (names.Count() != valueTypes.Count())
+                    throw new CompilerException($"Failed to parse Script \"{script.Name}\" - Mismatched parameter arrays.", context);
 
                 // create parameters from the extracted strings
-                for (int i = 0; i < names.Count(); i++)
+                for (ushort i = 0; i < names.Count(); i++)
                 {
                     ScriptParameter param = new ScriptParameter
                     {
                         Name = names[i],
-                        Type = (short)_opcodes.GetTypeInfo(valTypes[i]).Opcode
+                        Type = (short)_opcodes.GetTypeInfo(valueTypes[i]).Opcode
                     };
 
-                    scr.Parameters.Add(param);
-                    // create variable lookup
-                    var info = new ParameterInfo(names[i], valTypes[i]);
-                    _variables.Add(info);
+                    script.Parameters.Add(param);
+
+                    // TODO: Move this somewhere else once the parameter context has been added to the grammar.
+                    // Create the parameter lookup.
+                    var info = new ParameterInfo(names[i], valueTypes[i], i);
+                    _parameterLookup[info.Name] = info;
                 }
             }
-
-            return scr;
+            return script;
         }
 
         /// <summary>
@@ -730,30 +780,37 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="info">The function's ScriptFunctionInfo</param>
         /// <param name="context">The call contect</param>
         /// <param name="actualParameterCount">The number of parameters which was extracted from the context</param>
-        private void PushCallParameters(ScriptFunctionInfo info, BS_ReachParser.CallContext context, int contextParameterCount, string expectedReturnType)
+        private void PushCallParameters(FunctionInfo info, int contextParameterCount, string expectedReturnType, BS_ReachParser.CallContext context)
         {
-            // handle parameters
+            // Handle parameters.
             int expectedParamCount = info.ParameterTypes.Count();
             if (expectedParamCount > 0)
             {
                 if (contextParameterCount != expectedParamCount)
+                {
                     throw new CompilerException($"Failed to push function parameters for function \"{context.funcID().GetText()}\". Mismatched counts. Expected: \"{expectedParamCount}\" Encountered: \"{contextParameterCount}\".", context);
 
-                // push params to the stack
+                }
                 PushTypes(info.ParameterTypes);
             }
+            // TODO: Throw exceptions if a wrong number of parameters is detected.
             #region special functions
             else
             {
                 switch (info.Group)
                 {
                     case "Begin":
-                        // the last evaluated expression.
-                        PushTypes(expectedReturnType);
                         if (info.Name.Contains("random"))
-                            PushTypes(expectedReturnType, contextParameterCount - 1);
+                        {
+                            PushTypes(expectedReturnType, contextParameterCount);
+
+                        }
                         else
+                        {
+                            // the last evaluated expression.
+                            PushTypes(expectedReturnType);
                             PushTypes("void", contextParameterCount - 1);
+                        }
                         break;
 
                     case "BeginCount":
@@ -777,16 +834,15 @@ namespace Blamite.Blam.Scripting.Compiler
                         throw new CompilerException("A cond call was not regognized by the parser.", context);
 
                     case "Set":
-                            PushTypes("GLOBALREFERENCE");
-                            _set = true;
-                            break;
+                        PushTypes("GLOBALREFERENCE");
+                        _set = true;
+                        break;
 
                     case "Logical":
                         PushTypes("boolean", contextParameterCount);
                         break;
 
                     case "Arithmetic":
-                        //PushTypes("NUMBER", contextParameterCount);
                         PushTypes("real", contextParameterCount);
                         break;
 
@@ -797,14 +853,18 @@ namespace Blamite.Blam.Scripting.Compiler
                         break;
 
                     case "Sleep":
-                        if (contextParameterCount > 1)
+                        if (contextParameterCount == 2)
+                        {
                             PushTypes("script");
+                        }
                         PushTypes("short");
                         break;
 
                     case "SleepForever":
-                        if (contextParameterCount > 0)
+                        if (contextParameterCount == 1)
+                        {
                             PushTypes("script");
+                        }
                         break;
 
                     case "SleepUntil":
@@ -866,122 +926,161 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private void GenerateBranches()
         {
-            foreach(var branch in _genBranches)
+            foreach(var branch in _generatedBranches)
             {
+                ushort voidOpcode = _opcodes.GetTypeInfo("void").Opcode;
+
                 // create script entry
-                Script scr = new Script
+                Script script = new Script
                 {
                     Name = branch.Key,
-                    ReturnType = (short)_opcodes.GetTypeInfo("void").Opcode,
+                    ReturnType = (short)voidOpcode,
                     ExecutionType = (short)_opcodes.GetScriptTypeOpcode("static"),
                     RootExpressionIndex = _currentIndex,
                 };
+                _scripts.Add(script);
 
-                _scripts.Add(scr);
+                CreateInitialBegin("void");
+                LinkDatum();
 
-                // create the begin call
-                ScriptFunctionInfo beginInfo = _opcodes.GetFunctionInfo("begin").First();
-                var begin = new ScriptExpression(_currentIndex, beginInfo.Opcode, _opcodes.GetTypeInfo("void").Opcode,
-                    ScriptExpressionType.Group, _randomAddress, _currentIndex.Next(), 0);
-                _currentIndex.Increment();
-                _expressions.Add(begin);
+                //// create the begin call
+                //ScriptFunctionInfo beginInfo = _opcodes.GetFunctionInfo("begin").First();
+                //var begin = new ScriptExpression(_currentIndex, beginInfo.Opcode, _opcodes.GetTypeInfo("void").Opcode,
+                //    ScriptExpressionType.Group, _randomAddress, _currentIndex.Next(), 0);
+                //_currentIndex.Increment();
+                //_expressions.Add(begin);
 
-                // create the begin name
-                var beginName = new ScriptExpression(_currentIndex, beginInfo.Opcode, _opcodes.GetTypeInfo("function_name").Opcode,
-                    ScriptExpressionType.Expression, _currentIndex.Next(), _strings.Cache("begin"), (uint)0, 0);
-                _currentIndex.Increment();
-                _expressions.Add(beginName);
+                //// create the begin name
+                //var beginName = new ScriptExpression(_currentIndex, beginInfo.Opcode, _opcodes.GetTypeInfo("function_name").Opcode,
+                //    ScriptExpressionType.Expression, _currentIndex.Next(), _strings.Cache("begin"), (uint)0, 0);
+                //_currentIndex.Increment();
+                //_expressions.Add(beginName);
 
                 // create the sleep_until call
-                ScriptFunctionInfo sleepInfo = _opcodes.GetFunctionInfo("sleep_until").First();
-                var sleepCall = new ScriptExpression(_currentIndex, sleepInfo.Opcode, _opcodes.GetTypeInfo("void").Opcode,
-                    ScriptExpressionType.Group, _randomAddress, _currentIndex.Next(), 0);
+                FunctionInfo sleepInfo = _opcodes.GetFunctionInfo("sleep_until").First();
+                CreateFunctionCall(sleepInfo, voidOpcode, 0);
 
-                // link to the script reference
-                ushort srIndex = (ushort)(_currentIndex.Index + 3);
-                ushort srSalt = IndexToSalt(srIndex);
-                sleepCall.Next = new DatumIndex(srSalt, srIndex);
-                _currentIndex.Increment();
-                _expressions.Add(sleepCall);
+                //var sleepCall = new ScriptExpression(_currentIndex, sleepInfo.Opcode, _opcodes.GetTypeInfo("void").Opcode,
+                //    ScriptExpressionType.Group, _randomAddress, _currentIndex.Next(), 0);
 
-                // create the sleep_until name
-                var sleepName = new ScriptExpression(_currentIndex, sleepInfo.Opcode, _opcodes.GetTypeInfo("function_name").Opcode,
-                    ScriptExpressionType.Expression, _currentIndex.Next(), _strings.Cache("sleep_until"), (uint)0, 0);
-                _currentIndex.Increment();
-                _expressions.Add(sleepName);
+                //// link to the script reference
+                //ushort srIndex = (ushort)(_currentIndex.Index + 3);
+                //ushort srSalt = IndexToSalt(srIndex);
+                //sleepCall.Next = new DatumIndex(srSalt, srIndex);
+                //_currentIndex.Increment();
+                //_expressions.Add(sleepCall);
 
-                // adjust the boolean expression
-                ScriptExpression bo = branch.Value[0];
-                bo.Index = _currentIndex;
-                bo.Next = DatumIndex.Null;
-                _currentIndex.Increment();
-                _expressions.Add(bo);
+                //// create the sleep_until name
+                //var sleepName = new ScriptExpression(_currentIndex, sleepInfo.Opcode, _opcodes.GetTypeInfo("function_name").Opcode,
+                //    ScriptExpressionType.Expression, _currentIndex.Next(), _strings.Cache("sleep_until"), (uint)0, 0);
+                //_currentIndex.Increment();
+                //_expressions.Add(sleepName);
 
-                // adjust the script reference
-                ScriptExpression sr = branch.Value[1];
-                sr.Index = _currentIndex;
-                sr.Next = DatumIndex.Null;
-                _currentIndex.Increment();
-                _expressions.Add(sr);
+                // Adjust the condition expression and add it.
+                LinkDatum();
+                ScriptExpression condition = branch.Value[0];
+                condition.Index = _currentIndex;
+                condition.Next = DatumIndex.Null;
+                AddExpressionIncrement(condition);
+
+                // Adjust the script reference and add it.
+                LinkDatum();
+                ScriptExpression scriptReference = branch.Value[1];
+                scriptReference.Index = _currentIndex;
+                scriptReference.Next = DatumIndex.Null;
+                AddExpressionIncrement(scriptReference);
             }
         }
 
-        private void CreateInitialBegin(ushort returnType)
+        private void CreateInitialBegin(string returnType)
         {
-            ScriptFunctionInfo info = _opcodes.GetFunctionInfo("begin").First();
-            ushort op = info.Opcode;
-            short line = 0;
+            FunctionInfo info = _opcodes.GetFunctionInfo("begin").First();
 
-            DatumIndex current = _currentIndex;
-            _currentIndex.Increment();
-            DatumIndex next = _currentIndex;
+            // Create the begin call.
+            var beginCall = new ScriptExpression
+            {
+                Index = _currentIndex,
+                Opcode = info.Opcode,
+                ReturnType = _opcodes.GetTypeInfo(returnType).Opcode,
+                Type = ScriptExpressionType.Group,
+                Next = DatumIndex.Null,
+                StringOffset = _randomAddress,
+                LineNumber = 0
+            };
+            beginCall.SetValue(_currentIndex.Next);
+            AddExpressionIncrement(beginCall);
 
-            // create the begin call
-            var call = new ScriptExpression(current, op, returnType, ScriptExpressionType.Group, _randomAddress, next, line);
-            _expressions.Add(call);
-
-            // create the function name
-            ushort valType = _opcodes.GetTypeInfo("function_name").Opcode;
-            var funcName = new ScriptExpression(next, op, valType, ScriptExpressionType.Expression, 
-                _strings.Cache("begin"), (uint)0, line);
-            _currentIndex.Increment();
-            OpenDatumAndAdd(funcName);
+            // Create the function name.
+            var beginName = new ScriptExpression
+            {
+                Index = _currentIndex,
+                Opcode = info.Opcode,
+                ReturnType = _opcodes.GetTypeInfo("function_name").Opcode,
+                Type = ScriptExpressionType.Expression,
+                Next = DatumIndex.Null,
+                StringOffset = _strings.Cache(info.Name),
+                Value = 0,
+                LineNumber = 0
+            };
+            OpenDatumAddExpressionIncrement(beginName);
         }
 
-        private void CreateFunctionCall(ushort returnType, ScriptFunctionInfo funcInfo, short lineNumber)
+        private void CreateFunctionCall(FunctionInfo info, ushort returnTypeOpcode, short lineNumber)
         {
-            ushort op = funcInfo.Opcode;
+            var callExpression = new ScriptExpression
+            {
+                Index = _currentIndex,
+                Opcode = info.Opcode,
+                ReturnType = returnTypeOpcode,
+                Type = ScriptExpressionType.Group,
+                Next = DatumIndex.Null,
+                StringOffset = _randomAddress,
+                LineNumber = lineNumber
+            };
+            callExpression.SetValue(_currentIndex.Next);
+            OpenDatumAddExpressionIncrement(callExpression);
 
-            DatumIndex current = _currentIndex;
-            _currentIndex.Increment();
-            DatumIndex next = _currentIndex;
-
-            ScriptExpression call = new ScriptExpression(current, op, returnType, ScriptExpressionType.Group, 
-                _randomAddress, next, lineNumber);
-            OpenDatumAndAdd(call);
-
-            ushort nameType = _opcodes.GetTypeInfo("function_name").Opcode;
-            ScriptExpression funcName = new ScriptExpression(next, op, nameType, ScriptExpressionType.Expression, 
-                _strings.Cache(funcInfo.Name), (uint)0, lineNumber);
-            _currentIndex.Increment();
-            OpenDatumAndAdd(funcName);
+            var nameExpression = new ScriptExpression
+            {
+                Index = _currentIndex,
+                Opcode = info.Opcode,
+                ReturnType = _opcodes.GetTypeInfo("function_name").Opcode,
+                Type = ScriptExpressionType.Expression,
+                Next = DatumIndex.Null,
+                StringOffset = _strings.Cache(info.Name),
+                Value = 0,
+                LineNumber = lineNumber
+            };
+            OpenDatumAddExpressionIncrement(nameExpression);
         }
 
-        private void CreateScriptReference(string name, ushort op, ushort valType, short lineNumber)
+        private void CreateScriptReference(ScriptInfo info, ushort returnTypeOpcode, short lineNumber)
         {
-            DatumIndex current = _currentIndex;
-            _currentIndex.Increment();
-            DatumIndex next = _currentIndex;
+            var scriptReference = new ScriptExpression
+            {
+                Index = _currentIndex,
+                Opcode = info.Opcode,
+                ReturnType = returnTypeOpcode,
+                Type = ScriptExpressionType.ScriptReference,
+                Next = DatumIndex.Null,
+                StringOffset = _randomAddress,
+                LineNumber = lineNumber
+            };
+            scriptReference.SetValue(_currentIndex.Next);
+            OpenDatumAddExpressionIncrement(scriptReference);
 
-            ScriptExpression scrRef = new ScriptExpression(current, op, valType, ScriptExpressionType.ScriptReference,
-                _randomAddress, next, lineNumber);
-            OpenDatumAndAdd(scrRef);
-
-            ushort nameType = _opcodes.GetTypeInfo("function_name").Opcode;
-            ScriptExpression funcName = new ScriptExpression(next, op, nameType, ScriptExpressionType.Expression, 
-                _strings.Cache(name), (uint)0, lineNumber);
-            _currentIndex.Increment();
-            OpenDatumAndAdd(funcName);
+            var nameExpression = new ScriptExpression
+            {
+                Index = _currentIndex,
+                Opcode = info.Opcode,
+                ReturnType = _opcodes.GetTypeInfo("function_name").Opcode,
+                Type = ScriptExpressionType.Expression,
+                Next = DatumIndex.Null,
+                StringOffset = _strings.Cache(info.Name),
+                Value = 0,
+                LineNumber = lineNumber
+            };
+            OpenDatumAddExpressionIncrement(nameExpression);
         }
     }
 }
