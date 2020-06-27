@@ -27,23 +27,29 @@ namespace Blamite.Blam.Scripting.Compiler
             FunctionInfo result;
             // overloaded functions exist. select the right one based on its parameter count and whether the function is implemented or not.
             if (infos.Count > 1)
+            {
                 result = infos.Find(i => !i.Implemented && i.ParameterTypes.Count() == parameterCount);
+
+            }
             else
+            {
                 result = infos[0];
+
+            }
 
             return result;
         }
 
-        private BS_ReachParser.ScriDeclContext GetParentScriptContext(ParserRuleContext ctx)
+        private BS_ReachParser.ScriptDeclarationContext GetParentScriptContext(ParserRuleContext ctx)
         {
             RuleContext parent = ctx;
 
             for(int i = 0; i < ctx.Depth(); i++)
             {
                 parent = parent.Parent;
-                if(parent is BS_ReachParser.ScriDeclContext)
+                if(parent is BS_ReachParser.ScriptDeclarationContext scriptDeclaration)
                 {
-                    return (BS_ReachParser.ScriDeclContext)parent;
+                    return scriptDeclaration;
                 }
             }
             throw new CompilerException("Failed to retrieve a script declaration context.", ctx.GetText(), ctx.Start.Line);

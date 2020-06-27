@@ -553,8 +553,8 @@ namespace Blamite.Blam.Scripting
 					break;
 
 				case "ai_line":
-					//text = expression.StringValue;
-					//break;
+					text = expression.StringValue;
+					break;
 				case "unit_seat_mapping":
 					if (expression.Value != 0xFFFFFFFF)
 					{

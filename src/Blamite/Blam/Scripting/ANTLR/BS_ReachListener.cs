@@ -41,35 +41,35 @@ public interface IBS_ReachListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitHsc([NotNull] BS_ReachParser.HscContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="BS_ReachParser.gloDecl"/>.
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.globalDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterGloDecl([NotNull] BS_ReachParser.GloDeclContext context);
+	void EnterGlobalDeclaration([NotNull] BS_ReachParser.GlobalDeclarationContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="BS_ReachParser.gloDecl"/>.
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.globalDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitGloDecl([NotNull] BS_ReachParser.GloDeclContext context);
+	void ExitGlobalDeclaration([NotNull] BS_ReachParser.GlobalDeclarationContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="BS_ReachParser.scriDecl"/>.
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.scriptDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterScriDecl([NotNull] BS_ReachParser.ScriDeclContext context);
+	void EnterScriptDeclaration([NotNull] BS_ReachParser.ScriptDeclarationContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="BS_ReachParser.scriDecl"/>.
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.scriptDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitScriDecl([NotNull] BS_ReachParser.ScriDeclContext context);
+	void ExitScriptDeclaration([NotNull] BS_ReachParser.ScriptDeclarationContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="BS_ReachParser.scriptParams"/>.
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.scriptParameters"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterScriptParams([NotNull] BS_ReachParser.ScriptParamsContext context);
+	void EnterScriptParameters([NotNull] BS_ReachParser.ScriptParametersContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="BS_ReachParser.scriptParams"/>.
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.scriptParameters"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitScriptParams([NotNull] BS_ReachParser.ScriptParamsContext context);
+	void ExitScriptParameters([NotNull] BS_ReachParser.ScriptParametersContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="BS_ReachParser.cond"/>.
 	/// </summary>
@@ -111,6 +111,16 @@ public interface IBS_ReachListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitCondGroup([NotNull] BS_ReachParser.CondGroupContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.parameterGroup"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterParameterGroup([NotNull] BS_ReachParser.ParameterGroupContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.parameterGroup"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitParameterGroup([NotNull] BS_ReachParser.ParameterGroupContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="BS_ReachParser.scriptID"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -121,53 +131,43 @@ public interface IBS_ReachListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitScriptID([NotNull] BS_ReachParser.ScriptIDContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="BS_ReachParser.funcID"/>.
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.functionID"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterFuncID([NotNull] BS_ReachParser.FuncIDContext context);
+	void EnterFunctionID([NotNull] BS_ReachParser.FunctionIDContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="BS_ReachParser.funcID"/>.
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.functionID"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitFuncID([NotNull] BS_ReachParser.FuncIDContext context);
+	void ExitFunctionID([NotNull] BS_ReachParser.FunctionIDContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="BS_ReachParser.gloRef"/>.
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.globalsReference"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterGloRef([NotNull] BS_ReachParser.GloRefContext context);
+	void EnterGlobalsReference([NotNull] BS_ReachParser.GlobalsReferenceContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="BS_ReachParser.gloRef"/>.
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.globalsReference"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitGloRef([NotNull] BS_ReachParser.GloRefContext context);
+	void ExitGlobalsReference([NotNull] BS_ReachParser.GlobalsReferenceContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="BS_ReachParser.expr"/>.
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterExpr([NotNull] BS_ReachParser.ExprContext context);
+	void EnterExpression([NotNull] BS_ReachParser.ExpressionContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="BS_ReachParser.expr"/>.
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitExpr([NotNull] BS_ReachParser.ExprContext context);
+	void ExitExpression([NotNull] BS_ReachParser.ExpressionContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="BS_ReachParser.retType"/>.
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.literal"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterRetType([NotNull] BS_ReachParser.RetTypeContext context);
+	void EnterLiteral([NotNull] BS_ReachParser.LiteralContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="BS_ReachParser.retType"/>.
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.literal"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitRetType([NotNull] BS_ReachParser.RetTypeContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="BS_ReachParser.lit"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterLit([NotNull] BS_ReachParser.LitContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="BS_ReachParser.lit"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitLit([NotNull] BS_ReachParser.LitContext context);
+	void ExitLiteral([NotNull] BS_ReachParser.LiteralContext context);
 }

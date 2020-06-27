@@ -47,41 +47,41 @@ public partial class BS_ReachBaseListener : IBS_ReachListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitHsc([NotNull] BS_ReachParser.HscContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="BS_ReachParser.gloDecl"/>.
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.globalDeclaration"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterGloDecl([NotNull] BS_ReachParser.GloDeclContext context) { }
+	public virtual void EnterGlobalDeclaration([NotNull] BS_ReachParser.GlobalDeclarationContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="BS_ReachParser.gloDecl"/>.
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.globalDeclaration"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitGloDecl([NotNull] BS_ReachParser.GloDeclContext context) { }
+	public virtual void ExitGlobalDeclaration([NotNull] BS_ReachParser.GlobalDeclarationContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="BS_ReachParser.scriDecl"/>.
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.scriptDeclaration"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterScriDecl([NotNull] BS_ReachParser.ScriDeclContext context) { }
+	public virtual void EnterScriptDeclaration([NotNull] BS_ReachParser.ScriptDeclarationContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="BS_ReachParser.scriDecl"/>.
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.scriptDeclaration"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitScriDecl([NotNull] BS_ReachParser.ScriDeclContext context) { }
+	public virtual void ExitScriptDeclaration([NotNull] BS_ReachParser.ScriptDeclarationContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="BS_ReachParser.scriptParams"/>.
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.scriptParameters"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterScriptParams([NotNull] BS_ReachParser.ScriptParamsContext context) { }
+	public virtual void EnterScriptParameters([NotNull] BS_ReachParser.ScriptParametersContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="BS_ReachParser.scriptParams"/>.
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.scriptParameters"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitScriptParams([NotNull] BS_ReachParser.ScriptParamsContext context) { }
+	public virtual void ExitScriptParameters([NotNull] BS_ReachParser.ScriptParametersContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="BS_ReachParser.cond"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -131,6 +131,18 @@ public partial class BS_ReachBaseListener : IBS_ReachListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitCondGroup([NotNull] BS_ReachParser.CondGroupContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.parameterGroup"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterParameterGroup([NotNull] BS_ReachParser.ParameterGroupContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.parameterGroup"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitParameterGroup([NotNull] BS_ReachParser.ParameterGroupContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="BS_ReachParser.scriptID"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -143,65 +155,53 @@ public partial class BS_ReachBaseListener : IBS_ReachListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitScriptID([NotNull] BS_ReachParser.ScriptIDContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="BS_ReachParser.funcID"/>.
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.functionID"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterFuncID([NotNull] BS_ReachParser.FuncIDContext context) { }
+	public virtual void EnterFunctionID([NotNull] BS_ReachParser.FunctionIDContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="BS_ReachParser.funcID"/>.
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.functionID"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitFuncID([NotNull] BS_ReachParser.FuncIDContext context) { }
+	public virtual void ExitFunctionID([NotNull] BS_ReachParser.FunctionIDContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="BS_ReachParser.gloRef"/>.
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.globalsReference"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterGloRef([NotNull] BS_ReachParser.GloRefContext context) { }
+	public virtual void EnterGlobalsReference([NotNull] BS_ReachParser.GlobalsReferenceContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="BS_ReachParser.gloRef"/>.
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.globalsReference"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitGloRef([NotNull] BS_ReachParser.GloRefContext context) { }
+	public virtual void ExitGlobalsReference([NotNull] BS_ReachParser.GlobalsReferenceContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="BS_ReachParser.expr"/>.
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterExpr([NotNull] BS_ReachParser.ExprContext context) { }
+	public virtual void EnterExpression([NotNull] BS_ReachParser.ExpressionContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="BS_ReachParser.expr"/>.
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitExpr([NotNull] BS_ReachParser.ExprContext context) { }
+	public virtual void ExitExpression([NotNull] BS_ReachParser.ExpressionContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="BS_ReachParser.retType"/>.
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.literal"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterRetType([NotNull] BS_ReachParser.RetTypeContext context) { }
+	public virtual void EnterLiteral([NotNull] BS_ReachParser.LiteralContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="BS_ReachParser.retType"/>.
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.literal"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitRetType([NotNull] BS_ReachParser.RetTypeContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="BS_ReachParser.lit"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterLit([NotNull] BS_ReachParser.LitContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="BS_ReachParser.lit"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitLit([NotNull] BS_ReachParser.LitContext context) { }
+	public virtual void ExitLiteral([NotNull] BS_ReachParser.LiteralContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

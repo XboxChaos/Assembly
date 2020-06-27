@@ -10,7 +10,7 @@ namespace Blamite.Blam.Scripting.Compiler
         public string Name { get; private set; }
         public string ReturnType { get; private set; }
 
-        public GlobalDeclarationInfo(BS_ReachParser.GloDeclContext context)
+        public GlobalDeclarationInfo(BS_ReachParser.GlobalDeclarationContext context)
         {
             Name = context.ID().GetText();
             ReturnType = context.VALUETYPE().GetText();

@@ -19,22 +19,10 @@ namespace Blamite.Blam.Scripting.Compiler
             Text = context.GetText();
         }
 
-        public CompilerException(string message, BS_ReachParser.LitContext context) : base(message)
-        {
-            Line = context.Start.Line;
-            Text = context.GetText();
-        }
-
         public CompilerException(string message, BS_ReachParser.CallContext context) : base(message)
         {
             Line = context.Start.Line;
-            Text = context.funcID().GetText();
-        }
-
-        public CompilerException(string message, BS_ReachParser.ScriDeclContext context) : base(message)
-        {
-            Line = context.Start.Line;
-            Text = context.scriptID().GetText();
+            Text = context.functionID().GetText();
         }
 
         public CompilerException(string message, BS_ReachParser.BranchContext context) : base(message)

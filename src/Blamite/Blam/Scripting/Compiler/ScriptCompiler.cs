@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
-using System.Diagnostics;
 
 namespace Blamite.Blam.Scripting.Compiler
 {
@@ -17,6 +16,7 @@ namespace Blamite.Blam.Scripting.Compiler
         private readonly OpcodeLookup _opcodes;
         private readonly ScriptContext _scriptContext;
         private readonly Dictionary<string, UnitSeatMapping> _seatMappings;
+        // TODO: Change the script lookup from dictionary to lookup.
         private Dictionary<string, ScriptInfo> _scriptLookup = new Dictionary<string, ScriptInfo>();
         private Dictionary<string, GlobalInfo> _mapGlobalsLookup = new Dictionary<string, GlobalInfo>();
         private readonly Dictionary<string, ParameterInfo> _parameterLookup = new Dictionary<string, ParameterInfo>();
@@ -84,19 +84,22 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void EnterHsc(BS_ReachParser.HscContext context)
         {
-            if (context.gloDecl() != null)
+            // Generate the globals lookup.
+            if (context.globalDeclaration() != null)
             {
-                _mapGlobalsLookup = context.gloDecl().Select((g, index) => new GlobalInfo(g, (ushort)index)).ToDictionary(g => g.Name);
+                _mapGlobalsLookup = context.globalDeclaration().Select((g, index) => new GlobalInfo(g, (ushort)index)).ToDictionary(g => g.Name);
 
             }
 
-            if (context.scriDecl() != null)
+            // Generate the script lookup.
+            if (context.scriptDeclaration() != null)
             {
-                _scriptLookup = context.scriDecl().Select((s, index) => new ScriptInfo(s, (ushort)index)).ToDictionary(s => s.Name + "_" + s.Parameters.Count);
+                _scriptLookup = context.scriptDeclaration().Select((s, index) => new ScriptInfo(s, (ushort)index)).ToDictionary(s => s.Name + "_" + s.Parameters.Count);
 
             }
 
-            _declarationCount = context.scriDecl().Count() + context.gloDecl().Count();
+            // The declarations count is used to calculate the current progress.
+            _declarationCount = context.scriptDeclaration().Count() + context.globalDeclaration().Count();
         }
 
         /// <summary>
@@ -118,7 +121,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// Generates the variable lookup. Pushes return types.
         /// </summary>
         /// <param name="context"></param>
-        public override void EnterScriDecl(BS_ReachParser.ScriDeclContext context)
+        public override void EnterScriptDeclaration(BS_ReachParser.ScriptDeclarationContext context)
         {
             if(PrintDebugInfo)
             {
@@ -126,29 +129,37 @@ namespace Blamite.Blam.Scripting.Compiler
 
             }
 
-            // Create new script object and add it to the table
-            Script scr = ScriptFromContext(context);
-            _scripts.Add(scr);
+            // Create new script object and add it to the table.
+            Script script = GetScriptFromContext(context);
+            _scripts.Add(script);
 
-            string retType = context.retType().GetText();
-            int expCount = context.gloRef().Count() + context.call().Count() + context.branch().Count() + context.cond().Count();
-
-            // The final expression must match the return type of this script.
-            PushTypes(retType);
-            // The other expressions can be of any type.
-            if (expCount > 1)
+            // Generate the parameter lookup.
+            for(ushort i = 0; i < script.Parameters.Count; i++)
             {
-                PushTypes("void", expCount - 1);
+                ScriptParameter parameter = script.Parameters[i];
+                var info = new ParameterInfo(parameter.Name, _opcodes.GetTypeInfo(parameter.Type).Name, i);
+                _parameterLookup.Add(info.Name, info);
             }
 
-            CreateInitialBegin(retType);
+            string returnType = context.VALUETYPE().GetText();
+            int expressionCount = context.globalsReference().Count() + context.call().Count() + context.branch().Count() + context.cond().Count();
+
+            // The final expression must match the return type of this script.
+            PushTypes(returnType);
+            // The other expressions can be of any type.
+            if (expressionCount > 1)
+            {
+                PushTypes("void", expressionCount - 1);
+            }
+
+            CreateInitialBegin(returnType);
         }
 
         /// <summary>
         /// Closes a datum.
         /// </summary>
         /// <param name="context"></param>
-        public override void ExitScriDecl(BS_ReachParser.ScriDeclContext context)  
+        public override void ExitScriptDeclaration(BS_ReachParser.ScriptDeclarationContext context)
         {
             if (PrintDebugInfo)
             {
@@ -165,7 +176,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// Processes global declarations. Opens a datum. Creates the global node. Pushes the value type.
         /// </summary>
         /// <param name="context"></param>
-        public override void EnterGloDecl( BS_ReachParser.GloDeclContext context)
+        public override void EnterGlobalDeclaration(BS_ReachParser.GlobalDeclarationContext context)
         {
             if (PrintDebugInfo)
             {
@@ -196,7 +207,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// Closes a datum.
         /// </summary>
         /// <param name="context"></param>
-        public override void ExitGloDecl(BS_ReachParser.GloDeclContext context)
+        public override void ExitGlobalDeclaration(BS_ReachParser.GlobalDeclarationContext context)
         {
             if (PrintDebugInfo)
             {
@@ -217,15 +228,15 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             if (PrintDebugInfo)
             {
-                _logger.WriteLine("CALL", $"Enter: {context.funcID().GetText()} , Line: {GetLineNumber(context)}");
+                _logger.WriteLine("CALL", $"Enter: {context.functionID().GetText()} , Line: {GetLineNumber(context)}");
             }
 
             LinkDatum();
 
             // Retrieve information from the context.
-            string name = context.funcID().GetText();
+            string name = context.functionID().GetText();
             string expectedType = PopType();
-            int contextParameterCount = context.expr().Count();
+            int contextParameterCount = context.expression().Count();
 
             // Handle script references.
             if (IsScriptReference(expectedType, contextParameterCount, context))
@@ -249,7 +260,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
             if (PrintDebugInfo)
             {
-                _logger.WriteLine("CALL", $"Exit: {context.funcID().GetText()} , Line: {GetLineNumber(context)}");
+                _logger.WriteLine("CALL", $"Exit: {context.functionID().GetText()} , Line: {GetLineNumber(context)}");
             }
 
             CloseDatum();
@@ -266,7 +277,7 @@ namespace Blamite.Blam.Scripting.Compiler
             _ = PopType();    // Just ignore the type for now.
 
             // branch excepts two parameters
-            if (context.expr().Count() != 2)
+            if (context.expression().Count() != 2)
             {
                 throw new CompilerException("A branch call had an unexpected number of parameters.", context);
             }
@@ -286,16 +297,16 @@ namespace Blamite.Blam.Scripting.Compiler
             }
 
             // Generate the script name.
-            BS_ReachParser.ScriDeclContext scriptContext = GetParentScriptContext(context);
+            BS_ReachParser.ScriptDeclarationContext scriptContext = GetParentScriptContext(context);
             string fromScript = scriptContext.scriptID().GetText();
 
-            var parameters = context.expr();
+            var parameters = context.expression();
             if (parameters[1].call() == null)
             {
                 throw new CompilerException("A branch statements second parameter was not a script.", context);
             }
             var param = parameters[1].call();
-            string toScript = param.funcID().GetText();
+            string toScript = param.functionID().GetText();
             string generatedName = fromScript + "_to_" + toScript;
 
             ScriptExpression[] expressions = new ScriptExpression[2];
@@ -374,7 +385,7 @@ namespace Blamite.Blam.Scripting.Compiler
             LinkDatum();
 
             // push the types of the group members.
-            PushTypes(_condReturnType, context.expr().Count() - 1);
+            PushTypes(_condReturnType, context.expression().Count() - 1);
             PushTypes("boolean");
 
             var ifInfo = _opcodes.GetFunctionInfo("if")[0];
@@ -455,7 +466,7 @@ namespace Blamite.Blam.Scripting.Compiler
             AddExpressionIncrement(compilerBeginName);
         }
 
-        public override void EnterGloRef(BS_ReachParser.GloRefContext context)
+        public override void EnterGlobalsReference(BS_ReachParser.GlobalsReferenceContext context)
         {
             if (PrintDebugInfo)
             {
@@ -475,7 +486,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// Processes regular expressions, script variables and global references. Links to a datum. Opens a datum.
         /// </summary>
         /// <param name="context"></param>
-        public override void EnterLit(BS_ReachParser.LitContext context)
+        public override void EnterLiteral(BS_ReachParser.LiteralContext context)
         {
             if (PrintDebugInfo)
             {
@@ -576,7 +587,7 @@ namespace Blamite.Blam.Scripting.Compiler
             // "set" and (in)equality functions are special.
             if (grandparent is BS_ReachParser.CallContext call)
             {
-                string funcName = call.funcID().GetText();
+                string funcName = call.functionID().GetText();
                 List<FunctionInfo> funcInfo = _opcodes.GetFunctionInfo(funcName);
 
                 if (funcInfo != null)
@@ -634,7 +645,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private bool IsScriptReference(string expectedReturnType, int expectedParameterCount, BS_ReachParser.CallContext context)
         {
-            string key = context.funcID().GetText() + "_" + expectedParameterCount;
+            string key = context.functionID().GetText() + "_" + expectedParameterCount;
             if(!_scriptLookup.TryGetValue(key, out ScriptInfo info))
             {
                 if (expectedReturnType == "SCRIPTREFERENCE")
@@ -662,7 +673,7 @@ namespace Blamite.Blam.Scripting.Compiler
             return true;
         }
 
-        private bool IsScriptParameter(string expectedReturnType, BS_ReachParser.LitContext context)
+        private bool IsScriptParameter(string expectedReturnType, ParserRuleContext context)
         {
             // This script doesn't have parameters.
             if (_parameterLookup.Count == 0)
@@ -702,7 +713,7 @@ namespace Blamite.Blam.Scripting.Compiler
             // (In)Equality functions are special
             if(context.Parent.Parent is BS_ReachParser.CallContext grandparent)
             {
-                string funcName = grandparent.funcID().GetText();
+                string funcName = grandparent.functionID().GetText();
                 var funcInfo = _opcodes.GetFunctionInfo(funcName);
                 if(funcInfo != null)
                 {
@@ -730,45 +741,37 @@ namespace Blamite.Blam.Scripting.Compiler
             return true;
         }
 
-        private Script ScriptFromContext(BS_ReachParser.ScriDeclContext context)
+        private Script GetScriptFromContext(BS_ReachParser.ScriptDeclarationContext context)
         {
-            // Create new Script
+            // Create a new Script.
             Script script = new Script
             {
                 Name = context.scriptID().GetText(),
                 ExecutionType = (short)_opcodes.GetScriptTypeOpcode(context.SCRIPTTYPE().GetText()),
-                ReturnType = (short)_opcodes.GetTypeInfo(context.retType().GetText()).Opcode,
+                ReturnType = (short)_opcodes.GetTypeInfo(context.VALUETYPE().GetText()).Opcode,
                 RootExpressionIndex = _currentIndex
             };
-
-            var parameterContext = context.scriptParams();
-
-            // TODO: Modify the grammar and add a parameter context.
-            // Process parameters.
+            // Handle scripts with parameters.
+            var parameterContext = context.scriptParameters();
             if (parameterContext != null)
             {
-                // extract strings from the context
-                var names = parameterContext.ID().Select(n => n.GetText()).ToArray();
-                var valueTypes = parameterContext.VALUETYPE().Select(v => v.GetText()).ToArray();
-
-                if (names.Count() != valueTypes.Count())
-                    throw new CompilerException($"Failed to parse Script \"{script.Name}\" - Mismatched parameter arrays.", context);
-
-                // create parameters from the extracted strings
-                for (ushort i = 0; i < names.Count(); i++)
+                var parameters = parameterContext.parameterGroup();
+                for(ushort i = 0; i < parameters.Length; i++)
                 {
-                    ScriptParameter param = new ScriptParameter
+                    string name = parameters[i].ID().GetText();
+                    string valueType = parameters[i].VALUETYPE().GetText();
+
+                    // Add the parameter to the script object.
+                    ScriptParameter parameter = new ScriptParameter
                     {
-                        Name = names[i],
-                        Type = (short)_opcodes.GetTypeInfo(valueTypes[i]).Opcode
+                        Name = name,
+                        Type = _opcodes.GetTypeInfo(valueType).Opcode
                     };
+                    script.Parameters.Add(parameter);
 
-                    script.Parameters.Add(param);
-
-                    // TODO: Move this somewhere else once the parameter context has been added to the grammar.
-                    // Create the parameter lookup.
-                    var info = new ParameterInfo(names[i], valueTypes[i], i);
-                    _parameterLookup[info.Name] = info;
+                    //// Add the parameter to the parameter lookup.
+                    //var info = new ParameterInfo(name, valueType, i);
+                    //_parameterLookup[info.Name] = info;
                 }
             }
             return script;
@@ -788,7 +791,7 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 if (contextParameterCount != expectedParamCount)
                 {
-                    throw new CompilerException($"Failed to push function parameters for function \"{context.funcID().GetText()}\". Mismatched counts. Expected: \"{expectedParamCount}\" Encountered: \"{contextParameterCount}\".", context);
+                    throw new CompilerException($"Failed to push function parameters for function \"{context.functionID().GetText()}\". Mismatched counts. Expected: \"{expectedParamCount}\" Encountered: \"{contextParameterCount}\".", context);
 
                 }
                 PushTypes(info.ParameterTypes);

@@ -8,7 +8,7 @@ namespace Blamite.Blam.Scripting.Compiler
 {
     public partial class ScriptCompiler : BS_ReachBaseListener
     {
-        private bool ProcessLiteral(string expectedValueType, BS_ReachParser.LitContext context)
+        private bool ProcessLiteral(string expectedValueType, BS_ReachParser.LiteralContext context)
         {
             CastInfo info = _opcodes.GetTypeCast(expectedValueType);
             // types which can be casted to.
@@ -65,7 +65,7 @@ namespace Blamite.Blam.Scripting.Compiler
             }
         }
 
-        private bool HandleValueType(BS_ReachParser.LitContext context, string expectedValueType)
+        private bool HandleValueType(BS_ReachParser.LiteralContext context, string expectedValueType)
         {
             string name = context.GetText();
 
@@ -201,10 +201,10 @@ namespace Blamite.Blam.Scripting.Compiler
             }
         }
 
-        private bool IsBoolean(BS_ReachParser.LitContext context)
+        private bool IsBoolean(BS_ReachParser.LiteralContext context)
         {
             string txt = context.GetText();
-            if (context.BOOLIT() == null)
+            if (context.BOOLEAN() == null)
                 return false;
 
             var opCode = _opcodes.GetTypeInfo("boolean").Opcode;
@@ -230,7 +230,7 @@ namespace Blamite.Blam.Scripting.Compiler
             return true;
         }
 
-        private bool IsEnum32(BS_ReachParser.LitContext context, string valueType, string castTo)
+        private bool IsEnum32(BS_ReachParser.LiteralContext context, string valueType, string castTo)
         {
             string txt = context.GetText().Trim('"');
             ScriptValueType info = _opcodes.GetTypeInfo(valueType);
@@ -248,7 +248,7 @@ namespace Blamite.Blam.Scripting.Compiler
             return true;
         }
 
-        private bool IsEnum16(BS_ReachParser.LitContext context, string expectedValueType)
+        private bool IsEnum16(BS_ReachParser.LiteralContext context, string expectedValueType)
         {
             string txt = context.GetText().Trim('"');
             ScriptValueType info = _opcodes.GetTypeInfo(expectedValueType);
@@ -266,7 +266,7 @@ namespace Blamite.Blam.Scripting.Compiler
             return true;
         }
 
-        private bool IsNumber(BS_ReachParser.LitContext context)
+        private bool IsNumber(BS_ReachParser.LiteralContext context)
         {
             // is the number an integer? The default integer is a short for now.
             if (context.INT() != null)
@@ -293,7 +293,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 return false;
         }
 
-        private bool IsObject_Name(BS_ReachParser.LitContext context, string valueType, string castTo)
+        private bool IsObject_Name(BS_ReachParser.LiteralContext context, string valueType, string castTo)
         {
             string name = context.GetText().Trim('"');
             int val = Array.FindIndex(_scriptContext.ObjectReferences, o => o.Name == name);
@@ -312,7 +312,7 @@ namespace Blamite.Blam.Scripting.Compiler
             return true;
         }
 
-        private bool IsAI(BS_ReachParser.LitContext context, string expectedValueType)
+        private bool IsAI(BS_ReachParser.LiteralContext context, string expectedValueType)
         {
             // information
             string txt = context.GetText().Trim('"');
@@ -427,7 +427,7 @@ namespace Blamite.Blam.Scripting.Compiler
             return true;
         }
 
-        private bool IsIndex16(BS_ReachParser.LitContext context, string expectedValueType)
+        private bool IsIndex16(BS_ReachParser.LiteralContext context, string expectedValueType)
         {
             string name = context.GetText().Trim('"');
             int val = -1;
@@ -480,7 +480,7 @@ namespace Blamite.Blam.Scripting.Compiler
             return true;
         }
 
-        private bool IsDeviceGroup(BS_ReachParser.LitContext context)
+        private bool IsDeviceGroup(BS_ReachParser.LiteralContext context)
         {
             string name = context.GetText().Trim('"');
             int index = Array.FindIndex(_scriptContext.DeviceGroups, t => t.Name == name);
@@ -500,7 +500,7 @@ namespace Blamite.Blam.Scripting.Compiler
             return true;
         }
 
-        private bool IsPointReference(BS_ReachParser.LitContext context)
+        private bool IsPointReference(BS_ReachParser.LiteralContext context)
         {
             string txt = context.GetText().Trim('"');
             string[] subStrings = txt.Split(new char[] { '/' }, 2, StringSplitOptions.RemoveEmptyEntries);
@@ -542,7 +542,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         }
 
-        private bool IsFolder(BS_ReachParser.LitContext context)
+        private bool IsFolder(BS_ReachParser.LiteralContext context)
         {
             string name = context.GetText().Trim('"');
             int index = Array.FindIndex(_scriptContext.ObjectFolders, f => f.Name == name);
@@ -561,7 +561,7 @@ namespace Blamite.Blam.Scripting.Compiler
             return true;
         }
 
-        private bool IsTagref(BS_ReachParser.LitContext context, string expectedValueType)
+        private bool IsTagref(BS_ReachParser.LiteralContext context, string expectedValueType)
         {
             string txt = context.GetText().Trim('"');
             string[] subStrings = txt.Split(new char[] { '.' }, 2, StringSplitOptions.RemoveEmptyEntries);
@@ -621,7 +621,7 @@ namespace Blamite.Blam.Scripting.Compiler
             return true;
         }
 
-        private bool IsAiLine(BS_ReachParser.LitContext context)
+        private bool IsAiLine(BS_ReachParser.LiteralContext context)
         {
             string name = context.GetText().Trim('"');
             // Check if this is a simple line reference.
@@ -666,7 +666,7 @@ namespace Blamite.Blam.Scripting.Compiler
             return true;
         }
 
-        private bool IsString(BS_ReachParser.LitContext context)
+        private bool IsString(BS_ReachParser.LiteralContext context)
         {
             if (context.STRING() == null)
                 return false;
@@ -684,7 +684,7 @@ namespace Blamite.Blam.Scripting.Compiler
             return true;
         }
 
-        private bool IsLong(BS_ReachParser.LitContext context)
+        private bool IsLong(BS_ReachParser.LiteralContext context)
         {
             string txt = context.GetText();
             var opCode = _opcodes.GetTypeInfo("long").Opcode;
@@ -701,7 +701,7 @@ namespace Blamite.Blam.Scripting.Compiler
             return true;
         }
 
-        private bool IsShort(BS_ReachParser.LitContext context)
+        private bool IsShort(BS_ReachParser.LiteralContext context)
         {
             string txt = context.GetText();
             var opCode = _opcodes.GetTypeInfo("short").Opcode;
@@ -718,7 +718,7 @@ namespace Blamite.Blam.Scripting.Compiler
             return true;
         }
 
-        private bool IsReal(BS_ReachParser.LitContext context)
+        private bool IsReal(BS_ReachParser.LiteralContext context)
         {
             string txt = context.GetText();
             var opCode = _opcodes.GetTypeInfo("real").Opcode;
@@ -735,7 +735,7 @@ namespace Blamite.Blam.Scripting.Compiler
             return true;
         }
 
-        private void CreateSID(BS_ReachParser.LitContext context)
+        private void CreateSID(BS_ReachParser.LiteralContext context)
         {
             string txt = context.GetText().Trim('"');
             var opCode = _opcodes.GetTypeInfo("string_id").Opcode;
@@ -747,7 +747,7 @@ namespace Blamite.Blam.Scripting.Compiler
             EqualityPush("string_id");
         }
 
-        private void CreateUnitSeatMapping(BS_ReachParser.LitContext context)
+        private void CreateUnitSeatMapping(BS_ReachParser.LiteralContext context)
         {
             string txt = context.GetText().Trim('"');           
 
@@ -779,7 +779,7 @@ namespace Blamite.Blam.Scripting.Compiler
         ///// </summary>
         ///// <param name="context"></param>
         ///// <returns>true if a expression node could be created and false if not.</returns>
-        //private bool GuessValueType(BS_ReachParser.LitContext context)
+        //private bool GuessValueType(BS_ReachParser.LiteralContext context)
         //{
         //    string txt = context.GetText().Trim('"');
         //    if (context.BOOLIT() != null)

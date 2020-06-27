@@ -1,27 +1,29 @@
 grammar BS_Reach;
 
-hsc : (gloDecl|scriDecl)+ ;
+hsc : (globalDeclaration|scriptDeclaration)+ ;
 
-gloDecl : LP 'global' VALUETYPE ID expr RP ;
+globalDeclaration : LP 'global' VALUETYPE ID expression RP ;
 
-scriDecl : LP 'script' SCRIPTTYPE retType scriptID scriptParams? (call | gloRef | branch | cond)+ RP ;
+scriptDeclaration : LP 'script' SCRIPTTYPE VALUETYPE scriptID scriptParameters? (call | globalsReference | branch | cond)+ RP ;
 
-scriptParams : LP VALUETYPE ID (',' VALUETYPE ID)* RP ;
+scriptParameters : LP parameterGroup (',' parameterGroup)* RP ;
 
 cond : LP 'cond' condGroup+ RP ;
 
-branch : LP 'branch' expr* RP ;
+branch : LP 'branch' expression* RP ;
 
-call : LP funcID expr* RP ;
+call : LP functionID expression* RP ;
 
-condGroup : LP expr expr+ RP ;
+condGroup : LP expression expression+ RP ;
+
+parameterGroup: VALUETYPE ID ;
 
 scriptID 
         :       ID
         |       INT
         ;
 
-funcID 
+functionID 
         :       '!='
         |       '>='
         |       '<='
@@ -34,19 +36,19 @@ funcID
         |       ID
         |       VALUETYPE                       //messy
         ;
-gloRef  :       ID; 
+globalsReference  :       ID; 
 
-expr    :   lit | call | branch | cond;
+expression    :   literal | call | branch | cond;
 
-retType : 'void' | VALUETYPE ;
+// returnType : 'void' | VALUETYPE ;
 
-lit 
+literal 
         :       INT
         |       FLOAT
         |       STRING
         |       DAMAGEREGION
         |       MODELSTATE
-        |       BOOLIT
+        |       BOOLEAN
         |       ID
         |       VALUETYPE                       //messy
         ;
@@ -73,7 +75,7 @@ MODELSTATE
         |       'destroyed'
         ;   
 
-BOOLIT  : 'true' | 'false' ;
+BOOLEAN  : 'true' | 'false' ;
 
 VALUETYPE
         :       'unparsed'
@@ -177,13 +179,12 @@ SCRIPTTYPE
     ;
      
 
-
 STRING : '"' .*? '"' ;
 
 FLOAT : '-'? DIGIT+ '.' DIGIT+ ;
 
-
 INT : '-'? DIGIT+ ;
+
 ID : (LCASE|DIGIT|SPECIAL)+ ;
 
 LP : '(' ;
@@ -205,6 +206,7 @@ SPECIAL
         | '+' 
         | '.' 
         | '/' 
+		| '\\' 
         | ':' 
         | '?' 
         | '@' 

@@ -18,30 +18,24 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <value>The opcode of the function.</value>
         public ushort Opcode { get; private set; }
 
-        public ScriptInfo(BS_ReachParser.ScriDeclContext context, ushort index)
+        public ScriptInfo(BS_ReachParser.ScriptDeclarationContext context, ushort index)
         {
             Name = context.scriptID().GetText();
             ScriptType = context.SCRIPTTYPE().GetText();
-            ReturnType = context.retType().GetText();
+            ReturnType = context.VALUETYPE().GetText();
             Parameters = new List<ParameterInfo>();
             Opcode = index;
 
-            if (context.scriptParams() != null)
+            var parameterContext = context.scriptParameters();
+            if (parameterContext != null)
             {
-                string[] names = context.scriptParams().ID().Select(n => n.GetText()).ToArray();
-                string[] valueTypes = context.scriptParams().VALUETYPE().Select(v => v.GetText()).ToArray();
-                // extract strings from the context
-
-                if (names.Count() != valueTypes.Count())
-                {
-                    throw new InvalidOperationException($"Failed to create parameter information for Script \"{Name}\" - Mismatched parameter arrays. Line: {context.Start.Line}");
-
-                }
-
+                var parameters = parameterContext.parameterGroup();
                 // Create parameters from the extracted strings
-                for (ushort i = 0; i < names.Count(); i++)
+                for (ushort i = 0; i < parameters.Length; i++)
                 {
-                    var param = new ParameterInfo(names[i], valueTypes[i], i);
+                    string name = parameters[i].ID().GetText();
+                    string valueType = parameters[i].VALUETYPE().GetText();
+                    var param = new ParameterInfo(name, valueType, i);
                     Parameters.Add(param);
                 }
             }                

@@ -26,7 +26,7 @@ namespace Blamite.Blam.Scripting
 		/// <summary>
 		///     Gets or sets the type opcode of the parameter.
 		/// </summary>
-		public short Type { get; set; }
+		public ushort Type { get; set; }
 
 		public override bool Equals(object obj)
 		{
@@ -46,14 +46,14 @@ namespace Blamite.Blam.Scripting
 		public void Write(IWriter writer)
         {
             writer.WriteAscii(Name, 0x20);
-            writer.WriteInt16(Type);
+            writer.WriteUInt16(Type);
             writer.WriteInt16(0);
         }
 
 		private void Load(StructureValueCollection values)
 		{
 			Name = values.GetString("name");
-			Type = (short) values.GetInteger("type");
+			Type = (ushort) values.GetInteger("type");
 		}
 
 
