@@ -69,7 +69,10 @@ namespace Blamite.Serialization.Settings
 			{
 				string name = XMLUtil.GetStringAttribute(element, "name");
 				if (name == "")
+				{
 					continue;
+
+				}
 
 				var opcode = (ushort) XMLUtil.GetNumericAttribute(element, "opcode");
 				string returnType = XMLUtil.GetStringAttribute(element, "returnType", "void");
@@ -78,7 +81,7 @@ namespace Blamite.Serialization.Settings
 				bool isNull = XMLUtil.GetBoolAttribute(element, "null", false);
 				string[] parameterTypes = element.Descendants("arg").Select(e => XMLUtil.GetStringAttribute(e, "type")).ToArray();
 
-				var info = new FunctionInfo(name, opcode, returnType, flags, group, parameterTypes, isNull);
+				var info = new FunctionInfo(name, opcode, returnType, flags, group, parameterTypes, !isNull);
 				lookup.RegisterFunction(info);
 			}
 		}
@@ -89,12 +92,15 @@ namespace Blamite.Serialization.Settings
             {
                 string name = XMLUtil.GetStringAttribute(element, "name");
                 if (name == "")
-                    continue;
+				{
+					continue;
+				}
 
-                ushort opcode = (ushort)XMLUtil.GetNumericAttribute(element, "opcode");
+				ushort opcode = (ushort)XMLUtil.GetNumericAttribute(element, "opcode");
                 string returnType = XMLUtil.GetStringAttribute(element, "type");
+				bool isNull = XMLUtil.GetBoolAttribute(element, "null", false);
 
-                var info = new GlobalInfo(name, opcode, returnType);
+				var info = new GlobalInfo(name, opcode, returnType, !isNull);
                 lookup.RegisterGlobal(info);
             }
         }

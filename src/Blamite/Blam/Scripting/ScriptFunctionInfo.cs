@@ -12,8 +12,10 @@
 		/// <param name="opcode">The opcode of the function.</param>
 		/// <param name="returnType">The return type of the function.</param>
 		/// <param name="flags">The flags for the function.</param>
+		/// <param name="group">The group of special functions this function belongs to.</param>
 		/// <param name="parameterTypes">The parameter types for the function.</param>
-		public FunctionInfo(string name, ushort opcode, string returnType, uint flags, string group, string[] parameterTypes, bool isNull)
+		/// <param name="implemented">Whether the function is implemented in the game executable or not.</param>
+		public FunctionInfo(string name, ushort opcode, string returnType, uint flags, string group, string[] parameterTypes, bool implemented)
 		{
 			Name = name;
 			ReturnType = returnType;
@@ -21,7 +23,7 @@
 			Flags = flags;
             Group = group;
 			ParameterTypes = parameterTypes;
-			Implemented = isNull;
+			Implemented = implemented;
 		}
 
 		/// <summary>

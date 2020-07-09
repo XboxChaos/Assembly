@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Blamite.Blam.Scripting
 {
@@ -130,5 +131,15 @@ namespace Blamite.Blam.Scripting
                 return result;
             return null;
         }
+
+		public IEnumerable<FunctionInfo> GetAllImplementedFunctions()
+		{
+			return _functionLookupByOpcode.Where(f => f.Value.Implemented).Select(f => f.Value);
+		}
+
+		public IEnumerable<GlobalInfo> GetAllImplementedGlobals()
+		{
+			return _globalLookupByOpcode.Where(f => f.Value.Implemented).Select(f => f.Value);
+		}
     }
 }

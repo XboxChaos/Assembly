@@ -13,11 +13,13 @@ namespace Blamite.Blam.Scripting
         /// <param name="name">The name of the global.</param>
         /// <param name="opcode">The opcode of the global.</param>
         /// <param name="returnType">The return type of the global.</param>
-        public GlobalInfo(string name, ushort opcode, string returnType)
+        /// <param name="implemented">Whether this global is implemented in this game version or not.</param>
+        public GlobalInfo(string name, ushort opcode, string returnType, bool implemented)
         {
             Name = name;
             ReturnType = returnType;
             Opcode = opcode;
+            Implemented = implemented;
         }
 
         /// <summary>
@@ -30,6 +32,7 @@ namespace Blamite.Blam.Scripting
             Name = context.ID().GetText();
             ReturnType = context.VALUETYPE().GetText();
             Opcode = index;
+            Implemented = true;
         }
 
         /// <summary>
@@ -55,5 +58,10 @@ namespace Blamite.Blam.Scripting
         /// </summary>
         /// <value>The opcode of the function.</value>
         public ushort MaskedOpcode { get => (ushort)(Opcode | 0x8000); }
+
+        /// <summary>
+        ///		Is true if the global exists in this game version and is implemented.
+        /// </summary>
+        public bool Implemented { get; private set; }
     }
 }

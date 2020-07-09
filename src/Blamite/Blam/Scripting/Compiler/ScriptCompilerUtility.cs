@@ -28,7 +28,7 @@ namespace Blamite.Blam.Scripting.Compiler
             // overloaded functions exist. select the right one based on its parameter count and whether the function is implemented or not.
             if (infos.Count > 1)
             {
-                result = infos.Find(i => !i.Implemented && i.ParameterTypes.Count() == parameterCount);
+                result = infos.Find(i => i.Implemented && i.ParameterTypes.Count() == parameterCount);
 
             }
             else

@@ -10,19 +10,20 @@ using Blamite.IO;
 using Blamite.Serialization;
 using Blamite.Util;
 using ICSharpCode.AvalonEdit.Search;
+using ICSharpCode.AvalonEdit.CodeCompletion;
 using Microsoft.Win32;
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Controls;
-using System.Xml;
 using System.Xml.Linq;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 {
@@ -40,9 +41,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private bool _showInfo;
         private Endian _endian;
         private Action _metaRefresh;
-
-        private const uint _randomAddress = 0xCDCDCDCD;  // used for expressions where the string address doesn't point to the string table
-
+        private CompletionWindow _completionWindow = null;
+        private readonly List<ICompletionData> _completionData = new List<ICompletionData>();
 
         public ScriptEditor(Action metaRefresh, EngineDescription buildInfo, IScriptFile scriptFile, IStreamManager streamManager, ICacheFile casheFile, string casheName, Endian endian)
         {
@@ -56,10 +56,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             _casheName = casheName;
             _showInfo = App.AssemblyStorage.AssemblySettings.ShowScriptInfo;
 
-
             InitializeComponent();
-            List<Task> tasks = new List<Task>();
+            txtScript.TextArea.TextEntering += txtScript_TextArea_TextEntering;
+            App.AssemblyStorage.AssemblySettings.PropertyChanged += Settings_SettingsChanged;
+            SetHighlightColor();
 
+            SearchPanel srch = SearchPanel.Install(txtScript);
+            var bconv = new System.Windows.Media.BrushConverter();
+            var srchbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#40F0F0F0");
+            srch.MarkerBrush = srchbrsh;
+
+            List<Task> tasks = new List<Task>();
+            tasks.Add(Task.Run(() => { GenerateCompletionData(); }));
             switch (_buildInfo.Name)
             {
                 case "Halo: Reach":
@@ -72,24 +80,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                     tasks.Add(Task.Run(() => { DecompileScripts(); }));
                     break;      
             }
-
-            //tasks.Add(Task.Run(() => { GenerateSeatMappings(); }));
-            //tasks.Add(Task.Run(() => { DumpEngineGlobalsToXML(); }));
-            // tasks.Add(Task.Run(() => { DumpSpecialGlobalsToXML(); }));
-
-            //var thrd1 = new Thread(DecompileScripts);
-            //thrd1.SetApartmentState(ApartmentState.STA);
-            //thrd1.Start();
-
-            SearchPanel srch = SearchPanel.Install(txtScript);
-
-            var bconv = new System.Windows.Media.BrushConverter();
-            var srchbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#40F0F0F0");
-
-            srch.MarkerBrush = srchbrsh;
-
-            App.AssemblyStorage.AssemblySettings.PropertyChanged += Settings_SettingsChanged;
-            SetHighlightColor();
         }
 
         private void DecompileScripts()
@@ -244,28 +234,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             MetroMessageBox.Show("Script Exported", "Script exported successfully.");
         }
 
-        private void btnPrint_Click(object sender, RoutedEventArgs e)
-        {
-            if (txtScript.LineCount > 0)
-            {
-                StringBuilder sb = new StringBuilder();
-                int counter = 1;
-                string[] lines = txtScript.Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-                for (int i = 0; i < lines.Length; i++)
-                {
-                    sb.AppendLine(lines[i]);
-                    if (lines[i].Contains("(script"))
-                    {
-                        string[] words = lines[i].Split(' ');
-                        sb.AppendLine($"\t(print \"Enter Script {words[3].TrimEnd('\r', '\n')}\")");
-                        counter++;
-                    }
-                }
-                txtScript.Text = sb.ToString();
-                MetroMessageBox.Show("A print call has been added to the beginning of each script.");
-            }
-        }
-
         private async void btnCompile_Click(object sender, RoutedEventArgs e)
         {
             switch(_buildInfo.Name)
@@ -354,19 +322,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             }
         }
 
-        private async void btnDump_Click(object sender, RoutedEventArgs e)
-        {
-            Task task = Task.Run(() => AllExpressionsToXML());
-            await task.ContinueWith(t =>
-            {
-                Dispatcher.Invoke(() => MetroMessageBox.Show("All Expressions were dumped."));
-            });
-        }
-
         private ScriptData CompileScripts(string code, IProgress<int> progress, Logger logger)
         {
-
-
             using (IReader reader = _streamManager.OpenRead())
             {
                 ICharStream stream = CharStreams.fromstring(code);
@@ -380,357 +337,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                  ScriptCompiler compiler = new ScriptCompiler(_cashefile, scrContext, _opcodes, seats, progress, logger);
                 ParseTreeWalker.Default.Walk(compiler, tree);
                 return compiler.Result();
-            }
-        }
-
-        //remove later?
-        private void btnExpressions_Click(object sender, RoutedEventArgs e)
-        {
-            ExpressionsToXML();
-        }
-
-        // remover later?
-        private void ExpressionsToXML()
-        {
-
-            string searchString = SearchTermTextBox.Text;
-            var info = _opcodes.GetTypeInfo(searchString);
-
-            if (info == null)
-            {
-                MetroMessageBox.Show("Unable to retrieve value type information. Please check your spelling.");
-                return;
-            }
-
-            ScriptTable scripts;
-            using (IReader reader = ((IStreamManager)_streamManager).OpenRead())
-            {
-                scripts = _scriptFile.LoadScripts(reader);
-            }
-
-            string folder = "Dump";
-            string fileName = _cashefile.InternalName + "_Expressions_" + searchString + ".xml";
-            string path = Path.Combine(folder, fileName);
-            if (!Directory.Exists(folder))
-            {
-                Directory.CreateDirectory(folder);
-            }
-
-
-            var expressions = scripts.Expressions.ExpressionsAsReadonly;
-            int occurences = 0;
-
-            var settings = new XmlWriterSettings();
-            settings.Indent = true;
-            using (var writer = XmlWriter.Create(path, settings))
-            {
-                writer.WriteComment($"Map: \"{_cashefile.InternalName}\" ValueType: \"{searchString}\" Opcode: \"{info.Opcode}\"");
-                writer.WriteStartElement("Expressions");
-
-                for (int i = 0; i < expressions.Count; i++)
-                {
-                    var exp = expressions[i];
-                    if (exp.Type == ScriptExpressionType.Expression && (exp.Opcode == info.Opcode || exp.ReturnType == info.Opcode))
-                    {
-                        // throw out function_names
-                        if (exp.ReturnType != _opcodes.GetTypeInfo("function_name").Opcode)
-                        {
-                            var bytes = BitConverter.GetBytes(exp.Value);
-                            ushort second16 = BitConverter.ToUInt16(bytes, 0);
-                            ushort first16 = BitConverter.ToUInt16(bytes, 2);
-
-                            writer.WriteStartElement("Expression");
-                            writer.WriteAttributeString("Index", i.ToString());
-                            writer.WriteAttributeString("Opcode", exp.Opcode.ToString());
-                            writer.WriteAttributeString("ValueType", exp.ReturnType.ToString());
-                            writer.WriteAttributeString("ExpType", exp.Type.ToString());
-                            writer.WriteAttributeString("String", exp.StringValue);
-                            writer.WriteAttributeString("Val32", exp.Value.ToString());
-                            writer.WriteAttributeString("Val16_1", first16.ToString());
-                            writer.WriteAttributeString("Val16_2", second16.ToString());
-                            writer.WriteAttributeString("Val8_1", bytes[3].ToString());
-                            writer.WriteAttributeString("Val8_2", bytes[2].ToString());
-                            writer.WriteAttributeString("Val8_3", bytes[1].ToString());
-                            writer.WriteAttributeString("Val8_4", bytes[0].ToString());
-                            writer.WriteEndElement();
-
-                            occurences++;
-                        }
-                    }
-                }
-                writer.WriteEndElement();
-                writer.WriteEndDocument();
-                writer.Close();
-            }
-            MetroMessageBox.Show($"{occurences} expressions matching the criteria were found.\nThe output was saved in \"{path}\".");
-        }
-
-        private void AllExpressionsToXML()
-        {
-            using (IReader reader = ((IStreamManager)_streamManager).OpenRead())
-            {
-                ScriptTable scripts = _scriptFile.LoadScripts(reader);
-                string folder = "Dump";
-                string fileName = _cashefile.InternalName + "_Expression_Table.xml";
-                string path = Path.Combine(folder, fileName);
-                if (!Directory.Exists(folder))
-                {
-                    Directory.CreateDirectory(folder);
-                }
-
-                var expressions = scripts.Expressions.ExpressionsAsReadonly;
-
-                var settings = new XmlWriterSettings();
-                settings.Indent = true;
-                using (var writer = XmlWriter.Create(path, settings))
-                {
-                    writer.WriteComment($"Map: \"{_cashefile.InternalName}\"");
-                    writer.WriteStartElement("Expressions");
-
-                    for (int i = 0; i < expressions.Count; i++)
-                    {
-                        var exp = expressions[i];
-
-                        writer.WriteStartElement("Expression");
-                        writer.WriteAttributeString("Num", i.ToString("X4"));
-                        writer.WriteAttributeString("Salt", exp.Index.Salt.ToString("X4"));
-                        writer.WriteAttributeString("Opcode", exp.Opcode.ToString("X4"));
-                        writer.WriteAttributeString("ValueType", exp.ReturnType.ToString("X4"));
-                        switch (exp.Type)
-                        {
-                            case ScriptExpressionType.Group:
-                                writer.WriteAttributeString("ExpressionType", "Call");
-                                break;
-                            case ScriptExpressionType.Expression:
-                                writer.WriteAttributeString("ExpressionType", "Expression");
-                                break;
-                            case ScriptExpressionType.ScriptReference:
-                                writer.WriteAttributeString("ExpressionType", "ScriptRef");
-                                break;
-                            case ScriptExpressionType.GlobalsReference:
-                                writer.WriteAttributeString("ExpressionType", "GlobalRef");
-                                break;
-                            case ScriptExpressionType.ParameterReference:
-                                writer.WriteAttributeString("ExpressionType", "ScriptPar");
-                                break;
-
-                        }
-                        writer.WriteAttributeString("NextSalt", exp.Next.Salt.ToString("X4"));
-                        writer.WriteAttributeString("NextIndex", exp.Next.Index.ToString("X4"));
-                        writer.WriteAttributeString("StringOff", exp.StringOffset.ToString("X"));
-                        writer.WriteAttributeString("Value", exp.Value.ToString("X8"));
-                        writer.WriteAttributeString("LineNum", exp.LineNumber.ToString("X4"));
-                        if (exp.StringOffset != _randomAddress && exp.StringValue != null)
-                            writer.WriteAttributeString("String", exp.StringValue);
-                        writer.WriteEndElement();
-                    }
-                    writer.WriteEndElement();
-                    writer.WriteEndDocument();
-                    writer.Close();
-                }
-            }
-        }
-
-        // remove later
-        private void DumpEngineGlobalsToXML()
-        {
-            ScriptTable scripts;
-            using (IReader reader = ((IStreamManager)_streamManager).OpenRead())
-            {
-                scripts = _scriptFile.LoadScripts(reader);
-            }
-
-            string folder = "Dump";
-            string fileName = _cashefile.InternalName + "_EngineGlobals.xml";
-            string path = Path.Combine(folder, fileName);
-            if (!Directory.Exists(folder))
-            {
-                Directory.CreateDirectory(folder);
-            }
-
-
-            var expressions = scripts.Expressions.ExpressionsAsReadonly;
-            int occurences = 0;
-
-            var settings = new XmlWriterSettings();
-            settings.Indent = true;
-            using (var writer = XmlWriter.Create(path, settings))
-            {
-                writer.WriteStartElement("globals");
-
-                for (int i = 0; i < expressions.Count; i++)
-                {
-                    var exp = expressions[i];
-                    if (exp.Type == ScriptExpressionType.GlobalsReference)
-                    {
-
-                        var bytes = BitConverter.GetBytes(exp.Value);
-                        ushort first16 = BitConverter.ToUInt16(bytes, 2);
-                        ushort second16 = (ushort)(BitConverter.ToUInt16(bytes, 0) ^ 0x8000);
-
-                        if (first16 == 0xFFFF)
-                        {
-                            int con = (int)exp.Value;
-
-                            writer.WriteStartElement("global");
-                            writer.WriteAttributeString("Index", i.ToString());
-                            writer.WriteAttributeString("Opcode", exp.Opcode.ToString());
-                            writer.WriteAttributeString("ValueType", exp.ReturnType.ToString());
-                            writer.WriteAttributeString("ExpType", exp.Type.ToString());
-                            writer.WriteAttributeString("String", exp.StringValue);
-                            writer.WriteAttributeString("OpCode", second16.ToString("X"));
-                            writer.WriteEndElement();
-
-                            occurences++;
-                        }
-                    }
-                }
-                writer.WriteEndElement();
-                writer.WriteEndDocument();
-                writer.Close();
-            }
-            Dispatcher.Invoke(new Action(() => MetroMessageBox.Show($"{occurences} expressions matching the criteria were found.\nThe output was saved in \"{path}\".")));
-        }
-
-        // remove later
-        private void DumpSpecialGlobalsToXML()
-        {
-            ScriptTable scripts;
-            using (IReader reader = ((IStreamManager)_streamManager).OpenRead())
-            {
-                scripts = _scriptFile.LoadScripts(reader);
-            }
-
-            string folder = "Dump";
-            string fileName = _cashefile.InternalName + "_SpecialGlobals.xml";
-            string path = Path.Combine(folder, fileName);
-            if (!Directory.Exists(folder))
-            {
-                Directory.CreateDirectory(folder);
-            }
-
-
-            var expressions = scripts.Expressions.ExpressionsAsReadonly;
-            int occurences = 0;
-
-            var settings = new XmlWriterSettings();
-            settings.Indent = true;
-            using (var writer = XmlWriter.Create(path, settings))
-            {
-                writer.WriteStartElement("globals");
-
-                for (int i = 0; i < expressions.Count; i++)
-                {
-                    var exp = expressions[i];
-                    if (exp.Type == ScriptExpressionType.GlobalsReference && exp.Opcode != exp.ReturnType)
-                    {
-
-                        var bytes = BitConverter.GetBytes(exp.Value);
-                        ushort first16 = BitConverter.ToUInt16(bytes, 2);
-                        ushort second16 = BitConverter.ToUInt16(bytes, 0);
-
-                        writer.WriteStartElement("global");
-                        writer.WriteAttributeString("Index", i.ToString());
-                        writer.WriteAttributeString("Opcode", exp.Opcode.ToString());
-                        writer.WriteAttributeString("ValueType", exp.ReturnType.ToString());
-                        writer.WriteAttributeString("ExpType", exp.Type.ToString());
-                        writer.WriteAttributeString("String", exp.StringValue);
-                        writer.WriteAttributeString("Value", exp.Value.ToString("X"));
-                        writer.WriteEndElement();
-
-                        occurences++;
-                    }
-                }
-                writer.WriteEndElement();
-                writer.WriteEndDocument();
-                writer.Close();
-            }
-            Dispatcher.Invoke(new Action(() => MetroMessageBox.Show($"{occurences} expressions matching the criteria were found.\nThe output was saved in \"{path}\".")));
-        }
-
-        // remove later
-        private void TagsToXML()
-        {
-
-            string folder = "Dump";
-            string fileName = _cashefile.InternalName + "_Tags.xml";
-            string path = Path.Combine(folder, fileName);
-            if (!Directory.Exists(folder))
-            {
-                Directory.CreateDirectory(folder);
-            }
-
-
-            var tags = _cashefile.Tags;
-
-            var settings = new XmlWriterSettings();
-            settings.Indent = true;
-            using (var writer = XmlWriter.Create(path, settings))
-            {
-                writer.WriteComment($"Map: \"{_cashefile.InternalName}\"");
-                writer.WriteStartElement("Tags");
-
-                for (int i = 0; i < tags.Count; i++)
-                {
-                    var tag = tags[i];
-
-                    writer.WriteStartElement("Tag");
-                    writer.WriteAttributeString("Index", i.ToString());
-                    writer.WriteAttributeString("DatumSalt", tag.Index.Salt.ToString());
-                    writer.WriteAttributeString("DatumIndex", tag.Index.Index.ToString());
-                    if (tag.Group == null)
-                        writer.WriteAttributeString("Class", "");
-                    else
-                        writer.WriteAttributeString("Class", CharConstant.ToString(tag.Group.Magic));
-                    if (tag.MetaLocation == null)
-                        writer.WriteAttributeString("MetaLocation", "");
-                    else
-                        writer.WriteAttributeString("MetaLocation", tag.MetaLocation.AsPointer().ToString());
-                    if (tag.Index.IsValid)
-                        writer.WriteAttributeString("Name", _cashefile.FileNames.GetTagName(tag));
-                    else
-                        writer.WriteAttributeString("Name", "");
-                    writer.WriteEndElement();
-                }
-                writer.WriteEndElement();
-                writer.WriteEndDocument();
-                writer.Close();
-            }
-        }
-        // remove later
-        private void SIDsToXML()
-        {
-
-            string folder = "Dump";
-            string fileName = _cashefile.InternalName + "_StringIDs.xml";
-            string path = Path.Combine(folder, fileName);
-            if (!Directory.Exists(folder))
-            {
-                Directory.CreateDirectory(folder);
-            }
-
-            var settings = new XmlWriterSettings();
-            settings.Indent = true;
-            using (var writer = XmlWriter.Create(path, settings))
-            {
-                writer.WriteComment($"Map: \"{_cashefile.InternalName}\"");
-                writer.WriteStartElement("String_IDs");
-
-                foreach (string str in _cashefile.StringIDs)
-                {
-
-                    StringID id = _cashefile.StringIDs.FindStringID(str);
-
-                    writer.WriteStartElement("String_ID");
-                    writer.WriteAttributeString("String", str);
-                    writer.WriteAttributeString("Set", id.GetNamespace(_cashefile.StringIDs.IDLayout).ToString());
-                    writer.WriteAttributeString("Index", id.GetIndex(_cashefile.StringIDs.IDLayout).ToString());
-                    writer.WriteAttributeString("Value", id.Value.ToString());
-                    writer.WriteEndElement();
-                }
-                writer.WriteEndElement();
-                writer.WriteEndDocument();
-                writer.Close();
             }
         }
 
@@ -762,10 +368,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             return result;
         }
 
-
         private void Settings_SettingsChanged(object sender, EventArgs e)
         {
-            // Reset the highlight color in case the theme changed
+            // Reset the highlight color in case the theme changed.
             SetHighlightColor();
         }
 
@@ -799,6 +404,57 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         {
             txtScript.Clear();
             App.AssemblyStorage.AssemblySettings.PropertyChanged -= Settings_SettingsChanged;
+        }
+
+        private void GenerateCompletionData()
+        {
+            _completionData.AddRange(_opcodes.GetAllImplementedFunctions().Select(info => new ScriptCompletion(info)));
+            _completionData.AddRange(_opcodes.GetAllImplementedGlobals().Select(info => new ScriptCompletion(info)));
+        }
+
+        private void InitializaCompletionWindow()
+        {
+            // Set properties.
+            var converter = new System.Windows.Media.BrushConverter();
+            var bg = (System.Windows.Media.Brush)converter.ConvertFromString("#FF303032");
+            _completionWindow = new CompletionWindow(txtScript.TextArea);
+            _completionWindow.SizeToContent = SizeToContent.WidthAndHeight;
+            _completionWindow.Background = bg;
+            _completionWindow.WindowStyle = WindowStyle.None;
+            _completionWindow.CompletionList.ListBox.Background = System.Windows.Media.Brushes.Transparent;
+            _completionWindow.CompletionList.ListBox.Foreground = this.Foreground;
+            _completionWindow.SizeChanged += completionWindow_SizeChanged;
+            _completionWindow.Closed += delegate {
+                _completionWindow = null;
+            };
+
+            // Add completion data to the list.
+            IList<ICompletionData> data = _completionWindow.CompletionList.CompletionData;
+            foreach (ScriptCompletion func in _completionData)
+            {
+                data.Add(func);
+            }
+        }
+
+        private void txtScript_TextArea_TextEntering(object sender, TextCompositionEventArgs e)
+        {
+            if (e.Text.Length > 0 && _completionWindow == null)
+            {
+                if(char.IsLetterOrDigit(e.Text[0]))
+                {
+                    InitializaCompletionWindow();
+                    _completionWindow.Show();
+                }
+            }
+        }
+
+        private void completionWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            CompletionWindow window = sender as CompletionWindow;
+            if(window.CompletionList.ListBox.Items.Count == 0)
+            {
+                window.Close();
+            }
         }
     }
 }
