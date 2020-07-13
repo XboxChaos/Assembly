@@ -68,21 +68,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
             List<Task> tasks = new List<Task>();
             tasks.Add(Task.Run(() => { GenerateCompletionData(); }));
-            switch (_buildInfo.Name)
+            if(_buildInfo.Name.Contains("Halo 4"))
             {
-                case "Halo: Reach":
-                case "Halo: Reach MCC":
-                case "Halo: Reach MCC Update 1":
-                case "Halo: Reach MCC Update 2":
-                    tasks.Add(Task.Run(() => { DecompileReach(); }));
-                    break;
-                default:
-                    tasks.Add(Task.Run(() => { DecompileScripts(); }));
-                    break;      
+                tasks.Add(Task.Run(() => { DecompileHalo4Old(); }));
+            }
+            else
+            {
+                tasks.Add(Task.Run(() => { DecompileToLISP(); }));
             }
         }
 
-        private void DecompileScripts()
+        private void DecompileHalo4Old()
         {
             DateTime startTime = DateTime.Now;
 
@@ -194,7 +190,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             Dispatcher.Invoke(new Action(delegate { txtScript.Text = code.InnerWriter.ToString(); }));
         }
 
-        private void DecompileReach()
+        private void DecompileToLISP()
         {
             DateTime startTime = DateTime.Now;
 

@@ -485,6 +485,7 @@ namespace Blamite.Blam.Scripting
 			byte[] val = BitConverter.GetBytes(value);
 			string text;
 
+
 			switch (actualType.Name)
 			{
 				case "void":
@@ -517,41 +518,6 @@ namespace Blamite.Blam.Scripting
 					float fl = BitConverter.ToSingle(val, 0);
 					text = fl.ToString("0.0#######", CultureInfo.InvariantCulture);
 					break;
-					// Enum Types
-				case "player":
-				case "game_difficulty":
-				case "team":
-				case "mp_team":
-				case "controller":
-				case "button_preset":
-				case "joystick_preset":
-				case "player_color":
-				case "player_model_choice":
-				case "voice_output_setting":
-				case "voice_mask":
-				case "subtitle_setting":
-				case "actor_type":
-				case "model_state":
-				case "event":
-				case "character_physics":
-				case "skull":
-				case "firing_point_evaluator":
-				case "damage_region":
-					string enumValue = actualType.GetEnumValue(value);
-					if (enumValue != null)
-					{
-						text = enumValue;
-					}
-					else if (expression.Value == 0xFFFFFFFF)
-					{
-						text = "none";
-					}
-					else
-					{
-						throw new NotImplementedException("Unknown Enum Value.");
-					}
-					break;
-
 				case "ai_line":
 					text = expression.StringValue;
 					break;
@@ -570,6 +536,18 @@ namespace Blamite.Blam.Scripting
 					if(expression.Value == 0xFFFFFFFF)
 					{
 						text = "none";
+					}
+					else if(actualType.IsEnum)
+					{
+						string enumValue = actualType.GetEnumValue(value);
+						if (enumValue != null)
+						{
+							text = enumValue;
+						}
+						else
+						{
+							throw new NotImplementedException("Unknown Enum Value.");
+						}
 					}
 					else
 					{

@@ -68,5 +68,7 @@ namespace Blamite.Blam.Scripting
         {
             return _enumValues.FindIndex(e => e == name);
         }
+
+		public bool IsEnum { get { return _enumValues.Count > 0; } }
 	}
 }
