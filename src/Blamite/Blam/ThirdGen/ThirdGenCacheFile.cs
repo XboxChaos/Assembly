@@ -243,7 +243,8 @@ namespace Blamite.Blam.ThirdGen
 		{
 			LoadHeader(reader, buildString);
 			LoadFileNames(reader);
-			LoadStringIDs(reader);
+			var resolver = LoadStringIDNamespaces(reader);
+			LoadStringIDs(reader, resolver);
 			LoadTags(reader);
 			LoadLanguageGlobals(reader);
 			LoadScriptFiles(reader);
@@ -283,13 +284,53 @@ namespace Blamite.Blam.ThirdGen
 			}
 		}
 
-		private void LoadStringIDs(IReader reader)
+		private StringIDNamespaceResolver LoadStringIDNamespaces(IReader reader)
+		{
+			// making some assumptions here based on all current stringid xmls
+			if (_header.StringIDNamespaceCount > 1)
+			{
+				int[] namespaces = new int[_header.StringIDNamespaceCount];
+				reader.SeekTo(_header.StringIDNamespaceTable.Offset);
+				for (int i = 0; i < namespaces.Length; i++)
+					namespaces[i] = reader.ReadInt32();
+
+				// shift our way to the namespace bits, assuming index is always at least 16 bits
+				int firstNamespaceBit = -1;
+				for (int i = 16; i < 32; i++)
+					if (namespaces[1] >> i == 1)
+					{
+						firstNamespaceBit = i;
+						break;
+					}
+
+				if (firstNamespaceBit == -1)
+					return null;
+
+				// assuming here that the namespace is always 8 bits
+				var resolver = new StringIDNamespaceResolver(new StringIDLayout(firstNamespaceBit, 8, 32 - 8 - firstNamespaceBit));
+				int indexMask = (1 << firstNamespaceBit) - 1;
+
+				// register all but the first namespace as that needs the final count
+				int counter = namespaces[0] & indexMask;
+				for (int i = 1; i < namespaces.Length; i++)
+				{
+					resolver.RegisterSet(i, 0, counter);
+					counter += namespaces[i] & indexMask;
+				}
+				resolver.RegisterSet(0, namespaces[0] & indexMask, counter);
+				return resolver;
+			}
+			else
+				return null;
+		}
+
+		private void LoadStringIDs(IReader reader, StringIDNamespaceResolver resolver = null)
 		{
 			if (_header.StringIDCount > 0)
 			{
 				var stringTable = new IndexedStringTable(reader, _header.StringIDCount, _header.StringIDIndexTable,
 					_header.StringIDData, _buildInfo.StringIDKey);
-				_stringIds = new IndexedStringIDSource(stringTable, _buildInfo.StringIDs);
+				_stringIds = new IndexedStringIDSource(stringTable, resolver != null ? resolver : _buildInfo.StringIDs);
 			}
 		}
 
