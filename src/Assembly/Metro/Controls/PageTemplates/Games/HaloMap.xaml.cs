@@ -889,9 +889,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 							if (cpb.RadioEffect != null)
 								tagsToProcess.Enqueue(_cacheFile.Tags[cpb.RadioEffect.Index]);
 
-							foreach (var comp in cpb.Components)
-								if (comp.Sound != null)
-									tagsToProcess.Enqueue(_cacheFile.Tags[comp.Sound.Index]);
+							if (cpb.Components != null)
+								foreach (var comp in cpb.Components)
+									if (comp.Sound != null)
+										tagsToProcess.Enqueue(_cacheFile.Tags[comp.Sound.Index]);
 						}
 					}
 
