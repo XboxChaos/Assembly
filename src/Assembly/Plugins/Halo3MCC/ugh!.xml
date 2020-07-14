@@ -5,27 +5,37 @@
 		<revision author="Lord Zedd" version="1">k</revision>
 	</revisions>
 	<undefined name="Unknown" offset="0x0" visible="true" />
-	<tagblock name="Platform Codec" offset="0x4" visible="true" elementSize="0x3" align="0x10">
+	<tagblock name="Codecs" offset="0x4" visible="true" elementSize="0x3">
 		<enum8 name="Sample Rate" offset="0x0" visible="true">
 			<option name="22kHz" value="0x0" />
 			<option name="44kHz" value="0x1" />
 			<option name="32kHz" value="0x2" />
+			<option name="Unknown" value="0x3" />
 		</enum8>
 		<enum8 name="Encoding" offset="0x1" visible="true">
 			<option name="Mono" value="0x0" />
 			<option name="Stereo" value="0x1" />
 			<option name="Surround" value="0x2" />
 			<option name="5.1 Surround" value="0x3" />
+			<option name="Codec" value="0x4" />
 		</enum8>
-		<int8 name="Compression" offset="0x2" visible="true" />
+		<enum8 name="Compression" offset="0x2" visible="true">
+			<option name="None (Big Endian)" value="0x0" />
+			<option name="Xbox ADPCM" value="0x1" />
+			<option name="IMA ADPCM" value="0x2" />
+			<option name="None (Little Endian)" value="0x3" />
+			<option name="WMA" value="0x4" />
+			<option name="None (Endian Agnostic)" value="0x5" />
+			<option name="XMA" value="0x6" />
+			<option name="XMA v2" value="0x7" />
+		</enum8>
 	</tagblock>
-	<tagblock name="Playback Parameters" offset="0x10" visible="true" elementSize="0x44">
-		<comment title="Distances" />
-		<flags32 name="Field Disable Flags" offset="0x0" visible="true">
-			<bit name="Distance A" index="0" />
-			<bit name="Distance B" index="1" />
-			<bit name="Distance C" index="2" />
-			<bit name="Distance D" index="3" />
+	<tagblock name="Playbacks" offset="0x10" visible="true" elementSize="0x44">
+		<flags32 name="Internal Flags" offset="0x0" visible="true">
+			<bit name="Ignore &quot;Don't Play Distance&quot;" index="0" />
+			<bit name="Ignore &quot;Attack Distance&quot;" index="1" />
+			<bit name="Ignore &quot;Minimum Distance&quot;" index="2" />
+			<bit name="Ignore &quot;Maximum Distance&quot;" index="3" />
 			<bit name="Bit 4" index="4" />
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
@@ -55,22 +65,27 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</flags32>
-		<float32 name="Distance A" offset="0x4" visible="true" />
-		<float32 name="Distance B" offset="0x8" visible="true" />
-		<float32 name="Distance C" offset="0xC" visible="true" />
-		<float32 name="Distance D" offset="0x10" visible="true" />
-		<float32 name="Skip Fraction" offset="0x14" visible="true" />
+		<float32 name="Don't Play Distance" offset="0x4" visible="true" tooltip="don't play below this distance" />
+		<float32 name="Attack Distance" offset="0x8" visible="true" tooltip="start playing at full volume at this distance" />
+		<float32 name="Minimum Distance" offset="0xC" visible="true" tooltip="start attenuating at this distance" />
+		<float32 name="Maximum Distance" offset="0x10" visible="true" tooltip="the distance beyond which this sound is no longer audible" />
+		<float32 name="Skip Fraction" offset="0x14" visible="true" tooltip="fraction of requests to play this sound that will be ignored (0 means always play.)" />
 		<float32 name="Maximum Bend Per Second" offset="0x18" visible="true" />
-		<comment title="Randomization" />
-		<float32 name="Gain Base" offset="0x1C" visible="true" />
-		<float32 name="Gain Variance" offset="0x20" visible="true" />
-		<int16 name="Random Pitch Bounds min" offset="0x24" visible="true" />
-		<int16 name="Random Pitch Bounds max" offset="0x26" visible="true" />
-		<comment title="Directional Sounds" />
-		<degree name="Inner Cone Angle" offset="0x28" visible="true" />
-		<degree name="Outer Cone Angle" offset="0x2C" visible="true" />
-		<float32 name="Outer Cone Gain" offset="0x30" visible="true" />
-		<comment title="Scripted Location Override" />
+		<comment title="Randomization">these settings control random variation of volume and pitch.
+ the second parameter gets clipped to the first.</comment>
+		<float32 name="Gain Base" offset="0x1C" visible="true" tooltip="sound's random gain will start here" />
+		<float32 name="Gain Variance" offset="0x20" visible="true" tooltip="sound's gain will be randomly modulated within this range" />
+		<range16 name="Random Pitch Bounds" offset="0x24" visible="true" tooltip="the sound's pitch will be modulated randomly within this range." />
+		<comment title="Directional Sounds">these settings allow sounds to be directional, fading as they turn away from the listener</comment>
+		<degree name="Inner Cone Angle" offset="0x28" visible="true" tooltip="within the cone defined by this angle and the sound's direction, the sound plays with a gain of 1.0." />
+		<degree name="Outer Cone Angle" offset="0x2C" visible="true" tooltip="outside the cone defined by this angle and the sound's direction, the sound plays with a gain of OUTER CONE GAIN. (0 means the sound does not attenuate with direction.)" />
+		<float32 name="Outer Cone Gain" offset="0x30" visible="true" tooltip="the gain to use when the sound is directed away from the listener" />
+		<comment title="Scripted Location Override">NOTE: this will only apply when the sound is started via script
+azimuth:
+    0 =&gt; front
+    90 =&gt; left
+    180 =&gt; back
+    270 =&gt; right</comment>
 		<flags32 name="Flags" offset="0x34" visible="true">
 			<bit name="Override Azimuth" index="0" />
 			<bit name="Override 3D Gain" index="1" />
@@ -81,85 +96,120 @@
 		<float32 name="First Person Gain" offset="0x40" visible="true" />
 	</tagblock>
 	<tagblock name="Scales" offset="0x1C" visible="true" elementSize="0x14">
-		<float32 name="Gain Modifier min" offset="0x0" visible="true" />
-		<float32 name="Gain Modifier max" offset="0x4" visible="true" />
-		<int16 name="Pitch Modifier min" offset="0x8" visible="true" />
-		<int16 name="Pitch Modifier max" offset="0xA" visible="true" />
-		<float32 name="Skip Fraction Modifier min" offset="0xC" visible="true" />
-		<float32 name="Skip Fraction Modifier max" offset="0x10" visible="true" />
+		<comment title="Scale Modifiers">as the sound's input scale changes from zero to one, these modifiers move between the two values specified here. the sound will play using the current scale modifier multiplied by the values specified above. (0 values are ignored.)</comment>
+		<rangef name="Gain Modifier" offset="0x0" visible="true" />
+		<range16 name="Pitch Modifier" offset="0x8" visible="true" />
+		<rangef name="Skip Fraction Modifier" offset="0xC" visible="true" />
 	</tagblock>
 	<tagblock name="Import Names" offset="0x28" visible="true" elementSize="0x4">
-		<stringId name="Name" offset="0x0" visible="true" />
+		<stringid name="Import Name" offset="0x0" visible="true" />
 	</tagblock>
 	<tagblock name="Pitch Range Parameters" offset="0x34" visible="true" elementSize="0xE">
 		<int16 name="Natural Pitch" offset="0x0" visible="true" />
-		<int16 name="Bend Bounds min" offset="0x2" visible="true" />
-		<int16 name="Bend Bounds max" offset="0x4" visible="true" />
-		<int16 name="Max Gain Pitch Bounds min" offset="0x6" visible="true" />
-		<int16 name="Max Gain Pitch Bounds max" offset="0x8" visible="true" />
-		<int16 name="Unknown Bounds min" offset="0xA" visible="true" />
-		<int16 name="Unknown Bounds max" offset="0xC" visible="true" />
+		<range16 name="Bend Bounds" offset="0x2" visible="true" tooltip="the range of pitches that will be represented using this sample." />
+		<range16 name="Maximum Gain Pitch Bounds" offset="0x6" visible="true" />
+		<range16 name="Playback Pitch Bounds" offset="0xA" visible="true" />
 	</tagblock>
 	<tagblock name="Pitch Ranges" offset="0x40" visible="true" elementSize="0xC" align="0x10">
 		<int16 name="Import Name Index" offset="0x0" visible="true" />
 		<int16 name="Pitch Range Parameter Index" offset="0x2" visible="true" />
-		<int16 name="Encoded Permutation Data Index" offset="0x4" visible="true" />
-		<int16 name="Encoded Runtime Permutation Flag Index" offset="0x6" visible="true" />
-		<int16 name="Encoded Permutation Count" offset="0x8" visible="true" />
-		<uint16 name="First Permuation Index" offset="0xA" visible="true" />
+		<int16 name="Encoded Permutation Data" offset="0x4" visible="true" />
+		<int16 name="Encoded First Runtime Permutation Flag Index" offset="0x6" visible="true" />
+		<int32 name="Encoded First Permutation And Counts" offset="0x8" visible="true" />
 	</tagblock>
 	<tagblock name="Permutations" offset="0x4C" visible="true" elementSize="0x14">
 		<int16 name="Import Name Index" offset="0x0" visible="true" />
 		<int16 name="Encoded Skip Fraction" offset="0x2" visible="true" />
-		<uint32 name="Sample Size" offset="0x4" visible="true" />
-		<int32 name="First Permutation Chunk Index" offset="0x8" visible="true" />
-		<int16 name="Permutation Chunk Count" offset="0xC" visible="true" />
-		<int8 name="Gain" offset="0xE" visible="true" />
-		<int8 name="Pitch Range Overall Permutation Index" offset="0xF" visible="true" />
+		<uint32 name="Uncompressed Sample Size" offset="0x4" visible="true" />
+		<int32 name="First Chunk Index" offset="0x8" visible="true" />
+		<int16 name="Chunk Count" offset="0xC" visible="true" />
+		<int8 name="Encoded Gain" offset="0xE" visible="true" />
+		<int8 name="Encoded Permutation Info Index" offset="0xF" visible="true" />
 		<uint32 name="FSB Info Value" offset="0x10" visible="true" />
 	</tagblock>
 	<undefined name="Unknown" offset="0x58" visible="false" />
 	<undefined name="Unknown" offset="0x5C" visible="false" />
 	<undefined name="Unknown" offset="0x60" visible="false" />
 	<tagblock name="Custom Playbacks" offset="0x64" visible="true" elementSize="0x48">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
+		<tagblock name="Mix" offset="0x0" visible="true" elementSize="0x8">
+			<enum32 name="Mixbin" offset="0x0" visible="true">
+				<option name="Front Left" value="0x0" />
+				<option name="Front Right" value="0x1" />
+				<option name="Back Left" value="0x2" />
+				<option name="Back Right" value="0x3" />
+				<option name="Center" value="0x4" />
+				<option name="Low Frequency" value="0x5" />
+				<option name="Reverb" value="0x6" />
+				<option name="3D Front Left" value="0x7" />
+				<option name="3D Front Right" value="0x8" />
+				<option name="3D Back Left" value="0x9" />
+				<option name="3D Back Right" value="0xA" />
+				<option name="Default Left Speakers" value="0xB" />
+				<option name="Default Right Speakers" value="0xC" />
+			</enum32>
+			<float32 name="Gain" offset="0x4" visible="true" />
+		</tagblock>
 		<flags32 name="Flags" offset="0xC" visible="true">
 			<bit name="Use 3D Radio Hack" index="0" />
 		</flags32>
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<tagblock name="Filter" offset="0x18" visible="true" elementSize="0x48">
-			<int32 name="Filter Type" offset="0x0" visible="true" />
+			<enum32 name="Filter Type" offset="0x0" visible="true">
+				<option name="Parametric EQ" value="0x0" />
+				<option name="DLS2" value="0x1" />
+				<option name="Both (Only Valid For Mono)" value="0x2" />
+			</enum32>
 			<int32 name="Filter Width" offset="0x4" visible="true" />
-			<comment title="Left Filter Frequency" />
-			<float32 name="Scale Bounds min" offset="0x8" visible="true" />
-			<float32 name="Scale Bounds max" offset="0xC" visible="true" />
+			<comment title="Left Filter Frequency">in Hz [0,8000]</comment>
+			<rangeF name="Scale Bounds" offset="0x8" visible="true" />
 			<float32 name="Random Base" offset="0x10" visible="true" />
 			<float32 name="Random Variance" offset="0x14" visible="true" />
-			<comment title="Left Filter Gain" />
-			<float32 name="Scale Bounds min" offset="0x18" visible="true" />
-			<float32 name="Scale Bounds max" offset="0x1C" visible="true" />
+			<comment title="Left Filter Gain">in dB</comment>
+			<rangeF name="Scale Bounds" offset="0x18" visible="true" />
 			<float32 name="Random Base" offset="0x20" visible="true" />
 			<float32 name="Random Variance" offset="0x24" visible="true" />
-			<comment title="Right Filter Frequency" />
-			<float32 name="Scale Bounds min" offset="0x28" visible="true" />
-			<float32 name="Scale Bounds max" offset="0x2C" visible="true" />
+			<comment title="Right Filter Frequency">in Hz [0,8000]</comment>
+			<rangeF name="Scale Bounds" offset="0x28" visible="true" />
 			<float32 name="Random Base" offset="0x30" visible="true" />
 			<float32 name="Random Variance" offset="0x34" visible="true" />
-			<comment title="Right Filter Gain" />
-			<float32 name="Scale Bounds min" offset="0x38" visible="true" />
-			<float32 name="Scale Bounds max" offset="0x3C" visible="true" />
+			<comment title="Right Filter Gain">in dB</comment>
+			<rangeF name="Scale Bounds" offset="0x38" visible="true" />
 			<float32 name="Random Base" offset="0x40" visible="true" />
 			<float32 name="Random Variance" offset="0x44" visible="true" />
 		</tagblock>
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
+		<tagblock name="Pitch LFO" offset="0x24" visible="true" elementSize="0x30">
+			<comment title="Delay">seconds</comment>
+			<rangef name="Scale Bounds" offset="0x0" visible="true" />
+			<float32 name="Random Base" offset="0x8" visible="true" />
+			<float32 name="Random Variance" offset="0xC" visible="true" />
+			<comment title="Frequency">Hz[0,43.7]</comment>
+			<rangef name="Scale Bounds" offset="0x10" visible="true" />
+			<float32 name="Random Base" offset="0x18" visible="true" />
+			<float32 name="Random Variance" offset="0x1C" visible="true" />
+			<comment title="Pitch Modulation">octaves[-1,1]</comment>
+			<rangef name="Scale Bounds" offset="0x20" visible="true" />
+			<float32 name="Random Base" offset="0x28" visible="true" />
+			<float32 name="Random Variance" offset="0x2C" visible="true" />
+		</tagblock>
+		<tagblock name="Filter LFO" offset="0x30" visible="true" elementSize="0x40">
+			<comment title="Delay">in seconds</comment>
+			<rangef name="Scale Bounds" offset="0x0" visible="true" />
+			<float32 name="Random Base" offset="0x8" visible="true" />
+			<float32 name="Random Variance" offset="0xC" visible="true" />
+			<comment title="Frequency">in Hz[0,43.7]</comment>
+			<rangef name="Scale Bounds" offset="0x10" visible="true" />
+			<float32 name="Random Base" offset="0x18" visible="true" />
+			<float32 name="Random Variance" offset="0x1C" visible="true" />
+			<comment title="Cutoff Modulation">octaves[-8,8]</comment>
+			<rangef name="Scale Bounds" offset="0x20" visible="true" />
+			<float32 name="Random Base" offset="0x28" visible="true" />
+			<float32 name="Random Variance" offset="0x2C" visible="true" />
+			<comment title="Gain Modulation">dB[-16,16]</comment>
+			<rangef name="Scale Bounds" offset="0x30" visible="true" />
+			<float32 name="Random Base" offset="0x38" visible="true" />
+			<float32 name="Random Variance" offset="0x3C" visible="true" />
+		</tagblock>
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<undefined name="Unknown" offset="0x40" visible="false" />
 		<undefined name="Unknown" offset="0x44" visible="false" />
@@ -180,54 +230,42 @@
 			<option name="Polish" value="0xB" />
 		</enum32>
 		<tagblock name="Permutation Durations" offset="0x4" visible="true" elementSize="0x2">
-			<int16 name="Duration" offset="0x0" visible="true" />
+			<int16 name="Duration (Script Ticks)" offset="0x0" visible="true" />
 		</tagblock>
 		<tagblock name="Pitch Ranges" offset="0x10" visible="true" elementSize="0x4">
-			<int16 name="First Permutation Index" offset="0x0" visible="true" />
+			<int16 name="First Permutation Duration Index" offset="0x0" visible="true" />
 			<int16 name="Permutation Count" offset="0x2" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Runtime Permutation Flags" offset="0x7C" visible="true" elementSize="0x1">
-		<int8 name="Unknown" offset="0x0" visible="true" />
+	<tagblock name="Runtime Permutation Flags" offset="0x7C" visible="true" elementSize="0x1" align="0x10">
+		<int8 name="Flags" offset="0x0" visible="true" />
 	</tagblock>
-	<dataref name="Unknown" offset="0x88" visible="false" />
+	<dataref name="Native Sample Data" offset="0x88" visible="false" />
 	<undefined name="Unknown" offset="0x9C" visible="false" />
 	<undefined name="Unknown" offset="0xA0" visible="false" />
-	<tagblock name="Permutation Chunks" offset="0xA4" visible="true" elementSize="0x1C">
+	<tagblock name="Chunks" offset="0xA4" visible="true" elementSize="0x1C" align="0x10">
 		<uint32 name="File Offset" offset="0x0" visible="true" />
-		<flags8 name="Flags" offset="0x4" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Has 'Unknown A' Value" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-		</flags8>
-		<comment title="Chunk Size">Chunk size is actually int24 but since that isn't supported the "Leftmost Byte" value will take care of it. It is for bits 16-24 as seen in windows calculator.</comment>
-		<uint8 name="Chunk Size Leftmost Byte" offset="0x5" visible="true" />
-		<uint16 name="Chunk Size" offset="0x6" visible="true" />
-		<int32 name="Runtime Index" offset="0x8" visible="true" />
-		<int32 name="Unknown A" offset="0xC" visible="true" />
-		<int32 name="Unknown Size" offset="0x10" visible="true" />
+		<uint32 name="Encoded Size And Flags" offset="0x4" visible="true" />
+		<int32 name="Cache Index" offset="0x8" visible="true" />
+		<int32 name="XMA2 Source Buffer Sample Start" offset="0xC" visible="true" />
+		<int32 name="XMA2 Source Buffer Sample End" offset="0x10" visible="true" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
 	</tagblock>
-	<tagblock name="Promotions" offset="0xB0" visible="true" elementSize="0x24">
-		<tagblock name="Rules" offset="0x0" visible="true" elementSize="0x10">
+	<tagblock name="Promotions" offset="0xB0" visible="true" elementSize="0x24" align="0x10">
+		<tagblock name="Promotion Rules" offset="0x0" visible="true" elementSize="0x10">
 			<int16 name="Pitch Range Index" offset="0x0" visible="true" />
 			<int16 name="Maximum Playing Count" offset="0x2" visible="true" />
-			<float32 name="Suppression Time" offset="0x4" visible="true" />
-			<int32 name="Unknown" offset="0x8" visible="false" />
-			<int32 name="Unknown" offset="0xC" visible="false" />
+			<float32 name="Suppression Time" offset="0x4" visible="true" tooltip="time from when first permutation plays to when another sound from an equal or lower promotion can play" />
+			<int32 name="Runtime Rollover Time" offset="0x8" visible="true" />
+			<int32 name="Impulse Promotion Time" offset="0xC" visible="true" />
 		</tagblock>
-		<tagblock name="Runtime Timers" offset="0xC" visible="true" elementSize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="true" />
+		<tagblock name="Runtime Timers" offset="0xC" visible="true" elementSize="0x4" align="0x10">
+			<int32 name="Timer Storage" offset="0x0" visible="true" />
 		</tagblock>
-		<int32 name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
+		<int32 name="Runtime Active Promotion Index" offset="0x18" visible="true" />
+		<int32 name="Runtime Last Promotion Time" offset="0x1C" visible="true" />
+		<int32 name="Runtime Suppression Timeout" offset="0x20" visible="true" />
 	</tagblock>
 	<tagblock name="Extra Info" offset="0xBC" visible="true" elementSize="0xC">
 		<tagblock name="Encoded Permutation Sections" offset="0x0" visible="true" elementSize="0x2C">
@@ -236,14 +274,26 @@
 				<uint32 name="Mouth Data Offset" offset="0x0" visible="true" />
 				<uint32 name="Mouth Data Length" offset="0x4" visible="true" />
 				<uint32 name="Lipsync Data Offset" offset="0x8" visible="true" />
-				<uint32 name="Lipsynce Data Length" offset="0xC" visible="true" />
+				<uint32 name="Lipsync Data Length" offset="0xC" visible="true" />
 			</tagblock>
-			<tagblock name="Unknown" offset="0x20" visible="true" elementSize="0xC">
-				<tagblock name="Unknown" offset="0x0" visible="true" elementSize="0x28">
-					<undefined name="Unknown" offset="0x0" visible="true" />
-					<undefined name="Unknown" offset="0x4" visible="true" />
-					<undefined name="Unknown" offset="0x8" visible="true" />
-					<undefined name="Unknown" offset="0xC" visible="true" />
+			<tagblock name="Unknown" offset="0x20" visible="true" elementSize="0x3C">
+				<undefined name="Unknown" offset="0x0" visible="false" />
+				<int32 name="Unknown" offset="0x4" visible="false" />
+				<int32 name="Unknown" offset="0x8" visible="false" />
+				<int32 name="Unknown" offset="0xC" visible="false" />
+				<int32 name="Unknown" offset="0x10" visible="false" />
+				<int32 name="Unknown" offset="0x14" visible="false" />
+				<int32 name="Unknown" offset="0x18" visible="false" />
+				<int32 name="Unknown" offset="0x1C" visible="false" />
+				<int32 name="Unknown" offset="0x20" visible="false" />
+				<undefined name="Unknown" offset="0x24" visible="false" />
+				<int32 name="Unknown" offset="0x28" visible="false" />
+				<undefined name="Unknown" offset="0x2C" visible="false" />
+				<tagblock name="Unknown" offset="0x30" visible="true" elementSize="0x28">
+					<float32 name="Unknown" offset="0x0" visible="true" />
+					<float32 name="Unknown" offset="0x4" visible="true" />
+					<float32 name="Unknown" offset="0x8" visible="true" />
+					<float32 name="Unknown" offset="0xC" visible="true" />
 					<tagblock name="Unknown" offset="0x10" visible="true" elementSize="0x8">
 						<undefined name="Unknown" offset="0x0" visible="true" />
 						<undefined name="Unknown" offset="0x4" visible="true" />
