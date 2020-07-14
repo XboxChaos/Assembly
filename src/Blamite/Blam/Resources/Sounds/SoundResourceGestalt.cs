@@ -956,7 +956,7 @@ namespace Blamite.Blam.Resources.Sounds
 			foreach (StructureValueCollection entry in entries)
 			{
 				// if the length is 0 then theres a good chance that the following blocks will be 0'd and have a chance to cause corruption if freed
-				if ((int)basevalues.GetInteger("encoded data size") == 0)
+				if ((int)entry.GetInteger("encoded data size") == 0)
 					continue;
 
 				FreeExtraInfoBuffer(entry);
