@@ -6,7 +6,6 @@ using Blamite.Blam.Scripting;
 using Blamite.Blam.Shaders;
 using Blamite.Blam.ThirdGen.Localization;
 using Blamite.Blam.ThirdGen.Resources;
-using Blamite.Blam.ThirdGen.Resources.Sounds;
 using Blamite.Blam.ThirdGen.Shaders;
 using Blamite.Blam.ThirdGen.Structures;
 using Blamite.Blam.Util;
@@ -35,6 +34,7 @@ namespace Blamite.Blam.ThirdGen
 		private ThirdGenPointerExpander _expander;
 		private Endian _endianness;
 		private EffectInterop _effects;
+		private SoundResourceManager _soundGestalt;
 
 		private bool _zoneOnly = false;
 
@@ -234,6 +234,11 @@ namespace Blamite.Blam.ThirdGen
 			get { return _effects; }
 		}
 
+		public SoundResourceManager SoundGestalt
+		{
+			get { return _soundGestalt; }
+		}
+
 		private void Load(IReader reader, string buildString)
 		{
 			LoadHeader(reader, buildString);
@@ -243,6 +248,7 @@ namespace Blamite.Blam.ThirdGen
 			LoadLanguageGlobals(reader);
 			LoadScriptFiles(reader);
 			LoadResourceManager(reader);
+			LoadSoundResourceManager(reader);
 			LoadSimulationDefinitions(reader);
 			LoadEffects(reader);
 			ShaderStreamer = new ThirdGenShaderStreamer(this, _buildInfo);
@@ -357,25 +363,20 @@ namespace Blamite.Blam.ThirdGen
 			}
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="reader"></param>
-		/// <returns></returns>
-		public ISoundResourceGestalt LoadSoundResourceGestaltData(IReader reader)
+		private void LoadSoundResourceManager(IReader reader)
 		{
-			if (_tags == null || !_buildInfo.Layouts.HasLayout("sound resource gestalt"))
-				return null;
+			ITag ughTag = _tags.FindTagByGroup("ugh!");
+			bool haveUghLayout = _buildInfo.Layouts.HasLayout("sound resource gestalt");
+			bool canLoadUgh = (ughTag != null && ughTag.MetaLocation != null && haveUghLayout);
 
-			var layout = _buildInfo.Layouts.GetLayout("sound resource gestalt");
+			if (ughTag != null && ughTag.MetaLocation != null && haveUghLayout)
+			{
+				SoundResourceGestalt gestalt = null;
+				if (canLoadUgh)
+					gestalt = new SoundResourceGestalt(reader, ughTag, MetaArea, Allocator, _buildInfo, _expander);
 
-			var ugh = _tags.FindTagByGroup("ugh!");
-			if (ugh == null)
-				return null;
-
-			reader.SeekTo(ugh.MetaLocation.AsOffset());
-			var values = StructureReader.ReadStructure(reader, layout);
-			return new ThirdGenSoundResourceGestalt(values, reader, MetaArea, _buildInfo);
+				_soundGestalt = new SoundResourceManager(gestalt, _tags, MetaArea, Allocator, _buildInfo, _expander);
+			}
 		}
 
 		private void LoadScriptFiles(IReader reader)

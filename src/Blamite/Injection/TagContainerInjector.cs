@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using Blamite.Blam;
 using Blamite.Blam.Resources;
+using Blamite.Blam.Resources.Sounds;
 using Blamite.IO;
+using Blamite.Serialization;
 using Blamite.Util;
 using Blamite.Blam.Localization;
 using System.Linq;
@@ -36,11 +38,22 @@ namespace Blamite.Injection
 		private CachedLanguagePackLoader _languageCache;
 		private ResourceTable _resources;
 		private IZoneSetTable _zoneSets;
+		private SoundResourceTable _soundResources;
 		
 		private static HashSet<string> _simulationGroups = new HashSet<string>(new string[] { "jpt!", "effe", "argd", "bipd", "bloc", "crea", "ctrl", "efsc", "eqip", "gint", "mach", "proj", "scen", "ssce", "term", "vehi", "weap" });
 
 		private static HashSet<string> _shaderGroups = new HashSet<string>(new string[] { "mtsb", "mats", "pixl", "vtsh", "rmt2" });
 
+		private readonly StructureLayout _soundLayout;
+
+		private readonly Dictionary<ExtractedSoundCodec, int> _soundCodecs = new Dictionary<ExtractedSoundCodec, int>();
+		private readonly Dictionary<ExtractedSoundPitchRange, int> _soundPitchRanges = new Dictionary<ExtractedSoundPitchRange, int>();
+		private readonly Dictionary<ExtractedSoundLanguageDuration, int> _soundLanguageDurations = new Dictionary<ExtractedSoundLanguageDuration, int>();
+		private readonly Dictionary<ExtractedSoundPlayback, int> _soundPlaybacks = new Dictionary<ExtractedSoundPlayback, int>();
+		private readonly Dictionary<ExtractedSoundScale, int> _soundScales = new Dictionary<ExtractedSoundScale, int>();
+		private readonly Dictionary<ExtractedSoundPromotion, int> _soundPromotions = new Dictionary<ExtractedSoundPromotion, int>();
+		private readonly Dictionary<ExtractedSoundCustomPlayback, int> _soundCustomPlaybacks = new Dictionary<ExtractedSoundCustomPlayback, int>();
+		private readonly Dictionary<ExtractedSoundExtraInfo, int> _soundExtraInfos = new Dictionary<ExtractedSoundExtraInfo, int>();
 
 		public TagContainerInjector(ICacheFile cacheFile, TagContainer container)
 		{
@@ -52,7 +65,7 @@ namespace Blamite.Injection
 			_findExistingPages = false;
 		}
 
-		public TagContainerInjector(ICacheFile cacheFile, TagContainer container, bool keepsnd, bool injectraw, bool findexisting, bool renameshaders)
+		public TagContainerInjector(ICacheFile cacheFile, TagContainer container, EngineDescription buildInfo, bool keepsnd, bool injectraw, bool findexisting, bool renameshaders)
 		{
 			_cacheFile = cacheFile;
 			_languageCache = new CachedLanguagePackLoader(cacheFile.Languages);
@@ -61,6 +74,9 @@ namespace Blamite.Injection
 			_injectRaw = injectraw;
 			_findExistingPages = findexisting;
 			_renameShaders = renameshaders;
+
+			if (buildInfo.Layouts.HasLayout("sound"))
+				_soundLayout = buildInfo.Layouts.GetLayout("sound");
 		}
 
 		public ICollection<DataBlock> InjectedBlocks
@@ -105,6 +121,9 @@ namespace Blamite.Injection
 				_zoneSets.SaveChanges(stream);
 				_zoneSets = null;
 			}
+			if (_soundResources != null)
+				_cacheFile.SoundGestalt.SaveSoundResourceTable(_soundResources, stream);
+
 			_languageCache.SaveAll(stream);
 			_languageCache.ClearCache();
 			_cacheFile.SaveChanges(stream);
@@ -161,6 +180,13 @@ namespace Blamite.Injection
 				// If the tag relies on resources and that info isn't available, throw it out
 				LoadResourceTable(stream);
 				if (_resources == null)
+					return DatumIndex.Null;
+			}
+			if (_soundResources == null && BlockNeedsSounds(tagData))
+			{
+				// If the tag relies on sound resources and that info isn't available, throw it out
+				LoadSoundResourceTable(stream);
+				if (_soundResources == null)
 					return DatumIndex.Null;
 			}
 
@@ -412,6 +438,20 @@ namespace Blamite.Injection
 			return false;
 		}
 
+		private bool BlockNeedsSounds(DataBlock block)
+		{
+			if (block.SoundFixups.Count > 0)
+				return true;
+
+			foreach (var addrFixup in block.AddressFixups)
+			{
+				var subBlock = _container.FindDataBlock(addrFixup.OriginalAddress);
+				if (BlockNeedsSounds(subBlock))
+					return true;
+			}
+			return false;
+		}
+
 		private void WriteDataBlock(DataBlock block, SegmentPointer location, IStream stream, ITag tag = null)
 		{
 			if (tag == null && _dataBlockAddresses.ContainsKey(block)) // Don't write anything if the block has already been written
@@ -435,6 +475,7 @@ namespace Blamite.Injection
 					FixUnicListReferences(block, tag, bufferWriter, stream);
 				FixInteropReferences(block, bufferWriter, stream, location);
 				FixEffectReferences(block, bufferWriter);
+				FixSoundReferences(block, bufferWriter, stream);
 
 				// sort after fixups
 				if (block.Sortable && block.EntrySize >= 4)
@@ -683,6 +724,337 @@ namespace Blamite.Injection
 				return null;
 		}
 
+		private void FixSoundReferences(DataBlock block, IWriter buffer, IStream stream)
+		{
+			foreach (DataBlockSoundFixup fixup in block.SoundFixups)
+			{
+				if (fixup.OriginalCodecIndex != -1)
+					FixSoundReference_Codec(fixup.OriginalCodecIndex, buffer);
+
+				if (fixup.OriginalPitchRangeIndex != -1)
+					FixSoundReference_PitchRange(fixup.OriginalPitchRangeIndex, fixup.PitchRangeCount, buffer);
+
+				if (fixup.OriginalLanguageDurationIndex != -1)
+					FixSoundReference_LanguageDuration(fixup.OriginalLanguageDurationIndex, fixup.PitchRangeCount, buffer);
+
+				if (fixup.OriginalPlaybackIndex != -1)
+					FixSoundReference_Playback(fixup.OriginalPlaybackIndex, buffer);
+
+				if (fixup.OriginalScaleIndex != -1)
+					FixSoundReference_Scale(fixup.OriginalScaleIndex, buffer);
+
+				if (fixup.OriginalPromotionIndex != -1)
+					FixSoundReference_Promotion(fixup.OriginalPromotionIndex, buffer);
+
+				if (fixup.OriginalCustomPlaybackIndex != -1)
+					FixSoundReference_CustomPlayback(fixup.OriginalCustomPlaybackIndex, buffer, stream);
+
+				if (fixup.OriginalExtraInfoIndex != -1)
+					FixSoundReference_ExtraInfo(fixup.OriginalExtraInfoIndex, buffer, stream);
+			}
+		}
+
+		private void FixSoundReference_Codec(int originalIndex, IWriter buffer)
+		{
+			var codec = _container.FindSoundCodec(originalIndex);
+
+			int newIndex;
+			if (!_soundCodecs.TryGetValue(codec, out newIndex))
+			{
+				newIndex = _soundResources.Codecs.FindIndex(c => c.Equals(codec.Source));
+				if (newIndex == -1)
+				{
+					newIndex = _soundResources.Codecs.Count;
+					_soundResources.Codecs.Add(codec.Source);
+				}
+				_soundCodecs[codec] = newIndex;
+			}
+			buffer.SeekTo(_soundLayout.GetFieldOffset("codec index"));
+			buffer.WriteInt16((short)newIndex);
+		}
+
+		private void FixSoundReference_PitchRange(int originalIndex, int count, IWriter buffer)
+		{
+			for (int i = 0; i < count; i++)
+			{
+				var pRange = _container.FindSoundPitchRange(originalIndex + i);
+
+				int newIndex;
+				if (!_soundPitchRanges.TryGetValue(pRange, out newIndex))
+				{
+					newIndex = _soundResources.PitchRanges.Count;
+
+					SoundPitchRange newPRange = new SoundPitchRange();
+
+					newPRange.Name = InjectStringID(pRange.Name);
+
+					newPRange.Parameter = pRange.Parameter;
+
+					newPRange.HasEncodedData = pRange.HasEncodedData;
+					newPRange.RequiredPermutationCount = pRange.RequiredPermutationCount;
+
+					var permutations = new List<SoundPermutation>();
+					foreach (var perm in pRange.Permutations)
+					{
+						SoundPermutation newPerm = new SoundPermutation();
+
+						newPerm.Name = InjectStringID(perm.Name);
+
+						newPerm.EncodedSkipFraction = perm.EncodedSkipFraction;
+						newPerm.EncodedGain = perm.EncodedGain;
+						newPerm.EncodedPermutationInfoIndex = perm.EncodedPermutationInfoIndex;
+						newPerm.SampleSize = perm.SampleSize;
+
+						newPerm.FSBInfo = perm.FSBInfo;
+
+						var chunks = new List<SoundChunk>();
+
+						foreach (var chunk in perm.Chunks)
+							chunks.Add(chunk.Source);
+
+						if (perm.Languages != null)
+						{
+							var languages = new List<SoundPermutationLanguage>();
+
+							foreach (var lang in perm.Languages)
+							{
+								var newPL = new SoundPermutationLanguage();
+
+								newPL.LanguageIndex = lang.LanguageIndex;
+								newPL.SampleSize = lang.SampleSize;
+
+								if (lang.Chunks != null && lang.Chunks.Count > 0)
+								{
+									var lChunks = new List<SoundChunk>();
+
+									foreach (var chunk in lang.Chunks)
+										lChunks.Add(chunk.Source);
+
+									newPL.Chunks = lChunks.ToArray();
+								}
+							}
+
+							newPerm.Languages = languages.ToArray();
+						}
+
+						if (perm.LayerMarkers != null)
+							newPerm.LayerMarkers = perm.LayerMarkers.ToArray();
+
+						newPerm.Chunks = chunks.ToArray();
+						
+
+						permutations.Add(newPerm);
+					}
+
+					newPRange.Permutations = permutations.ToArray();
+
+					_soundResources.PitchRanges.Add(newPRange);
+					_soundPitchRanges[pRange] = newIndex;
+				}
+				if (i == 0)
+				{
+					var test = _soundLayout.GetFieldOffset("first pitch range index");
+					buffer.SeekTo(test);
+					buffer.WriteInt16((short)newIndex);
+				}
+			}
+		}
+
+		private void FixSoundReference_LanguageDuration(int originalIndex, int count, IWriter buffer)
+		{
+			for (int i = 0; i < count; i++)
+			{
+				var langd = _container.FindSoundLanguageDuration(originalIndex + i);
+
+				int newIndex;
+				if (!_soundLanguageDurations.TryGetValue(langd, out newIndex))
+				{
+					newIndex = _soundResources.LanguageDurations[0].PitchRanges.Count;
+
+					//redo so its foreach existing language and find a match?
+					foreach (var lang in langd.Languages)
+					{
+						SoundLanguagePitchRange newLang = new SoundLanguagePitchRange();
+
+						newLang.Durations = lang.Durations.ToArray();
+
+						_soundResources.LanguageDurations[lang.LanguageIndex].PitchRanges.Add(newLang);
+					}
+
+					_soundLanguageDurations[langd] = newIndex;
+				}
+				if (i == 0)
+				{
+					buffer.SeekTo(_soundLayout.GetFieldOffset("first language duration pitch range index"));
+					buffer.WriteInt16((short)newIndex);
+				}
+			}
+		}
+
+		private void FixSoundReference_Playback(int originalIndex, IWriter buffer)
+		{
+			var playback = _container.FindSoundPlayback(originalIndex);
+
+			int newIndex;
+			if (!_soundPlaybacks.TryGetValue(playback, out newIndex))
+			{
+				newIndex = _soundResources.Playbacks.FindIndex(c => c.Equals(playback.Source));
+				if (newIndex == -1)
+				{
+					newIndex = _soundResources.Playbacks.Count;
+					_soundResources.Playbacks.Add(playback.Source);
+				}
+				_soundPlaybacks[playback] = newIndex;
+			}
+			buffer.SeekTo(_soundLayout.GetFieldOffset("playback index"));
+			buffer.WriteInt16((short)newIndex);
+		}
+
+		private void FixSoundReference_Scale(int originalIndex, IWriter buffer)
+		{
+			var scale = _container.FindSoundScale(originalIndex);
+
+			int newIndex;
+			if (!_soundScales.TryGetValue(scale, out newIndex))
+			{
+				newIndex = _soundResources.Scales.FindIndex(c => c.Equals(scale.Source));
+				if (newIndex == -1)
+				{
+					newIndex = _soundResources.Scales.Count;
+					_soundResources.Scales.Add(scale.Source);
+				}
+				_soundScales[scale] = newIndex;
+			}
+			buffer.SeekTo(_soundLayout.GetFieldOffset("scale index"));
+			buffer.WriteInt16((short)newIndex);
+		}
+
+		private void FixSoundReference_Promotion(int originalIndex, IWriter buffer)
+		{
+			var promo = _container.FindSoundPromotion(originalIndex);
+
+			int newIndex;
+			if (!_soundPromotions.TryGetValue(promo, out newIndex))
+			{
+				newIndex = _soundResources.Promotions.FindIndex(c => c.Equals(promo.Source));
+				if (newIndex == -1)
+				{
+					newIndex = _soundResources.Promotions.Count;
+					_soundResources.Promotions.Add(promo.Source);
+				}
+				_soundPromotions[promo] = newIndex;
+			}
+			buffer.SeekTo(_soundLayout.GetFieldOffset("promotion index"));
+			buffer.WriteSByte((sbyte)newIndex);
+		}
+
+		private void FixSoundReference_CustomPlayback(int originalIndex, IWriter buffer, IStream stream)
+		{
+			var cplayback = _container.FindSoundCustomPlayback(originalIndex);
+
+			if (_soundResources.CustomPlaybacks.Count > 0)
+			{
+				if (cplayback.Version != _soundResources.CustomPlaybacks[0].Version)
+				{
+					buffer.SeekTo(_soundLayout.GetFieldOffset("custom playback index"));
+					buffer.WriteSByte(-1);
+					return;
+				}
+			}
+
+			SoundCustomPlayback newCPlayback = new SoundCustomPlayback();
+
+			if (cplayback.Mixes != null)
+				newCPlayback.Mixes = cplayback.Mixes.ToArray();
+
+			newCPlayback.Flags = cplayback.Flags;
+			newCPlayback.Unknown = cplayback.Unknown;
+			newCPlayback.Unknown1 = cplayback.Unknown1;
+
+			if (cplayback.Filters != null)
+				newCPlayback.Filters = cplayback.Filters.ToArray();
+
+			if (cplayback.PitchLFOs != null)
+				newCPlayback.PitchLFOs = cplayback.PitchLFOs.ToArray();
+
+			if (cplayback.FilterLFOs != null)
+				newCPlayback.FilterLFOs = cplayback.FilterLFOs.ToArray();
+
+			newCPlayback.Unknown2 = cplayback.Unknown2;
+			newCPlayback.Unknown3 = cplayback.Unknown3;
+			newCPlayback.Unknown4 = cplayback.Unknown4;
+
+			if (cplayback.OriginalRadioEffect != DatumIndex.Null)
+			{
+				DatumIndex newRadio = InjectTag(cplayback.OriginalRadioEffect, stream);
+				newCPlayback.RadioEffect = _cacheFile.Tags[newRadio];
+			}
+
+			if (cplayback.LowpassEffects != null)
+				newCPlayback.LowpassEffects = cplayback.LowpassEffects.ToArray();
+
+			if (cplayback.Components != null)
+			{
+				var components = new List<SoundCustomPlaybackComponent>();
+				foreach (var c in cplayback.Components)
+				{
+					SoundCustomPlaybackComponent newC = new SoundCustomPlaybackComponent();
+					if (c.OriginalSound != DatumIndex.Null)
+					{
+						DatumIndex newSound = InjectTag(c.OriginalSound, stream);
+						newC.Sound = _cacheFile.Tags[newSound];
+					}
+
+					newC.Gain = c.Gain;
+					newC.Flags = c.Flags;
+
+					components.Add(newC);
+				}
+				newCPlayback.Components = components.ToArray();
+			}
+
+			int newIndex;
+			if (!_soundCustomPlaybacks.TryGetValue(cplayback, out newIndex))
+			{
+				newIndex = _soundResources.CustomPlaybacks.FindIndex(c => c.Equals(newCPlayback));
+				if (newIndex == -1)
+				{
+					_soundResources.CustomPlaybacks.Add(newCPlayback);
+				}
+				_soundCustomPlaybacks[cplayback] = newIndex;
+			}
+			buffer.SeekTo(_soundLayout.GetFieldOffset("custom playback index"));
+			buffer.WriteSByte((sbyte)newIndex);
+		}
+
+		private void FixSoundReference_ExtraInfo(int originalIndex, IWriter buffer, IStream stream)
+		{
+			var extra = _container.FindSoundExtraInfo(originalIndex);
+
+			int newIndex;
+			if (!_soundExtraInfos.TryGetValue(extra, out newIndex))
+			{
+				newIndex = _soundResources.ExtraInfos.Count;
+
+				if (extra.Source.Datums != null)
+				{
+					for (int i = 0; i < extra.Source.Datums.Length; i++)
+					{
+						if (extra.Source.Datums[i] != DatumIndex.Null)
+						{
+							DatumIndex newRes = InjectResource(extra.Source.Datums[i], stream);
+							extra.Source.Datums[i] = newRes;
+						}
+					}
+				}
+
+				_soundResources.ExtraInfos.Add(extra.Source);
+				_soundExtraInfos[extra] = newIndex;
+			}
+			buffer.SeekTo(_soundLayout.GetFieldOffset("extra info index"));
+			buffer.WriteInt16((short)newIndex);
+		}
+
 		private void LoadResourceTable(IReader reader)
 		{
 			if (_resources == null)
@@ -693,6 +1065,12 @@ namespace Blamite.Injection
 		{
 			if (_zoneSets == null)
 				_zoneSets = _cacheFile.Resources.LoadZoneSets(reader);
+		}
+
+		private void LoadSoundResourceTable(IReader reader)
+		{
+			if (_soundResources == null)
+				_soundResources = _cacheFile.SoundGestalt.LoadSoundResourceTable(reader);
 		}
 	}
 }

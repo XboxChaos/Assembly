@@ -108,15 +108,23 @@
     <Compile Include="Blam\Localization\CachedLanguagePackLoader.cs" />
     <Compile Include="Blam\Resources\ResourcePageInjector.cs" />
     <Compile Include="Blam\Resources\ResourceSize.cs" />
-    <Compile Include="Blam\Resources\Sounds\ISoundCodec.cs" />
-    <Compile Include="Blam\Resources\Sounds\ISoundPermutation.cs" />
-    <Compile Include="Blam\Resources\Sounds\ISoundPlayback.cs" />
-    <Compile Include="Blam\Resources\Sounds\ISoundPlaybackParameter.cs" />
-    <Compile Include="Blam\Resources\Sounds\ISoundRawChunk.cs" />
-    <Compile Include="Blam\Resources\Sounds\ISoundResourceGestalt.cs" />
-    <Compile Include="Blam\Resources\Sounds\ISoundScale.cs" />
-    <Compile Include="Blam\Resources\Sounds\SoundReader.cs" />
+    <Compile Include="Blam\Resources\Sounds\CacheSound.cs" />
+    <Compile Include="Blam\Resources\Sounds\SoundChunk.cs" />
+    <Compile Include="Blam\Resources\Sounds\SoundCodec.cs" />
+    <Compile Include="Blam\Resources\Sounds\SoundCustomPlayback.cs" />
+    <Compile Include="Blam\Resources\Sounds\SoundExtraInfo.cs" />
+    <Compile Include="Blam\Resources\Sounds\SoundLanguageDuration.cs" />
+    <Compile Include="Blam\Resources\Sounds\SoundPermutation.cs" />
+    <Compile Include="Blam\Resources\Sounds\SoundPitchRange.cs" />
+    <Compile Include="Blam\Resources\Sounds\SoundPitchRangeDistance.cs" />
+    <Compile Include="Blam\Resources\Sounds\SoundPitchRangeParameter.cs" />
+    <Compile Include="Blam\Resources\Sounds\SoundPlayback.cs" />
+    <Compile Include="Blam\Resources\Sounds\SoundPromotion.cs" />
     <Compile Include="Blam\ISimulationDefinitionTable.cs" />
+    <Compile Include="Blam\Resources\Sounds\SoundResourceGestalt.cs" />
+    <Compile Include="Blam\Resources\Sounds\SoundResourceManager.cs" />
+    <Compile Include="Blam\Resources\Sounds\SoundResourceTable.cs" />
+    <Compile Include="Blam\Resources\Sounds\SoundScale.cs" />
     <Compile Include="Blam\SecondGen\SecondGenPointerExpander.cs" />
     <Compile Include="Blam\Shaders\IShader.cs" />
     <Compile Include="Blam\Shaders\IShaderStreamer.cs" />
@@ -167,15 +175,6 @@
     <Compile Include="Blam\ThirdGen\Localization\ThirdGenLanguagePackLoader.cs" />
     <Compile Include="Blam\ThirdGen\MetaAddressConverter.cs" />
     <Compile Include="Blam\ThirdGen\Resources\BSP\ThirdGenScenarioBSP.cs" />
-    <Compile Include="Blam\Resources\Sounds\ISound.cs" />
-    <Compile Include="Blam\ThirdGen\Resources\Sounds\ThirdGenSound.cs" />
-    <Compile Include="Blam\ThirdGen\Resources\Sounds\ThirdGenSoundPlaybackParameter.cs" />
-    <Compile Include="Blam\ThirdGen\Resources\Sounds\ThirdGenSoundPermutation.cs" />
-    <Compile Include="Blam\ThirdGen\Resources\Sounds\ThirdGenSoundPlatformCodec.cs" />
-    <Compile Include="Blam\ThirdGen\Resources\Sounds\ThirdGenSoundPlayback.cs" />
-    <Compile Include="Blam\ThirdGen\Resources\Sounds\ThirdGenSoundRawChunk.cs" />
-    <Compile Include="Blam\ThirdGen\Resources\Sounds\ThirdGenSoundResourceGestalt.cs" />
-    <Compile Include="Blam\ThirdGen\Resources\Sounds\ThirdGenSoundScale.cs" />
     <Compile Include="Blam\ThirdGen\Resources\ThirdGenResourceManager.cs" />
     <Compile Include="Blam\ThirdGen\Shaders\ThirdGenShader.cs" />
     <Compile Include="Blam\ThirdGen\Shaders\ThirdGenShaderStreamer.cs" />
@@ -202,6 +201,8 @@
     <Compile Include="Blam\Util\TagBlockWriter.cs" />
     <Compile Include="Compression\CacheCompressor.cs" />
     <Compile Include="Extensions\BitArrayExtensions.cs" />
+    <Compile Include="Injection\DataBlockFixups.cs" />
+    <Compile Include="Injection\ExtractedSound.cs" />
     <Compile Include="IO\IPointerExpander.cs" />
     <Compile Include="Native\ProcessModuleMemoryStream.cs" />
     <Compile Include="RTE\MapPointerReader.cs" />
@@ -375,6 +376,7 @@
     </Content>
     <Content Include="Formats\Halo2AMCC\H2AMCC_Poking.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Formats\Halo2AMCC\H2AMCC_Scripting.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -399,6 +401,7 @@
     </Content>
     <Content Include="Formats\Halo2MCC\H2MCC_Poking.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Formats\Halo2MCC\H2MCC_Scripting.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -457,6 +460,10 @@
     </Content>
     <Content Include="Formats\Halo3MCC\Layouts\H3MCC_Layouts_Scenario.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo3MCC\Layouts\H3MCC_Layouts_Sounds.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Formats\Halo3\H3_LocaleSymbols.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -560,6 +567,9 @@
     <Content Include="Formats\ODST\Layouts\ODST_Layouts_Scenario.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Formats\ODST\Layouts\ODST_Layouts_Sounds.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Formats\ODST\ODST_LocaleSymbols.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -576,6 +586,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\ReachBeta\Layouts\ReachBeta_Layouts_Scenario.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\ReachBeta\Layouts\ReachBeta_Layouts_Sounds.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\ReachBeta\ReachBeta_LocaleSymbols.xml">
@@ -599,6 +612,10 @@
     <Content Include="Formats\ReachMCC\Layouts\ReachMCC_Layouts_Scenario.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Formats\ReachMCC\Layouts\ReachMCC_Layouts_Sounds.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Formats\ReachMCC\ReachMCC_Scripting.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -607,6 +624,7 @@
     </Content>
     <Content Include="Formats\ReachMCC\ReachMCC_Poking.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Formats\ReachMCC\ReachMCC_StringIDs.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -630,6 +648,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\Reach\Layouts\Reach_Layouts_Scenario.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Reach\Layouts\Reach_Layouts_Sounds.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\Reach\ReachDemo_StringIDs.xml">

@@ -33,6 +33,7 @@ using Newtonsoft.Json;
 using XBDMCommunicator;
 using Blamite.Blam.ThirdGen;
 using Blamite.RTE.ThirdGen;
+using Blamite.Blam.Resources.Sounds;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -772,10 +773,30 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			var resourcesProcessed = new HashSet<DatumIndex>();
 			var resourcePagesProcessed = new HashSet<ResourcePage>();
 
+			var soundCodecsToProcess = new Queue<int>();
+			var soundPitchRangesToProcess = new Queue<int>();
+			var soundLanguageDurationsToProcess = new Queue<int>();
+			var soundPlaybacksToProcess = new Queue<int>();
+			var soundScalesToProcess = new Queue<int>();
+			var soundPromotionsToProcess = new Queue<int>();
+			var soundCustomPlaybacksToProcess = new Queue<int>();
+			var soundExtraInfoToProcess = new Queue<int>();
+
+			var soundCodecsProcessed = new HashSet<int>();
+			var soundPitchRangesProcessed = new HashSet<int>();
+			var soundLanguageDurationsProcessed = new HashSet<int>();
+			var soundPlaybacksProcessed = new HashSet<int>();
+			var soundScalesProcessed = new HashSet<int>();
+			var soundPromotionsProcessed = new HashSet<int>();
+			var soundCustomPlaybacksProcessed = new HashSet<int>();
+			var soundExtraInfoProcessed = new HashSet<int>();
+
 			foreach (TagEntry t in tags)
 				tagsToProcess.Enqueue(t.RawTag);
 
 			ResourceTable resources = null;
+			SoundResourceTable soundResources = null;
+
 			using (var reader = _mapManager.OpenRead())
 			{
 				while (tagsToProcess.Count > 0)
@@ -841,11 +862,202 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 							tagsToProcess.Enqueue(_cacheFile.Tags[tagRef]);
 					foreach (var resource in blockBuilder.ReferencedResources)
 						resourcesToProcess.Enqueue(resource);
+
+					//this needs to be loaded early because there are referenced tags that need to be queued
+					if (blockBuilder.ContainsSoundReferences && soundResources == null && _cacheFile.SoundGestalt != null)
+						soundResources = _cacheFile.SoundGestalt.LoadSoundResourceTable(reader);
+
+					foreach (var codec in blockBuilder.ReferencedSoundCodecs)
+						soundCodecsToProcess.Enqueue(codec);
+					foreach (var pr in blockBuilder.ReferencedSoundPitchRanges)
+						soundPitchRangesToProcess.Enqueue(pr);
+					foreach (var lpr in blockBuilder.ReferencedSoundLanguagePitchRanges)
+						soundLanguageDurationsToProcess.Enqueue(lpr);
+					foreach (var playback in blockBuilder.ReferencedSoundPlaybacks)
+						soundPlaybacksToProcess.Enqueue(playback);
+					foreach (var scale in blockBuilder.ReferencedSoundScales)
+						soundScalesToProcess.Enqueue(scale);
+					foreach (var pro in blockBuilder.ReferencedSoundPromotions)
+						soundPromotionsToProcess.Enqueue(pro);
+
+					foreach (var cplayback in blockBuilder.ReferencedSoundCustomPlaybacks)
+					{
+						soundCustomPlaybacksToProcess.Enqueue(cplayback);
+						if (soundResources != null)
+						{
+							var cpb = soundResources.CustomPlaybacks[cplayback];
+							if (cpb.RadioEffect != null)
+								tagsToProcess.Enqueue(_cacheFile.Tags[cpb.RadioEffect.Index]);
+
+							foreach (var comp in cpb.Components)
+								if (comp.Sound != null)
+									tagsToProcess.Enqueue(_cacheFile.Tags[comp.Sound.Index]);
+						}
+					}
+
+					foreach (var extra in blockBuilder.ReferencedSoundExtraInfo)
+						soundExtraInfoToProcess.Enqueue(extra);
 				}
 
 				// Load the resource table in if necessary
-				if ( _cacheFile.Resources != null)
+				if (resourcesToProcess.Count > 0 && _cacheFile.Resources != null)
 					resources = _cacheFile.Resources.LoadResourceTable(reader);
+			}
+
+			// Extract sound info
+			if (soundResources != null)
+			{
+				while (soundCodecsToProcess.Count > 0)
+				{
+					var index = soundCodecsToProcess.Dequeue();
+					if (soundCodecsProcessed.Contains(index))
+						continue;
+
+					container.AddSoundCodec(new ExtractedSoundCodec(index, soundResources.Codecs[index]));
+				}
+
+				while (soundPitchRangesToProcess.Count > 0)
+				{
+					var index = soundPitchRangesToProcess.Dequeue();
+					if (soundPitchRangesProcessed.Contains(index))
+						continue;
+
+					var pRange = soundResources.PitchRanges[index];
+
+					string name = _cacheFile.StringIDs.GetString(pRange.Name);
+					bool hasSection = pRange.HasEncodedData;
+
+					List<ExtractedSoundPermutation> perms = new List<ExtractedSoundPermutation>();
+					for (int i = 0; i < pRange.Permutations.Length; i++)
+					{
+						var p = pRange.Permutations[i];
+
+						string pName = _cacheFile.StringIDs.GetString(p.Name);
+						ExtractedSoundPermutation exP = new ExtractedSoundPermutation();
+						exP.Name = pName;
+						exP.EncodedSkipFraction = p.EncodedSkipFraction;
+						exP.EncodedGain = p.EncodedGain;
+						exP.EncodedPermutationInfoIndex = p.EncodedPermutationInfoIndex;
+
+						exP.SampleSize = p.SampleSize;
+
+						exP.FSBInfo = p.FSBInfo;
+
+						exP.Chunks = new List<ExtractedSoundChunk>();
+
+						foreach (var chunk in p.Chunks)
+							exP.Chunks.Add(new ExtractedSoundChunk(chunk));
+
+						if (p.Languages != null)
+						{
+							exP.Languages = new List<ExtractedSoundLanguagePermutation>();
+
+							foreach (var lang in p.Languages)
+							{
+								ExtractedSoundLanguagePermutation exLP = new ExtractedSoundLanguagePermutation();
+
+								exLP.LanguageIndex = lang.LanguageIndex;
+								exLP.SampleSize = lang.SampleSize;
+
+								exLP.Chunks = new List<ExtractedSoundChunk>();
+
+								foreach (var chunk in p.Chunks)
+									exLP.Chunks.Add(new ExtractedSoundChunk(chunk));
+
+								exP.Languages.Add(exLP);
+							}
+						}
+
+						if (p.LayerMarkers != null)
+						{
+							exP.LayerMarkers = new List<int>();
+							exP.LayerMarkers.AddRange(p.LayerMarkers);
+						}
+
+						perms.Add(exP);
+					}
+
+					ExtractedSoundPitchRange exPRange = new ExtractedSoundPitchRange(index, name, pRange, perms);
+
+					container.AddSoundPitchRange(exPRange);
+				}
+
+				while (soundLanguageDurationsToProcess.Count > 0)
+				{
+					var index = soundLanguageDurationsToProcess.Dequeue();
+					if (soundLanguageDurationsProcessed.Contains(index))
+						continue;
+
+					ExtractedSoundLanguageDuration exLD = new ExtractedSoundLanguageDuration(index);
+
+					foreach (var lang in soundResources.LanguageDurations)
+					{
+						ExtractedSoundLanguageDurationInfo exLI = new ExtractedSoundLanguageDurationInfo();
+						exLI.Durations = new List<int>();
+
+						exLI.LanguageIndex = lang.LanguageIndex;
+
+						var pRange = lang.PitchRanges[index];
+
+						exLI.Durations = new List<int>();
+						exLI.Durations.AddRange(pRange.Durations);
+
+						exLD.Languages.Add(exLI);
+					}
+
+					container.AddSoundLanguageDuration(exLD);
+				}
+
+				while (soundPlaybacksToProcess.Count > 0)
+				{
+					var index = soundPlaybacksToProcess.Dequeue();
+					if (soundPlaybacksProcessed.Contains(index))
+						continue;
+
+					container.AddSoundPlayback(new ExtractedSoundPlayback(index, soundResources.Playbacks[index]));
+				}
+
+				while (soundScalesToProcess.Count > 0)
+				{
+					var index = soundScalesToProcess.Dequeue();
+					if (soundScalesProcessed.Contains(index))
+						continue;
+
+					container.AddSoundScale(new ExtractedSoundScale(index, soundResources.Scales[index]));
+				}
+
+				while (soundPromotionsToProcess.Count > 0)
+				{
+					var index = soundPromotionsToProcess.Dequeue();
+					if (soundPromotionsProcessed.Contains(index))
+						continue;
+
+					container.AddSoundPromotion(new ExtractedSoundPromotion(index, soundResources.Promotions[index]));
+				}
+
+				while (soundCustomPlaybacksToProcess.Count > 0)
+				{
+					var index = soundCustomPlaybacksToProcess.Dequeue();
+					if (soundCustomPlaybacksProcessed.Contains(index))
+						continue;
+
+					container.AddSoundCustomPlayback(new ExtractedSoundCustomPlayback(index, soundResources.CustomPlaybacks[index]));
+				}
+
+				while (soundExtraInfoToProcess.Count > 0)
+				{
+					var index = soundExtraInfoToProcess.Dequeue();
+					if (soundExtraInfoProcessed.Contains(index))
+						continue;
+
+					container.AddSoundExtraInfo(new ExtractedSoundExtraInfo(index, soundResources.ExtraInfos[index]));
+
+					// thar (possibly) be resources
+					if (soundResources.ExtraInfos[index].Datums != null)
+						foreach (var datum in soundResources.ExtraInfos[index].Datums)
+							if (datum != DatumIndex.Null)
+								resourcesToProcess.Enqueue(datum);
+				}
 			}
 
 			// Extract resource info
@@ -1000,7 +1212,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			Dialogs.ControlDialogs.InjectSettings injs = new Dialogs.ControlDialogs.InjectSettings(_allTags, container);
 			// Handle defaults
-			injs.KeepSounds = (_cacheFile.HeaderSize == 0x1E000);
 			injs.UniqueShaders = (_cacheFile.HeaderSize > 0x3000 && _cacheFile.Endianness == Endian.BigEndian);
 
 			// H3 MCC currently doesnt store a checksum for uncompressed resources, so this must be unticked
@@ -1010,7 +1221,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			if (injs.DialogResult.HasValue && injs.DialogResult.Value)
 			{
-				var injector = new TagContainerInjector(_cacheFile, container, (bool)injs.KeepSounds, (bool)injs.InjectRaw, (bool)injs.FindRaw, (bool)injs.UniqueShaders);
+				var injector = new TagContainerInjector(_cacheFile, container, _buildInfo, (bool)injs.KeepSounds, (bool)injs.InjectRaw, (bool)injs.FindRaw, (bool)injs.UniqueShaders);
 				using (IStream stream = _mapManager.OpenReadWrite())
 				{
 					foreach (ExtractedTag tag in container.Tags)
@@ -1038,8 +1249,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					"\r\n\r\nPlease remember that you cannot poke to injected or modified tags without causing problems. Load the modified map in the game first.\r\n\r\nAdditionally, if applicable, make sure that your game executable is patched so that any map header hash checks are bypassed. Using an executable which only has RSA checks patched out will refuse to load the map.");
 
 			}
-
-
 		}
 
 		private void btnSaveNames_Click(object sender, RoutedEventArgs e)
@@ -1081,7 +1290,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				using (var stream = _mapManager.OpenReadWrite())
 				{
 					// Now inject the container
-					var injector = new TagContainerInjector(_cacheFile, container, true, false, true, false);
+					var injector = new TagContainerInjector(_cacheFile, container, _buildInfo, true, false, true, false);
 					injector.InjectTag(container.Tags.First(), stream);
 					injector.InjectPredictions(container.Predictions, stream);
 					injector.SaveChanges(stream);

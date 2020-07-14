@@ -32,32 +32,35 @@
 		<int32 name="number of sound names" offset="0x24" />
 		<uint32 name="sound name table address" offset="0x28" />
 		
-		<int32 name="number of pitch range parameters" offset="0x30" />
-		<uint32 name="pitch range parameters table address" offset="0x34" />
-
-		<int32 name="number of pitch ranges" offset="0x3C" />
-		<uint32 name="pitch range table address" offset="0x40" />
-
-		<int32 name="number of permutations" offset="0x48" />
-		<uint32 name="permutation table address" offset="0x4C" />
-
-		<int32 name="number of custom playbacks" offset="0x54" />
-		<uint32 name="custom playback table address" offset="0x58" />
-
-		<int32 name="number of language durations" offset="0x60" />
-		<uint32 name="language duration table address" offset="0x64" />
+		<int32 name="number of pitch range distances" offset="0x30" />
+		<uint32 name="pitch range distance table address" offset="0x34" />
 		
-		<int32 name="number of runtime permutation flags" offset="0x6C" />
-		<uint32 name="runtime permutation flag table address" offset="0x70" />
+		<int32 name="number of pitch range parameters" offset="0x3C" />
+		<uint32 name="pitch range parameters table address" offset="0x40" />
 
-		<int32 name="number of chunks" offset="0x94" />
-		<uint32 name="chunk table address" offset="0x98" />
+		<int32 name="number of pitch ranges" offset="0x48" />
+		<uint32 name="pitch range table address" offset="0x4C" />
 
-		<int32 name="number of promotions" offset="0xA0" />
-		<uint32 name="promotion table address" offset="0xA4" />
+		<int32 name="number of permutations" offset="0x54" />
+		<uint32 name="permutation table address" offset="0x58" />
 		
-		<int32 name="number of extra infos" offset="0xAC" />
-		<uint32 name="extra info table address" offset="0xB0" />
+		<int32 name="number of custom playbacks" offset="0x60" />
+		<uint32 name="custom playback table address" offset="0x64" />
+		
+		<int32 name="number of language durations" offset="0x6C" />
+		<uint32 name="language duration table address" offset="0x70" />
+		
+		<int32 name="number of runtime permutation flags" offset="0x78" />
+		<uint32 name="runtime permutation flag table address" offset="0x7C" />
+		
+		<int32 name="number of chunks" offset="0xA0" />
+		<uint32 name="chunk table address" offset="0xA4" />
+		
+		<int32 name="number of promotions" offset="0xAC" />
+		<uint32 name="promotion table address" offset="0xB0" />
+		
+		<int32 name="number of extra infos" offset="0xB8" />
+		<uint32 name="extra info table address" offset="0xBC" />
 	</layout>
 	
 	<layout for="sound codec" size="0x3">
@@ -65,7 +68,7 @@
 		<byte name="encoding" offset="0x1" />
 		<byte name="compression" offset="0x2" />
 	</layout>
-	
+
 	<layout for="sound playback" size="0x44">
 		<int32 name="internal flags" offset="0x0" />
 		<float32 name="dont play distance" offset="0x4" />
@@ -86,7 +89,7 @@
 		<float32 name="position gain" offset="0x3C" />
 		<float32 name="first person gain" offset="0x40" />
 	</layout>
-	
+
 	<layout for="sound scale" size="0x14">
 		<float32 name="gain min" offset="0x0" />
 		<float32 name="gain max" offset="0x4" />
@@ -100,14 +103,22 @@
 		<int32 name="name string id" offset="0x0" />
 	</layout>
 	
-	<layout for="sound pitch range parameter" size="0xE">
+	<layout for="sound pitch range distance" size="0x10">
+		<float32 name="dont play distance" offset="0x0" />
+		<float32 name="attack distance" offset="0x4" />
+		<float32 name="minimum distance" offset="0x8" />
+		<float32 name="maximum distance" offset="0xC" />
+	</layout>
+	
+	<layout for="sound pitch range parameter" size="0x10">
 		<int16 name="natural pitch" offset="0x0" />
-		<int16 name="bend min" offset="0x2" />
-		<int16 name="bend max" offset="0x4" />
-		<int16 name="max gain pitch min" offset="0x6" />
-		<int16 name="max gain pitch max" offset="0x8" />
-		<int16 name="playback pitch min" offset="0xA" />
-		<int16 name="playback pitch max" offset="0xC" />
+		<int16 name="distance index" offset="0x2" />
+		<int16 name="bend min" offset="0x4" />
+		<int16 name="bend max" offset="0x6" />
+		<int16 name="max gain pitch min" offset="0x8" />
+		<int16 name="max gain pitch max" offset="0xA" />
+		<int16 name="playback pitch min" offset="0xC" />
+		<int16 name="playback pitch max" offset="0xE" />
 	</layout>
 	
 	<layout for="sound pitch range" size="0xC">
