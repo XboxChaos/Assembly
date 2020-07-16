@@ -1210,13 +1210,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			using (var reader = new EndianReader(File.OpenRead(ofd.FileName), _cacheFile.Endianness))
 				container = TagContainerReader.ReadTagContainer(reader);
 
-
 			Dialogs.ControlDialogs.InjectSettings injs = new Dialogs.ControlDialogs.InjectSettings(_allTags, container);
+
 			// Handle defaults
 			injs.UniqueShaders = (_cacheFile.HeaderSize > 0x3000 && _cacheFile.Endianness == Endian.BigEndian);
 
 			// H3 MCC currently doesnt store a checksum for uncompressed resources, so this must be unticked
-			injs.FindRaw = !(_cacheFile.HeaderSize == 0x3000 && _cacheFile.Endianness == Endian.LittleEndian);
+			injs.FindRaw = _buildInfo.UsesRawHashes;
 
 			injs.ShowDialog();
 
@@ -1291,7 +1291,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				using (var stream = _mapManager.OpenReadWrite())
 				{
 					// Now inject the container
-					var injector = new TagContainerInjector(_cacheFile, container, _buildInfo, true, false, true, false);
+					var injector = new TagContainerInjector(_cacheFile, container, _buildInfo, (bool)dupe.DupeSoundGestalt);
 					injector.InjectTag(container.Tags.First(), stream);
 					injector.InjectPredictions(container.Predictions, stream);
 					injector.SaveChanges(stream);

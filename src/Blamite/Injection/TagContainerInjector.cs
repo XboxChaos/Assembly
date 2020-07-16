@@ -18,6 +18,8 @@ namespace Blamite.Injection
 		private bool _injectRaw;
 		private bool _findExistingPages;
 		private bool _renameShaders;
+		private bool _dupeReuseRawPages;
+		private bool _dupeReuseSoundGestalt;
 		private static int SoundGroup = CharConstant.FromString("snd!");
 
 		private static int PCAGroup = CharConstant.FromString("pcaa");
@@ -63,8 +65,14 @@ namespace Blamite.Injection
 			_keepSound = false;
 			_injectRaw = false;
 			_findExistingPages = false;
+			_renameShaders = false;
+			_dupeReuseSoundGestalt = false;
+			_dupeReuseRawPages = false;
 		}
 
+		/// <summary>
+		/// Constructor for use with injection
+		/// </summary>
 		public TagContainerInjector(ICacheFile cacheFile, TagContainer container, EngineDescription buildInfo, bool keepsnd, bool injectraw, bool findexisting, bool renameshaders)
 		{
 			_cacheFile = cacheFile;
@@ -74,6 +82,27 @@ namespace Blamite.Injection
 			_injectRaw = injectraw;
 			_findExistingPages = findexisting;
 			_renameShaders = renameshaders;
+			_dupeReuseSoundGestalt = false;
+			_dupeReuseRawPages = false;
+
+			if (buildInfo.Layouts.HasLayout("sound"))
+				_soundLayout = buildInfo.Layouts.GetLayout("sound");
+		}
+
+		/// <summary>
+		/// Constructor for use with duplication
+		/// </summary>
+		public TagContainerInjector(ICacheFile cacheFile, TagContainer container, EngineDescription buildInfo, bool dupeSoundGestalt)
+		{
+			_cacheFile = cacheFile;
+			_languageCache = new CachedLanguagePackLoader(cacheFile.Languages);
+			_container = container;
+			_keepSound = true;
+			_injectRaw = false;
+			_findExistingPages = true;
+			_renameShaders = false;
+			_dupeReuseRawPages = !buildInfo.UsesRawHashes;
+			_dupeReuseSoundGestalt = !dupeSoundGestalt;
 
 			if (buildInfo.Layouts.HasLayout("sound"))
 				_soundLayout = buildInfo.Layouts.GetLayout("sound");
@@ -342,8 +371,10 @@ namespace Blamite.Injection
 				{
 					int primaryPageIndex = -1;
 
-					if (_findExistingPages) //find existing entry to point to
+					if (_findExistingPages && !_dupeReuseRawPages) //find existing entry to point to
 						primaryPageIndex = _resources.Pages.FindIndex(r => r.Checksum == _container.FindResourcePage(resource.Location.OriginalPrimaryPageIndex).Checksum);
+					else if (_dupeReuseRawPages) // point back to the original page for edge case duplication
+						primaryPageIndex = resource.Location.OriginalPrimaryPageIndex;
  
 					if (primaryPageIndex == -1)
 						primaryPageIndex = InjectResourcePage(resource.Location.OriginalPrimaryPageIndex, stream);
@@ -363,8 +394,10 @@ namespace Blamite.Injection
 				{
 					int secondaryPageIndex = -1;
 
-					if (_findExistingPages) //find existing entry to point to
+					if (_findExistingPages && !_dupeReuseRawPages) //find existing entry to point to
 						secondaryPageIndex = _resources.Pages.FindIndex(r => r.Checksum == _container.FindResourcePage(resource.Location.OriginalSecondaryPageIndex).Checksum);
+					else if (_dupeReuseRawPages) // point back to the original page for edge case duplication
+						secondaryPageIndex = resource.Location.OriginalSecondaryPageIndex;
 
 					if (secondaryPageIndex == -1)
 						secondaryPageIndex = InjectResourcePage(resource.Location.OriginalSecondaryPageIndex, stream);
@@ -384,8 +417,10 @@ namespace Blamite.Injection
 				{
 					int tertiaryPageIndex = -1;
 
-					if (_findExistingPages) //find existing entry to point to
+					if (_findExistingPages && !_dupeReuseRawPages) //find existing entry to point to
 						tertiaryPageIndex = _resources.Pages.FindIndex(r => r.Checksum == _container.FindResourcePage(resource.Location.OriginalTertiaryPageIndex).Checksum);
+					else if (_dupeReuseRawPages) // point back to the original page for edge case duplication
+						tertiaryPageIndex = resource.Location.OriginalTertiaryPageIndex;
 
 					if (tertiaryPageIndex == -1)
 						tertiaryPageIndex = InjectResourcePage(resource.Location.OriginalTertiaryPageIndex, stream);
@@ -475,7 +510,8 @@ namespace Blamite.Injection
 					FixUnicListReferences(block, tag, bufferWriter, stream);
 				FixInteropReferences(block, bufferWriter, stream, location);
 				FixEffectReferences(block, bufferWriter);
-				FixSoundReferences(block, bufferWriter, stream);
+				if (!_dupeReuseSoundGestalt)
+					FixSoundReferences(block, bufferWriter, stream);
 
 				// sort after fixups
 				if (block.Sortable && block.EntrySize >= 4)
