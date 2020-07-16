@@ -677,7 +677,7 @@ namespace Blamite.Injection
 				else
 					writer.WriteInt32(0);
 
-				writer.WriteUInt32(cplayback.OriginalRadioEffect.Index);
+				writer.WriteUInt32(cplayback.OriginalRadioEffect.Value);
 
 				if (cplayback.LowpassEffects != null)
 				{
@@ -698,7 +698,7 @@ namespace Blamite.Injection
 					writer.WriteInt32(cplayback.Components.Count);
 					foreach (var comp in cplayback.Components)
 					{
-						writer.WriteUInt32(comp.OriginalSound.Index);
+						writer.WriteUInt32(comp.OriginalSound.Value);
 						writer.WriteFloat(comp.Gain);
 						writer.WriteInt32(comp.Flags);
 					}

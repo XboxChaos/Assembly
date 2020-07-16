@@ -816,7 +816,10 @@ namespace Blamite.Injection
 				cplayback.FilterLFOs.Add(filterlfo);
 			}
 
+			//bug fix because I released this with the writer only writing half the datum, so the tag should be thrown out if it predates this commit
 			cplayback.OriginalRadioEffect = new DatumIndex(reader.ReadUInt32());
+			if (cplayback.OriginalRadioEffect.Salt == 0)
+				cplayback.OriginalRadioEffect = DatumIndex.Null;
 
 			cplayback.LowpassEffects = new System.Collections.Generic.List<SoundCustomPlaybackLowpassEffect>();
 			int lowpasscount = reader.ReadInt32();
@@ -838,7 +841,11 @@ namespace Blamite.Injection
 			{
 				ExtractedSoundCustomPlaybackComponent c = new ExtractedSoundCustomPlaybackComponent();
 
+				//bug fix because I released this with the writer only writing half the datum, so the tag should be thrown out if it predates this commit
 				c.OriginalSound = new DatumIndex(reader.ReadUInt32());
+				if (c.OriginalSound.Salt == 0)
+					c.OriginalSound = DatumIndex.Null;
+
 				c.Gain = reader.ReadFloat();
 				c.Flags = reader.ReadInt32();
 
