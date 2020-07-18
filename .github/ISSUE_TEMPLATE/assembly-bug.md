@@ -27,4 +27,4 @@ If applicable, add screenshots to help explain your problem.
  - OS: [e.g. iOS]
 
 **Additional context**
-Add any other context about the problem here.
+Add any other context about the problem here. If applicable, always include the game, map name(s), and tag(s) to make reproduction easier. [e.g. Halo 3 MCC, injecting the grunt biped from 010_jungle.map into shrine.map]
