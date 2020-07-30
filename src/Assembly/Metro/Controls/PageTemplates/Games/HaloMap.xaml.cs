@@ -490,7 +490,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private void GenerateSeatMappings()
 		{
 			string casheName = Path.GetFileNameWithoutExtension(_cacheLocation);
-			string folder = _buildInfo.SeatMappings;
+			string folder = _buildInfo.SeatMappingPath;
 			string filename = casheName + "_Mappings.xml";
 			string path = Path.Combine(folder, filename);
 

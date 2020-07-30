@@ -6,6 +6,7 @@ using Assembly.Helpers;
 using Blamite.Blam;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.Scripting.Compiler;
+using Blamite.Blam.Scripting.Context;
 using Blamite.IO;
 using Blamite.Serialization;
 using Blamite.Util;
@@ -42,6 +43,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private Endian _endian;
         private Action _metaRefresh;
         private CompletionWindow _completionWindow = null;
+        private ScriptingContextCollection _context;
         private readonly List<ICompletionData> _completionData = new List<ICompletionData>();
 
         public ScriptEditor(Action metaRefresh, EngineDescription buildInfo, IScriptFile scriptFile, IStreamManager streamManager, ICacheFile casheFile, string casheName, Endian endian)
@@ -57,17 +59,24 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             _showInfo = App.AssemblyStorage.AssemblySettings.ShowScriptInfo;
 
             InitializeComponent();
+
+            // Disable user input. Enable it again when all background tasks have been completed.
+            txtScript.IsReadOnly = true;
+
             txtScript.TextArea.TextEntering += txtScript_TextArea_TextEntering;
             App.AssemblyStorage.AssemblySettings.PropertyChanged += Settings_SettingsChanged;
             SetHighlightColor();
-
             SearchPanel srch = SearchPanel.Install(txtScript);
             var bconv = new System.Windows.Media.BrushConverter();
             var srchbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#40F0F0F0");
             srch.MarkerBrush = srchbrsh;
-
+            
+            // Background tasks.
             List<Task> tasks = new List<Task>();
-            tasks.Add(Task.Run(() => { GenerateCompletionData(); }));
+            Task contextTask = Task.Run(() => { LoadContext(); });
+            Task completionTask = contextTask.ContinueWith(t => GenerateCompletionData());
+            tasks.Add(contextTask);
+            tasks.Add(completionTask);
             if(_buildInfo.Name.Contains("Halo 4"))
             {
                 tasks.Add(Task.Run(() => { DecompileHalo4Old(); }));
@@ -76,6 +85,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             {
                 tasks.Add(Task.Run(() => { DecompileToLISP(); }));
             }
+            Task.WhenAll(tasks).ContinueWith(t => 
+                {
+                    Dispatcher.Invoke(() => { txtScript.IsReadOnly = false; });
+                });
+            //txtScript.IsReadOnly = true;
         }
 
         private void DecompileHalo4Old()
@@ -217,6 +231,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             Dispatcher.Invoke(new Action(delegate { txtScript.Text = code.InnerWriter.ToString(); }));
         }
 
+        private void LoadContext()
+        {
+            var loader = new XMLScriptingContextLoader(_cashefile, _streamManager, _buildInfo);
+            _context =  loader.LoadContext(_buildInfo.ScriptingContextPath);
+        }
+
         private void btnExport_Click(object sender, RoutedEventArgs e)
         {
             var sfd = new SaveFileDialog();
@@ -338,7 +358,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
         private Dictionary<string, UnitSeatMapping> LoadSeatMappings()
         {
-            string folder = _buildInfo.SeatMappings;
+            string folder = _buildInfo.SeatMappingPath;
             string filename = _casheName + "_Mappings.xml";
             string path = Path.Combine(folder, filename);
 
