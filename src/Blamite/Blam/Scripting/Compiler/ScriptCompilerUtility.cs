@@ -10,22 +10,17 @@ namespace Blamite.Blam.Scripting.Compiler
 {
     public partial class ScriptCompiler : BS_ReachBaseListener
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="function"></param>
-        /// <param name="parameterCount"></param>
-        /// <param name="line"></param>
-        /// <returns></returns>
         private FunctionInfo RetrieveFunctionInfo(string function, int parameterCount, int line)
         {
             List<FunctionInfo> infos = _opcodes.GetFunctionInfo(function);
             if (infos == null)
+            {
                 throw new CompilerException($"The opcode for function \"{function}\" with parameter count \"{parameterCount}\" couldn't be retrieved. Please ensure that this is a valid function name."
-                                        +"\nAlternatively, a script declaration could be missing in your .hsc file." , function, line);
+                        + "\nAlternatively, a script declaration could be missing in your .hsc file.", function, line);
+            }
 
+            // Overloaded functions exist. Select the right one based on its parameter count and whether the function is implemented or not.
             FunctionInfo result;
-            // overloaded functions exist. select the right one based on its parameter count and whether the function is implemented or not.
             if (infos.Count > 1)
             {
                 result = infos.Find(i => i.Implemented && i.ParameterTypes.Count() == parameterCount);
@@ -52,7 +47,25 @@ namespace Blamite.Blam.Scripting.Compiler
                     return scriptDeclaration;
                 }
             }
-            throw new CompilerException("Failed to retrieve a script declaration context.", ctx.GetText(), ctx.Start.Line);
+            throw new CompilerException("Failed to retrieve the parent script declaration context.", ctx.GetText(), ctx.Start.Line);
+        }
+
+        private RuleContext GetParentContext(RuleContext context, int ruleIndex)
+        {
+            RuleContext parent = context.Parent;
+            if (parent.RuleIndex == ruleIndex)
+            {
+                return parent;
+            }
+            while (parent.RuleIndex != BS_ReachParser.RULE_hsc)
+            {
+                parent = parent.Parent;
+                if (parent.RuleIndex == ruleIndex)
+                {
+                    return parent;
+                }
+            }
+            return null;
         }
 
         private void ExpressionsToXML()
@@ -60,11 +73,12 @@ namespace Blamite.Blam.Scripting.Compiler
             if (_expressions.Count > 0)
             {
                 string folder = "Compiler";
+                string fileName = Path.Combine(folder, _cacheFile.InternalName + "_expressions.xml");
+
                 if (!Directory.Exists(folder))
                 {
                     Directory.CreateDirectory(folder);
                 }
-                string fileName = Path.Combine(folder, _cacheFile.InternalName + "_expressions.xml");
 
                 var settings = new XmlWriterSettings
                 {
@@ -131,28 +145,29 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 _strings.Write(writer);
             }
-
         }
 
         private void DeclarationsToXML()
         {
             string folder = "Compiler";
+            string fileName = Path.Combine(folder, _cacheFile.InternalName + "_Declarations.xml");
+
             if (!Directory.Exists(folder))
             {
                 Directory.CreateDirectory(folder);
             }
-            string fileName = Path.Combine(folder, _cacheFile.InternalName + "_Declarations.xml");
 
             var settings = new XmlWriterSettings
             {
                 Indent = true
             };
+
             using (var writer = XmlWriter.Create(fileName, settings))
             {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("declarations");
                 
-                // globals
+                // Globals.
                 writer.WriteStartElement("globals");
                 foreach (ScriptGlobal glo in _globals)
                 {
@@ -165,7 +180,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 }
                 writer.WriteEndElement();
 
-                // scripts
+                // Scripts.
                 writer.WriteStartElement("scripts");
                 foreach (Script scr in _scripts)
                 {
@@ -202,20 +217,20 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             if (_openDatums.Count > 0)
             {
-                var index = _openDatums.Pop();
-
+                int index = _openDatums.Pop();
                 if (OutputDebugInfo)
                 {
                     _logger.WriteLine("CLOSE", $"Index: {index}");
                     _logger.WriteNewLine();
                 }
 
-
+                // Null the Datum Index.
                 _expressions[index].Next = DatumIndex.Null;
             }
-
             else
+            {
                 throw new InvalidOperationException("Failed to close a datum. The Datum stack is empty.");
+            }
         }
 
         /// <summary>
@@ -225,16 +240,22 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             if (_openDatums.Count > 0)
             {
-                var index = _openDatums.Pop();
+                int index = _openDatums.Pop();
                 if (OutputDebugInfo)
+                {
                     _logger.WriteLine("LINK", $"Index: {index}");
+                }
 
-                if (index != -1)        // -1 means that this expression belongs to a global declaration
+                // -1 means that this expression belongs to a global declaration.
+                if (index != -1)
+                {
                     _expressions[index].Next = _currentIndex;
+                }
             }
-
             else
+            {
                 throw new InvalidOperationException("Failed to link a datum. The Datum stack is empty.");
+            }
         }
 
         /// <summary>
@@ -278,21 +299,24 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <returns>The salt value.</returns>
         private ushort IndexToSalt(ushort index)
         {
-            ushort init = SaltGenerator.GetSalt("script node");           // initial value for the expression reflexive
-            ushort restart = 0x7FFF;        // the value which is used to calculate the salt once it exceeds 0xFFFF
+            // Initial value for the expression reflexive.
+            ushort init = SaltGenerator.GetSalt("script node");
+            // This value is used to calculate the salt once it exceeds 0xFFFF.
+            ushort restart = 0x7FFF;
 
-            var salt = init + index;
-
+            int salt = init + index;
             if (salt >= ushort.MaxValue)
+            {
                 salt = (salt % restart) + restart;
+            }
 
             return (ushort)salt;
         }
 
         private void PushTypes(params string[] types)
         {
-            var rev = types.Reverse();
-            foreach(string type in rev)
+            var reverse = types.Reverse();
+            foreach(string type in reverse)
             {
                 if(OutputDebugInfo)
                 {
@@ -338,24 +362,6 @@ namespace Blamite.Blam.Scripting.Compiler
             _processedDeclarations++;
             int i = _processedDeclarations * 100 / _declarationCount;
             _progress.Report(i);
-        }
-
-        private RuleContext GetParentContext(RuleContext context, int ruleIndex)
-        {
-            var parent = context.Parent;
-            if (parent.RuleIndex == ruleIndex)
-            {
-                return parent;
-            }
-            while (parent.RuleIndex != BS_ReachParser.RULE_hsc)
-            {
-                parent = parent.Parent;
-                if (parent.RuleIndex == ruleIndex)
-                {
-                    return parent;
-                }
-            }
-            return null;
         }
 
         private short GetLineNumber(ParserRuleContext context)

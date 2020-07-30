@@ -57,7 +57,6 @@ namespace Blamite.Blam.Scripting.Compiler
         private ScriptData _result = null;
 
 
-
         public ScriptCompiler(ICacheFile casheFile, ScriptContext context, OpcodeLookup opCodes, Dictionary<string, UnitSeatMapping> seatMappings, IProgress<int> progress, Logger logger)
         {
             _progress = progress;

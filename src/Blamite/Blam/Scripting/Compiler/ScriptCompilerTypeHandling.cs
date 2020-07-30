@@ -11,21 +11,21 @@ namespace Blamite.Blam.Scripting.Compiler
         private bool ProcessLiteral(string expectedValueType, BS_ReachParser.LiteralContext context)
         {
             CastInfo info = _opcodes.GetTypeCast(expectedValueType);
-            // types which can be casted to.
+            // Types which can be casted to.
             if (info != null)
             {
-                // check if casting is necessary.
+                // Check if casting is necessary.
                 if (HandleValueType(context, expectedValueType))
                 {
                     return true;
                 }
-                // casting
+                // Casting.
                 else
                 {
                     FIFOStack<string> remainingTypes = new FIFOStack<string>();
                     List<string> processedTypes = new List<string>();
 
-                    // push immediate casts.
+                    // Push immediate casts.
                     foreach (string type in info.From)
                     {
                         remainingTypes.Push(type);
@@ -33,11 +33,11 @@ namespace Blamite.Blam.Scripting.Compiler
 
                     while (remainingTypes.Count > 0)
                     {
-                        // check if this is the right value type.
+                        // Check if this is the right value type.
                         string typeToProcess = remainingTypes.Pop();
                         if (HandleValueType(context, typeToProcess))
                         {
-                            // overwrite the value type of the added expression node with the casted type.
+                            // Overwrite the value type of the added expression node with the casted type.
                             _expressions[_expressions.Count - 1].ReturnType = _opcodes.GetTypeInfo(expectedValueType).Opcode;
                             return true;
                         }
@@ -45,7 +45,7 @@ namespace Blamite.Blam.Scripting.Compiler
                         info = _opcodes.GetTypeCast(typeToProcess);
                         if (info !=  null)
                         {
-                            // push nested casts.
+                            // Push nested casts.
                             foreach (string type in info.From)
                             {
                                 if (!remainingTypes.Contains(type) && !processedTypes.Contains(type))
@@ -58,7 +58,7 @@ namespace Blamite.Blam.Scripting.Compiler
                     return false;
                 }
             }
-            // this type can't be casted to.
+            // This type can't be casted to.
             else
             {
                 return HandleValueType(context, expectedValueType);
@@ -68,7 +68,6 @@ namespace Blamite.Blam.Scripting.Compiler
         private bool HandleValueType(BS_ReachParser.LiteralContext context, string expectedValueType)
         {
             string name = context.GetText();
-
             switch (expectedValueType)
             {
                 case "ANY":
@@ -203,28 +202,30 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private bool IsBoolean(BS_ReachParser.LiteralContext context)
         {
-            string txt = context.GetText();
+            string text = context.GetText();
             if (context.BOOLEAN() == null)
+            {
                 return false;
+            }
 
-            var opCode = _opcodes.GetTypeInfo("boolean").Opcode;
             byte val;
-
-            if (txt == "true")
+            if (text == "true")
             {
                 val = 1;
             }
-            else if (txt == "false")
+            else if (text == "false")
             {
                 val = 0;
             }
             else
+            {
                 return false;
+            }
 
-            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression,
+            ushort opcode = _opcodes.GetTypeInfo("boolean").Opcode;
+            var expression = new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
                 _randomAddress, val, (short)context.Start.Line);
-
-            OpenDatumAddExpressionIncrement(exp);
+            OpenDatumAddExpressionIncrement(expression);
 
             EqualityPush("boolean");
             return true;
@@ -232,17 +233,19 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private bool IsEnum32(BS_ReachParser.LiteralContext context, string valueType, string castTo)
         {
-            string txt = context.GetText().Trim('"');
+            string text = context.GetText().Trim('"');
             ScriptValueType info = _opcodes.GetTypeInfo(valueType);
-            var index = info.GetEnumIndex(txt);
+            int index = info.GetEnumIndex(text);
 
             if (index == -1)
+            {
                 return false;
 
-            var exp = new ScriptExpression(_currentIndex, info.Opcode, _opcodes.GetTypeInfo(castTo).Opcode, ScriptExpressionType.Expression,
-                _strings.Cache(txt), (uint)index, (short)context.Start.Line);
+            }
 
-            OpenDatumAddExpressionIncrement(exp);
+            var expression = new ScriptExpression(_currentIndex, info.Opcode, _opcodes.GetTypeInfo(castTo).Opcode, ScriptExpressionType.Expression,
+                _strings.Cache(text), (uint)index, (short)context.Start.Line);
+            OpenDatumAddExpressionIncrement(expression);
 
             EqualityPush(valueType);
             return true;
@@ -250,17 +253,19 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private bool IsEnum16(BS_ReachParser.LiteralContext context, string expectedValueType)
         {
-            string txt = context.GetText().Trim('"');
+            string text = context.GetText().Trim('"');
             ScriptValueType info = _opcodes.GetTypeInfo(expectedValueType);
-            var val = info.GetEnumIndex(txt);
+            int val = info.GetEnumIndex(text);
 
             if (val == -1)
+            {
                 return false;
-   
-            var exp = new ScriptExpression(_currentIndex, info.Opcode, info.Opcode, ScriptExpressionType.Expression, 
-                _strings.Cache(txt), (ushort)val, (short)context.Start.Line);
 
-            OpenDatumAddExpressionIncrement(exp);
+            }
+
+            var expression = new ScriptExpression(_currentIndex, info.Opcode, info.Opcode, ScriptExpressionType.Expression, 
+                _strings.Cache(text), (ushort)val, (short)context.Start.Line);
+            OpenDatumAddExpressionIncrement(expression);
 
             EqualityPush(expectedValueType);
             return true;
@@ -268,14 +273,17 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private bool IsNumber(BS_ReachParser.LiteralContext context)
         {
-            // is the number an integer? The default integer is a short for now.
+            // Is the number an integer? The default integer is a short for now.
             if (context.INT() != null)
             {
                 string txt = context.GetText();
 
                 if (!int.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out int num))
+                {
                     throw new ArgumentException($"Failed to parse Long. Text: {txt}");
-                if(num >= short.MinValue && num <= short.MaxValue)
+
+                }
+                if (num >= short.MinValue && num <= short.MaxValue)
                 {
                     return IsShort(context);
                 }
@@ -284,29 +292,35 @@ namespace Blamite.Blam.Scripting.Compiler
                     return IsLong(context);
                 }                               
             }
-            // is the number a real?
+            // Is the number a real?
             else if (context.FLOAT() != null)
             {
                 return IsReal(context);
             }
             else
+            {
                 return false;
+
+            }
         }
 
         private bool IsObject_Name(BS_ReachParser.LiteralContext context, string valueType, string castTo)
         {
             string name = context.GetText().Trim('"');
             int val = Array.FindIndex(_scriptContext.ObjectReferences, o => o.Name == name);
-            // not found
+
+            // Not found.
             if (val == -1)
+            {
                 return false;
 
-            // create expression node
-            ushort op = _opcodes.GetTypeInfo(valueType).Opcode;
-            var exp = new ScriptExpression(_currentIndex, op, _opcodes.GetTypeInfo(castTo).Opcode, ScriptExpressionType.Expression, 
-                _strings.Cache(name), (ushort)val, (short)context.Start.Line);
+            }
 
-            OpenDatumAddExpressionIncrement(exp);
+            // Create expression node.
+            ushort opcode = _opcodes.GetTypeInfo(valueType).Opcode;
+            var expression = new ScriptExpression(_currentIndex, opcode, _opcodes.GetTypeInfo(castTo).Opcode, ScriptExpressionType.Expression, 
+                _strings.Cache(name), (ushort)val, (short)context.Start.Line);
+            OpenDatumAddExpressionIncrement(expression);
 
             EqualityPush(valueType);
             return true;
@@ -314,114 +328,110 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private bool IsAI(BS_ReachParser.LiteralContext context, string expectedValueType)
         {
-            // information
-            string txt = context.GetText().Trim('"');
-            if (txt == "ai_current_actor")
-            {
-                throw new NotImplementedException("The keyword ai_current_actor is not supported yet.");
-            }
-            string[] subStrings = txt.Split(new char[] { '/' }, 2, StringSplitOptions.RemoveEmptyEntries);
-            var opCode = _opcodes.GetTypeInfo("ai").Opcode;
-            var valType = _opcodes.GetTypeInfo(expectedValueType).Opcode;
+            string text = context.GetText().Trim('"');
+            string[] subStrings = text.Split(new char[] { '/' }, 2, StringSplitOptions.RemoveEmptyEntries);
+            ushort opcode = _opcodes.GetTypeInfo("ai").Opcode;
+            ushort valuetype = _opcodes.GetTypeInfo(expectedValueType).Opcode;
 
             byte[] values = new byte[4];
-
             #region value generation
-            if (subStrings[0] != "none")       // special case
-            { 
-                // squads
-                int index = Array.FindIndex(_scriptContext.AISquads, sq => sq.Name == subStrings[0]);
-                if (index != -1)
+            // Squads.
+            int index = Array.FindIndex(_scriptContext.AISquads, squad => squad.Name == subStrings[0]);
+            if (index != -1)
+            {
+                if (subStrings.LongCount() == 2)
                 {
-                    if (subStrings.LongCount() == 2)
+                    var singleLocations = _scriptContext.AISquads[index].GetChildren(_scriptContext.AISquadSingleLocations);
+                    int singleIndex = Array.FindIndex(singleLocations, c => c.Name == subStrings[1]);
+                    if (singleIndex != -1)
                     {
-                        var singleLocations = _scriptContext.AISquads[index].GetChildren(_scriptContext.AISquadSingleLocations);
-                        int singleIndex = Array.FindIndex(singleLocations, c => c.Name == subStrings[1]);
-                        if (singleIndex != -1)
-                        {
-                            // squad/single_location
-                            values[0] = 128;
-                            values[1] = (byte)index;
-                            values[2] = 0;
-                            values[3] = (byte)singleIndex;
-                        }
-                        else
-                        {
-                            var groupLocations = _scriptContext.AISquads[index].GetChildren(_scriptContext.AISquadGroupLocations);
-                            int groupIndex = Array.FindIndex(groupLocations, c => c.Name == subStrings[1]);
-                            if(groupIndex != -1)
-                            {
-                                // squad/group_location
-                                values[0] = 160;
-                                values[1] = (byte)index;
-                                values[2] = 0;
-                                values[3] = (byte)groupIndex;
-                            }
-                            else
-                            {
-                                return false;
-                            }
-                        }
+                        // Squad/single_location.
+                        values[0] = 128;
+                        values[1] = (byte)index;
+                        values[2] = 0;
+                        values[3] = (byte)singleIndex;
                     }
                     else
                     {
-                        // squad
-                        values[0] = 32;
-                        values[1] = 0;
-                        values[2] = 0;
-                        values[3] = (byte)index;
+                        var groupLocations = _scriptContext.AISquads[index].GetChildren(_scriptContext.AISquadGroupLocations);
+                        int groupIndex = Array.FindIndex(groupLocations, c => c.Name == subStrings[1]);
+                        if(groupIndex != -1)
+                        {
+                            // Squad/group_location.
+                            values[0] = 160;
+                            values[1] = (byte)index;
+                            values[2] = 0;
+                            values[3] = (byte)groupIndex;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     }
                 }
                 else
                 {
-                    // groups
-                    index = Array.FindIndex(_scriptContext.AISquadGroups, gr => gr.Name == subStrings[0]);
+                    // Squad.
+                    values[0] = 32;
+                    values[1] = 0;
+                    values[2] = 0;
+                    values[3] = (byte)index;
+                }
+            }
+            else
+            {
+                // Groups.
+                index = Array.FindIndex(_scriptContext.AISquadGroups, gr => gr.Name == subStrings[0]);
+                if (index != -1)
+                {
+                    values[0] = 64;
+                    values[1] = 0;
+                    values[2] = 0;
+                    values[3] = (byte)index;
+                }
+                else
+                {
+                    // Objectives.
+                    index = Array.FindIndex(_scriptContext.AIObjects, o => o.Name == subStrings[0]);
                     if (index != -1)
                     {
-                        values[0] = 64;
-                        values[1] = 0;
-                        values[2] = 0;
-                        values[3] = (byte)index;
-                    }
-                    else
-                    {
-                        //objectives
-                        index = Array.FindIndex(_scriptContext.AIObjects, o => o.Name == subStrings[0]);
-                        if (index != -1)
+                        var children = _scriptContext.AIObjects[index].GetChildren(_scriptContext.AIObjectWaves);
+                        if (subStrings.LongCount() == 2)
                         {
-                            var children = _scriptContext.AIObjects[index].GetChildren(_scriptContext.AIObjectWaves);
-                            if (subStrings.LongCount() == 2)
+                            int role = Array.FindIndex(children, r => r.Name == subStrings[1]);
+                            if (role != -1)
                             {
-                                int role = Array.FindIndex(children, r => r.Name == subStrings[1]);
-                                if (role != -1)
-                                {
-                                    // objective/role
-                                    values[0] = 192;
-                                    values[1] = (byte)role;
-                                    values[2] = 0;
-                                    values[3] = (byte)index;
-                                }
-                                else
-                                    return false;
-                            }
-                            else
-                            {
-                                // objective
-                                values[0] = 223;
-                                values[1] = 255;
+                                // Objective/role.
+                                values[0] = 192;
+                                values[1] = (byte)role;
                                 values[2] = 0;
                                 values[3] = (byte)index;
                             }
+                            else
+                            {
+                                return false;
+
+                            }
                         }
                         else
-                            return false;                       // no match
+                        {
+                            // Objective.
+                            values[0] = 223;
+                            values[1] = 255;
+                            values[2] = 0;
+                            values[3] = (byte)index;
+                        }
+                    }
+                    // No match.
+                    else
+                    {
+                        return false;
                     }
                 }
             }
             #endregion
-            var exp = new ScriptExpression(_currentIndex, opCode, valType, ScriptExpressionType.Expression, _strings.Cache(txt), values, (short)context.Start.Line);
-
-            OpenDatumAddExpressionIncrement(exp);
+            var expression = new ScriptExpression(_currentIndex, opcode, valuetype, ScriptExpressionType.Expression, _strings.Cache(text), values, (short)context.Start.Line);
+            OpenDatumAddExpressionIncrement(expression);
 
             EqualityPush(expectedValueType);
             return true;
@@ -466,15 +476,16 @@ namespace Blamite.Blam.Scripting.Compiler
                     val = Array.FindIndex(_scriptContext.DesignerZones, t => t.Name == name);
                     break;
             }
-            // no match
+            // No match.
             if (val == -1)
+            {
                 return false;
+            }
 
-            var opCode = _opcodes.GetTypeInfo(expectedValueType).Opcode;
-            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
+            ushort opcode = _opcodes.GetTypeInfo(expectedValueType).Opcode;
+            var expression = new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression, 
                 _strings.Cache(name), (ushort)val, (short)context.Start.Line);
-
-            OpenDatumAddExpressionIncrement(exp);
+            OpenDatumAddExpressionIncrement(expression);
 
             EqualityPush(expectedValueType);
             return true;
@@ -484,16 +495,20 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             string name = context.GetText().Trim('"');
             int index = Array.FindIndex(_scriptContext.DeviceGroups, t => t.Name == name);
+
+            // Not found.
             if (index == -1)
-                return false; // not found
+            {
+                return false;
 
-            var opCode = _opcodes.GetTypeInfo("device_group").Opcode;
+            }
 
-            // value stores a device group datum
-            ushort device_salt = (ushort)(SaltGenerator.GetSalt("device groups") + index);
-            DatumIndex value = new DatumIndex(device_salt, (ushort)index);
+            // Value stores a device group datum.
+            ushort deviceSalt = (ushort)(SaltGenerator.GetSalt("device groups") + index);
+            DatumIndex value = new DatumIndex(deviceSalt, (ushort)index);
 
-            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, _strings.Cache(name), value, (short)context.Start.Line);
+            ushort opcode = _opcodes.GetTypeInfo("device_group").Opcode;
+            var exp = new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression, _strings.Cache(name), value, (short)context.Start.Line);
             OpenDatumAddExpressionIncrement(exp);
 
             EqualityPush("device_group");
@@ -502,44 +517,45 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private bool IsPointReference(BS_ReachParser.LiteralContext context)
         {
-            string txt = context.GetText().Trim('"');
-            string[] subStrings = txt.Split(new char[] { '/' }, 2, StringSplitOptions.RemoveEmptyEntries);
+            string text = context.GetText().Trim('"');
+            string[] subStrings = text.Split(new char[] { '/' }, 2, StringSplitOptions.RemoveEmptyEntries);
 
-             // find set
+             // Find set.
             int set = Array.FindIndex(_scriptContext.PointSets, s => s.Name == subStrings[0]);
             if (set != -1)
             {
+                // Check if the string contains a point name.
                 int point = -1;
-                // check if the string contains a point name
                 if(subStrings.Count() == 2)
                 {
-                    // find point
+                    // Find point.
                     ScriptObject[] points = _scriptContext.PointSets[set].GetChildren(_scriptContext.PointSetPoints);
                     point = Array.FindIndex(points, p => p.Name == subStrings[1]);
                     if (point == -1)
                     {
-                        // a matching point couldn't be found
-                        return false;
+                        // A matching point wasn't found.
+                        {
+                            return false;
+                        }
                     }
                 }
 
-                // create point_reference
-                var opCode = _opcodes.GetTypeInfo("point_reference").Opcode;
-
+                // Create point_reference.
+                ushort opCode = _opcodes.GetTypeInfo("point_reference").Opcode;
                 ushort[] value = new ushort[2];
                 value[0] = (ushort)set;
                 value[1] = (ushort)point;
-
-                var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
-                    _strings.Cache(txt), value, (short)context.Start.Line);
-                OpenDatumAddExpressionIncrement(exp);
+                var expression = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
+                    _strings.Cache(text), value, (short)context.Start.Line);
+                OpenDatumAddExpressionIncrement(expression);
 
                 EqualityPush("point_reference");
                 return true;
             }
             else
+            {
                 return false;
-
+            }
         }
 
         private bool IsFolder(BS_ReachParser.LiteralContext context)
@@ -547,15 +563,16 @@ namespace Blamite.Blam.Scripting.Compiler
             string name = context.GetText().Trim('"');
             int index = Array.FindIndex(_scriptContext.ObjectFolders, f => f.Name == name);
 
-            // no match
+            // No match.
             if (index == -1)
+            {
                 return false;
+            }
 
-            var opCode = _opcodes.GetTypeInfo("folder").Opcode;
-            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
+            ushort opCode = _opcodes.GetTypeInfo("folder").Opcode;
+            var expression = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
                 _strings.Cache(name), (uint)index, (short)context.Start.Line);
-
-            OpenDatumAddExpressionIncrement(exp);
+            OpenDatumAddExpressionIncrement(expression);
 
             EqualityPush("folder");
             return true;
@@ -563,38 +580,44 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private bool IsTagref(BS_ReachParser.LiteralContext context, string expectedValueType)
         {
-            string txt = context.GetText().Trim('"');
-            string[] subStrings = txt.Split(new char[] { '.' }, 2, StringSplitOptions.RemoveEmptyEntries);
+            string text = context.GetText().Trim('"');
+            string[] subStrings = text.Split(new char[] { '.' }, 2, StringSplitOptions.RemoveEmptyEntries);
             DatumIndex datum;
             ITag tagRef;
 
-            // strings with optional tag class suffixes have priority
+            // Strings with optional tag class suffixes have priority.
             if (subStrings.LongCount() == 2)
             {
-                var ids = _cacheFile.StringIDs;
-                ITagGroup cla = _cacheFile.TagGroups.Single(c => ids.GetString(c.Description) == subStrings[1]);
-                ITag tag = _cacheFile.Tags.FindTagByName(subStrings[0], cla, _cacheFile.FileNames);
+                StringIDSource stringIDs = _cacheFile.StringIDs;
+                ITagGroup tagGroup = _cacheFile.TagGroups.Single(c => stringIDs.GetString(c.Description) == subStrings[1]);
+                ITag tag = _cacheFile.Tags.FindTagByName(subStrings[0], tagGroup, _cacheFile.FileNames);
                 if (tag != null)
                 {
                     datum = tag.Index;
                     tagRef = tag;
                 }
                 else
+                {
                     return false;
-
+                }
             }
             else
             {
                 string classMagic = _opcodes.GetTypeInfo(expectedValueType).TagGroup;
                 if (classMagic == null)
+                {
                     return false;
+                }
 
                 ITag tag;
                 if (classMagic == "BLAM")
+                {
                     tag = _cacheFile.Tags.FindTagByName(subStrings[0], _cacheFile.FileNames);
+                }
                 else
+                {
                     tag = _cacheFile.Tags.FindTagByName(subStrings[0], classMagic, _cacheFile.FileNames);
-
+                }
 
                 if (tag != null)
                 {
@@ -602,20 +625,22 @@ namespace Blamite.Blam.Scripting.Compiler
                     tagRef = tag;
                 }
                 else
-                    return false;                    
+                {
+                    return false;
+                }
             }
 
-            // add the referenced tag to the tagref table if it wasn't included yet.
+            // Add the referenced tag to the tagref table if it wasn't included yet.
             if(!_references.Contains(tagRef))
+            {
                 _references.Add(tagRef);
+            }
 
-            // create expression.
-            var opCode = _opcodes.GetTypeInfo(expectedValueType).Opcode;
-
-            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression,
-                _strings.Cache(txt), datum, (short)context.Start.Line);
-
-            OpenDatumAddExpressionIncrement(exp);
+            // Create expression.
+            var opcode = _opcodes.GetTypeInfo(expectedValueType).Opcode;
+            var expression = new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
+                _strings.Cache(text), datum, (short)context.Start.Line);
+            OpenDatumAddExpressionIncrement(expression);
 
             EqualityPush(expectedValueType);
             return true;
@@ -626,7 +651,7 @@ namespace Blamite.Blam.Scripting.Compiler
             string name = context.GetText().Trim('"');
             // Check if this is a simple line reference.
             bool exists = _scriptContext.AILines.Any(s => s.Name == name);
-            // Check if a variant was specified.
+            // Maybe a variant was specified.
             if (!exists)
             {
                 var split = name.Split('_');
@@ -634,21 +659,18 @@ namespace Blamite.Blam.Scripting.Compiler
                 {
                     string line = string.Join("_", split, 0, split.Count()-1);
                     string variant = split[split.Count()-1];
-
                     int lineIndex = Array.FindIndex(_scriptContext.AILines, l => l.Name == line);
 
-                    // make sure that this variant exists
+                    // Make sure that this variant exists
                     if(lineIndex != -1)
                     {
-                        var variants = _scriptContext.AILines[lineIndex].GetChildren(_scriptContext.AILineVariants);
+                        ScriptObject[] variants = _scriptContext.AILines[lineIndex].GetChildren(_scriptContext.AILineVariants);
                         exists = variants.Any(v => v.Name == variant);
                     }
                 }
             }
 
-            var opCode = _opcodes.GetTypeInfo("ai_line").Opcode;
             uint value;
-
             if(exists || name == "none")
             {
                 value = _cacheFile.StringIDs.FindStringID(name).Value;
@@ -658,10 +680,11 @@ namespace Blamite.Blam.Scripting.Compiler
                 value = 0xFFFFFFFF;
             }
 
-            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression,
+            ushort opcode = _opcodes.GetTypeInfo("ai_line").Opcode;
+            var expression = new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
                 _strings.Cache(name), value, (short)context.Start.Line);
+            OpenDatumAddExpressionIncrement(expression);
 
-            OpenDatumAddExpressionIncrement(exp);
             EqualityPush("ai_line");
             return true;
         }
@@ -669,16 +692,16 @@ namespace Blamite.Blam.Scripting.Compiler
         private bool IsString(BS_ReachParser.LiteralContext context)
         {
             if (context.STRING() == null)
+            {
                 return false;
+            }
 
-            string txt = context.GetText().Trim('"');
-            var opCode = _opcodes.GetTypeInfo("string").Opcode;
-            uint value = _strings.Cache(txt);
-
-            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression,
+            string text = context.GetText().Trim('"');
+            var opcode = _opcodes.GetTypeInfo("string").Opcode;
+            uint value = _strings.Cache(text);
+            var expression = new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
                 value, value, (short)context.Start.Line);
-
-            OpenDatumAddExpressionIncrement(exp);
+            OpenDatumAddExpressionIncrement(expression);
 
             EqualityPush("string");
             return true;
@@ -686,72 +709,71 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private bool IsLong(BS_ReachParser.LiteralContext context)
         {
-            string txt = context.GetText();
-            var opCode = _opcodes.GetTypeInfo("long").Opcode;
-            if (!int.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out int value))
+            string text = context.GetText();
+            ushort opcode = _opcodes.GetTypeInfo("long").Opcode;
+            if (!int.TryParse(text, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out int value))
             {
                 return false;
             }
 
-            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
+            var expression = new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression, 
                 _randomAddress, (uint)value, (short)context.Start.Line);
+            OpenDatumAddExpressionIncrement(expression);
 
-            OpenDatumAddExpressionIncrement(exp);
             EqualityPush("long");
             return true;
         }
 
         private bool IsShort(BS_ReachParser.LiteralContext context)
         {
-            string txt = context.GetText();
-            var opCode = _opcodes.GetTypeInfo("short").Opcode;
-            if (!short.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out short value))
+            string text = context.GetText();
+            ushort opcode = _opcodes.GetTypeInfo("short").Opcode;
+            if (!short.TryParse(text, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out short value))
             {
                 return false;
             }
 
-            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
+            var expression = new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression, 
                 _randomAddress, (ushort)value, (short)context.Start.Line);
+            OpenDatumAddExpressionIncrement(expression);
 
-            OpenDatumAddExpressionIncrement(exp);
             EqualityPush("short");
             return true;
         }
 
         private bool IsReal(BS_ReachParser.LiteralContext context)
         {
-            string txt = context.GetText();
-            var opCode = _opcodes.GetTypeInfo("real").Opcode;
-            if (!float.TryParse(txt, NumberStyles.Float, CultureInfo.InvariantCulture, out float value))
+            string text = context.GetText();
+            ushort opcode = _opcodes.GetTypeInfo("real").Opcode;
+            if (!float.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out float value))
             {
                 return false;
             }
 
-            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
+            var expressison = new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression, 
                 _randomAddress, value, (short)context.Start.Line);
+            OpenDatumAddExpressionIncrement(expressison);
 
-            OpenDatumAddExpressionIncrement(exp);
             EqualityPush("real");
             return true;
         }
 
         private void CreateSID(BS_ReachParser.LiteralContext context)
         {
-            string txt = context.GetText().Trim('"');
-            var opCode = _opcodes.GetTypeInfo("string_id").Opcode;
-            StringID id = _cacheFile.StringIDs.FindOrAddStringID(txt);
-            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression,
-                _strings.Cache(txt), id, (short)context.Start.Line);
+            string text = context.GetText().Trim('"');
+            ushort opcode = _opcodes.GetTypeInfo("string_id").Opcode;
+            StringID id = _cacheFile.StringIDs.FindOrAddStringID(text);
+            var expression = new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
+                _strings.Cache(text), id, (short)context.Start.Line);
+            OpenDatumAddExpressionIncrement(expression);
 
-            OpenDatumAddExpressionIncrement(exp);
             EqualityPush("string_id");
         }
 
         private void CreateUnitSeatMapping(BS_ReachParser.LiteralContext context)
         {
-            string txt = context.GetText().Trim('"');           
-
-            if(!_seatMappings.TryGetValue(txt, out UnitSeatMapping mapping))
+            string text = context.GetText().Trim('"');           
+            if(!_seatMappings.TryGetValue(text, out UnitSeatMapping mapping))
             {
                 throw new CompilerException($"Failed to retrieve the unit seat mapping information. " +
                     $"Please ensure that the xml file contains the mapping.", context);
@@ -762,81 +784,15 @@ namespace Blamite.Blam.Scripting.Compiler
                 throw new ArgumentException($"Invalid unit seat mapping index. Index: {mapping.Index}. Line: {context.Start.Line}");
             }
 
-            var opCode = _opcodes.GetTypeInfo("unit_seat_mapping").Opcode;
-            ushort[] values = new ushort[2];
-            values[0] = (ushort)mapping.Count;
-            values[1] = (ushort)mapping.Index;
+            ushort opcode = _opcodes.GetTypeInfo("unit_seat_mapping").Opcode;
+            ushort[] value = new ushort[2];
+            value[0] = (ushort)mapping.Count;
+            value[1] = (ushort)mapping.Index;
+            var expression = new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression, 
+                _strings.Cache(mapping.Name), value, (short)context.Start.Line);
+            OpenDatumAddExpressionIncrement(expression);
 
-            var exp = new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression, 
-                _strings.Cache(mapping.Name), values, (short)context.Start.Line);
-
-            OpenDatumAddExpressionIncrement(exp);
             EqualityPush("unit_seat_mapping");
         }
-        ///// <summary>
-        ///// Attempts to predict and create a suitable expression node, solely based on the parser context. 
-        ///// ONLY USE THIS IF THERE IS ABSOLUTELY NO OTHER INFORMATION TO WORK OFF OF!
-        ///// </summary>
-        ///// <param name="context"></param>
-        ///// <returns>true if a expression node could be created and false if not.</returns>
-        //private bool GuessValueType(BS_ReachParser.LiteralContext context)
-        //{
-        //    string txt = context.GetText().Trim('"');
-        //    if (context.BOOLIT() != null)
-        //    {
-        //        return IsBoolean(context);
-        //    }
-        //    else if(context.FLOAT() != null || context.INT() != null)
-        //    {
-        //        return IsNumber(context);
-        //    }
-        //    #region Hail Mary!
-        //    else
-        //    {
-        //        bool result = IsEnum32(context, "player", "player")
-        //            || IsEnum32(context, "game_difficulty", "game_difficulty")
-        //            || IsEnum32(context, "team", "team")
-        //            || IsEnum32(context, "mp_team", "mp_team")
-        //            || IsEnum32(context, "controller", "controller")
-        //            || IsEnum32(context, "actor_type", "actor_type")
-        //            || IsEnum32(context, "model_state", "model_state")
-        //            || IsEnum32(context, "event", "event")
-        //            || IsEnum32(context, "character_physics", "character_physics")
-        //            || IsEnum32(context, "skull", "skull")
-        //            || IsEnum32(context, "firing_point_evaluator", "firing_point_evaluator")
-        //            || IsEnum32(context, "damage_region", "damage_region")
-        //            || IsEnum32(context, "actor_type", "actor_type")
-        //            || IsEnum32(context, "model_state", "model_state")
-        //            || IsEnum32(context, "event", "event")
-        //            || IsEnum32(context, "character_physics", "character_physics")
-        //            || IsEnum16(context, "button_preset")
-        //            || IsEnum16(context, "joystick_preset")
-        //            || IsEnum16(context, "player_color")
-        //            || IsEnum16(context, "player_model_choice")
-        //            || IsEnum16(context, "voice_output_setting")
-        //            || IsEnum16(context, "voice_mask")
-        //            || IsEnum16(context, "subtitle_setting")
-        //            || IsIndex16(context, "script")
-        //            //|| IsIndex16(context, "ai_command_script")
-        //            || IsIndex16(context, "trigger_volume")
-        //            || IsIndex16(context, "cutscene_flag")
-        //            || IsIndex16(context, "cutscene_camera_point")
-        //            || IsIndex16(context, "cutscene_title")
-        //            || IsIndex16(context, "starting_profile")
-        //            || IsIndex16(context, "zone_set")
-        //            || IsIndex16(context, "designer_zone")
-        //            || IsObject_Name(context, "Object_name", "Object_name")
-        //            || IsAI(context, "ai")
-        //            || IsAiLine(context)
-        //            || IsPointReference(context)
-        //            || IsFolder(context)
-        //            || IsDeviceGroup(context)
-        //            || IsTagref(context, "any_tag")
-        //            || IsSID(context)
-        //            || IsString(context);
-        //        return result;
-        //    }
-        //    #endregion
-        //}
     }
 }
