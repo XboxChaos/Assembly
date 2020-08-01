@@ -70,13 +70,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             var bconv = new System.Windows.Media.BrushConverter();
             var srchbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#40F0F0F0");
             srch.MarkerBrush = srchbrsh;
-            
+
             // Background tasks.
             List<Task> tasks = new List<Task>();
-            Task contextTask = Task.Run(() => { LoadContext(); });
-            Task completionTask = contextTask.ContinueWith(t => GenerateCompletionData());
-            tasks.Add(contextTask);
-            tasks.Add(completionTask);
+            tasks.Add(Task.Run(() => { LoadContext(); }));
+
             if(_buildInfo.Name.Contains("Halo 4"))
             {
                 tasks.Add(Task.Run(() => { DecompileHalo4Old(); }));
@@ -85,11 +83,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             {
                 tasks.Add(Task.Run(() => { DecompileToLISP(); }));
             }
-            Task.WhenAll(tasks).ContinueWith(t => 
+            Task.WhenAll(tasks).ContinueWith(t =>
                 {
-                    Dispatcher.Invoke(() => { txtScript.IsReadOnly = false; });
+                    Dispatcher.Invoke(() =>
+                    {
+                        GenerateCompletionData();
+                        txtScript.IsReadOnly = false;
+                    });
                 });
-            //txtScript.IsReadOnly = true;
         }
 
         private void DecompileHalo4Old()
@@ -234,7 +235,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private void LoadContext()
         {
             var loader = new XMLScriptingContextLoader(_cashefile, _streamManager, _buildInfo);
-            _context =  loader.LoadContext(_buildInfo.ScriptingContextPath);
+            string folder = _buildInfo.SeatMappingPath;
+            string filename = Path.GetFileNameWithoutExtension(_cashefile.FileName) + "_Mappings.xml";
+            string unitSeatMappingPath = Path.Combine(folder, filename);
+            _context = loader.LoadContext(_buildInfo.ScriptingContextPath, unitSeatMappingPath);
         }
 
         private void btnExport_Click(object sender, RoutedEventArgs e)
@@ -426,6 +430,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         {
             _completionData.AddRange(_opcodes.GetAllImplementedFunctions().Select(info => new ScriptCompletion(info)));
             _completionData.AddRange(_opcodes.GetAllImplementedGlobals().Select(info => new ScriptCompletion(info)));
+            IEnumerable<ScriptCompletion> objectCompletion = _context.GetAllContextObjects().Select(obj => new ScriptCompletion(obj));
+            IEnumerable<ScriptCompletion> uniqueObjectCompletion = objectCompletion.GroupBy(obj => new { obj.Text, obj.Description }).Select(obj=>obj.First());
+            _completionData.AddRange(uniqueObjectCompletion);
+            _completionData.AddRange(_context.GetAllUnitSeatMappings().Select(mapping => new ScriptCompletion(mapping)));
         }
 
         private void InitializaCompletionWindow()
@@ -458,8 +466,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             {
                 if(char.IsLetterOrDigit(e.Text[0]))
                 {
-                    InitializaCompletionWindow();
-                    _completionWindow.Show();
+                   InitializaCompletionWindow();
+                   _completionWindow.Show();
                 }
             }
         }

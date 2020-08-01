@@ -15,25 +15,27 @@ namespace Blamite.Blam
 		///     Loads a cache file from a stream.
 		/// </summary>
 		/// <param name="reader">The stream to read from.</param>
+		/// <param name="fileName">The file name of the cache file.</param>
 		/// <param name="engineDb">The engine database to use to process the cache file.</param>
 		/// <returns>The cache file that was loaded.</returns>
 		/// <exception cref="ArgumentException">Thrown if the cache file is invalid.</exception>
 		/// <exception cref="NotSupportedException">Thrown if the cache file's target engine is not supported.</exception>
-		public static ICacheFile LoadCacheFile(IReader reader, EngineDatabase engineDb)
+		public static ICacheFile LoadCacheFile(IReader reader, string fileName, EngineDatabase engineDb)
 		{
-			return LoadCacheFile(reader, engineDb, out _);
+			return LoadCacheFile(reader, fileName, engineDb, out _);
 		}
 
 		/// <summary>
 		///     Loads a cache file from a stream.
 		/// </summary>
 		/// <param name="reader">The stream to read from.</param>
+		/// <param name="fileName">The file name of the cache file.</param>
 		/// <param name="engineDb">The engine database to use to process the cache file.</param>
 		/// <param name="engineInfo">On output, this will contain the cache file's engine description.</param>
 		/// <returns>The cache file that was loaded.</returns>
 		/// <exception cref="ArgumentException">Thrown if the cache file is invalid.</exception>
 		/// <exception cref="NotSupportedException">Thrown if the cache file's target engine is not supported.</exception>
-		public static ICacheFile LoadCacheFile(IReader reader, EngineDatabase engineDb, out EngineDescription engineInfo)
+		public static ICacheFile LoadCacheFile(IReader reader, string fileName, EngineDatabase engineDb, out EngineDescription engineInfo)
 		{
 			// Set the reader's endianness based upon the file's header magic
 			reader.SeekTo(0);
@@ -54,10 +56,10 @@ namespace Blamite.Blam
 			switch (version.Engine)
 			{
 				case EngineType.SecondGeneration:
-					return new SecondGenCacheFile(reader, engineInfo, version.BuildString);
+					return new SecondGenCacheFile(reader, engineInfo, fileName, version.BuildString);
 
 				case EngineType.ThirdGeneration:
-					return new ThirdGenCacheFile(reader, engineInfo, version.BuildString);
+					return new ThirdGenCacheFile(reader, engineInfo, fileName, version.BuildString);
 
 				default:
 					throw new NotSupportedException("Engine not supported");

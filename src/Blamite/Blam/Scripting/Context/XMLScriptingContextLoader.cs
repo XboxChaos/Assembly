@@ -9,6 +9,7 @@ using Blamite.Blam.Util;
 using Blamite.IO;
 using Blamite.Util;
 using Blamite.Serialization;
+using System.IO;
 
 namespace Blamite.Blam.Scripting.Context
 {
@@ -25,23 +26,48 @@ namespace Blamite.Blam.Scripting.Context
             _description = engine;
         }
 
-        public ScriptingContextCollection LoadContext(string path)
-        {
-            var document = XDocument.Load(path);
-            return LoadContext(document);
-        }
-
-        public ScriptingContextCollection LoadContext(XDocument document)
+        public ScriptingContextCollection LoadContext(string contextDefinitionPath, string unitSeatMappingPath)
         {
             var result = new ScriptingContextCollection();
+            LoadUnitSeatMappings(unitSeatMappingPath, result);
+            LoadCacheObjects(contextDefinitionPath, result);
+            return result;
+        }
+
+        public void LoadCacheObjects(string path, ScriptingContextCollection collection)
+        {
+            var document = XDocument.Load(path);
+            LoadCacheObjects(document, collection);
+        }
+
+        public void LoadCacheObjects(XDocument document, ScriptingContextCollection collection)
+        {
             var tagElement = document.Element("tags");
             var tags = tagElement.Elements("tag");
             foreach(var tagname in tags)
             {
-                LoadTag(tagname, result);
+                LoadTag(tagname, collection);
             }
+        }
 
-            return result;
+        public void LoadUnitSeatMappings(string path, ScriptingContextCollection context)
+        {
+            XDocument doc = XDocument.Load(path);
+            LoadUnitSeatMappings(doc, context);
+        }
+
+        public void LoadUnitSeatMappings(XDocument document, ScriptingContextCollection context)
+        {
+            var mappings = document.Element("UnitSeatMappings").Elements("Mapping");
+
+            foreach (XElement mapping in mappings)
+            {
+                long index = XMLUtil.GetNumericAttribute(mapping, "Index");
+                long count = XMLUtil.GetNumericAttribute(mapping, "Count");
+                string name = XMLUtil.GetStringAttribute(mapping, "Name");
+                UnitSeatMapping seatMapping = new UnitSeatMapping((short)index, (short)count, name);
+                context.AddUnitSeatMapping(seatMapping);
+            }
         }
 
         private void LoadTag(XElement tagName, ScriptingContextCollection collection)
@@ -58,7 +84,7 @@ namespace Blamite.Blam.Scripting.Context
                         LoadScriptObject(element, collection, reader, tag.MetaLocation.AsOffset());
                     }
                 }
-                else if(element.Name == "wrapper_object")
+                else if(element.Name == "wrapper")
                 {
                     using (var reader = _manager.OpenRead())
                     {
@@ -70,9 +96,7 @@ namespace Blamite.Blam.Scripting.Context
 
         private void LoadWrapperBlock(XElement wrapper, ScriptingContextCollection collection, IReader reader, int baseOffset)
         {
-            //string objectName = XMLUtil.GetStringAttribute(wrapper, "name");
             long offset = XMLUtil.GetNumericAttribute(wrapper, "offset");
-            //long size = XMLUtil.GetNumericAttribute(wrapper, "size");
 
             StructureLayout blockLayout = _description.Layouts.GetLayout("tag block");
             reader.SeekTo(baseOffset + offset);
@@ -91,13 +115,12 @@ namespace Blamite.Blam.Scripting.Context
         {
             string objectName = XMLUtil.GetStringAttribute(scriptObject, "name");
             long offset = XMLUtil.GetNumericAttribute(scriptObject, "offset");
-            //long size = XMLUtil.GetNumericAttribute(scriptObject, "size");
 
             XElement nameElement = scriptObject.Element("name");
             long nameOffset = XMLUtil.GetNumericAttribute(nameElement, "offset");
             string nameType = XMLUtil.GetStringAttribute(nameElement, "type");
 
-            var children = scriptObject.Elements("child_object");
+            var children = scriptObject.Elements("child");
 
             StructureLayout blockLayout = _description.Layouts.GetLayout("tag block");
             reader.SeekTo(baseOffset + offset);
@@ -107,15 +130,9 @@ namespace Blamite.Blam.Scripting.Context
             long expandedPointer = _cache.PointerExpander.Expand(blockPointer);
             StructureLayout objectLayout = GenerateObjectLayout(scriptObject);
             StructureValueCollection[] objectData = TagBlockReader.ReadTagBlock(reader, blockCount, expandedPointer, objectLayout, _cache.MetaArea);
-            var objects = objectData.Select((obj, index) => ValueCollectionToContextObject(reader, obj, index, children));
+            ScriptingContextObject[] objects = objectData.Select((obj, index) => ValueCollectionToContextObject(reader, obj, index, objectName, false, children)).ToArray();
 
-            ScriptingContextBlock result = new ScriptingContextBlock();
-            result.Name = objectName;
-            foreach(var obj in objects)
-            {
-                result.AddObject(obj);
-            }
-
+            ScriptingContextBlock result = new ScriptingContextBlock(objectName, objects);
             collection.AddObjectGroup(result);
         }
 
@@ -127,7 +144,7 @@ namespace Blamite.Blam.Scripting.Context
             XElement nameElement = scriptObject.Element("name");
             long nameOffset = XMLUtil.GetNumericAttribute(nameElement, "offset");
             string nameType = XMLUtil.GetStringAttribute(nameElement, "type");
-            var children = scriptObject.Elements("child_object");
+            var children = scriptObject.Elements("child");
 
             StructureLayout result = new StructureLayout((int)size);
 
@@ -158,24 +175,11 @@ namespace Blamite.Blam.Scripting.Context
             return result;
         }
 
-        private ScriptingContextObject ValueCollectionToContextObject(IReader reader, StructureValueCollection collection, int index, IEnumerable<XElement> childElements)
+        private ScriptingContextObject ValueCollectionToContextObject(IReader reader, StructureValueCollection collection, int index, string group, bool isChild, IEnumerable<XElement> childElements)
         {
-            ScriptingContextObject result = new ScriptingContextObject();
+            ScriptingContextObject result = new ScriptingContextObject(GetNameFromCollection(collection), index, group, isChild);
 
-            if(collection.HasString("name"))
-            {
-                result.Name = collection.GetString("name");
-            }
-            else if(collection.HasInteger("name"))
-            {
-                result.Name = _cache.StringIDs.GetString((int)collection.GetInteger("name"));
-            }
-            else
-            {
-                throw new Exception("A scripting context object didn't have a valid name attribute.");
-            }
-            result.Index = index;
-
+            // Handle children blocks.
             foreach(var element in childElements)
             {
                 string childName = XMLUtil.GetStringAttribute(element, "name");
@@ -188,39 +192,35 @@ namespace Blamite.Blam.Scripting.Context
                 var childData = TagBlockReader.ReadTagBlock(reader, blockCount, expandedPointer, layout, _cache.MetaArea);
 
                 // Create the child object block.
-                ScriptingContextBlock child = new ScriptingContextBlock();
-                child.Name = childName;
-
-                for(int i = 0; i<childData.Length; i++)
-                {
-                    string name;
-                    if (childData[i].HasString("name"))
-                    {
-                        name = childData[i].GetString("name");
-                    }
-                    else if (childData[i].HasInteger("name"))
-                    {
-                        var sid = new StringID(childData[i].GetInteger("name"));
-                        name = _cache.StringIDs.GetString(sid).ToLowerInvariant();
-                        if (name is null)
-                        {
-                            throw new Exception("Failed to retrieve the Name StringID for a scripting context object.");
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception("A scripting context object didn't have a valid name attribute.");
-                    }
-
-                    ScriptingContextObject childObject = new ScriptingContextObject
-                    {
-                        Name = name,
-                        Index = i
-                    };
-                    child.AddObject(childObject);
-                }
-                result.AddChildObject(child);
+                var test = childData.Select((data, index) => new ScriptingContextObject(GetNameFromCollection(data), index, childName, true));
+                ScriptingContextBlock child = new ScriptingContextBlock(childName, test);
+                result.AddChildBlock(child);
             }
+            return result;
+        }
+
+        private string GetNameFromCollection(StructureValueCollection collection)
+        {
+            string result;
+            if (collection.HasString("name"))
+            {
+                result = collection.GetString("name");
+            }
+            else if (collection.HasInteger("name"))
+            {
+                var sid = new StringID(collection.GetInteger("name"));
+                result = _cache.StringIDs.GetString(sid).ToLowerInvariant();
+            }
+            else
+            {
+                throw new Exception("A scripting context object didn't have a valid name attribute.");
+            }
+
+            if (result is null || result == "")
+            {
+                throw new Exception("Failed to retrieve the Name for a scripting context object.");
+            }
+
             return result;
         }
     }

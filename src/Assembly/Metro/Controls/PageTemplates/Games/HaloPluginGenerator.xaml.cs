@@ -373,7 +373,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				App.AssemblyStorage.AssemblySettings.DefaultDatabase.FindEngineByVersion(versionInfo.BuildString);
 
 			return
-				new KeyValuePair<ICacheFile, EngineDescription>(new ThirdGenCacheFile(reader, buildInfo, versionInfo.BuildString),
+				new KeyValuePair<ICacheFile, EngineDescription>(new ThirdGenCacheFile(reader, buildInfo, path, versionInfo.BuildString),
 					buildInfo);
 		}
 

@@ -8,25 +8,34 @@ namespace Blamite.Blam.Scripting.Context
 {
     public class ScriptingContextBlock
     {
-        private readonly Dictionary<string, ScriptingContextObject> _objects = new Dictionary<string, ScriptingContextObject>();
+        private readonly Lookup<string, ScriptingContextObject> _objects;
 
         public string Name { get; set; }
 
-        public void AddObject(ScriptingContextObject obj)
+        public ScriptingContextBlock(string name, IEnumerable<ScriptingContextObject> objects)
         {
-            if(_objects.ContainsKey(obj.Name))
-            {
-                throw new InvalidOperationException($"The context group {Name} has multiple definitions for the name {obj.Name}.");
-            }
-            else
-            {
-                _objects.Add(obj.Name, obj);
-            }
+            Name = name;
+            _objects = (Lookup<string, ScriptingContextObject>)objects.ToLookup(obj => obj.Name, obj => obj);
         }
 
-        public bool TryGetObject(string name, out ScriptingContextObject obj)
+        public IEnumerable<ScriptingContextObject> GetObjects(string name)
         {
-            return _objects.TryGetValue(name, out obj);
+            return _objects[name];
         }
+
+        public IEnumerable<ScriptingContextObject> GetAllObjects()
+        {
+            List<ScriptingContextObject> result = new List<ScriptingContextObject>();
+            IEnumerable<ScriptingContextObject> values = _objects.SelectMany(b => b);
+            result.AddRange(values);
+
+            foreach(var obj in values)
+            {
+                result.AddRange(obj.GetAllChildObjects());
+            }
+
+            return result;
+        }
+
     }
 }

@@ -25,8 +25,9 @@ namespace Blamite.Blam.SecondGen
 		private Endian _endianness;
 		private EffectInterop _effects;
 
-		public SecondGenCacheFile(IReader reader, EngineDescription buildInfo, string buildString)
+		public SecondGenCacheFile(IReader reader, EngineDescription buildInfo, string fileName, string buildString)
 		{
+			FileName = fileName;
 			_endianness = reader.Endianness;
 			_buildInfo = buildInfo;
 			_segmenter = new FileSegmenter(buildInfo.SegmentAlignment);
@@ -41,6 +42,8 @@ namespace Blamite.Blam.SecondGen
 			WriteHeader(stream);
 			// TODO: Write the tag table
 		}
+
+		public string FileName { get; private set; }
 
 		public int HeaderSize
 		{

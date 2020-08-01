@@ -280,7 +280,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
 						resourceStream =
 							File.OpenRead(resourceCachePath);
-						resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, Endian.BigEndian), _buildInfo,
+						resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, Endian.BigEndian), _buildInfo, resourceCachePath,
 							_cache.BuildString);
 					}
 					

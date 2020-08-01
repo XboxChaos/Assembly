@@ -18,7 +18,17 @@ namespace Blamite.Blam.Scripting.Context
 
         public bool HasChildren { get { return _children.Count > 0; } }
 
-        public void AddChildObject(ScriptingContextBlock child)
+        public bool IsChild { get; set; }
+
+        public ScriptingContextObject(string name, int index, string group, bool isChild)
+        {
+            Name = name;
+            Index = index;
+            ObjectGroup = group;
+            IsChild = isChild;
+        }
+
+        public void AddChildBlock(ScriptingContextBlock child)
         {
             if (_children.ContainsKey(child.Name))
             {
@@ -30,9 +40,19 @@ namespace Blamite.Blam.Scripting.Context
             }
         }
 
-        public bool TryGetChildObject(string name, out ScriptingContextBlock child)
+        public bool TryGetChildBlock(string name, out ScriptingContextBlock child)
         {
             return _children.TryGetValue(name, out child);
+        }
+
+        public IEnumerable<ScriptingContextObject> GetAllChildObjects()
+        {
+            List<ScriptingContextObject> result = new List<ScriptingContextObject>();
+            foreach(ScriptingContextBlock block in _children.Values)
+            {
+                result.AddRange(block.GetAllObjects());
+            }
+            return result;
         }
     }
 }
