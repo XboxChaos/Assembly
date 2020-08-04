@@ -25,6 +25,10 @@ using System.Windows.Controls;
 using System.Xml.Linq;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
+using ICSharpCode.AvalonEdit.Document;
+using Assembly.Helpers.CodeCompletion.Scripting;
+using System.Threading;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 {
@@ -44,8 +48,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private Action _metaRefresh;
         private CompletionWindow _completionWindow = null;
         private ScriptingContextCollection _context;
-        private readonly List<ICompletionData> _completionData = new List<ICompletionData>();
+        private CancellationTokenSource _searchToken;
+        private Regex _scriptRegex;
+        private Regex _globalsRegex;
+        private IEnumerable<ICompletionData> _staticCompletionData = new ICompletionData[0];
+        private IEnumerable<ICompletionData> _dynamicScriptCompletionData = new ICompletionData[0];
+        private IEnumerable<ICompletionData> _dynamicGlobalCompletionData = new ICompletionData[0];
+        private bool _loaded = false;
 
+        // Todo: Simplify constructor. Remove unnecessary parameters.
         public ScriptEditor(Action metaRefresh, EngineDescription buildInfo, IScriptFile scriptFile, IStreamManager streamManager, ICacheFile casheFile, string casheName, Endian endian)
         {
             _endian = endian;
@@ -64,36 +75,193 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             txtScript.IsReadOnly = true;
 
             txtScript.TextArea.TextEntering += txtScript_TextArea_TextEntering;
+            txtScript.TextArea.TextEntered += txtScript_TextArea_TextEntered;
             App.AssemblyStorage.AssemblySettings.PropertyChanged += Settings_SettingsChanged;
+            txtScript.TextArea.Document.Changed += EditorTextChanged;
             SetHighlightColor();
             SearchPanel srch = SearchPanel.Install(txtScript);
             var bconv = new System.Windows.Media.BrushConverter();
             var srchbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#40F0F0F0");
             srch.MarkerBrush = srchbrsh;
-
-            // Background tasks.
-            List<Task> tasks = new List<Task>();
-            tasks.Add(Task.Run(() => { LoadContext(); }));
-
-            if(_buildInfo.Name.Contains("Halo 4"))
-            {
-                tasks.Add(Task.Run(() => { DecompileHalo4Old(); }));
-            }
-            else
-            {
-                tasks.Add(Task.Run(() => { DecompileToLISP(); }));
-            }
-            Task.WhenAll(tasks).ContinueWith(t =>
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        GenerateCompletionData();
-                        txtScript.IsReadOnly = false;
-                    });
-                });
         }
 
-        private void DecompileHalo4Old()
+
+        #region Event Handlers
+        private void btnExport_Click(object sender, RoutedEventArgs e)
+        {
+            var sfd = new SaveFileDialog();
+            sfd.FileName = $"{_cashefile.InternalName}.hsc";
+            sfd.Title = "Save Script As";
+            sfd.Filter = "BlamScript Files|*.hsc|Text Files|*.txt|All Files|*.*";
+            if (!(bool)sfd.ShowDialog())
+                return;
+
+            File.WriteAllText(sfd.FileName, txtScript.Text);
+            MetroMessageBox.Show("Script Exported", "Script exported successfully.");
+        }
+
+        // Todo: Refactor this mess.
+        private async void btnCompile_Click(object sender, RoutedEventArgs e)
+        {
+            switch (_buildInfo.Name)
+            {
+                case "Halo: Reach":
+                case "Halo: Reach MCC":
+                case "Halo: Reach MCC Update 1":
+                case "Halo: Reach MCC Update 2":
+                    bool saved = false;
+                    string folder = "Compiler";
+                    if (!Directory.Exists(folder))
+                        Directory.CreateDirectory(folder);
+                    string name = "compilation.log";
+                    string filePath = Path.Combine(folder, name);
+
+                    using (StreamWriter sw = File.CreateText(filePath))
+                    {
+                        Logger log = new Logger(sw);
+                        string hsc = txtScript.Text;
+                        var progress = new Progress<int>(v =>
+                        {
+                            progressBar.Value = v;
+
+                        });
+                        try
+                        {
+
+                            DateTime start = DateTime.Now;
+                            Task<ScriptData> task = Task.Run(() => CompileScripts(hsc, progress, log));
+                            await task.ContinueWith(t =>
+                            {
+                                ScriptData data = t.Result;
+
+                                DateTime end = DateTime.Now;
+                                TimeSpan duration = end.Subtract(start);
+
+                                var res = Dispatcher.Invoke<MetroMessageBox.MessageBoxResult>(() => MetroMessageBox.Show("Success!", $"The scripts were successfully compiled in {duration.TotalSeconds} seconds."
+                                    + "\nWARNING: This compiler is not 100% accurate and could corrupt your map.\nPlease backup your map before proceeding."
+                                    + "\n\nDo you want to save the changes to the file?", MetroMessageBox.MessageBoxButtons.YesNo));
+                                if (res == MetroMessageBox.MessageBoxResult.Yes)
+                                {
+                                    using (IStream stream = _streamManager.OpenReadWrite())
+                                    {
+                                        _scriptFile.SaveScripts(data, stream);
+                                        _cashefile.SaveChanges(stream);
+                                    }
+                                    saved = true;
+                                }
+                            });
+                        }
+                        catch (AggregateException ex)
+                        {
+                            ex.Handle((x) =>
+                            {
+                                if (x is CompilerException)
+                                {
+                                    var comEx = x as CompilerException;
+                                    MetroMessageBox.Show("Compiler Exception", $"{comEx.Message}\n\nText: \"{comEx.Text}\"\nLine: {comEx.Line}");
+                                    log.WriteNewLine();
+                                    log.WriteLine("EXCEPTION", $"{comEx.Message}\tText: {comEx.Text}\tLine: {comEx.Line}");
+                                    return true;
+
+                                }
+                                else
+                                {
+                                    MetroMessageBox.Show(x.GetType().ToString(), x.Message);
+                                    return true;
+                                }
+                            });
+                        }
+                    }
+
+                    if (saved)
+                    {
+                        _metaRefresh();
+                        StatusUpdater.Update("Scripts saved");
+                    }
+
+                    progressBar.Value = 0;
+                    break;
+
+
+                default:
+                    MetroMessageBox.Show("Not Implemented", $"Unsupported Game: {_buildInfo.Name}");
+                    break;
+            }
+        }
+
+        private async void EditorLoadedAsync(object sender, RoutedEventArgs e)
+        {
+            if (!_loaded)
+            {
+                // Background tasks.           
+                Task regexTask = Task.Run(() => CreateRegex());
+                Task contextTask = Task.Run(() => LoadContext());
+                Task<IEnumerable<ICompletionData>> completionTask = contextTask.ContinueWith(t => GenerateStaticCompletionData());
+
+                // Use the new decompiler for all games other than H4. H4 doesn't use LISP and has new structures.
+                Task<string> decompilationTask;
+                if (_buildInfo.Name.Contains("Halo 4"))
+                {
+                    decompilationTask = Task.Run(() => DecompileHalo4Old());
+                }
+                else
+                {
+                    decompilationTask = Task.Run(() => DecompileToLISP());
+                }
+
+                // Show the script file once all tasks have been completed. Enable editing. 
+                await Task.WhenAll(regexTask, contextTask, completionTask, decompilationTask);
+                _staticCompletionData = await completionTask;
+                txtScript.Text = await decompilationTask;
+                txtScript.IsReadOnly = false;
+                _loaded = true;
+            }
+        }
+
+        private void EditorGotFocus(object sender, RoutedEventArgs e)
+        {
+            // Start the background search.
+            _searchToken = new CancellationTokenSource();
+            Task backGroundSearch = BackgroundSearchAsync(TimeSpan.FromSeconds(5.0), _searchToken.Token);
+        }
+
+        private void EditorLostFocus(object sender, RoutedEventArgs e)
+        {
+            // Stop the background search.
+            _searchToken.Cancel();
+        }
+
+        private void txtScript_TextArea_TextEntering(object sender, TextCompositionEventArgs e)
+        {
+            if (e.Text.Length > 0 && _completionWindow == null)
+            {
+                if (char.IsLetterOrDigit(e.Text[0]))
+                {
+                    InitializaCompletionWindow();
+                    _completionWindow.Show();
+                }
+            }
+        }
+
+        private void txtScript_TextArea_TextEntered(object sender, TextCompositionEventArgs e)
+        {
+            if (_completionWindow != null && !_completionWindow.CompletionList.ListBox.HasItems)
+            {
+                _completionWindow.Close();
+            }
+        }
+
+        private void Settings_SettingsChanged(object sender, EventArgs e)
+        {
+            // Reset the highlight color in case the theme changed.
+            SetHighlightColor();
+        }
+
+        #endregion
+
+
+        #region Functions
+        private string DecompileHalo4Old()
         {
             DateTime startTime = DateTime.Now;
 
@@ -102,7 +270,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             {
                 scripts = _scriptFile.LoadScripts(reader);
                 if (scripts == null)
-                    return;
+                    return "";
             }
 
             OpcodeLookup opcodes = _buildInfo.ScriptInfo;
@@ -202,10 +370,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             TimeSpan duration = endTime.Subtract(startTime);
             generator.WriteComment("Decompilation finished in ~" + duration.TotalSeconds + "s", code);
 
-            Dispatcher.Invoke(new Action(delegate { txtScript.Text = code.InnerWriter.ToString(); }));
+            return code.InnerWriter.ToString();
         }
 
-        private void DecompileToLISP()
+        private string DecompileToLISP()
         {
             DateTime startTime = DateTime.Now;
 
@@ -214,7 +382,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             {
                 scripts = _scriptFile.LoadScripts(reader);
                 if (scripts == null)
-                    return;
+                    return "";
             }
 
             OpcodeLookup opcodes = _buildInfo.ScriptInfo;
@@ -229,117 +397,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             DateTime endTime = DateTime.Now;
             TimeSpan duration = endTime.Subtract(startTime);
             decompiler.WriteComment("Decompilation finished in ~" + duration.TotalSeconds + "s");
-            Dispatcher.Invoke(new Action(delegate { txtScript.Text = code.InnerWriter.ToString(); }));
+            return code.InnerWriter.ToString();
         }
 
         private void LoadContext()
         {
+            // Load the context and seat mappings.
             var loader = new XMLScriptingContextLoader(_cashefile, _streamManager, _buildInfo);
             string folder = _buildInfo.SeatMappingPath;
             string filename = Path.GetFileNameWithoutExtension(_cashefile.FileName) + "_Mappings.xml";
             string unitSeatMappingPath = Path.Combine(folder, filename);
             _context = loader.LoadContext(_buildInfo.ScriptingContextPath, unitSeatMappingPath);
-        }
-
-        private void btnExport_Click(object sender, RoutedEventArgs e)
-        {
-            var sfd = new SaveFileDialog();
-            sfd.FileName = $"{_cashefile.InternalName}.hsc";
-            sfd.Title = "Save Script As";
-            sfd.Filter = "BlamScript Files|*.hsc|Text Files|*.txt|All Files|*.*";
-            if (!(bool)sfd.ShowDialog())
-                return;
-
-            File.WriteAllText(sfd.FileName, txtScript.Text);
-            MetroMessageBox.Show("Script Exported", "Script exported successfully.");
-        }
-
-        private async void btnCompile_Click(object sender, RoutedEventArgs e)
-        {
-            switch(_buildInfo.Name)
-            {
-                case "Halo: Reach":
-                case "Halo: Reach MCC":
-                case "Halo: Reach MCC Update 1":
-                case "Halo: Reach MCC Update 2":
-                    bool saved = false;
-                    string folder = "Compiler";
-                    if (!Directory.Exists(folder))
-                        Directory.CreateDirectory(folder);
-                    string name = "compilation.log";
-                    string filePath = Path.Combine(folder, name);
-
-                    using (StreamWriter sw = File.CreateText(filePath))
-                    {
-                        Logger log = new Logger(sw);
-                        string hsc = txtScript.Text;
-                        var progress = new Progress<int>(v =>
-                        {
-                            progressBar.Value = v;
-
-                        });
-                        try
-                        {
-
-                            DateTime start = DateTime.Now;
-                            Task<ScriptData> task = Task.Run(() => CompileScripts(hsc, progress, log));
-                            await task.ContinueWith(t =>
-                            {
-                                ScriptData data = t.Result;
-
-                                DateTime end = DateTime.Now;
-                                TimeSpan duration = end.Subtract(start);
-
-                                var res = Dispatcher.Invoke<MetroMessageBox.MessageBoxResult>(() => MetroMessageBox.Show("Success!", $"The scripts were successfully compiled in {duration.TotalSeconds} seconds."
-                                    + "\nWARNING: This compiler is not 100% accurate and could corrupt your map.\nPlease backup your map before proceeding."
-                                    + "\n\nDo you want to save the changes to the file?", MetroMessageBox.MessageBoxButtons.YesNo));
-                                if (res == MetroMessageBox.MessageBoxResult.Yes)
-                                {
-                                    using (IStream stream = _streamManager.OpenReadWrite())
-                                    {
-                                        _scriptFile.SaveScripts(data, stream);
-                                        _cashefile.SaveChanges(stream);
-                                    }
-                                    saved = true;
-                                }
-                            });
-                        }
-                        catch (AggregateException ex)
-                        {
-                            ex.Handle((x) =>
-                            {
-                                if (x is CompilerException)
-                                {
-                                    var comEx = x as CompilerException;
-                                    MetroMessageBox.Show("Compiler Exception", $"{comEx.Message}\n\nText: \"{comEx.Text}\"\nLine: {comEx.Line}");
-                                    log.WriteNewLine();
-                                    log.WriteLine("EXCEPTION", $"{comEx.Message}\tText: {comEx.Text}\tLine: {comEx.Line}");
-                                    return true;
-
-                                }
-                                else
-                                {
-                                    MetroMessageBox.Show(x.GetType().ToString(), x.Message);
-                                    return true;
-                                }
-                            });
-                        }
-                    }
-
-                    if (saved)
-                    {
-                        _metaRefresh();
-                        StatusUpdater.Update("Scripts saved");
-                    }
-
-                    progressBar.Value = 0;
-                    break;
-
-
-                default:
-                    MetroMessageBox.Show("Not Implemented", $"Unsupported Game: {_buildInfo.Name}");
-                    break;
-            }
         }
 
         private ScriptData CompileScripts(string code, IProgress<int> progress, Logger logger)
@@ -360,6 +428,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             }
         }
 
+        // Todo: Remove later.
         private Dictionary<string, UnitSeatMapping> LoadSeatMappings()
         {
             string folder = _buildInfo.SeatMappingPath;
@@ -388,12 +457,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             return result;
         }
 
-        private void Settings_SettingsChanged(object sender, EventArgs e)
-        {
-            // Reset the highlight color in case the theme changed.
-            SetHighlightColor();
-        }
-
+        // Todo: Find out to properly handle themes.
         private void SetHighlightColor()
         {
             var bconv = new System.Windows.Media.BrushConverter();
@@ -420,20 +484,32 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             txtScript.TextArea.SelectionBrush = selbrsh;
         }
 
+        // Is this necessary?
         public void Dispose()
         {
             txtScript.Clear();
             App.AssemblyStorage.AssemblySettings.PropertyChanged -= Settings_SettingsChanged;
         }
 
-        private void GenerateCompletionData()
+        private IEnumerable<ICompletionData> GenerateStaticCompletionData()
         {
-            _completionData.AddRange(_opcodes.GetAllImplementedFunctions().Select(info => new ScriptCompletion(info)));
-            _completionData.AddRange(_opcodes.GetAllImplementedGlobals().Select(info => new ScriptCompletion(info)));
-            IEnumerable<ScriptCompletion> objectCompletion = _context.GetAllContextObjects().Select(obj => new ScriptCompletion(obj));
-            IEnumerable<ScriptCompletion> uniqueObjectCompletion = objectCompletion.GroupBy(obj => new { obj.Text, obj.Description }).Select(obj=>obj.First());
-            _completionData.AddRange(uniqueObjectCompletion);
-            _completionData.AddRange(_context.GetAllUnitSeatMappings().Select(mapping => new ScriptCompletion(mapping)));
+            List<ICompletionData> result = new List<ICompletionData>();
+
+            // Functions.
+            result.AddRange(_opcodes.GetAllImplementedFunctions().Select(info => new FunctionCompletion(info)));
+
+            // Engine globals.
+            result.AddRange(_opcodes.GetAllImplementedGlobals().Select(info => new GlobalCompletion(info, GlobalType.Engine)));
+
+            // Objects.
+            IEnumerable<ObjectCompletion> objectCompletion = _context.GetAllContextObjects().Select(obj => new ObjectCompletion(obj));
+            IEnumerable<ObjectCompletion> uniqueObjectCompletion = objectCompletion.GroupBy(obj => new { obj.Text, obj.Description }).Select(obj => obj.First());
+            result.AddRange(uniqueObjectCompletion);
+
+            // Unit seat mappings.
+            result.AddRange(_context.GetAllUnitSeatMappings().Select(mapping => new ObjectCompletion(mapping)));
+
+            return result;
         }
 
         private void InitializaCompletionWindow()
@@ -447,38 +523,94 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             _completionWindow.WindowStyle = WindowStyle.None;
             _completionWindow.CompletionList.ListBox.Background = System.Windows.Media.Brushes.Transparent;
             _completionWindow.CompletionList.ListBox.Foreground = this.Foreground;
-            _completionWindow.SizeChanged += completionWindow_SizeChanged;
-            _completionWindow.Closed += delegate {
-                _completionWindow = null;
-            };
+            _completionWindow.Closed += delegate { _completionWindow = null; };
+            _completionWindow.CloseAutomatically = true;
+            _completionWindow.CloseWhenCaretAtBeginning = true;
 
             // Add completion data to the list.
             IList<ICompletionData> data = _completionWindow.CompletionList.CompletionData;
-            foreach (ScriptCompletion func in _completionData)
+
+            // Static Items.
+            foreach (var item in _staticCompletionData)
             {
-                data.Add(func);
+                data.Add(item);
+            }
+
+            // Dynamic Script Items.
+            foreach (var item in _dynamicScriptCompletionData)
+            {
+                data.Add(item);
+            }
+
+            // Dynamic Global Items.
+            foreach (var item in _dynamicGlobalCompletionData)
+            {
+                data.Add(item);
             }
         }
 
-        private void txtScript_TextArea_TextEntering(object sender, TextCompositionEventArgs e)
+        private void CreateRegex()
         {
-            if (e.Text.Length > 0 && _completionWindow == null)
+            string valueTypePattern = "(?<ValueType>" + string.Join("|", _opcodes.GetAllValueTypeNames()) + ")";
+            string scriptTypePattern = "(?<ScriptType>" + string.Join("|", _opcodes.GetAllScriptTypeNames()) + ")";
+            string scriptPattern = @"\bscript\s+" + scriptTypePattern + @"\s+" + valueTypePattern + @"\s+(?<Name>\S+)";
+            string globalsPattern = @"\bglobal\s+" + valueTypePattern + @"\s+(?<Name>\S+)";
+            _scriptRegex = new Regex(scriptPattern, RegexOptions.Compiled);
+            _globalsRegex = new Regex(globalsPattern, RegexOptions.Compiled);
+        }
+
+        private async Task FindScriptNamesAsync(string hsc)
+        {
+            IEnumerable<ICompletionData> data = await Task.Run(() => 
+            { 
+                var collection = _scriptRegex.Matches(hsc);
+                var matches = collection.OfType<Match>().ToArray();
+                return matches.Select(match => new ScriptCompletion(match.Groups["Name"].Value, match.Groups["ScriptType"].Value, match.Groups["ValueType"].Value));
+            });
+            _dynamicScriptCompletionData = data;
+        }
+
+        private async Task FindGlobalNamesAsync(string hsc)
+        {
+            IEnumerable<ICompletionData> data = await Task.Run(() =>
             {
-                if(char.IsLetterOrDigit(e.Text[0]))
+                var collection = _globalsRegex.Matches(hsc);
+                var matches = collection.OfType<Match>().ToArray();
+                return matches.Select(match => new GlobalCompletion(match.Groups["Name"].Value, match.Groups["ValueType"].Value, GlobalType.Map));
+            });
+            _dynamicGlobalCompletionData = data;
+        }
+
+        private void EditorTextChanged(object sender, DocumentChangeEventArgs e)
+        {
+            if(e.InsertedText.Text.Contains("script") || e.RemovedText.Text.Contains("script"))
+            {
+                _ = FindScriptNamesAsync(txtScript.Text);
+            }
+            
+            if(e.InsertedText.Text.Contains("global") || e.RemovedText.Text.Contains("global"))
+            {
+                _ = FindGlobalNamesAsync(txtScript.Text);
+            }
+        }
+
+        private async Task BackgroundSearchAsync(TimeSpan interval, CancellationToken cancellationToken)
+        {
+            try
+            {
+                while (true)
                 {
-                   InitializaCompletionWindow();
-                   _completionWindow.Show();
+                    await FindGlobalNamesAsync(txtScript.Text);
+                    await FindScriptNamesAsync(txtScript.Text);
+                    await Task.Delay(interval, cancellationToken);
                 }
             }
-        }
-
-        private void completionWindow_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            CompletionWindow window = sender as CompletionWindow;
-            if(window.CompletionList.ListBox.Items.Count == 0)
+            catch (TaskCanceledException e)
             {
-                window.Close();
+                _searchToken.Dispose();
             }
         }
+
+        #endregion
     }
 }

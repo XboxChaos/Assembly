@@ -141,5 +141,15 @@ namespace Blamite.Blam.Scripting
 		{
 			return _globalLookupByOpcode.Where(f => f.Value.Implemented).Select(f => f.Value);
 		}
-    }
+
+		public IEnumerable<string> GetAllScriptTypeNames()
+        {
+			return _scriptTypeNameLookup.Values;
+        }
+
+		public IEnumerable<string> GetAllValueTypeNames()
+		{
+			return _typeLookupByName.Keys;
+		}
+	}
 }
