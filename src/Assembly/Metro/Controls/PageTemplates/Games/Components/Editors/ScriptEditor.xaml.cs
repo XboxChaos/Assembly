@@ -103,89 +103,80 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         // Todo: Refactor this mess.
         private async void btnCompile_Click(object sender, RoutedEventArgs e)
         {
-            switch (_buildInfo.Name)
+            if(_buildInfo.Name.Contains("Reach"))
             {
-                case "Halo: Reach":
-                case "Halo: Reach MCC":
-                case "Halo: Reach MCC Update 1":
-                case "Halo: Reach MCC Update 2":
-                    bool saved = false;
-                    string folder = "Compiler";
-                    if (!Directory.Exists(folder))
-                        Directory.CreateDirectory(folder);
-                    string name = "compilation.log";
-                    string filePath = Path.Combine(folder, name);
+                bool saved = false;
+                string folder = "Compiler";
+                if (!Directory.Exists(folder))
+                    Directory.CreateDirectory(folder);
+                string name = "ScriptCompiler.log";
+                string filePath = Path.Combine(folder, name);
 
-                    using (StreamWriter sw = File.CreateText(filePath))
+                using (var logStream = File.Create(filePath))
+                {
+                    TextWriterTraceListener traceListener = new TextWriterTraceListener(logStream);
+                    ScriptCompilerLogger logger = new ScriptCompilerLogger(traceListener);
+                    string hsc = txtScript.Text;
+                    var progress = new Progress<int>(v => { progressBar.Value = v; });
+                    try
                     {
-                        Logger log = new Logger(sw);
-                        string hsc = txtScript.Text;
-                        var progress = new Progress<int>(v =>
+                        DateTime start = DateTime.Now;
+                        Task<ScriptData> task = Task.Run(() => CompileScripts(hsc, progress, logger));
+                        await task.ContinueWith(t =>
                         {
-                            progressBar.Value = v;
+                            ScriptData data = t.Result;
 
+                            DateTime end = DateTime.Now;
+                            TimeSpan duration = end.Subtract(start);
+
+                            var res = Dispatcher.Invoke<MetroMessageBox.MessageBoxResult>(() => MetroMessageBox.Show("Success!", $"The scripts were successfully compiled in {duration.TotalSeconds} seconds."
+                                + "\nWARNING: This compiler is not 100% accurate and could corrupt your map.\nPlease backup your map before proceeding."
+                                + "\n\nDo you want to save the changes to the file?", MetroMessageBox.MessageBoxButtons.YesNo));
+                            if (res == MetroMessageBox.MessageBoxResult.Yes)
+                            {
+                                using (IStream stream = _streamManager.OpenReadWrite())
+                                {
+                                    _scriptFile.SaveScripts(data, stream);
+                                    _cashefile.SaveChanges(stream);
+                                }
+                                saved = true;
+                            }
+                            logger.Flush();
                         });
-                        try
-                        {
-
-                            DateTime start = DateTime.Now;
-                            Task<ScriptData> task = Task.Run(() => CompileScripts(hsc, progress, log));
-                            await task.ContinueWith(t =>
-                            {
-                                ScriptData data = t.Result;
-
-                                DateTime end = DateTime.Now;
-                                TimeSpan duration = end.Subtract(start);
-
-                                var res = Dispatcher.Invoke<MetroMessageBox.MessageBoxResult>(() => MetroMessageBox.Show("Success!", $"The scripts were successfully compiled in {duration.TotalSeconds} seconds."
-                                    + "\nWARNING: This compiler is not 100% accurate and could corrupt your map.\nPlease backup your map before proceeding."
-                                    + "\n\nDo you want to save the changes to the file?", MetroMessageBox.MessageBoxButtons.YesNo));
-                                if (res == MetroMessageBox.MessageBoxResult.Yes)
-                                {
-                                    using (IStream stream = _streamManager.OpenReadWrite())
-                                    {
-                                        _scriptFile.SaveScripts(data, stream);
-                                        _cashefile.SaveChanges(stream);
-                                    }
-                                    saved = true;
-                                }
-                            });
-                        }
-                        catch (AggregateException ex)
-                        {
-                            ex.Handle((x) =>
-                            {
-                                if (x is CompilerException)
-                                {
-                                    var comEx = x as CompilerException;
-                                    MetroMessageBox.Show("Compiler Exception", $"{comEx.Message}\n\nText: \"{comEx.Text}\"\nLine: {comEx.Line}");
-                                    log.WriteNewLine();
-                                    log.WriteLine("EXCEPTION", $"{comEx.Message}\tText: {comEx.Text}\tLine: {comEx.Line}");
-                                    return true;
-
-                                }
-                                else
-                                {
-                                    MetroMessageBox.Show(x.GetType().ToString(), x.Message);
-                                    return true;
-                                }
-                            });
-                        }
                     }
-
-                    if (saved)
+                    catch (AggregateException ex)
                     {
-                        _metaRefresh();
-                        StatusUpdater.Update("Scripts saved");
+                        ex.Handle((x) =>
+                        {
+                            logger.Error(x);
+                            logger.Flush();
+                            if (x is CompilerException)
+                            {
+                                var comEx = x as CompilerException;
+                                MetroMessageBox.Show("Compiler Exception", $"{comEx.Message}\n\nText: \"{comEx.Text}\"\nLine: {comEx.Line}");
+                                return true;
+
+                            }
+                            else
+                            {
+                                MetroMessageBox.Show(x.GetType().ToString(), x.Message);
+                                return true;
+                            }
+                        });
                     }
+                }
 
-                    progressBar.Value = 0;
-                    break;
+                if (saved)
+                {
+                    _metaRefresh();
+                    StatusUpdater.Update("Scripts saved");
+                }
 
-
-                default:
-                    MetroMessageBox.Show("Not Implemented", $"Unsupported Game: {_buildInfo.Name}");
-                    break;
+                progressBar.Value = 0;
+            }
+            else
+            {
+                MetroMessageBox.Show("Not Implemented", $"Unsupported Game: {_buildInfo.Name}");
             }
         }
 
@@ -229,6 +220,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         {
             // Stop the background search.
             _searchToken.Cancel();
+            _searchToken.Dispose();
         }
 
         private void txtScript_TextArea_TextEntering(object sender, TextCompositionEventArgs e)
@@ -410,7 +402,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             _context = loader.LoadContext(_buildInfo.ScriptingContextPath, unitSeatMappingPath);
         }
 
-        private ScriptData CompileScripts(string code, IProgress<int> progress, Logger logger)
+        private ScriptData CompileScripts(string code, IProgress<int> progress, ScriptCompilerLogger logger)
         {
             using (IReader reader = _streamManager.OpenRead())
             {
@@ -423,6 +415,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                 ScriptContext scrContext = _scriptFile.LoadContext(reader);
                 Dictionary<string, UnitSeatMapping> seats = LoadSeatMappings();
                  ScriptCompiler compiler = new ScriptCompiler(_cashefile, scrContext, _opcodes, seats, progress, logger);
+                compiler.OutputDebugInfo = true;
                 ParseTreeWalker.Default.Walk(compiler, tree);
                 return compiler.Result();
             }
@@ -607,7 +600,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             }
             catch (TaskCanceledException e)
             {
-                _searchToken.Dispose();
+
             }
         }
 

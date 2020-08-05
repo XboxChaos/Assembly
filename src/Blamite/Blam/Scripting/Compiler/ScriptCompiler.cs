@@ -1,5 +1,7 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
 
@@ -8,8 +10,7 @@ namespace Blamite.Blam.Scripting.Compiler
     public partial class ScriptCompiler : BS_ReachBaseListener
     {
         // debug
-        public bool PrintDebugInfo = true;
-        private readonly Logger _logger;
+        private readonly ScriptCompilerLogger _logger;
 
         // lookups
         private readonly ICacheFile _cacheFile;
@@ -30,6 +31,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         // utility
         private const uint _randomAddress = 0xCDCDCDCD;  // used for expressions where the string address doesn't point to the string table
+        private const int _globalPushIndex = -1;
         private DatumIndex _currentIndex;
         private readonly Stack<int> _openDatums = new Stack<int>();
         private readonly Stack<string> _expectedTypes = new Stack<string>();
@@ -57,7 +59,7 @@ namespace Blamite.Blam.Scripting.Compiler
         private ScriptData _result = null;
 
 
-        public ScriptCompiler(ICacheFile casheFile, ScriptContext context, OpcodeLookup opCodes, Dictionary<string, UnitSeatMapping> seatMappings, IProgress<int> progress, Logger logger)
+        public ScriptCompiler(ICacheFile casheFile, ScriptContext context, OpcodeLookup opCodes, Dictionary<string, UnitSeatMapping> seatMappings, IProgress<int> progress, ScriptCompilerLogger logger)
         {
             _progress = progress;
             _cacheFile = casheFile;
@@ -122,10 +124,9 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void EnterScriptDeclaration(BS_ReachParser.ScriptDeclarationContext context)
         {
-            if(PrintDebugInfo)
+            if(OutputDebugInfo)
             {
-                _logger.WriteLine("SCRIPT", $"Enter: {context.scriptID().GetText()} ,  Line: {GetLineNumber(context)}");
-
+                _logger.Script(context, CompilerContextAction.Enter);
             }
 
             // Create new script object and add it to the table.
@@ -160,10 +161,9 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void ExitScriptDeclaration(BS_ReachParser.ScriptDeclarationContext context)
         {
-            if (PrintDebugInfo)
+            if (OutputDebugInfo)
             {
-                _logger.WriteLine("SCRIPT", $"Exit: {context.scriptID().GetText()} , Line: {GetLineNumber(context)}");
-                _logger.WriteNewLine();
+                _logger.Script(context, CompilerContextAction.Exit);
             }
 
             _parameterLookup.Clear();
@@ -177,9 +177,9 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void EnterGlobalDeclaration(BS_ReachParser.GlobalDeclarationContext context)
         {
-            if (PrintDebugInfo)
+            if (OutputDebugInfo)
             {
-                _logger.WriteLine("GLOBAL", $"Enter: {context.ID().GetText()} , Line: {GetLineNumber(context)}");
+                _logger.Global(context, CompilerContextAction.Enter);
             }
 
             // Create a new Global and add it to the table.
@@ -193,13 +193,12 @@ namespace Blamite.Blam.Scripting.Compiler
 
             _globals.Add(glo);
 
-            if (PrintDebugInfo)
+            if (OutputDebugInfo)
             {
-                _logger.WriteLine("GLOBAL", $"Open: -1");
-                _logger.WriteLine("GLOBAL", $"Type Push: {valueType}");
+                _logger.Information($"A global declaration was detected by the parser. The index {_globalPushIndex} will be opened.");
             }
+            OpenDatum(_globalPushIndex);
             PushTypes(valueType);
-            _openDatums.Push(-1);
         }
 
         /// <summary>
@@ -208,10 +207,9 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void ExitGlobalDeclaration(BS_ReachParser.GlobalDeclarationContext context)
         {
-            if (PrintDebugInfo)
+            if (OutputDebugInfo)
             {
-                _logger.WriteLine("GLOBAL", $"Exit: {context.ID().GetText()}");
-                _logger.WriteNewLine();
+                _logger.Global(context, CompilerContextAction.Exit);
             }
 
             CloseDatum();
@@ -225,9 +223,9 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void EnterCall(BS_ReachParser.CallContext context)
         {
-            if (PrintDebugInfo)
+            if (OutputDebugInfo)
             {
-                _logger.WriteLine("CALL", $"Enter: {context.functionID().GetText()} , Line: {GetLineNumber(context)}");
+                _logger.Call(context, CompilerContextAction.Enter);
             }
 
             LinkDatum();
@@ -256,10 +254,9 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void ExitCall(BS_ReachParser.CallContext context)
         {
-
-            if (PrintDebugInfo)
+            if (OutputDebugInfo)
             {
-                _logger.WriteLine("CALL", $"Exit: {context.functionID().GetText()} , Line: {GetLineNumber(context)}");
+                _logger.Call(context, CompilerContextAction.Exit);
             }
 
             CloseDatum();
@@ -267,9 +264,9 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public override void EnterBranch(BS_ReachParser.BranchContext context)
         {
-            if (PrintDebugInfo)
+            if (OutputDebugInfo)
             {
-                _logger.WriteLine("BRANCH", $"Enter , Line: {GetLineNumber(context)}");
+                _logger.Branch(context, CompilerContextAction.Enter);
             }
 
             LinkDatum();
@@ -290,9 +287,9 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public override void ExitBranch(BS_ReachParser.BranchContext context)
         {
-            if (PrintDebugInfo)
+            if (OutputDebugInfo)
             {
-                _logger.WriteLine("BRANCH", $"Exit , Line: {context.Start.Line}");
+                _logger.Branch(context, CompilerContextAction.Exit);
             }
 
             // Generate the script name.
@@ -327,9 +324,9 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public override void EnterCond(BS_ReachParser.CondContext context)
         {
-            if (PrintDebugInfo)
+            if (OutputDebugInfo)
             {
-                _logger.WriteLine("COND", $"Enter, Line: {GetLineNumber(context)}");
+                _logger.Cond(context, CompilerContextAction.Enter);
             }
 
             // Tell the groups what type to expect.
@@ -345,9 +342,9 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public override void ExitCond(BS_ReachParser.CondContext context)
         {
-            if (PrintDebugInfo)
+            if (OutputDebugInfo)
             {
-                _logger.WriteLine("COND", $"Exit, Line: {GetLineNumber(context)}");
+                _logger.Cond(context, CompilerContextAction.Exit);
             }
 
             // Link to the compiler generated begin call of the last open cond group.
@@ -375,9 +372,9 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public override void EnterCondGroup(BS_ReachParser.CondGroupContext context)
         {
-            if (PrintDebugInfo)
+            if (OutputDebugInfo)
             {
-                _logger.WriteLine("COND GROUP", $"Enter, Line: {GetLineNumber(context)}");
+                _logger.CondGroup(context, CompilerContextAction.Enter);
             }
 
             // Link to the previous expression or cond group.
@@ -422,9 +419,9 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public override void ExitCondGroup(BS_ReachParser.CondGroupContext context)
         {
-            if (PrintDebugInfo)
+            if (OutputDebugInfo)
             {
-                _logger.WriteLine("COND GROUP", $"Exit, Line: {GetLineNumber(context)}");
+                _logger.CondGroup(context, CompilerContextAction.Exit);
             }
 
             // Close the final value expression.
@@ -467,9 +464,9 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public override void EnterGlobalsReference(BS_ReachParser.GlobalsReferenceContext context)
         {
-            if (PrintDebugInfo)
+            if (OutputDebugInfo)
             {
-                _logger.WriteLine("GloRef", $"Enter: {context.GetText()} , Line: {GetLineNumber(context)}");
+                _logger.GlobalReference(context, CompilerContextAction.Enter);
             }
 
             LinkDatum();
@@ -487,9 +484,9 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void EnterLiteral(BS_ReachParser.LiteralContext context)
         {
-            if (PrintDebugInfo)
+            if (OutputDebugInfo)
             {
-                _logger.WriteLine("LITERAL", $"Enter: {context.GetText()} , Line: {GetLineNumber(context)}");
+                _logger.Literal(context, CompilerContextAction.Enter);
             }
 
             LinkDatum();
@@ -599,9 +596,9 @@ namespace Blamite.Blam.Scripting.Compiler
                     {
                         opcode = 0xFFFF;
 
-                        if (PrintDebugInfo)
+                        if (OutputDebugInfo)
                         {
-                            _logger.WriteLine("SET", $"Set Push!");
+                            _logger.Information("The Global belongs to a set call. It's value type will be pushed to the stack.");
                         }
                         // The next parameter must have the same return type as this global
                         PushTypes(_opcodes.GetTypeInfo(expectedTypeOpcode).Name);
@@ -930,6 +927,11 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             foreach(var branch in _generatedBranches)
             {
+                if(OutputDebugInfo)
+                {
+                    _logger.Information($"Generating Branch: {branch.Key}");
+                }
+
                 ushort voidOpcode = _opcodes.GetTypeInfo("void").Opcode;
 
                 // create script entry
