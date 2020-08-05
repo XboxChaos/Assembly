@@ -214,12 +214,12 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <summary>
         /// Pops an index from the Datum stack and nulls the open Datum Index.
         /// </summary>
-        private void CloseDatum()
+        public void CloseDatum()
         {
             if (_openDatums.Count > 0)
             {
                 int index = _openDatums.Pop();
-                if (OutputDebugInfo)
+                if (_debug)
                 {
                     _logger.Datum(index, CompilerDatumAction.Close);
                 }
@@ -236,12 +236,12 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <summary>
         /// Pops an index from the Datum stack and links the open Datum index to the current expression.
         /// </summary>
-        private void LinkDatum()
+        public void LinkDatum()
         {
             if (_openDatums.Count > 0)
             {
                 int index = _openDatums.Pop();
-                if (OutputDebugInfo)
+                if (_debug)
                 {
                     _logger.Datum(index, CompilerDatumAction.Link);
                 }
@@ -257,10 +257,10 @@ namespace Blamite.Blam.Scripting.Compiler
             }
         }
 
-        private void OpenDatum(int index)
+        public void OpenDatum(int index)
         {
             _openDatums.Push(index);
-            if (OutputDebugInfo)
+            if (_debug)
             {
                 _logger.Datum(index, CompilerDatumAction.Open);
             }
@@ -273,7 +273,7 @@ namespace Blamite.Blam.Scripting.Compiler
         private void OpenDatumAddExpressionIncrement(ScriptExpression expression)
         {
             int openIndex = _expressions.Count;
-            if (OutputDebugInfo)
+            if (_debug)
             {
                 _logger.Datum(openIndex, CompilerDatumAction.Open);
             }
@@ -310,61 +310,14 @@ namespace Blamite.Blam.Scripting.Compiler
             return (ushort)salt;
         }
 
-        private void PushType(string type)
-        {
-            _expectedTypes.Push(type);
-            if (OutputDebugInfo)
-            {
-                int index = _expectedTypes.Count - 1;
-                _logger.TypeStack(type, index, StackAction.Push);
-            }
-        }
-
-        private void PushTypes(params string[] types)
-        {
-            var reverse = types.Reverse();
-            foreach(string type in reverse)
-            {
-                PushType(type);
-            }
-        }     
-
-        private void PushTypes(string type, int count)
-        {
-            for(int i = 0; i < count; i++)
-            {
-                PushType(type);
-            }
-        }
-
         private void EqualityPush(string type)
         {
             if(_equality)
             {
-                PushTypes(type);
+                _expectedTypes.PushType(type);
                 _equality = false;
             }
         }
-
-        private string PopType()
-        {
-            if(_expectedTypes.Count > 0)
-            {
-                string type = _expectedTypes.Pop();
-                if (OutputDebugInfo)
-                {
-                    int index = _expectedTypes.Count;
-                    _logger.TypeStack(type, index, StackAction.Pop);
-                }
-                return type;
-            }
-            else
-            {
-                throw new InvalidOperationException("Failed to pop a value type. The expected types stack was empty.");
-            }
-        }
-
-
 
         private void ReportProgress()
         {

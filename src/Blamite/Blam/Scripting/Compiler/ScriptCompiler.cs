@@ -11,6 +11,7 @@ namespace Blamite.Blam.Scripting.Compiler
     {
         // debug
         private readonly ScriptCompilerLogger _logger;
+        private readonly bool _debug;
 
         // lookups
         private readonly ICacheFile _cacheFile;
@@ -34,7 +35,7 @@ namespace Blamite.Blam.Scripting.Compiler
         private const int _globalPushIndex = -1;
         private DatumIndex _currentIndex;
         private readonly Stack<int> _openDatums = new Stack<int>();
-        private readonly Stack<string> _expectedTypes = new Stack<string>();
+        private readonly TypeStack _expectedTypes;
 
         // branching
         private ushort _branchBoolIndex = 0;
@@ -59,7 +60,7 @@ namespace Blamite.Blam.Scripting.Compiler
         private ScriptData _result = null;
 
 
-        public ScriptCompiler(ICacheFile casheFile, ScriptContext context, OpcodeLookup opCodes, Dictionary<string, UnitSeatMapping> seatMappings, IProgress<int> progress, ScriptCompilerLogger logger)
+        public ScriptCompiler(ICacheFile casheFile, ScriptContext context, OpcodeLookup opCodes, Dictionary<string, UnitSeatMapping> seatMappings, IProgress<int> progress, ScriptCompilerLogger logger, bool debug)
         {
             _progress = progress;
             _cacheFile = casheFile;
@@ -67,6 +68,8 @@ namespace Blamite.Blam.Scripting.Compiler
             _opcodes = opCodes;
             _seatMappings = seatMappings;
             _logger = logger;
+            _debug = debug;
+            _expectedTypes = new TypeStack(logger, _debug);
 
             ushort intialSalt = SaltGenerator.GetSalt("script node");
             _currentIndex = new DatumIndex(intialSalt, 0);
@@ -76,8 +79,6 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             return _result;
         }
-
-        public bool OutputDebugInfo { get; set; } = false;
 
         /// <summary>
         /// Generate script and global lookups.
@@ -124,7 +125,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void EnterScriptDeclaration(BS_ReachParser.ScriptDeclarationContext context)
         {
-            if(OutputDebugInfo)
+            if(_debug)
             {
                 _logger.Script(context, CompilerContextAction.Enter);
             }
@@ -145,11 +146,11 @@ namespace Blamite.Blam.Scripting.Compiler
             int expressionCount = context.globalsReference().Count() + context.call().Count() + context.branch().Count() + context.cond().Count();
 
             // The final expression must match the return type of this script.
-            PushTypes(returnType);
+            _expectedTypes.PushType(returnType);
             // The other expressions can be of any type.
             if (expressionCount > 1)
             {
-                PushTypes("void", expressionCount - 1);
+                _expectedTypes.PushTypes("void", expressionCount - 1);
             }
 
             CreateInitialBegin(returnType);
@@ -161,7 +162,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void ExitScriptDeclaration(BS_ReachParser.ScriptDeclarationContext context)
         {
-            if (OutputDebugInfo)
+            if (_debug)
             {
                 _logger.Script(context, CompilerContextAction.Exit);
             }
@@ -177,7 +178,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void EnterGlobalDeclaration(BS_ReachParser.GlobalDeclarationContext context)
         {
-            if (OutputDebugInfo)
+            if (_debug)
             {
                 _logger.Global(context, CompilerContextAction.Enter);
             }
@@ -193,12 +194,12 @@ namespace Blamite.Blam.Scripting.Compiler
 
             _globals.Add(glo);
 
-            if (OutputDebugInfo)
+            if (_debug)
             {
                 _logger.Information($"A global declaration was detected by the parser. The index {_globalPushIndex} will be opened.");
             }
             OpenDatum(_globalPushIndex);
-            PushTypes(valueType);
+            _expectedTypes.PushType(valueType);
         }
 
         /// <summary>
@@ -207,7 +208,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void ExitGlobalDeclaration(BS_ReachParser.GlobalDeclarationContext context)
         {
-            if (OutputDebugInfo)
+            if (_debug)
             {
                 _logger.Global(context, CompilerContextAction.Exit);
             }
@@ -223,7 +224,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void EnterCall(BS_ReachParser.CallContext context)
         {
-            if (OutputDebugInfo)
+            if (_debug)
             {
                 _logger.Call(context, CompilerContextAction.Enter);
             }
@@ -232,7 +233,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
             // Retrieve information from the context.
             string name = context.functionID().GetText();
-            string expectedType = PopType();
+            string expectedType = _expectedTypes.PopType();
             int contextParameterCount = context.expression().Count();
 
             // Handle script references.
@@ -254,7 +255,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void ExitCall(BS_ReachParser.CallContext context)
         {
-            if (OutputDebugInfo)
+            if (_debug)
             {
                 _logger.Call(context, CompilerContextAction.Exit);
             }
@@ -264,13 +265,13 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public override void EnterBranch(BS_ReachParser.BranchContext context)
         {
-            if (OutputDebugInfo)
+            if (_debug)
             {
                 _logger.Branch(context, CompilerContextAction.Enter);
             }
 
             LinkDatum();
-            _ = PopType();    // Just ignore the type for now.
+            _ = _expectedTypes.PopType();    // Just ignore the type for now.
 
             // branch excepts two parameters
             if (context.expression().Count() != 2)
@@ -278,7 +279,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 throw new CompilerException("A branch call had an unexpected number of parameters.", context);
             }
 
-            PushTypes("boolean", "SCRIPTREFERENCE");
+            _expectedTypes.PushTypes("boolean", "SCRIPTREFERENCE");
             FunctionInfo info = _opcodes.GetFunctionInfo("branch").First();
             CreateFunctionCall(info, _opcodes.GetTypeInfo("void").Opcode, GetLineNumber(context));
 
@@ -287,7 +288,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public override void ExitBranch(BS_ReachParser.BranchContext context)
         {
-            if (OutputDebugInfo)
+            if (_debug)
             {
                 _logger.Branch(context, CompilerContextAction.Exit);
             }
@@ -324,13 +325,13 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public override void EnterCond(BS_ReachParser.CondContext context)
         {
-            if (OutputDebugInfo)
+            if (_debug)
             {
                 _logger.Cond(context, CompilerContextAction.Enter);
             }
 
             // Tell the groups what type to expect.
-            _condReturnType = PopType();
+            _condReturnType = _expectedTypes.PopType();
 
             // Is this still necessary?
             //if (_condReturnType == "ANY")
@@ -342,7 +343,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public override void ExitCond(BS_ReachParser.CondContext context)
         {
-            if (OutputDebugInfo)
+            if (_debug)
             {
                 _logger.Cond(context, CompilerContextAction.Exit);
             }
@@ -372,7 +373,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public override void EnterCondGroup(BS_ReachParser.CondGroupContext context)
         {
-            if (OutputDebugInfo)
+            if (_debug)
             {
                 _logger.CondGroup(context, CompilerContextAction.Enter);
             }
@@ -381,8 +382,8 @@ namespace Blamite.Blam.Scripting.Compiler
             LinkDatum();
 
             // push the types of the group members.
-            PushTypes(_condReturnType, context.expression().Count() - 1);
-            PushTypes("boolean");
+            _expectedTypes.PushTypes(_condReturnType, context.expression().Count() - 1);
+            _expectedTypes.PushType("boolean");
 
             var ifInfo = _opcodes.GetFunctionInfo("if")[0];
             var compilerIf = new ScriptExpression
@@ -419,7 +420,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public override void ExitCondGroup(BS_ReachParser.CondGroupContext context)
         {
-            if (OutputDebugInfo)
+            if (_debug)
             {
                 _logger.CondGroup(context, CompilerContextAction.Exit);
             }
@@ -464,13 +465,13 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public override void EnterGlobalsReference(BS_ReachParser.GlobalsReferenceContext context)
         {
-            if (OutputDebugInfo)
+            if (_debug)
             {
                 _logger.GlobalReference(context, CompilerContextAction.Enter);
             }
 
             LinkDatum();
-            string expectedType = PopType();
+            string expectedType = _expectedTypes.PopType();
 
             if (!IsGlobalsReference(expectedType, context))
             {
@@ -484,7 +485,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void EnterLiteral(BS_ReachParser.LiteralContext context)
         {
-            if (OutputDebugInfo)
+            if (_debug)
             {
                 _logger.Literal(context, CompilerContextAction.Enter);
             }
@@ -492,7 +493,7 @@ namespace Blamite.Blam.Scripting.Compiler
             LinkDatum();
 
             string text = context.GetText();
-            string expectedType = PopType();
+            string expectedType = _expectedTypes.PopType();
 
             // Handle "none" expressions. The Value field of ai_line expressions stores their string offset.
             // Therefore the Value is not -1 if the expression is "none".
@@ -596,12 +597,12 @@ namespace Blamite.Blam.Scripting.Compiler
                     {
                         opcode = 0xFFFF;
 
-                        if (OutputDebugInfo)
+                        if (_debug)
                         {
                             _logger.Information("The Global belongs to a set call. It's value type will be pushed to the stack.");
                         }
                         // The next parameter must have the same return type as this global
-                        PushTypes(_opcodes.GetTypeInfo(expectedTypeOpcode).Name);
+                        _expectedTypes.PushType(_opcodes.GetTypeInfo(expectedTypeOpcode).Name);
                         _set = false;
                     }
                 }
@@ -660,7 +661,7 @@ namespace Blamite.Blam.Scripting.Compiler
             if (expectedParameterCount > 0)
             {
                 string[] parameterTypes = info.Parameters.Select(p=> p.ReturnType).ToArray();
-                PushTypes(parameterTypes);
+                _expectedTypes.PushTypes(parameterTypes);
             }
 
             // Create a script reference node.
@@ -790,7 +791,7 @@ namespace Blamite.Blam.Scripting.Compiler
                     throw new CompilerException($"Failed to push function parameters for function \"{context.functionID().GetText()}\". Mismatched counts. Expected: \"{expectedParamCount}\" Encountered: \"{contextParameterCount}\".", context);
 
                 }
-                PushTypes(info.ParameterTypes);
+                _expectedTypes.PushTypes(info.ParameterTypes);
             }
             // TODO: Throw exceptions if a wrong number of parameters is detected.
             #region special functions
@@ -801,81 +802,81 @@ namespace Blamite.Blam.Scripting.Compiler
                     case "Begin":
                         if (info.Name.Contains("random"))
                         {
-                            PushTypes(expectedReturnType, contextParameterCount);
+                            _expectedTypes.PushTypes(expectedReturnType, contextParameterCount);
 
                         }
                         else
                         {
                             // the last evaluated expression.
-                            PushTypes(expectedReturnType);
-                            PushTypes("void", contextParameterCount - 1);
+                            _expectedTypes.PushType(expectedReturnType);
+                            _expectedTypes.PushTypes("void", contextParameterCount - 1);
                         }
                         break;
 
                     case "BeginCount":
-                        PushTypes(expectedReturnType, contextParameterCount - 1);
-                        PushTypes("long");
+                        _expectedTypes.PushTypes(expectedReturnType, contextParameterCount - 1);
+                        _expectedTypes.PushType("long");
                         break;
 
                     case "If":
                         if(expectedReturnType == "ANY")
                         {
-                            PushTypes("void", contextParameterCount - 1);
+                            _expectedTypes.PushTypes("void", contextParameterCount - 1);
                         }
                         else
                         {
-                            PushTypes(expectedReturnType, contextParameterCount - 1);
+                            _expectedTypes.PushTypes(expectedReturnType, contextParameterCount - 1);
                         }
-                        PushTypes("boolean");
+                        _expectedTypes.PushType("boolean");
                         break;
 
                     case "Cond":
                         throw new CompilerException("A cond call was not regognized by the parser.", context);
 
                     case "Set":
-                        PushTypes("GLOBALREFERENCE");
+                        _expectedTypes.PushType("GLOBALREFERENCE");
                         _set = true;
                         break;
 
                     case "Logical":
-                        PushTypes("boolean", contextParameterCount);
+                        _expectedTypes.PushTypes("boolean", contextParameterCount);
                         break;
 
                     case "Arithmetic":
-                        PushTypes("real", contextParameterCount);
+                        _expectedTypes.PushTypes("real", contextParameterCount);
                         break;
 
                     case "Equality":
                     case "Inequality":
-                        PushTypes("ANY");
+                        _expectedTypes.PushTypes("ANY");
                         _equality = true;
                         break;
 
                     case "Sleep":
                         if (contextParameterCount == 2)
                         {
-                            PushTypes("script");
+                            _expectedTypes.PushType("script");
                         }
-                        PushTypes("short");
+                        _expectedTypes.PushType("short");
                         break;
 
                     case "SleepForever":
                         if (contextParameterCount == 1)
                         {
-                            PushTypes("script");
+                            _expectedTypes.PushType("script");
                         }
                         break;
 
                     case "SleepUntil":
                         if (contextParameterCount == 3)
                         {
-                            PushTypes("short", "long");
+                            _expectedTypes.PushTypes("short", "long");
                         }
                         else if(contextParameterCount == 2)
                         {
-                            PushTypes("short");
+                            _expectedTypes.PushType("short");
                         }
-                        PushTypes("boolean");
+                        _expectedTypes.PushType("boolean");
                         break;
 
                     case "SleepUntilGameTicks":
@@ -885,7 +886,7 @@ namespace Blamite.Blam.Scripting.Compiler
                                 "call with more than two arguments.", context);
                         }
 
-                        PushTypes("boolean", "short");
+                        _expectedTypes.PushTypes("boolean", "short");
                         break;
 
                     case "CinematicSleep":
@@ -895,22 +896,22 @@ namespace Blamite.Blam.Scripting.Compiler
                                 "call with more than one arguments.", context);
                         }
 
-                        PushTypes("short");
+                        _expectedTypes.PushType("short");
                         break;
 
                     case "Wake":
-                        PushTypes("script");
+                        _expectedTypes.PushType("script");
                         break;
 
                     case "Inspect":
-                        PushTypes("ANY");
+                        _expectedTypes.PushType("ANY");
                         break;
 
                     case "Branch":
                         throw new CompilerException("A branch call was not regognized by the parser.", context);
 
                     case "ObjectCast":
-                        PushTypes("object");
+                        _expectedTypes.PushType("object");
                         break;
 
                     case null:
@@ -927,7 +928,7 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             foreach(var branch in _generatedBranches)
             {
-                if(OutputDebugInfo)
+                if(_debug)
                 {
                     _logger.Information($"Generating Branch: {branch.Key}");
                 }

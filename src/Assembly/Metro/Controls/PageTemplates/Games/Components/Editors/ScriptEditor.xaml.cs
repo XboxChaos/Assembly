@@ -414,8 +414,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                 IParseTree tree = parser.hsc();
                 ScriptContext scrContext = _scriptFile.LoadContext(reader);
                 Dictionary<string, UnitSeatMapping> seats = LoadSeatMappings();
-                 ScriptCompiler compiler = new ScriptCompiler(_cashefile, scrContext, _opcodes, seats, progress, logger);
-                compiler.OutputDebugInfo = true;
+                 ScriptCompiler compiler = new ScriptCompiler(_cashefile, scrContext, _opcodes, seats, progress, logger, true);
                 ParseTreeWalker.Default.Walk(compiler, tree);
                 return compiler.Result();
             }
