@@ -115,6 +115,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_a = a;
 			_b = b;
 			_c = c;
+			_d = d;
 		}
 
 		public string Type
