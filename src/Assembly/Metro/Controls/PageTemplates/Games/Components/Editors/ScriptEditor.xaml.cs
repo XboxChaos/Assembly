@@ -58,7 +58,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private IEnumerable<ICompletionData> _dynamicScriptCompletionData = new ICompletionData[0];
         private IEnumerable<ICompletionData> _dynamicGlobalCompletionData = new ICompletionData[0];
         private bool _loaded = false;
-        private readonly bool _oldSyntax;
+        private readonly bool _compilationSupported;
 
         // Todo: Simplify constructor. Remove unnecessary parameters.
         public ScriptEditor(Action metaRefresh, EngineDescription buildInfo, IScriptFile scriptFile, IStreamManager streamManager, ICacheFile casheFile, string casheName, Endian endian)
@@ -74,14 +74,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             _showInfo = App.AssemblyStorage.AssemblySettings.ShowScriptInfo;
 
             // All games other than H4 use the old blam script syntax. Currently the compiler only supports the old syntax.
-            _oldSyntax = !buildInfo.Name.Contains("Halo 4");
+            _compilationSupported = !buildInfo.Name.Contains("Halo 4") && !(buildInfo.ScriptingContextPath is null);
 
             InitializeComponent();
 
             // Disable user input. Enable it again when all background tasks have been completed.
             txtScript.IsReadOnly = true;
 
-            if(_oldSyntax)
+            // Enable code completion only if the compiler supports this game.
+            if(_compilationSupported)
             {
                 GotFocus += EditorGotFocus;
                 LostFocus += EditorLostFocus;
@@ -199,7 +200,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         {
             if (!_loaded)
             {
-                if(_oldSyntax)
+                if(_compilationSupported)
                 {
                     // Background tasks.      
                     List<Task> tasks = new List<Task>();
