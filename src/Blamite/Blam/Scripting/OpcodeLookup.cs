@@ -142,6 +142,16 @@ namespace Blamite.Blam.Scripting
 			return _globalLookupByOpcode.Where(f => f.Value.Implemented).Select(f => f.Value);
 		}
 
+		public IEnumerable<string> GetAllUniqueFunctionNames()
+        {
+			return _functionLookupByName.Keys;
+        }
+
+		public IEnumerable<string> GetAllUniqueGlobalNames()
+		{
+			return _globalLookupByName.Keys;
+		}
+
 		public IEnumerable<string> GetAllScriptTypeNames()
         {
 			return _scriptTypeNameLookup.Values;

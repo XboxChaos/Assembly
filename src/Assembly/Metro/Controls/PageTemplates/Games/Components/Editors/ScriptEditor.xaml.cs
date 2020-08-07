@@ -3,6 +3,7 @@ using Antlr4.Runtime.Tree;
 using Assembly.Metro.Dialogs;
 using Assembly.Windows;
 using Assembly.Helpers;
+using Assembly.SyntaxHighlighting;
 using Blamite.Blam;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.Scripting.Compiler;
@@ -22,6 +23,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Controls;
+using System.Xml;
 using System.Xml.Linq;
 using System.Diagnostics;
 using System.Linq;
@@ -29,6 +31,7 @@ using System.Text.RegularExpressions;
 using ICSharpCode.AvalonEdit.Document;
 using Assembly.Helpers.CodeCompletion.Scripting;
 using System.Threading;
+using ICSharpCode.AvalonEdit.Highlighting;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 {
@@ -55,6 +58,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private IEnumerable<ICompletionData> _dynamicScriptCompletionData = new ICompletionData[0];
         private IEnumerable<ICompletionData> _dynamicGlobalCompletionData = new ICompletionData[0];
         private bool _loaded = false;
+        private readonly bool _oldSyntax;
 
         // Todo: Simplify constructor. Remove unnecessary parameters.
         public ScriptEditor(Action metaRefresh, EngineDescription buildInfo, IScriptFile scriptFile, IStreamManager streamManager, ICacheFile casheFile, string casheName, Endian endian)
@@ -69,20 +73,31 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             _casheName = casheName;
             _showInfo = App.AssemblyStorage.AssemblySettings.ShowScriptInfo;
 
+            // All games other than H4 use the old blam script syntax. Currently the compiler only supports the old syntax.
+            _oldSyntax = !buildInfo.Name.Contains("Halo 4");
+
             InitializeComponent();
 
             // Disable user input. Enable it again when all background tasks have been completed.
             txtScript.IsReadOnly = true;
 
-            txtScript.TextArea.TextEntering += txtScript_TextArea_TextEntering;
-            txtScript.TextArea.TextEntered += txtScript_TextArea_TextEntered;
+            if(_oldSyntax)
+            {
+                GotFocus += EditorGotFocus;
+                LostFocus += EditorLostFocus;
+                txtScript.TextArea.TextEntering += EditorTextEntering;
+                txtScript.TextArea.TextEntered += EditorTextEntered;
+                txtScript.TextArea.Document.Changed += EditorTextChanged;
+            }
+
             App.AssemblyStorage.AssemblySettings.PropertyChanged += Settings_SettingsChanged;
-            txtScript.TextArea.Document.Changed += EditorTextChanged;
             SetHighlightColor();
             SearchPanel srch = SearchPanel.Install(txtScript);
             var bconv = new System.Windows.Media.BrushConverter();
             var srchbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#40F0F0F0");
             srch.MarkerBrush = srchbrsh;
+
+            txtScript.SyntaxHighlighting = LoadSyntaxHighlighting(_opcodes);
         }
 
 
@@ -184,26 +199,28 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         {
             if (!_loaded)
             {
-                // Background tasks.           
-                Task regexTask = Task.Run(() => CreateRegex());
-                Task contextTask = Task.Run(() => LoadContext());
-                Task<IEnumerable<ICompletionData>> completionTask = contextTask.ContinueWith(t => GenerateStaticCompletionData());
-
-                // Use the new decompiler for all games other than H4. H4 doesn't use LISP and has new structures.
-                Task<string> decompilationTask;
-                if (_buildInfo.Name.Contains("Halo 4"))
+                if(_oldSyntax)
                 {
-                    decompilationTask = Task.Run(() => DecompileHalo4Old());
+                    // Background tasks.      
+                    List<Task> tasks = new List<Task>();
+
+                    Task regexTask = Task.Run(() => CreateRegex());
+                    Task<string> decompilationTask = Task.Run(() => DecompileToLISP());
+                    Task contextTask = Task.Run(() => LoadContext());
+                    Task<IEnumerable<ICompletionData>> completionTask = contextTask.ContinueWith(t => GenerateStaticCompletionData());
+                    tasks.Add(regexTask);
+                    tasks.Add(decompilationTask);
+                    tasks.Add(contextTask);
+                    tasks.Add(completionTask);
+
+                    await Task.WhenAll(tasks);
+                    _staticCompletionData = await completionTask;
+                    txtScript.Text = await decompilationTask;
                 }
                 else
                 {
-                    decompilationTask = Task.Run(() => DecompileToLISP());
+                    txtScript.Text = await Task.Run(() => DecompileHalo4Old());
                 }
-
-                // Show the script file once all tasks have been completed. Enable editing. 
-                await Task.WhenAll(regexTask, contextTask, completionTask, decompilationTask);
-                _staticCompletionData = await completionTask;
-                txtScript.Text = await decompilationTask;
                 txtScript.IsReadOnly = false;
                 _loaded = true;
             }
@@ -223,7 +240,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             _searchToken.Dispose();
         }
 
-        private void txtScript_TextArea_TextEntering(object sender, TextCompositionEventArgs e)
+        private void Settings_SettingsChanged(object sender, EventArgs e)
+        {
+            // Reset the highlight color in case the theme changed.
+            SetHighlightColor();
+        }
+
+        private void EditorTextEntering(object sender, TextCompositionEventArgs e)
         {
             if (e.Text.Length > 0 && _completionWindow == null)
             {
@@ -235,7 +258,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             }
         }
 
-        private void txtScript_TextArea_TextEntered(object sender, TextCompositionEventArgs e)
+        private void EditorTextEntered(object sender, TextCompositionEventArgs e)
         {
             if (_completionWindow != null && !_completionWindow.CompletionList.ListBox.HasItems)
             {
@@ -243,10 +266,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             }
         }
 
-        private void Settings_SettingsChanged(object sender, EventArgs e)
+        private void EditorTextChanged(object sender, DocumentChangeEventArgs e)
         {
-            // Reset the highlight color in case the theme changed.
-            SetHighlightColor();
+            if (e.InsertedText.Text.Contains("script") || e.RemovedText.Text.Contains("script"))
+            {
+                _ = FindScriptNamesAsync(txtScript.Text);
+            }
+
+            if (e.InsertedText.Text.Contains("global") || e.RemovedText.Text.Contains("global"))
+            {
+                _ = FindGlobalNamesAsync(txtScript.Text);
+            }
         }
 
         #endregion
@@ -476,6 +506,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             txtScript.TextArea.SelectionBrush = selbrsh;
         }
 
+        private IHighlightingDefinition LoadSyntaxHighlighting(OpcodeLookup lookup)
+        {
+            string filename = "BlamScriptSolarized.xshd";
+            return HighlightLoader.LoadEmbeddedBlamScriptDefinition(filename, _opcodes);
+        }
+
         // Is this necessary?
         public void Dispose()
         {
@@ -571,19 +607,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                 return matches.Select(match => new GlobalCompletion(match.Groups["Name"].Value, match.Groups["ValueType"].Value, GlobalType.Map));
             });
             _dynamicGlobalCompletionData = data;
-        }
-
-        private void EditorTextChanged(object sender, DocumentChangeEventArgs e)
-        {
-            if(e.InsertedText.Text.Contains("script") || e.RemovedText.Text.Contains("script"))
-            {
-                _ = FindScriptNamesAsync(txtScript.Text);
-            }
-            
-            if(e.InsertedText.Text.Contains("global") || e.RemovedText.Text.Contains("global"))
-            {
-                _ = FindGlobalNamesAsync(txtScript.Text);
-            }
         }
 
         private async Task BackgroundSearchAsync(TimeSpan interval, CancellationToken cancellationToken)
