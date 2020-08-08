@@ -8,6 +8,7 @@ using System.Text;
 
 namespace Blamite.Blam.Scripting.Compiler
 {
+    [Serializable]
     public class CompilerException: Exception
     {
         public int Line { get; private set; }

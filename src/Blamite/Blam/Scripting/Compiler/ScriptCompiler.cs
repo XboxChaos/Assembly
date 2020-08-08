@@ -3,6 +3,7 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Blamite.Blam.Scripting.Context;
 using Antlr4.Runtime;
 
 namespace Blamite.Blam.Scripting.Compiler
@@ -16,8 +17,8 @@ namespace Blamite.Blam.Scripting.Compiler
         // lookups
         private readonly ICacheFile _cacheFile;
         private readonly OpcodeLookup _opcodes;
-        private readonly ScriptContext _scriptContext;
-        private readonly Dictionary<string, UnitSeatMapping> _seatMappings;
+        private readonly ScriptingContextCollection _scriptingContext;
+
         // TODO: Change the script lookup from dictionary to lookup.
         private Dictionary<string, ScriptInfo> _scriptLookup = new Dictionary<string, ScriptInfo>();
         private Dictionary<string, GlobalInfo> _mapGlobalsLookup = new Dictionary<string, GlobalInfo>();
@@ -60,13 +61,12 @@ namespace Blamite.Blam.Scripting.Compiler
         private ScriptData _result = null;
 
 
-        public ScriptCompiler(ICacheFile casheFile, ScriptContext context, OpcodeLookup opCodes, Dictionary<string, UnitSeatMapping> seatMappings, IProgress<int> progress, ScriptCompilerLogger logger, bool debug)
+        public ScriptCompiler(ICacheFile casheFile, OpcodeLookup opCodes, ScriptingContextCollection context, IProgress<int> progress, ScriptCompilerLogger logger, bool debug)
         {
             _progress = progress;
             _cacheFile = casheFile;
-            _scriptContext = context;
+            _scriptingContext = context;
             _opcodes = opCodes;
-            _seatMappings = seatMappings;
             _logger = logger;
             _debug = debug;
             _expectedTypes = new TypeStack(logger, _debug);
@@ -527,7 +527,7 @@ namespace Blamite.Blam.Scripting.Compiler
             if (ProcessLiteral(expectedType, context))
                 return;
 
-            throw new CompilerException($"Failed to process \"{text}\".", context);
+            throw new CompilerException($"Failed to process the expression \"{text.Trim('"')}\" with the expected return type \"{expectedType}\".", context);
         }
 
         private bool IsGlobalsReference(string expectedType, ParserRuleContext context)

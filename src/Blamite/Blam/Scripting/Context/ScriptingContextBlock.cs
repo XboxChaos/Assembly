@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,10 @@ namespace Blamite.Blam.Scripting.Context
 
         public string Name { get; set; }
 
+        public IEnumerable<string> ObjectNames {get { return _objects.Select(obj => obj.Key); } }
+
+        public int Count { get { return _objects.Count; } }
+
         public ScriptingContextBlock(string name, IEnumerable<ScriptingContextObject> objects)
         {
             Name = name;
@@ -20,7 +25,14 @@ namespace Blamite.Blam.Scripting.Context
 
         public IEnumerable<ScriptingContextObject> GetObjects(string name)
         {
-            return _objects[name];
+            if(_objects.Contains(name))
+            {
+                return _objects[name];
+            }
+            else
+            {
+                return new ScriptingContextObject[0];
+            }
         }
 
         public IEnumerable<ScriptingContextObject> GetAllObjects()
@@ -36,6 +48,5 @@ namespace Blamite.Blam.Scripting.Context
 
             return result;
         }
-
     }
 }

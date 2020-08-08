@@ -23,7 +23,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Controls;
-using System.Xml;
 using System.Xml.Linq;
 using System.Diagnostics;
 using System.Linq;
@@ -443,9 +442,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                 BS_ReachParser parser = new BS_ReachParser(tokens);
                 parser.BuildParseTree = true;
                 IParseTree tree = parser.hsc();
-                ScriptContext scrContext = _scriptFile.LoadContext(reader);
                 Dictionary<string, UnitSeatMapping> seats = LoadSeatMappings();
-                 ScriptCompiler compiler = new ScriptCompiler(_cashefile, scrContext, _opcodes, seats, progress, logger, true);
+                 ScriptCompiler compiler = new ScriptCompiler(_cashefile, _opcodes, _context, progress, logger, true);
                 ParseTreeWalker.Default.Walk(compiler, tree);
                 return compiler.Result();
             }

@@ -111,12 +111,20 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public void Error(Exception ex)
         {
+            int currentIndentLevel = _listener.IndentLevel;
+            _listener.IndentLevel = 0;
             WriteEntry("ERROR", ex.Message);
+            _listener.IndentLevel = currentIndentLevel;
         }
 
         public void Information(string message)
         {
             WriteEntry("INFORMATION", message);
+        }
+
+        public void Warning(string message)
+        {
+            WriteEntry("WARNING", message);
         }
 
 

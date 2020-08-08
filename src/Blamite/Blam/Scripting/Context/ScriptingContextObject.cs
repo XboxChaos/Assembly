@@ -45,6 +45,18 @@ namespace Blamite.Blam.Scripting.Context
             return _children.TryGetValue(name, out child);
         }
 
+        public IEnumerable<ScriptingContextObject> GetChildObjects(string childBlockName, string name)
+        {
+            if(HasChildren && _children.TryGetValue(childBlockName, out ScriptingContextBlock childBlock))
+            {
+                return childBlock.GetObjects(name);
+            }
+            else
+            {
+                return new ScriptingContextObject[0];
+            }    
+        }
+
         public IEnumerable<ScriptingContextObject> GetAllChildObjects()
         {
             List<ScriptingContextObject> result = new List<ScriptingContextObject>();

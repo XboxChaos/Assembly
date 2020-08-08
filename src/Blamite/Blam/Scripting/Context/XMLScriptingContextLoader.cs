@@ -75,20 +75,23 @@ namespace Blamite.Blam.Scripting.Context
             string group = tagName.Attribute("name").Value;
             ITag tag = _cache.Tags.FindTagByGroup(group);
 
-            foreach(var element in tagName.Elements())
+            if (tag != null)
             {
-                if(element.Name == "script_object")
+                foreach (var element in tagName.Elements())
                 {
-                    using (var reader = _manager.OpenRead())
+                    if (element.Name == "script_object")
                     {
-                        LoadScriptObject(element, collection, reader, tag.MetaLocation.AsOffset());
+                        using (var reader = _manager.OpenRead())
+                        {
+                            LoadScriptObject(element, collection, reader, tag.MetaLocation.AsOffset());
+                        }
                     }
-                }
-                else if(element.Name == "wrapper")
-                {
-                    using (var reader = _manager.OpenRead())
+                    else if (element.Name == "wrapper")
                     {
-                        LoadWrapperBlock(element, collection, reader, tag.MetaLocation.AsOffset());
+                        using (var reader = _manager.OpenRead())
+                        {
+                            LoadWrapperBlock(element, collection, reader, tag.MetaLocation.AsOffset());
+                        }
                     }
                 }
             }
@@ -204,7 +207,7 @@ namespace Blamite.Blam.Scripting.Context
             string result;
             if (collection.HasString("name"))
             {
-                result = collection.GetString("name");
+                result = collection.GetString("name").ToLowerInvariant();
             }
             else if (collection.HasInteger("name"))
             {

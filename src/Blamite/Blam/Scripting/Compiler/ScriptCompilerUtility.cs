@@ -6,6 +6,7 @@ using System.Xml;
 using Blamite.IO;
 using System.IO;
 using System.Configuration;
+using Blamite.Blam.Scripting.Context;
 
 namespace Blamite.Blam.Scripting.Compiler
 {
@@ -329,6 +330,45 @@ namespace Blamite.Blam.Scripting.Compiler
         private short GetLineNumber(ParserRuleContext context)
         {
             return (short)context.Start.Line;
+        }
+
+        private bool TryGetObjectFromContext(out ScriptingContextObject scriptObject, params Tuple<string, string>[] path)
+        {
+            if(_scriptingContext.TryGetObjects(out IEnumerable<ScriptingContextObject> objects, path))
+            {
+                scriptObject = objects.First();
+                if (objects.Count() > 1)
+                {
+                    var lastPathTuple = path.Last();
+                    _logger.Warning($"The block \"{lastPathTuple.Item1}\" contained multiple objects with the name \"{lastPathTuple.Item2}\". " +
+                        $"The first occurence with the index {scriptObject.Index} was chosen by the compiler.");
+                }
+                return true;
+            }
+            else
+            {
+                scriptObject = null;
+                return false;
+            }
+        }
+
+        private bool TryGetChildObjectFromObject(ScriptingContextObject parent, string blockName, string name, out ScriptingContextObject child)
+        {
+            var children = parent.GetChildObjects(blockName, name).ToArray();
+            if(children.Length == 0)
+            {
+                child = null;
+                return false;
+            }
+
+            child = children[0];
+
+            if(children.Length > 1)
+            {
+                _logger.Warning($"The child block \"{blockName}\" contained multiple objects with the name \"{name}\". " +
+                    $"The first occurence with the index {child.Index} was chosen by the compiler.");
+            }
+            return true;
         }
     }
 }
