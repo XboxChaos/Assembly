@@ -265,7 +265,11 @@ namespace Blamite.Blam.Scripting
 						if (expression.Opcode >= _scripts.Scripts.Count)
 							output.Write("import#" + expression.StringValue);
 						else
-							output.Write(_scripts.Scripts[expression.Opcode].Name);
+							output.Write(expression.StringValue); // todo: there are cases (h3 xbox mainmenu's campaign_cam specifically) where the function_name expression's opcode value is +1 from what it should be, and the expression prior has the right index.
+							// the current state of this script code doesnt seem to be good enough to step back so here is the hacky fix implemented in the HO fork.
+
+							//output.Write(_scripts.Scripts[expression.Opcode].Name);
+
 						_nextFunctionIsScript = false;
 					}
 					else
