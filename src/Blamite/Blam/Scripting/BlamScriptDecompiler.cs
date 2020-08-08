@@ -262,6 +262,13 @@ namespace Blamite.Blam.Scripting
 				{
 					_output.WriteLine();
 				}
+				// If a regular call ends on a multiline call, insert a line break and reset the indent. Mostly applies to sleep_until in combination with or.
+				else if(type == BranchType.Call && IsMultilineExpression(exp) && endOfExpression)
+                {
+					_output.WriteLine();
+					_output.Indent = startIndent;
+				}
+
 
 				index++;
 				exp = exp.NextExpression;
@@ -362,7 +369,6 @@ namespace Blamite.Blam.Scripting
 				// indicate that the following expressions are part of a cond construct. 
 				_cond = true;
 				_condIndent = _output.Indent + 1;
-
 
 				_output.WriteLine("(cond");
 
@@ -552,6 +558,7 @@ namespace Blamite.Blam.Scripting
 					else
 					{
 						throw new NotImplementedException($"Unhandled Return Type: \"{actualType.Name}\".");
+						//text = expression.StringValue;
 					}
 						
 					break;
