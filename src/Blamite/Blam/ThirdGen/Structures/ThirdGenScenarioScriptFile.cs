@@ -21,67 +21,33 @@ namespace Blamite.Blam.ThirdGen.Structures
 
         private readonly ITag _scenarioTag;
 		private readonly ITag _scriptTag;
-        private readonly ITag _mdlgTag;
 
-		private ScriptObjectTagBlock _aiObjectWaves;
-		private ScriptObjectTagBlock _aiObjects;
-		private ScriptObjectTagBlock _aiSquadGroups;
-		private ScriptObjectTagBlock _aiSquadSingleLocations;
-        private ScriptObjectTagBlock _aiSquadGroupLocations;
-        private ScriptObjectTagBlock _aiSquads;
-
-		private ScriptObjectTagBlock _cutsceneCameraPoints;
-		private ScriptObjectTagBlock _cutsceneFlags;
-		private ScriptObjectTagBlock _cutsceneTitles;
-		private ScriptObjectTagBlock _deviceGroups;
-		private ScriptObjectTagBlock _objectFolders;
-
-		private ScriptObjectTagBlock _pointSetPoints;
-		private ScriptObjectTagBlock _pointSets;
-		private ScriptObjectTagBlock _referencedObjects;
-		private ScriptObjectTagBlock _startingProfiles;
-		private ScriptObjectTagBlock _triggerVolumes;
-
-		private ScriptObjectTagBlock _zoneSets;
-        private ScriptObjectTagBlock _designerZones;
-        private ScriptObjectTagBlock _aiLines;
-        private ScriptObjectTagBlock _aiLineVariants;
-
-        // For Games before Halo 4
-		public ThirdGenScenarioScriptFile(ITag scenarioTag, ITag scriptTag, ITag mdlgTag, string tagName, FileSegmentGroup metaArea,
-			StringIDSource stringIDs, EngineDescription buildInfo, IPointerExpander expander, MetaAllocator allocator)
-		{
-			_scenarioTag = scenarioTag;
+        // For Games other than Halo 4
+        public ThirdGenScenarioScriptFile(ITag scriptTag, string tagName, FileSegmentGroup metaArea,
+            StringIDSource stringIDs, EngineDescription buildInfo, IPointerExpander expander, MetaAllocator allocator)
+        {
             _scriptTag = scriptTag;
-            _mdlgTag = mdlgTag;
             _metaArea = metaArea;
             _stringIDs = stringIDs;
             _buildInfo = buildInfo;
             _expander = expander;
             _allocator = allocator;
+            Name = tagName.Substring(tagName.LastIndexOf('\\') + 1) + ".hsc";
+        }
 
+        // For Halo 4
+        public ThirdGenScenarioScriptFile(ITag scriptTag, ITag scenarioTag, string tagName, FileSegmentGroup metaArea,
+			StringIDSource stringIDs, EngineDescription buildInfo, IPointerExpander expander, MetaAllocator allocator)
+		{
+			_scenarioTag = scenarioTag;
+            _scriptTag = scriptTag;
+            _metaArea = metaArea;
+            _stringIDs = stringIDs;
+            _buildInfo = buildInfo;
+            _expander = expander;
+            _allocator = allocator;
 			Name = tagName.Substring(tagName.LastIndexOf('\\') + 1) + ".hsc";
-
-			DefineScriptObjectTagBlocks();
 		}
-
-        // For Halo4 and Games thereafter
-		//public ThirdGenScenarioScriptFile(ITag scenarioTag, ITag scriptTag, string tagName, FileSegmentGroup metaArea,
-	 //       StringIDSource stringIDs, EngineDescription buildInfo, IPointerExpander expander, MetaAllocator allocator)
-		//{
-  //          _scenarioTag = scenarioTag;
-  //          _scriptTag = scriptTag;
-  //          _mdlgTag = null;
-  //          _metaArea = metaArea;
-  //          _stringIDs = stringIDs;
-  //          _buildInfo = buildInfo;
-  //          _expander = expander;
-  //          _allocator = allocator;
-
-  //          Name = tagName.Substring(tagName.LastIndexOf('\\') + 1) + ".hsc";
-
-		//	DefineScriptObjectTagBlocks();
-		//}
 
 		public string Name { get; private set; }
 
@@ -163,108 +129,6 @@ namespace Blamite.Blam.ThirdGen.Structures
             return uniqueMappings;
         }
 
-        private void DefineScriptObjectTagBlocks()
-        {
-            _referencedObjects = new ScriptObjectTagBlock("number of script objects", "script object table address",
-                "script object element");
-            _triggerVolumes = new ScriptObjectTagBlock("number of trigger volumes", "trigger volumes table address",
-                "trigger volume element");
-            _cutsceneFlags = new ScriptObjectTagBlock("number of cutscene flags", "cutscene flags table address",
-                "cutscene flag element");
-            _cutsceneCameraPoints = new ScriptObjectTagBlock("number of cutscene camera points",
-                "cutscene camera points table address", "cutscene camera point element");
-            _cutsceneTitles = new ScriptObjectTagBlock("number of cutscene titles", "cutscene titles table address",
-                "cutscene title element");
-            _deviceGroups = new ScriptObjectTagBlock("number of device groups", "device groups table address",
-                "device group element");
-            _aiSquadGroups = new ScriptObjectTagBlock("number of ai squad groups", "ai squad groups table address",
-                "ai squad group element");
-            _aiSquads = new ScriptObjectTagBlock("number of ai squads", "ai squads table address", "ai squad element");
-            _aiSquadGroupLocations = new ScriptObjectTagBlock("number of group locations", "group locations table address",
-                "ai squad group location element");
-            _aiSquadSingleLocations = new ScriptObjectTagBlock("number of single locations", "single locations table address",
-                "ai squad single location element");
-            _aiObjects = new ScriptObjectTagBlock("number of ai objects", "ai objects table address", "ai object element");
-            _aiObjectWaves = new ScriptObjectTagBlock("number of waves", "waves table address", "ai object wave element");
-            _startingProfiles = new ScriptObjectTagBlock("number of starting profiles", "starting profiles table address",
-                "starting profile element");
-            _zoneSets = new ScriptObjectTagBlock("number of zone sets", "zone sets table address", "zone set element");
-            _objectFolders = new ScriptObjectTagBlock("number of object folders", "object folders table address",
-                "object folder element");
-            _designerZones = new ScriptObjectTagBlock("number of designer zones", "designer zones table address", "designer zone element");
-            _objectFolders = new ScriptObjectTagBlock("number of object folders", "object folders table address", "object folder element");
-            _pointSets = new ScriptObjectTagBlock("number of point sets", "point sets table address", "point set element");
-            _pointSetPoints = new ScriptObjectTagBlock("number of points", "points table address", "point set point element");
-
-            _aiSquads.RegisterChild(_aiSquadSingleLocations);
-            _aiSquads.RegisterChild(_aiSquadGroupLocations);
-            _aiObjects.RegisterChild(_aiObjectWaves);
-            _pointSets.RegisterChild(_pointSetPoints);
-
-
-            _aiLines = new ScriptObjectTagBlock("number of lines", "lines table address", "line element");
-            _aiLineVariants = new ScriptObjectTagBlock("number of variants", "variants table address", "line variants element");
-            _aiLines.RegisterChild(_aiLineVariants);
-        }
-
-        public ScriptContext LoadContext(IReader reader)
-		{
-			StructureValueCollection scnrValues = LoadScriptTag(reader, _scenarioTag);
-
-            ScriptObject[] lines = new ScriptObject[0];
-            //ScriptObject[] lineVariants = new ScriptObject[0];
-
-            if(_mdlgTag != null)
-            {
-                StructureValueCollection mdlgValues = LoadScriptTag(reader, _mdlgTag);
-                lines = ReadObjects(reader, mdlgValues, _aiLines);
-            }
-
-
-            return new ScriptContext
-            {
-                ObjectReferences = ReadObjects(reader, scnrValues, _referencedObjects),
-                TriggerVolumes = ReadObjects(reader, scnrValues, _triggerVolumes),
-                CutsceneFlags = ReadObjects(reader, scnrValues, _cutsceneFlags),
-                CutsceneCameraPoints = ReadObjects(reader, scnrValues, _cutsceneCameraPoints),
-                CutsceneTitles = ReadObjects(reader, scnrValues, _cutsceneTitles),
-                DeviceGroups = ReadObjects(reader, scnrValues, _deviceGroups),
-                AISquadGroups = ReadObjects(reader, scnrValues, _aiSquadGroups),
-                AISquads = ReadObjects(reader, scnrValues, _aiSquads),
-                AIObjects = ReadObjects(reader, scnrValues, _aiObjects),
-                StartingProfiles = ReadObjects(reader, scnrValues, _startingProfiles),
-                ZoneSets = ReadObjects(reader, scnrValues, _zoneSets),
-                DesignerZones = ReadObjects(reader, scnrValues, _designerZones),
-                ObjectFolders = ReadObjects(reader, scnrValues, _objectFolders),
-                PointSets = ReadPointSets(reader, scnrValues),
-                AISquadSingleLocations = _aiSquadSingleLocations,
-                AISquadGroupLocations = _aiSquadGroupLocations,
-                AIObjectWaves = _aiObjectWaves,
-                PointSetPoints = _pointSetPoints,
-
-                AILines = lines,
-                AILineVariants = _aiLineVariants,
-                UnitSeatMappingCount = (int)scnrValues.GetInteger("unit seat mapping count")
-            };
-		}
-
-        //private StructureValueCollection LoadScnrTag(IReader reader)
-        //{
-        //    reader.SeekTo(_scenarioTag.MetaLocation.AsOffset());
-        //    return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("scnr"));
-        //}
-        //private StructureValueCollection LoadScriptTag(IReader reader)
-        //{
-        //    reader.SeekTo(_scriptTag.MetaLocation.AsOffset());
-        //    return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("hsdt"));
-        //}
-
-        //private StructureValueCollection LoadMdlgTag(IReader reader)
-        //{
-        //    reader.SeekTo(_mdlgTag.MetaLocation.AsOffset());
-        //    return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("mdlg"));
-        //}
-
         private StructureValueCollection LoadScriptTag(IReader reader, ITag tag)
         {
             reader.SeekTo(tag.MetaLocation.AsOffset());
@@ -278,10 +142,6 @@ namespace Blamite.Blam.ThirdGen.Structures
                 case "hsdt":
                     {
                         return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("hsdt"));
-                    }
-                case "mdlg":
-                    {
-                        return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("mdlg"));
                     }
                 default:
                     {
@@ -376,23 +236,6 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private ScriptObject[] ReadObjects(IReader reader, StructureValueCollection values, ScriptObjectTagBlock block)
 		{
 			return block.ReadObjects(values, reader, _metaArea, _stringIDs, _buildInfo, _expander);
-		}
-
-		private ScriptObject[] ReadPointSets(IReader reader, StructureValueCollection values)
-		{
-			// Point sets are nested in another block for whatever reason
-			// Seems like the length of the outer is always 1, so just take the first element and process it
-			var count = (int) values.GetInteger("point set data count");
-			if (count == 0)
-				return new ScriptObject[0];
-
-			uint address = (uint)values.GetInteger("point set data address");
-
-			long expand = _expander.Expand(address);
-
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("point set data element");
-			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, expand, layout, _metaArea);
-			return ReadObjects(reader, entries.First(), _pointSets);
 		}
 
         /// <summary>

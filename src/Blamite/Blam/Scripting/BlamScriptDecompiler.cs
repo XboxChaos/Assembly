@@ -557,8 +557,8 @@ namespace Blamite.Blam.Scripting
 					}
 					else
 					{
-						throw new NotImplementedException($"Unhandled Return Type: \"{actualType.Name}\".");
-						//text = expression.StringValue;
+						//throw new NotImplementedException($"Unhandled Return Type: \"{actualType.Name}\".");
+						text = expression.StringValue;
 					}
 						
 					break;
@@ -578,9 +578,22 @@ namespace Blamite.Blam.Scripting
 		private uint GetValue(ScriptExpression expression, ScriptValueType type)
 		{
 			if (_endian == Endian.BigEndian)
+			{
 				return expression.Value >> (32 - (type.Size * 8));
+
+			}
 			else
-				return expression.Value;
+			{
+				var bytes = BitConverter.GetBytes(expression.Value);
+				uint result = type.Size switch
+				{
+					4 => expression.Value,
+					2 => (uint)BitConverter.ToUInt16(bytes, 0),
+					1 => (uint)bytes[0],
+					_ => throw new ArgumentException($"Script value types can only have a size of 1, 2 or 4 bytes. The size {type.Size} is invalid.")
+				};
+				return result;
+			}
 		}
 
 		/// <summary>

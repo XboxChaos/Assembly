@@ -59,7 +59,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private bool _loaded = false;
         private readonly bool _compilationSupported;
 
-        // Todo: Simplify constructor. Remove unnecessary parameters.
         public ScriptEditor(Action metaRefresh, EngineDescription buildInfo, IScriptFile scriptFile, IStreamManager streamManager, ICacheFile casheFile, string casheName, Endian endian)
         {
             _endian = endian;
@@ -217,9 +216,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                     _staticCompletionData = await completionTask;
                     txtScript.Text = await decompilationTask;
                 }
-                else
+                else if(_buildInfo.Name.Contains("Halo 4"))
                 {
                     txtScript.Text = await Task.Run(() => DecompileHalo4Old());
+                }
+                else
+                {
+                    txtScript.Text = await Task.Run(() => DecompileToLISP());
                 }
                 txtScript.IsReadOnly = false;
                 _loaded = true;

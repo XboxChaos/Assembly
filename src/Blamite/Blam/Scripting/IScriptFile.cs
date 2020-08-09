@@ -36,14 +36,6 @@ namespace Blamite.Blam.Scripting
 		void SaveScripts(ScriptData scripts, IStream stream);
 
 		/// <summary>
-		///     Loads the script file's context.
-		/// </summary>
-		/// <param name="reader">The stream to read from.</param>
-		/// <returns>The script file's context, or null if not available.</returns>
-		/// <seealso cref="ScriptContext" />
-		ScriptContext LoadContext(IReader reader);
-
-		/// <summary>
 		///		Retrieves all unique Seat Mappings which were referenced in this map's scripts.
 		/// </summary>
 		/// <param name="reader">The stream to read from.</param>

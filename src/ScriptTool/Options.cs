@@ -12,7 +12,7 @@ namespace ScriptTool
         public string MapFolder { get; set; }
 
         [Option('e', "expressions", Group = "ScriptObject",
-            HelpText = "Dump expressions. \"ALL\n will dump all Expressions contained in the maps. Only Expressions of a specific value type will be dumped if one is specified. A list of valid types can be found in the _scripting.xml files in the formats folder.")]
+            HelpText = "Dump expressions. \"ALL\" will dump all Expressions contained in the maps. Only Expressions of a specific value type will be dumped if one is specified. A list of valid types can be found in the _scripting.xml files in the formats folder.")]
         public string DumpExpressions { get; set; }
 
         //[Option("scripts", Group = "ScriptObject", Default = (bool)false, HelpText = "Dump script definitions.")]

@@ -495,7 +495,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			string filename = casheName + "_Mappings.xml";
 			string path = Path.Combine(folder, filename);
 
-			if (!File.Exists(path) && _cacheFile.ScriptFiles != null)
+			if (!File.Exists(path) && _cacheFile.ScriptFiles.Length != 0)
 			{
 				// retrieve all seat mappings which were named in this map's scripts
 				IScriptFile scriptFile;
