@@ -56,6 +56,8 @@ namespace Blamite.Plugins
 		void VisitFloat32(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 		void VisitUndefined(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 
+		void VisitDatum(string name, uint offset, bool visible, uint pluginline, string tooltip);
+
 		void VisitPoint2(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 		void VisitPoint3(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 		void VisitVector2(string name, uint offset, bool visible, uint pluginLine, string tooltip);
@@ -73,7 +75,7 @@ namespace Blamite.Plugins
 		void VisitTagReference(string name, uint offset, bool visible, bool withGroup, bool showJumpTo, uint pluginLine, string tooltip);
 		void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine, string tooltip);
 
-		void VisitRangeUInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitRangeInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 		void VisitRangeFloat32(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 		void VisitRangeDegree(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 

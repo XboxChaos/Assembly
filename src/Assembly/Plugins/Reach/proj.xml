@@ -46,7 +46,7 @@
 		<bit name="Damage Not Blocked By Obstructions" index="17" tooltip="AOE damage being applied to this object does not test for obstrutions." />
 		<bit name="Does Not Damage Breakable Surfaces" index="18" />
 	</flags32>
-	<float32 name="Bounding Radius" offset="0x8" visible="true" />
+	<float32 name="Bounding Radius" offset="0x8" visible="true" tooltip="If you edit this field manually, beware that the render model is no longer respected for radius calculation and that you need to set the bounding offset as well." />
 	<point3 name="Bounding Offset" offset="0xC" visible="true" />
 	<float32 name="Horizontal Acceleration Scale" offset="0x18" visible="true" />
 	<float32 name="Vertical Acceleration Scale" offset="0x1C" visible="true" />
@@ -117,7 +117,7 @@
 	<tagRef name="Collision Damage" offset="0x84" visible="true" tooltip="only set this tag if you want to override the default collision damage values in globals.globals" />
 	<tagRef name="Brittle Collision Damage" offset="0x94" visible="true" />
 	<tagblock name="Early Mover Oriented Bounding Box" offset="0xA4" visible="true" elementSize="0x2C">
-		<stringid name="Node Name" offset="0x0" visible="true" />
+		<stringid name="Node Name" offset="0x0" visible="true" tooltip="empty means object space" />
 		<int32 name="Runtime Node Index" offset="0x4" visible="true" />
 		<float32 name="X0" offset="0x8" visible="true" />
 		<float32 name="X1" offset="0xC" visible="true" />
@@ -129,7 +129,7 @@
 	</tagblock>
 	<tagRef name="Creation Effect" offset="0xB0" visible="true" />
 	<tagRef name="Material Effects" offset="0xC0" visible="true" />
-	<tagRef name="Melee Sound" offset="0xD0" visible="true" tooltip="this is the sound that is made when I am meleed.  This overrides the sweetener sound of my material." />
+	<tagRef name="Melee Sound" offset="0xD0" visible="true" tooltip="this is the sound that is made when I am meleed. This overrides the sweetener sound of my material." />
 	<tagblock name="AI Properties" offset="0xE0" visible="true" elementSize="0x10">
 		<flags32 name="Flags" offset="0x0" visible="true">
 			<bit name="Destroyable Cover" index="0" />
@@ -255,7 +255,7 @@ the higher the value of k, the quicker the system will reach the target value</c
 			<float32 name="Maximum Velocity" offset="0x18" visible="true" />
 			<comment title="Suction" />
 			<dataref name="Velocity To Pressure Function" offset="0x1C" visible="true" />
-			<float32 name="Max Velocity" offset="0x30" visible="true" />
+			<float32 name="Maximum Velocity" offset="0x30" visible="true" />
 			<float32 name="Linear Damping" offset="0x34" visible="true" />
 			<float32 name="Angular Damping" offset="0x38" visible="true" />
 		</tagblock>
@@ -294,13 +294,15 @@ the higher the value of k, the quicker the system will reach the target value</c
 	<tagblock name="Predicted Resources" offset="0x144" visible="false" elementSize="0x0">
 	</tagblock>
 	<tagblock name="Multiplayer Object Properties" offset="0x150" visible="true" elementSize="0xBC">
-		<flags8 name="Game Engine Flags" offset="0x0" visible="true">
+		<flags8 name="Game Engine Flags" offset="0x0" visible="true" tooltip="Set which game engines you desire this object to appear in">
 			<bit name="None" index="0" />
 			<bit name="Sandbox" index="1" />
 			<bit name="Megalo" index="2" />
 			<bit name="Campaign" index="3" />
 			<bit name="Survival" index="4" />
 		</flags8>
+		<comment title="TYPE AND FLAGS">Type pertains to how you want the game engine to handle this object
+Certain flags applicable only to certain object types, should be self evident</comment>
 		<enum8 name="Object Type" offset="0x1" visible="true">
 			<option name="Ordinary" value="0x0" />
 			<option name="Weapon" value="0x1" />
@@ -339,11 +341,11 @@ the higher the value of k, the quicker the system will reach the target value</c
 			<bit name="Allows Projectiles" index="4" />
 		</flags8>
 		<int8 name="Unknown" offset="0x3" visible="true" />
-		<float32 name="Radius/Width" offset="0x4" visible="true" />
-		<float32 name="Length" offset="0x8" visible="true" />
-		<float32 name="Top" offset="0xC" visible="true" />
-		<float32 name="Bottom" offset="0x10" visible="true" />
-		<enum8 name="Shape" offset="0x14" visible="true">
+		<float32 name="Boundary Radius/Width" offset="0x4" visible="true" />
+		<float32 name="Boundary Length" offset="0x8" visible="true" />
+		<float32 name="Boundary Top" offset="0xC" visible="true" />
+		<float32 name="Boundary Bottom" offset="0x10" visible="true" />
+		<enum8 name="Boundary Shape" offset="0x14" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Sphere" value="0x1" />
 			<option name="Cylinder" value="0x2" />

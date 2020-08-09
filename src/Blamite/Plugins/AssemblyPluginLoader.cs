@@ -281,13 +281,16 @@ namespace Blamite.Plugins
 					break;
 
 				case "range16":
-					visitor.VisitRangeUInt16(name, offset, visible, pluginLine, tooltip);
+					visitor.VisitRangeInt16(name, offset, visible, pluginLine, tooltip);
 					break;
 				case "rangef":
 					visitor.VisitRangeFloat32(name, offset, visible, pluginLine, tooltip);
 					break;
 				case "ranged":
 					visitor.VisitRangeDegree(name, offset, visible, pluginLine, tooltip);
+					break;
+				case "datum":
+					visitor.VisitDatum(name, offset, visible, pluginLine, tooltip);
 					break;
 
 				default:

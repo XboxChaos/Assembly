@@ -29,6 +29,30 @@ namespace Blamite.Injection
 		private readonly List<ExtractedResourcePredictionD> _extractedPredictions =
 			new List<ExtractedResourcePredictionD>();
 
+		private readonly Dictionary<int, ExtractedSoundCodec> _soundCodecsByIndex =
+			new Dictionary<int, ExtractedSoundCodec>();
+
+		private readonly Dictionary<int, ExtractedSoundPitchRange> _soundPitchRangesByIndex =
+			new Dictionary<int, ExtractedSoundPitchRange>();
+
+		private readonly Dictionary<int, ExtractedSoundLanguageDuration> _soundLanguageDurationsByIndex =
+			new Dictionary<int, ExtractedSoundLanguageDuration>();
+
+		private readonly Dictionary<int, ExtractedSoundPlayback> _soundPlaybacksByIndex =
+			new Dictionary<int, ExtractedSoundPlayback>();
+
+		private readonly Dictionary<int, ExtractedSoundScale> _soundScalesByIndex =
+			new Dictionary<int, ExtractedSoundScale>();
+
+		private readonly Dictionary<int, ExtractedSoundPromotion> _soundPromotionsByIndex =
+			new Dictionary<int, ExtractedSoundPromotion>();
+
+		private readonly Dictionary<int, ExtractedSoundCustomPlayback> _soundCustomPlaybacksByIndex =
+			new Dictionary<int, ExtractedSoundCustomPlayback>();
+
+		private readonly Dictionary<int, ExtractedSoundExtraInfo> _soundExtraInfoByIndex =
+			new Dictionary<int, ExtractedSoundExtraInfo>();
+
 		/// <summary>
 		///     Gets a collection of all data blocks in the container.
 		/// </summary>
@@ -75,6 +99,70 @@ namespace Blamite.Injection
 		public ICollection<ExtractedResourcePredictionD> Predictions
 		{
 			get { return _extractedPredictions; }
+		}
+
+		/// <summary>
+		///     Gets a collection of all sound codec objects in the container.
+		/// </summary>
+		public ICollection<ExtractedSoundCodec> SoundCodecs
+		{
+			get { return _soundCodecsByIndex.Values; }
+		}
+
+		/// <summary>
+		///     Gets a collection of all sound pitch range objects in the container.
+		/// </summary>
+		public ICollection<ExtractedSoundPitchRange> SoundPitchRanges
+		{
+			get { return _soundPitchRangesByIndex.Values; }
+		}
+
+		/// <summary>
+		///     Gets a collection of all sound language duration objects in the container.
+		/// </summary>
+		public ICollection<ExtractedSoundLanguageDuration> SoundLanguageDurations
+		{
+			get { return _soundLanguageDurationsByIndex.Values; }
+		}
+
+		/// <summary>
+		///     Gets a collection of all sound playback objects in the container.
+		/// </summary>
+		public ICollection<ExtractedSoundPlayback> SoundPlaybacks
+		{
+			get { return _soundPlaybacksByIndex.Values; }
+		}
+
+		/// <summary>
+		///     Gets a collection of all sound scale objects in the container.
+		/// </summary>
+		public ICollection<ExtractedSoundScale> SoundScales
+		{
+			get { return _soundScalesByIndex.Values; }
+		}
+
+		/// <summary>
+		///     Gets a collection of all sound promotion objects in the container.
+		/// </summary>
+		public ICollection<ExtractedSoundPromotion> SoundPromotions
+		{
+			get { return _soundPromotionsByIndex.Values; }
+		}
+
+		/// <summary>
+		///     Gets a collection of all sound custom playback objects in the container.
+		/// </summary>
+		public ICollection<ExtractedSoundCustomPlayback> SoundCustomPlaybacks
+		{
+			get { return _soundCustomPlaybacksByIndex.Values; }
+		}
+
+		/// <summary>
+		///     Gets a collection of all sound extra info objects in the container.
+		/// </summary>
+		public ICollection<ExtractedSoundExtraInfo> SoundExtraInfos
+		{
+			get { return _soundExtraInfoByIndex.Values; }
 		}
 
 		/// <summary>
@@ -130,6 +218,78 @@ namespace Blamite.Injection
 		public void AddPrediction(ExtractedResourcePredictionD prediction)
 		{
 			_extractedPredictions.Add(prediction);
+		}
+
+		/// <summary>
+		///     Adds information about a sound codec to the container.
+		/// </summary>
+		/// <param name="codec">The codec to add.</param>
+		public void AddSoundCodec(ExtractedSoundCodec codec)
+		{
+			_soundCodecsByIndex[codec.OriginalIndex] = codec;
+		}
+
+		/// <summary>
+		///		Adds information about a sound pitch range to the container.
+		/// </summary>
+		/// <param name="pitchRange">The pitch range to add.</param>
+		public void AddSoundPitchRange(ExtractedSoundPitchRange pitchRange)
+		{
+			_soundPitchRangesByIndex[pitchRange.OriginalIndex] = pitchRange;
+		}
+
+		/// <summary>
+		///     Adds information about a sound language duration to the container.
+		/// </summary>
+		/// <param name="langDuration">The language duration to add.</param>
+		public void AddSoundLanguageDuration(ExtractedSoundLanguageDuration langDuration)
+		{
+			_soundLanguageDurationsByIndex[langDuration.OriginalIndex] = langDuration;
+		}
+
+		/// <summary>
+		///     Adds information about a sound playback to the container.
+		/// </summary>
+		/// <param name="playback">The playback to add.</param>
+		public void AddSoundPlayback(ExtractedSoundPlayback playback)
+		{
+			_soundPlaybacksByIndex[playback.OriginalIndex] = playback;
+		}
+
+		/// <summary>
+		///     Adds information about a sound scale to the container.
+		/// </summary>
+		/// <param name="scale">The scale to add.</param>
+		public void AddSoundScale(ExtractedSoundScale scale)
+		{
+			_soundScalesByIndex[scale.OriginalIndex] = scale;
+		}
+
+		/// <summary>
+		///     Adds information about a sound promotion to the container.
+		/// </summary>
+		/// <param name="promotion">The promotion to add.</param>
+		public void AddSoundPromotion(ExtractedSoundPromotion promotion)
+		{
+			_soundPromotionsByIndex[promotion.OriginalIndex] = promotion;
+		}
+
+		/// <summary>
+		///     Adds information about a sound custom playback to the container.
+		/// </summary>
+		/// <param name="customPlayback">The custom playback to add.</param>
+		public void AddSoundCustomPlayback(ExtractedSoundCustomPlayback customPlayback)
+		{
+			_soundCustomPlaybacksByIndex[customPlayback.OriginalIndex] = customPlayback;
+		}
+
+		/// <summary>
+		///     Adds information about a sound extra info to the container.
+		/// </summary>
+		/// <param name="extraInfo">The extra info to add.</param>
+		public void AddSoundExtraInfo(ExtractedSoundExtraInfo extraInfo)
+		{
+			_soundExtraInfoByIndex[extraInfo.OriginalIndex] = extraInfo;
 		}
 
 		/// <summary>
@@ -189,6 +349,102 @@ namespace Blamite.Injection
 		{
 			ExtractedResourceInfo result;
 			_resourcesByIndex.TryGetValue(originalIndex, out result);
+			return result;
+		}
+
+		/// <summary>
+		///     Finds the sound codec which has a specified original index.
+		/// </summary>
+		/// <param name="originalIndex">The original index of the sound codec to find.</param>
+		/// <returns>The <see cref="ExtractedSoundCodec" /> with the original index, or <c>null</c> if not found.</returns>
+		public ExtractedSoundCodec FindSoundCodec(int originalIndex)
+		{
+			ExtractedSoundCodec result;
+			_soundCodecsByIndex.TryGetValue(originalIndex, out result);
+			return result;
+		}
+
+		/// <summary>
+		///     Finds the sound pitch range which has a specified original index.
+		/// </summary>
+		/// <param name="originalIndex">The original index of the sound pitch range to find.</param>
+		/// <returns>The <see cref="ExtractedSoundPitchRange" /> with the original index, or <c>null</c> if not found.</returns>
+		public ExtractedSoundPitchRange FindSoundPitchRange(int originalIndex)
+		{
+			ExtractedSoundPitchRange result;
+			_soundPitchRangesByIndex.TryGetValue(originalIndex, out result);
+			return result;
+		}
+
+		/// <summary>
+		///     Finds the sound language duration which has a specified original index.
+		/// </summary>
+		/// <param name="originalIndex">The original index of the sound language duration to find.</param>
+		/// <returns>The <see cref="ExtractedSoundLanguageDuration" /> with the original index, or <c>null</c> if not found.</returns>
+		public ExtractedSoundLanguageDuration FindSoundLanguageDuration(int originalIndex)
+		{
+			ExtractedSoundLanguageDuration result;
+			_soundLanguageDurationsByIndex.TryGetValue(originalIndex, out result);
+			return result;
+		}
+
+		/// <summary>
+		///     Finds the sound playback which has a specified original index.
+		/// </summary>
+		/// <param name="originalIndex">The original index of the sound playback to find.</param>
+		/// <returns>The <see cref="ExtractedSoundPlayback" /> with the original index, or <c>null</c> if not found.</returns>
+		public ExtractedSoundPlayback FindSoundPlayback(int originalIndex)
+		{
+			ExtractedSoundPlayback result;
+			_soundPlaybacksByIndex.TryGetValue(originalIndex, out result);
+			return result;
+		}
+
+		/// <summary>
+		///     Finds the sound scale which has a specified original index.
+		/// </summary>
+		/// <param name="originalIndex">The original index of the sound scale to find.</param>
+		/// <returns>The <see cref="ExtractedSoundScale" /> with the original index, or <c>null</c> if not found.</returns>
+		public ExtractedSoundScale FindSoundScale(int originalIndex)
+		{
+			ExtractedSoundScale result;
+			_soundScalesByIndex.TryGetValue(originalIndex, out result);
+			return result;
+		}
+
+		/// <summary>
+		///     Finds the sound promotion which has a specified original index.
+		/// </summary>
+		/// <param name="originalIndex">The original index of the sound promotion to find.</param>
+		/// <returns>The <see cref="ExtractedSoundPromotion" /> with the original index, or <c>null</c> if not found.</returns>
+		public ExtractedSoundPromotion FindSoundPromotion(int originalIndex)
+		{
+			ExtractedSoundPromotion result;
+			_soundPromotionsByIndex.TryGetValue(originalIndex, out result);
+			return result;
+		}
+
+		/// <summary>
+		///     Finds the sound custom playback which has a specified original index.
+		/// </summary>
+		/// <param name="originalIndex">The original index of the sound custom playback to find.</param>
+		/// <returns>The <see cref="ExtractedSoundCustomPlayback" /> with the original index, or <c>null</c> if not found.</returns>
+		public ExtractedSoundCustomPlayback FindSoundCustomPlayback(int originalIndex)
+		{
+			ExtractedSoundCustomPlayback result;
+			_soundCustomPlaybacksByIndex.TryGetValue(originalIndex, out result);
+			return result;
+		}
+
+		/// <summary>
+		///     Finds the sound extra info which has a specified original index.
+		/// </summary>
+		/// <param name="originalIndex">The original index of the sound extra info to find.</param>
+		/// <returns>The <see cref="ExtractedSoundExtraInfo" /> with the original index, or <c>null</c> if not found.</returns>
+		public ExtractedSoundExtraInfo FindSoundExtraInfo(int originalIndex)
+		{
+			ExtractedSoundExtraInfo result;
+			_soundExtraInfoByIndex.TryGetValue(originalIndex, out result);
 			return result;
 		}
 	}

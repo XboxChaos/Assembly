@@ -24,6 +24,7 @@ namespace Blamite.Blam.SecondGen
 		private SecondGenPointerExpander _expander;
 		private Endian _endianness;
 		private EffectInterop _effects;
+		private SoundResourceManager _soundGestalt;
 
 		public SecondGenCacheFile(IReader reader, EngineDescription buildInfo, string fileName, string buildString)
 		{
@@ -162,11 +163,6 @@ namespace Blamite.Blam.SecondGen
 			get { return new SecondGenResourceMetaLoader(); }
 		}
 
-		public ISoundResourceGestalt LoadSoundResourceGestaltData(IReader reader)
-		{
-			throw new NotImplementedException();
-		}
-
 		public FileSegment StringIDIndexTable
 		{
 			get { return _header.StringIDIndexTable; }
@@ -222,6 +218,11 @@ namespace Blamite.Blam.SecondGen
 		public EffectInterop EffectInterops
 		{
 			get { return _effects; }
+		}
+
+		public SoundResourceManager SoundGestalt
+		{
+			get { return _soundGestalt; }
 		}
 
 		private void Load(IReader reader, EngineDescription buildInfo, string buildString)

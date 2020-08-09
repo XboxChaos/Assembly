@@ -157,9 +157,14 @@ namespace Blamite.Serialization
 		public bool UsesCompression { get; private set; }
 
 		/// <summary>
-		///		MCC sometimes ships maps with hashes 0'd out, in some cases adding a hash can cause issues.
+		///		MCC sometimes ships maps with string hashes 0'd out, in some cases adding a hash can cause issues.
 		/// </summary>
-		public bool UsesHashes { get; private set; }
+		public bool UsesStringHashes { get; private set; }
+
+		/// <summary>
+		///		MCC sometimes ships maps with resource hashes and checksums 0'd out, this makes some injection optimizations impossible.
+		/// </summary>
+		public bool UsesRawHashes { get; private set; }
 
 		private void LoadSettings()
 		{
@@ -171,10 +176,11 @@ namespace Blamite.Serialization
 		{
 			HeaderSize = Settings.GetSetting<int>("engineInfo/headerSize");
 			SegmentAlignment = Settings.GetSettingOrDefault("engineInfo/segmentAlignment", 0x1000);
-			ExpandMagic = Settings.GetSettingOrDefault("engineInfo/expandMagic", 0);
+			ExpandMagic = Settings.GetSettingOrDefault("engineInfo/expandMagic", -1);
 
 			UsesCompression = Settings.GetSettingOrDefault("engineInfo/usesCompression", false);
-			UsesHashes = Settings.GetSettingOrDefault("engineInfo/usesHashes", true);
+			UsesStringHashes = Settings.GetSettingOrDefault("engineInfo/usesStringHashes", true);
+			UsesRawHashes = Settings.GetSettingOrDefault("engineInfo/usesRawHashes", true);
 
 			if (Settings.PathExists("engineInfo/pokingOffset"))
 				PokingOffset = Settings.GetSettingOrDefault("engineInfo/pokingOffset", 0);

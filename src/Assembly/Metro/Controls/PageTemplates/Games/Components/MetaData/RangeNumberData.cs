@@ -54,21 +54,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// <summary>
 	///     Unsigned 16-bit integer.
 	/// </summary>
-	public class RangeUint16Data : RangeNumberData<ushort>
+	public class RangeInt16Data : RangeNumberData<short>
 	{
-		public RangeUint16Data(string name, uint offset, long address, string type, ushort min, ushort max, uint pluginLine, string tooltip)
+		public RangeInt16Data(string name, uint offset, long address, string type, short min, short max, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, min, max, pluginLine, tooltip)
 		{
 		}
 
 		public override void Accept(IMetaFieldVisitor visitor)
 		{
-			visitor.VisitRangeUint16(this);
+			visitor.VisitRangeInt16(this);
 		}
 
 		public override MetaField CloneValue()
 		{
-			return new RangeUint16Data(Name, Offset, FieldAddress, Type, Min, Max, PluginLine, ToolTip);
+			return new RangeInt16Data(Name, Offset, FieldAddress, Type, Min, Max, PluginLine, ToolTip);
 		}
 	}
 

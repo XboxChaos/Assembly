@@ -442,11 +442,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			// Don't do anything
 		}
 
-		public void VisitRangeUint16(RangeUint16Data field)
+		public void VisitRangeInt16(RangeInt16Data field)
 		{
 			SeekToOffset(field.Offset);
-			_writer.WriteUInt16(field.Min);
-			_writer.WriteUInt16(field.Max);
+			_writer.WriteInt16(field.Min);
+			_writer.WriteInt16(field.Max);
 		}
 
 		public void VisitRangeFloat32(RangeFloat32Data field)
@@ -461,6 +461,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			SeekToOffset(field.Offset);
 			_writer.WriteFloat(field.RadianMin);
 			_writer.WriteFloat(field.RadianMax);
+		}
+
+		public void VisitDatum(DatumData field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteUInt32((uint)(field.Salt << 16) | field.Index);
 		}
 
 		public void WriteFields(IList<MetaField> fields)

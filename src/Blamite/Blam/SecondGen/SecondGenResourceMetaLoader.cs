@@ -25,7 +25,7 @@ namespace Blamite.Blam.SecondGen
 			get { return false; }
 		}
 
-		public ISound LoadSoundMeta(ITag sndTag, IReader reader)
+		public CacheSound LoadSoundMeta(ITag sndTag, IReader reader)
 		{
 			throw new NotImplementedException();
 		}

@@ -37,8 +37,9 @@
 		void VisitColourInt(ColorData field);
 		void VisitColourFloat(ColorData field);
 		void VisitShaderRef(ShaderRef field);
-		void VisitRangeUint16(RangeUint16Data field);
+		void VisitRangeInt16(RangeInt16Data field);
 		void VisitRangeFloat32(RangeFloat32Data field);
 		void VisitRangeDegree(RangeDegreeData field);
+		void VisitDatum(DatumData field);
 	}
 }

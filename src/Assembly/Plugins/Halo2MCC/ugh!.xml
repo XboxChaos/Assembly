@@ -8,12 +8,11 @@
 		<float32 name="Minimum Distance" offset="0x0" visible="true" />
 		<float32 name="Maximum Distance" offset="0x4" visible="true" />
 		<float32 name="Skip Fraction" offset="0x8" visible="true" />
-		<float32 name="Maximum Bend Per Second" offset="0xC" visible="true" />
+		<float32 name="Runtime Bend Per Second" offset="0xC" visible="true" tooltip="=Maximum Bend Per Second/Difference Pitch Modifier Scale" />
 		<comment title="Randomization" />
 		<float32 name="Gain Base" offset="0x10" visible="true" />
 		<float32 name="Gain Variance" offset="0x14" visible="true" />
-		<int16 name="Random Pitch Bounds min" offset="0x18" visible="true" />
-		<int16 name="Random Pitch Bounds max" offset="0x1A" visible="true" />
+		<range16 name="Random Pitch Bounds min" offset="0x18" visible="true" />
 		<comment title="Directional Sounds" />
 		<degree name="Inner Cone Angle" offset="0x1C" visible="true" />
 		<degree name="Outer Cone Angle" offset="0x20" visible="true" />
@@ -29,22 +28,17 @@
 		<float32 name="First Person Gain" offset="0x34" visible="true" />
 	</tagblock>
 	<tagblock name="Scales" offset="0x8" visible="true" elementSize="0x14">
-		<float32 name="Gain Modifier min" offset="0x0" visible="true" />
-		<float32 name="Gain Modifier max" offset="0x4" visible="true" />
-		<int16 name="Pitch Modifier min" offset="0x8" visible="true" />
-		<int16 name="Pitch Modifier max" offset="0xA" visible="true" />
-		<float32 name="Skip Fraction Modifier min" offset="0xC" visible="true" />
-		<float32 name="Skip Fraction Modifier max" offset="0x10" visible="true" />
+		<rangef name="Gain Modifier" offset="0x0" visible="true" />
+		<range16 name="Pitch Modifier" offset="0x8" visible="true" />
+		<rangef name="Skip Fraction Modifier" offset="0xC" visible="true" />
 	</tagblock>
 	<tagblock name="Import Names" offset="0x10" visible="true" elementSize="0x4">
 		<stringId name="Name" offset="0x0" visible="true" />
 	</tagblock>
 	<tagblock name="Pitch Range Parameters" offset="0x18" visible="true" elementSize="0xA">
 		<int16 name="Natural Pitch" offset="0x0" visible="true" />
-		<int16 name="Bend Bounds min" offset="0x2" visible="true" />
-		<int16 name="Bend Bounds max" offset="0x4" visible="true" />
-		<int16 name="Max Gain Pitch Bounds min" offset="0x6" visible="true" />
-		<int16 name="Max Gain Pitch Bounds max" offset="0x8" visible="true" />
+		<range16 name="Bend Bounds" offset="0x2" visible="true" />
+		<range16 name="Max Gain Pitch Bounds" offset="0x6" visible="true" />
 	</tagblock>
 	<tagblock name="Pitch Ranges" offset="0x20" visible="true" elementSize="0xC">
 		<int16 name="Import Name Index" offset="0x0" visible="true" />
@@ -75,35 +69,91 @@
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<tagblock name="Filter" offset="0x14" visible="true" elementSize="0x48">
-			<int32 name="Filter Type" offset="0x0" visible="true" />
+			<enum32 name="Filter Type" offset="0x0" visible="true">
+				<option name="parametric EQ" value="0x0" />
+				<option name="DLS2" value="0x1" />
+				<option name="both (only valid for mono)" value="0x2" />
+			</enum32>
 			<int32 name="Filter Width" offset="0x4" visible="true" />
 			<comment title="Left Filter Frequency" />
-			<float32 name="Scale Bounds min" offset="0x8" visible="true" />
-			<float32 name="Scale Bounds max" offset="0xC" visible="true" />
-			<float32 name="Random Base" offset="0x10" visible="true" />
-			<float32 name="Random Variance" offset="0x14" visible="true" />
+			<rangef name="Scale Bounds" offset="0x8" visible="true" />
+			<rangef name="Random Base and Variance" offset="0x10" visible="true" />
 			<comment title="Left Filter Gain" />
-			<float32 name="Scale Bounds min" offset="0x18" visible="true" />
-			<float32 name="Scale Bounds max" offset="0x1C" visible="true" />
-			<float32 name="Random Base" offset="0x20" visible="true" />
-			<float32 name="Random Variance" offset="0x24" visible="true" />
+			<rangef name="Scale Bounds" offset="0x18" visible="true" />
+			<rangef name="Random Base and Variance" offset="0x20" visible="true" />
 			<comment title="Right Filter Frequency" />
-			<float32 name="Scale Bounds min" offset="0x28" visible="true" />
-			<float32 name="Scale Bounds max" offset="0x2C" visible="true" />
-			<float32 name="Random Base" offset="0x30" visible="true" />
-			<float32 name="Random Variance" offset="0x34" visible="true" />
+			<rangef name="Scale Bounds" offset="0x28" visible="true" />
+			<rangef name="Random Base and Variance" offset="0x30" visible="true" />
 			<comment title="Right Filter Gain" />
-			<float32 name="Scale Bounds min" offset="0x38" visible="true" />
-			<float32 name="Scale Bounds max" offset="0x3C" visible="true" />
-			<float32 name="Random Base" offset="0x40" visible="true" />
-			<float32 name="Random Variance" offset="0x44" visible="true" />
+			<rangef name="Scale Bounds" offset="0x38" visible="true" />
+			<rangef name="Random Base and Variance" offset="0x40" visible="true" />
 		</tagblock>
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
+		<tagblock name="Pitch LFO" offset="0x1C" visible="true" elementSize="0x30">
+			<comment title="Delay" />
+			<rangef name="Scale Bounds" offset="0x0" visible="true" />
+			<rangef name="Random Base and Variance" offset="0x8" visible="true" />
+			<comment title="Frequency" />
+			<rangef name="Scale Bounds" offset="0x10" visible="true" />
+			<rangef name="Random Base and Variance" offset="0x18" visible="true" />
+			<comment title="Pitch Modulation" />
+			<rangef name="Scale Bounds" offset="0x20" visible="true" />
+			<rangef name="Random Base and Variance" offset="0x28" visible="true" />
+		</tagblock>
+		<tagblock name="Filter LFO" offset="0x24" visible="true" elementSize="0x40">
+			<comment title="Delay" />
+			<rangef name="Scale Bounds" offset="0x0" visible="true" />
+			<rangef name="Random Base and Variance" offset="0x8" visible="true" />
+			<comment title="Frequency" />
+			<rangef name="Scale Bounds" offset="0x10" visible="true" />
+			<rangef name="Random Base and Variance" offset="0x18" visible="true" />
+			<comment title="Cutoff Modulation" />
+			<rangef name="Scale Bounds" offset="0x20" visible="true" />
+			<rangef name="Random Base and Variance" offset="0x28" visible="true" />
+			<comment title="Gain Modulation" />
+			<rangef name="Scale Bounds" offset="0x30" visible="true" />
+			<rangef name="Random Base and Variance" offset="0x38" visible="true" />
+		</tagblock>
+		<tagblock name="Sound Effect" offset="0x2C" visible="true" elementSize="0x28">
+			<tagRef name="Template" offset="0x0" visible="true" />
+			<tagblock name="Components" offset="0x8" visible="true" elementSize="0x10">
+				<tagRef name="Sound" offset="0x0" visible="true" />
+				<float32 name="Gain" offset="0x8" visible="true" />
+				<flags32 name="Flags" offset="0xC" visible="true">
+					<bit name="Don't play at start" index="0" />
+					<bit name="Play on stop" index="1" />
+					<bit name="" index="2" />
+					<bit name="Play alternate" index="3" />
+					<bit name="" index="4" />
+					<bit name="Sync with origin looping sound" index="5" />
+				</flags32>
+			</tagblock>
+			<undefined name="Unknown" offset="0x10" visible="false" />
+			<undefined name="Unknown" offset="0x14" visible="false" />
+			<undefined name="Unknown" offset="0x18" visible="false" />
+			<undefined name="Unknown" offset="0x1C" visible="false" />
+			<tagblock name="Unknown" offset="0x20" visible="true" elementSize="0x14">
+				<tagblock name="Unknown" offset="0x0" visible="true" elementSize="0x1C">
+					<tagblock name="Unknown" offset="0x0" visible="true" elementSize="0x10">
+						<undefined name="Unknown" offset="0x0" visible="true" />
+						<dataRef name="Unknown" offset="0x4" visible="true" />
+						<float32 name="Unknown" offset="0xC" visible="true" />
+					</tagblock>
+					<tagblock name="Unknown" offset="0x8" visible="true" elementSize="0x4">
+						<float32 name="Unknown" offset="0x0" visible="true" />
+					</tagblock>
+					<tagblock name="Unknown" offset="0x10" visible="true" elementSize="0x4">
+						<undefined name="Unknown" offset="0x0" visible="true" />
+					</tagblock>
+					<undefined name="Unknown" offset="0x18" visible="true" />
+				</tagblock>
+				<tagblock name="Unknown" offset="0x8" visible="true" elementSize="0x10">
+					<undefined name="Unknown" offset="0x0" visible="true" />
+					<dataRef name="Unknown" offset="0x4" visible="true" />
+					<float32 name="Unknown" offset="0xC" visible="true" />
+				</tagblock>
+				<undefined name="Unknown" offset="0x10" visible="true" />
+			</tagblock>
+		</tagblock>
 	</tagblock>
 	<tagblock name="Runtime Permutation Flags" offset="0x38" visible="true" elementSize="0x1">
 		<int8 name="Unknown" offset="0x0" visible="true" />

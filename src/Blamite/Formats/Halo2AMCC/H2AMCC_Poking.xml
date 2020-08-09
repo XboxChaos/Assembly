@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <poking>
-	<!-- To add a new build, just add the version number, and then the pointer address for the map header. -->
+	<!-- To add a new build, just add the version number, and then depending on the game, the following;
 	
-	<version name="1.1477.0.0" address="0x15831F0"/>
-	<version name="1.1499.0.0" address="0x1583280"/>
-	<version name="1.1520.0.0" address="0x1583280"/>
+				For engines that use a single pointer to the map header and the magic value just beyond:
+				headerPointer       - The location of a pointer for a buffer containing the map header and magic. The offset (subtracting the header size) to the magic should be added to Engines.xml
+				
+				For engines where the above does not apply and the map header and magic are not pointers:
+				headerAddress       - The location of the map header.
+				magicAddress        - The location of the magic value to convert map addresses to runtime addresses.
+				sharedMagicAddress  - The location of the magic value to convert shared map addresses to runtime addresses. For Second Generation.-->
+	
+	<version name="1.1477.0.0" headerPointer="0x15831F0"/>
+	<version name="1.1499.0.0" headerPointer="0x1583280"/>
+	<version name="1.1520.0.0" headerPointer="0x1583280"/>
+	<version name="1.1570.0.0" headerPointer="0x15832F0"/>
+	<version name="1.1619.0.0" headerPointer="0x15832F0"/>
+	<version name="1.1698.0.0" headerPointer="0x1586510"/>
+	<version name="1.1716.0.0" headerPointer="0x1586510"/>
 </poking>
