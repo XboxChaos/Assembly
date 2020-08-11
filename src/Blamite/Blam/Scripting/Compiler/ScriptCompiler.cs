@@ -242,7 +242,14 @@ namespace Blamite.Blam.Scripting.Compiler
                 return;
             }
 
-            FunctionInfo info = RetrieveFunctionInfo(name, contextParameterCount, GetLineNumber(context));
+            FunctionInfo info = RetrieveFunctionInfo(name, contextParameterCount);
+            if(info is null)
+            {
+                string message = contextParameterCount == 1 ?
+                    $"A function or script called \"{name}\" with 1 parameter could not be found." :
+                    $"A function or script called \"{name}\" with {contextParameterCount} parameters could not be found.";
+                throw new CompilerException(message, context);
+            }
             ushort returnTypeOpcode = DetermineReturnTypeOpcode(info, expectedType, context);
             EqualityPush(info.ReturnType);
             PushCallParameters(info, contextParameterCount, expectedType, context);
@@ -273,13 +280,13 @@ namespace Blamite.Blam.Scripting.Compiler
             LinkDatum();
             _ = _expectedTypes.PopType();    // Just ignore the type for now.
 
-            // branch excepts two parameters
+            // Branch always has two parameters.
             if (context.expression().Count() != 2)
             {
-                throw new CompilerException("A branch call had an unexpected number of parameters.", context);
+                throw new CompilerException($"\"Branch\" accepts two arguments. The compiler found {context.expression().Count() }.", context);
             }
 
-            _expectedTypes.PushTypes("boolean", "SCRIPTREFERENCE");
+            _expectedTypes.PushTypes("boolean", TypeHelper.ScriptReference);
             FunctionInfo info = _opcodes.GetFunctionInfo("branch").First();
             CreateFunctionCall(info, _opcodes.GetTypeInfo("void").Opcode, GetLineNumber(context));
 
@@ -294,13 +301,17 @@ namespace Blamite.Blam.Scripting.Compiler
             }
 
             // Generate the script name.
-            BS_ReachParser.ScriptDeclarationContext scriptContext = GetParentScriptContext(context);
+            var scriptContext = GetParentContext(context, BS_ReachParser.RULE_scriptDeclaration) as BS_ReachParser.ScriptDeclarationContext;
+            if(scriptContext is null)
+            {
+                throw new CompilerException("The compiler failed to retrieve the name of a script, from which \"branch\" was called.", context);
+            }
             string fromScript = scriptContext.scriptID().GetText();
 
             var parameters = context.expression();
             if (parameters[1].call() == null)
             {
-                throw new CompilerException("A branch statements second parameter was not a script.", context);
+                throw new CompilerException("A branch call's second argument must be a script call.", context);
             }
             var param = parameters[1].call();
             string toScript = param.functionID().GetText();
@@ -322,6 +333,8 @@ namespace Blamite.Blam.Scripting.Compiler
 
             CloseDatum();
         }
+
+       
 
         public override void EnterCond(BS_ReachParser.CondContext context)
         {
@@ -475,7 +488,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
             if (!IsGlobalsReference(expectedType, context))
             {
-                throw new CompilerException("The parser detected a Globals Reference, but the expression doesn't seem to be one.", context);
+                throw new CompilerException("The parser detected a Global Reference, but the expression does not seem to be one.", context);
             }
         }
 
@@ -527,7 +540,7 @@ namespace Blamite.Blam.Scripting.Compiler
             if (ProcessLiteral(expectedType, context))
                 return;
 
-            throw new CompilerException($"Failed to process the expression \"{text.Trim('"')}\" with the expected return type \"{expectedType}\".", context);
+            throw new CompilerException($"Failed to process the expression \"{text.Trim('"')}\". A \"{expectedType}\" expression was expected.", context);
         }
 
         private bool IsGlobalsReference(string expectedType, ParserRuleContext context)
@@ -549,9 +562,9 @@ namespace Blamite.Blam.Scripting.Compiler
                 value = (uint)globalInfo.Opcode;
             }
             // Not a global...
-            else if (expectedType == "GLOBALREFERENCE")
+            else if (expectedType == TypeHelper.GlobalsReference)
             {
-                throw new CompilerException($"GLOBALREFERENCE: No matching global could be found.", context);
+                throw new CompilerException($"A global reference was expected, but no global with the name \"{text}\" could be found.", context);
             }
             else
             {
@@ -619,22 +632,22 @@ namespace Blamite.Blam.Scripting.Compiler
                 "ANY" when info.ReturnType == "passthrough" => "void",
                 "ANY" => info.ReturnType,
                 // Cast globals in arithmetic functions to real.
-                "NUMBER" when info is GlobalInfo && Casting.IsNumType(info.ReturnType) => "real",
-                "NUMBER" when Casting.IsNumType(info.ReturnType) => info.ReturnType,
-                "NUMBER" when !Casting.IsNumType(info.ReturnType) => "",
+                "NUMBER" when info is GlobalInfo && TypeHelper.IsNumType(info.ReturnType) => "real",
+                "NUMBER" when TypeHelper.IsNumType(info.ReturnType) => info.ReturnType,
+                "NUMBER" when !TypeHelper.IsNumType(info.ReturnType) => "",
                 "void" => "void",
                 "GLOBALREFERENCE" when info is GlobalInfo => info.ReturnType,
                 "SCRIPTREFERENCE" when info is ScriptInfo => info.ReturnType,
                 _ when expectedType == info.ReturnType => expectedType,
                 _ when info.ReturnType == "passthrough" => expectedType,
-                _ when Casting.CanBeCasted(info.ReturnType, expectedType, _opcodes) => expectedType,
+                _ when TypeHelper.CanBeCasted(info.ReturnType, expectedType, _opcodes) => expectedType,
                 _ => ""
             };
 
             if (calculatedType == "")
             {
-                throw new CompilerException($"The compiler failed to calculate the return type of an expression. It expected the return type \"{expectedType}\" while processing \"{info.Name}\"." +
-                    $" It encountered the return type \"{info.ReturnType}\".", context);
+                throw new CompilerException($"Failed to calculate the return type of an expression. The expected return type for \"{info.Name}\" was \"{expectedType}\"." +
+                    $" Its actual return type was \"{info.ReturnType}\".", context);
             }
 
             return _opcodes.GetTypeInfo(calculatedType).Opcode;
@@ -645,8 +658,8 @@ namespace Blamite.Blam.Scripting.Compiler
             string key = context.functionID().GetText() + "_" + expectedParameterCount;
             if(!_scriptLookup.TryGetValue(key, out ScriptInfo info))
             {
-                if (expectedReturnType == "SCRIPTREFERENCE")
-                    throw new CompilerException("The compiler expected a Script Reference but was unable to find a matching one. " +
+                if (expectedReturnType == TypeHelper.ScriptReference)
+                    throw new CompilerException($"The compiler expected a Script Reference but a Script with the name \"{key}\" could not be found. " +
                         "Please check your script declarations and your spelling.", context);
                 else
                     return false;
@@ -782,24 +795,30 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="actualParameterCount">The number of parameters which was extracted from the context</param>
         private void PushCallParameters(FunctionInfo info, int contextParameterCount, string expectedReturnType, BS_ReachParser.CallContext context)
         {
-            // Handle parameters.
             int expectedParamCount = info.ParameterTypes.Count();
+
+            // Handle regular functions.
             if (expectedParamCount > 0)
             {
                 if (contextParameterCount != expectedParamCount)
                 {
-                    throw new CompilerException($"Failed to push function parameters for function \"{context.functionID().GetText()}\". Mismatched counts. Expected: \"{expectedParamCount}\" Encountered: \"{contextParameterCount}\".", context);
+                    throw new CompilerException($"The function \"{context.functionID().GetText()}\" has an unexpected number of arguments. Expected: \"{expectedParamCount}\" Encountered: \"{contextParameterCount}\".", context);
 
                 }
                 _expectedTypes.PushTypes(info.ParameterTypes);
             }
             // TODO: Throw exceptions if a wrong number of parameters is detected.
+            // Handle special functions.
             #region special functions
             else
             {
+                bool validNumberOfArgs = false;
+
                 switch (info.Group)
                 {
+                    // Any number of arguments.
                     case "Begin":
+                        validNumberOfArgs = true;
                         if (info.Name.Contains("random"))
                         {
                             _expectedTypes.PushTypes(expectedReturnType, contextParameterCount);
@@ -813,13 +832,17 @@ namespace Blamite.Blam.Scripting.Compiler
                         }
                         break;
 
+                    // Any number of arguments.
                     case "BeginCount":
+                        validNumberOfArgs = true;
                         _expectedTypes.PushTypes(expectedReturnType, contextParameterCount - 1);
                         _expectedTypes.PushType("long");
                         break;
 
+                    // 2 or 3 arguments?
                     case "If":
-                        if(expectedReturnType == "ANY")
+                        validNumberOfArgs = contextParameterCount == 2 || contextParameterCount == 3;
+                        if(expectedReturnType == TypeHelper.Any)
                         {
                             _expectedTypes.PushTypes("void", contextParameterCount - 1);
                         }
@@ -830,44 +853,61 @@ namespace Blamite.Blam.Scripting.Compiler
                         _expectedTypes.PushType("boolean");
                         break;
 
+                    // Cond has it's own parser rule and should be handled elsewhere.
                     case "Cond":
-                        throw new CompilerException("A cond call was not regognized by the parser.", context);
+                        throw new CompilerException("A cond call was not recognized by the parser.", context);
 
+                    // Two arguments.
                     case "Set":
-                        _expectedTypes.PushType("GLOBALREFERENCE");
+                        validNumberOfArgs = contextParameterCount == 2;
+                        _expectedTypes.PushType(TypeHelper.GlobalsReference);
+                        // The second parameter will be pushed once we have determined the return type of the global.
                         _set = true;
                         break;
 
+                    // Any number of arguments.
                     case "Logical":
+                        validNumberOfArgs = contextParameterCount >= 1;
                         _expectedTypes.PushTypes("boolean", contextParameterCount);
                         break;
 
+                    // Depends on the function. Some accept only two arguments.
                     case "Arithmetic":
+                        validNumberOfArgs = contextParameterCount >= 1;
                         _expectedTypes.PushTypes("real", contextParameterCount);
                         break;
 
+                    // TODO: Change inequality to only accept NUMBER or maybe real arguments?
+                    // Two arguments.
                     case "Equality":
                     case "Inequality":
+                        validNumberOfArgs = contextParameterCount == 2;
                         _expectedTypes.PushTypes("ANY");
                         _equality = true;
                         break;
-
+                    
+                    // One or two arguments.
                     case "Sleep":
+                        validNumberOfArgs = contextParameterCount == 1 || contextParameterCount == 2;
                         if (contextParameterCount == 2)
                         {
                             _expectedTypes.PushType("script");
                         }
                         _expectedTypes.PushType("short");
                         break;
-
+                    
+                    // Zero or one argument(s).
                     case "SleepForever":
+                        validNumberOfArgs = contextParameterCount == 0 || contextParameterCount == 1;
                         if (contextParameterCount == 1)
                         {
                             _expectedTypes.PushType("script");
                         }
                         break;
 
+                    // One, two or three arguments.
                     case "SleepUntil":
+                        validNumberOfArgs = contextParameterCount >= 1 || contextParameterCount <= 3;
                         if (contextParameterCount == 3)
                         {
                             _expectedTypes.PushTypes("short", "long");
@@ -879,46 +919,58 @@ namespace Blamite.Blam.Scripting.Compiler
                         _expectedTypes.PushType("boolean");
                         break;
 
+                    // Probably two arguments.
                     case "SleepUntilGameTicks":
+                        validNumberOfArgs = contextParameterCount == 2;
                         if (contextParameterCount != 2)
                         {
-                            throw new CompilerException("The Compiler encountered a sleep_until_game_ticks " +
-                                "call with more than two arguments.", context);
+                            throw new CompilerException("The Compiler encountered a \"sleep_until_game_ticks\" call, which didn't have exactly two arguments.", context);
                         }
-
                         _expectedTypes.PushTypes("boolean", "short");
                         break;
 
+                    // Probably one argument.
                     case "CinematicSleep":
+                        validNumberOfArgs = contextParameterCount == 1;
                         if (contextParameterCount != 1)
                         {
-                            throw new CompilerException("The Compiler encountered a sleep_until_game_ticks " +
-                                "call with more than one arguments.", context);
+                            throw new CompilerException("The Compiler encountered a \"sleep_until_game_ticks\" call, which didn't have exactly one argument.", context);
                         }
-
                         _expectedTypes.PushType("short");
                         break;
 
+                    // One argument.
                     case "Wake":
+                        validNumberOfArgs = contextParameterCount == 1;
                         _expectedTypes.PushType("script");
                         break;
 
+                    // One argument.
                     case "Inspect":
+                        validNumberOfArgs = contextParameterCount == 1;
                         _expectedTypes.PushType("ANY");
                         break;
 
+                    // Branch has it's own parser rule and should be handled elsewhere.
                     case "Branch":
-                        throw new CompilerException("A branch call was not regognized by the parser.", context);
-
+                        throw new CompilerException("A branch call was not identified by the parser.", context);
+                    
+                    // One argument.
                     case "ObjectCast":
+                        validNumberOfArgs = contextParameterCount == 1;
                         _expectedTypes.PushType("object");
                         break;
 
+                    // What is this?
                     case null:
-                        break;
+                        return;
 
                     default:
-                        throw new CompilerException($"Unimplemented function group: {info.Group}", context);
+                        throw new CompilerException($"Unimplemented function group: \"{info.Group}\".", context);
+                }
+                if(!validNumberOfArgs)
+                {
+                    throw new CompilerException($"The special function \"{info.Name}\" has an invalid number of arguments: \"{contextParameterCount}\".", context);
                 }
             }
             #endregion

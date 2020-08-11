@@ -76,8 +76,7 @@ namespace Blamite.Blam.Scripting.Compiler
                     expression = GetNumberExpression(context);
                     if(expression is null)
                     {
-                        throw new CompilerException($"The Compiler encountered the literal {name} which could be of ANY value type." +
-                                "Guessing the value type would lead to too many inaccuracies.", context);
+                        throw new CompilerException($"Failed to process \"{name}\" because it didn't know which value type to expect. Try using a different function with clearly defined parameters.", context);
                     }
                     break;
 
@@ -217,7 +216,8 @@ namespace Blamite.Blam.Scripting.Compiler
                     // Throw an exception for unknown and misspelled value types.
                     else
                     {
-                        throw new CompilerException($"Unknown Value Type: \"{expectedValueType}\".", context);
+                        throw new CompilerException($"Unknown Value Type: \"{expectedValueType}\". " +
+                            $"A type definition might be missing from the scripting XML file or this could be a bug.", context);
                     }                   
             }
             // Failed to generate an expression.
@@ -722,8 +722,8 @@ namespace Blamite.Blam.Scripting.Compiler
             string name = context.GetText().Trim('"');           
             if(!_scriptingContext.TryGetUnitSeatMapping(name, out UnitSeatMapping mapping))
             {
-                throw new CompilerException($"Failed to retrieve the information for the unit seat mapping {name}. " +
-                    $"Please ensure that the xml file contains this mapping.", context);
+                throw new CompilerException($"Failed to retrieve the information for the Unit Seat Mapping {name}. " +
+                    $"Please ensure that the XML file in the \"SeatMappings\" folder for this map contains this mapping.", context);
             }
 
             ushort opcode = _opcodes.GetTypeInfo("unit_seat_mapping").Opcode;

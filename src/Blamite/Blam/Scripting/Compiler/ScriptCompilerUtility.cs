@@ -12,45 +12,41 @@ namespace Blamite.Blam.Scripting.Compiler
 {
     public partial class ScriptCompiler : BS_ReachBaseListener
     {
-        private FunctionInfo RetrieveFunctionInfo(string function, int parameterCount, int line)
+        private FunctionInfo RetrieveFunctionInfo(string function, int parameterCount)
         {
             List<FunctionInfo> infos = _opcodes.GetFunctionInfo(function);
-            if (infos == null)
+            if (infos == null || infos.Count == 0)
             {
-                throw new CompilerException($"The opcode for function \"{function}\" with parameter count \"{parameterCount}\" couldn't be retrieved. Please ensure that this is a valid function name."
-                        + "\nAlternatively, a script declaration could be missing in your .hsc file.", function, line);
+                return null;
             }
 
             // Overloaded functions exist. Select the right one based on its parameter count and whether the function is implemented or not.
-            FunctionInfo result;
             if (infos.Count > 1)
             {
-                result = infos.Find(i => i.Implemented && i.ParameterTypes.Count() == parameterCount);
+                return infos.Find(i => i.Implemented && i.ParameterTypes.Count() == parameterCount);
 
             }
             else
             {
-                result = infos[0];
+                return infos[0];
 
             }
-
-            return result;
         }
 
-        private BS_ReachParser.ScriptDeclarationContext GetParentScriptContext(ParserRuleContext ctx)
-        {
-            RuleContext parent = ctx;
+        //private BS_ReachParser.ScriptDeclarationContext GetParentScriptContext(ParserRuleContext ctx)
+        //{
+        //    RuleContext parent = ctx;
 
-            for(int i = 0; i < ctx.Depth(); i++)
-            {
-                parent = parent.Parent;
-                if(parent is BS_ReachParser.ScriptDeclarationContext scriptDeclaration)
-                {
-                    return scriptDeclaration;
-                }
-            }
-            throw new CompilerException("Failed to retrieve the parent script declaration context.", ctx.GetText(), ctx.Start.Line);
-        }
+        //    for(int i = 0; i < ctx.Depth(); i++)
+        //    {
+        //        parent = parent.Parent;
+        //        if(parent is BS_ReachParser.ScriptDeclarationContext scriptDeclaration)
+        //        {
+        //            return scriptDeclaration;
+        //        }
+        //    }
+        //    throw new CompilerException("Failed to retrieve the parent script declaration context.", ctx.GetText(), ctx.Start.Line);
+        //}
 
         private RuleContext GetParentContext(RuleContext context, int ruleIndex)
         {

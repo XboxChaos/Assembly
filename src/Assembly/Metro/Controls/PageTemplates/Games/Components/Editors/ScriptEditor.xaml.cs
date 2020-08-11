@@ -23,7 +23,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Controls;
-using System.Xml.Linq;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -31,6 +30,10 @@ using ICSharpCode.AvalonEdit.Document;
 using Assembly.Helpers.CodeCompletion.Scripting;
 using System.Threading;
 using ICSharpCode.AvalonEdit.Highlighting;
+using System.Windows.Media;
+using System.ComponentModel;
+using System.Text;
+using ICSharpCode.AvalonEdit.Editing;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 {
@@ -45,9 +48,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private readonly OpcodeLookup _opcodes;
         private readonly ICacheFile _cashefile;
         private readonly string _casheName;
-        private bool _showInfo;
         private Endian _endian;
-        private Action _metaRefresh;
         private CompletionWindow _completionWindow = null;
         private ScriptingContextCollection _context;
         private CancellationTokenSource _searchToken;
@@ -59,17 +60,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private bool _loaded = false;
         private readonly bool _compilationSupported;
 
-        public ScriptEditor(Action metaRefresh, EngineDescription buildInfo, IScriptFile scriptFile, IStreamManager streamManager, ICacheFile casheFile, string casheName, Endian endian)
+        public ScriptEditor(EngineDescription buildInfo, IScriptFile scriptFile, IStreamManager streamManager, ICacheFile casheFile, string casheName, Endian endian)
         {
             _endian = endian;
-            _metaRefresh = metaRefresh;
             _buildInfo = buildInfo;
             _opcodes = _buildInfo.ScriptInfo;
             _scriptFile = scriptFile;
             _streamManager = streamManager;
             _cashefile = casheFile;
             _casheName = casheName;
-            _showInfo = App.AssemblyStorage.AssemblySettings.ShowScriptInfo;
 
             // All games other than H4 use the old blam script syntax. Currently the compiler only supports the old syntax.
             _compilationSupported = !buildInfo.Name.Contains("Halo 4") && !(buildInfo.ScriptingContextPath is null);
@@ -101,104 +100,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
 
         #region Event Handlers
-        private void btnExport_Click(object sender, RoutedEventArgs e)
-        {
-            var sfd = new SaveFileDialog();
-            sfd.FileName = $"{_cashefile.InternalName}.hsc";
-            sfd.Title = "Save Script As";
-            sfd.Filter = "BlamScript Files|*.hsc|Text Files|*.txt|All Files|*.*";
-            if (!(bool)sfd.ShowDialog())
-                return;
-
-            File.WriteAllText(sfd.FileName, txtScript.Text);
-            MetroMessageBox.Show("Script Exported", "Script exported successfully.");
-        }
-
-        // Todo: Refactor this mess.
-        private async void btnCompile_Click(object sender, RoutedEventArgs e)
-        {
-            if(_buildInfo.Name.Contains("Reach"))
-            {
-                bool saved = false;
-                string folder = "Compiler";
-                if (!Directory.Exists(folder))
-                    Directory.CreateDirectory(folder);
-                string name = "ScriptCompiler.log";
-                string filePath = Path.Combine(folder, name);
-
-                using (var logStream = File.Create(filePath))
-                {
-                    TextWriterTraceListener traceListener = new TextWriterTraceListener(logStream);
-                    ScriptCompilerLogger logger = new ScriptCompilerLogger(traceListener);
-                    string hsc = txtScript.Text;
-                    var progress = new Progress<int>(v => { progressBar.Value = v; });
-                    try
-                    {
-                        DateTime start = DateTime.Now;
-                        Task<ScriptData> task = Task.Run(() => CompileScripts(hsc, progress, logger));
-                        await task.ContinueWith(t =>
-                        {
-                            ScriptData data = t.Result;
-
-                            DateTime end = DateTime.Now;
-                            TimeSpan duration = end.Subtract(start);
-
-                            var res = Dispatcher.Invoke<MetroMessageBox.MessageBoxResult>(() => MetroMessageBox.Show("Success!", $"The scripts were successfully compiled in {duration.TotalSeconds} seconds."
-                                + "\nWARNING: This compiler is not 100% accurate and could corrupt your map.\nPlease backup your map before proceeding."
-                                + "\n\nDo you want to save the changes to the file?", MetroMessageBox.MessageBoxButtons.YesNo));
-                            if (res == MetroMessageBox.MessageBoxResult.Yes)
-                            {
-                                using (IStream stream = _streamManager.OpenReadWrite())
-                                {
-                                    _scriptFile.SaveScripts(data, stream);
-                                    _cashefile.SaveChanges(stream);
-                                }
-                                saved = true;
-                            }
-                            logger.Flush();
-                        });
-                    }
-                    catch (AggregateException ex)
-                    {
-                        ex.Handle((x) =>
-                        {
-                            logger.Error(x);
-                            logger.Flush();
-                            if (x is CompilerException)
-                            {
-                                var comEx = x as CompilerException;
-                                MetroMessageBox.Show("Compiler Exception", $"{comEx.Message}\n\nText: \"{comEx.Text}\"\nLine: {comEx.Line}");
-                                return true;
-
-                            }
-                            else
-                            {
-                                MetroMessageBox.Show(x.GetType().ToString(), x.Message);
-                                return true;
-                            }
-                        });
-                    }
-                }
-
-                if (saved)
-                {
-                    _metaRefresh();
-                    StatusUpdater.Update("Scripts saved");
-                }
-
-                progressBar.Value = 0;
-            }
-            else
-            {
-                MetroMessageBox.Show("Not Implemented", $"Unsupported Game: {_buildInfo.Name}");
-            }
-        }
-
         private async void EditorLoadedAsync(object sender, RoutedEventArgs e)
         {
             if (!_loaded)
             {
-                if(_compilationSupported)
+                if (_compilationSupported)
                 {
                     // Background tasks.      
                     List<Task> tasks = new List<Task>();
@@ -216,7 +122,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                     _staticCompletionData = await completionTask;
                     txtScript.Text = await decompilationTask;
                 }
-                else if(_buildInfo.Name.Contains("Halo 4"))
+                else if (_buildInfo.Name.Contains("Halo 4"))
                 {
                     txtScript.Text = await Task.Run(() => DecompileHalo4Old());
                 }
@@ -226,6 +132,104 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                 }
                 txtScript.IsReadOnly = false;
                 _loaded = true;
+            }
+        }
+
+        private void btnExport_Click(object sender, RoutedEventArgs e)
+        {
+            var sfd = new SaveFileDialog();
+            sfd.FileName = $"{_cashefile.InternalName}.hsc";
+            sfd.Title = "Save Script As";
+            sfd.Filter = "BlamScript Files|*.hsc|Text Files|*.txt|All Files|*.*";
+            if (!(bool)sfd.ShowDialog())
+                return;
+
+            File.WriteAllText(sfd.FileName, txtScript.Text);
+            MetroMessageBox.Show("Script Exported", "Script exported successfully.");
+        }
+
+        private async void CompileButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (_buildInfo.Name.Contains("Reach"))
+            {
+                // Logger Setup
+                string folder = "Compiler";
+                if (!Directory.Exists(folder))
+                    Directory.CreateDirectory(folder);
+                string logPath = Path.Combine(folder, "ScriptCompiler.log");
+
+                using (var logStream = File.Create(logPath))
+                {
+                    // Create the logger and the exception collector. They are used for debugging.
+                    var traceListener = new TextWriterTraceListener(logStream);
+                    var logger = new ScriptCompilerLogger(traceListener);
+                    var exceptionCollector = new ParsingExceptionCollector();
+                    logger.Information($"Attempting to compile: {_scriptFile.Name}, Time: {DateTime.Now}");
+                    try
+                    {
+                        // Get the script file.
+                        string hsc = txtScript.Text;
+
+                        // Setup the progress handler.
+                        var progress = new Progress<int>(v => { progressBar.Value = v; });
+
+                        // Measure the time it took to compile the scripts.
+                        var stopWatch = Stopwatch.StartNew();
+
+                        // Compile the scripts.
+                        ScriptData compileData = await Task.Run(() => CompileScripts(hsc, progress, logger, exceptionCollector));
+                        stopWatch.Stop();
+                        var timeSpan = stopWatch.Elapsed;
+                        string compilationMessage = $"The scripts were successfully compiled in {timeSpan.TotalSeconds} seconds.";
+                        logger.Information(compilationMessage);
+
+                        // Show the message box.
+                        var saveResult = MetroMessageBox.Show("Scripts Compiled", compilationMessage
+                                + "\nWARNING: This compiler is not 100% accurate and could corrupt your map."
+                                + "\n\nDo you want to save the changes to the file?", MetroMessageBox.MessageBoxButtons.YesNo);
+                        if(saveResult == MetroMessageBox.MessageBoxResult.Yes)
+                        {
+                            //TODO: Move this to its own function.
+                            await Task.Run(() =>
+                            {
+                                using (IStream stream = _streamManager.OpenReadWrite())
+                                {
+                                    _scriptFile.SaveScripts(compileData, stream);
+                                    _cashefile.SaveChanges(stream);
+                                }
+                            });
+                            RefreshMeta();
+                            StatusUpdater.Update("Scripts saved");
+                        }
+                    }
+                    // Handle Parsing Errors.
+                    catch(OperationCanceledException opEx)
+                    {
+                        if (exceptionCollector.ContainsExceptions)
+                        {
+                            HandleParsingErrors(opEx, exceptionCollector, logger);
+                        }
+                        else
+                        {
+                            MetroMessageBox.Show("Operation Canceled", opEx.Message);
+                        }
+
+                    }
+                    // Handle Compiler Errors.
+                    catch(CompilerException compEx)
+                    {
+                        HandleCompilerErrors(compEx, logger);
+                    }
+                    finally
+                    {
+                        logger.Flush();
+                        progressBar.Value = 0;
+                    }
+                }
+            }
+            else
+            {
+                MetroMessageBox.Show("Game Not Supported", $"Script compilation for {_buildInfo.Name} is not supoprted yet.");
             }
         }
 
@@ -243,10 +247,23 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             _searchToken.Dispose();
         }
 
-        private void Settings_SettingsChanged(object sender, EventArgs e)
+        private async void Settings_SettingsChanged(object sender, PropertyChangedEventArgs e)
         {
-            // Reset the highlight color in case the theme changed.
-            SetHighlightColor();
+            if(e.PropertyName == "ShowScriptInfo")
+            {
+                if(_buildInfo.Name.Contains("Halo 4"))
+                {
+                    txtScript.Text = await Task.Run(() => DecompileHalo4Old());
+                }
+                else
+                {
+                    txtScript.Text = await Task.Run(() => DecompileToLISP() );
+                }
+            }
+            else if(e.PropertyName == "ApplicationAccent")
+            {
+                SetHighlightColor();
+            }
         }
 
         private void EditorTextEntering(object sender, TextCompositionEventArgs e)
@@ -288,6 +305,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         #region Functions
         private string DecompileHalo4Old()
         {
+            bool _showInfo = App.AssemblyStorage.AssemblySettings.ShowScriptInfo;
+
             DateTime startTime = DateTime.Now;
 
             ScriptTable scripts;
@@ -400,7 +419,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
         private string DecompileToLISP()
         {
-            DateTime startTime = DateTime.Now;
+            var watch = Stopwatch.StartNew();
 
             ScriptTable scripts;
             using (IReader reader = ((IStreamManager)_streamManager).OpenRead())
@@ -415,13 +434,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             var decompiler = new BlamScriptDecompiler(code, scripts, opcodes, _endian);
             decompiler.WriteComment("Decompiled with Assembly");
             decompiler.WriteComment("Source file: " + _scriptFile.Name);
-            decompiler.WriteComment("Start time: " + startTime);
+            decompiler.WriteComment("Start time: " + DateTime.Now);
             decompiler.WriteComment("Remember that all script code is property of Bungie/343 Industries.");
             decompiler.WriteComment("You have no rights. Play nice.");
-            decompiler.Decompile(_showInfo);
-            DateTime endTime = DateTime.Now;
-            TimeSpan duration = endTime.Subtract(startTime);
-            decompiler.WriteComment("Decompilation finished in ~" + duration.TotalSeconds + "s");
+            decompiler.Decompile(App.AssemblyStorage.AssemblySettings.ShowScriptInfo);
+            watch.Stop();
+            decompiler.WriteComment("Decompilation finished in ~" + watch.Elapsed.TotalSeconds + "s");
             return code.InnerWriter.ToString();
         }
 
@@ -435,53 +453,42 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             _context = loader.LoadContext(_buildInfo.ScriptingContextPath, unitSeatMappingPath);
         }
 
-        private ScriptData CompileScripts(string code, IProgress<int> progress, ScriptCompilerLogger logger)
+        private ScriptData CompileScripts(string code, IProgress<int> progress, ScriptCompilerLogger logger, ParsingExceptionCollector collector)
         {
             using (IReader reader = _streamManager.OpenRead())
             {
+                // Set up the lexer.
+                logger.Information("Running the lexer...");
                 ICharStream stream = CharStreams.fromstring(code);
-                ITokenSource lexer = new BS_ReachLexer(stream);
+                BS_ReachLexer lexer = new BS_ReachLexer(stream);
+                lexer.AddErrorListener(collector);
                 ITokenStream tokens = new CommonTokenStream(lexer);
+
+                // Set up the parser.
+                logger.Information("Running the parser...");
                 BS_ReachParser parser = new BS_ReachParser(tokens);
+                parser.AddErrorListener(collector);
+
+                // Parse the scripts.
                 parser.BuildParseTree = true;
                 IParseTree tree = parser.hsc();
-                Dictionary<string, UnitSeatMapping> seats = LoadSeatMappings();
-                 ScriptCompiler compiler = new ScriptCompiler(_cashefile, _opcodes, _context, progress, logger, true);
+
+                // Throw an exception if ANTLR reports parsing or lexing errors.
+                if(collector.ContainsExceptions)
+                {
+                    logger.Information("The collector contained errors. Cancelling the process...");
+                    throw new OperationCanceledException($"Parsing Failed! {collector.ExceptionCount} Exceptions occured during the parsing process.");
+                }
+
+                // Run the compiler.
+                logger.Information("Running the compiler...");
+                ScriptCompiler compiler = new ScriptCompiler(_cashefile, _opcodes, _context, progress, logger, true);
                 ParseTreeWalker.Default.Walk(compiler, tree);
                 return compiler.Result();
             }
         }
 
-        // Todo: Remove later.
-        private Dictionary<string, UnitSeatMapping> LoadSeatMappings()
-        {
-            string folder = _buildInfo.SeatMappingPath;
-            string filename = _casheName + "_Mappings.xml";
-            string path = Path.Combine(folder, filename);
-
-            XDocument doc = XDocument.Load(path);
-            var mappings = doc.Element("UnitSeatMappings").Elements("Mapping");
-
-            Dictionary<string, UnitSeatMapping> result = new Dictionary<string, UnitSeatMapping>();
-            foreach (XElement mapping in mappings)
-            {
-                long index = XMLUtil.GetNumericAttribute(mapping, "Index");
-                long count = XMLUtil.GetNumericAttribute(mapping, "Count");
-                string name = XMLUtil.GetStringAttribute(mapping, "Name");
-
-                if (result.ContainsKey(name))
-                {
-                    throw new Exception($"Duplicate unit seat mapping names: {name}");
-                }
-
-                UnitSeatMapping seat = new UnitSeatMapping((short)index, (short)count, name);
-                result.Add(name, seat);
-            }
-
-            return result;
-        }
-
-        // Todo: Find out to properly handle themes.
+        // TODO: Find out to properly handle themes.
         private void SetHighlightColor()
         {
             var bconv = new System.Windows.Media.BrushConverter();
@@ -622,9 +629,74 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                     await Task.Delay(interval, cancellationToken);
                 }
             }
-            catch (TaskCanceledException e)
+            catch (TaskCanceledException _)
             {
 
+            }
+        }
+
+        private void RefreshMeta()
+        {
+            DependencyObject parent = VisualTreeHelper.GetParent(this);
+            while(parent != null)
+            {
+                var haloMap = parent as HaloMap;
+                if(haloMap != null)
+                {
+                    haloMap.RefreshTags();
+                    StatusUpdater.Update("Meta Refreshed");
+                    return;
+                }
+                else
+                {
+                    parent = VisualTreeHelper.GetParent(parent);
+                }
+            }
+        }
+
+        private void HandleParsingErrors(OperationCanceledException ex, ParsingExceptionCollector collector, ScriptCompilerLogger logger)
+        {
+            StringBuilder sb = new StringBuilder();
+            ParsingExceptionInformation[] errors = collector.GetExceptions().ToArray();
+            int counter = errors.Length <= 10 ? errors.Length : 10;
+            for (int i = 0; i < counter; i++)
+            {
+                string errorMessage = $"{i + 1}: {errors[i].Message}, Line: {errors[i].Line}, Column: {errors[i].Column}";
+                sb.AppendLine(errorMessage);
+                logger.Error("Parsing Error " + errorMessage);
+            }
+
+            var _ = MetroMessageBox.Show("Parsing Failed", sb.ToString(), MetroMessageBox.MessageBoxButtons.Ok);
+            if (txtScript.TextArea.Focus())
+            {
+                // Go to the first error.
+                var firstError = errors[0];
+                if (firstError.Exception != null && firstError.Exception.OffendingToken != null)
+                {
+                    txtScript.Select(firstError.Exception.OffendingToken.StartIndex, firstError.Exception.OffendingToken.StopIndex + 1 - firstError.Exception.OffendingToken.StartIndex);
+                }
+                else
+                {
+                    txtScript.TextArea.Caret.Offset = txtScript.Document.GetOffset(firstError.Line, firstError.Column);
+                }
+                txtScript.ScrollToLine(firstError.Line);
+            }
+        }
+
+        private void HandleCompilerErrors(CompilerException ex, ScriptCompilerLogger logger)
+        {
+            logger.Error(ex);
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(ex.Message);
+            sb.AppendLine();
+            sb.AppendLine($"Text: \"{ex.Text}\"");
+            sb.AppendLine("Line: " + ex.Line);
+            sb.AppendLine("Column: " + ex.Column);
+            var _ = MetroMessageBox.Show("Compilation Failed", sb.ToString() , MetroMessageBox.MessageBoxButtons.Ok);
+            if(txtScript.TextArea.Focus())
+            {
+                txtScript.TextArea.Caret.Offset = txtScript.Document.GetOffset(ex.Line, ex.Column);
+                txtScript.ScrollToLine(ex.Line);
             }
         }
 

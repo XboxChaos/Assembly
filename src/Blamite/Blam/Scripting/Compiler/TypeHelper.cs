@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
 namespace Blamite.Blam.Scripting.Compiler
 {
-    public static class Casting
+    public static class TypeHelper
     {
-        private static readonly List<string> _numTypes = new List<string> { "real", "short", "long" };
-
-        private static readonly List<string> _flexTypes = new List<string>() { "ANY", "NUMBER", "GLOBALSREFERENCE" };
+        // When making changes to these, also adjust the strings in the function DetermineReturnTypeOpcode in ScriptCompiler.cs.
+        private const string _globalReferenceID = "GLOBALREFERENCE";
+        private const string _scriptReferenceID = "SCRIPTREFERENCE";
+        private const string _anyID = "ANY";
+        private const string _numberID = "NUMBER";
+        private static readonly IReadOnlyList<string> _numTypes = new ReadOnlyCollection<string>(new List<string>() { "long", "short", "real" });
 
         public static bool CanBeCasted(string from, string to, OpcodeLookup op)
         {
@@ -59,14 +63,22 @@ namespace Blamite.Blam.Scripting.Compiler
             }
         }
 
+        public static string GlobalsReference { get { return _globalReferenceID; } }
+
+        public static string ScriptReference { get { return _scriptReferenceID; } }
+
+        public static string Any { get { return _anyID; } }
+
+        public static string Number { get { return _numberID; } }
+
+        public static bool IsSpecialType(string type)
+        {
+            return type == _globalReferenceID || type == _anyID || type == _numberID;
+        }
+
         public static bool IsNumType(string type)
         {
             return _numTypes.Contains(type);
-        }
-
-        public static bool IsFlexType(string type)
-        {
-            return _flexTypes.Contains(type);
         }
     }
 }

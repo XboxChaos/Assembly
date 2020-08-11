@@ -686,7 +686,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                         Content = tabName,
                         ContextMenu = BaseContextMenu
                     },
-                    Content = new ScriptEditor(RefreshTags, _buildInfo, script, _mapManager, _cacheFile, Path.GetFileNameWithoutExtension(_cacheLocation), _cacheFile.Endianness)
+                    Content = new ScriptEditor(_buildInfo, script, _mapManager, _cacheFile, Path.GetFileNameWithoutExtension(_cacheLocation), _cacheFile.Endianness)
 				};
 
 				contentTabs.Items.Add(tab);
