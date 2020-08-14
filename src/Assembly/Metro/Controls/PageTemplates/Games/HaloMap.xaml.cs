@@ -159,7 +159,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		#else
 				try
 				{
-					_cacheFile = CacheFileLoader.LoadCacheFile(reader, App.AssemblyStorage.AssemblySettings.DefaultDatabase,
+					_cacheFile = CacheFileLoader.LoadCacheFile(reader, Path.GetFileName(_cacheLocation), App.AssemblyStorage.AssemblySettings.DefaultDatabase,
 						out _buildInfo);
 				}
 				catch (Exception ex)

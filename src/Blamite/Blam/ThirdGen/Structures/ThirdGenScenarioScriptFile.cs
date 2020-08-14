@@ -494,8 +494,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 
         private void WriteTagReferences(ScriptData data, IStream stream, StructureValueCollection scnr)
         {
-            int oldRefCount = (int)scnr.GetInteger("number of script references");
-            uint oldRefAddress = (uint)scnr.GetInteger("script references table address");
+            int oldRefCount = (int)scnr.GetInteger("number of script tag references");
+            uint oldRefAddress = (uint)scnr.GetInteger("script tag references table address");
             long expOldRefAddress = _expander.Expand(oldRefAddress);
             int oldRefSize = oldRefCount * 0x10;
             long newRefAddress = 0;
@@ -530,8 +530,8 @@ namespace Blamite.Blam.ThirdGen.Structures
                 _allocator.Free(expOldRefAddress, oldRefSize);
             }
 
-            scnr.SetInteger("number of script references", (uint)data.TagReferences.Count);
-            scnr.SetInteger("script references table address", _expander.Contract(newRefAddress));
+            scnr.SetInteger("number of script tag references", (uint)data.TagReferences.Count);
+            scnr.SetInteger("script tag references table address", _expander.Contract(newRefAddress));
         }
     }
 }
