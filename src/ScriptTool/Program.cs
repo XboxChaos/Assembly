@@ -33,7 +33,6 @@ namespace ScriptTool
         {
             string exeDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string[] maps = Directory.GetFiles(options.MapFolder, "*.map");
-            var extractor = new ScriptDumper();
             string outputFolder = options.OutputFolder == null ? exeDir : options.OutputFolder;
 
             if (!Directory.Exists(options.MapFolder))
@@ -56,14 +55,28 @@ namespace ScriptTool
 
             Console.WriteLine($"{maps.Length} maps found.\n");
 
-            if (options.DumpExpressions == "ALL")
+            // Dump Expressions.
+            if(options.DumpExpressions != null)
             {
-                extractor.DumpExpressionsAll(maps, outputFolder);
+                var extractor = new ScriptDumper();
+
+                if (options.DumpExpressions == "ALL")
+                {
+                    extractor.DumpExpressionsAll(maps, outputFolder);
+                }
+                else
+                {
+                    string outputFile = Path.Combine(outputFolder, options.DumpExpressions + "_expressions.xml");
+                    extractor.DumpExpressionsType(maps, options.DumpExpressions, outputFile);
+                }
             }
-            else if (options.DumpExpressions != null)
+
+            // Dump StringIDs.
+            if(options.DumpStringIDs == true)
             {
-                string outputFile = Path.Combine(outputFolder, options.DumpExpressions + "_expressions.xml");
-                extractor.DumpExpressionsType(maps, options.DumpExpressions, outputFile);
+                var dumper = new  MapDatadumper();
+                string outputFile = Path.Combine(outputFolder, "StringIDs.xml");
+                dumper.DumpUniqueStringIDs(maps, outputFile);
             }
         }
 

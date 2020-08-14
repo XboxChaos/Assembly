@@ -11,9 +11,23 @@ using System.IO;
 
 namespace ScriptTool
 {
-    public static class ScriptDataLoader
+    public static class MapLoader
     {
-        public static Dictionary<string, ScriptTable> LoadAllData(string path, EngineDatabase db, out EngineDescription engineInfo)
+        public static IEnumerable<ICacheFile> LoadAllMaps(string[] paths, EngineDatabase db)
+        {
+            List<ICacheFile> result = new List<ICacheFile>();
+            foreach(string path in paths)
+            {
+                using var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+                var reader = new EndianReader(stream, Endian.BigEndian);
+                var cache = CacheFileLoader.LoadCacheFile(reader, Path.GetFileNameWithoutExtension(path), db);
+                result.Add(cache);
+            }
+            return result;
+        }
+
+
+        public static Dictionary<string, ScriptTable> LoadAllScriptFiles(string path, EngineDatabase db, out EngineDescription engineInfo)
         {
             Dictionary<string, ScriptTable> result = new Dictionary<string, ScriptTable>();
             string fileName = Path.GetFileNameWithoutExtension(path);

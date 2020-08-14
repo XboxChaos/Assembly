@@ -35,7 +35,7 @@ namespace ScriptTool
             foreach (string map in mapPaths)
             {
                 Console.WriteLine($"Dumping the script expressions of {Path.GetFileName(map)}.");
-                var scriptTables = ScriptDataLoader.LoadAllData(map, _db, out EngineDescription engine);
+                var scriptTables = MapLoader.LoadAllScriptFiles(map, _db, out EngineDescription engine);
                 string fileName = Path.GetFileNameWithoutExtension(map) + "_Script_Expressions.xml";
                 string outputPath = Path.Combine(outputDirectory, fileName);
                 XmlHelper.AllExpressionsToXml(scriptTables, outputPath);
@@ -50,7 +50,7 @@ namespace ScriptTool
             // Collect the data.
             foreach (string map in mapPaths)
             {
-                var scriptTables = ScriptDataLoader.LoadAllData(map, _db, out EngineDescription engine);
+                var scriptTables = MapLoader.LoadAllScriptFiles(map, _db, out EngineDescription engine);
                 ScriptValueType info = engine.ScriptInfo.GetTypeInfo(type);
 
                 if(info is null)
@@ -82,19 +82,6 @@ namespace ScriptTool
             // Write the data to xml.
             XmlHelper.FilteredExpressionsToXml(mapExpressions, outputPath);
             Console.WriteLine($"\nAll {type} Expressions have been saved to {outputPath}.");
-        }
-
-        public void DumpStrings(string[] mapPaths, string outputDirectory)
-        {
-            foreach (string map in mapPaths)
-            {
-                Console.WriteLine($"Dumping the script expressions of {Path.GetFileName(map)}.");
-                var scriptTables = ScriptDataLoader.LoadAllData(map, _db, out EngineDescription engine);
-                string fileName = Path.GetFileNameWithoutExtension(map) + "_Strings.xml";
-                string outputPath = Path.Combine(outputDirectory, fileName);
-                XmlHelper.AllExpressionsToXml(scriptTables, outputPath);
-            }
-            Console.WriteLine($"\nAll Script Expressions have been dumped.");
         }
     }
 }

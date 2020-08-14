@@ -9,6 +9,7 @@ using Blamite.Blam.Scripting;
 using Blamite.Serialization;
 using Blamite.Serialization.Settings;
 using Blamite.IO;
+using System.Security;
 
 namespace ScriptTool
 {
@@ -161,6 +162,27 @@ namespace ScriptTool
                     writer.Close();
                 }
             }
+        }
+
+        public static void StringIDsToXml(IEnumerable<string> ids, string filePath)
+        {
+            var settings = new XmlWriterSettings
+            {
+                Indent = true,
+                Encoding = Encoding.Unicode
+            };
+
+            using var writer = XmlWriter.Create(filePath, settings);
+            writer.WriteStartDocument();
+            writer.WriteStartElement("StringIDs");
+            foreach (var id in ids)
+            {
+                XElement idElement = new XElement("StringID", id);
+                idElement.WriteTo(writer);
+            }
+            writer.WriteEndElement();
+            writer.WriteEndDocument();
+            writer.Close();
         }
 
         private static void WriteExpression(XmlWriter writer, ScriptExpression expression)

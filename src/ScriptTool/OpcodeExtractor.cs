@@ -51,7 +51,7 @@ namespace ScriptTool
             foreach (string map in maps)
             {
                 Console.WriteLine($"Processing {Path.GetFileName(map)}.");
-                var scriptTables = ScriptDataLoader.LoadAllData(map, _db, out _);
+                var scriptTables = MapLoader.LoadAllScriptFiles(map, _db, out _);
                 foreach (ScriptTable table in scriptTables.Values)
                 {
                     if(type == OpcodeType.Functions)
