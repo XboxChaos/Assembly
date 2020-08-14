@@ -10,37 +10,52 @@ using Blamite.Serialization;
 using Blamite.Serialization.Settings;
 using Blamite.IO;
 using System.Security;
+using System.Diagnostics;
 
 namespace ScriptTool
 {
     public static class XmlHelper
     {
-        public static void UpdateFunctionOpcodes(IDictionary<int, string> functions, string filePath)
+        public static int UpdateFunctionOpcodes(IDictionary<int, string> functions, string filePath)
         {
+            int updatedOpcodes = 0;
             XDocument doc = XDocument.Load(filePath);
             var xmlFunctions = doc.Descendants("function");
             foreach (var func in functions)
             {
+                string funcName = func.Value;
                 string op = "0x" + func.Key.ToString("X3");
                 XElement matchingFunc = xmlFunctions.Single(e => e.Attribute("opcode").Value == op);
-                matchingFunc.SetAttributeValue("name", func.Value);
+                if (matchingFunc.Attribute("name").Value != func.Value)
+                {
+                    Debug.WriteLine($"Functions: Overwriting {matchingFunc.Attribute("name").Value} with {func.Value}.");
+                    matchingFunc.SetAttributeValue("name", func.Value);
+                    updatedOpcodes++;
+                }
             }
-
             doc.Save(filePath);
+            return updatedOpcodes;
         }
 
-        public static void UpdateEngineGlobals(IDictionary<int, string> functions, string filePath)
+        public static int UpdateEngineGlobals(IDictionary<int, string> functions, string filePath)
         {
+            int updatedOpcodes = 0;
             XDocument doc = XDocument.Load(filePath);
-            var xmlFunctions = doc.Descendants("globals");
+            var xmlGlobals = doc.Descendants("global");
             foreach (var func in functions)
             {
                 string op = "0x" + func.Key.ToString("X3");
-                XElement matchingFunc = xmlFunctions.Single(e => e.Attribute("opcode").Value == op);
-                matchingFunc.SetAttributeValue("name", func.Value);
+                XElement matchingGlobal = xmlGlobals.Single(e => e.Attribute("opcode").Value == op);
+                // If the names don't match, overwrite the old one with the new one.
+                if(matchingGlobal.Attribute("name").Value != func.Value)
+                {
+                    Debug.WriteLine($"Globals: Overwriting {matchingGlobal.Attribute("name").Value} with {func.Value}.");
+                    matchingGlobal.SetAttributeValue("name", func.Value);
+                    updatedOpcodes++;
+                }
             }
-
             doc.Save(filePath);
+            return updatedOpcodes;
         }
 
         public static void FunctionOpcodesToXml(IDictionary<int, string> functions, string filePath)

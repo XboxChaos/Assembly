@@ -20,15 +20,16 @@ namespace ScriptWalker
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            if (args.Length != 3)
+            if (args.Length != 2 && args.Length != 3)
             {
-                Console.WriteLine("Usage: ScriptWalker <unmodified map> <modified map> <output dir>");
+                Console.WriteLine("Usage: ScriptWalker <unmodified map> <modified map> <[OPTIONAL] output dir>");
                 return;
             }
 
+            string exeDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string origPath = args[0];
             string modPath = args[1];
-            string outputDir = args[2];
+            string outputDir = args.Length == 3 ? args[2] : exeDir;
 
             if (!File.Exists(origPath))
             {
@@ -53,7 +54,6 @@ namespace ScriptWalker
             string outputName = modName + "_to_" + origName + ".txt";
             string outputPath = Path.Combine(outputDir, outputName);
 
-            string exeDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string formatsDir = Path.Combine(exeDir, "Formats");
             string supportedBuildsPath = Path.Combine(formatsDir, "Engines.xml");
 
@@ -93,7 +93,7 @@ namespace ScriptWalker
                 EngineDescription engine;
 
                 var reader = new EndianReader(stream, Endian.BigEndian);
-                var cache = CacheFileLoader.LoadCacheFile(reader, db, out engine);
+                var cache = CacheFileLoader.LoadCacheFile(reader, Path.GetFileName(path), db, out engine);
                 desc = engine;
                 Console.WriteLine($"File: {path} | Endianness: {reader.Endianness}");
                 var scripts = cache.ScriptFiles[0].LoadScripts(reader);

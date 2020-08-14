@@ -117,8 +117,9 @@ namespace ScriptTool
                 }
                 else
                 {
-                    XmlHelper.UpdateFunctionOpcodes(opcodes, options.UpdateFile);
-                    Console.WriteLine($"\nThe file {options.UpdateFile} was updated with the extracted function opcodes.");
+                    int updated = XmlHelper.UpdateFunctionOpcodes(opcodes, options.UpdateFile);
+                    string message = updated == 0 ? "No Opcodes were updated. The file was already up to date." : $"{updated} Opcodes have been updated with the extracted ones.";
+                    Console.WriteLine(message);
                 }
             }
         }
@@ -160,8 +161,9 @@ namespace ScriptTool
                 }
                 else
                 {
-                    XmlHelper.UpdateFunctionOpcodes(opcodes, options.UpdateFile);
-                    Console.WriteLine($"\nThe file {options.UpdateFile} was updated with the extracted function opcodes.");
+                    int updated = XmlHelper.UpdateEngineGlobals(opcodes, options.UpdateFile);
+                    string message = updated == 0 ? "No Opcodes were updated. The file was already up to date." : $"{updated} Opcodes have been updated with the extracted ones.";
+                    Console.WriteLine(message);
                 }
             }
         }
