@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using Blamite.Blam.Scripting.Context;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
 
 namespace Blamite.Blam.Scripting.Compiler
 {
@@ -143,7 +144,7 @@ namespace Blamite.Blam.Scripting.Compiler
             }
 
             string returnType = context.VALUETYPE().GetText();
-            int expressionCount = context.globalsReference().Count() + context.call().Count() + context.branch().Count() + context.cond().Count();
+            int expressionCount = context.globalReference().Count() + context.call().Count() + context.branch().Count() + context.cond().Count();
 
             // The final expression must match the return type of this script.
             _expectedTypes.PushType(returnType);
@@ -232,7 +233,7 @@ namespace Blamite.Blam.Scripting.Compiler
             LinkDatum();
 
             // Retrieve information from the context.
-            string name = context.functionID().GetText();
+            string name = context.callID().GetText();
             string expectedType = _expectedTypes.PopType();
             int contextParameterCount = context.expression().Count();
 
@@ -309,12 +310,12 @@ namespace Blamite.Blam.Scripting.Compiler
             string fromScript = scriptContext.scriptID().GetText();
 
             var parameters = context.expression();
-            if (parameters[1].call() == null)
+            if (parameters[1].call() is null)
             {
                 throw new CompilerException("A branch call's second argument must be a script call.", context);
             }
             var param = parameters[1].call();
-            string toScript = param.functionID().GetText();
+            string toScript = param.callID().GetText();
             string generatedName = fromScript + "_to_" + toScript;
 
             ScriptExpression[] expressions = new ScriptExpression[2];
@@ -476,7 +477,7 @@ namespace Blamite.Blam.Scripting.Compiler
             AddExpressionIncrement(compilerBeginName);
         }
 
-        public override void EnterGlobalsReference(BS_ReachParser.GlobalsReferenceContext context)
+        public override void EnterGlobalReference(BS_ReachParser.GlobalReferenceContext context)
         {
             if (_debug)
             {
@@ -597,7 +598,7 @@ namespace Blamite.Blam.Scripting.Compiler
             // "set" and (in)equality functions are special.
             if (grandparent is BS_ReachParser.CallContext call)
             {
-                string funcName = call.functionID().GetText();
+                string funcName = call.callID().GetText();
                 List<FunctionInfo> funcInfo = _opcodes.GetFunctionInfo(funcName);
 
                 if (funcInfo != null)
@@ -655,7 +656,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private bool IsScriptReference(string expectedReturnType, int expectedParameterCount, BS_ReachParser.CallContext context)
         {
-            string key = context.functionID().GetText() + "_" + expectedParameterCount;
+            string key = context.callID().GetText() + "_" + expectedParameterCount;
             if(!_scriptLookup.TryGetValue(key, out ScriptInfo info))
             {
                 if (expectedReturnType == TypeHelper.ScriptReference)
@@ -723,7 +724,7 @@ namespace Blamite.Blam.Scripting.Compiler
             // (In)Equality functions are special
             if(context.Parent.Parent is BS_ReachParser.CallContext grandparent)
             {
-                string funcName = grandparent.functionID().GetText();
+                string funcName = grandparent.callID().GetText();
                 var funcInfo = _opcodes.GetFunctionInfo(funcName);
                 if(funcInfo != null)
                 {
@@ -765,7 +766,7 @@ namespace Blamite.Blam.Scripting.Compiler
             var parameterContext = context.scriptParameters();
             if (parameterContext != null)
             {
-                var parameters = parameterContext.parameterGroup();
+                var parameters = parameterContext.parameter();
                 for(ushort i = 0; i < parameters.Length; i++)
                 {
                     string name = parameters[i].ID().GetText();
@@ -802,7 +803,7 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 if (contextParameterCount != expectedParamCount)
                 {
-                    throw new CompilerException($"The function \"{context.functionID().GetText()}\" has an unexpected number of arguments. Expected: \"{expectedParamCount}\" Encountered: \"{contextParameterCount}\".", context);
+                    throw new CompilerException($"The function \"{context.callID().GetText()}\" has an unexpected number of arguments. Expected: \"{expectedParamCount}\" Encountered: \"{contextParameterCount}\".", context);
 
                 }
                 _expectedTypes.PushTypes(info.ParameterTypes);

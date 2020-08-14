@@ -29,7 +29,7 @@ namespace Blamite.Blam.Scripting.Compiler
             var parameterContext = context.scriptParameters();
             if (parameterContext != null)
             {
-                var parameters = parameterContext.parameterGroup();
+                var parameters = parameterContext.parameter();
                 // Create parameters from the extracted strings
                 for (ushort i = 0; i < parameters.Length; i++)
                 {

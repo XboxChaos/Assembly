@@ -1,46 +1,41 @@
 grammar BS_Reach;
 
-hsc : (globalDeclaration|scriptDeclaration)+ ;
+hsc : (globalDeclaration|scriptDeclaration)* ;
 
 globalDeclaration : LP 'global' VALUETYPE ID expression RP ;
 
-scriptDeclaration : LP 'script' SCRIPTTYPE VALUETYPE scriptID scriptParameters? (call | globalsReference | branch | cond)+ RP ;
+scriptDeclaration : LP 'script' SCRIPTTYPE VALUETYPE scriptID scriptParameters? (call | globalReference | branch | cond)+ RP ;
 
-scriptParameters : LP parameterGroup (',' parameterGroup)* RP ;
+scriptParameters : LP parameter (',' parameter)* RP ;
 
 cond : LP 'cond' condGroup+ RP ;
 
 branch : LP 'branch' expression* RP ;
 
-call : LP functionID expression* RP ;
+call : LP callID expression* RP ;
 
 condGroup : LP expression expression+ RP ;
 
-parameterGroup: VALUETYPE ID ;
+parameter: VALUETYPE ID ;
 
 scriptID 
         :       ID
         |       INT
         ;
 
-functionID 
-        :       '!='
-        |       '>='
-        |       '<='
-        |       '*'
-        |       '+'
-        |       '<'
-        |       '-'
-        |       '='
-        |       '>'
-        |       ID
-        |       VALUETYPE                       //messy
+callID 
+        :       scriptID
+        |       VALUETYPE
         ;
-globalsReference  :       ID; 
+        
+globalReference  :       ID; 
 
-expression    :   literal | call | branch | cond;
-
-// returnType : 'void' | VALUETYPE ;
+expression    
+        : literal 
+        | call               
+        | branch 
+        | cond
+        ;
 
 literal 
         :       INT
@@ -50,8 +45,17 @@ literal
         |       MODELSTATE
         |       BOOLEAN
         |       ID
-        |       VALUETYPE                       //messy
+        |       NONE
+        |       VALUETYPE       // The value type player causes problems
         ;
+
+
+// Lexers
+//--------------------------------------------------------------------
+
+BOOLEAN  : 'true' | 'false' ;
+
+NONE: 'none' ;
 		
 DAMAGEREGION
         :       'gut'
@@ -74,8 +78,6 @@ MODELSTATE
         |       'major damage'
         |       'destroyed'
         ;   
-
-BOOLEAN  : 'true' | 'false' ;
 
 VALUETYPE
         :       'unparsed'
@@ -185,10 +187,10 @@ FLOAT : '-'? DIGIT+ '.' DIGIT+ ;
 
 INT : '-'? DIGIT+ ;
 
-ID : (LCASE|DIGIT|SPECIAL)+ ;
-
 LP : '(' ;
 RP : ')' ;
+
+ID : (LCASE|DIGIT|SPECIAL)+ ;
 
 fragment
 LCASE : [a-z] ;
@@ -198,26 +200,40 @@ DIGIT : [0-9] ;
 
 fragment
 SPECIAL 
-        :  '!' 
-        | '#' 
-        | '$' 
-        | '%' 
-        | '*' 
-        | '+' 
-        | '.' 
-        | '/' 
-		| '\\' 
-        | ':' 
-        | '?' 
-        | '@' 
-        | '[' 
-        | ']' 
-        | '_' 
-        |  '|'
+        :	'_'
+        |       '-'
+        |	'#'
+        |	':'
+        |	'%'
+        |	'?'
+        |	'*'
+        |	'!'
+        |	'\\'
+        |	'/'
+        |	'|'
+        |	'$'
+        |	'.'
+        |	'+'
+        |	'@'
+        |	'['
+        |	']'
+        |	'\''
+        |	'`'
+        |	'='
+        |	'<'
+        |	'>'
         ;
 
 
+// Discard
+//--------------------------------------------------------------------
 
-COMMENT : ';' .*? '\n' -> skip;
+fragment
+WS : [ \n\r\t,] ;
 
-WS : [ \t\r\n]+ -> skip ;
+fragment
+COMMENT: ';' ~[\r\n]* ;
+
+TRASH
+    : ( WS | COMMENT ) -> channel(HIDDEN)
+    ;

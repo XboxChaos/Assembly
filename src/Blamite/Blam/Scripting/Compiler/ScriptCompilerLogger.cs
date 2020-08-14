@@ -209,7 +209,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public void Call(BS_ReachParser.CallContext context, CompilerContextAction action)
         {
-            string name = context.functionID().GetText();
+            string name = context.callID().GetText();
             WriteContextIndent("CALL", context, action, name);
         }
 

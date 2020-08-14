@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from BS_Reach.g4 by ANTLR 4.8
+// Generated from f:\Dev\Antlr\BS_Reach.g4 by ANTLR 4.8
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -111,15 +111,15 @@ public interface IBS_ReachListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitCondGroup([NotNull] BS_ReachParser.CondGroupContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="BS_ReachParser.parameterGroup"/>.
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.parameter"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterParameterGroup([NotNull] BS_ReachParser.ParameterGroupContext context);
+	void EnterParameter([NotNull] BS_ReachParser.ParameterContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="BS_ReachParser.parameterGroup"/>.
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.parameter"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitParameterGroup([NotNull] BS_ReachParser.ParameterGroupContext context);
+	void ExitParameter([NotNull] BS_ReachParser.ParameterContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="BS_ReachParser.scriptID"/>.
 	/// </summary>
@@ -131,25 +131,25 @@ public interface IBS_ReachListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitScriptID([NotNull] BS_ReachParser.ScriptIDContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="BS_ReachParser.functionID"/>.
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.callID"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterFunctionID([NotNull] BS_ReachParser.FunctionIDContext context);
+	void EnterCallID([NotNull] BS_ReachParser.CallIDContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="BS_ReachParser.functionID"/>.
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.callID"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitFunctionID([NotNull] BS_ReachParser.FunctionIDContext context);
+	void ExitCallID([NotNull] BS_ReachParser.CallIDContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="BS_ReachParser.globalsReference"/>.
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.globalReference"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterGlobalsReference([NotNull] BS_ReachParser.GlobalsReferenceContext context);
+	void EnterGlobalReference([NotNull] BS_ReachParser.GlobalReferenceContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="BS_ReachParser.globalsReference"/>.
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.globalReference"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitGlobalsReference([NotNull] BS_ReachParser.GlobalsReferenceContext context);
+	void ExitGlobalReference([NotNull] BS_ReachParser.GlobalReferenceContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="BS_ReachParser.expression"/>.
 	/// </summary>
