@@ -9,20 +9,38 @@
              d:DesignHeight="600" d:DesignWidth="1000" Loaded="EditorLoadedAsync">
     <Grid>
         <DockPanel LastChildFill="True">
-            <Border Height="30" BorderThickness="0,1,0,0" BorderBrush="#434346" Background="#FF303032" DockPanel.Dock="Bottom">
-                <StackPanel Orientation="Horizontal">
-                    <Button x:Name="btnCompile" Content="Save and Compile" Width="132" VerticalAlignment="Center"
-				            HorizontalAlignment="Left" Margin="10,0,0,0" Click="CompileButtonClick" />
-                    <Grid HorizontalAlignment="Left">
-                        <ProgressBar x:Name="progressBar" Width="100" VerticalAlignment="Center" Margin="10,0,0,0" Maximum="100" Height="20"/>
-                        <TextBlock Text="{Binding ElementName=progressBar, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
-                    </Grid>
-                    <Button x:Name="btnExport" Content="Export..." Width="80" VerticalAlignment="Center" HorizontalAlignment="Left"
-				            Margin="10,0,0,0" Click="btnExport_Click" />
-                </StackPanel>
+            <Border Height="30" BorderThickness="0,0,0,1" BorderBrush="#434346" Background="#FF303032" DockPanel.Dock="Top">
+                <Grid>
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                        <Button x:Name="btnImport" VerticalAlignment="Center" Margin="5,0,0,0" Width="75" Click="btnImport_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <ContentControl ContentTemplate="{StaticResource ImportIcon}" Width="16" VerticalAlignment="Center"/>
+                                <TextBlock Text="Import" VerticalAlignment="Center" Margin="3,0,0,0"/>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="btnExport" VerticalAlignment="Center" Margin="5,0,0,0" Width="75" Click="btnExport_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <ContentControl ContentTemplate="{StaticResource ExportIcon}" Width="16" />
+                                <TextBlock Text="Export" VerticalAlignment="Center" Margin="3,0,0,0"/>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="btnCompile" VerticalAlignment="Center" Margin="5,0,0,0" Width="75" Click="CompileButtonClick">
+                            <StackPanel Orientation="Horizontal">
+                                <ContentControl ContentTemplate="{StaticResource RunIcon}" Width="16"/>
+                                <TextBlock Text="Compile" VerticalAlignment="Center" Margin="3,0,0,0"/>
+                            </StackPanel>
+                        </Button>
+                        <Grid Margin="5,0,0,0" VerticalAlignment="Center">
+                            <Border BorderBrush="#616161" BorderThickness="1" Height="22" VerticalAlignment="Center">
+                                <ProgressBar x:Name="progressBar" Maximum="100" Height="20" Width="150" Background="Transparent"/>
+                            </Border>
+                            <TextBlock Text="{Binding ElementName=progressBar, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
             </Border>
             <AvalonEdit:TextEditor Name="txtScript" Padding="0" BorderThickness="0" LineNumbersForeground="{DynamicResource ExtryzeAccentBrush}" ShowLineNumbers="True" 
-                                   Background="Transparent" Foreground="#FF839496" VerticalScrollBarVisibility="Auto"
+                                   Background="#252526" Foreground="#FF839496" VerticalScrollBarVisibility="Auto"
 		                           HorizontalScrollBarVisibility="Auto" FontFamily="Consolas" FontSize="10pt">
                 <AvalonEdit:TextEditor.ContextMenu>
                     <ContextMenu>

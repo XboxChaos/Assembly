@@ -148,6 +148,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             MetroMessageBox.Show("Script Exported", "Script exported successfully.");
         }
 
+        private void btnImport_Click(object sender, RoutedEventArgs e)
+        {
+            var ofd = new OpenFileDialog();
+            ofd.Filter = "BlamScript Files|*.hsc|Text Files|*.txt|All Files|*.*";
+            if (!(bool)ofd.ShowDialog())
+                return;
+            txtScript.Text = File.ReadAllText(ofd.FileName);
+        }
+
         private async void CompileButtonClick(object sender, RoutedEventArgs e)
         {
             if (_buildInfo.Name.Contains("Reach"))
