@@ -6,6 +6,7 @@ using System.Linq;
 using Blamite.Blam.Scripting.Context;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
+using Blamite.Util;
 
 namespace Blamite.Blam.Scripting.Compiler
 {
@@ -112,9 +113,12 @@ namespace Blamite.Blam.Scripting.Compiler
         public override void ExitHsc(BS_ReachParser.HscContext context)
         {
             GenerateBranches();
-            DeclarationsToXML();
-            ExpressionsToXML();
-            StringsToFile();
+            if(_debug)
+            {
+                DeclarationsToXML();
+                ExpressionsToXML();
+                StringsToFile();
+            }
             _result = new ScriptData(_scripts, _globals, _references, _expressions, _strings);
         }
 
@@ -144,7 +148,7 @@ namespace Blamite.Blam.Scripting.Compiler
             }
 
             string returnType = context.VALUETYPE().GetText();
-            int expressionCount = context.globalReference().Count() + context.call().Count() + context.branch().Count() + context.cond().Count();
+            int expressionCount = context.expression().Count();
 
             // The final expression must match the return type of this script.
             _expectedTypes.PushType(returnType);
@@ -477,22 +481,6 @@ namespace Blamite.Blam.Scripting.Compiler
             AddExpressionIncrement(compilerBeginName);
         }
 
-        public override void EnterGlobalReference(BS_ReachParser.GlobalReferenceContext context)
-        {
-            if (_debug)
-            {
-                _logger.GlobalReference(context, CompilerContextAction.Enter);
-            }
-
-            LinkDatum();
-            string expectedType = _expectedTypes.PopType();
-
-            if (!IsGlobalsReference(expectedType, context))
-            {
-                throw new CompilerException("The parser detected a Global Reference, but the expression does not seem to be one.", context);
-            }
-        }
-
         /// <summary>
         /// Processes regular expressions, script variables and global references. Links to a datum. Opens a datum.
         /// </summary>
@@ -511,7 +499,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
             // Handle "none" expressions. The Value field of ai_line expressions stores their string offset.
             // Therefore the Value is not -1 if the expression is "none".
-            if(text == "none" && expectedType != "ai_line")
+            if(text == "none" && expectedType != "ai_line" && expectedType != "string")
             {                
                 ushort opcode = _opcodes.GetTypeInfo(expectedType).Opcode;
                 var expression = new ScriptExpression
@@ -699,24 +687,6 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 return false;
             }
-
-            //// Casting is not required.
-            //if(Casting.IsFlexType(expectedReturnType) || expectedReturnType == info.ReturnType)
-            //{
-            //    returnType = info.ReturnType;
-            //}
-            //// Casting.
-            //else
-            //{
-            //    if(Casting.CanBeCasted(info.ReturnType, expectedReturnType, _opcodes))
-            //    {
-            //        returnType = expectedReturnType;
-            //    }
-            //    else
-            //    {
-            //        throw new CompilerException($"The parameter  \"{text}\" can't be casted from \"{info.ReturnType}\" to \"{expectedReturnType}\".", context);
-            //    }
-            //}
 
             ushort returnTypeOpcode = DetermineReturnTypeOpcode(info, expectedReturnType, context);
             ushort opcode = returnTypeOpcode;
@@ -1001,38 +971,9 @@ namespace Blamite.Blam.Scripting.Compiler
                 CreateInitialBegin("void");
                 LinkDatum();
 
-                //// create the begin call
-                //ScriptFunctionInfo beginInfo = _opcodes.GetFunctionInfo("begin").First();
-                //var begin = new ScriptExpression(_currentIndex, beginInfo.Opcode, _opcodes.GetTypeInfo("void").Opcode,
-                //    ScriptExpressionType.Group, _randomAddress, _currentIndex.Next(), 0);
-                //_currentIndex.Increment();
-                //_expressions.Add(begin);
-
-                //// create the begin name
-                //var beginName = new ScriptExpression(_currentIndex, beginInfo.Opcode, _opcodes.GetTypeInfo("function_name").Opcode,
-                //    ScriptExpressionType.Expression, _currentIndex.Next(), _strings.Cache("begin"), (uint)0, 0);
-                //_currentIndex.Increment();
-                //_expressions.Add(beginName);
-
                 // create the sleep_until call
                 FunctionInfo sleepInfo = _opcodes.GetFunctionInfo("sleep_until").First();
                 CreateFunctionCall(sleepInfo, voidOpcode, 0);
-
-                //var sleepCall = new ScriptExpression(_currentIndex, sleepInfo.Opcode, _opcodes.GetTypeInfo("void").Opcode,
-                //    ScriptExpressionType.Group, _randomAddress, _currentIndex.Next(), 0);
-
-                //// link to the script reference
-                //ushort srIndex = (ushort)(_currentIndex.Index + 3);
-                //ushort srSalt = IndexToSalt(srIndex);
-                //sleepCall.Next = new DatumIndex(srSalt, srIndex);
-                //_currentIndex.Increment();
-                //_expressions.Add(sleepCall);
-
-                //// create the sleep_until name
-                //var sleepName = new ScriptExpression(_currentIndex, sleepInfo.Opcode, _opcodes.GetTypeInfo("function_name").Opcode,
-                //    ScriptExpressionType.Expression, _currentIndex.Next(), _strings.Cache("sleep_until"), (uint)0, 0);
-                //_currentIndex.Increment();
-                //_expressions.Add(sleepName);
 
                 // Adjust the condition expression and add it.
                 LinkDatum();

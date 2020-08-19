@@ -1,5 +1,7 @@
 ﻿using Blamite.Blam.Scripting.Compiler;
 using Blamite.IO;
+using Blamite.Util;
+using System;
 using System.Collections.Generic;
 
 namespace Blamite.Blam.Scripting
@@ -29,11 +31,12 @@ namespace Blamite.Blam.Scripting
 		ScriptTable LoadScripts(IReader reader);
 
 		/// <summary>
-		///     Saves scripts back to the file.
+		///     Saves scripts back to the file and reports the progress.
 		/// </summary>
 		/// <param name="scripts">The scripts to save.</param>
 		/// <param name="stream">The stream to operate on.</param>
-		void SaveScripts(ScriptData scripts, IStream stream);
+		/// <param name="progress">The object to report progress with.</param>
+		void SaveScripts(ScriptData scripts, IStream stream, IProgress<int> progress);
 
 		/// <summary>
 		///		Retrieves all unique Seat Mappings which were referenced in this map's scripts.

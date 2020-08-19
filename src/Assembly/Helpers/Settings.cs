@@ -180,7 +180,9 @@ namespace Assembly.Helpers
 		private UpdateSource _updateChannel = UpdateSource.Stable;
 		private bool _shownCheatingDialog = false;
 		private bool _autoOpenDuplicates = false;
+		// Scripting
 		private bool _showScriptInfo = false;
+		private bool _outputCompilerDebugData = false;
 
 		#region Enums
 
@@ -700,6 +702,12 @@ namespace Assembly.Helpers
 			get { return _showScriptInfo; }
 			set { SetField(ref _showScriptInfo, value, "ShowScriptInfo"); }
 		}
+
+		public bool OutputCompilerDebugData
+        {
+            get { return _outputCompilerDebugData; }
+			set { SetField(ref _outputCompilerDebugData, value, "OutputCompilerDebugData"); }
+        }
 
 		/// <summary>
 		/// </summary>

@@ -59,6 +59,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private IEnumerable<ICompletionData> _dynamicGlobalCompletionData = new ICompletionData[0];
         private bool _loaded = false;
         private readonly bool _compilationSupported;
+        private readonly Progress<int> _progress;
 
         public ScriptEditor(EngineDescription buildInfo, IScriptFile scriptFile, IStreamManager streamManager, ICacheFile casheFile, string casheName, Endian endian)
         {
@@ -96,6 +97,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             srch.MarkerBrush = srchbrsh;
 
             txtScript.SyntaxHighlighting = LoadSyntaxHighlighting(_opcodes);
+
+            _progress = new Progress<int>(i =>
+            {
+                progressBar.Value = i;
+            });
+
+            itemShowInformation.IsChecked = App.AssemblyStorage.AssemblySettings.ShowScriptInfo;
+            itemDebugData.IsChecked = App.AssemblyStorage.AssemblySettings.OutputCompilerDebugData;
         }
 
 
@@ -135,7 +144,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             }
         }
 
-        private void btnExport_Click(object sender, RoutedEventArgs e)
+        private void ExportClick(object sender, RoutedEventArgs e)
         {
             var sfd = new SaveFileDialog();
             sfd.FileName = $"{_cashefile.InternalName}.hsc";
@@ -148,7 +157,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             MetroMessageBox.Show("Script Exported", "Script exported successfully.");
         }
 
-        private void btnImport_Click(object sender, RoutedEventArgs e)
+        private void ImportClick(object sender, RoutedEventArgs e)
         {
             var ofd = new OpenFileDialog();
             ofd.Filter = "BlamScript Files|*.hsc|Text Files|*.txt|All Files|*.*";
@@ -157,7 +166,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             txtScript.Text = File.ReadAllText(ofd.FileName);
         }
 
-        private async void CompileButtonClick(object sender, RoutedEventArgs e)
+        private async void CompileClick(object sender, RoutedEventArgs e)
         {
             if (_buildInfo.Name.Contains("Reach"))
             {
@@ -179,14 +188,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                         // Get the script file.
                         string hsc = txtScript.Text;
 
-                        // Setup the progress handler.
-                        var progress = new Progress<int>(v => { progressBar.Value = v; });
-
                         // Measure the time it took to compile the scripts.
                         var stopWatch = Stopwatch.StartNew();
 
                         // Compile the scripts.
-                        ScriptData compileData = await Task.Run(() => CompileScripts(hsc, progress, logger, exceptionCollector));
+                        ScriptData compileData = await Task.Run(() => CompileScripts(hsc, _progress, logger, exceptionCollector));
                         stopWatch.Stop();
                         var timeSpan = stopWatch.Elapsed;
                         string compilationMessage = $"The scripts were successfully compiled in {timeSpan.TotalSeconds} seconds.";
@@ -203,7 +209,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                             {
                                 using (IStream stream = _streamManager.OpenReadWrite())
                                 {
-                                    _scriptFile.SaveScripts(compileData, stream);
+                                    _scriptFile.SaveScripts(compileData, stream, _progress);
                                     _cashefile.SaveChanges(stream);
                                 }
                             });
@@ -232,7 +238,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                     finally
                     {
                         logger.Flush();
-                        progressBar.Value = 0;
+                        ResetProgressBar();
                     }
                 }
             }
@@ -240,6 +246,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             {
                 MetroMessageBox.Show("Game Not Supported", $"Script compilation for {_buildInfo.Name} is not supoprted yet.");
             }
+        }
+
+        private void AdditionalInfoCheckChange(object sender, RoutedEventArgs e)
+        {
+            App.AssemblyStorage.AssemblySettings.ShowScriptInfo = itemShowInformation.IsChecked;
+        }
+
+        private void OutputDebugDataCheckChange(object sender, RoutedEventArgs e)
+        {
+            App.AssemblyStorage.AssemblySettings.OutputCompilerDebugData = itemDebugData.IsChecked;
         }
 
         private void EditorGotFocus(object sender, RoutedEventArgs e)
@@ -491,7 +507,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
                 // Run the compiler.
                 logger.Information("Running the compiler...");
-                ScriptCompiler compiler = new ScriptCompiler(_cashefile, _opcodes, _context, progress, logger, true);
+                bool outputDebugData = App.AssemblyStorage.AssemblySettings.OutputCompilerDebugData;
+                ScriptCompiler compiler = new ScriptCompiler(_cashefile, _opcodes, _context, progress, logger, outputDebugData);
                 ParseTreeWalker.Default.Walk(compiler, tree);
                 return compiler.Result();
             }
@@ -709,6 +726,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             }
         }
 
+        private void ResetProgressBar()
+        {
+            progressBar.Value = 0;
+        }
+
         #endregion
+
+
     }
 }

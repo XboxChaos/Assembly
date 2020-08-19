@@ -167,18 +167,6 @@ public partial class BS_ReachBaseListener : IBS_ReachListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitCallID([NotNull] BS_ReachParser.CallIDContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="BS_ReachParser.globalReference"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterGlobalReference([NotNull] BS_ReachParser.GlobalReferenceContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="BS_ReachParser.globalReference"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitGlobalReference([NotNull] BS_ReachParser.GlobalReferenceContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="BS_ReachParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

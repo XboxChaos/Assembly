@@ -4,7 +4,7 @@ hsc : (globalDeclaration|scriptDeclaration)* ;
 
 globalDeclaration : LP 'global' VALUETYPE ID expression RP ;
 
-scriptDeclaration : LP 'script' SCRIPTTYPE VALUETYPE scriptID scriptParameters? (call | globalReference | branch | cond)+ RP ;
+scriptDeclaration : LP 'script' SCRIPTTYPE VALUETYPE scriptID scriptParameters? expression+ RP ;
 
 scriptParameters : LP parameter (',' parameter)* RP ;
 
@@ -27,8 +27,6 @@ callID
         :       scriptID
         |       VALUETYPE
         ;
-        
-globalReference  :       ID; 
 
 expression    
         : literal 
@@ -228,12 +226,8 @@ SPECIAL
 // Discard
 //--------------------------------------------------------------------
 
-fragment
-WS : [ \n\r\t,] ;
+WS : [ \t\r\n]+ -> skip ;
+BLOCKCOMMENT: ';*' .*? '*;' -> skip;
+COMMENT: ';' .*? [\r\n]+ -> skip;
 
-fragment
-COMMENT: ';' ~[\r\n]* ;
 
-TRASH
-    : ( WS | COMMENT ) -> channel(HIDDEN)
-    ;

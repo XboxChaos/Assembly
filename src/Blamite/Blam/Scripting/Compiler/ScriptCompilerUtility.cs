@@ -319,8 +319,7 @@ namespace Blamite.Blam.Scripting.Compiler
         private void ReportProgress()
         {
             _processedDeclarations++;
-            int i = _processedDeclarations * 100 / _declarationCount;
-            _progress.Report(i);
+            _progress.Report(_processedDeclarations * 100 / _declarationCount);
         }
 
         private short GetLineNumber(ParserRuleContext context)

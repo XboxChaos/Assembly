@@ -17,8 +17,10 @@ namespace Blamite.Blam.Scripting
 			uint lastEnd = 0;
 			foreach (uint offset in _requestedStrings)
 			{
-				if (offset == 0 && offset <= lastEnd)
+				if (offset < lastEnd)
+                {
 					continue;
+				}
 
 				reader.SeekTo(tableOffset + offset);
 				string str = reader.ReadWin1252();

@@ -77,24 +77,38 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			CachedStringTable strings = LoadStrings(reader, values, stringReader);
 			foreach (ScriptExpression expr in result.Expressions.Where(e => (e != null)))
-				expr.ResolveStrings(strings);
+            {
+                expr.ResolveStrings(strings);
+            }
 
-			return result;
+            return result;
 		}
 
-		public void SaveScripts(ScriptData data, IStream stream)
+		public void SaveScripts(ScriptData data, IStream stream, IProgress<int> progress)
 		{
+            progress.Report(0);
             StructureValueCollection values = LoadScriptTag(stream, _scriptTag);
             StructureLayout scnrLayout = _buildInfo.Layouts.GetLayout("scnr");
+            progress.Report(10);
 
             WriteExpressions(data, stream, values);
+            progress.Report(40);
+
             WriteStrings(data, stream, values);
+            progress.Report(50);
+
             WriteGlobals(data, stream, values);
+            progress.Report(60);
+
             WriteTagReferences(data, stream, values);
+            progress.Report(70);
+
             WriteScripts(data, stream, values);
+            progress.Report(90);
 
             stream.SeekTo(_scriptTag.MetaLocation.AsOffset());
             StructureWriter.WriteStructure(values, scnrLayout, stream);
+            progress.Report(100);
         }
 
         public SortedDictionary<uint, UnitSeatMapping> GetUniqueSeatMappings(IReader reader, ushort opcode)
@@ -345,6 +359,7 @@ namespace Blamite.Blam.ThirdGen.Structures
                 stream.SeekTo(_metaArea.PointerToOffset(newScriptAddress));
 
                 // write scripts
+                int writtenScripts = 0;
                 foreach (var scr in data.Scripts)
                 {
                     int paramCount = scr.Parameters.Count;
@@ -469,7 +484,7 @@ namespace Blamite.Blam.ThirdGen.Structures
                 // allocate space for the expressions
                 if (oldExpCount > 0)
                 {
-                    newExpAddress = _allocator.Reallocate(oldExpAddress, oldExpCount, newExpSize, stream);
+                    newExpAddress = _allocator.Reallocate(oldExpAddress, oldExpSize, newExpSize, stream);
                 }
                 else
                 {

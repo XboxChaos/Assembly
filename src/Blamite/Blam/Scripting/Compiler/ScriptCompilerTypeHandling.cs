@@ -657,12 +657,13 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private ScriptExpression GetStringExpression(BS_ReachParser.LiteralContext context)
         {
-            if (context.STRING() == null)
+            string text = context.GetText().Trim('"');
+
+            if (text != "none" && context.STRING() == null)
             {
                 return null;
             }
 
-            string text = context.GetText().Trim('"');
             var opcode = _opcodes.GetTypeInfo("string").Opcode;
             uint value = _strings.Cache(text);
             return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,

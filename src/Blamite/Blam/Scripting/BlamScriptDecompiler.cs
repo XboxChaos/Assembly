@@ -477,12 +477,18 @@ namespace Blamite.Blam.Scripting
 			{
 				actualType = _opcodes.GetTypeInfo(expression.Opcode);
 
+				// Simply write the string for quoted expressions.
 				if (actualType.Quoted)
 				{
-					if (expression.Value != 0xFFFFFFFF)
-						_output.Write("\"{0}\"", expression.StringValue);
-					else
+					// Don't quote the keyword none.
+					if(expression.Value == 0xFFFFFFFF || expression.StringValue == "none")
+                    {
 						_output.Write("none");
+					}
+                    else
+                    {
+						_output.Write("\"{0}\"", expression.StringValue);
+					}
 					return false;
 				}
 			}

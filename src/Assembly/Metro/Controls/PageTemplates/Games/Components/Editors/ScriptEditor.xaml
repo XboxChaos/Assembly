@@ -3,33 +3,56 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:Vectors="clr-namespace:Assembly.Metro.Controls.Vectors"
              xmlns:Editors="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.Editors"
              xmlns:AvalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="1000" Loaded="EditorLoadedAsync">
+    <UserControl.Resources>
+        <Style TargetType="MenuItem">
+            <Style.Triggers>
+                <Trigger Property="Role" Value="TopLevelItem">
+                    <Setter Property="Padding" Value="5,5,5,5"/>
+                </Trigger>
+                <Trigger Property="Role" Value="TopLevelHeader">
+                    <Setter Property="Padding" Value="5,5,5,5"/>
+                </Trigger>
+            </Style.Triggers>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <DockPanel LastChildFill="True">
             <Border Height="30" BorderThickness="0,0,0,1" BorderBrush="#434346" Background="#FF303032" DockPanel.Dock="Top">
                 <Grid>
                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                        <Button x:Name="btnImport" VerticalAlignment="Center" Margin="5,0,0,0" Width="75" Click="btnImport_Click">
-                            <StackPanel Orientation="Horizontal">
-                                <ContentControl ContentTemplate="{StaticResource ImportIcon}" Width="16" VerticalAlignment="Center"/>
-                                <TextBlock Text="Import" VerticalAlignment="Center" Margin="3,0,0,0"/>
-                            </StackPanel>
-                        </Button>
-                        <Button x:Name="btnExport" VerticalAlignment="Center" Margin="5,0,0,0" Width="75" Click="btnExport_Click">
-                            <StackPanel Orientation="Horizontal">
-                                <ContentControl ContentTemplate="{StaticResource ExportIcon}" Width="16" />
-                                <TextBlock Text="Export" VerticalAlignment="Center" Margin="3,0,0,0"/>
-                            </StackPanel>
-                        </Button>
-                        <Button x:Name="btnCompile" VerticalAlignment="Center" Margin="5,0,0,0" Width="75" Click="CompileButtonClick">
-                            <StackPanel Orientation="Horizontal">
-                                <ContentControl ContentTemplate="{StaticResource RunIcon}" Width="16"/>
-                                <TextBlock Text="Compile" VerticalAlignment="Center" Margin="3,0,0,0"/>
-                            </StackPanel>
-                        </Button>
+                        <Menu VerticalAlignment="Center" FontFamily="{DynamicResource MetroFontLight}" Background="{x:Null}">
+                            <MenuItem Header="Options">
+                                <MenuItem.Icon>
+                                    <ContentControl ContentTemplate="{StaticResource ScriptSettingsIcon}" Width="16"/>
+                                </MenuItem.Icon>
+                                <MenuItem x:Name="itemShowInformation" Header="Show Additional Information" IsCheckable="True" Checked="AdditionalInfoCheckChange" Unchecked="AdditionalInfoCheckChange">
+                                </MenuItem>
+                                <MenuItem x:Name="itemDebugData" Header="Output Debug Data" IsCheckable="True" Checked="OutputDebugDataCheckChange" Unchecked="OutputDebugDataCheckChange">
+                                </MenuItem>
+                            </MenuItem>
+                            <MenuItem Header="Import" Click="ImportClick">
+                                <MenuItem.Icon>
+                                    <ContentControl ContentTemplate="{StaticResource ImportIcon}" Width="16"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Export" Click="ExportClick">
+                                <MenuItem.Icon>
+                                    <ContentControl ContentTemplate="{StaticResource ExportIcon}" Width="16"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Compile" Click="CompileClick">
+                                <MenuItem.Icon>
+                                    <ContentControl ContentTemplate="{StaticResource RunIcon}" Width="16"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </Menu>
                         <Grid Margin="5,0,0,0" VerticalAlignment="Center">
                             <Border BorderBrush="#616161" BorderThickness="1" Height="22" VerticalAlignment="Center">
                                 <ProgressBar x:Name="progressBar" Maximum="100" Height="20" Width="150" Background="Transparent"/>

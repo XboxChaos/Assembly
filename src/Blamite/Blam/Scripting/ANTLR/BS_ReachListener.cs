@@ -141,16 +141,6 @@ public interface IBS_ReachListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitCallID([NotNull] BS_ReachParser.CallIDContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="BS_ReachParser.globalReference"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterGlobalReference([NotNull] BS_ReachParser.GlobalReferenceContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="BS_ReachParser.globalReference"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitGlobalReference([NotNull] BS_ReachParser.GlobalReferenceContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="BS_ReachParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
