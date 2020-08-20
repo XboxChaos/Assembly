@@ -7,6 +7,7 @@ using Blamite.IO;
 using System.IO;
 using System.Configuration;
 using Blamite.Blam.Scripting.Context;
+using Blamite.Util;
 
 namespace Blamite.Blam.Scripting.Compiler
 {
@@ -77,57 +78,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 {
                     Directory.CreateDirectory(folder);
                 }
-
-                var settings = new XmlWriterSettings
-                {
-                    Indent = true
-                };
-
-                using (var writer = XmlWriter.Create(fileName, settings))
-                {
-                    writer.WriteStartDocument();
-                    writer.WriteStartElement("Expressions");
-
-                    for (int i = 0; i < _expressions.Count; i++)
-                    {
-                        var exp = _expressions[i];
-                        writer.WriteStartElement("Expression");
-                        writer.WriteAttributeString("Num", i.ToString("X4"));
-                        writer.WriteAttributeString("Salt", exp.Index.Salt.ToString("X4"));
-                        writer.WriteAttributeString("Opcode", exp.Opcode.ToString("X4"));
-                        writer.WriteAttributeString("ValueType", exp.ReturnType.ToString("X4"));                       
-                        switch (exp.Type)
-                        {
-                            case ScriptExpressionType.Group:
-                                writer.WriteAttributeString("ExpressionType", "Call");
-                                break;
-                            case ScriptExpressionType.Expression:
-                                writer.WriteAttributeString("ExpressionType", "Expression");
-                                break;
-                            case ScriptExpressionType.ScriptReference:
-                                writer.WriteAttributeString("ExpressionType", "ScriptRef");
-                                break;
-                            case ScriptExpressionType.GlobalsReference:
-                                writer.WriteAttributeString("ExpressionType", "GlobalRef");
-                                break;
-                            case ScriptExpressionType.ParameterReference:
-                                writer.WriteAttributeString("ExpressionType", "ScriptPar");
-                                break;
-
-                        }
-                        writer.WriteAttributeString("NextSalt", exp.Next.Salt.ToString("X4"));
-                        writer.WriteAttributeString("NextIndex", exp.Next.Index.ToString("X4"));
-                        writer.WriteAttributeString("StringOff", exp.StringOffset.ToString("X"));
-                        writer.WriteAttributeString("Value", exp.Value.ToString("X8"));
-                        writer.WriteAttributeString("LineNum", exp.LineNumber.ToString("X4"));
-                        if(exp.StringOffset != _randomAddress)
-                            writer.WriteAttributeString("String", _strings.GetString(exp.StringOffset));
-                        writer.WriteEndElement();
-                    }
-                    writer.WriteEndElement();
-                    writer.WriteEndDocument();
-                    writer.Close();
-                }
+                XMLUtil.WriteScriptExpressionsToXml(_expressions, fileName);
             }
         }
 

@@ -82,8 +82,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             // Enable code completion only if the compiler supports this game.
             if(_compilationSupported)
             {
-                GotFocus += EditorGotFocus;
-                LostFocus += EditorLostFocus;
+                txtScript.TextArea.GotFocus += EditorGotFocus;
+                txtScript.TextArea.LostFocus += EditorLostFocus;
                 txtScript.TextArea.TextEntering += EditorTextEntering;
                 txtScript.TextArea.TextEntered += EditorTextEntered;
                 txtScript.TextArea.Document.Changed += EditorTextChanged;
@@ -144,7 +144,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             }
         }
 
-        private void ExportClick(object sender, RoutedEventArgs e)
+        private void ExportSourceClick(object sender, RoutedEventArgs e)
         {
             var sfd = new SaveFileDialog();
             sfd.FileName = $"{_cashefile.InternalName}.hsc";
@@ -155,6 +155,26 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
             File.WriteAllText(sfd.FileName, txtScript.Text);
             MetroMessageBox.Show("Script Exported", "Script exported successfully.");
+        }
+
+        private void ExportExpressionsClick(object sender, RoutedEventArgs e)
+        {
+            var sfd = new SaveFileDialog();
+            sfd.FileName = $"{_cashefile.InternalName}_Expressions.xml";
+            sfd.Title = "Save Script Expressions As";
+            sfd.Filter = "XML Files|*.xml";
+            if (!(bool)sfd.ShowDialog())
+                return;
+
+            ScriptTable scripts;
+            using (IReader reader = ((IStreamManager)_streamManager).OpenRead())
+            {
+                scripts = _scriptFile.LoadScripts(reader);
+                if (scripts == null)
+                    return;
+            }
+            XMLUtil.WriteScriptExpressionsToXml(scripts.Expressions, sfd.FileName);
+            MetroMessageBox.Show("Expressions Exported", "Expressions exported successfully.");
         }
 
         private void ImportClick(object sender, RoutedEventArgs e)
@@ -258,18 +278,29 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             App.AssemblyStorage.AssemblySettings.OutputCompilerDebugData = itemDebugData.IsChecked;
         }
 
-        private void EditorGotFocus(object sender, RoutedEventArgs e)
+        private async void EditorGotFocus(object sender, RoutedEventArgs e)
         {
             // Start the background search.
             _searchToken = new CancellationTokenSource();
-            Task backGroundSearch = BackgroundSearchAsync(TimeSpan.FromSeconds(5.0), _searchToken.Token);
+            try
+            {
+                await BackgroundSearchAsync(TimeSpan.FromSeconds(10), _searchToken.Token);
+            }
+            catch(TaskCanceledException _)
+            {
+
+            }
+            _searchToken.Dispose();
+            _searchToken = null;
         }
 
         private void EditorLostFocus(object sender, RoutedEventArgs e)
         {
             // Stop the background search.
-            _searchToken.Cancel();
-            _searchToken.Dispose();
+            if(_searchToken != null)
+            {
+                _searchToken.Cancel();
+            }
         }
 
         private async void Settings_SettingsChanged(object sender, PropertyChangedEventArgs e)
@@ -646,18 +677,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
         private async Task BackgroundSearchAsync(TimeSpan interval, CancellationToken cancellationToken)
         {
-            try
+            while (true)
             {
-                while (true)
-                {
-                    await FindGlobalNamesAsync(txtScript.Text);
-                    await FindScriptNamesAsync(txtScript.Text);
-                    await Task.Delay(interval, cancellationToken);
-                }
-            }
-            catch (TaskCanceledException _)
-            {
-
+                await Task.WhenAll(FindGlobalNamesAsync(txtScript.Text), FindScriptNamesAsync(txtScript.Text));
+                await Task.Delay(interval, cancellationToken);
             }
         }
 
@@ -731,8 +754,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             progressBar.Value = 0;
         }
 
+
         #endregion
-
-
     }
 }

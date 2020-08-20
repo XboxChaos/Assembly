@@ -132,7 +132,10 @@ namespace ScriptWalker
             areEqual = areEqual && (origExp.Opcode == modExp.Opcode);
             areEqual = areEqual && (origExp.ReturnType == modExp.ReturnType);
 
-            switch (_op.GetTypeInfo(origExp.ReturnType).Name)
+            // An expression's opcode determines its actual value type. The value type is used for casting. Function names are an exception.
+            string valueType = _op.GetTypeInfo(origExp.ReturnType).Name == "function_name" ? "function_name" : _op.GetTypeInfo(origExp.Opcode).Name;
+
+            switch (valueType)
             {
                 case "void":
                 case "boolean":
@@ -377,7 +380,7 @@ namespace ScriptWalker
             sb.Append($" ExpType: \"{exp.Type.ToString()}\"");
             sb.Append($" NextSalt: \"{exp.Next.Salt.ToString("X4")}\"");
             sb.Append($" NextIndex: \"{exp.Next.Index.ToString("X4")}\"");
-            sb.Append($" Value: \"{exp.Value.ToString("X4")}\"");
+            sb.Append($" Value: \"{exp.Value.ToString("X8")}\"");
             sb.Append($" Line: \"{exp.LineNumber.ToString()}\"");
 
             if (exp.Type == ScriptExpressionType.Group)

@@ -473,18 +473,20 @@ namespace Blamite.Blam.ThirdGen.Structures
         {
             StructureLayout expLayout = _buildInfo.Layouts.GetLayout("script expression element");
             int oldExpCount = (int)scnr.GetInteger("number of script expressions");
-            long oldExpAddress = (long)scnr.GetInteger("script expression table address");
+            int newExpCount = data.Expressions.Count;
+            uint oldExpressionAddress = (uint)scnr.GetInteger("script expression table address");
+            long oldExpandedAddress = _expander.Expand(oldExpressionAddress);
             int oldExpSize = oldExpCount * expLayout.Size;
             long newExpAddress = 0;
 
-            if (data.Expressions.Count > 0)
+            if (newExpCount > 0)
             {
-                int newExpSize = data.Expressions.Count * expLayout.Size;
+                int newExpSize = (int)(newExpCount * expLayout.Size);
 
                 // allocate space for the expressions
                 if (oldExpCount > 0)
                 {
-                    newExpAddress = _allocator.Reallocate(oldExpAddress, oldExpSize, newExpSize, stream);
+                    newExpAddress = _allocator.Reallocate(oldExpandedAddress, oldExpSize, newExpSize, stream);
                 }
                 else
                 {
@@ -500,10 +502,10 @@ namespace Blamite.Blam.ThirdGen.Structures
             }
             else if (oldExpCount > 0)
             {
-                _allocator.Free(oldExpAddress, oldExpSize);
+                _allocator.Free(oldExpandedAddress, oldExpSize);
             }
 
-            scnr.SetInteger("number of script expressions", (uint)data.Expressions.Count);
+            scnr.SetInteger("number of script expressions", (ulong)newExpCount);
             scnr.SetInteger("script expression table address", _expander.Contract(newExpAddress));
         }
 
