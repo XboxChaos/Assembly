@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin game="ODSTMCC" baseSize="0x554">
+<plugin game="ODSTMCC" baseSize="0x360">
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="Lord Zedd" version="2">poopoo</revision>
-		<revision author="Lord Zedd" version="3">Movement physics cleaning.</revision>
-		<revision author="Lord Zedd" version="4">thanks h5</revision>
+		<revision author="Lord Zedd" version="3">thanks h5</revision>
 	</revisions>
 	<enum16 name="Object Type" offset="0x0" visible="true">
 		<option name="Biped" value="0x0" />
@@ -741,364 +740,58 @@ Certain flags applicable only to certain object types, should be self evident</c
 	<float32 name="Lipsync Decay Weight" offset="0x314" visible="true" />
 	<tagRef name="Detach Damage" offset="0x318" visible="true" />
 	<tagRef name="Detached Weapon" offset="0x328" visible="true" />
-	<comment title="BIPED" />
-	<degree name="Moving Turning Speed" offset="0x338" visible="true" />
-	<flags32 name="Flags" offset="0x33C" visible="true">
-		<bit name="Turns Without Animating" index="0" />
-		<bit name="Passes Through Other Bipeds" index="1" />
-		<bit name="Immune To Falling Damage" index="2" />
-		<bit name="Rotate While Airborne" index="3" />
-		<bit name="Use Limp Body Physics" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Random Speed Increase" index="6" />
-		<bit name="Bit 7" index="7" />
-		<bit name="Spawn Death Children On Destroy" index="8" />
-		<bit name="Stunned By EMP Damage" index="9" />
-		<bit name="Dead Physics When Stunned" index="10" />
-		<bit name="Always Ragdoll When Dead" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
-		<bit name="Bit 16" index="16" />
-		<bit name="Bit 17" index="17" />
-		<bit name="Bit 18" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Bit 20" index="20" />
-		<bit name="Bit 21" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Bit 25" index="25" />
-		<bit name="Bit 26" index="26" />
-		<bit name="Bit 27" index="27" />
-		<bit name="Bit 28" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Bit 31" index="31" />
+	<comment title="GIANT" />
+	<flags32 name="Flags" offset="0x338" visible="true">
 	</flags32>
-	<degree name="Stationary Turning Threshold" offset="0x340" visible="true" />
-	<undefined name="Unknown" offset="0x344" visible="false" />
-	<stringid name="Unknown" offset="0x348" visible="true" />
-	<float32 name="Jump Velocity" offset="0x34C" visible="true" />
-	<float32 name="Maximum Soft Landing Time" offset="0x350" visible="true" />
-	<float32 name="Maximum Hard Landing Time" offset="0x354" visible="true" />
-	<float32 name="Minimum Soft Landing Velocity" offset="0x358" visible="true" />
-	<float32 name="Minimum Hard Landing Velocity" offset="0x35C" visible="true" />
-	<float32 name="Maximum Hard Landing Velocity" offset="0x360" visible="true" />
-	<float32 name="Death Hard Landing Velocity" offset="0x364" visible="true" />
-	<float32 name="Stun Duration" offset="0x368" visible="true" />
-	<float32 name="Stationary Standing Camera Height" offset="0x36C" visible="true" />
-	<float32 name="Moving Standing Camera Height" offset="0x370" visible="true" />
-	<float32 name="Stationary Crouching Camera Height" offset="0x374" visible="true" />
-	<float32 name="Moving Crouching Camera Height" offset="0x378" visible="true" />
-	<float32 name="Crouch Transition Time" offset="0x37C" visible="true" />
-	<degree name="Camera Interpolation Start" offset="0x380" visible="true" />
-	<degree name="Camera Interpolation End" offset="0x384" visible="true" />
-	<float32 name="Camera Forward Movement Scale" offset="0x388" visible="true" />
-	<float32 name="Camera Side Movement Scale" offset="0x38C" visible="true" />
-	<float32 name="Camera Vertical Movement Scale" offset="0x390" visible="true" />
-	<float32 name="Camera Exclusion Distance" offset="0x394" visible="true" />
-	<float32 name="Autoaim Width" offset="0x398" visible="true" />
-	<flags32 name="Lock-On Flags" offset="0x39C" visible="true">
-		<bit name="Locked By Human Targeting" index="0" />
-		<bit name="Locked By Plasma Targeting" index="1" />
-		<bit name="Always Locked By Human Targeting" index="2" />
-		<bit name="Bit 3" index="3" />
-		<bit name="Bit 4" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Bit 6" index="6" />
-		<bit name="Bit 7" index="7" />
-		<bit name="Bit 8" index="8" />
-		<bit name="Bit 9" index="9" />
-		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
-		<bit name="Bit 16" index="16" />
-		<bit name="Bit 17" index="17" />
-		<bit name="Bit 18" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Bit 20" index="20" />
-		<bit name="Bit 21" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Bit 25" index="25" />
-		<bit name="Bit 26" index="26" />
-		<bit name="Bit 27" index="27" />
-		<bit name="Bit 28" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Bit 31" index="31" />
-	</flags32>
-	<float32 name="Lock-On Distance" offset="0x3A0" visible="true" />
-	<int16 name="Physics Control Node Index" offset="0x3A4" visible="true" />
-	<int16 name="Unknown" offset="0x3A6" visible="false" />
-	<float32 name="Unknown" offset="0x3A8" visible="false" />
-	<float32 name="Unknown" offset="0x3AC" visible="false" />
-	<float32 name="Unknown" offset="0x3B0" visible="false" />
-	<int16 name="Pelvis Node Index" offset="0x3B4" visible="true" />
-	<int16 name="Head Node Index" offset="0x3B6" visible="true" />
-	<float32 name="Unknown" offset="0x3B8" visible="false" />
-	<float32 name="Headshot Acceleration Scale" offset="0x3BC" visible="true" />
-	<tagRef name="Area Damage Effect" offset="0x3C0" visible="true" />
-	<tagblock name="Unknown" offset="0x3D0" visible="false" elementSize="0x24">
-		<float32 name="Unknown" offset="0x0" visible="false" />
-		<float32 name="Unknown" offset="0x4" visible="false" />
-		<float32 name="Unknown" offset="0x8" visible="false" />
-		<float32 name="Unknown" offset="0xC" visible="false" />
-		<dataRef name="Function" offset="0x10" visible="false" />
+	<comment title="Movement" />
+	<float32 name="Acceleration Time" offset="0x33C" visible="true" />
+	<float32 name="Deceleration Time" offset="0x340" visible="true" />
+	<float32 name="Speed Scale" offset="0x344" visible="true" tooltip="overall animation speed scale" />
+	<float32 name="Elevation Change Rate" offset="0x348" visible="true" />
+	<float32 name="Maximum Vertical Reach" offset="0x34C" visible="true" tooltip="how many world-units up/down a leg can reach from the ground elevation under the scarab" />
+	<tagblock name="Buckle Settings" offset="0x350" visible="true" elementSize="0x5C">
+		<comment title="Timing Controls" />
+		<float32 name="Lower Time" offset="0x0" visible="true" />
+		<enum32 name="Lower Curve" offset="0x4" visible="true">
+			<option name="Linear" value="0x0" />
+			<option name="Light Ease In" value="0x1" />
+			<option name="Full Ease In" value="0x2" />
+			<option name="Light Ease Out" value="0x3" />
+			<option name="Full Ease Out" value="0x4" />
+			<option name="Light Ease In And Out" value="0x5" />
+			<option name="Full Ease In And Out" value="0x6" />
+		</enum32>
+		<float32 name="Raise Time" offset="0x8" visible="true" />
+		<enum32 name="Raise Curve" offset="0xC" visible="true">
+			<option name="Linear" value="0x0" />
+			<option name="Light Ease In" value="0x1" />
+			<option name="Full Ease In" value="0x2" />
+			<option name="Light Ease Out" value="0x3" />
+			<option name="Full Ease Out" value="0x4" />
+			<option name="Light Ease In And Out" value="0x5" />
+			<option name="Full Ease In And Out" value="0x6" />
+		</enum32>
+		<float32 name="Pause Time (Easy)" offset="0x10" visible="true" />
+		<float32 name="Pause Time (Normal)" offset="0x14" visible="true" />
+		<float32 name="Pause Time (Heroic)" offset="0x18" visible="true" />
+		<float32 name="Pause Time (Legendary)" offset="0x1C" visible="true" />
+		<comment title="Optional Buckle Gravity">overrides lower time and curve when not 0</comment>
+		<float32 name="Buckle Gravity Scale" offset="0x20" visible="true" />
+		<comment title="Buckling Search" />
+		<stringid name="Buckling Marker" offset="0x24" visible="true" />
+		<float32 name="Forward-Rear Scan" offset="0x28" visible="true" />
+		<float32 name="Left-Right Scan" offset="0x2C" visible="true" />
+		<int32 name="Forward-Rear Steps" offset="0x30" visible="true" />
+		<int32 name="Left-Right Steps" offset="0x34" visible="true" />
+		<comment title="Buckling Angle Control" />
+		<ranged name="Pitch Bounds" offset="0x38" visible="true" tooltip="giant may rotate the parent node of the buckling marker this much to align with ground." />
+		<ranged name="Roll Bounds" offset="0x40" visible="true" tooltip="giant may rotate the parent node of the buckling marker this much to align with ground." />
+		<comment title="Animations" />
+		<stringid name="Buckle Animation" offset="0x48" visible="true" />
+		<stringid name="Descent Overlay" offset="0x4C" visible="true" />
+		<stringid name="Paused Overlay" offset="0x50" visible="true" />
+		<float32 name="Descent Overlay Scale" offset="0x54" visible="true" />
+		<float32 name="Paused Overlay Scale" offset="0x58" visible="true" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0x3DC" visible="false" elementSize="0x24">
-		<float32 name="Unknown" offset="0x0" visible="false" />
-		<float32 name="Unknown" offset="0x4" visible="false" />
-		<float32 name="Unknown" offset="0x8" visible="false" />
-		<float32 name="Unknown" offset="0xC" visible="false" />
-		<dataRef name="Function" offset="0x10" visible="false" />
-	</tagblock>
-	<float32 name="Unknown" offset="0x3E8" visible="false" />
-	<float32 name="Unknown" offset="0x3EC" visible="false" />
-	<float32 name="Unknown" offset="0x3F0" visible="false" />
-	<float32 name="Unknown" offset="0x3F4" visible="false" />
-	<float32 name="Unknown" offset="0x3F8" visible="false" />
-	<float32 name="Unknown" offset="0x3FC" visible="false" />
-	<comment title="Physics" />
-	<flags32 name="Flags" offset="0x400" visible="true">
-		<bit name="Centered at Origin" index="0" />
-		<bit name="Shape Spherical" index="1" />
-		<bit name="Use Player Physics" index="2" />
-		<bit name="Climb Any Surface" index="3" />
-		<bit name="Flying" index="4" />
-		<bit name="Not Physical" index="5" />
-		<bit name="Dead Character Collision Group" index="6" />
-		<bit name="Bit 7" index="7" />
-		<bit name="Never Rests" index="8" />
-		<bit name="Bit 9" index="9" />
-		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
-		<bit name="Bit 16" index="16" />
-		<bit name="Bit 17" index="17" />
-		<bit name="Bit 18" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Bit 20" index="20" />
-		<bit name="Bit 21" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Bit 25" index="25" />
-		<bit name="Bit 26" index="26" />
-		<bit name="Bit 27" index="27" />
-		<bit name="Bit 28" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Bit 31" index="31" />
-	</flags32>
-	<float32 name="Height Standing" offset="0x404" visible="true" />
-	<float32 name="Height Crouching" offset="0x408" visible="true" />
-	<float32 name="Radius" offset="0x40C" visible="true" />
-	<float32 name="Mass" offset="0x410" visible="true" />
-	<stringId name="Living Material Name" offset="0x414" visible="true" />
-	<stringId name="Dead Material Name" offset="0x418" visible="true" />
-	<int16 name="Living Global Material Index" offset="0x41C" visible="true" />
-	<int16 name="Dead Global Material Index" offset="0x41E" visible="true" />
-	<tagblock name="Dead Sphere Shapes" offset="0x420" visible="true" elementSize="0xA0" align="0x10">
-		<stringid name="Name" offset="0x0" visible="true" />
-		<int8 name="Material Index" offset="0x4" visible="true" />
-		<int8 name="Unknown" offset="0x5" visible="false" />
-		<int16 name="Global Material Index" offset="0x6" visible="true" />
-		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
-		<float32 name="Friction" offset="0xC" visible="true" />
-		<float32 name="Restitution" offset="0x10" visible="true" />
-		<float32 name="Volume" offset="0x14" visible="true" />
-		<float32 name="Mass" offset="0x18" visible="true" />
-		<int16 name="Overall Shape Index" offset="0x1C" visible="true" />
-		<int8 name="Phantom Index" offset="0x1E" visible="true" />
-		<int8 name="Interaction Unknown" offset="0x1F" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<int16 name="Size" offset="0x28" visible="true" />
-		<int16 name="Count" offset="0x2A" visible="true" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<int32 name="Offset" offset="0x30" visible="true" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<int32 name="Unknown" offset="0x38" visible="true" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<float32 name="Radius" offset="0x40" visible="true" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
-		<undefined name="Unknown" offset="0x50" visible="false" />
-		<undefined name="Unknown" offset="0x54" visible="false" />
-		<int16 name="Size" offset="0x58" visible="true" />
-		<int16 name="Count" offset="0x5A" visible="true" />
-		<undefined name="Unknown" offset="0x5C" visible="false" />
-		<int32 name="Offset" offset="0x60" visible="true" />
-		<undefined name="Unknown" offset="0x64" visible="false" />
-		<int32 name="Unknown" offset="0x68" visible="true" />
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<float32 name="Radius" offset="0x70" visible="true" />
-		<undefined name="Unknown" offset="0x74" visible="false" />
-		<undefined name="Unknown" offset="0x78" visible="false" />
-		<undefined name="Unknown" offset="0x7C" visible="false" />
-		<undefined name="Unknown" offset="0x80" visible="false" />
-		<undefined name="Unknown" offset="0x84" visible="false" />
-		<undefined name="Unknown" offset="0x88" visible="false" />
-		<undefined name="Unknown" offset="0x8C" visible="false" />
-		<float32 name="Translation i" offset="0x90" visible="true" />
-		<float32 name="Translation j" offset="0x94" visible="true" />
-		<float32 name="Translation k" offset="0x98" visible="true" />
-		<float32 name="Translation Radius" offset="0x9C" visible="true" />
-	</tagblock>
-	<tagblock name="Pill Shapes" offset="0x42C" visible="true" elementSize="0x70" align="0x10">
-		<stringid name="Name" offset="0x0" visible="true" />
-		<int8 name="Material Index" offset="0x4" visible="true" />
-		<int8 name="Unknown" offset="0x5" visible="false" />
-		<int16 name="Global Material Index" offset="0x6" visible="true" />
-		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
-		<float32 name="Friction" offset="0xC" visible="true" />
-		<float32 name="Restitution" offset="0x10" visible="true" />
-		<float32 name="Volume" offset="0x14" visible="true" />
-		<float32 name="Mass" offset="0x18" visible="true" />
-		<int16 name="Overall Shape Index" offset="0x1C" visible="true" />
-		<int8 name="Phantom Index" offset="0x1E" visible="true" />
-		<int8 name="Interaction Unknown" offset="0x1F" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<int16 name="Size" offset="0x28" visible="true" />
-		<int16 name="Count" offset="0x2A" visible="true" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<int32 name="Offset" offset="0x30" visible="true" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<int32 name="Unknown" offset="0x38" visible="true" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<float32 name="Radius" offset="0x40" visible="true" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
-		<float32 name="Bottom i" offset="0x50" visible="true" />
-		<float32 name="Bottom j" offset="0x54" visible="true" />
-		<float32 name="Bottom k" offset="0x58" visible="true" />
-		<float32 name="Bottom Radius" offset="0x5C" visible="true" />
-		<float32 name="Top i" offset="0x60" visible="true" />
-		<float32 name="Top j" offset="0x64" visible="true" />
-		<float32 name="Top k" offset="0x68" visible="true" />
-		<float32 name="Top Radius" offset="0x6C" visible="true" />
-	</tagblock>
-	<tagblock name="Sphere Shapes" offset="0x438" visible="true" elementSize="0xA0" align="0x10">
-		<stringid name="Name" offset="0x0" visible="true" />
-		<int8 name="Material Index" offset="0x4" visible="true" />
-		<int8 name="Unknown" offset="0x5" visible="false" />
-		<int16 name="Global Material Index" offset="0x6" visible="true" />
-		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
-		<float32 name="Friction" offset="0xC" visible="true" />
-		<float32 name="Restitution" offset="0x10" visible="true" />
-		<float32 name="Volume" offset="0x14" visible="true" />
-		<float32 name="Mass" offset="0x18" visible="true" />
-		<int16 name="Overall Shape Index" offset="0x1C" visible="true" />
-		<int8 name="Phantom Index" offset="0x1E" visible="true" />
-		<int8 name="Interaction Unknown" offset="0x1F" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<int16 name="Size" offset="0x28" visible="true" />
-		<int16 name="Count" offset="0x2A" visible="true" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<int32 name="Offset" offset="0x30" visible="true" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<int32 name="Unknown" offset="0x38" visible="true" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<float32 name="Radius" offset="0x40" visible="true" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
-		<undefined name="Unknown" offset="0x50" visible="false" />
-		<undefined name="Unknown" offset="0x54" visible="false" />
-		<int16 name="Size" offset="0x58" visible="true" />
-		<int16 name="Count" offset="0x5A" visible="true" />
-		<undefined name="Unknown" offset="0x5C" visible="false" />
-		<int32 name="Offset" offset="0x60" visible="true" />
-		<undefined name="Unknown" offset="0x64" visible="false" />
-		<int32 name="Unknown" offset="0x68" visible="true" />
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<float32 name="Radius" offset="0x70" visible="true" />
-		<undefined name="Unknown" offset="0x74" visible="false" />
-		<undefined name="Unknown" offset="0x78" visible="false" />
-		<undefined name="Unknown" offset="0x7C" visible="false" />
-		<undefined name="Unknown" offset="0x80" visible="false" />
-		<undefined name="Unknown" offset="0x84" visible="false" />
-		<undefined name="Unknown" offset="0x88" visible="false" />
-		<undefined name="Unknown" offset="0x8C" visible="false" />
-		<float32 name="Translation i" offset="0x90" visible="true" />
-		<float32 name="Translation j" offset="0x94" visible="true" />
-		<float32 name="Translation k" offset="0x98" visible="true" />
-		<float32 name="Translation Radius" offset="0x9C" visible="true" />
-	</tagblock>
-	<comment title="Ground" />
-	<degree name="Maximum Slope Angle" offset="0x444" visible="true" />
-	<degree name="Downhill Falloff Angle" offset="0x448" visible="true" />
-	<degree name="Downhill Cutoff Angle" offset="0x44C" visible="true" />
-	<degree name="Uphill Falloff Angle" offset="0x450" visible="true" />
-	<degree name="Uphill Cutoff Angle" offset="0x454" visible="true" />
-	<float32 name="Downhill Velocity Scale" offset="0x458" visible="true" />
-	<float32 name="Uphill Velocity Scale" offset="0x45C" visible="true" />
-	<float32 name="Unknown" offset="0x460" visible="false" />
-	<float32 name="Unknown" offset="0x464" visible="false" />
-	<float32 name="Unknown" offset="0x468" visible="false" />
-	<float32 name="Unknown" offset="0x46C" visible="false" />
-	<float32 name="Unknown" offset="0x470" visible="false" />
-	<float32 name="Unknown" offset="0x474" visible="false" />
-	<float32 name="Unknown" offset="0x478" visible="false" />
-	<float32 name="Falling Velocity Scale" offset="0x47C" visible="true" />
-	<float32 name="Unknown" offset="0x480" visible="false" />
-	<comment title="Flying" />
-	<degree name="Bank Angle" offset="0x484" visible="true" />
-	<float32 name="Bank Apply Time" offset="0x488" visible="true" />
-	<float32 name="Bank Decay Time" offset="0x48C" visible="true" />
-	<float32 name="Pitch Ratio" offset="0x490" visible="true" />
-	<float32 name="Maximum Velocity" offset="0x494" visible="true" />
-	<float32 name="Maximum Sidestep Velocity" offset="0x498" visible="true" />
-	<float32 name="Acceleration" offset="0x49C" visible="true" />
-	<float32 name="Deceleration" offset="0x4A0" visible="true" />
-	<degree name="Angular Velocity Maximum" offset="0x4A4" visible="true" />
-	<degree name="Angular Acceleration Maximum" offset="0x4A8" visible="true" />
-	<float32 name="Crouch Velocity Modifier" offset="0x4AC" visible="true" />
-	<undefined name="Unknown" offset="0x4B0" visible="false" />
-	<tagblock name="Contact Points" offset="0x4B4" visible="true" elementSize="0x4">
-		<stringId name="Marker Name" offset="0x0" visible="true" />
-	</tagblock>
-	<tagRef name="Reanimation Character" offset="0x4C0" visible="true" />
-	<tagRef name="Transformation Muffin" offset="0x4D0" visible="true" />
-	<tagRef name="Death Spawn Character" offset="0x4E0" visible="true" />
-	<int16 name="Death Spawn Count" offset="0x4F0" visible="true" />
-	<int16 name="Unknown" offset="0x4F2" visible="false" />
-	<undefined name="Unknown" offset="0x4F4" visible="false" />
-	<float32 name="Unknown" offset="0x4F8" visible="false" />
-	<float32 name="Unknown" offset="0x4FC" visible="false" />
-	<float32 name="Unknown" offset="0x500" visible="false" />
-	<float32 name="Unknown" offset="0x504" visible="false" />
-	<degree name="Unknown" offset="0x508" visible="false" />
-	<degree name="Unknown" offset="0x50C" visible="false" />
-	<undefined name="Unknown" offset="0x510" visible="false" />
-	<undefined name="Unknown" offset="0x514" visible="false" />
-	<float32 name="Unknown" offset="0x518" visible="false" />
-	<float32 name="Unknown" offset="0x51C" visible="false" />
-	<float32 name="Unknown" offset="0x520" visible="false" />
-	<float32 name="Unknown" offset="0x524" visible="false" />
-	<float32 name="Unknown" offset="0x528" visible="false" />
-	<float32 name="Unknown" offset="0x52C" visible="false" />
-	<float32 name="Unknown" offset="0x530" visible="false" />
-	<float32 name="Unknown" offset="0x534" visible="false" />
-	<degree name="Unknown" offset="0x538" visible="false" />
-	<degree name="Unknown" offset="0x53C" visible="false" />
-	<float32 name="Unknown" offset="0x540" visible="false" />
-	<float32 name="Unknown" offset="0x544" visible="false" />
-	<float32 name="Unknown" offset="0x548" visible="false" />
-	<float32 name="Unknown" offset="0x54C" visible="false" />
-	<float32 name="Unknown" offset="0x550" visible="false" />
+	<float32 name="Ankle ik Scale" offset="0x35C" visible="true" />
 </plugin>
