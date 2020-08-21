@@ -72,7 +72,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             _casheName = casheName;
 
             // All games other than H4 use the old blam script syntax. Currently the compiler only supports the old syntax.
-            _compilationSupported = !buildInfo.Name.Contains("Halo 4") && !(buildInfo.ScriptingContextPath is null);
+            _compilationSupported = !_buildInfo.Layouts.HasLayout("hsdt") && !(buildInfo.ScriptingContextPath is null);
 
             InitializeComponent();
 
@@ -131,9 +131,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                     _staticCompletionData = await completionTask;
                     txtScript.Text = await decompilationTask;
                 }
-                else if (_buildInfo.Name.Contains("Halo 4"))
+                else if (_buildInfo.Layouts.HasLayout("hsdt"))
                 {
-                    txtScript.Text = await Task.Run(() => DecompileHalo4Old());
+                    txtScript.Text = await Task.Run(() => DecompileHsdtOld());
                 }
                 else
                 {
@@ -264,7 +264,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             }
             else
             {
-                MetroMessageBox.Show("Game Not Supported", $"Script compilation for {_buildInfo.Name} is not supoprted yet.");
+                MetroMessageBox.Show("Game Not Supported", $"Script compilation for {_buildInfo.Name} is not supported yet.");
             }
         }
 
@@ -307,9 +307,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         {
             if(e.PropertyName == "ShowScriptInfo")
             {
-                if(_buildInfo.Name.Contains("Halo 4"))
+                if(_buildInfo.Layouts.HasLayout("hsdt"))
                 {
-                    txtScript.Text = await Task.Run(() => DecompileHalo4Old());
+                    txtScript.Text = await Task.Run(() => DecompileHsdtOld());
                 }
                 else
                 {
@@ -359,7 +359,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
 
         #region Functions
-        private string DecompileHalo4Old()
+        private string DecompileHsdtOld()
         {
             bool _showInfo = App.AssemblyStorage.AssemblySettings.ShowScriptInfo;
 
