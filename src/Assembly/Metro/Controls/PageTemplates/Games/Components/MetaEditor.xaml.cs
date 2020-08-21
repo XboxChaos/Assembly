@@ -421,10 +421,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			{
 				case Key.S:
 					// Save Meta
+					btnPluginSave.Focus();
 					UpdateMeta(MetaWriter.SaveType.File, false);
 					break;
 
 				case Key.P:
+					sbPluginPoke.Focus();
 					if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0)
 					{
 						// Poke All
@@ -459,6 +461,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					txtSearch.Focus();
 					break;
 			}
+
+			e.Handled = true;
 		}
 
 		private void ViewValueAsCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
