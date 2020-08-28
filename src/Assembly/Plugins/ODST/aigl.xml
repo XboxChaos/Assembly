@@ -6,10 +6,10 @@
 		<revision author="Lord Zedd" version="2">Updates and standardizing</revision>
 		<revision author="Lord Zedd" version="3">thanks h5</revision>
 	</revisions>
-	<tagblock name="AI Globals" offset="0x0" visible="true" elementSize="0x144">
-		<float32 name="AI Infantry-On-AI Weapon Damage Scale" offset="0x0" visible="true" />
-		<float32 name="AI Vehicle-On-AI Weapon Damage Scale" offset="0x4" visible="true" />
-		<float32 name="AI Player Vehicle-On-AI Weapon Damage Scale" offset="0x8" visible="true" />
+	<tagblock name="Data" offset="0x0" visible="true" elementSize="0x144">
+		<float32 name="AI Infantry-On-AI Weapon Damage Scale" offset="0x0" visible="true" tooltip="Global scale on weapon damage made by AI on other AI" />
+		<float32 name="AI Vehicle-On-AI Weapon Damage Scale" offset="0x4" visible="true" tooltip="Global scale on weapon damage made by AI in a vehicle on other AI" />
+		<float32 name="AI Player Vehicle-On-AI Weapon Damage Scale" offset="0x8" visible="true" tooltip="Global scale on weapon damage made by AI in a vehicle with the player on other AI" />
 		<float32 name="Danger Broadly Facing" offset="0xC" visible="true" />
 		<float32 name="Danger Shooting Near" offset="0x10" visible="true" />
 		<float32 name="Danger Shooting At" offset="0x14" visible="true" />
@@ -18,7 +18,7 @@
 		<float32 name="Danger Extended Shield Damage" offset="0x20" visible="true" />
 		<float32 name="Danger Body Damage" offset="0x24" visible="true" />
 		<float32 name="Danger Extended Body Damage" offset="0x28" visible="true" />
-		<tagRef name="Global Dialogue" offset="0x2C" visible="true" />
+		<tagRef name="Global Dialogue Tag" offset="0x2C" visible="true" />
 		<stringid name="Default Mission Dialogue Sound Effect" offset="0x3C" visible="true" />
 		<float32 name="Jump Down" offset="0x40" visible="true" />
 		<float32 name="Jump Step" offset="0x44" visible="true" />
@@ -32,16 +32,11 @@
 		<float32 name="Maximum Jump Down Height Stand" offset="0x64" visible="true" />
 		<float32 name="Maximum Jump Down Height Storey" offset="0x68" visible="true" />
 		<float32 name="Maximum Jump Down Height Tower" offset="0x6C" visible="true" />
-		<float32 name="Hoist Step min" offset="0x70" visible="true" />
-		<float32 name="Hoist Step max" offset="0x74" visible="true" />
-		<float32 name="Hoist Crouch min" offset="0x78" visible="true" />
-		<float32 name="Hoist Crouch max" offset="0x7C" visible="true" />
-		<float32 name="Hoist Stand min" offset="0x80" visible="true" />
-		<float32 name="Hoist Stand max" offset="0x84" visible="true" />
-		<float32 name="Vault Step min" offset="0x88" visible="true" />
-		<float32 name="Vault Step max" offset="0x8C" visible="true" />
-		<float32 name="Vault Crouch min" offset="0x90" visible="true" />
-		<float32 name="Vault Crouch max" offset="0x94" visible="true" />
+		<rangef name="Hoist Step" offset="0x70" visible="true" />
+		<rangef name="Hoist Crouch" offset="0x78" visible="true" />
+		<rangef name="Hoist Stand" offset="0x80" visible="true" />
+		<rangef name="Vault Step" offset="0x88" visible="true" />
+		<rangef name="Vault Crouch" offset="0x90" visible="true" />
 		<comment title="PATHFINDING SEARCH RANGES">The maximum ranges to which firing point evaluations will do pathfinding searches. INCREASING THESE VALUES WILL ALMOST CERTAINLY HAVE A NEGATIVE IMPACT ON PERFORMANCE.</comment>
 		<float32 name="Search Range Infantry" offset="0x98" visible="true" />
 		<float32 name="Search Range Flying" offset="0x9C" visible="true" />
@@ -52,20 +47,20 @@
 			<float32 name="Ideal Retreat Time" offset="0x4" visible="true" />
 			<float32 name="Maximum Retreat Time" offset="0x8" visible="true" />
 		</tagblock>
-		<float32 name="Scary Target Threshold" offset="0xB4" visible="true" />
-		<float32 name="Scary Weapon Threshold" offset="0xB8" visible="true" />
+		<float32 name="Scary Target Threshold" offset="0xB4" visible="true" tooltip="A target of this scariness is offically considered scary (by combat dialogue, etc.)" />
+		<float32 name="Scary Weapon Threshold" offset="0xB8" visible="true" tooltip="A weapon of this scariness is offically considered scary (by combat dialogue, etc.)" />
 		<float32 name="Player Scariness" offset="0xBC" visible="true" />
 		<float32 name="Berserking Actor Scariness" offset="0xC0" visible="true" />
 		<float32 name="Kamikazeing Actor Scariness" offset="0xC4" visible="true" />
-		<float32 name="Invincible Scariness" offset="0xC8" visible="true" />
-		<float32 name="Unknown" offset="0xCC" visible="false" />
-		<float32 name="Unknown" offset="0xD0" visible="false" />
-		<float32 name="Unknown" offset="0xD4" visible="false" />
+		<float32 name="Invincible Scariness" offset="0xC8" visible="true" tooltip="when an actor's target is invincible, he is this much more scared" />
+		<float32 name="Unknown" offset="0xCC" visible="true" />
+		<float32 name="Unknown" offset="0xD0" visible="true" />
+		<float32 name="Unknown" offset="0xD4" visible="true" />
 		<comment title="RESURRECTION">A few properties to help define when it is safe for a mission critical character to ressurect.</comment>
-		<float32 name="Minimum Death Time" offset="0xD8" visible="true" />
-		<float32 name="Projectile Distance" offset="0xDC" visible="true" />
-		<float32 name="Idle Clump Distance" offset="0xE0" visible="true" />
-		<float32 name="Dangerous Clump Distance" offset="0xE4" visible="true" />
+		<float32 name="Minimum Death Time" offset="0xD8" visible="true" tooltip="I will be dead for at least this long" />
+		<float32 name="Projectile Distance" offset="0xDC" visible="true" tooltip="If there is a projectile within this distance of me, I'll stay dead" />
+		<float32 name="Idle Clump Distance" offset="0xE0" visible="true" tooltip="If there is any enemy clump within this distance of me, I'll stay dead" />
+		<float32 name="Dangerous Clump Distance" offset="0xE4" visible="true" tooltip="If there is any enemy clump with a status higher than idle within this distance of me, I'll stay dead" />
 		<tagblock name="Styles" offset="0xE8" visible="true" elementSize="0x10">
 			<tagRef name="Style" offset="0x0" visible="true" />
 		</tagblock>
@@ -76,20 +71,20 @@
 			<tagRef name="Squad Template" offset="0x0" visible="true" />
 		</tagblock>
 		<comment title="CLUMP THROTTLING">Some values to help you control how much guys will throttle when they want to stick with the rest of their squad.</comment>
-		<float32 name="Stop Distance" offset="0x10C" visible="true" />
-		<float32 name="Resume Distance" offset="0x110" visible="true" />
-		<float32 name="Minimum Distance" offset="0x114" visible="true" />
-		<float32 name="Maximum Distance" offset="0x118" visible="true" />
-		<float32 name="Minimum Scale" offset="0x11C" visible="true" />
+		<float32 name="Stop Distance" offset="0x10C" visible="true" tooltip="At this distance from the squad, stop." />
+		<float32 name="Resume Distance" offset="0x110" visible="true" tooltip="At this distance from the squad, start again." />
+		<float32 name="Minimum Distance" offset="0x114" visible="true" tooltip="Start throttling back at this distance" />
+		<float32 name="Maximum Distance" offset="0x118" visible="true" tooltip="Maximum throttle scale at this distance" />
+		<float32 name="Minimum Scale" offset="0x11C" visible="true" tooltip="Minimum throttle value." />
 		<comment title="SQUAD PATROLLING">Parameters related to squad patrolling.</comment>
-		<float32 name="Passthrough Chance" offset="0x120" visible="true" />
-		<float32 name="Search Phase Skip Chance" offset="0x124" visible="true" />
-		<float32 name="Patrol Transition Timeout" offset="0x128" visible="true" />
-		<float32 name="Patrol Maneuver Timeout" offset="0x12C" visible="true" />
-		<float32 name="Unknown" offset="0x130" visible="false" />
-		<float32 name="Unknown" offset="0x134" visible="false" />
-		<float32 name="Unknown" offset="0x138" visible="false" />
-		<float32 name="Unknown" offset="0x13C" visible="false" />
-		<float32 name="Unknown" offset="0x140" visible="false" />
+		<float32 name="Passthrough Chance" offset="0x120" visible="true" tooltip="Chance of passing through a patrol objective without pausing" />
+		<float32 name="Search Phase Skip Chance" offset="0x124" visible="true" tooltip="Chance of skipping the search phase when stopped at a patrol objective" />
+		<float32 name="Patrol Transition Timeout" offset="0x128" visible="true" tooltip="If the squad takes more than this time to get to their new patrol point, cancel it and go on to the next." />
+		<float32 name="Patrol Maneuver Timeout" offset="0x12C" visible="true" tooltip="If the squad takes longer than this time to reposition within a patrol point (e.g. searching and pausing), cancel the point and go on to the next." />
+		<float32 name="Unknown" offset="0x130" visible="true" />
+		<float32 name="Unknown" offset="0x134" visible="true" />
+		<float32 name="Unknown" offset="0x138" visible="true" />
+		<float32 name="Unknown" offset="0x13C" visible="true" />
+		<float32 name="Unknown" offset="0x140" visible="true" />
 	</tagblock>
 </plugin>

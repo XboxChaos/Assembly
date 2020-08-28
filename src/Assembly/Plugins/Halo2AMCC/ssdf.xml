@@ -4,91 +4,136 @@
 	<revisions>
 		<revision author="Lord Zedd" version="1">k</revision>
 	</revisions>
-	<undefined name="Unknown" offset="0x0" visible="false" />
-	<undefined name="Unknown" offset="0x4" visible="false" />
-	<undefined name="Unknown" offset="0x8" visible="false" />
-	<undefined name="Unknown" offset="0xC" visible="false" />
-	<undefined name="Unknown" offset="0x10" visible="false" />
-	<undefined name="Unknown" offset="0x14" visible="false" />
-	<undefined name="Unknown" offset="0x18" visible="false" />
-	<tagblock name="Unknown" offset="0x1C" visible="false" elementSize="0xC">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
+	<float32 name="Minimum Spawn Time" offset="0x0" visible="true" tooltip="Absolute floor.  Used to put a few-frame delay between death and instaspawn.  Will not override longer minimum times." />
+	<float32 name="Minimum Acceptable Spawn Score" offset="0x4" visible="true" tooltip="spawns with a score lower than this will never be used" />
+	<comment title="Spawn Randomization">Values that affect randomization of respawn point selection
+Runtime will use the largest of '% best weight to use' and 'Min absolute weight range'</comment>
+	<float32 name="Maximum Random Spawn Bias" offset="0x8" visible="true" tooltip="Controls how large of a random value gets added to each spawn point" />
+	<comment title="Percent Number Spawn Points To Use">Example -
+On a map with 140 respawn points, a value of 0.1 here
+will choose randomly between up to the best 14 points.
+Number of points considered is also limited by the following parameters and flags.
+If next two parameters are 0, only points with the exact same weight as the highest
+scoring respawn point will be considered.  If 'Min absolute weight range' is 25 then
+the best 'X' points within 25 points of the highest scoring point will be considered.</comment>
+	<float32 name="Percent Number Spawn Points To Use" offset="0xC" visible="true" />
+	<comment title="Percent Best Weight To Use">Example -
+Value of 0.25 will consider all points with weight within 25% of the highest scoring point.
+Note - At run-time, the larger of '% best weight to use' and 'Min absolute weight range' will be used.
+For instance if '% best weight' is 0.1 and 'Min absolute weight' is 5.0' a max weight
+of 150 will use 15, but a max weight of 10 will fall back on the min weight of 5</comment>
+	<float32 name="Percent Best Weight To Use" offset="0x10" visible="true" />
+	<comment title="Minimum Absolute Weight Range">Example -
+Value of 50 will consider all points within 50 of the highest scoring point.
+Note - At run-time, the larger of '% best weight to use' and 'Min absolute weight range' will be used.</comment>
+	<float32 name="Minimum Absolute Weight Range" offset="0x14" visible="true" />
+	<flags32 name="Flags" offset="0x18" visible="true">
+		<bit name="Allow Negative Weights In Randomization" index="0" tooltip="If checked, negative weighted respawn points are treated the same as ones with positive weight. If not checked, negative respawn points aren't grouped with positive weighted respawn points." />
+	</flags32>
+	<comment title="Spawn Settings">0: influencer - Enemy Forbid
+1: influencer - Enemy Bias
+2: influencer - Ally Bias
+3: influencer - Selected Ally Bias
+4: influencer - Dead Teammate
+5: influencer - Respawn Zone
+6: influencer - Weapon
+7: influencer - Vehicle
+8: influencer - Projectile
+9: influencer - Equipment
+10: influencer - Fireteam 1 zone
+11: influencer - Fireteam 2 zone
+12: influencer - Fireteam 3 zone
+13: influencer - Fireteam 4 zone
+14: influencer - Drop Pod
+15: influencer - Auto Turret</comment>
+	<tagblock name="Spawn Settings" offset="0x1C" visible="true" elementSize="0xC">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="Only Use Largest Influence" index="0" />
+			<bit name="Pin Influence To Minimum And Maximum" index="1" />
+		</flags32>
+		<float32 name="Minimum Influence" offset="0x4" visible="true" />
+		<float32 name="Maximum Influence" offset="0x8" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x28" visible="false" />
-	<undefined name="Unknown" offset="0x2C" visible="false" />
-	<undefined name="Unknown" offset="0x30" visible="false" />
-	<undefined name="Unknown" offset="0x34" visible="false" />
-	<undefined name="Unknown" offset="0x38" visible="false" />
-	<undefined name="Unknown" offset="0x3C" visible="false" />
-	<undefined name="Unknown" offset="0x40" visible="false" />
-	<undefined name="Unknown" offset="0x44" visible="false" />
-	<undefined name="Unknown" offset="0x48" visible="false" />
-	<undefined name="Unknown" offset="0x4C" visible="false" />
-	<tagblock name="Unknown" offset="0x50" visible="false" elementSize="0x14">
-		<dataRef name="Unknown" offset="0x0" visible="false" align="0x8" />
+	<comment title="Enemy Forbid">This is a tight cylinder around the player with a strong negative weight. It serves to protect players from spawning close to an enemy, or having and enemy spawn close to them.</comment>
+	<float32 name="Full Weight Radius" offset="0x28" visible="true" />
+	<float32 name="Fall-Off Radius" offset="0x2C" visible="true" />
+	<tagblock name="Falloff Function" offset="0x30" visible="true" elementSize="0x14" tooltip="Multiplier applied to weight (domain is full weight radius to fall-off radius, range should be 0 to 1).">
+		<dataref name="Function" offset="0x0" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x5C" visible="false" />
-	<undefined name="Unknown" offset="0x60" visible="false" />
-	<undefined name="Unknown" offset="0x64" visible="false" />
-	<undefined name="Unknown" offset="0x68" visible="false" />
-	<undefined name="Unknown" offset="0x6C" visible="false" />
-	<tagblock name="Unknown" offset="0x70" visible="false" elementSize="0x14">
-		<dataRef name="Unknown" offset="0x0" visible="false" align="0x8" />
+	<float32 name="Upper Height" offset="0x3C" visible="true" />
+	<float32 name="Lower Height" offset="0x40" visible="true" />
+	<float32 name="Weight" offset="0x44" visible="true" />
+	<comment title="Enemy Bias">This is a larger cylinder, with a size set specifically for the size of the map. It has a weak negative weight which falls to zero towards the outer radius. It serves to bias players away from spawning near enemies, or in enemy held areas.</comment>
+	<float32 name="Full Weight Radius" offset="0x48" visible="true" />
+	<float32 name="Fall-Off Radius" offset="0x4C" visible="true" />
+	<tagblock name="Falloff Function" offset="0x50" visible="true" elementSize="0x14" tooltip="Multiplier applied to weight (domain is full weight radius to fall-off radius, range should be 0 to 1).">
+		<dataref name="Function" offset="0x0" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x7C" visible="false" />
-	<undefined name="Unknown" offset="0x80" visible="false" />
-	<undefined name="Unknown" offset="0x84" visible="false" />
-	<undefined name="Unknown" offset="0x88" visible="false" />
-	<undefined name="Unknown" offset="0x8C" visible="false" />
-	<tagblock name="Unknown" offset="0x90" visible="false" elementSize="0x14">
-		<dataRef name="Unknown" offset="0x0" visible="false" align="0x8" />
+	<float32 name="Upper Height" offset="0x5C" visible="true" />
+	<float32 name="Lower Height" offset="0x60" visible="true" />
+	<float32 name="Weight" offset="0x64" visible="true" />
+	<comment title="Ally Bias">This is a larger cylinder, with a size set specifically for the size of the map. It has a weak positive weight which falls to zero towards the outer radius. It serves to bias players towards spawning with allies, or in areas which are controlled by friendly players.</comment>
+	<float32 name="Full Weight Radius" offset="0x68" visible="true" />
+	<float32 name="Fall-Off Radius" offset="0x6C" visible="true" />
+	<tagblock name="Falloff Function" offset="0x70" visible="true" elementSize="0x14" tooltip="Multiplier applied to weight (domain is full weight radius to fall-off radius, range should be 0 to 1).">
+		<dataref name="Function" offset="0x0" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x9C" visible="false" />
-	<undefined name="Unknown" offset="0xA0" visible="false" />
-	<undefined name="Unknown" offset="0xA4" visible="false" />
-	<undefined name="Unknown" offset="0xA8" visible="false" />
-	<undefined name="Unknown" offset="0xAC" visible="false" />
-	<tagblock name="Unknown" offset="0xB0" visible="false" elementSize="0x14">
-		<dataRef name="Unknown" offset="0x0" visible="false" align="0x8" />
+	<float32 name="Upper Height" offset="0x7C" visible="true" />
+	<float32 name="Lower Height" offset="0x80" visible="true" />
+	<float32 name="Weight" offset="0x84" visible="true" />
+	<comment title="Selected Ally Bias">Same as ALLY BIAS, but used when the ally is selected in the dead-camera.</comment>
+	<float32 name="Full Weight Radius" offset="0x88" visible="true" />
+	<float32 name="Fall-Off Radius" offset="0x8C" visible="true" />
+	<tagblock name="Falloff Function" offset="0x90" visible="true" elementSize="0x14" tooltip="Multiplier applied to weight (domain is full weight radius to fall-off radius, range should be 0 to 1).">
+		<dataref name="Function" offset="0x0" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0xBC" visible="false" />
-	<undefined name="Unknown" offset="0xC0" visible="false" />
-	<undefined name="Unknown" offset="0xC4" visible="false" />
-	<undefined name="Unknown" offset="0xC8" visible="false" />
-	<undefined name="Unknown" offset="0xCC" visible="false" />
-	<undefined name="Unknown" offset="0xD0" visible="false" />
-	<undefined name="Unknown" offset="0xD4" visible="false" />
-	<undefined name="Unknown" offset="0xD8" visible="false" />
-	<undefined name="Unknown" offset="0xDC" visible="false" />
-	<undefined name="Unknown" offset="0xE0" visible="false" />
-	<undefined name="Unknown" offset="0xE4" visible="false" />
-	<undefined name="Unknown" offset="0xE8" visible="false" />
-	<undefined name="Unknown" offset="0xEC" visible="false" />
-	<tagblock name="Unknown" offset="0xF0" visible="false" elementSize="0x20">
-		<tagRef name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
+	<float32 name="Upper Height" offset="0x9C" visible="true" />
+	<float32 name="Lower Height" offset="0xA0" visible="true" />
+	<float32 name="Weight" offset="0xA4" visible="true" />
+	<comment title="Dead Teammate Bias">Dead teammate influences are cylinders centered upon the body of a dead teammate (or the player's own dead body).</comment>
+	<float32 name="Full Weight Radius" offset="0xA8" visible="true" />
+	<float32 name="Fall-Off Radius" offset="0xAC" visible="true" />
+	<tagblock name="Falloff Function" offset="0xB0" visible="true" elementSize="0x14" tooltip="Multiplier applied to weight (domain is full weight radius to fall-off radius, range should be 0 to 1).">
+		<dataref name="Function" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0xFC" visible="false" elementSize="0x28">
-		<tagRef name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
+	<float32 name="Upper Height" offset="0xBC" visible="true" />
+	<float32 name="Lower Height" offset="0xC0" visible="true" />
+	<float32 name="Weight" offset="0xC4" visible="true" />
+	<float32 name="Influence Duration" offset="0xC8" visible="true" />
+	<comment title="Unknown Bias" />
+	<float32 name="Full Weight Radius" offset="0xCC" visible="true" />
+	<float32 name="Fall-Off Radius" offset="0xD0" visible="true" />
+	<tagblock name="Falloff Function" offset="0xD4" visible="true" elementSize="0x14" tooltip="Multiplier applied to weight (domain is full weight radius to fall-off radius, range should be 0 to 1).">
+		<dataref name="Function" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0x108" visible="false" elementSize="0x1C">
-		<tagRef name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
+	<float32 name="Unknown" offset="0xE0" visible="true" />
+	<float32 name="Unknown" offset="0xE4" visible="true" />
+	<float32 name="Unknown" offset="0xE8" visible="true" />
+	<float32 name="Unknown" offset="0xEC" visible="true" />
+	<tagblock name="Weapon Influencers" offset="0xF0" visible="true" elementSize="0x20" tooltip="These influencers are induced by weapons either weilded or carried in the player's backpack">
+		<tagRef name="Weapon" offset="0x0" visible="true" />
+		<float32 name="Full Weight Range" offset="0x10" visible="true" />
+		<float32 name="Fall-Off Range" offset="0x14" visible="true" />
+		<float32 name="Fall-Off Cone Radius" offset="0x18" visible="true" />
+		<float32 name="Weight" offset="0x1C" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x114" visible="false" />
-	<undefined name="Unknown" offset="0x118" visible="false" />
-	<undefined name="Unknown" offset="0x11C" visible="false" />
+	<tagblock name="Vehicle Influencers" offset="0xFC" visible="true" elementSize="0x28" tooltip="These influencers are induced by vehicles.">
+		<tagRef name="Vehicle" offset="0x0" visible="true" />
+		<float32 name="Box Width" offset="0x10" visible="true" />
+		<float32 name="Box Minimum Height" offset="0x14" visible="true" tooltip="How far influencer will extend below unit's origin. Will usually be negative. (If min and max are both 0, unit radius is used)" />
+		<float32 name="Box Maximum Height" offset="0x18" visible="true" tooltip="How far influencer will extend above unit's origin. Will usually be positive. (If min and max are both 0, unit radius is used)" />
+		<float32 name="Lead Time" offset="0x1C" visible="true" />
+		<float32 name="Minimum Velocity" offset="0x20" visible="true" />
+		<float32 name="Weight" offset="0x24" visible="true" />
+	</tagblock>
+	<tagblock name="Projectile Influencers" offset="0x108" visible="true" elementSize="0x1C" tooltip="These influencers are induced by projectiles.">
+		<tagRef name="Projectile" offset="0x0" visible="true" />
+		<float32 name="Lead Time" offset="0x10" visible="true" />
+		<float32 name="Collision Cylinder Radius" offset="0x14" visible="true" />
+		<float32 name="Weight" offset="0x18" visible="true" />
+	</tagblock>
+	<tagblock name="Equipment Influencers" offset="0x114" visible="true" elementSize="0x14" tooltip="These influencers are induced by equipment.">
+		<tagRef name="Equipment" offset="0x0" visible="true" />
+		<float32 name="Weight" offset="0x10" visible="true" />
+	</tagblock>
 </plugin>

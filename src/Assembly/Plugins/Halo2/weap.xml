@@ -5,7 +5,7 @@
 		<revision author="XZodia" version="1">Completed</revision>
 		<revision author="Lord Zedd" version="2">Fully completed</revision>
 	</revisions>
-	<enum16 name="Object Type" offset="0x0" visible="true">
+	<enum16 name="Runtime Object Type" offset="0x0" visible="true">
 		<option name="Biped" value="0x0" />
 		<option name="Vehicle" value="0x1" />
 		<option name="Weapon" value="0x2" />
@@ -22,7 +22,7 @@
 	</enum16>
 	<flags16 name="Flags" offset="0x2" visible="true">
 		<bit name="Does Not Cast Shadow" index="0" />
-		<bit name="Search Cardinal Direction Lightmaps" index="1" />
+		<bit name="Search Cardinal Direction Lightmaps on Failure" index="1" />
 		<bit name="Bit 2" index="2" />
 		<bit name="Not A Pathfinding Obstacle" index="3" />
 		<bit name="Extension Of Parent" index="4" tooltip="object passes all function values to parent and uses parent's markers" />
@@ -98,7 +98,7 @@
 			<bit name="Pathfinding Ignore When Dead" index="1" />
 			<bit name="Dynamic Cover" index="2" />
 		</flags32>
-		<stringId name="AI Type Name" offset="0x4" visible="true" />
+		<stringId name="AI Type Name" offset="0x4" visible="true" tooltip="used for combat dialogue, etc." />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<enum16 name="AI Size" offset="0xC" visible="true">
 			<option name="Default" value="0x0" />
@@ -127,7 +127,7 @@
 			<bit name="Always Active" index="2" tooltip="function does not deactivate when at or below lower bound" />
 			<bit name="Random Time Offset" index="3" tooltip="function offsets periodic function input by random value between 0 and 1" />
 		</flags32>
-		<stringId name="Import Name" offset="0x4" visible="true" />
+		<stringId name="Import Name" offset="0x4" visible="true" tooltip="if you leave this field blank then you can set this function's input value with the hs_function object_set_function_variable" />
 		<stringId name="Export Name" offset="0x8" visible="true" />
 		<stringid name="Turn Off With" offset="0xC" visible="true" tooltip="if the specified function is off, so is this function" />
 		<float32 name="Minimum Value" offset="0x10" visible="true" tooltip="function must exceed this value (after mapping) to be active 0. means do nothing" />
@@ -191,18 +191,18 @@
 			<stringid name="Variant Name" offset="0x1C" visible="true" tooltip="if empty, may be used by any model variant" />
 		</tagblock>
 		<tagblock name="Functions" offset="0x8" visible="true" elementSize="0x28">
-			<undefined name="Unknown" offset="0x0" visible="true" />
+			<undefined name="Unknown" offset="0x0" visible="false" />
 			<flags32 name="Scale Flags" offset="0x4" visible="true">
 				<bit name="Blend In HSV" index="0" tooltip="blends colors in hsv rather than rgb space" />
 				<bit name="...More Colors" index="1" tooltip="blends colors through more hues (goes the long way around the color wheel)" />
 			</flags32>
 			<colorf name="Color Lower Bound" offset="0x8" alpha="false" visible="true" />
 			<colorf name="Color Upper Bound" offset="0x14" alpha="false" visible="true" />
-			<stringid name="Darken By..." offset="0x20" visible="true" />
-			<stringid name="Scale By..." offset="0x24" visible="true" />
+			<stringid name="Darken By" offset="0x20" visible="true" />
+			<stringid name="Scale By" offset="0x24" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Predicted Resource" offset="0xB4" visible="true" elementSize="0x8">
+	<tagblock name="Predicted Resources" offset="0xB4" visible="true" elementSize="0x8">
 		<enum16 name="Type" offset="0x0" visible="true">
 			<option name="Bitmap" value="0x0" />
 			<option name="Sound" value="0x1" />

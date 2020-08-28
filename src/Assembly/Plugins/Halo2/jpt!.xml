@@ -17,7 +17,7 @@
 		<option name="None" value="0x0" />
 		<option name="Harmless" value="0x1" />
 		<option name="Lethal To The Unsuspecting" value="0x2" />
-		<option name="Emp" value="0x3" />
+		<option name="EMP" value="0x3" />
 	</enum16>
 	<enum16 name="Category" offset="0x12" visible="true">
 		<option name="None" value="0x0" />
@@ -46,9 +46,9 @@
 		<bit name="Damage Indicators Always Point Down" index="8" />
 		<bit name="Skips Shields" index="9" />
 		<bit name="Only Hurts One Infection Form" index="10" />
-		<bit name="Obsolete, Was Can Cause Multiplayer Headshots" index="11" />
+		<bit name="Bit 11" index="11" tooltip="Obsolete, was Can Cause Multiplayer Headshots" />
 		<bit name="Infection Form Pop" index="12" />
-		<bit name="Ignore Seat Scale For Dir. Dmg" index="13" />
+		<bit name="Ignore Seat Scale For Direct Damage" index="13" />
 		<bit name="Forces Hard Ping" index="14" />
 		<bit name="Does Not Hurt Players" index="15" />
 	</flags32>
@@ -56,15 +56,16 @@
 	<float32 name="Damage Lower Bound" offset="0x1C" visible="true" />
 	<rangef name="Damage Upper Bound" offset="0x20" visible="true" />
 	<degree name="Damage Inner Cone Angle" offset="0x28" visible="true" />
-	<degree name="Damage Outter Cone Angle" offset="0x2C" visible="true" />
+	<degree name="Damage Outer Cone Angle" offset="0x2C" visible="true" />
 	<float32 name="Active Camoflage Damage" offset="0x30" visible="true" tooltip="how much more visible this damage makes a player who is active camouflaged" />
 	<float32 name="Stun" offset="0x34" visible="true" tooltip="amount of stun added to damaged unit" />
 	<float32 name="Maximum Stun" offset="0x38" visible="true" tooltip="damaged unit's stun will never exceed this amount" />
 	<float32 name="Stun Time" offset="0x3C" visible="true" tooltip="duration of stun due to this damage" />
 	<float32 name="Instantaneous Acceleration" offset="0x40" visible="true" />
+	<comment title="Rider Damage Scales" />
 	<float32 name="Rider Direct Damage Scale" offset="0x44" visible="true" />
-	<float32 name="Rider Max Transfer Damage Scale" offset="0x48" visible="true" />
-	<float32 name="Rider Min Transfer Damage Scale" offset="0x4C" visible="true" />
+	<float32 name="Rider Maximum Transfer Damage Scale" offset="0x48" visible="true" />
+	<float32 name="Rider Minimum Transfer Damage Scale" offset="0x4C" visible="true" />
 	<stringId name="General Damage" offset="0x50" visible="true" />
 	<stringId name="Specific Damage" offset="0x54" visible="true" />
 	<float32 name="AI Stun Radius" offset="0x58" visible="true" />
@@ -78,7 +79,17 @@
 			<option name="All" value="0x2" />
 		</enum16>
 		<int16 name="Unknown" offset="0x2" visible="false" />
-		<comment title="Screen Flash" />
+		<comment title="Screen Flash">There are seven screen flash types:
+
+NONE: DST'= DST
+LIGHTEN: DST'= DST(1 - A) + C
+DARKEN: DST'= DST(1 - A) - C
+MAX: DST'= MAX[DST(1 - C), (C - A)(1-DST)]
+MIN: DST'= MIN[DST(1 - C), (C + A)(1-DST)]
+TINT: DST'= DST(1 - C) + (A*PIN[2C - 1, 0, 1] + A)(1-DST)
+INVERT: DST'= DST(1 - C) + A)
+
+In the above equations C and A represent the color and alpha of the screen flash, DST represents the color in the framebuffer before the screen flash is applied, and DST' represents the color after the screen flash is applied.</comment>
 		<enum16 name="Type" offset="0x4" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Lighten" value="0x1" />
@@ -105,13 +116,13 @@
 			<option name="One" value="0x7" />
 		</enum16>
 		<int16 name="Unknown" offset="0xE" visible="false" />
-		<float32 name="Max Intensity" offset="0x10" visible="true" />
+		<float32 name="Maximum Intensity" offset="0x10" visible="true" />
 		<colorf name="Color" offset="0x14" alpha="true" visible="true" />
 		<comment title="Vibration" />
 		<float32 name="Low Frequency Vibration Duration" offset="0x24" visible="true" />
-		<dataref name="Low Frequency Whore Function" offset="0x28" visible="true" /><!-- lol bungie -->
+		<dataref name="Low Frequency Vibration Function" offset="0x28" visible="true" />
 		<float32 name="High Frequency Vibration Duration" offset="0x30" visible="true" />
-		<dataref name="High Frequency Whore Function" offset="0x34" visible="true" /><!-- lol bungie -->
+		<dataref name="High Frequency Vibration Function" offset="0x34" visible="true" />
 		<comment title="Sound Effect" />
 		<stringId name="Effect Name" offset="0x3C" visible="true" />
 		<float32 name="Duration" offset="0x40" visible="true" />
@@ -132,11 +143,13 @@
 	<int16 name="Unknown" offset="0x7A" visible="false" />
 	<degree name="Rotation" offset="0x7C" visible="true" />
 	<float32 name="Pushback" offset="0x80" visible="true" />
-	<float32 name="Jitter min" offset="0x84" visible="true" />
-	<float32 name="Jitter max" offset="0x88" visible="true" />
-	<comment title="Camera Shaking" />
-	<float32 name="Duration" offset="0x8C" visible="true" />
-	<enum16 name="Falloff Function" offset="0x90" visible="true">
+	<rangef name="Jitter" offset="0x84" visible="true" />
+	<comment title="Camera Shaking">The wobble function and weight affects how the camera shake oscilates over time.
+If the weight is one, then the wobble function completely scales the translational
+and rotational magnitudes.  The less the weight, the less the effect wobble has.
+If the wobble weight is 0 then wobble is completely ignored.</comment>
+	<float32 name="Duration" offset="0x8C" visible="true" tooltip="the effect will last for this duration." />
+	<enum16 name="Falloff Function" offset="0x90" visible="true" tooltip="a function to envelope the effect's magnitude over time">
 		<option name="Linear" value="0x0" />
 		<option name="Late" value="0x1" />
 		<option name="Very Late" value="0x2" />
@@ -147,9 +160,9 @@
 		<option name="One" value="0x7" />
 	</enum16>
 	<int16 name="Unknown" offset="0x92" visible="false" />
-	<float32 name="Random Translation" offset="0x94" visible="true" />
-	<degree name="Random Rotation" offset="0x98" visible="true" />
-	<enum16 name="Wobble Function" offset="0x9C" visible="true">
+	<float32 name="Random Translation" offset="0x94" visible="true" tooltip="random translation in all directions" />
+	<degree name="Random Rotation" offset="0x98" visible="true" tooltip="random rotation in all directions" />
+	<enum16 name="Wobble Function" offset="0x9C" visible="true" tooltip="a function to perturb the effect's behavior over time">
 		<option name="One" value="0x0" />
 		<option name="Zero" value="0x1" />
 		<option name="Cosine" value="0x2" />
@@ -165,10 +178,20 @@
 	</enum16>
 	<int16 name="Unknown" offset="0x9E" visible="false" />
 	<float32 name="Wobble Function Period" offset="0xA0" visible="true" />
-	<float32 name="Wobble Weight" offset="0xA4" visible="true" />
+	<float32 name="Wobble Weight" offset="0xA4" visible="true" tooltip="a value of 0.0 signifies that the wobble function has no effect; a value of 1.0 signifies that the effect will not be felt when the wobble function's value is zero." />
 	<comment title="Sound" />
 	<tagRef name="Sound" offset="0xA8" visible="true" />
-	<comment title="Breaking Effect" />
+	<comment title="Breaking Effect">Controls particle velocities when a damage effect shatters a materal.
+
+All particles created within 'forward radius' will be kicked along the
+damage direction with a speed equivalent to 'forward velocity' at the
+epicenter of the damage and 0 at the outer radius. 'Forward exponent'
+is used to modify the velocity scale. A low exponent (like 0.5) means that
+particles between the epicenter and the radius will be kicked out with a speed
+closer to 'forward velocity' than if a higher exponent (like 2.0) was used
+
+The outward fields work in a similar way, except instead of kicking along the
+damage direction, they get kick away from the damage epicenter.</comment>
 	<float32 name="Forward Velocity" offset="0xB0" visible="true" />
 	<float32 name="Forward Radius" offset="0xB4" visible="true" />
 	<float32 name="Forward Exponent" offset="0xB8" visible="true" />

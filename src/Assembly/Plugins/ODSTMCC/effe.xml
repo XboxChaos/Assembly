@@ -5,21 +5,21 @@
 		<revision author="Lord Zedd" version="1">k</revision>
 	</revisions>
 	<flags32 name="Flags" offset="0x0" visible="true">
-		<bit name="Bit 0" index="0" />
-		<bit name="Bit 1" index="1" />
-		<bit name="Bit 2" index="2" />
-		<bit name="Bit 3" index="3" />
-		<bit name="Bit 4" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Bit 6" index="6" />
-		<bit name="Bit 7" index="7" />
-		<bit name="Bit 8" index="8" />
-		<bit name="Enable Accelerations?" index="9" />
-		<bit name="Dark Casings?" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
+		<bit name="Deleted When Attachment Deactivates" index="0" />
+		<bit name="Run Events In Parallel" index="1" />
+		<bit name="Do Not Re-Use Parts When Looping" index="2" tooltip="This option will hurt performance on effects with very short duration." />
+		<bit name="Age Creator's Weapon" index="3" />
+		<bit name="Use Parent Position But World Orientation" index="4" />
+		<bit name="Can Penetrate Walls (Expensive)" index="5" />
+		<bit name="Cannot Be Restarted" index="6" tooltip="Will help performance for parallel events of different lengths, if the effect is unlikely to be reused" />
+		<bit name="Force Use Own Lightprobe" index="7" tooltip="Do not adopt parent object's lightprobe, even when it's available" />
+		<bit name="(Runtime?) Bit 8" index="8" />
+		<bit name="(Runtime?) Enable Accelerations?" index="9" />
+		<bit name="(Runtime?) Dark Casings?" index="10" />
+		<bit name="(Runtime?) Bit 11" index="11" />
+		<bit name="(Runtime?) Bit 12" index="12" />
+		<bit name="(Runtime?) Bit 13" index="13" />
+		<bit name="(Runtime?) Bit 14" index="14" />
 		<bit name="Bit 15" index="15" />
 		<bit name="Bit 16" index="16" />
 		<bit name="Bit 17" index="17" />
@@ -38,37 +38,152 @@
 		<bit name="Bit 30" index="30" />
 		<bit name="Bit 31" index="31" />
 	</flags32>
-	<int32 name="Unknown" offset="0x4" visible="false" />
-	<float32 name="Unknown" offset="0x8" visible="false" />
-	<undefined name="Unknown" offset="0xC" visible="false" />
-	<float32 name="Unknown" offset="0x10" visible="false" />
-	<int8 name="Unknown" offset="0x14" visible="false" />
-	<int8 name="Unknown" offset="0x15" visible="false" />
-	<int8 name="Unknown" offset="0x16" visible="false" />
-	<int8 name="Unknown" offset="0x17" visible="false" />
+	<int32 name="Fixed Random Seed" offset="0x4" visible="true" tooltip="If this is non-zero, the effect will usually be exactly repeatable" />
+	<float32 name="Restart If Within" offset="0x8" visible="true" />
+	<float32 name="Continue If Within" offset="0xC" visible="true" />
+	<float32 name="Death Delay" offset="0x10" visible="true" />
+	<int8 name="Unknown" offset="0x14" visible="true" />
+	<int8 name="Unknown" offset="0x15" visible="true" />
+	<int8 name="Unknown" offset="0x16" visible="true" />
+	<int8 name="Unknown" offset="0x17" visible="true" />
 	<int16 name="Loop Start Event" offset="0x18" visible="true" />
-	<int16 name="Unknown" offset="0x1A" visible="false" />
-	<undefined name="Unknown" offset="0x1C" visible="false" />
+	<enum8 name="Priority" offset="0x1A" visible="true">
+		<option name="Low" value="0x0" />
+		<option name="Normal" value="0x1" />
+		<option name="Above Normal" value="0x2" />
+		<option name="High" value="0x3" />
+		<option name="Very High" value="0x4" />
+		<option name="Essential" value="0x5" />
+	</enum8>
+	<int8 name="Unknown" offset="0x1B" visible="false" />
+	<undefined name="Unknown" offset="0x1C" visible="true" />
 	<tagblock name="Locations" offset="0x20" visible="true" elementSize="0xC">
+		<comment title="MARKER NAMES">In addition to the marker in the render model there are several special marker names:
+
+replace
+Replace allows you to use the same effect with different markers. Damage transition effects support this for example.
+
+gravity, up
+The direction of gravity (down) and the opposite direction (up).  Always supplied
+
+normal
+Vector pointing directly away from the surface you collided with. Supplied for effects from collision.
+
+forward
+The 'negative incident' vector i.e. the direction the object is moving in. Most commonly used to generated decals. Supplied for effects from collision.
+
+backward
+The 'incident' vector i.e. the opposite of the direction the object is moving in. Supplied for effects from collision.
+
+reflection
+The way the effect would reflect off the surface it hit. Supplied for effects from collision.
+
+root
+The object root (pivot). These can used for all effects which are associated with an object.
+
+impact
+The location of a havok impact.
+
+water_surface
+Point of the effect projected to the water surface above it. Otherwise it just returns the effect position.
+
+child
+The location of the last detonated projectile, in case the parent object is a weapon (tracers only)</comment>
 		<stringId name="Marker Name" offset="0x0" visible="true" />
-		<int32 name="Unknown" offset="0x4" visible="false" />
-		<int8 name="Unknown" offset="0x8" visible="false" />
+		<flags32 name="Flags" offset="0x4" visible="true">
+			<bit name="Optional (no error if not found)" index="0" />
+			<bit name="Destructible (no error if goes away)" index="1" />
+			<bit name="Track Sub-Frame Movements" index="2" tooltip="When effect moves multiple times within one frame, update location each time" />
+			<bit name="Never Stagger Across Markers" index="3" tooltip="Even if this effect is told to stagger across available markers, always fire from all instances" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
+		</flags32>
+		<enum8 name="Priority" offset="0x8" visible="true">
+			<option name="Low" value="0x0" />
+			<option name="Normal" value="0x1" />
+			<option name="Above Normal" value="0x2" />
+			<option name="High" value="0x3" />
+			<option name="Very High" value="0x4" />
+			<option name="Essential" value="0x5" />
+		</enum8>
 		<int8 name="Unknown" offset="0x9" visible="false" />
-		<int8 name="Unknown" offset="0xA" visible="false" />
-		<int8 name="Unknown" offset="0xB" visible="false" />
+		<int16 name="Unknown" offset="0xA" visible="false" />
 	</tagblock>
 	<tagblock name="Events" offset="0x2C" visible="true" elementSize="0x44">
 		<stringId name="Name" offset="0x0" visible="true" />
-		<int32 name="Unknown" offset="0x4" visible="false" />
-		<int8 name="Unknown" offset="0x8" visible="false" />
+		<flags32 name="Flags" offset="0x4" visible="true">
+			<bit name="Disabled for Debugging" index="0" />
+			<bit name="Particles Die When Effect Ends" index="1" />
+			<bit name="Loop Event Age Duration Override" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
+		</flags32>
+		<enum8 name="Priority" offset="0x8" visible="true">
+			<option name="Low" value="0x0" />
+			<option name="Normal" value="0x1" />
+			<option name="Above Normal" value="0x2" />
+			<option name="High" value="0x3" />
+			<option name="Very High" value="0x4" />
+			<option name="Essential" value="0x5" />
+		</enum8>
 		<int8 name="Unknown" offset="0x9" visible="false" />
-		<int8 name="Unknown" offset="0xA" visible="false" />
-		<int8 name="Unknown" offset="0xB" visible="false" />
+		<int16 name="Unknown" offset="0xA" visible="false" />
 		<float32 name="Skip Fraction" offset="0xC" visible="true" />
-		<float32 name="Delay Bounds min" offset="0x10" visible="true" />
-		<float32 name="Delay Bounds max" offset="0x14" visible="true" />
-		<float32 name="Duration Bounds min" offset="0x18" visible="true" />
-		<float32 name="Duration Bounds max" offset="0x1C" visible="true" />
+		<rangef name="Delay Bounds" offset="0x10" visible="true" />
+		<rangef name="Duration Bounds" offset="0x18" visible="true" />
 		<tagblock name="Parts" offset="0x20" visible="true" elementSize="0x60">
 			<enum16 name="Create In Environment" offset="0x0" visible="true">
 				<option name="Any Environment" value="0x0" />
@@ -82,9 +197,27 @@
 				<option name="Nonviolent Mode Only" value="0x2" />
 			</enum16>
 			<int16 name="Location Index" offset="0x4" visible="true" />
-			<int16 name="Unknown" offset="0x6" visible="false" />
-			<int16 name="Unknown" offset="0x8" visible="false" />
-			<int8 name="Unknown" offset="0xA" visible="false" />
+			<int16 name="Secondary Location (beams)" offset="0x6" visible="true" />
+			<flags16 name="Flags" offset="0x8" visible="true">
+				<bit name="Face Down Regardless of Location (decals)" index="0" />
+				<bit name="Offset Origin Away From Geometry (lights)" index="1" />
+				<bit name="Never Attached to Object" index="2" />
+				<bit name="Disabled for Debugging" index="3" />
+				<bit name="Draw Regardless of Distance" index="4" />
+				<bit name="Make Every Tick" index="5" />
+				<bit name="Inherit Parent Variant" index="6" />
+				<bit name="Batch AOE Damage" index="7" />
+				<bit name="Create Even When Event Loops Back to Self" index="8" />
+				<bit name="Face Up Regardless of Location (replace_up)" index="9" />
+			</flags16>
+			<enum8 name="Priority" offset="0xA" visible="true">
+				<option name="Low" value="0x0" />
+				<option name="Normal" value="0x1" />
+				<option name="Above Normal" value="0x2" />
+				<option name="High" value="0x3" />
+				<option name="Very High" value="0x4" />
+				<option name="Essential" value="0x5" />
+			</enum8>
 			<enum8 name="Camera Mode" offset="0xB" visible="true">
 				<option name="Independent Of Camera Mode" value="0x0" />
 				<option name="First Person Only" value="0x1" />
@@ -107,87 +240,28 @@
 				<option name="snd! - sound" value="0x736E6421" />
 			</enum32>
 			<tagRef name="Type" offset="0x10" visible="true" tooltip="The above &quot;Runtime Base Group Tag&quot; field should match this reference." />
-			<float32 name="Velocity Bounds min" offset="0x20" visible="true" />
-			<float32 name="Velocity Bounds max" offset="0x24" visible="true" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<undefined name="Unknown" offset="0x2C" visible="false" />
+			<rangef name="Velocity Bounds" offset="0x20" visible="true" />
+			<degree2 name="Velocity Orientation (yaw, pitch)" offset="0x28" visible="true" tooltip="NOT USED!" />
 			<degree name="Velocity Cone Angle" offset="0x30" visible="true" />
-			<degree name="Angular Velocity Bounds min" offset="0x34" visible="true" />
-			<degree name="Angular Velocity Bounds max" offset="0x38" visible="true" />
-			<float32 name="Radius Modifier Bounds min" offset="0x3C" visible="true" />
-			<float32 name="Radius Modifier Bounds max" offset="0x40" visible="true" />
-			<float32 name="Origin Offset X" offset="0x44" visible="true" />
-			<float32 name="Origin Offset Y" offset="0x48" visible="true" />
-			<float32 name="Origin Offset Z" offset="0x4C" visible="true" />
-			<degree name="Origin Rotation i" offset="0x50" visible="true" />
-			<degree name="Origin Rotation j" offset="0x54" visible="true" />
+			<ranged name="Angular Velocity Bounds" offset="0x34" visible="true" />
+			<rangef name="Radius Modifier Bounds" offset="0x3C" visible="true" />
+			<point3 name="Origin Offset" offset="0x44" visible="true" />
+			<vector2 name="Origin Rotation" offset="0x50" visible="true" />
 			<flags32 name="A Scales Values" offset="0x58" visible="true">
-				<bit name="Bit 0" index="0" />
-				<bit name="Bit 1" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
+				<bit name="Velocity" index="0" />
+				<bit name="Velocity Delta" index="1" />
+				<bit name="Velocity Cone Angle" index="2" />
+				<bit name="Angular Velocity" index="3" />
+				<bit name="Angular Velocity Delta" index="4" />
+				<bit name="Type-Specific Scale" index="5" />
 			</flags32>
 			<flags32 name="B Scales Values" offset="0x5C" visible="true">
-				<bit name="Bit 0" index="0" />
-				<bit name="Bit 1" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
+				<bit name="Velocity" index="0" />
+				<bit name="Velocity Delta" index="1" />
+				<bit name="Velocity Cone Angle" index="2" />
+				<bit name="Angular Velocity" index="3" />
+				<bit name="Angular Velocity Delta" index="4" />
+				<bit name="Type-Specific Scale" index="5" />
 			</flags32>
 		</tagblock>
 		<tagblock name="Accelerations" offset="0x2C" visible="true" elementSize="0x14">
@@ -209,10 +283,16 @@
 			<float32 name="Outer Cone Angle" offset="0x10" visible="true" />
 		</tagblock>
 		<tagblock name="Particle Systems" offset="0x38" visible="true" elementSize="0x5C">
-			<int8 name="Unknown" offset="0x0" visible="false" />
+			<enum8 name="Priority" offset="0x0" visible="true">
+				<option name="Low" value="0x0" />
+				<option name="Normal" value="0x1" />
+				<option name="Above Normal" value="0x2" />
+				<option name="High" value="0x3" />
+				<option name="Very High" value="0x4" />
+				<option name="Essential" value="0x5" />
+			</enum8>
 			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int8 name="Unknown" offset="0x2" visible="false" />
-			<int8 name="Unknown" offset="0x3" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagRef name="Particle" offset="0x4" visible="true" />
 			<int16 name="Unknown" offset="0x14" visible="false" />
 			<int16 name="Location Index" offset="0x16" visible="true" />
@@ -240,36 +320,36 @@
 			</enum16>
 			<int16 name="Sort Bias" offset="0x20" visible="true" />
 			<flags16 name="Flags" offset="0x22" visible="true">
-				<bit name="Bit 0" index="0" />
-				<bit name="Bit 1" index="1" />
-				<bit name="Bit 2" index="2" />
+				<bit name="Particles Freeze When Offscreen" index="0" />
+				<bit name="Particles Continue As Usual When Offscreen" index="1" />
+				<bit name="Lod Always 1.0" index="2" />
 				<bit name="Bit 3" index="3" />
 				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
+				<bit name="Disabled For Debugging" index="5" />
+				<bit name="Inherit Effect Velocity" index="6" />
+				<bit name="Don't Render System" index="7" />
+				<bit name="Render When Zoomed" index="8" />
+				<bit name="Bit 9" index="9" /> <!--Particles Die When Effect Ends-->
+				<bit name="Bit 10" index="10" /> <!--Use Synchronized Random Seed-->
+				<bit name="Bit 11" index="11" /> 
+				<bit name="Bit 12" index="12" /> <!--Render In Spawn Order-->
+				<bit name="Bit 13" index="13" /> 
 				<bit name="Bit 14" index="14" />
 				<bit name="Bit 15" index="15" />
 			</flags16>
-			<float32 name="Unknown" offset="0x24" visible="false" />
-			<float32 name="Unknown" offset="0x28" visible="false" />
-			<float32 name="Unknown" offset="0x2C" visible="false" />
-			<float32 name="Unknown" offset="0x30" visible="false" />
-			<undefined name="Unknown" offset="0x34" visible="false" />
-			<float32 name="Unknown" offset="0x38" visible="false" />
-			<float32 name="Amount/Size" offset="0x3C" visible="true" />
-			<float32 name="LOD Out Distance" offset="0x40" visible="true" />
-			<float32 name="LOD Feather Out Delta" offset="0x44" visible="true" />
+			<float32 name="Pixel Budget" offset="0x24" visible="true" />
+			<float32 name="Near Fade Range" offset="0x28" visible="true" tooltip="distance beyond cutoff over which particles fade" />
+			<float32 name="Near Fade Cuttoff" offset="0x2C" visible="true" tooltip="distance in front of camera where fade is complete*" />
+			<float32 name="Near Fade Override" offset="0x30" visible="true" tooltip="distance in front of camera where fade is complete" />
+			<float32 name="LOD In Distance" offset="0x34" visible="true" />
+			<float32 name="LOD Feather In Delta" offset="0x38" visible="true" tooltip="minimum is 0.0001" />
+			<float32 name="Inverse LOD Feather In" offset="0x3C" visible="true" />
+			<float32 name="LOD Out Distance" offset="0x40" visible="true" tooltip="defaults to 20.0" />
+			<float32 name="LOD Feather Out Delta" offset="0x44" visible="true" tooltip="0 defaults to 5.0, minimum is 0.0001" />
 			<float32 name="Inverse LOD Feather Out" offset="0x48" visible="true" />
 			<tagblock name="Emitters" offset="0x4C" visible="true" elementSize="0x2EC">
 				<stringid name="Name" offset="0x0" visible="true" />
-				<flags16 name="Unknown" offset="0x4" visible="true">
+				<flags16 name="Flags" offset="0x4" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -305,256 +385,1963 @@
 				</flags16>
 				<int16 name="Unknown" offset="0x6" visible="false" />
 				<tagRef name="Custom Emitter Points" offset="0x8" visible="true" />
-				<undefined name="Unknown" offset="0x18" visible="false" />
-				<undefined name="Unknown" offset="0x1C" visible="false" />
-				<undefined name="Unknown" offset="0x20" visible="false" />
-				<undefined name="Unknown" offset="0x24" visible="false" />
-				<int8 name="Input" offset="0x28" visible="true" />
-				<int8 name="Input Range" offset="0x29" visible="true" />
-				<enum8 name="Output Kind" offset="0x2A" visible="true">
+				<float32 name="Bounding Radius Estimate" offset="0x18" visible="true" />
+				<float32 name="Bounding Radius Override" offset="0x1C" visible="true" />
+				<vector2 name="UV Scrolling" offset="0x20" visible="true" />
+				<comment title="Translational Offset (World Units)">XYZ controls that offset the emitter's origin from the original location</comment>
+				<enum8 name="Input Variable" offset="0x28" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Range Variable" offset="0x29" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Output Modifier" offset="0x2A" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum8>
-				<int8 name="Output" offset="0x2B" visible="true" />
-				<dataRef name="Unknown" offset="0x2C" visible="true" />
-				<undefined name="Unknown" offset="0x40" visible="false" />
-				<undefined name="Unknown" offset="0x44" visible="false" />
-				<undefined name="Unknown" offset="0x48" visible="false" />
-				<undefined name="Unknown" offset="0x4C" visible="false" />
-				<undefined name="Unknown" offset="0x50" visible="false" />
-				<undefined name="Unknown" offset="0x54" visible="false" />
-				<undefined name="Unknown" offset="0x58" visible="false" />
-				<undefined name="Unknown" offset="0x5C" visible="false" />
-				<int8 name="Input" offset="0x60" visible="true" />
-				<int8 name="Input Range" offset="0x61" visible="true" />
-				<enum8 name="Output Kind" offset="0x62" visible="true">
+				<enum8 name="Output Modifier Input" offset="0x2B" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<dataRef name="Mapping" offset="0x2C" visible="true" />
+				<float32 name="Runtime m Constant Value" offset="0x40" visible="true" />
+				<flags16 name="Runtime m Flags" offset="0x44" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+				</flags16>
+				<int16 name="Unknown" offset="0x46" visible="false" />
+				<point3 name="Starting Interpolant" offset="0x48" visible="true" />
+				<point3 name="Ending Interpolant" offset="0x54" visible="true" />
+				<comment title="Relative Direction">vector that changes the initial direction of the emitter</comment>
+				<enum8 name="Input Variable" offset="0x60" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Range Variable" offset="0x61" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Output Modifier" offset="0x62" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum8>
-				<int8 name="Output" offset="0x63" visible="true" />
-				<dataRef name="Unknown" offset="0x64" visible="true" />
-				<undefined name="Unknown" offset="0x78" visible="false" />
-				<undefined name="Unknown" offset="0x7C" visible="false" />
-				<undefined name="Unknown" offset="0x80" visible="false" />
-				<undefined name="Unknown" offset="0x84" visible="false" />
-				<undefined name="Unknown" offset="0x88" visible="false" />
-				<undefined name="Unknown" offset="0x8C" visible="false" />
-				<undefined name="Unknown" offset="0x90" visible="false" />
-				<undefined name="Unknown" offset="0x94" visible="false" />
-				<int8 name="Input" offset="0x98" visible="true" />
-				<int8 name="Input Range" offset="0x99" visible="true" />
-				<enum8 name="Output Kind" offset="0x9A" visible="true">
+				<enum8 name="Output Modifier Input" offset="0x63" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<dataRef name="Mapping" offset="0x64" visible="true" />
+				<float32 name="Runtime m Constant Value" offset="0x78" visible="true" />
+				<flags16 name="Runtime m Flags" offset="0x7C" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+				</flags16>
+				<int16 name="Unknown" offset="0x7E" visible="false" />
+				<vector3 name="Direction At 0" offset="0x80" visible="true" />
+				<vector3 name="Direction At 1" offset="0x8C" visible="true" />
+				<comment title="Emission Radius (World Units)">defines the size of the emitter</comment>
+				<enum8 name="Input Variable" offset="0x98" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Range Variable" offset="0x99" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Output Modifier" offset="0x9A" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum8>
-				<int8 name="Output" offset="0x9B" visible="true" />
-				<dataRef name="Unknown" offset="0x9C" visible="true" />
-				<undefined name="Unknown" offset="0xB0" visible="false" />
-				<undefined name="Unknown" offset="0xB4" visible="false" />
-				<int8 name="Input" offset="0xB8" visible="true" />
-				<int8 name="Input Range" offset="0xB9" visible="true" />
-				<enum8 name="Output Kind" offset="0xBA" visible="true">
+				<enum8 name="Output Modifier Input" offset="0x9B" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<dataRef name="Mapping" offset="0x9C" visible="true" />
+				<float32 name="Runtime m Constant Value" offset="0xB0" visible="true" />
+				<flags16 name="Runtime m Flags" offset="0xB4" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+				</flags16>
+				<flags8 name="Force Flags" offset="0xB6" visible="true">
+					<bit name="Force Constant" index="0" />
+				</flags8>
+				<int8 name="Unknown" offset="0xB7" visible="false" />
+				<comment title="Emission Angle (Degrees)">determines the angle at which particles are emitted</comment>
+				<enum8 name="Input Variable" offset="0xB8" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Range Variable" offset="0xB9" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Output Modifier" offset="0xBA" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum8>
-				<int8 name="Output" offset="0xBB" visible="true" />
-				<dataRef name="Unknown" offset="0xBC" visible="true" />
-				<undefined name="Unknown" offset="0xD0" visible="false" />
-				<undefined name="Unknown" offset="0xD4" visible="false" />
-				<int8 name="Input" offset="0xD8" visible="true" />
-				<int8 name="Input Range" offset="0xD9" visible="true" />
-				<enum8 name="Output Kind" offset="0xDA" visible="true">
+				<enum8 name="Output Modifier Input" offset="0xBB" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<dataRef name="Mapping" offset="0xBC" visible="true" />
+				<float32 name="Runtime m Constant Value" offset="0xD0" visible="true" />
+				<flags16 name="Runtime m Flags" offset="0xD4" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+				</flags16>
+				<flags8 name="Force Flags" offset="0xD6" visible="true">
+					<bit name="Force Constant" index="0" />
+				</flags8>
+				<int8 name="Unknown" offset="0xD7" visible="false" />
+				<comment title="Emission Axis Angle (Degrees)">determines the max tilt for particle axis</comment>
+				<enum8 name="Input Variable" offset="0xD8" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Range Variable" offset="0xD9" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Output Modifier" offset="0xDA" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum8>
-				<int8 name="Output" offset="0xDB" visible="true" />
-				<dataRef name="Unknown" offset="0xDC" visible="true" />
-				<undefined name="Unknown" offset="0xF0" visible="false" />
-				<undefined name="Unknown" offset="0xF4" visible="false" />
-				<int8 name="Input" offset="0xF8" visible="true" />
-				<int8 name="Input Range" offset="0xF9" visible="true" />
-				<enum8 name="Output Kind" offset="0xFA" visible="true">
+				<enum8 name="Output Modifier Input" offset="0xDB" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<dataRef name="Mapping" offset="0xDC" visible="true" />
+				<float32 name="Runtime m Constant Value" offset="0xF0" visible="true" />
+				<flags16 name="Runtime m Flags" offset="0xF4" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+				</flags16>
+				<flags8 name="Force Flags" offset="0xF6" visible="true">
+					<bit name="Force Constant" index="0" />
+				</flags8>
+				<int8 name="Unknown" offset="0xF7" visible="false" />
+				<comment title="Particle Starting Count">number of particles that are spawned at the birth of the effect</comment>
+				<enum8 name="Input Variable" offset="0xF8" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Range Variable" offset="0xF9" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Output Modifier" offset="0xFA" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum8>
-				<int8 name="Output" offset="0xFB" visible="true" />
-				<dataRef name="Unknown" offset="0xFC" visible="true" />
-				<undefined name="Unknown" offset="0x110" visible="false" />
-				<undefined name="Unknown" offset="0x114" visible="false" />
-				<int8 name="Input" offset="0x118" visible="true" />
-				<int8 name="Input Range" offset="0x119" visible="true" />
-				<enum8 name="Output Kind" offset="0x11A" visible="true">
+				<enum8 name="Output Modifier Input" offset="0xFB" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<dataRef name="Mapping" offset="0xFC" visible="true" />
+				<float32 name="Runtime m Constant Value" offset="0x110" visible="true" />
+				<flags16 name="Runtime m Flags" offset="0x114" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+				</flags16>
+				<flags8 name="Force Flags" offset="0x116" visible="true">
+					<bit name="Force Constant" index="0" />
+				</flags8>
+				<int8 name="Unknown" offset="0x117" visible="false" />
+				<comment title="Particle Max Count (0=unlimited)">max number of particles allowed to exist at one time</comment>
+				<enum8 name="Input Variable" offset="0x118" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Range Variable" offset="0x119" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Output Modifier" offset="0x11A" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum8>
-				<int8 name="Output" offset="0x11B" visible="true" />
-				<dataRef name="Unknown" offset="0x11C" visible="true" />
-				<undefined name="Unknown" offset="0x130" visible="false" />
-				<undefined name="Unknown" offset="0x134" visible="false" />
-				<int8 name="Input" offset="0x138" visible="true" />
-				<int8 name="Input Range" offset="0x139" visible="true" />
-				<enum8 name="Output Kind" offset="0x13A" visible="true">
+				<enum8 name="Output Modifier Input" offset="0x11B" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<dataRef name="Mapping" offset="0x11C" visible="true" />
+				<float32 name="Runtime m Constant Value" offset="0x130" visible="true" />
+				<flags16 name="Runtime m Flags" offset="0x134" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+				</flags16>
+				<flags8 name="Force Flags" offset="0x136" visible="true">
+					<bit name="Force Constant" index="0" />
+				</flags8>
+				<int8 name="Unknown" offset="0x137" visible="false" />
+				<comment title="Particle Emission Rate (Particles Per Second)">number of particles that are spawned every second from the emitters</comment>
+				<enum8 name="Input Variable" offset="0x138" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Range Variable" offset="0x139" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Output Modifier" offset="0x13A" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum8>
-				<int8 name="Output" offset="0x13B" visible="true" />
-				<dataRef name="Unknown" offset="0x13C" visible="true" />
-				<undefined name="Unknown" offset="0x150" visible="false" />
-				<undefined name="Unknown" offset="0x154" visible="false" />
-				<int8 name="Input" offset="0x158" visible="true" />
-				<int8 name="Input Range" offset="0x159" visible="true" />
-				<enum8 name="Output Kind" offset="0x15A" visible="true">
+				<enum8 name="Output Modifier Input" offset="0x13B" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<dataRef name="Mapping" offset="0x13C" visible="true" />
+				<float32 name="Runtime m Constant Value" offset="0x150" visible="true" />
+				<flags16 name="Runtime m Flags" offset="0x154" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+				</flags16>
+				<flags8 name="Force Flags" offset="0x156" visible="true">
+					<bit name="Force Constant" index="0" />
+				</flags8>
+				<int8 name="Unknown" offset="0x157" visible="false" />
+				<comment title="Particle Lifespan (Seconds)">the number of seconds a particle will live after emission</comment>
+				<enum8 name="Input Variable" offset="0x158" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Range Variable" offset="0x159" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Output Modifier" offset="0x15A" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum8>
-				<int8 name="Output" offset="0x15B" visible="true" />
-				<dataRef name="Unknown" offset="0x15C" visible="true" />
-				<undefined name="Unknown" offset="0x170" visible="false" />
-				<undefined name="Unknown" offset="0x174" visible="false" />
-				<tagRef name="Particle Physics" offset="0x178" visible="true" />
-				<undefined name="Unknown" offset="0x188" visible="false" />
-				<tagblock name="Unknown" offset="0x18C" visible="false" elementSize="0x18">
-					<undefined name="Unknown" offset="0x0" visible="false" />
-					<tagblock name="Unknown" offset="0x4" visible="false" elementSize="0x24">
-						<undefined name="Unknown" offset="0x0" visible="false" />
-						<int8 name="Input" offset="0x4" visible="true" />
-						<int8 name="Input Range" offset="0x5" visible="true" />
-						<enum8 name="Output Kind" offset="0x6" visible="true">
+				<enum8 name="Output Modifier Input" offset="0x15B" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<dataRef name="Mapping" offset="0x15C" visible="true" />
+				<float32 name="Runtime m Constant Value" offset="0x170" visible="true" />
+				<flags16 name="Runtime m Flags" offset="0x174" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+				</flags16>
+				<flags8 name="Force Flags" offset="0x176" visible="true">
+					<bit name="Force Constant" index="0" />
+				</flags8>
+				<int8 name="Unknown" offset="0x177" visible="false" />
+				<comment title="Particle Movement" />
+				<tagRef name="Template" offset="0x178" visible="true" />
+				<int8 name="Unknown" offset="0x188" visible="true" />
+				<int8 name="Unknown" offset="0x189" visible="true" />
+				<int8 name="Unknown" offset="0x18A" visible="true" />
+				<int8 name="Unknown" offset="0x18B" visible="true" />
+				<tagblock name="Movements" offset="0x18C" visible="true" elementSize="0x18">
+					<undefined name="Unknown" offset="0x0" visible="true" />
+					<tagblock name="Parameters" offset="0x4" visible="true" elementSize="0x24">
+						<int32 name="Parameter ID" offset="0x0" visible="true" />
+						<enum8 name="Input Variable" offset="0x4" visible="true">
+							<option name="Particle Age" value="0x0" />
+							<option name="System Age" value="0x1" />
+							<option name="Particle Random" value="0x2" />
+							<option name="System Random" value="0x3" />
+							<option name="Particle Correlation 1" value="0x4" />
+							<option name="Particle Correlation 2" value="0x5" />
+							<option name="Particle Correlation 3" value="0x6" />
+							<option name="Particle Correlation 4" value="0x7" />
+							<option name="System Correlation 1" value="0x8" />
+							<option name="System Correlation 2" value="0x9" />
+							<option name="Particle Emission Time" value="0xA" />
+							<option name="Location Lod" value="0xB" />
+							<option name="Game Time" value="0xC" />
+							<option name="Effect A Scale" value="0xD" />
+							<option name="Effect B Scale" value="0xE" />
+							<option name="Particle Rotation" value="0xF" />
+							<option name="Location Random" value="0x10" />
+							<option name="Distance From Emitter" value="0x11" />
+							<option name="Particle Simulation A" value="0x12" />
+							<option name="Particle Simulation B" value="0x13" />
+							<option name="Particle Velocity" value="0x14" />
+							<option name="Invalid State --- Please Set Again" value="0x15" />
+						</enum8>
+						<enum8 name="Range Variable" offset="0x5" visible="true">
+							<option name="Particle Age" value="0x0" />
+							<option name="System Age" value="0x1" />
+							<option name="Particle Random" value="0x2" />
+							<option name="System Random" value="0x3" />
+							<option name="Particle Correlation 1" value="0x4" />
+							<option name="Particle Correlation 2" value="0x5" />
+							<option name="Particle Correlation 3" value="0x6" />
+							<option name="Particle Correlation 4" value="0x7" />
+							<option name="System Correlation 1" value="0x8" />
+							<option name="System Correlation 2" value="0x9" />
+							<option name="Particle Emission Time" value="0xA" />
+							<option name="Location Lod" value="0xB" />
+							<option name="Game Time" value="0xC" />
+							<option name="Effect A Scale" value="0xD" />
+							<option name="Effect B Scale" value="0xE" />
+							<option name="Particle Rotation" value="0xF" />
+							<option name="Location Random" value="0x10" />
+							<option name="Distance From Emitter" value="0x11" />
+							<option name="Particle Simulation A" value="0x12" />
+							<option name="Particle Simulation B" value="0x13" />
+							<option name="Particle Velocity" value="0x14" />
+							<option name="Invalid State --- Please Set Again" value="0x15" />
+						</enum8>
+						<enum8 name="Output Modifier" offset="0x6" visible="true">
 							<option name="None" value="0x0" />
 							<option name="Plus" value="0x1" />
 							<option name="Times" value="0x2" />
 						</enum8>
-						<int8 name="Output" offset="0x7" visible="true" />
-						<dataRef name="Unknown" offset="0x8" visible="true" />
-						<undefined name="Unknown" offset="0x1C" visible="false" />
-						<undefined name="Unknown" offset="0x20" visible="false" />
+						<enum8 name="Output Modifier Input" offset="0x7" visible="true">
+							<option name="Particle Age" value="0x0" />
+							<option name="System Age" value="0x1" />
+							<option name="Particle Random" value="0x2" />
+							<option name="System Random" value="0x3" />
+							<option name="Particle Correlation 1" value="0x4" />
+							<option name="Particle Correlation 2" value="0x5" />
+							<option name="Particle Correlation 3" value="0x6" />
+							<option name="Particle Correlation 4" value="0x7" />
+							<option name="System Correlation 1" value="0x8" />
+							<option name="System Correlation 2" value="0x9" />
+							<option name="Particle Emission Time" value="0xA" />
+							<option name="Location Lod" value="0xB" />
+							<option name="Game Time" value="0xC" />
+							<option name="Effect A Scale" value="0xD" />
+							<option name="Effect B Scale" value="0xE" />
+							<option name="Particle Rotation" value="0xF" />
+							<option name="Location Random" value="0x10" />
+							<option name="Distance From Emitter" value="0x11" />
+							<option name="Particle Simulation A" value="0x12" />
+							<option name="Particle Simulation B" value="0x13" />
+							<option name="Particle Velocity" value="0x14" />
+							<option name="Invalid State --- Please Set Again" value="0x15" />
+						</enum8>
+						<dataRef name="Mapping" offset="0x8" visible="true" />
+						<float32 name="Runtime m Constant Value" offset="0x1C" visible="true" />
+						<flags16 name="Runtime m Flags" offset="0x20" visible="true">
+							<bit name="Bit 0" index="0" />
+							<bit name="Bit 1" index="1" />
+							<bit name="Bit 2" index="2" />
+							<bit name="Bit 3" index="3" />
+							<bit name="Bit 4" index="4" />
+							<bit name="Bit 5" index="5" />
+							<bit name="Bit 6" index="6" />
+							<bit name="Bit 7" index="7" />
+							<bit name="Bit 8" index="8" />
+							<bit name="Bit 9" index="9" />
+							<bit name="Bit 10" index="10" />
+							<bit name="Bit 11" index="11" />
+							<bit name="Bit 12" index="12" />
+							<bit name="Bit 13" index="13" />
+							<bit name="Bit 14" index="14" />
+							<bit name="Bit 15" index="15" />
+						</flags16>
+						<flags8 name="Force Flags" offset="0x22" visible="true">
+							<bit name="Force Constant" index="0" />
+						</flags8>
+						<int8 name="Unknown" offset="0x23" visible="false" />
 					</tagblock>
-					<undefined name="Unknown" offset="0x10" visible="false" />
-					<undefined name="Unknown" offset="0x14" visible="false" />
+					<int32 name="Runtime m Constant Parameters" offset="0x10" visible="true" />
+					<int32 name="Runtime m Used Particle States" offset="0x14" visible="true" />
 				</tagblock>
-				<int8 name="Input" offset="0x198" visible="true" />
-				<int8 name="Input Range" offset="0x199" visible="true" />
-				<enum8 name="Output Kind" offset="0x19A" visible="true">
+				<comment title="Particle Self Acceleration (World Units Per Second Per Second)" />
+				<enum8 name="Input Variable" offset="0x198" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Range Variable" offset="0x199" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Output Modifier" offset="0x19A" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum8>
-				<int8 name="Output" offset="0x19B" visible="true" />
-				<dataRef name="Unknown" offset="0x19C" visible="true" />
-				<undefined name="Unknown" offset="0x1B0" visible="false" />
-				<undefined name="Unknown" offset="0x1B4" visible="false" />
-				<undefined name="Unknown" offset="0x1B8" visible="false" />
-				<undefined name="Unknown" offset="0x1BC" visible="false" />
-				<undefined name="Unknown" offset="0x1C0" visible="false" />
-				<undefined name="Unknown" offset="0x1C4" visible="false" />
-				<undefined name="Unknown" offset="0x1C8" visible="false" />
-				<undefined name="Unknown" offset="0x1CC" visible="false" />
-				<int8 name="Input" offset="0x1D0" visible="true" />
-				<int8 name="Input Range" offset="0x1D1" visible="true" />
-				<enum8 name="Output Kind" offset="0x1D2" visible="true">
+				<enum8 name="Output Modifier Input" offset="0x19B" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<dataRef name="Mapping" offset="0x19C" visible="true" />
+				<float32 name="Runtime m Constant Value" offset="0x1B0" visible="true" />
+				<flags16 name="Runtime m Flags" offset="0x1B4" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+				</flags16>
+				<int16 name="Unknown" offset="0x1B6" visible="false" />
+				<vector3 name="Starting Interpolant" offset="0x1B8" visible="true" />
+				<vector3 name="Ending Interpolant" offset="0x1C4" visible="true" />
+				<comment title="Particle Initial Velocity (World Units Per Second)" />
+				<enum8 name="Input Variable" offset="0x1D0" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Range Variable" offset="0x1D1" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Output Modifier" offset="0x1D2" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum8>
-				<int8 name="Output" offset="0x1D3" visible="true" />
-				<dataRef name="Unknown" offset="0x1D4" visible="true" />
-				<undefined name="Unknown" offset="0x1E8" visible="false" />
-				<undefined name="Unknown" offset="0x1EC" visible="false" />
-				<int8 name="Input" offset="0x1F0" visible="true" />
-				<int8 name="Input Range" offset="0x1F1" visible="true" />
-				<enum8 name="Output Kind" offset="0x1F2" visible="true">
+				<enum8 name="Output Modifier Input" offset="0x1D3" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<dataRef name="Mapping" offset="0x1D4" visible="true" />
+				<float32 name="Runtime m Constant Value" offset="0x1E8" visible="true" />
+				<flags16 name="Runtime m Flags" offset="0x1EC" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+				</flags16>
+				<flags8 name="Force Flags" offset="0x1EE" visible="true">
+					<bit name="Force Constant" index="0" />
+				</flags8>
+				<int8 name="Unknown" offset="0x1EF" visible="false" />
+				<comment title="Particle Rotation (.25=90°, .5=180°, 1=360° ... adds to physics)" />
+				<enum8 name="Input Variable" offset="0x1F0" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Range Variable" offset="0x1F1" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Output Modifier" offset="0x1F2" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum8>
-				<int8 name="Output" offset="0x1F3" visible="true" />
-				<dataRef name="Unknown" offset="0x1F4" visible="true" />
-				<undefined name="Unknown" offset="0x208" visible="false" />
-				<undefined name="Unknown" offset="0x20C" visible="false" />
-				<int8 name="Input" offset="0x210" visible="true" />
-				<int8 name="Input Range" offset="0x211" visible="true" />
-				<enum8 name="Output Kind" offset="0x212" visible="true">
+				<enum8 name="Output Modifier Input" offset="0x1F3" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<dataRef name="Mapping" offset="0x1F4" visible="true" />
+				<float32 name="Runtime m Constant Value" offset="0x208" visible="true" />
+				<flags16 name="Runtime m Flags" offset="0x20C" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+				</flags16>
+				<flags8 name="Force Flags" offset="0x20E" visible="true">
+					<bit name="Force Constant" index="0" />
+				</flags8>
+				<int8 name="Unknown" offset="0x20F" visible="false" />
+				<comment title="Particle Initial Rotation Rate (360 Degree Rotations Per Second)" />
+				<enum8 name="Input Variable" offset="0x210" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Range Variable" offset="0x211" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Output Modifier" offset="0x212" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum8>
-				<int8 name="Output" offset="0x213" visible="true" />
-				<dataRef name="Unknown" offset="0x214" visible="true" />
-				<undefined name="Unknown" offset="0x228" visible="false" />
-				<undefined name="Unknown" offset="0x22C" visible="false" />
-				<int8 name="Input" offset="0x230" visible="true" />
-				<int8 name="Input Range" offset="0x231" visible="true" />
-				<enum8 name="Output Kind" offset="0x232" visible="true">
+				<enum8 name="Output Modifier Input" offset="0x213" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<dataRef name="Mapping" offset="0x214" visible="true" />
+				<float32 name="Runtime m Constant Value" offset="0x228" visible="true" />
+				<flags16 name="Runtime m Flags" offset="0x22C" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+				</flags16>
+				<flags8 name="Force Flags" offset="0x22E" visible="true">
+					<bit name="Force Constant" index="0" />
+				</flags8>
+				<int8 name="Unknown" offset="0x22F" visible="false" />
+				<comment title="Particle Size (World Units)" />
+				<enum8 name="Input Variable" offset="0x230" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Range Variable" offset="0x231" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Output Modifier" offset="0x232" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum8>
-				<int8 name="Output" offset="0x233" visible="true" />
-				<dataRef name="Unknown" offset="0x234" visible="true" />
-				<undefined name="Unknown" offset="0x248" visible="false" />
-				<undefined name="Unknown" offset="0x24C" visible="false" />
-				<int8 name="Input" offset="0x250" visible="true" />
-				<int8 name="Input Range" offset="0x251" visible="true" />
-				<enum8 name="Output Kind" offset="0x252" visible="true">
+				<enum8 name="Output Modifier Input" offset="0x233" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<dataRef name="Mapping" offset="0x234" visible="true" />
+				<float32 name="Runtime m Constant Value" offset="0x248" visible="true" />
+				<flags16 name="Runtime m Flags" offset="0x24C" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+				</flags16>
+				<flags8 name="Force Flags" offset="0x24E" visible="true">
+					<bit name="Force Constant" index="0" />
+				</flags8>
+				<int8 name="Unknown" offset="0x24F" visible="false" />
+				<comment title="Particle Scale (Multiple Of Size)" />
+				<enum8 name="Input Variable" offset="0x250" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Range Variable" offset="0x251" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Output Modifier" offset="0x252" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum8>
-				<int8 name="Output" offset="0x253" visible="true" />
-				<dataRef name="Particle Scale" offset="0x254" visible="true" />
-				<undefined name="Unknown" offset="0x268" visible="false" />
-				<undefined name="Unknown" offset="0x26C" visible="false" />
-				<int8 name="Input" offset="0x270" visible="true" />
-				<int8 name="Input Range" offset="0x271" visible="true" />
-				<enum8 name="Output Kind" offset="0x272" visible="true">
+				<enum8 name="Output Modifier Input" offset="0x253" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<dataRef name="Mapping" offset="0x254" visible="true" />
+				<float32 name="Runtime m Constant Value" offset="0x268" visible="true" />
+				<flags16 name="Runtime m Flags" offset="0x26C" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+				</flags16>
+				<flags8 name="Force Flags" offset="0x26E" visible="true">
+					<bit name="Force Constant" index="0" />
+				</flags8>
+				<int8 name="Unknown" offset="0x26F" visible="false" />
+				<comment title="Particle Tint">controls the overall tint of the particle</comment>
+				<enum8 name="Input Variable" offset="0x270" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Range Variable" offset="0x271" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Output Modifier" offset="0x272" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum8>
-				<int8 name="Output" offset="0x273" visible="true" />
-				<dataRef name="Particle Tint" offset="0x274" visible="true" />
-				<undefined name="Unknown" offset="0x288" visible="false" />
-				<undefined name="Unknown" offset="0x28C" visible="false" />
-				<int8 name="Input" offset="0x290" visible="true" />
-				<int8 name="Input Range" offset="0x291" visible="true" />
-				<enum8 name="Output Kind" offset="0x292" visible="true">
+				<enum8 name="Output Modifier Input" offset="0x273" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<dataRef name="Mapping" offset="0x274" visible="true" />
+				<float32 name="Runtime m Constant Value" offset="0x288" visible="true" />
+				<flags16 name="Runtime m Flags" offset="0x28C" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+				</flags16>
+				<int16 name="Unknown" offset="0x28E" visible="false" />
+				<comment title="Particle Alpha" />
+				<enum8 name="Input Variable" offset="0x290" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Range Variable" offset="0x291" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Output Modifier" offset="0x292" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum8>
-				<int8 name="Output" offset="0x293" visible="true" />
-				<dataRef name="Particle Alpha" offset="0x294" visible="true" />
-				<undefined name="Unknown" offset="0x2A8" visible="false" />
-				<undefined name="Unknown" offset="0x2AC" visible="false" />
-				<int8 name="Input" offset="0x2B0" visible="true" />
-				<int8 name="Input Range" offset="0x2B1" visible="true" />
-				<enum8 name="Output Kind" offset="0x2B2" visible="true">
+				<enum8 name="Output Modifier Input" offset="0x293" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<dataRef name="Mapping" offset="0x294" visible="true" />
+				<float32 name="Runtime m Constant Value" offset="0x2A8" visible="true" />
+				<flags16 name="Runtime m Flags" offset="0x2AC" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+				</flags16>
+				<flags8 name="Force Flags" offset="0x2AE" visible="true">
+					<bit name="Force Constant" index="0" />
+				</flags8>
+				<int8 name="Unknown" offset="0x2AF" visible="false" />
+				<comment title="Particle Alpha Black Point (0=Normal, 1=Clamped)" />
+				<enum8 name="Input Variable" offset="0x2B0" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Range Variable" offset="0x2B1" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<enum8 name="Output Modifier" offset="0x2B2" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum8>
-				<int8 name="Output" offset="0x2B3" visible="true" />
-				<dataRef name="Particle Alpha Black Point" offset="0x2B4" visible="true" />
-				<undefined name="Unknown" offset="0x2C8" visible="false" />
-				<undefined name="Unknown" offset="0x2CC" visible="false" />
-				<int32 name="Unknown" offset="0x2D0" visible="false" />
-				<int32 name="Unknown" offset="0x2D4" visible="false" />
-				<int32 name="Unknown" offset="0x2D8" visible="false" />
-				<int32 name="Unknown" offset="0x2DC" visible="false" />
+				<enum8 name="Output Modifier Input" offset="0x2B3" visible="true">
+					<option name="Particle Age" value="0x0" />
+					<option name="System Age" value="0x1" />
+					<option name="Particle Random" value="0x2" />
+					<option name="System Random" value="0x3" />
+					<option name="Particle Correlation 1" value="0x4" />
+					<option name="Particle Correlation 2" value="0x5" />
+					<option name="Particle Correlation 3" value="0x6" />
+					<option name="Particle Correlation 4" value="0x7" />
+					<option name="System Correlation 1" value="0x8" />
+					<option name="System Correlation 2" value="0x9" />
+					<option name="Particle Emission Time" value="0xA" />
+					<option name="Location Lod" value="0xB" />
+					<option name="Game Time" value="0xC" />
+					<option name="Effect A Scale" value="0xD" />
+					<option name="Effect B Scale" value="0xE" />
+					<option name="Particle Rotation" value="0xF" />
+					<option name="Location Random" value="0x10" />
+					<option name="Distance From Emitter" value="0x11" />
+					<option name="Particle Simulation A" value="0x12" />
+					<option name="Particle Simulation B" value="0x13" />
+					<option name="Particle Velocity" value="0x14" />
+					<option name="Invalid State --- Please Set Again" value="0x15" />
+				</enum8>
+				<dataRef name="Mapping" offset="0x2B4" visible="true" />
+				<float32 name="Runtime m Constant Value" offset="0x2C8" visible="true" />
+				<flags16 name="Runtime m Flags" offset="0x2CC" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+				</flags16>
+				<flags8 name="Force Flags" offset="0x2CE" visible="true">
+					<bit name="Force Constant" index="0" />
+				</flags8>
+				<int8 name="Unknown" offset="0x2CF" visible="false" />
+				<int32 name="Runtime m Constant Per Particle Properties!" offset="0x2D0" visible="true" />
+				<int32 name="Runtime m Constant Over Time Properties!" offset="0x2D4" visible="true" />
+				<int32 name="Runtime m Used Particle States!" offset="0x2D8" visible="true" />
+				<int32 name="Resource Index" offset="0x2DC" visible="true" />
 				<undefined name="Unknown" offset="0x2E0" visible="false" />
 				<undefined name="Unknown" offset="0x2E4" visible="false" />
 				<undefined name="Unknown" offset="0x2E8" visible="false" />
 			</tagblock>
-			<undefined name="Unknown" offset="0x58" visible="false" />
+			<float32 name="Runtime Maximum Lifespan" offset="0x58" visible="true" />
 		</tagblock>
 	</tagblock>
 	<tagRef name="Looping Sound" offset="0x38" visible="true" />
@@ -563,11 +2350,13 @@
 	<int16 name="Unknown" offset="0x4A" visible="false" />
 	<float32 name="Always Play Distance" offset="0x4C" visible="true" />
 	<float32 name="Never Play Distance" offset="0x50" visible="true" />
-	<float32 name="Unknown" offset="0x54" visible="false" />
-	<float32 name="Unknown" offset="0x58" visible="false" />
-	<tagblock name="Unknown" offset="0x5C" visible="false" elementSize="0xC">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
+	<float32 name="Runtime Lightprobe Death Delay" offset="0x54" visible="true" />
+	<float32 name="Runtime Local Space Death Delay" offset="0x58" visible="true" />
+	<tagblock name="Conical Distribution" offset="0x5C" visible="true" elementSize="0xC">
+		<comment title="Conical Projection">projectile_count = yaw_count*pitch_count</comment>
+		<int16 name="Yaw Count" offset="0x0" visible="true" />
+		<int16 name="Pitch Count" offset="0x2" visible="true" />
+		<float32 name="Distribution Exponent" offset="0x4" visible="true" />
+		<degree name="Spread" offset="0x8" visible="true" />
 	</tagblock>
 </plugin>
