@@ -443,7 +443,7 @@ namespace Blamite.Blam.ThirdGen
 
 					foreach (ITag hs in _tags.FindTagsByGroup("hsdt"))
                     {
-						l_scriptfiles.Add(new ThirdGenScenarioScriptFile(hs, mainScenario, _fileNames.GetTagName(hs.Index), MetaArea, StringIDs, _buildInfo, _expander, Allocator));
+						l_scriptfiles.Add(new ThirdGenScenarioScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, StringIDs, _buildInfo, _expander, Allocator));
 					}
 				}
 				else if (_buildInfo.Layouts.HasLayout("scnr"))

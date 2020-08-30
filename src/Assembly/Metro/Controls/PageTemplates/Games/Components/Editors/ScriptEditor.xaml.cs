@@ -47,10 +47,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private readonly IStreamManager _streamManager;
         private readonly OpcodeLookup _opcodes;
         private readonly ICacheFile _cashefile;
-        private readonly string _casheName;
         private Endian _endian;
         private CompletionWindow _completionWindow = null;
-        private ScriptingContextCollection _context;
         private CancellationTokenSource _searchToken;
         private Regex _scriptRegex;
         private Regex _globalsRegex;
@@ -58,10 +56,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private IEnumerable<ICompletionData> _dynamicScriptCompletionData = new ICompletionData[0];
         private IEnumerable<ICompletionData> _dynamicGlobalCompletionData = new ICompletionData[0];
         private bool _loaded = false;
-        private readonly bool _compilationSupported;
+        private readonly bool _hasNewSyntax;
         private readonly Progress<int> _progress;
 
-        public ScriptEditor(EngineDescription buildInfo, IScriptFile scriptFile, IStreamManager streamManager, ICacheFile casheFile, string casheName, Endian endian)
+        public ScriptEditor(EngineDescription buildInfo, IScriptFile scriptFile, IStreamManager streamManager, ICacheFile casheFile, Endian endian)
         {
             _endian = endian;
             _buildInfo = buildInfo;
@@ -69,10 +67,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             _scriptFile = scriptFile;
             _streamManager = streamManager;
             _cashefile = casheFile;
-            _casheName = casheName;
 
-            // All games other than H4 use the old blam script syntax. Currently the compiler only supports the old syntax.
-            _compilationSupported = !_buildInfo.Layouts.HasLayout("hsdt") && !(buildInfo.ScriptingContextPath is null);
+            // If a game contains hsdt tags, it uses a newer Blam Script syntax. Currently the compiler only supports the old syntax.
+            _hasNewSyntax = _buildInfo.Layouts.HasLayout("hsdt");
 
             InitializeComponent();
 
@@ -80,7 +77,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             txtScript.IsReadOnly = true;
 
             // Enable code completion only if the compiler supports this game.
-            if(_compilationSupported)
+            if(!_hasNewSyntax)
             {
                 txtScript.TextArea.GotFocus += EditorGotFocus;
                 txtScript.TextArea.LostFocus += EditorLostFocus;
@@ -113,31 +110,25 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         {
             if (!_loaded)
             {
-                if (_compilationSupported)
+                if (!_hasNewSyntax)
                 {
                     // Background tasks.      
                     List<Task> tasks = new List<Task>();
 
                     Task regexTask = Task.Run(() => CreateRegex());
                     Task<string> decompilationTask = Task.Run(() => DecompileToLISP());
-                    Task contextTask = Task.Run(() => LoadContext());
-                    Task<IEnumerable<ICompletionData>> completionTask = contextTask.ContinueWith(t => GenerateStaticCompletionData());
+                    Task<IEnumerable<ICompletionData>> completionTask = Task.Run(() => GenerateStaticCompletionData());
                     tasks.Add(regexTask);
                     tasks.Add(decompilationTask);
-                    tasks.Add(contextTask);
                     tasks.Add(completionTask);
 
                     await Task.WhenAll(tasks);
                     _staticCompletionData = await completionTask;
                     txtScript.Text = await decompilationTask;
                 }
-                else if (_buildInfo.Layouts.HasLayout("hsdt"))
-                {
-                    txtScript.Text = await Task.Run(() => DecompileHsdtOld());
-                }
                 else
                 {
-                    txtScript.Text = await Task.Run(() => DecompileToLISP());
+                    txtScript.Text = await Task.Run(() => DecompileHsdtOld());
                 }
                 txtScript.IsReadOnly = false;
                 _loaded = true;
@@ -290,8 +281,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             {
 
             }
-            _searchToken.Dispose();
-            _searchToken = null;
+            if(_searchToken != null)
+            {
+                _searchToken.Dispose();
+                _searchToken = null;
+            }
         }
 
         private void EditorLostFocus(object sender, RoutedEventArgs e)
@@ -499,15 +493,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             return code.InnerWriter.ToString();
         }
 
-        private void LoadContext()
-        {
-            // Load the context and seat mappings.
-            var loader = new XMLScriptingContextLoader(_cashefile, _streamManager, _buildInfo);
-            string folder = _buildInfo.SeatMappingPath;
-            string filename = Path.GetFileNameWithoutExtension(_cashefile.FileName) + "_Mappings.xml";
-            string unitSeatMappingPath = Path.Combine(folder, filename);
-            _context = loader.LoadContext(_buildInfo.ScriptingContextPath, unitSeatMappingPath);
-        }
+        //private void LoadContext()
+        //{
+        //    // Load the context and seat mappings.
+        //    var loader = new XMLScriptingContextLoader(_cashefile, _streamManager, _buildInfo);
+        //    string folder = _buildInfo.SeatMappingPath;
+        //    string filename = Path.GetFileNameWithoutExtension(_cashefile.FileName) + "_Mappings.xml";
+        //    string unitSeatMappingPath = Path.Combine(folder, filename);
+        //    _context = loader.LoadContext(_buildInfo.ScriptingContextPath, unitSeatMappingPath);
+        //}
 
         private ScriptData CompileScripts(string code, IProgress<int> progress, ScriptCompilerLogger logger, ParsingExceptionCollector collector)
         {
@@ -536,10 +530,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                     throw new OperationCanceledException($"Parsing Failed! {collector.ExceptionCount} Exceptions occured during the parsing process.");
                 }
 
+                // Load the context.
+                var context = _scriptFile.LoadContext(reader, _cashefile);
+
                 // Run the compiler.
                 logger.Information("Running the compiler...");
                 bool outputDebugData = App.AssemblyStorage.AssemblySettings.OutputCompilerDebugData;
-                ScriptCompiler compiler = new ScriptCompiler(_cashefile, _opcodes, _context, progress, logger, outputDebugData);
+                ScriptCompiler compiler = new ScriptCompiler(_cashefile, _opcodes, context, progress, logger, outputDebugData);
                 ParseTreeWalker.Default.Walk(compiler, tree);
                 return compiler.Result();
             }
@@ -587,23 +584,29 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
         private IEnumerable<ICompletionData> GenerateStaticCompletionData()
         {
-            List<ICompletionData> result = new List<ICompletionData>();
+            using (var reader = _streamManager.OpenRead())
+            {
+                List<ICompletionData> result = new List<ICompletionData>();
 
-            // Functions.
-            result.AddRange(_opcodes.GetAllImplementedFunctions().Select(info => new FunctionCompletion(info)));
+                // Load the context
+                var context = _scriptFile.LoadContext(reader, _cashefile);
 
-            // Engine globals.
-            result.AddRange(_opcodes.GetAllImplementedGlobals().Select(info => new GlobalCompletion(info, GlobalType.Engine)));
+                // Functions.
+                result.AddRange(_opcodes.GetAllImplementedFunctions().Select(info => new FunctionCompletion(info)));
 
-            // Objects.
-            IEnumerable<ObjectCompletion> objectCompletion = _context.GetAllContextObjects().Select(obj => new ObjectCompletion(obj));
-            IEnumerable<ObjectCompletion> uniqueObjectCompletion = objectCompletion.GroupBy(obj => new { obj.Text, obj.Description }).Select(obj => obj.First());
-            result.AddRange(uniqueObjectCompletion);
+                // Engine globals.
+                result.AddRange(_opcodes.GetAllImplementedGlobals().Select(info => new GlobalCompletion(info, GlobalType.Engine)));
 
-            // Unit seat mappings.
-            result.AddRange(_context.GetAllUnitSeatMappings().Select(mapping => new ObjectCompletion(mapping)));
+                // Objects.
+                IEnumerable<ObjectCompletion> objectCompletion = context.GetAllContextObjects().Select(obj => new ObjectCompletion(obj));
+                IEnumerable<ObjectCompletion> uniqueObjectCompletion = objectCompletion.GroupBy(obj => new { obj.Text, obj.Description }).Select(obj => obj.First());
+                result.AddRange(uniqueObjectCompletion);
 
-            return result;
+                // Unit seat mappings.
+                result.AddRange(context.GetAllUnitSeatMappings().Select(mapping => new ObjectCompletion(mapping)));
+
+                return result;
+            }
         }
 
         private void InitializaCompletionWindow()

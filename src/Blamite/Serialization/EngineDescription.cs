@@ -88,12 +88,6 @@ namespace Blamite.Serialization
 		public OpcodeLookup ScriptInfo { get; private set; }
 
 		/// <summary>
-		///     Gets the path to the scripting context information for the engine.
-		///     Can be <c>null</c> if not present.
-		/// </summary>
-		public string ScriptingContextPath { get; private set; }
-
-		/// <summary>
 		///     Gets locale symbols for the engine.
 		///     Can be <c>null</c> if not present.
 		/// </summary>
@@ -104,12 +98,6 @@ namespace Blamite.Serialization
 		///     Can be <c>null</c> if not present.
 		/// </summary>
 		public VertexLayoutCollection VertexLayouts { get; private set; }
-
-        /// <summary>
-        ///     Gets the seat mappings path for the engine.
-        ///     Can be <c>null</c> if not present.
-        /// </summary>
-        public string SeatMappingPath { get; private set; }
 		
 		/// <summary>
 		///     Gets group names for the engine.
@@ -204,10 +192,8 @@ namespace Blamite.Serialization
 			Layouts = Settings.GetSettingOrDefault<StructureLayoutCollection>("databases/layouts", null);
 			StringIDs = Settings.GetSettingOrDefault<StringIDNamespaceResolver>("databases/stringIds", null);
 			ScriptInfo = Settings.GetSettingOrDefault<OpcodeLookup>("databases/scripting", null);
-			ScriptingContextPath = Settings.GetSettingOrDefault<string>("databases/scriptingContext", null);
 			LocaleSymbols = Settings.GetSettingOrDefault<LocaleSymbolCollection>("databases/localeSymbols", null);
 			VertexLayouts = Settings.GetSettingOrDefault<VertexLayoutCollection>("databases/vertexLayouts", null);
-            SeatMappingPath = Settings.GetSettingOrDefault<string>("databases/seatMappings", null);
 			GroupNames = Settings.GetSettingOrDefault<GroupNameCollection>("databases/groupNames", null);
 			Poking = Settings.GetSettingOrDefault<PokingCollection>("databases/poking", null);
 		}

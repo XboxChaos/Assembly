@@ -8,18 +8,17 @@ using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Util;
 using System.Diagnostics;
+using Blamite.Blam.Scripting.Context;
 
 namespace Blamite.Blam.ThirdGen.Structures
 {
 	public class ThirdGenScenarioScriptFile : IScriptFile
 	{
 		private readonly EngineDescription _buildInfo;
-		private readonly FileSegmentGroup _metaArea;
 		private readonly StringIDSource _stringIDs;
         private readonly MetaAllocator _allocator;
         private readonly IPointerExpander _expander;
-
-        private readonly ITag _scenarioTag;
+        private readonly FileSegmentGroup _metaArea;
 		private readonly ITag _scriptTag;
 
         // For Games other than Halo 4
@@ -27,27 +26,13 @@ namespace Blamite.Blam.ThirdGen.Structures
             StringIDSource stringIDs, EngineDescription buildInfo, IPointerExpander expander, MetaAllocator allocator)
         {
             _scriptTag = scriptTag;
-            _metaArea = metaArea;
             _stringIDs = stringIDs;
             _buildInfo = buildInfo;
             _expander = expander;
+            _metaArea = metaArea;
             _allocator = allocator;
             Name = tagName.Substring(tagName.LastIndexOf('\\') + 1) + ".hsc";
         }
-
-        // For Halo 4
-        public ThirdGenScenarioScriptFile(ITag scriptTag, ITag scenarioTag, string tagName, FileSegmentGroup metaArea,
-			StringIDSource stringIDs, EngineDescription buildInfo, IPointerExpander expander, MetaAllocator allocator)
-		{
-			_scenarioTag = scenarioTag;
-            _scriptTag = scriptTag;
-            _metaArea = metaArea;
-            _stringIDs = stringIDs;
-            _buildInfo = buildInfo;
-            _expander = expander;
-            _allocator = allocator;
-			Name = tagName.Substring(tagName.LastIndexOf('\\') + 1) + ".hsc";
-		}
 
 		public string Name { get; private set; }
 
@@ -111,37 +96,49 @@ namespace Blamite.Blam.ThirdGen.Structures
             progress.Report(100);
         }
 
-        public SortedDictionary<uint, UnitSeatMapping> GetUniqueSeatMappings(IReader reader, ushort opcode)
+        public ScriptingContextCollection LoadContext(IReader reader, ICacheFile cache)
         {
-            // load the expressions
-            StructureValueCollection values = LoadScriptTag(reader, _scriptTag);
-            var stringReader = new StringTableReader();
-            ScriptExpressionTable expressions = LoadExpressions(reader, values, stringReader);
-            CachedStringTable strings = LoadStrings(reader, values, stringReader);
-            foreach (ScriptExpression expr in expressions.Where(e => (e != null)))
-                expr.ResolveStrings(strings);
-
-
-            // find all unique mappings
-            SortedDictionary<uint, UnitSeatMapping> uniqueMappings = new SortedDictionary<uint, UnitSeatMapping>();
-
-            foreach (var exp in expressions)
+            if(CharConstant.ToString(_scriptTag.Group.Magic) == "scnr")
             {
-                if (exp.Opcode == opcode && exp.ReturnType == opcode && exp.Value != 0xFFFFFFFF)
-                {
-                    // Calculate the index and only add it if it doesn't exist yet.
-                    uint index = exp.Value & 0xFFFF;
-                    if (!uniqueMappings.ContainsKey(index))
-                    {
-                        uint count = (exp.Value & 0xFFFF0000) >> 16;
-                        string name = exp.StringValue;
-                        UnitSeatMapping mapping = new UnitSeatMapping((short)index, (short)count, name);
-                        uniqueMappings.Add(index, mapping);
-                    }
-                }
+                return ScriptingContextGenerator.GenerateContext(reader, cache, _buildInfo);
             }
-            return uniqueMappings;
+            else
+            {
+                return new ScriptingContextCollection();
+            }
         }
+
+        //public SortedDictionary<uint, UnitSeatMapping> GetUniqueSeatMappings(IReader reader, ushort opcode)
+        //{
+        //    // load the expressions
+        //    StructureValueCollection values = LoadScriptTag(reader, _scriptTag);
+        //    var stringReader = new StringTableReader();
+        //    ScriptExpressionTable expressions = LoadExpressions(reader, values, stringReader);
+        //    CachedStringTable strings = LoadStrings(reader, values, stringReader);
+        //    foreach (ScriptExpression expr in expressions.Where(e => (e != null)))
+        //        expr.ResolveStrings(strings);
+
+
+        //    // find all unique mappings
+        //    SortedDictionary<uint, UnitSeatMapping> uniqueMappings = new SortedDictionary<uint, UnitSeatMapping>();
+
+        //    foreach (var exp in expressions)
+        //    {
+        //        if (exp.Opcode == opcode && exp.ReturnType == opcode && exp.Value != 0xFFFFFFFF)
+        //        {
+        //            // Calculate the index and only add it if it doesn't exist yet.
+        //            uint index = exp.Value & 0xFFFF;
+        //            if (!uniqueMappings.ContainsKey(index))
+        //            {
+        //                uint count = (exp.Value & 0xFFFF0000) >> 16;
+        //                string name = exp.StringValue;
+        //                UnitSeatMapping mapping = new UnitSeatMapping((short)index, (short)count, name);
+        //                uniqueMappings.Add(index, mapping);
+        //            }
+        //        }
+        //    }
+        //    return uniqueMappings;
+        //}
 
         private StructureValueCollection LoadScriptTag(IReader reader, ITag tag)
         {

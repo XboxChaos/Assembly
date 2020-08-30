@@ -1,14 +1,9 @@
-﻿using Antlr4.Runtime;
-using Blamite.IO;
+﻿using Blamite.IO;
 using Blamite.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Blamite.Blam.Scripting.Context
 {
@@ -20,17 +15,17 @@ namespace Blamite.Blam.Scripting.Context
             var scnrTag = cache.Tags.FindTagByGroup("scnr");
             var mdlgTag = cache.Tags.FindTagByGroup("mdlg");
             
-            if (scnrTag != null && buildinfo.Layouts.HasLayout("scnr script context"))
+            if (scnrTag != null && buildinfo.Layouts.HasLayout("scnr_script_context"))
             {
-                var scnrLayout = buildinfo.Layouts.GetLayout("scnr script context");
+                var scnrLayout = buildinfo.Layouts.GetLayout("scnr_script_context");
                 reader.SeekTo(scnrTag.MetaLocation.AsOffset());
                 var scnrValues = CacheStructureReader.ReadStructure(reader, cache, buildinfo, scnrLayout);
                 FillContextCollection(reader, cache, buildinfo, scnrValues, result);
             }
 
-            if(mdlgTag != null && buildinfo.Layouts.HasLayout("mdlg script context"))
+            if(mdlgTag != null && buildinfo.Layouts.HasLayout("mdlg_script_context"))
             {
-                var mdlgLayout = buildinfo.Layouts.GetLayout("mdlg script context");
+                var mdlgLayout = buildinfo.Layouts.GetLayout("mdlg_script_context");
                 reader.SeekTo(mdlgTag.MetaLocation.AsOffset());
                 var mdlgValues = CacheStructureReader.ReadStructure(reader, cache, buildinfo, mdlgLayout);
                 FillContextCollection(reader, cache, buildinfo, mdlgValues, result);
@@ -67,14 +62,7 @@ namespace Blamite.Blam.Scripting.Context
 
         private static bool IsWrapperBlock(KeyValuePair<string, StructureValueCollection[]> block)
         {
-            if(!block.Value[0].HasStringID("Name") && !block.Value[0].HasString("Name"))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return block.Value[0].HasStringID("Name") || block.Value[0].HasString("Name") ? false : true;
         }
 
         private static void HandleWrapperBlock(KeyValuePair<string, StructureValueCollection[]> block, ScriptingContextCollection collection)
@@ -118,9 +106,7 @@ namespace Blamite.Blam.Scripting.Context
         private static void HandleUnitSeatMappings(IReader reader, ICacheFile cache, EngineDescription buildInfo, 
             KeyValuePair<string, StructureValueCollection[]> block, ScriptingContextCollection collection)
         {
-            string lastMappingName = "";
-            short firstOccurenceIndex = 0;
-            short count = 0;
+            string[] mappingNames = new string[block.Value.Length];
 
             for (short mappingIndex = 0; mappingIndex < block.Value.Length; mappingIndex++)
             {
@@ -131,39 +117,56 @@ namespace Blamite.Blam.Scripting.Context
 
                 List<int> seatIndices = GetSeatIndices(seatIndeces1, seatIndeces2);
 
-                var vehiLayout = buildInfo.Layouts.GetLayout("vehi seats");
+                var vehiLayout = buildInfo.Layouts.GetLayout("vehi_seats");
                 reader.SeekTo(unit.MetaLocation.AsOffset());
                 var vehiValues = CacheStructureReader.ReadStructure(reader, cache, buildInfo, vehiLayout);
                 var seatsBlock = vehiValues.GetTagBlock("seats");
 
-                string mappingName = GetVehicleMappingName(seatsBlock, seatIndices);
+                mappingNames[mappingIndex] = GetVehicleMappingName(seatsBlock, seatIndices);
+            }
 
-                if(mappingName != lastMappingName)
+            var mappings = GroupMappingNames(mappingNames);
+
+            foreach(var mapping in mappings)
+            {
+                collection.AddUnitSeatMapping(mapping);
+            }
+        }
+
+        private static IEnumerable<UnitSeatMapping> GroupMappingNames(string[] names)
+        {
+            var result = new List<UnitSeatMapping>();
+            result.Add( new UnitSeatMapping(0, 0, names[0]));
+
+            for(short i = 0; i < names.Length; i++)
+            {
+                // Shorten the name, if such a seat mapping group has already been created.
+                string currentName = names[i];
+                if(result.Last().Name != currentName && result.Any(u => u.Name == currentName))
                 {
-                    // Don't add a unit seat mapping to the collection in the first iteration.
-                    if(mappingIndex > 0)
-                    {
-                        var mappingObject = new UnitSeatMapping(firstOccurenceIndex, count, lastMappingName);
-                        collection.AddUnitSeatMapping(mappingObject);
-                    }
+                    currentName = ShortenMappingName(currentName);
+                }
 
-                    // Reset
-                    lastMappingName = mappingName;
-                    firstOccurenceIndex = mappingIndex;
-                    count = 1;
+                // Increase the count if adjacent mappings have the same name. Otherwise add a new seat mapping.
+                var lastMapping = result.Last();
+                if(lastMapping.Name == currentName)
+                {
+                    result[result.Count - 1] = new UnitSeatMapping(lastMapping.Index, (short)(lastMapping.Count + 1), lastMapping.Name);
                 }
                 else
                 {
-                    count++;
-
-                    // If the last iteration contained a duplicate seat mapping, add it to the collection.
-                    if (mappingIndex == block.Value.Length - 1)
-                    {
-                        var mappingObject = new UnitSeatMapping(firstOccurenceIndex, count, lastMappingName);
-                        collection.AddUnitSeatMapping(mappingObject);
-                    }
+                    result.Add(new UnitSeatMapping(i, 1, currentName));
                 }
             }
+
+            return result;
+        }
+
+        private static string ShortenMappingName(string name)
+        {
+            string[] split = name.Split('_');
+            string[] shortened = split.Take(split.Length - 1).ToArray();
+            return string.Join("_", shortened);
         }
 
         private static List<int> GetSeatIndices(int seats1, int seats2)
@@ -195,7 +198,7 @@ namespace Blamite.Blam.Scripting.Context
 
             // Get the longest common prefix. This will be the mapping name.
             var result = names.Min().TakeWhile((c, i) => names.All(s => s[i] == c)).ToArray();
-            return new string(result).TrimEnd('_');
+            return new string(result).TrimEnd('_', '0');
         }
 
     }

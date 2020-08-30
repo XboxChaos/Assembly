@@ -4,11 +4,11 @@ namespace Blamite.Blam.Scripting
 {
     public class UnitSeatMapping
     {
-        public Int16 Count { get; private set; }
-        public Int16 Index { get; private set; }
+        public short Count { get; private set; }
+        public short Index { get; private set; }
         public string Name { get; private set; }
 
-        public UnitSeatMapping(Int16 index, Int16 count, string name)
+        public UnitSeatMapping(short index, short count, string name)
         {
             Count = count;
             Index = index;

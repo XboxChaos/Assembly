@@ -1,4 +1,5 @@
 ﻿using Blamite.Blam.Scripting.Compiler;
+using Blamite.Blam.Scripting.Context;
 using Blamite.IO;
 using Blamite.Util;
 using System;
@@ -39,11 +40,11 @@ namespace Blamite.Blam.Scripting
 		void SaveScripts(ScriptData scripts, IStream stream, IProgress<int> progress);
 
 		/// <summary>
-		///		Retrieves all unique Seat Mappings which were referenced in this map's scripts.
+		///		Loads the context for the script file.
 		/// </summary>
-		/// <param name="reader">The stream to read from.</param>
-		/// <param name="opcode">The ID which identifies Seat mapping expressions.</param>
-		/// <returns></returns>
-		SortedDictionary<uint, UnitSeatMapping> GetUniqueSeatMappings(IReader reader, ushort opcode);
+		/// <param name="reader">The steam to read from.</param>
+		/// <param name="cache">The cache file containing the script file.</param>
+		/// <returns>The context that was loaded.</returns>
+		ScriptingContextCollection LoadContext(IReader reader, ICacheFile cache);
 	}
 }
