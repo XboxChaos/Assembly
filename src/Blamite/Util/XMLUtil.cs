@@ -300,5 +300,34 @@ namespace Blamite.Util
 			writer.WriteAttributeString("LineNum", expression.LineNumber.ToString("X4"));
 			writer.WriteEndElement();
 		}
+
+		public static void WritUnitSeatMappingsToXml(IEnumerable<UnitSeatMapping> mappings, string outputPath)
+        {
+			if (mappings.Count() > 0)
+			{
+				var settings = new XmlWriterSettings
+				{
+					Indent = true
+				};
+
+				using (var writer = XmlWriter.Create(outputPath, settings))
+				{
+					writer.WriteStartDocument();
+					writer.WriteStartElement("UnitSeatMappings");
+
+					foreach (var mapping in mappings.OrderBy(m => m.Index))
+					{
+						writer.WriteStartElement("Mapping");
+						writer.WriteAttributeString("Index", mapping.Index.ToString());
+						writer.WriteAttributeString("Name", mapping.Name);
+						writer.WriteAttributeString("Count", mapping.Count.ToString());
+						writer.WriteEndElement();
+					}
+
+					writer.WriteEndDocument();
+					writer.Close();
+				}
+			}
+		}
 	}
 }

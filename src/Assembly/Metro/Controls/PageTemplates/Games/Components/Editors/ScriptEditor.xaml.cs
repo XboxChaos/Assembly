@@ -493,16 +493,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             return code.InnerWriter.ToString();
         }
 
-        //private void LoadContext()
-        //{
-        //    // Load the context and seat mappings.
-        //    var loader = new XMLScriptingContextLoader(_cashefile, _streamManager, _buildInfo);
-        //    string folder = _buildInfo.SeatMappingPath;
-        //    string filename = Path.GetFileNameWithoutExtension(_cashefile.FileName) + "_Mappings.xml";
-        //    string unitSeatMappingPath = Path.Combine(folder, filename);
-        //    _context = loader.LoadContext(_buildInfo.ScriptingContextPath, unitSeatMappingPath);
-        //}
-
         private ScriptData CompileScripts(string code, IProgress<int> progress, ScriptCompilerLogger logger, ParsingExceptionCollector collector)
         {
             using (IReader reader = _streamManager.OpenRead())

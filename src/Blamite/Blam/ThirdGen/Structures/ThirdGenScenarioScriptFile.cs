@@ -108,37 +108,37 @@ namespace Blamite.Blam.ThirdGen.Structures
             }
         }
 
-        //public SortedDictionary<uint, UnitSeatMapping> GetUniqueSeatMappings(IReader reader, ushort opcode)
-        //{
-        //    // load the expressions
-        //    StructureValueCollection values = LoadScriptTag(reader, _scriptTag);
-        //    var stringReader = new StringTableReader();
-        //    ScriptExpressionTable expressions = LoadExpressions(reader, values, stringReader);
-        //    CachedStringTable strings = LoadStrings(reader, values, stringReader);
-        //    foreach (ScriptExpression expr in expressions.Where(e => (e != null)))
-        //        expr.ResolveStrings(strings);
+        public IEnumerable<UnitSeatMapping> GetUniqueSeatMappings(IReader reader, ushort opcode)
+        {
+            // load the expressions
+            StructureValueCollection values = LoadScriptTag(reader, _scriptTag);
+            var stringReader = new StringTableReader();
+            ScriptExpressionTable expressions = LoadExpressions(reader, values, stringReader);
+            CachedStringTable strings = LoadStrings(reader, values, stringReader);
+            foreach (ScriptExpression expr in expressions.Where(e => (e != null)))
+                expr.ResolveStrings(strings);
 
 
-        //    // find all unique mappings
-        //    SortedDictionary<uint, UnitSeatMapping> uniqueMappings = new SortedDictionary<uint, UnitSeatMapping>();
+            // find all unique mappings
+            SortedDictionary<uint, UnitSeatMapping> uniqueMappings = new SortedDictionary<uint, UnitSeatMapping>();
 
-        //    foreach (var exp in expressions)
-        //    {
-        //        if (exp.Opcode == opcode && exp.ReturnType == opcode && exp.Value != 0xFFFFFFFF)
-        //        {
-        //            // Calculate the index and only add it if it doesn't exist yet.
-        //            uint index = exp.Value & 0xFFFF;
-        //            if (!uniqueMappings.ContainsKey(index))
-        //            {
-        //                uint count = (exp.Value & 0xFFFF0000) >> 16;
-        //                string name = exp.StringValue;
-        //                UnitSeatMapping mapping = new UnitSeatMapping((short)index, (short)count, name);
-        //                uniqueMappings.Add(index, mapping);
-        //            }
-        //        }
-        //    }
-        //    return uniqueMappings;
-        //}
+            foreach (var exp in expressions)
+            {
+                if (exp.Opcode == opcode && exp.ReturnType == opcode && exp.Value != 0xFFFFFFFF)
+                {
+                    // Calculate the index and only add it if it doesn't exist yet.
+                    uint index = exp.Value & 0xFFFF;
+                    if (!uniqueMappings.ContainsKey(index))
+                    {
+                        uint count = (exp.Value & 0xFFFF0000) >> 16;
+                        string name = exp.StringValue;
+                        UnitSeatMapping mapping = new UnitSeatMapping((short)index, (short)count, name);
+                        uniqueMappings.Add(index, mapping);
+                    }
+                }
+            }
+            return uniqueMappings.Values;
+        }
 
         private StructureValueCollection LoadScriptTag(IReader reader, ITag tag)
         {
