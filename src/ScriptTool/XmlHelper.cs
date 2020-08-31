@@ -233,5 +233,42 @@ namespace ScriptTool
             writer.WriteAttributeString("LineNum", expression.LineNumber.ToString("X4"));
             writer.WriteEndElement();
         }
+
+        public static void SeatMappingsToXml(Dictionary<string, IEnumerable<UnitSeatMapping>> mappings, string filePath)
+        {
+            if (mappings.Count > 0)
+            {
+                var settings = new XmlWriterSettings
+                {
+                    Indent = true
+                };
+
+                using (var writer = XmlWriter.Create(filePath, settings))
+                {
+                    writer.WriteStartDocument();
+                    writer.WriteStartElement("ScriptFiles");
+
+                    foreach (var mapping in mappings)
+                    {
+                        // Write file name.
+                        writer.WriteStartElement("hsc");
+                        writer.WriteAttributeString("Name", mapping.Key);
+                        foreach (UnitSeatMapping m in mapping.Value)
+                        {
+                            writer.WriteStartElement("Mapping");
+                            writer.WriteAttributeString("Index", m.Index.ToString());
+                            writer.WriteAttributeString("Name", m.Name);
+                            writer.WriteAttributeString("Count", m.Count.ToString());
+                            writer.WriteEndElement();
+                        }
+                        writer.WriteEndElement();
+                    }
+
+                    writer.WriteEndElement();
+                    writer.WriteEndDocument();
+                    writer.Close();
+                }
+            }
+        }
     }
 }

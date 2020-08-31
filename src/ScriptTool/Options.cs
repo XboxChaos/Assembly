@@ -26,6 +26,9 @@ namespace ScriptTool
         [Option("stringids", Group = "ScriptObject", Default = (bool)false, HelpText = "Dump StringIDs.")]
         public bool DumpStringIDs { get; set; }
 
+        [Option("unitseatmappings", Group = "ScriptObject", Default = (bool)false, HelpText = "Dump StringIDs.")]
+        public bool DumpUnitSeatMappings { get; set; }
+
         [Option('o', "output", HelpText = "Path to a folder where the data will be dumped to.")]
         public string OutputFolder { get; set; }
     }

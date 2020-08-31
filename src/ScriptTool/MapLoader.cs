@@ -8,6 +8,7 @@ using Blamite.Serialization.Settings;
 using System.Linq;
 using Blamite.IO;
 using System.IO;
+using Blamite.Blam.Resources.Sounds;
 
 namespace ScriptTool
 {
@@ -26,7 +27,6 @@ namespace ScriptTool
             return result;
         }
 
-
         public static Dictionary<string, ScriptTable> LoadAllScriptFiles(string path, EngineDatabase db, out EngineDescription engineInfo)
         {
             Dictionary<string, ScriptTable> result = new Dictionary<string, ScriptTable>();
@@ -43,6 +43,34 @@ namespace ScriptTool
                     }
                 }
             }
+            return result;
+        }
+
+        public static Dictionary<string, IEnumerable<UnitSeatMapping>> LoadAllSeatMappings(string path, EngineDatabase db, out EngineDescription engineInfo)
+        {
+            Dictionary<string, IEnumerable<UnitSeatMapping>> result = new Dictionary<string, IEnumerable<UnitSeatMapping>>();
+
+            string fileName = Path.GetFileNameWithoutExtension(path);
+
+            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                var reader = new EndianReader(stream, Endian.BigEndian);
+                var cache = CacheFileLoader.LoadCacheFile(reader, fileName, db, out engineInfo);
+                var info = engineInfo.ScriptInfo.GetTypeInfo("unit_seat_mapping");
+                if (info != null && cache.Type != CacheFileType.Shared && cache.Type != CacheFileType.SinglePlayerShared && cache.ScriptFiles.Length > 0)
+                {
+                    foreach (var file in cache.ScriptFiles)
+                    {
+                        var mappings = file.GetUniqueSeatMappings(reader, info.Opcode);
+
+                        if(mappings.Any())
+                        {
+                            result[file.Name] = mappings;
+                        }
+                    }
+                }
+            }
+
             return result;
         }
 

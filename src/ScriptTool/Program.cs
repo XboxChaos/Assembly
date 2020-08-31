@@ -78,6 +78,12 @@ namespace ScriptTool
                 string outputFile = Path.Combine(outputFolder, "StringIDs.xml");
                 dumper.DumpUniqueStringIDs(maps, outputFile);
             }
+
+            if(options.DumpUnitSeatMappings == true)
+            {
+                ScriptDumper dumper = new ScriptDumper();
+                dumper.DumpUnitSeatMappings(maps, outputFolder);
+            }
         }
 
         static void RunFunctions(FunctionOptions options)

@@ -12,6 +12,7 @@ using Blamite.Serialization.Settings;
 using Blamite.IO;
 using System.Text;
 using System.Xml.Linq;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ScriptTool
 {
@@ -82,6 +83,18 @@ namespace ScriptTool
             // Write the data to xml.
             XmlHelper.FilteredExpressionsToXml(mapExpressions, outputPath);
             Console.WriteLine($"\nAll {type} Expressions have been saved to {outputPath}.");
+        }
+
+        public void DumpUnitSeatMappings(string[] mapPaths, string outputDirectory)
+        {
+            foreach(string path in mapPaths)
+            {
+                Console.WriteLine($"Dumping the unit seat mappings from {Path.GetFileName(path)}.");
+                var mappings = MapLoader.LoadAllSeatMappings(path, _db, out _);
+                string fileName = Path.GetFileNameWithoutExtension(path) + "_Unit_Seat_Mappings.xml";
+                string outputPath = Path.Combine(outputDirectory, fileName);
+                XmlHelper.SeatMappingsToXml(mappings, outputPath);
+            }
         }
     }
 }
