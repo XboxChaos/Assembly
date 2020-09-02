@@ -29,10 +29,10 @@ callID
         ;
 
 expression    
-        : literal 
-        | call               
-        | branch 
-        | cond
+        :       literal 
+        |       call               
+        |       branch 
+        |       cond
         ;
 
 literal 
@@ -51,9 +51,16 @@ literal
 // Lexers
 //--------------------------------------------------------------------
 
-BOOLEAN  : 'true' | 'false' ;
+BOOLEAN  
+        : 'true' 
+        | 'false' 
+        | 'True' 
+        | 'False' 
+        | 'TRUE' 
+        | 'FALSE'
+        ;
 
-NONE: 'none' ;
+NONE: 'none' | 'None' | 'NONE';
 		
 DAMAGEREGION
         :       'gut'
@@ -188,10 +195,12 @@ INT : '-'? DIGIT+ ;
 LP : '(' ;
 RP : ')' ;
 
-ID : (LCASE|DIGIT|SPECIAL)+ ;
+ID : (LCASE|UCASE|DIGIT|SPECIAL)+ ;
 
 fragment
 LCASE : [a-z] ;
+fragment
+UCASE : [A-Z];
 
 fragment
 DIGIT : [0-9] ;

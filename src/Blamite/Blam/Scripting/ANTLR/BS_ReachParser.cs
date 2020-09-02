@@ -51,7 +51,7 @@ public partial class BS_ReachParser : Parser {
 	};
 
 	private static readonly string[] _LiteralNames = {
-		null, "'global'", "'script'", "','", "'cond'", "'branch'", null, "'none'", 
+		null, "'global'", "'script'", "','", "'cond'", "'branch'", null, null, 
 		null, null, null, null, null, null, null, "'('", "')'"
 	};
 	private static readonly string[] _SymbolicNames = {
