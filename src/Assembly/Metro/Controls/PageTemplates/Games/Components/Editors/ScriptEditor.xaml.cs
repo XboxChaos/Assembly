@@ -269,6 +269,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             App.AssemblyStorage.AssemblySettings.OutputCompilerDebugData = itemDebugData.IsChecked;
         }
 
+        private async void ReloadContextClick(object sender, RoutedEventArgs e)
+        {
+            IEnumerable<ICompletionData> completionData = await Task.Run(() => GenerateStaticCompletionData());
+            _staticCompletionData = completionData;
+            StatusUpdater.Update("Context Reloaded");
+        }
+
         private async void EditorGotFocus(object sender, RoutedEventArgs e)
         {
             // Start the background search.
