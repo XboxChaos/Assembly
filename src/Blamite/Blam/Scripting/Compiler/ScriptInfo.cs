@@ -20,9 +20,9 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public ScriptInfo(BS_ReachParser.ScriptDeclarationContext context, ushort index)
         {
-            Name = context.scriptID().GetText();
-            ScriptType = context.SCRIPTTYPE().GetText();
-            ReturnType = context.VALUETYPE().GetText();
+            Name = context.scriptID().GetTextSanitized();
+            ScriptType = context.SCRIPTTYPE().GetTextSanitized();
+            ReturnType = context.VALUETYPE().GetTextSanitized();
             Parameters = new List<ParameterInfo>();
             Opcode = index;
 
@@ -33,8 +33,8 @@ namespace Blamite.Blam.Scripting.Compiler
                 // Create parameters from the extracted strings
                 for (ushort i = 0; i < parameters.Length; i++)
                 {
-                    string name = parameters[i].ID().GetText();
-                    string valueType = parameters[i].VALUETYPE().GetText();
+                    string name = parameters[i].ID().GetTextSanitized();
+                    string valueType = parameters[i].VALUETYPE().GetTextSanitized();
                     var param = new ParameterInfo(name, valueType, i);
                     Parameters.Add(param);
                 }

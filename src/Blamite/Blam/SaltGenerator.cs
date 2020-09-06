@@ -5,7 +5,7 @@ namespace Blamite.Blam
 {
     public static class SaltGenerator
     {
-        public static UInt16 GetSalt(string tableName)
+        public static ushort GetSalt(string tableName)
         {
             byte[] bytes = Encoding.ASCII.GetBytes(tableName);
             uint c1 = bytes[0];
@@ -14,7 +14,7 @@ namespace Blamite.Blam
             c2 = c2 | 0x80;
             c2 = c2 << 8;
 
-            return (UInt16)(c2 | c1);
+            return (ushort)(c2 | c1);
         }
     }
 }

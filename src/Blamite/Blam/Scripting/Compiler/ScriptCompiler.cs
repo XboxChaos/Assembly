@@ -7,6 +7,8 @@ using Blamite.Blam.Scripting.Context;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Blamite.Util;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Blamite.Blam.Scripting.Compiler
 {
@@ -34,7 +36,7 @@ namespace Blamite.Blam.Scripting.Compiler
         private readonly List<ITag> _references = new List<ITag>();
 
         // utility
-        private const uint _randomAddress = 0xCDCDCDCD;  // used for expressions where the string address doesn't point to the string table
+        private readonly List<int> _missingCarriageReturnPositions = new List<int>();
         private const int _globalPushIndex = -1;
         private DatumIndex _currentIndex;
         private readonly Stack<int> _openDatums = new Stack<int>();
@@ -42,7 +44,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         // branching
         private ushort _branchBoolIndex = 0;
-        private readonly Dictionary<string, ScriptExpression[]> _generatedBranches = new Dictionary<string, ScriptExpression[]>();
+        private readonly List<Branch> _generatedBranches = new List<Branch>();
 
         // cond
         private string _condReturnType;
@@ -104,6 +106,16 @@ namespace Blamite.Blam.Scripting.Compiler
 
             // The declarations count is used to calculate the current progress.
             _declarationCount = context.scriptDeclaration().Count() + context.globalDeclaration().Count();
+
+            // Find all missing carriage returns. Somehow antlr removes them under certain circumstances and messes up the text position indeces.
+            string text = context.Start.InputStream.GetText(new Interval(0, context.Start.InputStream.Size));
+            string otherText = context.GetText();
+            bool same = text == otherText;
+            var missingCarriageReturns = Regex.Matches(text, @"(?<!\r)\n");
+            foreach (Match match in missingCarriageReturns)
+            {
+                _missingCarriageReturnPositions.Add(match.Index);
+            }
         }
 
         /// <summary>
@@ -136,7 +148,7 @@ namespace Blamite.Blam.Scripting.Compiler
             }
 
             // Create new script object and add it to the table.
-            Script script = GetScriptFromContext(context);
+            Script script = ScriptObjectCreation.GetScriptFromContext(context, _currentIndex, _opcodes);
             _scripts.Add(script);
 
             // Generate the parameter lookup.
@@ -147,7 +159,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 _parameterLookup.Add(info.Name, info);
             }
 
-            string returnType = context.VALUETYPE().GetText();
+            string returnType = context.VALUETYPE().GetTextSanitized();
             int expressionCount = context.expression().Count();
 
             // The final expression must match the return type of this script.
@@ -158,7 +170,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 _expectedTypes.PushTypes("void", expressionCount - 1);
             }
 
-            CreateInitialBegin(returnType);
+            CreateInitialBegin(returnType, context.GetCorrectTextPosition(_missingCarriageReturnPositions));
         }
 
         /// <summary>
@@ -189,10 +201,10 @@ namespace Blamite.Blam.Scripting.Compiler
             }
 
             // Create a new Global and add it to the table.
-            string valueType = context.VALUETYPE().GetText();
+            string valueType = context.VALUETYPE().GetTextSanitized();
             ScriptGlobal glo = new ScriptGlobal()
             {
-                Name = context.ID().GetText(),
+                Name = context.ID().GetTextSanitized(),
                 Type = (short)_opcodes.GetTypeInfo(valueType).Opcode,
                 ExpressionIndex = _currentIndex,
             };
@@ -237,7 +249,7 @@ namespace Blamite.Blam.Scripting.Compiler
             LinkDatum();
 
             // Retrieve information from the context.
-            string name = context.callID().GetText();
+            string name = context.callID().GetTextSanitized();
             string expectedType = _expectedTypes.PopType();
             int contextParameterCount = context.expression().Count();
 
@@ -258,7 +270,7 @@ namespace Blamite.Blam.Scripting.Compiler
             ushort returnTypeOpcode = DetermineReturnTypeOpcode(info, expectedType, context);
             EqualityPush(info.ReturnType);
             PushCallParameters(info, contextParameterCount, expectedType, context);
-            CreateFunctionCall(info, returnTypeOpcode, GetLineNumber(context));
+            CreateFunctionCall(info, returnTypeOpcode, context.GetCorrectTextPosition(_missingCarriageReturnPositions), GetLineNumber(context));
         }
 
         /// <summary>
@@ -293,7 +305,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
             _expectedTypes.PushTypes("boolean", TypeHelper.ScriptReference);
             FunctionInfo info = _opcodes.GetFunctionInfo("branch").First();
-            CreateFunctionCall(info, _opcodes.GetTypeInfo("void").Opcode, GetLineNumber(context));
+            CreateFunctionCall(info, _opcodes.GetTypeInfo("void").Opcode, context.GetCorrectTextPosition(_missingCarriageReturnPositions), GetLineNumber(context));
 
             _branchBoolIndex = _currentIndex.Index;
         }
@@ -311,22 +323,19 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 throw new CompilerException("The compiler failed to retrieve the name of a script, from which \"branch\" was called.", context);
             }
-            string fromScript = scriptContext.scriptID().GetText();
+            string fromScript = scriptContext.scriptID().GetTextSanitized();
 
             var parameters = context.expression();
-            if (parameters[1].call() is null)
+            var callParameter = parameters[1].call();
+            if (callParameter is null)
             {
                 throw new CompilerException("A branch call's second argument must be a script call.", context);
             }
-            var param = parameters[1].call();
-            string toScript = param.callID().GetText();
+            string toScript = callParameter.callID().GetTextSanitized();
             string generatedName = fromScript + "_to_" + toScript;
-
-            ScriptExpression[] expressions = new ScriptExpression[2];
             var condition = _expressions[_branchBoolIndex].Clone();
             var scriptReference = _expressions[condition.Next.Index].Clone();
-            expressions[0] = condition;
-            expressions[1] = scriptReference;
+
             // Modify the original script reference. The opcode points to the generated script.
             _expressions[condition.Next.Index].Opcode = (ushort)_scriptLookup.Count;
 
@@ -334,7 +343,8 @@ namespace Blamite.Blam.Scripting.Compiler
             ScriptInfo info = new ScriptInfo(generatedName, "static", "void", (ushort)_scriptLookup.Count);
             string infoKey = info.Name + "_" + 0;
             _scriptLookup[infoKey] = info;
-            _generatedBranches[generatedName] = expressions;
+            _generatedBranches.Add(new Branch(generatedName, context.GetCorrectTextPosition(_missingCarriageReturnPositions), condition, scriptReference));
+
 
             CloseDatum();
         }
@@ -378,7 +388,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 ReturnType = typeOpcode,
                 Type = ScriptExpressionType.Expression,
                 Next = DatumIndex.Null,
-                StringOffset = _randomAddress,
+                StringOffset = context.GetCorrectTextPosition(_missingCarriageReturnPositions),
                 Value = 0,
                 LineNumber = 0
             };
@@ -403,6 +413,7 @@ namespace Blamite.Blam.Scripting.Compiler
             _expectedTypes.PushTypes(_condReturnType, context.expression().Count() - 1);
             _expectedTypes.PushType("boolean");
 
+            var parentCond = context.Parent as BS_ReachParser.CondContext;
             var ifInfo = _opcodes.GetFunctionInfo("if")[0];
             var compilerIf = new ScriptExpression
             {
@@ -411,7 +422,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 ReturnType = _opcodes.GetTypeInfo(_condReturnType).Opcode,
                 Type = ScriptExpressionType.Group,
                 Next = DatumIndex.Null,
-                StringOffset = _randomAddress,
+                StringOffset = context.GetCorrectTextPosition(_missingCarriageReturnPositions),
                 LineNumber = 0
             };
             compilerIf.SetValue(_currentIndex.Next);
@@ -446,6 +457,7 @@ namespace Blamite.Blam.Scripting.Compiler
             // Close the final value expression.
             CloseDatum();
 
+            var parentCond = context.Parent as BS_ReachParser.CondContext;
             int index = _condIndeces.Pop();
             var beginInfo = _opcodes.GetFunctionInfo("begin")[0];
 
@@ -461,7 +473,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 ReturnType = _opcodes.GetTypeInfo(_condReturnType).Opcode,
                 Type = ScriptExpressionType.Group,
                 Next = DatumIndex.Null,
-                StringOffset = _randomAddress,
+                StringOffset = context.GetCorrectTextPosition(_missingCarriageReturnPositions),
                 LineNumber = 0
             };
             compilerBeginCall.SetValue(_currentIndex.Next);
@@ -494,12 +506,12 @@ namespace Blamite.Blam.Scripting.Compiler
 
             LinkDatum();
 
-            string text = context.GetText();
+            string text = context.GetTextSanitized();
             string expectedType = _expectedTypes.PopType();
 
             // Handle "none" expressions. The Value field of ai_line expressions stores their string offset.
             // Therefore the Value is not -1 if the expression is "none".
-            if(text == "none" && expectedType != "ai_line" && expectedType != "string")
+            if(IsNone(text) && expectedType != "ai_line" && expectedType != "string")
             {                
                 ushort opcode = _opcodes.GetTypeInfo(expectedType).Opcode;
                 var expression = new ScriptExpression
@@ -534,7 +546,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private bool IsGlobalsReference(string expectedType, ParserRuleContext context)
         {
-            string text = context.GetText();
+            string text = context.GetTextSanitized();
             GlobalInfo globalInfo = _opcodes.GetGlobalInfo(text);
             object value;
 
@@ -586,7 +598,7 @@ namespace Blamite.Blam.Scripting.Compiler
             // "set" and (in)equality functions are special.
             if (grandparent is BS_ReachParser.CallContext call)
             {
-                string funcName = call.callID().GetText();
+                string funcName = call.callID().GetTextSanitized();
                 List<FunctionInfo> funcInfo = _opcodes.GetFunctionInfo(funcName);
 
                 if (funcInfo != null)
@@ -644,7 +656,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private bool IsScriptReference(string expectedReturnType, int expectedParameterCount, BS_ReachParser.CallContext context)
         {
-            string key = context.callID().GetText() + "_" + expectedParameterCount;
+            string key = context.callID().GetTextSanitized() + "_" + expectedParameterCount;
             if(!_scriptLookup.TryGetValue(key, out ScriptInfo info))
             {
                 if (expectedReturnType == TypeHelper.ScriptReference)
@@ -667,7 +679,7 @@ namespace Blamite.Blam.Scripting.Compiler
             }
 
             // Create a script reference node.
-            CreateScriptReference(info, returnTypeOpcode, GetLineNumber(context));
+            CreateScriptReference(info, returnTypeOpcode, context.GetCorrectTextPosition(_missingCarriageReturnPositions), GetLineNumber(context));
 
             return true;
         }
@@ -680,7 +692,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 return false;
             }
 
-            string text = context.GetText().Trim('"');
+            string text = context.GetTextSanitized();
 
             // The script doesn't have a parameter with this name.
             if (!_parameterLookup.TryGetValue(text, out ParameterInfo info))
@@ -694,7 +706,7 @@ namespace Blamite.Blam.Scripting.Compiler
             // (In)Equality functions are special
             if(context.Parent.Parent is BS_ReachParser.CallContext grandparent)
             {
-                string funcName = grandparent.callID().GetText();
+                string funcName = grandparent.callID().GetTextSanitized();
                 var funcInfo = _opcodes.GetFunctionInfo(funcName);
                 if(funcInfo != null)
                 {
@@ -722,42 +734,6 @@ namespace Blamite.Blam.Scripting.Compiler
             return true;
         }
 
-        private Script GetScriptFromContext(BS_ReachParser.ScriptDeclarationContext context)
-        {
-            // Create a new Script.
-            Script script = new Script
-            {
-                Name = context.scriptID().GetText(),
-                ExecutionType = (short)_opcodes.GetScriptTypeOpcode(context.SCRIPTTYPE().GetText()),
-                ReturnType = (short)_opcodes.GetTypeInfo(context.VALUETYPE().GetText()).Opcode,
-                RootExpressionIndex = _currentIndex
-            };
-            // Handle scripts with parameters.
-            var parameterContext = context.scriptParameters();
-            if (parameterContext != null)
-            {
-                var parameters = parameterContext.parameter();
-                for(ushort i = 0; i < parameters.Length; i++)
-                {
-                    string name = parameters[i].ID().GetText();
-                    string valueType = parameters[i].VALUETYPE().GetText();
-
-                    // Add the parameter to the script object.
-                    ScriptParameter parameter = new ScriptParameter
-                    {
-                        Name = name,
-                        Type = _opcodes.GetTypeInfo(valueType).Opcode
-                    };
-                    script.Parameters.Add(parameter);
-
-                    //// Add the parameter to the parameter lookup.
-                    //var info = new ParameterInfo(name, valueType, i);
-                    //_parameterLookup[info.Name] = info;
-                }
-            }
-            return script;
-        }
-
         /// <summary>
         /// Calculates the value types for the parameters of a function and pushes them to the stack.
         /// </summary>
@@ -773,7 +749,7 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 if (contextParameterCount != expectedParamCount)
                 {
-                    throw new CompilerException($"The function \"{context.callID().GetText()}\" has an unexpected number of arguments. Expected: \"{expectedParamCount}\" Encountered: \"{contextParameterCount}\".", context);
+                    throw new CompilerException($"The function \"{context.callID().GetTextSanitized()}\" has an unexpected number of arguments. Expected: \"{expectedParamCount}\" Encountered: \"{contextParameterCount}\".", context);
 
                 }
                 _expectedTypes.PushTypes(info.ParameterTypes);
@@ -953,7 +929,7 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 if(_debug)
                 {
-                    _logger.Information($"Generating Branch: {branch.Key}");
+                    _logger.Information($"Generating Branch: {branch.BranchName}");
                 }
 
                 ushort voidOpcode = _opcodes.GetTypeInfo("void").Opcode;
@@ -961,37 +937,37 @@ namespace Blamite.Blam.Scripting.Compiler
                 // create script entry
                 Script script = new Script
                 {
-                    Name = branch.Key,
+                    Name = branch.BranchName,
                     ReturnType = (short)voidOpcode,
                     ExecutionType = (short)_opcodes.GetScriptTypeOpcode("static"),
                     RootExpressionIndex = _currentIndex,
                 };
                 _scripts.Add(script);
 
-                CreateInitialBegin("void");
+                CreateInitialBegin("void", branch.TextPosition);
                 LinkDatum();
 
                 // create the sleep_until call
                 FunctionInfo sleepInfo = _opcodes.GetFunctionInfo("sleep_until").First();
-                CreateFunctionCall(sleepInfo, voidOpcode, 0);
+                CreateFunctionCall(sleepInfo, voidOpcode, branch.TextPosition, 0);
 
                 // Adjust the condition expression and add it.
                 LinkDatum();
-                ScriptExpression condition = branch.Value[0];
+                ScriptExpression condition = branch.Condition;
                 condition.Index = _currentIndex;
                 condition.Next = DatumIndex.Null;
                 AddExpressionIncrement(condition);
 
                 // Adjust the script reference and add it.
                 LinkDatum();
-                ScriptExpression scriptReference = branch.Value[1];
+                ScriptExpression scriptReference = branch.TargetScript;
                 scriptReference.Index = _currentIndex;
                 scriptReference.Next = DatumIndex.Null;
                 AddExpressionIncrement(scriptReference);
             }
         }
 
-        private void CreateInitialBegin(string returnType)
+        private void CreateInitialBegin(string returnType, uint textPosition)
         {
             FunctionInfo info = _opcodes.GetFunctionInfo("begin").First();
 
@@ -1003,7 +979,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 ReturnType = _opcodes.GetTypeInfo(returnType).Opcode,
                 Type = ScriptExpressionType.Group,
                 Next = DatumIndex.Null,
-                StringOffset = _randomAddress,
+                StringOffset = textPosition,
                 LineNumber = 0
             };
             beginCall.SetValue(_currentIndex.Next);
@@ -1024,7 +1000,7 @@ namespace Blamite.Blam.Scripting.Compiler
             OpenDatumAddExpressionIncrement(beginName);
         }
 
-        private void CreateFunctionCall(FunctionInfo info, ushort returnTypeOpcode, short lineNumber)
+        private void CreateFunctionCall(FunctionInfo info, ushort returnTypeOpcode, uint textPosition, short lineNumber)
         {
             var callExpression = new ScriptExpression
             {
@@ -1033,7 +1009,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 ReturnType = returnTypeOpcode,
                 Type = ScriptExpressionType.Group,
                 Next = DatumIndex.Null,
-                StringOffset = _randomAddress,
+                StringOffset = textPosition,
                 LineNumber = lineNumber
             };
             callExpression.SetValue(_currentIndex.Next);
@@ -1053,7 +1029,7 @@ namespace Blamite.Blam.Scripting.Compiler
             OpenDatumAddExpressionIncrement(nameExpression);
         }
 
-        private void CreateScriptReference(ScriptInfo info, ushort returnTypeOpcode, short lineNumber)
+        private void CreateScriptReference(ScriptInfo info, ushort returnTypeOpcode, uint textPosition, short lineNumber)
         {
             var scriptReference = new ScriptExpression
             {
@@ -1062,7 +1038,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 ReturnType = returnTypeOpcode,
                 Type = ScriptExpressionType.ScriptReference,
                 Next = DatumIndex.Null,
-                StringOffset = _randomAddress,
+                StringOffset = textPosition,
                 LineNumber = lineNumber
             };
             scriptReference.SetValue(_currentIndex.Next);

@@ -34,7 +34,7 @@ namespace Blamite.Blam.Scripting.Compiler
         public CompilerException(string message, BS_ReachParser.CallContext context) : base(message)
         {
             SetCommonProperties(context);
-            Text = context.callID().GetText();
+            Text = context.callID().GetTextSanitized();
         }
 
         public CompilerException(string message, BS_ReachParser.BranchContext context) : base(message)

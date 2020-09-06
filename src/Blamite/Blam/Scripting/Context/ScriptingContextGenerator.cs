@@ -89,7 +89,7 @@ namespace Blamite.Blam.Scripting.Context
         private static ScriptingContextObject CreateContextObject(int index, string group, bool isChildObject, StructureValueCollection values)
         {
             string name = values.HasStringID("Name") ? values.GetStringID("Name") : values.GetString("Name");
-            var result = new ScriptingContextObject(name, index, group, isChildObject);
+            var result = new ScriptingContextObject(name.ToLowerInvariant(), index, group, isChildObject);
 
             var childBlocks = values.GetTagBlocks();
             if(childBlocks.Length > 0)

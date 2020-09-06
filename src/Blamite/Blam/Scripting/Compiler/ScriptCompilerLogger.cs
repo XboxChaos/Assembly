@@ -47,7 +47,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private void WriteContext(string level, ParserRuleContext context, CompilerContextAction action)
         {
-            string innerMessage = $"Line: {context.Start.Line}, {action}: \"{context.GetText().Trim('"')}\"";
+            string innerMessage = $"Line: {context.Start.Line}, {action}: \"{context.GetTextSanitized()}\"";
             WriteEntry(level, innerMessage);
         }
 
@@ -172,13 +172,13 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public void Script(BS_ReachParser.ScriptDeclarationContext context, CompilerContextAction action)
         {
-            string name = context.scriptID().GetText();
+            string name = context.scriptID().GetTextSanitized();
             WriteContextIndent("SCRIPT", context, action, name);
         }
 
         public void Global(BS_ReachParser.GlobalDeclarationContext context, CompilerContextAction action)
         {
-            string name = context.ID().GetText();
+            string name = context.ID().GetTextSanitized();
             WriteContextIndent("GLOBAL", context, action, name);
         }
 
@@ -209,7 +209,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public void Call(BS_ReachParser.CallContext context, CompilerContextAction action)
         {
-            string name = context.callID().GetText();
+            string name = context.callID().GetTextSanitized();
             WriteContextIndent("CALL", context, action, name);
         }
 

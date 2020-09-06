@@ -13,7 +13,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public ParameterInfo(string name, string valueType, ushort index)
         {
-            Name = name;
+            Name = name.ToLowerInvariant();
             ReturnType = valueType;
             Opcode = index;
         }

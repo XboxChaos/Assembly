@@ -68,7 +68,6 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private bool HandleValueType(BS_ReachParser.LiteralContext context, string expectedValueType)
         {
-            string name = context.GetText();
             ScriptExpression expression;
             switch (expectedValueType)
             {
@@ -76,7 +75,7 @@ namespace Blamite.Blam.Scripting.Compiler
                     expression = GetNumberExpression(context);
                     if(expression is null)
                     {
-                        throw new CompilerException($"Failed to process \"{name}\" because it didn't know which value type to expect. Try using a different function with clearly defined parameters.", context);
+                        throw new CompilerException($"Failed to process \"{context.GetTextSanitized()}\" because it didn't know which value type to expect. Try using a different function with clearly defined parameters.", context);
                     }
                     break;
 
@@ -235,7 +234,8 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private ScriptExpression GetBooleanExpression(BS_ReachParser.LiteralContext context)
         {
-            string text = context.GetText();
+
+            string text = context.GetTextSanitized();
             if (context.BOOLEAN() == null)
             {
                 return null;
@@ -257,12 +257,12 @@ namespace Blamite.Blam.Scripting.Compiler
 
             ushort opcode = _opcodes.GetTypeInfo("boolean").Opcode;
             return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
-                _randomAddress, val, (short)context.Start.Line);
+                context.GetCorrectTextPosition(_missingCarriageReturnPositions), val, (short)context.Start.Line);
         }
 
         private ScriptExpression GetEnum32Expression(BS_ReachParser.LiteralContext context, string valueType, string castTo)
         {
-            string text = context.GetText().Trim('"');
+            string text = context.GetTextSanitized();
             ScriptValueType info = _opcodes.GetTypeInfo(valueType);
             int index = info.GetEnumIndex(text);
 
@@ -278,7 +278,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private ScriptExpression GetEnum16Expression(BS_ReachParser.LiteralContext context, string expectedValueType)
         {
-            string text = context.GetText().Trim('"');
+            string text = context.GetTextSanitized();
             ScriptValueType info = _opcodes.GetTypeInfo(expectedValueType);
             int val = info.GetEnumIndex(text);
 
@@ -297,7 +297,7 @@ namespace Blamite.Blam.Scripting.Compiler
             // Is the number an integer? The default integer is a short for now.
             if (context.INT() != null)
             {
-                string txt = context.GetText();
+                string txt = context.GetTextSanitized();
 
                 if (!int.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out int num))
                 {
@@ -327,7 +327,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private ScriptExpression GetObjectNameExpression(BS_ReachParser.LiteralContext context, string valueType, string castTo)
         {
-            string name = context.GetText().Trim('"');
+            string name = context.GetTextSanitized();
             if(TryGetObjectFromContext(out ScriptingContextObject obj, Tuple.Create("object_name", name)))
             {
                 ushort opcode = _opcodes.GetTypeInfo(valueType).Opcode;
@@ -342,7 +342,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private ScriptExpression GetAIExpression(BS_ReachParser.LiteralContext context, string expectedValueType)
         {
-            string text = context.GetText().Trim('"');
+            string text = context.GetTextSanitized();
             string[] subStrings = text.Split(new char[] { '/' }, 2, StringSplitOptions.RemoveEmptyEntries);
             ushort opcode = _opcodes.GetTypeInfo("ai").Opcode;
             ushort valuetype = _opcodes.GetTypeInfo(expectedValueType).Opcode;
@@ -439,7 +439,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private ScriptExpression GetIndex16Expression(BS_ReachParser.LiteralContext context, string expectedValueType)
         {
-            string name = context.GetText().Trim('"');
+            string name = context.GetTextSanitized();
             int value = -1;
             switch (expectedValueType)
             {
@@ -478,7 +478,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private ScriptExpression GetDeviceGroupExpression(BS_ReachParser.LiteralContext context)
         {
-            string name = context.GetText().Trim('"');
+            string name = context.GetTextSanitized();
 
             if (TryGetObjectFromContext(out ScriptingContextObject deviceObject, Tuple.Create("device_group", name)))
             {
@@ -499,7 +499,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private ScriptExpression GetPointReferenceExpression(BS_ReachParser.LiteralContext context)
         {
-            string text = context.GetText().Trim('"');
+            string text = context.GetTextSanitized();
             string[] subStrings = text.Split(new char[] { '/' }, 2, StringSplitOptions.RemoveEmptyEntries);
 
             if(TryGetObjectFromContext(out ScriptingContextObject setObject, Tuple.Create("point_set", subStrings[0])))
@@ -539,7 +539,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private ScriptExpression GetFolderExpression(BS_ReachParser.LiteralContext context)
         {
-            string name = context.GetText().Trim('"');
+            string name = context.GetTextSanitized();
 
             if (TryGetObjectFromContext(out ScriptingContextObject folderObject, Tuple.Create("object_folder", name)))
             {
@@ -556,7 +556,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private ScriptExpression GetTagrefExpression(BS_ReachParser.LiteralContext context, string expectedValueType)
         {
-            string text = context.GetText().Trim('"');
+            string text = context.GetTextSanitized();
             string[] subStrings = text.Split(new char[] { '.' }, 2, StringSplitOptions.RemoveEmptyEntries);
             DatumIndex datum;
             ITag tagRef;
@@ -620,13 +620,13 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private ScriptExpression CreateLineExpression(BS_ReachParser.LiteralContext context)
         {
-            string name = context.GetText().Trim('"');
+            string name = context.GetTextSanitized();
 
             // Default value for expressions where the map doesn't contain a matching script object.
             uint value = 0xFFFFFFFF;
 
             // Check if this is a simple line reference.
-            if (name == "none" || _scriptingContext.ContainsObject(Tuple.Create("line", name)))
+            if (IsNone(name) || _scriptingContext.ContainsObject(Tuple.Create("line", name)))
             {
                 value = _cacheFile.StringIDs.FindStringID(name).Value;
             }
@@ -659,7 +659,7 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             string text = context.GetText().Trim('"');
 
-            if (text != "none" && context.STRING() == null)
+            if (!IsNone(text) && context.STRING() == null)
             {
                 return null;
             }
@@ -672,46 +672,46 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private ScriptExpression GetLongExpression(BS_ReachParser.LiteralContext context)
         {
-            string text = context.GetText();
+            string text = context.GetTextSanitized();
             ushort opcode = _opcodes.GetTypeInfo("long").Opcode;
             if (!int.TryParse(text, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out int value))
             {
                 return null;
             }
 
-            return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression, 
-                _randomAddress, (uint)value, (short)context.Start.Line);
+            return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
+                context.GetCorrectTextPosition(_missingCarriageReturnPositions), (uint)value, (short)context.Start.Line);
         }
 
         private ScriptExpression GetShortExpression(BS_ReachParser.LiteralContext context)
         {
-            string text = context.GetText();
+            string text = context.GetTextSanitized();
             ushort opcode = _opcodes.GetTypeInfo("short").Opcode;
             if (!short.TryParse(text, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out short value))
             {
                 return null;
             }
 
-            return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression, 
-                _randomAddress, (ushort)value, (short)context.Start.Line);
+            return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
+                context.GetCorrectTextPosition(_missingCarriageReturnPositions), (ushort)value, (short)context.Start.Line);
         }
 
         private ScriptExpression GetRealExpression(BS_ReachParser.LiteralContext context)
         {
-            string text = context.GetText();
+            string text = context.GetTextSanitized();
             ushort opcode = _opcodes.GetTypeInfo("real").Opcode;
             if (!float.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out float value))
             {
                 return null;
             }
 
-            return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression, 
-                _randomAddress, value, (short)context.Start.Line);
+            return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
+                context.GetCorrectTextPosition(_missingCarriageReturnPositions), value, (short)context.Start.Line);
         }
 
         private ScriptExpression CreateSIDExpression(BS_ReachParser.LiteralContext context)
         {
-            string text = context.GetText().Trim('"');
+            string text = context.GetTextSanitized();
             ushort opcode = _opcodes.GetTypeInfo("string_id").Opcode;
             StringID id = _cacheFile.StringIDs.FindOrAddStringID(text);
             return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
@@ -720,7 +720,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private ScriptExpression CreateUnitSeatMappingExpression(BS_ReachParser.LiteralContext context)
         {
-            string name = context.GetText().Trim('"');           
+            string name = context.GetTextSanitized();           
             if(!_scriptingContext.TryGetUnitSeatMapping(name, out UnitSeatMapping mapping))
             {
                 throw new CompilerException($"Failed to retrieve the information for the Unit Seat Mapping {name}. " +

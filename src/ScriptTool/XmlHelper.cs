@@ -163,7 +163,7 @@ namespace ScriptTool
                     foreach(var map in expressions)
                     {
                         // Write map name.
-                        writer.WriteStartElement(map.Key);
+                        writer.WriteStartElement("Map_" + map.Key);
 
                         // Write the expressions.
                         foreach(var expr in map.Value)

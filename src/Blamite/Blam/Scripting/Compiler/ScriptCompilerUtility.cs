@@ -8,6 +8,7 @@ using System.IO;
 using System.Configuration;
 using Blamite.Blam.Scripting.Context;
 using Blamite.Util;
+using System.Runtime.CompilerServices;
 
 namespace Blamite.Blam.Scripting.Compiler
 {
@@ -33,21 +34,6 @@ namespace Blamite.Blam.Scripting.Compiler
 
             }
         }
-
-        //private BS_ReachParser.ScriptDeclarationContext GetParentScriptContext(ParserRuleContext ctx)
-        //{
-        //    RuleContext parent = ctx;
-
-        //    for(int i = 0; i < ctx.Depth(); i++)
-        //    {
-        //        parent = parent.Parent;
-        //        if(parent is BS_ReachParser.ScriptDeclarationContext scriptDeclaration)
-        //        {
-        //            return scriptDeclaration;
-        //        }
-        //    }
-        //    throw new CompilerException("Failed to retrieve the parent script declaration context.", ctx.GetText(), ctx.Start.Line);
-        //}
 
         private RuleContext GetParentContext(RuleContext context, int ruleIndex)
         {
@@ -315,6 +301,11 @@ namespace Blamite.Blam.Scripting.Compiler
                     $"The first occurence with the index {child.Index} was chosen by the compiler.");
             }
             return true;
+        }
+
+        private bool IsNone(string text)
+        {
+            return text == "none" || text == "None" || text == "NONE";
         }
     }
 }

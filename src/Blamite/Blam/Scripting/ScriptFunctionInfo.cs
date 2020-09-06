@@ -17,7 +17,7 @@
 		/// <param name="implemented">Whether the function is implemented in the game executable or not.</param>
 		public FunctionInfo(string name, ushort opcode, string returnType, uint flags, string group, string[] parameterTypes, bool implemented)
 		{
-			Name = name;
+			Name = name.ToLowerInvariant();
 			ReturnType = returnType;
 			Opcode = opcode;
 			Flags = flags;

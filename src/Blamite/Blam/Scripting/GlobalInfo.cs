@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Blamite.Blam.Scripting.Compiler;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace Blamite.Blam.Scripting
         /// <param name="implemented">Whether this global is implemented in this game version or not.</param>
         public GlobalInfo(string name, ushort opcode, string returnType, bool implemented)
         {
-            Name = name;
+            Name = name.ToLowerInvariant();
             ReturnType = returnType;
             Opcode = opcode;
             Implemented = implemented;
@@ -29,8 +30,8 @@ namespace Blamite.Blam.Scripting
         /// <param name="index">The index of the map global.</param>
         public GlobalInfo(BS_ReachParser.GlobalDeclarationContext context, ushort index)
         {
-            Name = context.ID().GetText();
-            ReturnType = context.VALUETYPE().GetText();
+            Name = context.ID().GetTextSanitized();
+            ReturnType = context.VALUETYPE().GetTextSanitized();
             Opcode = index;
             Implemented = true;
         }
