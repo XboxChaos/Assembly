@@ -1,8 +1,10 @@
-﻿using Blamite.IO;
+﻿using Blamite.Blam.Resources.Sounds;
+using Blamite.IO;
 using Blamite.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Blamite.Blam.Scripting.Context
@@ -106,67 +108,109 @@ namespace Blamite.Blam.Scripting.Context
         private static void HandleUnitSeatMappings(IReader reader, ICacheFile cache, EngineDescription buildInfo, 
             KeyValuePair<string, StructureValueCollection[]> block, ScriptingContextCollection collection)
         {
-            string[] mappingNames = new string[block.Value.Length];
+            MappingInformation[] information = new MappingInformation[block.Value.Length];
 
+            // Collect information for all unti seat mappings in scnr.
             for (short mappingIndex = 0; mappingIndex < block.Value.Length; mappingIndex++)
             {
                 var values = block.Value[mappingIndex];
                 ITag unit = values.GetTagReference("Unit");
                 int seatIndeces1 = (int)values.GetInteger("Seats 1");
                 int seatIndeces2 = (int)values.GetInteger("Seats 2");
-
                 List<int> seatIndices = GetSeatIndices(seatIndeces1, seatIndeces2);
-
                 var vehiLayout = buildInfo.Layouts.GetLayout("vehi_seats");
+
+                // Read the vehicle meta data from the cache file.
                 reader.SeekTo(unit.MetaLocation.AsOffset());
                 var vehiValues = CacheStructureReader.ReadStructure(reader, cache, buildInfo, vehiLayout);
                 var seatsBlock = vehiValues.GetTagBlock("seats");
 
-                mappingNames[mappingIndex] = GetVehicleMappingName(seatsBlock, seatIndices);
+                // Guess the name of each mapping entry in scnr.
+                string name = GetVehicleMappingName(seatsBlock, seatIndices);
+
+                // Add the information to the array.
+                information[mappingIndex] = new MappingInformation
+                {
+                    Index = mappingIndex,
+                    Name = name,
+                    SplitName = name.Split('_'),
+                    TagName = cache.FileNames.GetTagName(unit),
+                    SeatIndices = seatIndices
+                };
             }
 
-            var mappings = GroupMappingNames(mappingNames);
+            // Identify and create seat mapping groups.
+            var mappings = GroupMappingNames(information);
 
+            // Add the final unit seat mapping objects to the result.
             foreach(var mapping in mappings)
             {
                 collection.AddUnitSeatMapping(mapping);
             }
         }
 
-        private static IEnumerable<UnitSeatMapping> GroupMappingNames(string[] names)
+        private static IEnumerable<UnitSeatMapping> GroupMappingNames(MappingInformation[] information)
         {
+            var queue = new Queue<MappingInformation>(information);
             var result = new List<UnitSeatMapping>();
-            result.Add( new UnitSeatMapping(0, 0, names[0]));
-
-            for(short i = 0; i < names.Length; i++)
+            while (queue.Count > 0)
             {
-                // Shorten the name, if such a seat mapping group has already been created.
-                string currentName = names[i];
-                if(result.Last().Name != currentName && result.Any(u => u.Name == currentName))
+                MappingInformation info = queue.Dequeue();
+                short index = info.Index;
+                string name = info.Name;
+                short count = 1;
+
+                var processedInformation = new List<MappingInformation>();
+                var processedTags = new List<string>();
+                processedInformation.Add(info);
+                processedTags.Add(info.TagName);
+                while (queue.Count > 0)
                 {
-                    currentName = ShortenMappingName(currentName);
+                    MappingInformation next = queue.Peek();
+                    if(next.TagName == info.TagName || next.SplitName[0] != info.SplitName[0] || next.SplitName[1] != info.SplitName[1] 
+                        || processedInformation.Contains(next) || processedTags.Contains(next.TagName))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        processedTags.Add(next.TagName);
+                        processedInformation.Add(queue.Dequeue());
+                    }
                 }
 
-                // Increase the count if adjacent mappings have the same name. Otherwise add a new seat mapping.
-                var lastMapping = result.Last();
-                if(lastMapping.Name == currentName)
+                if(processedInformation.Count > 1)
                 {
-                    result[result.Count - 1] = new UnitSeatMapping(lastMapping.Index, (short)(lastMapping.Count + 1), lastMapping.Name);
+                    count = (short)processedInformation.Count;
+                    name = ShortenMappingName(processedInformation);
                 }
-                else
-                {
-                    result.Add(new UnitSeatMapping(i, 1, currentName));
-                }
+
+                result.Add(new UnitSeatMapping(index, count, name));
             }
 
             return result;
         }
 
-        private static string ShortenMappingName(string name)
+        private static string ShortenMappingName(IEnumerable<MappingInformation> mappings)
         {
-            string[] split = name.Split('_');
-            string[] shortened = split.Take(split.Length - 1).ToArray();
-            return string.Join("_", shortened);
+            var split = mappings.Select(m => m.SplitName).ToArray();
+            int maxLength = split.Min(s => s.Length);
+            int matchingParts = 2;
+
+            for (int i = 2; i < maxLength; i++)
+            {
+                var nextPart = split.Select(s => s[i]).ToArray();
+                if (nextPart.All(s => s == nextPart[0]))
+                {
+                    matchingParts++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return string.Join("_", split[0].Take(matchingParts));
         }
 
         private static List<int> GetSeatIndices(int seats1, int seats2)
@@ -199,6 +243,15 @@ namespace Blamite.Blam.Scripting.Context
             // Get the longest common prefix. This will be the mapping name.
             var result = names.Min().TakeWhile((c, i) => names.All(s => s[i] == c)).ToArray();
             return new string(result).TrimEnd('_', '0');
+        }
+
+        private class MappingInformation
+        {
+            public short Index { get; set; }
+            public string Name { get; set; }
+            public string[] SplitName { get; set; }
+            public string TagName { get; set; }
+            public IEnumerable<int> SeatIndices { get; set; }
         }
 
     }
