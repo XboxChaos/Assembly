@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
@@ -110,6 +110,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 			}
 
 			EndWork();
+		}
+
+		private void btnOpenMap_Click(object sender, RoutedEventArgs e)
+		{
+			if (File.Exists(txtInputFile.Text))
+				App.AssemblyStorage.AssemblySettings.HomeWindow.AddCacheTabModule(txtInputFile.Text);
+			if (!File.Exists(txtInputFile.Text))
+			{
+				MetroMessageBox.Show("Invalid Path", "The specified file provided does not exist.");
+				return;
+			}
 		}
 
 		#endregion
