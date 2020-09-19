@@ -114,13 +114,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 
 		private void btnOpenMap_Click(object sender, RoutedEventArgs e)
 		{
-			if (File.Exists(txtInputFile.Text))
-				App.AssemblyStorage.AssemblySettings.HomeWindow.AddCacheTabModule(txtInputFile.Text);
-			if (!File.Exists(txtInputFile.Text))
-			{
-				MetroMessageBox.Show("Invalid Path", "The specified file provided does not exist.");
-				return;
-			}
+			App.AssemblyStorage.AssemblySettings.HomeWindow.ProcessContentFile(txtInputFile.Text);
 		}
 
 		#endregion
