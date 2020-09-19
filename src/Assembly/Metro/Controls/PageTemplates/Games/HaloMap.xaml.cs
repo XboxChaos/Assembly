@@ -371,7 +371,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			// Hide import/save name buttons if the cache file isn't thirdgen
 			if (_cacheFile.Engine != EngineType.ThirdGeneration)
 				Dispatcher.Invoke(new Action(() => { btnImport.Visibility = Visibility.Collapsed;
-					btnSaveNames.Visibility = Visibility.Collapsed; }));
+					menuSaveTagNames.Visibility = Visibility.Collapsed; }));
 				
 
 			_tagEntries = _cacheFile.Tags.Select(WrapTag).ToList();
@@ -2144,6 +2144,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						w.Close();
 				}
 			}
+		}
+
+		private void MenuSaveTagEditors_Click(object sender, RoutedEventArgs e)
+		{
+			List<TabItem> tabs = contentTabs.Items.OfType<TabItem>().ToList();
+
+			foreach (TabItem tabItem in tabs)
+			{
+				if (tabItem.Content.GetType() == typeof(MetaContainer))
+					((MetaContainer)tabItem.Content).ExternalSave();
+			}
+
+			MetroMessageBox.Show("Tags Saved", "The changes have been saved back to the original file.");
 		}
 	}
 }

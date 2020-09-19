@@ -1110,5 +1110,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			if (e.ClickCount == 2)
 				Clipboard.SetText(((System.Windows.Documents.Run)e.OriginalSource).Text);
 		}
+
+		public void ExternalSave()
+		{
+			if (_pluginPath != null && File.Exists(_pluginPath))
+				UpdateMeta(MetaWriter.SaveType.File, true, false);
+		}
 	}
 }
