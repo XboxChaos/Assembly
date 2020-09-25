@@ -8,7 +8,7 @@
 		<revision author="Snipe" version="4">Almost Done</revision>
 		<revision author="Lord Zedd" version="5">thanks h5</revision>
 	</revisions>
-	<enum16 name="Runtime Object Type" offset="0x0" visible="true">
+	<enum16 name="Object Type" offset="0x0" visible="true" tooltip="changing this would not be wise">
 		<option name="Biped" value="0x0" />
 		<option name="Vehicle" value="0x1" />
 		<option name="Weapon" value="0x2" />
@@ -41,8 +41,8 @@
 		<bit name="Object Is Always On Ceiling" index="12" />
 		<bit name="Sample Environment Lighting Only Ignore Object Lighting" index="13" />
 		<bit name="Effects Created By This Object Do Not Spawn Objects In Multiplayer" index="14" />
-		<bit name="Does Not Collide With Camera" index="15" tooltip="force camera not to collide with object.  By default small sweetener objects do not collide" />
-		<bit name="Force Collide With Camera" index="16" tooltip="force the camera to collide with this object,  By default small sweetener objects do not collide" />
+		<bit name="Does Not Collide With Camera" index="15" tooltip="force camera not to collide with object. By default small sweetener objects do not collide" />
+		<bit name="Force Collide With Camera" index="16" tooltip="force the camera to collide with this object, By default small sweetener objects do not collide" />
 		<bit name="Damage Not Blocked By Obstructions" index="17" tooltip="AOE damage being applied to this object does not test for obstrutions." />
 		<bit name="Does Not Damage Breakable Surfaces" index="18" />
 	</flags32>
@@ -447,7 +447,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<float32 name="Cooldown Time" offset="0x23C" visible="true" />
 	<float32 name="Phantom Volume Activation Time" offset="0x240" visible="true" />
 	<float32 name="Energy Recovery Time" offset="0x244" visible="true" />
-	<comment title="Energy">All these fields are additive, meaning a negative number will reduce energy and a positive one will increase energy.  Every piece of equipment starts at 1.0 energy</comment>
+	<comment title="Energy">All these fields are additive, meaning a negative number will reduce energy and a positive one will increase energy. Every piece of equipment starts at 1.0 energy</comment>
 	<float32 name="Minimum Activation Energy" offset="0x248" visible="true" tooltip="energy must be at least this high to activate. Like activation cost, but doesn't actually change energy levels" />
 	<float32 name="Activation Energy Cost" offset="0x24C" visible="true" />
 	<float32 name="Deactivation Energy Cost" offset="0x250" visible="true" />
@@ -504,11 +504,10 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<float32 name="Awareness Time" offset="0x2A8" visible="true" tooltip="How long I should go unnoticed by nearby enemies" />
 	<stringid name="AI Dialogue Equipment Type" offset="0x2AC" visible="true" tooltip="The equipment ability type name used by the ai dialog system used to filter equipment activation dialogue events." />
 	<tagblock name="Override Camera" offset="0x2B0" visible="true" elementSize="0x78">
-		<comment title="Unit Camera" />
 		<flags16 name="Flags" offset="0x0" visible="true">
 			<bit name="Pitch Bounds Absolute Space" index="0" />
 			<bit name="Only Collides With Environment" index="1" />
-			<bit name="Hides Player-Unit From Camera" index="2" tooltip="the player controlling this camera will not see their unit.  All other cameras will see this unit" />
+			<bit name="Hides Player-Unit From Camera" index="2" tooltip="the player controlling this camera will not see their unit. All other cameras will see this unit" />
 			<bit name="Use Aiming Vector Instead Of Marker Forward" index="3" tooltip="for cameras without tracks that use a marker position, specifies that we use the unit's aiming vector instead of the marker's forward vector. This results in more accurate aiming and smoother movement when frames are dropped" />
 		</flags16>
 		<int16 name="Unknown" offset="0x2" visible="false" />
@@ -522,12 +521,12 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<degree name="Pitch Minimum Spring" offset="0x20" visible="true" />
 		<degree name="Pitch Maximum Spring" offset="0x24" visible="true" />
 		<degree name="Spring Velocity" offset="0x28" visible="true" />
-		<degree name="Look Acceleration" offset="0x2C" visible="true" />
-		<degree name="Look Deceleration" offset="0x30" visible="true" />
+		<degree name="Look Acceleration" offset="0x2C" visible="true" tooltip="if non-zero, limits the change in look velocity per second while the user is pushing the look stick in the current direction of looking" />
+		<degree name="Look Deceleration" offset="0x30" visible="true" tooltip="if non-zero, limits the change in look velocity per second while the user is not pushing the look stick or changing directions" />
 		<float32 name="Look Acceleration Smoothing Fraction" offset="0x34" visible="true" tooltip="if non-zero, when the desired velocity change is less than this fraction of the acceleration, starts interpolating the maximum acceleration towards zero. You can think of this as a time in seconds where if the velocity would reach its target in this amount of time or less, it will start taking longer." />
-		<degree name="Override Field Of View" offset="0x38" visible="true" />
+		<degree name="Override Field Of View" offset="0x38" visible="true" tooltip="if non-zero, overrides the FOV set in the unit or globals" />
 		<comment title="Camera Obstruction" />
-		<float32 name="Cylinder Fraction" offset="0x3C" visible="true" tooltip="controls how far from the focus point the outer raycasts start.  0 == cone, 1 == cylinder" />
+		<float32 name="Cylinder Fraction" offset="0x3C" visible="true" tooltip="controls how far from the focus point the outer raycasts start. 0 == cone, 1 == cylinder" />
 		<degree name="Obstruction Test Angle" offset="0x40" visible="true" tooltip="how wide of a cone to test" />
 		<float32 name="Obstruction Maximum Inward Acceleration" offset="0x44" visible="true" tooltip="how quickly the camera moves inward when it anticipates a collision" />
 		<float32 name="Obstruction Maximum Outward Acceleration" offset="0x48" visible="true" tooltip="how quickly the camera returns to a normal position when its anticipated distance is further than its current" />
@@ -573,7 +572,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			</enum8>
 			<int8 name="Unknown" offset="0x4D" visible="false" />
 			<int16 name="Unknown" offset="0x4E" visible="false" />
-			<dataref name="Data" offset="0x50" visible="true" />
+			<dataref name="Function" offset="0x50" visible="true" />
 			<float32 name="Maximum Value" offset="0x64" visible="true" tooltip="for linear velocity; this is wu/s. for linear acceleration; this is the fraction of the seat acceleration. for angular velocity; this is deg/s" />
 			<float32 name="Camera Scale (Axial)" offset="0x68" visible="true" tooltip="scale factor used when this acceleration component is along the axis of the forward vector of the camera" />
 			<float32 name="Camera Scale (Perpendicular)" offset="0x6C" visible="true" tooltip="scale factor used when this acceleration component is perpendicular to the camera" />
@@ -586,10 +585,10 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			</enum8>
 			<int8 name="Unknown" offset="0x1" visible="false" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
-			<float32 name="Peg Threshold" offset="0x4" visible="true" />
-			<point2 name="Pegged Time" offset="0x8" visible="true" />
-			<point2 name="Pegged Scale" offset="0x10" visible="true" />
-			<degree name="Peg Maximum Angular Velocity" offset="0x18" visible="true" />
+			<float32 name="Peg Threshold" offset="0x4" visible="true" tooltip="[0,1] magnitude of analog input for pegged acceleration to kick in" />
+			<point2 name="Pegged Time" offset="0x8" visible="true" tooltip="time for a pegged look to reach maximum effect" />
+			<point2 name="Pegged Scale" offset="0x10" visible="true" tooltip="the maximum effect achieved over the duration of the pegged time." />
+			<degree name="Peg Maximum Angular Velocity" offset="0x18" visible="true" tooltip="the maximum turning speed during peg" />
 			<tagblock name="Input Mapping Function" offset="0x1C" visible="true" elementSize="0x14">
 				<dataref name="Function" offset="0x0" visible="true" />
 			</tagblock>
@@ -602,10 +601,10 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			</enum8>
 			<int8 name="Unknown" offset="0x1" visible="false" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
-			<float32 name="Peg Threshold" offset="0x4" visible="true" />
-			<point2 name="Pegged Time" offset="0x8" visible="true" />
-			<point2 name="Pegged Scale" offset="0x10" visible="true" />
-			<degree name="Peg Maximum Angular Velocity" offset="0x18" visible="true" />
+			<float32 name="Peg Threshold" offset="0x4" visible="true" tooltip="[0,1] magnitude of analog input for pegged acceleration to kick in" />
+			<point2 name="Pegged Time" offset="0x8" visible="true" tooltip="time for a pegged look to reach maximum effect" />
+			<point2 name="Pegged Scale" offset="0x10" visible="true" tooltip="the maximum effect achieved over the duration of the pegged time." />
+			<degree name="Peg Maximum Angular Velocity" offset="0x18" visible="true" tooltip="the maximum turning speed during peg" />
 			<tagblock name="Input Mapping Function" offset="0x1C" visible="true" elementSize="0x14">
 				<dataref name="Function" offset="0x0" visible="true" />
 			</tagblock>
@@ -637,8 +636,8 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<tagRef name="Explosion Effect" offset="0x0" visible="true" />
 		<tagRef name="Explosion Damage Effect" offset="0x10" visible="true" />
 		<float32 name="Arm Time" offset="0x20" visible="true" tooltip="time before it becomes a proximity mine" />
-		<float32 name="Self Destruct Time" offset="0x24" visible="true" tooltip="seconds after it is created that it must self destruct.  0 means never destroy" />
-		<float32 name="Trigger Time" offset="0x28" visible="true" tooltip="seconds object moving at trigger velocity takes to trigger explosion.  This will smooth out sensitivity to velocity noise" />
+		<float32 name="Self Destruct Time" offset="0x24" visible="true" tooltip="seconds after it is created that it must self destruct. 0 means never destroy" />
+		<float32 name="Trigger Time" offset="0x28" visible="true" tooltip="seconds object moving at trigger velocity takes to trigger explosion. This will smooth out sensitivity to velocity noise" />
 		<float32 name="Trigger Velocity" offset="0x2C" visible="true" tooltip="WU/sec at which we trigger explosion" />
 	</tagblock>
 	<tagblock name="Motion Tracker Noise" offset="0x2E0" visible="true" elementSize="0x10">
@@ -662,7 +661,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<stringid name="Loop-Invincibility Shield Name" offset="0x40" visible="true" tooltip="active while the equipment is in use (used for shield rendering effects)" />
 		<stringid name="Post-Invincibility Shield Name" offset="0x44" visible="true" tooltip="active once the equipment is no longer in use" />
 		<dataref name="Post-Invincibility Time To Shield Level Function" offset="0x48" visible="true" />
-		<float32 name="Maximum Vertical Velocity" offset="0x5C" visible="true" tooltip="we use this to specify the domain of the active vertical velocity funtion" />
+		<float32 name="Maximum Vertical Velocity" offset="0x5C" visible="true" tooltip="we use this to specify the domain of the active vertical velocity function" />
 		<dataref name="Active Vertical Velocity Damping" offset="0x60" visible="true" />
 		<tagblock name="Threshold Effects" offset="0x74" visible="true" elementSize="0x18" tooltip="the effect with the highest threshold will play on deactivation">
 			<float32 name="Threshold Energy Burned" offset="0x0" visible="true" tooltip="how much energy you have to burn to play this effect" />
@@ -1403,7 +1402,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<float32 name="Starting Warm Up Object Scale" offset="0x18" visible="true" tooltip="if &gt;0 (and warm up time is &gt;0), object size will scale up from this up to 1.0 over course of warm up time and down over cooldown time" />
 		<point3 name="Offset From Parent" offset="0x1C" visible="true" tooltip="the root of the child is offset by this amount from the root of the parent biped" />
 		<float32 name="Vertical Offset In World Space" offset="0x28" visible="true" tooltip="used to adjust hight per biped, regardless of aim direction" />
-		<rangef name="Pitch" offset="0x2C" visible="true" tooltip="the min and max pitch that the child will follow as you aim up and down.  -90 to 90" />
+		<rangef name="Pitch" offset="0x2C" visible="true" tooltip="the min and max pitch that the child will follow as you aim up and down. -90 to 90" />
 		<float32 name="Visual Activation Time" offset="0x34" visible="true" />
 		<tagRef name="Spawn Effect" offset="0x38" visible="true" />
 		<stringid name="Spawn Effect Marker" offset="0x48" visible="true" />
@@ -1440,7 +1439,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<dataRef name="Thrust To Acceleration Function" offset="0x0" visible="true" />
 		<float32 name="Thrust Attack Time" offset="0x14" visible="true" />
 		<float32 name="Thrust Decay Time" offset="0x18" visible="true" />
-		<float32 name="Negative Velovity Acceleration Scale" offset="0x1C" visible="true" />
+		<float32 name="Negative Velocity Acceleration Scale" offset="0x1C" visible="true" />
 		<float32 name="Airborne Acceleration Scale" offset="0x20" visible="true" />
 		<float32 name="Grounded Acceleration Magnitude" offset="0x24" visible="true" />
 		<float32 name="Landing Anticipation Time" offset="0x28" visible="true" />

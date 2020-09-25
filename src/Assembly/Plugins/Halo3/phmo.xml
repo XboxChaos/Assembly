@@ -297,8 +297,59 @@ If you want to poke it, you'll want to View Value As on the Shape Type enum for 
 		<stringId name="Name" offset="0x0" visible="true" />
 		<stringid name="Material Name" offset="0x4" visible="true" />
 		<int16 name="Phantom Type Index" offset="0x8" visible="true" />
-		<int8 name="Unknown" offset="0xA" visible="false" />
-		<int8 name="Unknown" offset="0xB" visible="false" />
+		<enum8 name="Proxy Collision Group" offset="0xA" visible="true" tooltip="does not affect anything, change the groups in the individual shapes instead.">
+			<option name="None" value="0x0" />
+			<option name="Small Crate" value="0x1" />
+			<option name="Unknown x2" value="0x2" />
+			<option name="Machine" value="0x3" />
+			<option name="Only Collide With Environment" value="0x4" />
+			<option name="Tech Art Custom?" value="0x5" />
+			<option name="Unknown x6" value="0x6" />
+			<option name="Huge Vehicle" value="0x7" />
+			<option name="Early Mover Machine" value="0x8" />
+			<option name="Unknown x9" value="0x9" />
+			<option name="Unknown xA" value="0xA" />
+			<option name="Unknown xB" value="0xB" />
+			<option name="Unknown xC" value="0xC" />
+			<option name="Unknown xD" value="0xD" />
+			<option name="Unknown xE" value="0xE" />
+			<option name="Unknown xF" value="0xF" />
+			<option name="Unknown x10" value="0x10" />
+			<option name="Unknown x11" value="0x11" />
+			<option name="Unknown x12" value="0x12" />
+			<option name="Unknown x13" value="0x13" />
+			<option name="Unknown x14" value="0x14" />
+		</enum8>
+		<enum8 name="Collision Group" offset="0xB" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
+			<option name="No Override" value="0xFF" />
+			<option name="Everything" value="0x0" />
+			<option name="Environment Default" value="0x1" />
+			<option name="Environment Only" value="0x2" />
+			<option name="Unknown x3" value="0x3" />
+			<option name="Small Crate" value="0x4" />
+			<option name="Unknown x5" value="0x5" />
+			<option name="Unknown x6" value="0x6" />
+			<option name="Unknown x7" value="0x7" />
+			<option name="Unknown x8" value="0x8" />
+			<option name="Machine" value="0x9" />
+			<option name="Early Mover Machine" value="0xA" />
+			<option name="Unknown xB" value="0xB" />
+			<option name="Unknown xC" value="0xC" />
+			<option name="Unknown xD" value="0xD" />
+			<option name="Unknown xE" value="0xE" />
+			<option name="Unknown xF" value="0xF" />
+			<option name="Unknown x10" value="0x10" />
+			<option name="Tech Art Custom?" value="0x11" />
+			<option name="Unknown x12" value="0x12" />
+			<option name="Unknown x13" value="0x13" />
+			<option name="Unknown x14" value="0x14" />
+			<option name="Unknown x15" value="0x15" />
+			<option name="Unknown x16" value="0x16" />
+			<option name="Huge Vehicle" value="0x17" />
+			<option name="Unknown x18" value="0x18" />
+			<option name="Unknown x19" value="0x19" />
+			<option name="Unknown x1A" value="0x1A" />
+		</enum8>
 	</tagblock>
 	<tagblock name="Spheres" offset="0x70" visible="true" elementSize="0x70" align="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
@@ -312,7 +363,36 @@ If you want to poke it, you'll want to View Value As on the Shape Type enum for 
 		<float32 name="Mass" offset="0x18" visible="true" />
 		<int16 name="Overall Shape Index" offset="0x1C" visible="true" />
 		<int8 name="Phantom Index" offset="0x1E" visible="true" />
-		<int8 name="Interaction Unknown" offset="0x1F" visible="true" />
+		<enum8 name="Collision Group" offset="0x1F" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
+			<option name="No Override" value="0xFF" />
+			<option name="Everything" value="0x0" />
+			<option name="Environment Default" value="0x1" />
+			<option name="Environment Only" value="0x2" />
+			<option name="Unknown x3" value="0x3" />
+			<option name="Small Crate" value="0x4" />
+			<option name="Unknown x5" value="0x5" />
+			<option name="Unknown x6" value="0x6" />
+			<option name="Unknown x7" value="0x7" />
+			<option name="Unknown x8" value="0x8" />
+			<option name="Machine" value="0x9" />
+			<option name="Early Mover Machine" value="0xA" />
+			<option name="Unknown xB" value="0xB" />
+			<option name="Unknown xC" value="0xC" />
+			<option name="Unknown xD" value="0xD" />
+			<option name="Unknown xE" value="0xE" />
+			<option name="Unknown xF" value="0xF" />
+			<option name="Unknown x10" value="0x10" />
+			<option name="Tech Art Custom?" value="0x11" />
+			<option name="Unknown x12" value="0x12" />
+			<option name="Unknown x13" value="0x13" />
+			<option name="Unknown x14" value="0x14" />
+			<option name="Unknown x15" value="0x15" />
+			<option name="Unknown x16" value="0x16" />
+			<option name="Huge Vehicle" value="0x17" />
+			<option name="Unknown x18" value="0x18" />
+			<option name="Unknown x19" value="0x19" />
+			<option name="Unknown x1A" value="0x1A" />
+		</enum8>
 		<int32 name="Unknown" offset="0x20" visible="false" />
 		<int16 name="Size" offset="0x24" visible="true" />
 		<int16 name="Count" offset="0x26" visible="true" />
@@ -351,7 +431,36 @@ If you want to poke it, you'll want to View Value As on the Shape Type enum for 
 		<float32 name="Mass" offset="0x18" visible="true" />
 		<int16 name="Overall Shape Index" offset="0x1C" visible="true" />
 		<int8 name="Phantom Index" offset="0x1E" visible="true" />
-		<int8 name="Interaction Unknown" offset="0x1F" visible="true" />
+		<enum8 name="Collision Group" offset="0x1F" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
+			<option name="No Override" value="0xFF" />
+			<option name="Everything" value="0x0" />
+			<option name="Environment Default" value="0x1" />
+			<option name="Environment Only" value="0x2" />
+			<option name="Unknown x3" value="0x3" />
+			<option name="Small Crate" value="0x4" />
+			<option name="Unknown x5" value="0x5" />
+			<option name="Unknown x6" value="0x6" />
+			<option name="Unknown x7" value="0x7" />
+			<option name="Unknown x8" value="0x8" />
+			<option name="Machine" value="0x9" />
+			<option name="Early Mover Machine" value="0xA" />
+			<option name="Unknown xB" value="0xB" />
+			<option name="Unknown xC" value="0xC" />
+			<option name="Unknown xD" value="0xD" />
+			<option name="Unknown xE" value="0xE" />
+			<option name="Unknown xF" value="0xF" />
+			<option name="Unknown x10" value="0x10" />
+			<option name="Tech Art Custom?" value="0x11" />
+			<option name="Unknown x12" value="0x12" />
+			<option name="Unknown x13" value="0x13" />
+			<option name="Unknown x14" value="0x14" />
+			<option name="Unknown x15" value="0x15" />
+			<option name="Unknown x16" value="0x16" />
+			<option name="Huge Vehicle" value="0x17" />
+			<option name="Unknown x18" value="0x18" />
+			<option name="Unknown x19" value="0x19" />
+			<option name="Unknown x1A" value="0x1A" />
+		</enum8>
 		<int32 name="Unknown" offset="0x20" visible="false" />
 		<int16 name="Size" offset="0x24" visible="true" />
 		<int16 name="Count" offset="0x26" visible="true" />
@@ -382,7 +491,36 @@ If you want to poke it, you'll want to View Value As on the Shape Type enum for 
 		<float32 name="Mass" offset="0x18" visible="true" />
 		<int16 name="Overall Shape Index" offset="0x1C" visible="true" />
 		<int8 name="Phantom Index" offset="0x1E" visible="true" />
-		<int8 name="Interaction Unknown" offset="0x1F" visible="true" />
+		<enum8 name="Collision Group" offset="0x1F" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
+			<option name="No Override" value="0xFF" />
+			<option name="Everything" value="0x0" />
+			<option name="Environment Default" value="0x1" />
+			<option name="Environment Only" value="0x2" />
+			<option name="Unknown x3" value="0x3" />
+			<option name="Small Crate" value="0x4" />
+			<option name="Unknown x5" value="0x5" />
+			<option name="Unknown x6" value="0x6" />
+			<option name="Unknown x7" value="0x7" />
+			<option name="Unknown x8" value="0x8" />
+			<option name="Machine" value="0x9" />
+			<option name="Early Mover Machine" value="0xA" />
+			<option name="Unknown xB" value="0xB" />
+			<option name="Unknown xC" value="0xC" />
+			<option name="Unknown xD" value="0xD" />
+			<option name="Unknown xE" value="0xE" />
+			<option name="Unknown xF" value="0xF" />
+			<option name="Unknown x10" value="0x10" />
+			<option name="Tech Art Custom?" value="0x11" />
+			<option name="Unknown x12" value="0x12" />
+			<option name="Unknown x13" value="0x13" />
+			<option name="Unknown x14" value="0x14" />
+			<option name="Unknown x15" value="0x15" />
+			<option name="Unknown x16" value="0x16" />
+			<option name="Huge Vehicle" value="0x17" />
+			<option name="Unknown x18" value="0x18" />
+			<option name="Unknown x19" value="0x19" />
+			<option name="Unknown x1A" value="0x1A" />
+		</enum8>
 		<int32 name="Unknown" offset="0x20" visible="false" />
 		<int16 name="Size" offset="0x24" visible="true" />
 		<int16 name="Count" offset="0x26" visible="true" />
@@ -434,7 +572,36 @@ If you want to poke it, you'll want to View Value As on the Shape Type enum for 
 		<float32 name="Mass" offset="0x18" visible="true" />
 		<int16 name="Overall Shape Index" offset="0x1C" visible="true" />
 		<int8 name="Phantom Index" offset="0x1E" visible="true" />
-		<int8 name="Interaction Unknown" offset="0x1F" visible="true" />
+		<enum8 name="Collision Group" offset="0x1F" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
+			<option name="No Override" value="0xFF" />
+			<option name="Everything" value="0x0" />
+			<option name="Environment Default" value="0x1" />
+			<option name="Environment Only" value="0x2" />
+			<option name="Unknown x3" value="0x3" />
+			<option name="Small Crate" value="0x4" />
+			<option name="Unknown x5" value="0x5" />
+			<option name="Unknown x6" value="0x6" />
+			<option name="Unknown x7" value="0x7" />
+			<option name="Unknown x8" value="0x8" />
+			<option name="Machine" value="0x9" />
+			<option name="Early Mover Machine" value="0xA" />
+			<option name="Unknown xB" value="0xB" />
+			<option name="Unknown xC" value="0xC" />
+			<option name="Unknown xD" value="0xD" />
+			<option name="Unknown xE" value="0xE" />
+			<option name="Unknown xF" value="0xF" />
+			<option name="Unknown x10" value="0x10" />
+			<option name="Tech Art Custom?" value="0x11" />
+			<option name="Unknown x12" value="0x12" />
+			<option name="Unknown x13" value="0x13" />
+			<option name="Unknown x14" value="0x14" />
+			<option name="Unknown x15" value="0x15" />
+			<option name="Unknown x16" value="0x16" />
+			<option name="Huge Vehicle" value="0x17" />
+			<option name="Unknown x18" value="0x18" />
+			<option name="Unknown x19" value="0x19" />
+			<option name="Unknown x1A" value="0x1A" />
+		</enum8>
 		<int32 name="Unknown" offset="0x20" visible="false" />
 		<int16 name="Size" offset="0x24" visible="true" />
 		<int16 name="Count" offset="0x26" visible="true" />
@@ -473,7 +640,36 @@ If you want to poke it, you'll want to View Value As on the Shape Type enum for 
 		<float32 name="Mass" offset="0x18" visible="true" />
 		<int16 name="Overall Shape Index" offset="0x1C" visible="true" />
 		<int8 name="Phantom Index" offset="0x1E" visible="true" />
-		<int8 name="Interaction Unknown" offset="0x1F" visible="true" />
+		<enum8 name="Collision Group" offset="0x1F" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
+			<option name="No Override" value="0xFF" />
+			<option name="Everything" value="0x0" />
+			<option name="Environment Default" value="0x1" />
+			<option name="Environment Only" value="0x2" />
+			<option name="Unknown x3" value="0x3" />
+			<option name="Small Crate" value="0x4" />
+			<option name="Unknown x5" value="0x5" />
+			<option name="Unknown x6" value="0x6" />
+			<option name="Unknown x7" value="0x7" />
+			<option name="Unknown x8" value="0x8" />
+			<option name="Machine" value="0x9" />
+			<option name="Early Mover Machine" value="0xA" />
+			<option name="Unknown xB" value="0xB" />
+			<option name="Unknown xC" value="0xC" />
+			<option name="Unknown xD" value="0xD" />
+			<option name="Unknown xE" value="0xE" />
+			<option name="Unknown xF" value="0xF" />
+			<option name="Unknown x10" value="0x10" />
+			<option name="Tech Art Custom?" value="0x11" />
+			<option name="Unknown x12" value="0x12" />
+			<option name="Unknown x13" value="0x13" />
+			<option name="Unknown x14" value="0x14" />
+			<option name="Unknown x15" value="0x15" />
+			<option name="Unknown x16" value="0x16" />
+			<option name="Huge Vehicle" value="0x17" />
+			<option name="Unknown x18" value="0x18" />
+			<option name="Unknown x19" value="0x19" />
+			<option name="Unknown x1A" value="0x1A" />
+		</enum8>
 		<int32 name="Unknown" offset="0x20" visible="false" />
 		<int16 name="Size" offset="0x24" visible="true" />
 		<int16 name="Count" offset="0x26" visible="true" />
