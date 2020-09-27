@@ -571,27 +571,40 @@
 			<int16 name="Opaque Point Count" offset="0xA" visible="true" />
 			<int16 name="Opaque Vertex Count" offset="0xC" visible="true" />
 			<int16 name="Opaque Part Count" offset="0xE" visible="true" />
-			<int16 name="Opague Max Nodes/Vertex" offset="0x10" visible="true" />
-			<int16 name="Transparent Max Nodes/Vertex" offset="0x12" visible="true" />
-			<int16 name="Shadow-Casting Rigid Triangle" offset="0x14" visible="true" />
-			<enum32 name="Geometry Classification" offset="0x16" visible="true">
-				<option name="World Space" value="0x0" />
-			</enum32>
-			<flags16 name="Geometry Compression Flags" offset="0x1A" visible="true">
+			<int8 name="Opague Max Nodes/Vertex" offset="0x10" visible="true" />
+			<int8 name="Transparent Max Nodes/Vertex" offset="0x11" visible="true" />
+			<int16 name="Shadow-Casting Rigid Triangle" offset="0x12" visible="true" />
+			<enum16 name="Geometry Classification" offset="0x14" visible="true">
+				<option name="Worldspace" value="0x0" />
+				<option name="Rigid" value="0x1" />
+				<option name="Rigid Boned" value="0x2" />
+				<option name="Skinned" value="0x3" />
+				<option name="Unsupported (Reimport)" value="0x4" />
+			</enum16>
+			<flags16 name="Geometry Compression Flags" offset="0x16" visible="true">
 				<bit name="Compressed Position" index="0" />
 				<bit name="Compressed Texcoord" index="1" />
 				<bit name="Compressed Secondary Texcoord" index="2" />
 			</flags16>
-			<int16 name="Hardware Node Count" offset="0x1C" visible="true" />
-			<int16 name="Node Map Size" offset="0x1E" visible="true" />
-			<int16 name="Software Plane Count" offset="0x20" visible="true" />
-			<int16 name="Total Subpart Count" offset="0x22" visible="true" />
-			<flags32 name="Section Lighting Flags" offset="0x24" visible="true">
+			<tagblock name="Compression" offset="0x18" visible="true" elementSize="0x38">
+				<rangef name="Position Bounds X" offset="0x0" visible="true" />
+				<rangef name="Position Bounds Y" offset="0x8" visible="true" />
+				<rangef name="Position Bounds Z" offset="0x10" visible="true" />
+				<rangef name="Texcoord Bounds X" offset="0x18" visible="true" />
+				<rangef name="Texcoord Bounds Y" offset="0x20" visible="true" />
+				<rangef name="Secondary Texcoord Bounds X" offset="0x28" visible="true" />
+				<rangef name="Secondary Texcoord Bounds Y" offset="0x30" visible="true" />
+			</tagblock>
+			<int8 name="Hardware Node Count" offset="0x20" visible="true" />
+			<int8 name="Node Map Size" offset="0x21" visible="true" />
+			<int16 name="Software Plane Count" offset="0x22" visible="true" />
+			<int16 name="Total Subpart Count" offset="0x24" visible="true" />
+			<flags16 name="Section Lighting Flags" offset="0x26" visible="true">
 				<bit name="Has LM Texcoords" index="0" />
 				<bit name="Has LM Inc. Rad." index="1" />
 				<bit name="Has LM Colors" index="2" />
 				<bit name="Has LM Prt" index="3" />
-			</flags32>
+			</flags16>
 			<int32 name="Block Offset" offset="0x28" visible="true" />
 			<int32 name="Block Size" offset="0x2C" visible="true" />
 			<int32 name="Section Data Size" offset="0x30" visible="true" />
@@ -617,27 +630,40 @@
 			<int16 name="Opaque Point Count" offset="0xA" visible="true" />
 			<int16 name="Opaque Vertex Count" offset="0xC" visible="true" />
 			<int16 name="Opaque Part Count" offset="0xE" visible="true" />
-			<int16 name="Opague Max Nodes/Vertex" offset="0x10" visible="true" />
-			<int16 name="Transparent Max Nodes/Vertex" offset="0x12" visible="true" />
-			<int16 name="Shadow-Casting Rigid Triangle" offset="0x14" visible="true" />
-			<enum32 name="Geometry Classification" offset="0x16" visible="true">
-				<option name="World Space" value="0x0" />
-			</enum32>
-			<flags16 name="Geometry Compression Flags" offset="0x1A" visible="true">
+			<int8 name="Opague Max Nodes/Vertex" offset="0x10" visible="true" />
+			<int8 name="Transparent Max Nodes/Vertex" offset="0x11" visible="true" />
+			<int16 name="Shadow-Casting Rigid Triangle" offset="0x12" visible="true" />
+			<enum16 name="Geometry Classification" offset="0x14" visible="true">
+				<option name="Worldspace" value="0x0" />
+				<option name="Rigid" value="0x1" />
+				<option name="Rigid Boned" value="0x2" />
+				<option name="Skinned" value="0x3" />
+				<option name="Unsupported (Reimport)" value="0x4" />
+			</enum16>
+			<flags16 name="Geometry Compression Flags" offset="0x16" visible="true">
 				<bit name="Compressed Position" index="0" />
 				<bit name="Compressed Texcoord" index="1" />
 				<bit name="Compressed Secondary Texcoord" index="2" />
 			</flags16>
-			<int16 name="Hardware Node Count" offset="0x1C" visible="true" />
-			<int16 name="Node Map Size" offset="0x1E" visible="true" />
-			<int16 name="Software Plane Count" offset="0x20" visible="true" />
-			<int16 name="Total Subpart Count" offset="0x22" visible="true" />
-			<flags32 name="Section Lighting Flags" offset="0x24" visible="true">
+			<tagblock name="Compression" offset="0x18" visible="true" elementSize="0x38">
+				<rangef name="Position Bounds X" offset="0x0" visible="true" />
+				<rangef name="Position Bounds Y" offset="0x8" visible="true" />
+				<rangef name="Position Bounds Z" offset="0x10" visible="true" />
+				<rangef name="Texcoord Bounds X" offset="0x18" visible="true" />
+				<rangef name="Texcoord Bounds Y" offset="0x20" visible="true" />
+				<rangef name="Secondary Texcoord Bounds X" offset="0x28" visible="true" />
+				<rangef name="Secondary Texcoord Bounds Y" offset="0x30" visible="true" />
+			</tagblock>
+			<int8 name="Hardware Node Count" offset="0x20" visible="true" />
+			<int8 name="Node Map Size" offset="0x21" visible="true" />
+			<int16 name="Software Plane Count" offset="0x22" visible="true" />
+			<int16 name="Total Subpart Count" offset="0x24" visible="true" />
+			<flags16 name="Section Lighting Flags" offset="0x26" visible="true">
 				<bit name="Has LM Texcoords" index="0" />
 				<bit name="Has LM Inc. Rad." index="1" />
 				<bit name="Has LM Colors" index="2" />
 				<bit name="Has LM Prt" index="3" />
-			</flags32>
+			</flags16>
 			<int32 name="Block Offset" offset="0x28" visible="true" />
 			<int32 name="Block Size" offset="0x2C" visible="true" />
 			<int32 name="Section Data Size" offset="0x30" visible="true" />

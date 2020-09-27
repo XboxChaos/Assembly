@@ -433,9 +433,9 @@ Certain flags applicable only to certain object types, should be self evident</c
 	<float32 name="Grounded Friction Length" offset="0x1A4" visible="true" />
 	<float32 name="Grounded Friction Unknown" offset="0x1A8" visible="true" />
 	<comment title="EQUIPMENT" />
-	<float32 name="Use Duration" offset="0x1AC" visible="true" />
-	<float32 name="Unknown" offset="0x1B0" visible="false" />
-	<int16 name="Number Of Uses" offset="0x1B4" visible="true" />
+	<float32 name="Cooldown Time" offset="0x1AC" visible="true" tooltip="for equipment that suppresses combat actions, these actions remain suppressed for this long after the equipment deactivates." />
+	<float32 name="Phantom Volume Activation Time" offset="0x1B0" visible="true" tooltip="time in seconds for the phantom volumes on this object to start accelerating things in them" />
+	<int16 name="Charges" offset="0x1B4" visible="true" tooltip="-1 means unlimited charges" />
 	<flags16 name="Flags" offset="0x1B6" visible="true">
 		<bit name="Bit 0" index="0" />
 		<bit name="Force Physics" index="1" />
@@ -454,64 +454,70 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<bit name="Bit 14" index="14" />
 		<bit name="Bit 15" index="15" />
 	</flags16>
-	<float32 name="Unknown" offset="0x1B8" visible="false" />
-	<float32 name="Unknown" offset="0x1BC" visible="false" />
-	<float32 name="Unknown" offset="0x1C0" visible="false" />
+	<comment title="AI">Settings which the AI use to know how they should react to this equipment</comment>
+	<float32 name="Danger Radius" offset="0x1B8" visible="true" tooltip="How large a danger zone we should create around this equipment (0 means no danger zone)" />
+	<float32 name="Minimum Deployment Distance" offset="0x1BC" visible="true" tooltip="How far does my target have to be for me to throw this at them?" />
+	<float32 name="Awareness Time" offset="0x1C0" visible="true" tooltip="How long I should go unnoticed by nearby enemies" />
+	<comment title="Type Definitions" />
 	<tagblock name="Health Pack" offset="0x1C4" visible="true" elementSize="0x3C">
-		<float32 name="Unknown" offset="0x0" visible="false" />
-		<float32 name="Unknown" offset="0x4" visible="false" />
+		<float32 name="Unknown" offset="0x0" visible="true" />
+		<float32 name="Unknown" offset="0x4" visible="true" />
 		<float32 name="Shields Given" offset="0x8" visible="true" />
 		<tagRef name="Unknown" offset="0xC" visible="true" />
 		<tagRef name="Unknown" offset="0x1C" visible="true" />
 		<tagRef name="Unknown" offset="0x2C" visible="true" />
 	</tagblock>
-	<tagblock name="Powerup" offset="0x1D0" visible="true" elementSize="0x4">
-		<enum32 name="Powerup Trait Set" offset="0x0" visible="true">
-			<option name="Red" value="0x0" />
-			<option name="Blue" value="0x1" />
-			<option name="Yellow" value="0x2" />
+	<tagblock name="Multiplayer Powerup" offset="0x1D0" visible="true" elementSize="0x4">
+		<enum32 name="Flavor" offset="0x0" visible="true">
+			<option name="Red Powerup" value="0x0" />
+			<option name="Blue Powerup" value="0x1" />
+			<option name="Yellow Powerup" value="0x2" />
 		</enum32>
 	</tagblock>
-	<tagblock name="Object Creation" offset="0x1DC" visible="true" elementSize="0x34">
-		<tagRef name="Object" offset="0x0" visible="true" />
-		<tagRef name="Unknown" offset="0x10" visible="true" />
-		<float32 name="Unknown" offset="0x20" visible="false" />
-		<float32 name="Unknown" offset="0x24" visible="false" />
-		<float32 name="Unknown" offset="0x28" visible="false" />
-		<float32 name="Object Force" offset="0x2C" visible="true" />
-		<float32 name="Unknown" offset="0x30" visible="false" />
+	<tagblock name="Spawner" offset="0x1DC" visible="true" elementSize="0x34">
+		<tagRef name="Spawned Object" offset="0x0" visible="true" />
+		<tagRef name="Spawned Effect" offset="0x10" visible="true" />
+		<float32 name="Spawn Radius" offset="0x20" visible="true" tooltip="distance from players eyeball on the z-plane that this effect spawns" />
+		<float32 name="Spawn z Offset" offset="0x24" visible="true" tooltip="z-offset of effect spawn" />
+		<float32 name="Spawn Area Radius" offset="0x28" visible="true" tooltip="need a sphere of radius r's free space in order to spawn, otherwise we pick a new spawn location" />
+		<float32 name="Spawn Velocity" offset="0x2C" visible="true" tooltip="WU/sec" />
+		<enum16 name="Type" offset="0x30" visible="true">
+			<option name="Along Aiming Vector" value="0x0" />
+			<option name="Camera Position z Plane" value="0x1" />
+			<option name="Foot Position z Plane" value="0x2" />
+		</enum16>
+		<int16 name="Unknown" offset="0x32" visible="false" />
 	</tagblock>
-	<tagblock name="Destruction" offset="0x1E8" visible="true" elementSize="0x30">
-		<tagRef name="Destroy Effect" offset="0x0" visible="true" />
-		<tagRef name="Destroy Damage Effect" offset="0x10" visible="true" />
-		<float32 name="Unknown" offset="0x20" visible="false" />
-		<float32 name="Self Destruction Time" offset="0x24" visible="true" />
-		<float32 name="Unknown" offset="0x28" visible="false" />
-		<float32 name="Unknown" offset="0x2C" visible="false" />
+	<tagblock name="Proximity Mine" offset="0x1E8" visible="true" elementSize="0x30">
+		<tagRef name="Explosion Effect" offset="0x0" visible="true" />
+		<tagRef name="Explosion Damage Effect" offset="0x10" visible="true" />
+		<float32 name="Arm Time" offset="0x20" visible="true" tooltip="time before it becomes a proximity mine" />
+		<float32 name="Self Destruct Time" offset="0x24" visible="true" tooltip="seconds after it is created that it must self destruct. 0 means never destroy" />
+		<float32 name="Trigger Time" offset="0x28" visible="true" tooltip="seconds object moving at trigger velocity takes to trigger explosion. This will smooth out sensitivity to velocity noise" />
+		<float32 name="Trigger Velocity" offset="0x2C" visible="true" tooltip="WU/sec at which we trigger explosion" />
 	</tagblock>
 	<tagblock name="Motion Tracker Noise" offset="0x1F4" visible="true" elementSize="0x10">
-		<float32 name="Arm Time" offset="0x0" visible="true" />
-		<float32 name="Noise Radius" offset="0x4" visible="true" />
-		<int32 name="Noise Count" offset="0x8" visible="true" />
-		<float32 name="Flash Radius" offset="0xC" visible="true" />
+		<float32 name="Arm Time" offset="0x0" visible="true" tooltip="time before it starts making noise" />
+		<float32 name="Noise Radius" offset="0x4" visible="true" tooltip="radius in WU that the noise extends to." />
+		<int32 name="Noise Count" offset="0x8" visible="true" tooltip="number of noise points that are generated" />
+		<float32 name="Flash Radius" offset="0xC" visible="true" tooltip="radius in WU that the damage flash noise extends to." />
 	</tagblock>
-	<uint32 name="Null" offset="0x200" visible="false" />
-	<uint32 name="Null" offset="0x204" visible="false" />
-	<uint32 name="Null" offset="0x208" visible="false" />
-	<tagblock name="Invisibility" offset="0x20C" visible="true" elementSize="0x8">
-		<float32 name="Unknown" offset="0x0" visible="true" />
-		<float32 name="Unknown" offset="0x4" visible="true" />
+	<tagblock name="Null" offset="0x200" visible="false" elementSize="0x0">
 	</tagblock>
-	<tagblock name="Invincibility" offset="0x218" visible="true" elementSize="0x3C">
-		<stringid name="Material Name" offset="0x0" visible="true" />
-		<int16 name="Global Material Index" offset="0x4" visible="true" />
+	<tagblock name="Active Camo" offset="0x20C" visible="true" elementSize="0x8">
+		<float32 name="Duration" offset="0x0" visible="true" />
+		<float32 name="Time To Full Camo" offset="0x4" visible="true" tooltip="lower is faster, but 0 defaults to 4." />
+	</tagblock>
+	<tagblock name="Invincibility Mode" offset="0x218" visible="true" elementSize="0x3C">
+		<stringid name="Invincibility Material Name" offset="0x0" visible="true" />
+		<int16 name="Invincibility Material Global Index" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
+		<float32 name="Unknown" offset="0x8" visible="true" />
 		<tagRef name="Activation Effect" offset="0xC" visible="true" />
 		<tagRef name="Active Effect" offset="0x1C" visible="true" />
 		<tagRef name="Deactivation Effect" offset="0x2C" visible="true" />
 	</tagblock>
-	<tagblock name="Regenerator" offset="0x224" visible="true" elementSize="0x4">
+	<tagblock name="Tree Of Life" offset="0x224" visible="true" elementSize="0x4">
 		<float32 name="Unknown" offset="0x0" visible="true" />
 	</tagblock>
 	<tagRef name="HUD Interface" offset="0x230" visible="true" />
