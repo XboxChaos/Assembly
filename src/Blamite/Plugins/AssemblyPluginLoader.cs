@@ -256,7 +256,7 @@ namespace Blamite.Plugins
 					visitor.VisitColorInt(name, offset, visible, ReadColorAlpha(reader), pluginLine, tooltip);
 					break;
 				case "colorf":
-					visitor.VisitColorF(name, offset, visible, ReadColorAlpha(reader), pluginLine, tooltip);
+					ReadColorF(reader, name, offset, visible, visitor, pluginLine, tooltip);
 					break;
 
 				case "dataref":
@@ -428,6 +428,19 @@ namespace Blamite.Plugins
 				tooltip = reader.Value;
 
 			visitor.VisitOption(name, value, tooltip);
+		}
+
+		private static void ReadColorF(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
+			uint pluginLine, string tooltip)
+		{
+			bool basic = false;
+
+			if (reader.MoveToAttribute("basic"))
+				basic = ParseBool(reader.Value);
+
+			bool alpha = ReadColorAlpha(reader);
+
+			visitor.VisitColorF(name, offset, visible, alpha, basic, pluginLine, tooltip);
 		}
 
 		private static bool ReadColorAlpha(XmlReader reader)

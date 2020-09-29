@@ -178,9 +178,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			SeekToOffset(field.Offset);
 
-			Color scColor = Color.FromScRgb(field.Alpha ? _reader.ReadFloat() : 1, _reader.ReadFloat(), _reader.ReadFloat(), _reader.ReadFloat());
-			//Color.ToString() doesnt display hex code when using scrgb, so gotta do this
-			field.Value = Color.FromArgb(scColor.A, scColor.R, scColor.G, scColor.B);
+			// colors are handled differently prior to thirdgen, but there are edge cases in thirdgen
+			if (_cache.Engine < EngineType.ThirdGeneration || field.Basic)
+			{
+				byte a = (byte)(field.Alpha ? _reader.ReadFloat() * 255f + 0.5f : 255);
+				byte r = (byte)(_reader.ReadFloat() * 255f + 0.5f);
+				byte g = (byte)(_reader.ReadFloat() * 255f + 0.5f);
+				byte b = (byte)(_reader.ReadFloat() * 255f + 0.5f);
+				field.Value = Color.FromArgb(a, r, g, b);
+			}
+			else
+			{
+				Color scColor = Color.FromScRgb(field.Alpha ? _reader.ReadFloat() : 1, _reader.ReadFloat(), _reader.ReadFloat(), _reader.ReadFloat());
+				//Color.ToString() doesnt display hex code when using scrgb, so gotta do this
+				field.Value = Color.FromArgb(scColor.A, scColor.R, scColor.G, scColor.B);
+			}
 		}
 
 		public void VisitString(StringData field)

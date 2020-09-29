@@ -228,10 +228,11 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
-		public void VisitColorF(string name, uint offset, bool visible, bool alpha, uint pluginLine, string tooltip)
+		public void VisitColorF(string name, uint offset, bool visible, bool alpha, bool basic, uint pluginLine, string tooltip)
 		{
 			WriteValueStart("colorf", name, offset, visible, tooltip);
 			_output.WriteAttributeString("alpha", alpha.ToString().ToLower());
+			_output.WriteAttributeString("basic", basic.ToString().ToLower());
 			_output.WriteEndElement();
 		}
 

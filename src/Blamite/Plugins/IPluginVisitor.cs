@@ -126,8 +126,9 @@ namespace Blamite.Plugins
 		/// <param name="offset">The offset of the color.</param>
 		/// <param name="visible">True if the color entry is visible.</param>
 		/// <param name="alpha">True if alpha is used.</param>
+		/// <param name="basic">True if a basic color conversion is used instead of sRGB.</param>
 		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
-		void VisitColorF(string name, uint offset, bool visible, bool alpha, uint pluginLine, string tooltip);
+		void VisitColorF(string name, uint offset, bool visible, bool alpha, bool basic, uint pluginLine, string tooltip);
 
 		// These are called whenever flags are found in the plugin.
 		// Return false from one of these methods to skip over the

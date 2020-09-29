@@ -204,6 +204,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			color.RegisterAttribute(colorAlpha);
 			colorf.RegisterAttribute(colorAlpha);
 
+			var colorBasic = new CompletableXMLAttribute("basic",
+				"Whether or not the color should be limited to 32bits (not required, default depends on engine)");
+			colorBasic.RegisterValue(new CompletableXMLValue("true", "The color is limited to 32bits (default for engines prior to thirdgen)"));
+			colorBasic.RegisterValue(new CompletableXMLValue("false", "The color is scRGB (default for thirdgen engines)"));
+			colorf.RegisterAttribute(colorBasic);
+
 			CompletableXMLTag tagRef = RegisterMetaTag("tagRef", "Tag reference");
 			var withGroup = new CompletableXMLAttribute("withGroup",
 				"Whether or not the reference includes a group ID (optional, default=true)");
