@@ -605,15 +605,27 @@
 				<bit name="Has LM Colors" index="2" />
 				<bit name="Has LM Prt" index="3" />
 			</flags16>
-			<int32 name="Block Offset" offset="0x28" visible="true" />
-			<int32 name="Block Size" offset="0x2C" visible="true" />
-			<int32 name="Section Data Size" offset="0x30" visible="true" />
-			<int32 name="Resource Data Size" offset="0x34" visible="true" />
-			<undefined name="Unknown" offset="0x38" visible="false" />
-			<undefined name="Unknown" offset="0x3C" visible="false" />
-			<undefined name="Unknown" offset="0x40" visible="false" />
-			<int32 name="Owner Tag Section Offset" offset="0x44" visible="true" />
-			<undefined name="Unknown" offset="0x48" visible="false" />
+			<int32 name="Resource Block Offset" offset="0x28" visible="true" />
+			<uint32 name="Resource Block Size" offset="0x2C" visible="true" />
+			<uint32 name="Section Data Size" offset="0x30" visible="true" />
+			<uint32 name="Resource Data Size" offset="0x34" visible="true" />
+			<tagblock name="Resources" offset="0x38" visible="true" elementSize="0x10">
+				<enum8 name="Type" offset="0x0" visible="true">
+					<option name="Tag Block" value="0x0" />
+					<option name="Tag Data" value="0x1" />
+					<option name="Vertex Buffer" value="0x2" />
+				</enum8>
+				<int8 name="Unknown" offset="0x1" visible="false" />
+				<int16 name="Unknown" offset="0x2" visible="false" />
+				<int16 name="Primary Locator" offset="0x4" visible="true" />
+				<int16 name="Secondary Locator" offset="0x6" visible="true" />
+				<uint32 name="Resoure Data Size" offset="0x8" visible="true" />
+				<uint32 name="Resource Data Offset" offset="0xC" visible="true" />
+			</tagblock>
+			<tagref name="Owner Tag" offset="0x40" withGroup="false" visible="true" />
+			<int16 name="Owner Tag Section Offset" offset="0x44" visible="true" />
+			<int16 name="Unknown" offset="0x46" visible="false" />
+			<int32 name="Unknown" offset="0x48" visible="false" />
 			<undefined name="Unknown" offset="0x4C" visible="false" />
 			<undefined name="Unknown" offset="0x50" visible="false" />
 		</tagblock>
@@ -664,15 +676,27 @@
 				<bit name="Has LM Colors" index="2" />
 				<bit name="Has LM Prt" index="3" />
 			</flags16>
-			<int32 name="Block Offset" offset="0x28" visible="true" />
-			<int32 name="Block Size" offset="0x2C" visible="true" />
-			<int32 name="Section Data Size" offset="0x30" visible="true" />
-			<int32 name="Resource Data Size" offset="0x34" visible="true" />
-			<undefined name="Unknown" offset="0x38" visible="false" />
-			<undefined name="Unknown" offset="0x3C" visible="false" />
-			<undefined name="Unknown" offset="0x40" visible="false" />
-			<int32 name="Owner Tag Section Offset" offset="0x44" visible="true" />
-			<undefined name="Unknown" offset="0x48" visible="false" />
+			<int32 name="Resource Block Offset" offset="0x28" visible="true" />
+			<uint32 name="Resource Block Size" offset="0x2C" visible="true" />
+			<uint32 name="Section Data Size" offset="0x30" visible="true" />
+			<uint32 name="Resource Data Size" offset="0x34" visible="true" />
+			<tagblock name="Resources" offset="0x38" visible="true" elementSize="0x10">
+				<enum8 name="Type" offset="0x0" visible="true">
+					<option name="Tag Block" value="0x0" />
+					<option name="Tag Data" value="0x1" />
+					<option name="Vertex Buffer" value="0x2" />
+				</enum8>
+				<int8 name="Unknown" offset="0x1" visible="false" />
+				<int16 name="Unknown" offset="0x2" visible="false" />
+				<int16 name="Primary Locator" offset="0x4" visible="true" />
+				<int16 name="Secondary Locator" offset="0x6" visible="true" />
+				<uint32 name="Resoure Data Size" offset="0x8" visible="true" />
+				<uint32 name="Resource Data Offset" offset="0xC" visible="true" />
+			</tagblock>
+			<tagref name="Owner Tag" offset="0x40" withGroup="false" visible="true" />
+			<int16 name="Owner Tag Section Offset" offset="0x44" visible="true" />
+			<int16 name="Unknown" offset="0x46" visible="false" />
+			<int32 name="Unknown" offset="0x48" visible="false" />
 			<undefined name="Unknown" offset="0x4C" visible="false" />
 			<undefined name="Unknown" offset="0x50" visible="false" />
 		</tagblock>
@@ -742,20 +766,27 @@
 			</flags32>
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
-			<int32 name="Raw Offset" offset="0xC" visible="true" />
-			<int32 name="Raw Size" offset="0x10" visible="true" />
-			<int32 name="Section Data Size" offset="0x14" visible="true" />
-			<int32 name="Resource Data Size" offset="0x18" visible="true" />
+			<int32 name="Resource Block Offset" offset="0xC" visible="true" />
+			<uint32 name="Resource Block Size" offset="0x10" visible="true" />
+			<uint32 name="Section Data Size" offset="0x14" visible="true" />
+			<uint32 name="Resource Data Size" offset="0x18" visible="true" />
 			<tagblock name="Resources" offset="0x1C" visible="true" elementSize="0x10">
-				<enum32 name="Type" offset="0x0" visible="true" />
+				<enum8 name="Type" offset="0x0" visible="true">
+					<option name="Tag Block" value="0x0" />
+					<option name="Tag Data" value="0x1" />
+					<option name="Vertex Buffer" value="0x2" />
+				</enum8>
+				<int8 name="Unknown" offset="0x1" visible="false" />
+				<int16 name="Unknown" offset="0x2" visible="false" />
 				<int16 name="Primary Locator" offset="0x4" visible="true" />
 				<int16 name="Secondary Locator" offset="0x6" visible="true" />
-				<int32 name="Resource Data Size" offset="0x8" visible="true" />
-				<int32 name="Resource Data Offset" offset="0xC" visible="true" />
+				<uint32 name="Resoure Data Size" offset="0x8" visible="true" />
+				<uint32 name="Resource Data Offset" offset="0xC" visible="true" />
 			</tagblock>
-			<int32 name="Owner Tag Section Offset" offset="0x24" visible="true" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<undefined name="Unknown" offset="0x2C" visible="false" />
+			<tagref name="Owner Tag" offset="0x24" withGroup="false" visible="true" />
+			<int16 name="Owner Tag Section Offset" offset="0x28" visible="true" />
+			<int16 name="Unknown" offset="0x2A" visible="false" />
+			<int32 name="Unknown" offset="0x2C" visible="false" />
 			<undefined name="Unknown" offset="0x30" visible="false" />
 			<undefined name="Unknown" offset="0x34" visible="false" />
 		</tagblock>

@@ -182,15 +182,27 @@
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
 	</tagblock>
-	<tagblock name="Extra Info" offset="0x50" visible="true" elementSize="0x2C">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<uint32 name="Block Offset" offset="0x8" visible="true" />
-		<uint32 name="Block Size" offset="0xC" visible="true" />
+	<tagblock name="Extra Info" offset="0x50" visible="true" elementSize="0x14C">
+		<tagblock name="Encoded Permutation Section" offset="0x0" visible="true" elementSize="0x10">
+			<dataref name="Encoded Data" offset="0x0" visible="true" />
+			<tagblock name="Sound Dialogue Info" offset="0x8" visible="true" elementSize="0x10">
+				<int32 name="Mouth Data Offset" offset="0x0" visible="true" />
+				<int32 name="Mouth Data Length" offset="0x4" visible="true" />
+				<int32 name="Lipsync Data Offset" offset="0x8" visible="true" />
+				<int32 name="Lipsync Data Length" offset="0xC" visible="true" />
+			</tagblock>
+		</tagblock>
+		<comment title="1" />
+		<int32 name="Resource Block Offset" offset="0x8" visible="true" />
+		<uint32 name="Resource Block Size" offset="0xC" visible="true" />
 		<uint32 name="Section Data Size" offset="0x10" visible="true" />
 		<uint32 name="Resource Data Size" offset="0x14" visible="true" />
 		<tagblock name="Resources" offset="0x18" visible="true" elementSize="0x10">
-			<int8 name="Type" offset="0x0" visible="true" />
+			<enum8 name="Type" offset="0x0" visible="true">
+				<option name="Tag Block" value="0x0" />
+				<option name="Tag Data" value="0x1" />
+				<option name="Vertex Buffer" value="0x2" />
+			</enum8>
 			<int8 name="Unknown" offset="0x1" visible="false" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<int16 name="Primary Locator" offset="0x4" visible="true" />
@@ -198,9 +210,172 @@
 			<uint32 name="Resource Data Size" offset="0x8" visible="true" />
 			<uint32 name="Resource Data Offset" offset="0xC" visible="true" />
 		</tagblock>
-		<tagref name="Sound Gestalt" offset="0x20" withGroup="false" visible="true" />
-		<int16 name="Unknown" offset="0x24" visible="false" />
+		<tagref name="Owner Tag" offset="0x20" withGroup="false" visible="true" />
+		<int16 name="Owner Tag Section Offset" offset="0x24" visible="true" />
 		<int16 name="Unknown" offset="0x26" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
+		<int32 name="Unknown" offset="0x28" visible="false" />
+		<comment title="2" />
+		<int32 name="Resource Block Offset" offset="0x2C" visible="true" />
+		<uint32 name="Resource Block Size" offset="0x30" visible="true" />
+		<uint32 name="Section Data Size" offset="0x34" visible="true" />
+		<uint32 name="Resource Data Size" offset="0x38" visible="true" />
+		<tagblock name="Resources" offset="0x3C" visible="true" elementSize="0x10">
+			<enum8 name="Type" offset="0x0" visible="true">
+				<option name="Tag Block" value="0x0" />
+				<option name="Tag Data" value="0x1" />
+				<option name="Vertex Buffer" value="0x2" />
+			</enum8>
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<int16 name="Primary Locator" offset="0x4" visible="true" />
+			<int16 name="Secondary Locator" offset="0x6" visible="true" />
+			<uint32 name="Resource Data Size" offset="0x8" visible="true" />
+			<uint32 name="Resource Data Offset" offset="0xC" visible="true" />
+		</tagblock>
+		<tagref name="Owner Tag" offset="0x44" withGroup="false" visible="true" />
+		<int16 name="Owner Tag Section Offset" offset="0x48" visible="true" />
+		<int16 name="Unknown" offset="0x4A" visible="false" />
+		<int32 name="Unknown" offset="0x4C" visible="false" />
+		<comment title="3" />
+		<int32 name="Resource Block Offset" offset="0x50" visible="true" />
+		<uint32 name="Resource Block Size" offset="0x54" visible="true" />
+		<uint32 name="Section Data Size" offset="0x58" visible="true" />
+		<uint32 name="Resource Data Size" offset="0x5C" visible="true" />
+		<tagblock name="Resources" offset="0x60" visible="true" elementSize="0x10">
+			<enum8 name="Type" offset="0x0" visible="true">
+				<option name="Tag Block" value="0x0" />
+				<option name="Tag Data" value="0x1" />
+				<option name="Vertex Buffer" value="0x2" />
+			</enum8>
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<int16 name="Primary Locator" offset="0x4" visible="true" />
+			<int16 name="Secondary Locator" offset="0x6" visible="true" />
+			<uint32 name="Resource Data Size" offset="0x8" visible="true" />
+			<uint32 name="Resource Data Offset" offset="0xC" visible="true" />
+		</tagblock>
+		<tagref name="Owner Tag" offset="0x68" withGroup="false" visible="true" />
+		<int16 name="Owner Tag Section Offset" offset="0x6C" visible="true" />
+		<int16 name="Unknown" offset="0x6E" visible="false" />
+		<int32 name="Unknown" offset="0x70" visible="false" />
+		<comment title="4" />
+		<int32 name="Resource Block Offset" offset="0x74" visible="true" />
+		<uint32 name="Resource Block Size" offset="0x78" visible="true" />
+		<uint32 name="Section Data Size" offset="0x7C" visible="true" />
+		<uint32 name="Resource Data Size" offset="0x80" visible="true" />
+		<tagblock name="Resources" offset="0x84" visible="true" elementSize="0x10">
+			<enum8 name="Type" offset="0x0" visible="true">
+				<option name="Tag Block" value="0x0" />
+				<option name="Tag Data" value="0x1" />
+				<option name="Vertex Buffer" value="0x2" />
+			</enum8>
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<int16 name="Primary Locator" offset="0x4" visible="true" />
+			<int16 name="Secondary Locator" offset="0x6" visible="true" />
+			<uint32 name="Resource Data Size" offset="0x8" visible="true" />
+			<uint32 name="Resource Data Offset" offset="0xC" visible="true" />
+		</tagblock>
+		<tagref name="Owner Tag" offset="0x8C" withGroup="false" visible="true" />
+		<int16 name="Owner Tag Section Offset" offset="0x90" visible="true" />
+		<int16 name="Unknown" offset="0x92" visible="false" />
+		<int32 name="Unknown" offset="0x94" visible="false" />
+		<comment title="5" />
+		<int32 name="Resource Block Offset" offset="0x98" visible="true" />
+		<uint32 name="Resource Block Size" offset="0x9C" visible="true" />
+		<uint32 name="Section Data Size" offset="0xA0" visible="true" />
+		<uint32 name="Resource Data Size" offset="0xA4" visible="true" />
+		<tagblock name="Resources" offset="0xA8" visible="true" elementSize="0x10">
+			<enum8 name="Type" offset="0x0" visible="true">
+				<option name="Tag Block" value="0x0" />
+				<option name="Tag Data" value="0x1" />
+				<option name="Vertex Buffer" value="0x2" />
+			</enum8>
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<int16 name="Primary Locator" offset="0x4" visible="true" />
+			<int16 name="Secondary Locator" offset="0x6" visible="true" />
+			<uint32 name="Resource Data Size" offset="0x8" visible="true" />
+			<uint32 name="Resource Data Offset" offset="0xC" visible="true" />
+		</tagblock>
+		<tagref name="Owner Tag" offset="0xB0" withGroup="false" visible="true" />
+		<int16 name="Owner Tag Section Offset" offset="0xB4" visible="true" />
+		<int16 name="Unknown" offset="0xB6" visible="false" />
+		<int32 name="Unknown" offset="0xB8" visible="false" />
+		<comment title="6" />
+		<int32 name="Resource Block Offset" offset="0xBC" visible="true" />
+		<uint32 name="Resource Block Size" offset="0xC0" visible="true" />
+		<uint32 name="Section Data Size" offset="0xC4" visible="true" />
+		<uint32 name="Resource Data Size" offset="0xC8" visible="true" />
+		<tagblock name="Resources" offset="0xCC" visible="true" elementSize="0x10">
+			<enum8 name="Type" offset="0x0" visible="true">
+				<option name="Tag Block" value="0x0" />
+				<option name="Tag Data" value="0x1" />
+				<option name="Vertex Buffer" value="0x2" />
+			</enum8>
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<int16 name="Primary Locator" offset="0x4" visible="true" />
+			<int16 name="Secondary Locator" offset="0x6" visible="true" />
+			<uint32 name="Resource Data Size" offset="0x8" visible="true" />
+			<uint32 name="Resource Data Offset" offset="0xC" visible="true" />
+		</tagblock>
+		<tagref name="Owner Tag" offset="0xD4" withGroup="false" visible="true" />
+		<int16 name="Owner Tag Section Offset" offset="0xD8" visible="true" />
+		<int16 name="Unknown" offset="0xDA" visible="false" />
+		<int32 name="Unknown" offset="0xDC" visible="false" />
+		<comment title="7" />
+		<int32 name="Resource Block Offset" offset="0xE0" visible="true" />
+		<uint32 name="Resource Block Size" offset="0xE4" visible="true" />
+		<uint32 name="Section Data Size" offset="0xE8" visible="true" />
+		<uint32 name="Resource Data Size" offset="0xEC" visible="true" />
+		<tagblock name="Resources" offset="0xF0" visible="true" elementSize="0x10">
+			<enum8 name="Type" offset="0x0" visible="true">
+				<option name="Tag Block" value="0x0" />
+				<option name="Tag Data" value="0x1" />
+				<option name="Vertex Buffer" value="0x2" />
+			</enum8>
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<int16 name="Primary Locator" offset="0x4" visible="true" />
+			<int16 name="Secondary Locator" offset="0x6" visible="true" />
+			<uint32 name="Resource Data Size" offset="0x8" visible="true" />
+			<uint32 name="Resource Data Offset" offset="0xC" visible="true" />
+		</tagblock>
+		<tagref name="Owner Tag" offset="0xF8" withGroup="false" visible="true" />
+		<int16 name="Owner Tag Section Offset" offset="0xFC" visible="true" />
+		<int16 name="Unknown" offset="0xFE" visible="false" />
+		<int32 name="Unknown" offset="0x100" visible="false" />
+		<comment title="8" />
+		<int32 name="Resource Block Offset" offset="0x104" visible="true" />
+		<uint32 name="Resource Block Size" offset="0x108" visible="true" />
+		<uint32 name="Section Data Size" offset="0x10C" visible="true" />
+		<uint32 name="Resource Data Size" offset="0x110" visible="true" />
+		<tagblock name="Resources" offset="0x114" visible="true" elementSize="0x10">
+			<enum8 name="Type" offset="0x0" visible="true">
+				<option name="Tag Block" value="0x0" />
+				<option name="Tag Data" value="0x1" />
+				<option name="Vertex Buffer" value="0x2" />
+			</enum8>
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<int16 name="Primary Locator" offset="0x4" visible="true" />
+			<int16 name="Secondary Locator" offset="0x6" visible="true" />
+			<uint32 name="Resource Data Size" offset="0x8" visible="true" />
+			<uint32 name="Resource Data Offset" offset="0xC" visible="true" />
+		</tagblock>
+		<tagref name="Owner Tag" offset="0x11C" withGroup="false" visible="true" />
+		<int16 name="Owner Tag Section Offset" offset="0x120" visible="true" />
+		<int16 name="Unknown" offset="0x122" visible="false" />
+		<int32 name="Unknown" offset="0x124" visible="false" />
+		<undefined name="Unknown" offset="0x128" visible="false" />
+		<undefined name="Unknown" offset="0x12C" visible="false" />
+		<undefined name="Unknown" offset="0x130" visible="false" />
+		<undefined name="Unknown" offset="0x134" visible="false" />
+		<undefined name="Unknown" offset="0x138" visible="false" />
+		<undefined name="Unknown" offset="0x13C" visible="false" />
+		<undefined name="Unknown" offset="0x140" visible="false" />
+		<undefined name="Unknown" offset="0x144" visible="false" />
+		<undefined name="Unknown" offset="0x148" visible="false" />
 	</tagblock>
 </plugin>
