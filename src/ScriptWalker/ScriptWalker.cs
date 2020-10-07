@@ -421,7 +421,9 @@ namespace ScriptWalker
                     _output.WriteLine(glo.Name);
                 }
                 else
-                    throw new System.Exception("Unsupported current object");
+                {
+                    _output.WriteLine($"[CRITICAL] Unsupported object: {_currentScriptObject.GetType()}");
+                }
 
                 _output.WriteLine();
                 _output.Indent = currentIndent;
