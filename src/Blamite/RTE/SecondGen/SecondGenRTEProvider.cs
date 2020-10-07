@@ -60,8 +60,6 @@ namespace Blamite.RTE.SecondGen
 			if (!info.SharedMagicAddress.HasValue)
 				throw new NotImplementedException("Second Generation poking requires a SharedMagicAddress value.");
 
-			long pointer = info.HeaderPointer.Value;
-
 			var gameMemory = new ProcessMemoryStream(gameProcess);
 			var mapInfo = new SecondGenMapPointerReader(gameMemory, _buildInfo, info);
 

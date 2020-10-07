@@ -349,15 +349,19 @@
 		<float32 name="Scale" offset="0xC" visible="true" />
 		<tagRef name="Dervish sound" offset="0x10" visible="true" />
 	</tagblock>
-	<tagblock name="Player Training Data" offset="0x420" visible="true" elementSize="0x14">
-		<stringId name="Display string" offset="0x0" visible="true" />
-		<stringId name="Display string2" offset="0x4" visible="true" />
-		<stringId name="Display string3" offset="0x8" visible="true" />
-		<float32 name="max display time" offset="0xC" visible="true" />
-		<uint8 name="display count" offset="0x10" visible="true" />
-		<uint8 name="disapear delay" offset="0x11" visible="true" />
-		<uint8 name="redisplay delay" offset="0x12" visible="true" />
-		<uint8 name="display delay (s)" offset="0x13" visible="true" />
+	<tagblock name="Player Training Data" offset="0x420" visible="true" elementSize="0x1C">
+		<stringid name="Display String" offset="0x0" visible="true" tooltip="comes out of the HUD text globals" />
+		<stringid name="Display String 2" offset="0x4" visible="true" tooltip="comes out of the HUD text globals, used for grouped prompt" />
+		<stringid name="Display String 3" offset="0x8" visible="true" tooltip="comes out of the HUD text globals, used for ungrouped prompt" />
+		<int16 name="Maximum Display Time" offset="0xC" visible="true" tooltip="how long the message can be on screen before being hidden" />
+		<int16 name="Display Count" offset="0xE" visible="true" tooltip="how many times a training message will get displayed (0-3 only" />
+		<int16 name="Dissapear Delay" offset="0x10" visible="true" tooltip="how long a displayed but untriggered message stays up" />
+		<int16 name="Redisplay Delay" offset="0x12" visible="true" tooltip="how long after display this message will stay hidden" />
+		<float32 name="Display Delay" offset="0x14" visible="true" tooltip="seconds. how long the event can be triggered before it's displayed" />
+		<flags16 name="Flags" offset="0x18" visible="true">
+			<bit name="Not In Multiplayer" index="0" />
+		</flags16>
+		<int16 name="Unknown" offset="0x1A" visible="false" />
 	</tagblock>
 	<tagRef name="Primary Message Sound" offset="0x428" visible="true" />
 	<tagRef name="Secondary Message Sound" offset="0x430" visible="true" />

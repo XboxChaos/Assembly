@@ -277,9 +277,9 @@ namespace Blamite.Plugins
 			Debug.WriteLine(Indent() + "Color32 \"{0}\" at {1}, visible = {2}, alpha = {3}, tooltip = {4}", name, offset, visible, alpha, tooltip);
 		}
 
-		public void VisitColorF(string name, uint offset, bool visible, bool alpha, uint pluginLine, string tooltip)
+		public void VisitColorF(string name, uint offset, bool visible, bool alpha, bool basic, uint pluginLine, string tooltip)
 		{
-			Debug.WriteLine(Indent() + "ColorF \"{0}\" at {1}, visible = {2}, alpha = {3}, tooltip = {4}", name, offset, visible, alpha, tooltip);
+			Debug.WriteLine(Indent() + "ColorF \"{0}\" at {1}, visible = {2}, alpha = {3}, basic = {4}, tooltip = {5}", name, offset, visible, alpha, basic, tooltip);
 		}
 
 		public void VisitRawData(string name, uint offset, bool visible, int size, uint pluginLine, string tooltip)

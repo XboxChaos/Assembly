@@ -371,7 +371,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			// Hide import/save name buttons if the cache file isn't thirdgen
 			if (_cacheFile.Engine != EngineType.ThirdGeneration)
 				Dispatcher.Invoke(new Action(() => { btnImport.Visibility = Visibility.Collapsed;
-					btnSaveNames.Visibility = Visibility.Collapsed; }));
+					menuSaveTagNames.Visibility = Visibility.Collapsed; }));
 				
 
 			_tagEntries = _cacheFile.Tags.Select(WrapTag).ToList();
@@ -2218,6 +2218,88 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						w.Close();
 				}
 			}
+		}
+
+		private void MenuSaveTagEditors_Click(object sender, RoutedEventArgs e)
+		{
+			List<TabItem> tabs = contentTabs.Items.OfType<TabItem>().ToList();
+
+			foreach (TabItem tabItem in tabs)
+			{
+				if (tabItem.Content.GetType() == typeof(MetaContainer))
+					((MetaContainer)tabItem.Content).ExternalSave();
+			}
+
+			MetroMessageBox.Show("Tags Saved", "The changes have been saved back to the original file.");
+		}
+
+		private void SIDFreeButton_Click(object sender, RoutedEventArgs e)
+		{
+			string bspLayoutName = "sbsp";
+			string bspInstancedLayoutName = "sbsp instanced geometry";
+
+			string bspLayoutBlockCountName = "number of instanced geometry";
+			string bspLayoutBlockAddrName = "instanced geometry table address";
+
+			string bspInstancedLayoutStringIDName = "name stringid";
+
+			if (!_buildInfo.Layouts.HasLayout(bspLayoutName) || !_buildInfo.Layouts.HasLayout(bspInstancedLayoutName))
+			{
+				MetroMessageBox.Show("Free StringIDs", "This current engine does not contain the required &quot;" + bspLayoutName + "&quot; and &quot;" + bspInstancedLayoutName + "&quot; layouts in the Formats folder. Can not continue.");
+				return;
+			}
+
+			StructureLayout sbspLayout = _buildInfo.Layouts.GetLayout(bspLayoutName);
+			StructureLayout sbspInstancedLayout = _buildInfo.Layouts.GetLayout(bspInstancedLayoutName);
+
+			if (!sbspLayout.HasField(bspLayoutBlockCountName) || !sbspLayout.HasField(bspLayoutBlockAddrName))
+			{
+				MetroMessageBox.Show("Free StringIDs", "This current engine does not contain the required &quot;" + bspLayoutBlockCountName + "&quot; and &quot;" + bspLayoutBlockAddrName + "&quot; fields for the &quot;" + bspLayoutName + "&quot; layout in the Formats folder. Can not continue.");
+				return;
+			}
+			else if (!sbspLayout.HasField(bspLayoutBlockCountName))
+			{
+				MetroMessageBox.Show("Free StringIDs", "This current engine does not contain the required &quot;" + bspInstancedLayoutStringIDName + "&quot; field for the &quot;" + sbspInstancedLayout + "&quot; layout in the Formats folder. Can not continue.");
+				return;
+			}
+
+			int origLength = _cacheFile.StringIDDataTable.Size;
+
+			using (var stream = _mapManager.OpenReadWrite())
+			{
+				foreach (var tag in _cacheFile.Tags.FindTagsByGroup("sbsp"))
+				{
+					stream.SeekTo(tag.MetaLocation.AsOffset());
+
+					StructureValueCollection values = StructureReader.ReadStructure(stream, sbspLayout);
+
+					int count = (int)values.GetInteger(bspLayoutBlockCountName);
+					uint contractedAddr = (uint)values.GetInteger(bspLayoutBlockAddrName);
+					long expandedAddr = _cacheFile.PointerExpander.Expand(contractedAddr);
+
+					StructureValueCollection[] instancedGeo = Blamite.Blam.Util.TagBlockReader.ReadTagBlock(stream, count, expandedAddr, sbspInstancedLayout, _cacheFile.MetaArea);
+
+					foreach (var iGeo in instancedGeo)
+					{
+						uint rawVal = (uint)iGeo.GetInteger(bspInstancedLayoutStringIDName);
+						StringID sid = new StringID(rawVal);
+
+						string test = _cacheFile.StringIDs.GetString(sid);
+
+						if (test.Length <= 10)
+							continue;
+
+						_cacheFile.StringIDs.SetString(sid, "ig" + rawVal.ToString("X"));
+					}
+				}
+
+				_cacheFile.SaveChanges(stream);
+			}
+
+			int result = origLength - _cacheFile.StringIDDataTable.Size;
+
+			MetroMessageBox.Show("Free StringIDs", "A total of " + result + " bytes were freed.");
+				
 		}
 	}
 }

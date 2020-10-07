@@ -6,30 +6,30 @@
 	<flags32 name="Flags" offset="0x0" visible="true">
 		<bit name="Deleted When Attachment Deactivates" index="0" />
 		<bit name="Run Events In Parallel" index="1" />
-		<bit name="Do Not Re-Use Parts When Looping" index="2" />
+		<bit name="Do Not Re-Use Parts When Looping" index="2" tooltip="This option will hurt performance on effects with very short duration." />
 		<bit name="Age Creator's Weapon" index="3" />
 		<bit name="Use Parent Position But World Orientation" index="4" />
 		<bit name="Can Penetrate Walls (Expensive)" index="5" />
-		<bit name="Cannot Be Restarted" index="6" />
-		<bit name="Force Use Own Lightprobe" index="7" />
-		<bit name="Force Looping" index="8" />
-		<bit name="Unknown Ordnance" index="9" />
-		<bit name="Render In Hologram Pass" index="10" />
-		<bit name="Lightprobe Only Sample Airprobes" index="11" />
+		<bit name="Cannot Be Restarted" index="6" tooltip="Will help performance for parallel events of different lengths, if the effect is unlikely to be reused" />
+		<bit name="Force Use Own Lightprobe" index="7" tooltip="Do not adopt parent object's lightprobe, even when it's available" />
+		<bit name="Force Looping" index="8" tooltip="Do not use this unless you know you stop the effect at some point" />
+		<bit name="Ordnance Droppod Locator" index="9" tooltip="trigger creation of player's ordnance droppod" />
+		<bit name="Render In Hologram Pass" index="10" tooltip="this effect should be lumped in with Cortana and other holograms when rendered" />
+		<bit name="Lightprobe Only Sample Airprobes" index="11" tooltip="Only works with &quot;force use own lightprobe&quot;; causes effect to never sample lightmap, only placed light probes" />
 		<bit name="Play Effect Even Outside Bsps (Expensive)" index="12" />
-		<bit name="Draw Parts When Stopped" index="13" />
-		<bit name="Kill Particles When Stopped" index="14" />
+		<bit name="Draw .Parts When Stopped (Draw lens flares when stopped)" index="13" />
+		<bit name="Kill Particles When Stopped" index="14" tooltip="particularly useful for particles that live forever" />
 		<bit name="Play Even On Hidden Objects" index="15" />
-		<bit name="Disable First Person Parts In Blind Skull" index="16" />
-		<bit name="Hides Associated Object On Effect Deletion" index="17" />
-		<bit name="Bypass MP Throttle" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Enable Accelerations?" index="20" />
-		<bit name="Dark Casings?" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Bit 25" index="25" />
+		<bit name="Disable First Person Parts In Blind Skull" index="16" tooltip="blind skull hides the first person weapon" />
+		<bit name="Hides Associated Object On Effect Deletion" index="17" tooltip="when the effect is deleted, it hides the object it is associated with (for hologram in mp)" />
+		<bit name="Bypass MP Throttle" index="18" tooltip="effect can not ignore generated crates or be non-networked" />
+		<bit name="(Runtime?) Bit 19" index="19" />
+		<bit name="(Runtime?) Enable Accelerations?" index="20" />
+		<bit name="(Runtime?) Dark Casings?" index="21" />
+		<bit name="(Runtime?) Bit 22" index="22" />
+		<bit name="(Runtime?) Bit 23" index="23" />
+		<bit name="(Runtime?) Bit 24" index="24" />
+		<bit name="(Runtime?) Bit 25" index="25" />
 		<bit name="Bit 26" index="26" />
 		<bit name="Bit 27" index="27" />
 		<bit name="Bit 28" index="28" />
@@ -37,7 +37,7 @@
 		<bit name="Bit 30" index="30" />
 		<bit name="Bit 31" index="31" />
 	</flags32>
-	<uint32 name="Fixed Random Seed" offset="0x4" visible="true" />
+	<int32 name="Fixed Random Seed" offset="0x4" visible="true" tooltip="If this is non-zero, the effect will usually be exactly repeatable" />
 	<float32 name="Restart If Within" offset="0x8" visible="true" />
 	<float32 name="Continue If Within" offset="0xC" visible="true" />
 	<float32 name="Death Delay" offset="0x10" visible="true" />
@@ -121,11 +121,9 @@ child
 		</enum8>
 		<int8 name="Unknown" offset="0x7" visible="false" />
 		<float32 name="Skip Fraction" offset="0x8" visible="true" />
-		<float32 name="Delay Bounds min" offset="0xC" visible="true" />
-		<float32 name="Delay Bounds max" offset="0x10" visible="true" />
-		<float32 name="Duration Bounds min" offset="0x14" visible="true" />
-		<float32 name="Duration Bounds max" offset="0x18" visible="true" />
-		<comment title="Event Age Duration Override">Parts and particle systems can take &quot;event age&quot; as a function input. Typically that goes from 0 to 1 over the event duration.  If you want a different time, specify it here.  0 means use the duration bounds above.</comment>
+		<rangef name="Delay Bounds" offset="0xC" visible="true" tooltip="delay before this event takes place" />
+		<rangef name="Duration Bounds" offset="0x14" visible="true" tooltip="duration of this event" />
+		<comment title="Event Age Duration Override">Parts and particle systems can take &quot;event age&quot; as a function input. Typically that goes from 0 to 1 over the event duration. If you want a different time, specify it here. 0 means use the duration bounds above.</comment>
 		<float32 name="Event Age Duration Override" offset="0x1C" visible="true" />
 		<tagblock name="Parts" offset="0x20" visible="true" elementSize="0x74">
 			<enum16 name="Create In" offset="0x0" visible="true">
@@ -142,7 +140,7 @@ child
 				<option name="Nonviolent Mode Only" value="0x2" />
 			</enum16>
 			<int16 name="Location index" offset="0x4" visible="true" />
-			<int16 name="Secondary Location (Beams) index" offset="0x6" visible="true" />
+			<int16 name="Secondary Location (Beams) Index" offset="0x6" visible="true" />
 			<flags16 name="Flags" offset="0x8" visible="true">
 				<bit name="Face Down Regardless Of Location (Decals)" index="0" />
 				<bit name="Offset Origin Away From Geometry (Lights)" index="1" />
@@ -153,7 +151,7 @@ child
 				<bit name="Inherit Parent Variant" index="6" />
 				<bit name="Batch AOE Damage" index="7" />
 				<bit name="Create Even When Event Loops Back To Self" index="8" />
-				<bit name="Face Up Regardless Of Location (Replace Up)" index="9" />
+				<bit name="Face Up Regardless Of Location (replace_up)" index="9" />
 				<bit name="Sound Only Plays In Killcam" index="10" />
 			</flags16>
 			<enum8 name="Priority" offset="0xA" visible="true">
@@ -254,69 +252,59 @@ child
 				<option name="Warthog Rocket" value="0x32" />
 				<option name="Scorpion" value="0x33" />
 				<option name="Scorpion Gunner" value="0x34" />
-				<option name="Falcon" value="0x35" />
-				<option name="Falcon Gunner" value="0x36" />
-				<option name="Wasp" value="0x37" />
-				<option name="Wasp Gunner" value="0x38" />
-				<option name="Wasp Heavy Gunner" value="0x39" />
-				<option name="Mantis Stomp" value="0x3A" />
-				<option name="Mantis Chaingun" value="0x3B" />
-				<option name="Mantis Cannon" value="0x3C" />
-				<option name="Mantis Missile" value="0x3D" />
-				<option name="Broadsword" value="0x3E" />
-				<option name="Broadword Missile" value="0x3F" />
-				<option name="Mammoth" value="0x40" />
-				<option name="Mammoth Gunner" value="0x41" />
-				<option name="MAC Cannon" value="0x42" />
-				<option name="Target Locator" value="0x43" />
-				<option name="Drop Pod" value="0x44" />
-				<option name="Cruise Missile" value="0x45" />
-				<option name="Hardlight Shield" value="0x46" />
-				<option name="Auto Sentry" value="0x47" />
-				<option name="Thruster Pack" value="0x48" />
-				<option name="Falling" value="0x49" />
-				<option name="Collision" value="0x4A" />
-				<option name="Melee" value="0x4B" />
-				<option name="Explosion" value="0x4C" />
-				<option name="Fire" value="0x4D" />
-				<option name="Birthday Party Explosion" value="0x4E" />
-				<option name="Flag" value="0x4F" />
-				<option name="Bomb" value="0x50" />
-				<option name="Bomb Explosion" value="0x51" />
-				<option name="Ball" value="0x52" />
-				<option name="Teleporter" value="0x53" />
-				<option name="Transfer Damage" value="0x54" />
-				<option name="Armor Lock" value="0x55" />
-				<option name="Machinegun Turret" value="0x56" />
-				<option name="Plasma Cannon" value="0x57" />
-				<option name="Plasma Mortar" value="0x58" />
-				<option name="Plasma Turret" value="0x59" />
-				<option name="Shade Turret" value="0x5A" />
-				<option name="Forerunner Turret" value="0x5B" />
-				<option name="Tank" value="0x5C" />
-				<option name="Chopper" value="0x5D" />
-				<option name="Pelican Chaingun" value="0x5E" />
-				<option name="Mantis" value="0x5F" />
-				<option name="Flag Sidearm" value="0x60" />
-				<option name="Flood Talon" value="0x61" />
+				<option name="Unknown x35" value="0x35" />
+				<option name="MAC Cannon" value="0x36" />
+				<option name="Target Locator" value="0x37" />
+				<option name="Drop Pod" value="0x38" />
+				<option name="Cruise Missile" value="0x39" />
+				<option name="Hardlight Shield" value="0x3A" />
+				<option name="Auto Sentry" value="0x3B" />
+				<option name="Thruster Pack" value="0x3C" />
+				<option name="Falling" value="0x3D" />
+				<option name="Collision" value="0x3E" />
+				<option name="Melee" value="0x3F" />
+				<option name="Explosion" value="0x40" />
+				<option name="Fire" value="0x41" />
+				<option name="Birthday Party Explosion" value="0x42" />
+				<option name="Flag" value="0x43" />
+				<option name="Bomb" value="0x44" />
+				<option name="Bomb Explosion" value="0x45" />
+				<option name="Ball" value="0x46" />
+				<option name="Teleporter" value="0x47" />
+				<option name="Transfer Damage" value="0x48" />
+				<option name="Armor Lock" value="0x49" />
+				<option name="Machinegun Turret" value="0x4A" />
+				<option name="Plasma Cannon" value="0x4B" />
+				<option name="Plasma Mortar" value="0x4C" />
+				<option name="Plasma Turret" value="0x4D" />
+				<option name="Shade Turret" value="0x4E" />
+				<option name="Forerunner Turret" value="0x4F" />
+				<option name="Tank" value="0x50" />
+				<option name="Chopper" value="0x51" />
+				<option name="Pelican Chaingun" value="0x52" />
+				<option name="Mantis" value="0x53" />
+				<option name="Flag Sidearm" value="0x54" />
+				<option name="Flood Talon" value="0x55" />
+				<option name="Plasma Rifle" value="0x56" />
+				<option name="Brute Plasma Rifle" value="0x57" />
+				<option name="Brute Shot" value="0x58" />
+				<option name="Sentinel Beam" value="0x59" />
+				<option name="SMG" value="0x5A" />
+				<option name="Suppressed SMG" value="0x5B" />
+				<option name="Gungoose" value="0x5C" />
+				<option name="Gungoose Chaingun" value="0x5D" />
+				<option name="Hornet Chaingun" value="0x5E" />
+				<option name="Hornet Rocket" value="0x5F" />
 			</enum8>
 			<int16 name="Unknown" offset="0x12" visible="false" />
 			<tagRef name="Type" offset="0x14" visible="true" tooltip="The above &quot;Runtime Base Group Tag&quot; field should match this reference." />
-			<float32 name="Velocity Bounds min" offset="0x24" visible="true" />
-			<float32 name="Velocity Bounds max" offset="0x28" visible="true" />
-			<degree name="Velocity Orientation y" offset="0x2C" visible="true" />
-			<degree name="Velocity Orientation p" offset="0x30" visible="true" />
-			<degree name="Velocity Cone Angle" offset="0x34" visible="true" />
-			<degree name="Angular Velocity Bounds min" offset="0x38" visible="true" />
-			<degree name="Angular Velocity Bounds max" offset="0x3C" visible="true" />
-			<float32 name="Radius Modifier Bounds min" offset="0x40" visible="true" />
-			<float32 name="Radius Modifier Bounds max" offset="0x44" visible="true" />
-			<float32 name="Relative Offset x" offset="0x48" visible="true" />
-			<float32 name="Relative Offset y" offset="0x4C" visible="true" />
-			<float32 name="Relative Offset z" offset="0x50" visible="true" />
-			<degree name="Relative Orientation y" offset="0x54" visible="true" />
-			<degree name="Relative Orientation p" offset="0x58" visible="true" />
-			<comment title="SCALE MODIFIERS" />
+			<rangef name="Velocity Bounds" offset="0x24" visible="true" tooltip="initial velocity along the location's forward, for decals the distance at which decal is created (defaults to 0.5)" />
+			<degree2 name="Velocity Orientation (yaw, pitch)" offset="0x2C" visible="true" tooltip="NOT USED!" />
+			<degree name="Velocity Cone Angle" offset="0x34" visible="true" tooltip="initial velocity will be inside the cone defined by this angle." />
+			<ranged name="Angular Velocity Bounds" offset="0x38" visible="true" />
+			<rangef name="Radius Modifier Bounds" offset="0x40" visible="true" />
+			<point3 name="Relative Offset" offset="0x48" visible="true" />
+			<degree2 name="Relative Orientation (yaw, pitch)" offset="0x54" visible="true" />
 			<flags32 name="A Scales Values" offset="0x5C" visible="true">
 				<bit name="Velocity" index="0" />
 				<bit name="Velocity Delta" index="1" />
@@ -411,46 +399,36 @@ child
 				<bit name="Disabled For Debugging" index="6" />
 				<bit name="Inherit Effect Velocity" index="7" />
 				<bit name="Don't Render System" index="8" />
-				<bit name="Bit 9" index="9" />
+				<bit name="Render When Zoomed" index="9" />
 				<bit name="Force CPU Updating" index="10" />
 				<bit name="Force GPU Updating" index="11" />
 				<bit name="Override Near Fade (Use With Caution)" index="12" />
 				<bit name="Particles Die When Effect Ends" index="13" />
-				<bit name="Use Synchronized Random Seed" index="14" />
-				<bit name="Use World Orientation" index="15" />
-				<bit name="Render In Spawn Order" index="16" />
-				<bit name="Dynamic Particle Resolution" index="17" />
+				<bit name="Use Synchronized Random Seed" index="14" tooltip="synchronized across particle systems" />
+				<bit name="Use World Orientation" index="15" tooltip="particle system uses local-space position but up is always 'global up'" />
+				<bit name="Render In Spawn Order" index="16" tooltip="first particle spawned renders first (at the back), last particle spawned renders last (front)" />
+				<bit name="Dynamic Particle Resolution" index="17" tooltip="use distance and multiplier (below) to tune high- or low-res rendering" />
 				<bit name="Particles Live Forever" index="18" />
 				<bit name="Disable In Vision Mode" index="19" />
 				<bit name="Disable Velocity" index="20" />
 				<bit name="Disable When Zoomed" index="21" />
 				<bit name="Continue When Offscreen (Ignores Performance Throttles)" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</flags32>
-			<float32 name="Percent Velocity To Inherit min" offset="0x28" visible="true" />
-			<float32 name="Percent Velocity To Inherit max" offset="0x2C" visible="true" />
-			<float32 name="Size Scale" offset="0x30" visible="true" />
-			<float32 name="Camera Offset" offset="0x34" visible="true" />
+			<rangef name="Percent Velocity To Inherit" offset="0x28" visible="true" tooltip="flag must be checked above" />
+			<float32 name="Size Scale" offset="0x30" visible="true" tooltip="multiplied by all &quot;size&quot; related fields, like scale, velocity, acceleration" />
+			<float32 name="Camera Offset" offset="0x34" visible="true" tooltip="the particle is pushed away from the camera this distance (can be negative)" />
 			<comment title="Estimate Overdraw Threshold" />
 			<float32 name="Pixel Budget" offset="0x38" visible="true" />
-			<float32 name="Near Fade Range" offset="0x3C" visible="true" />
-			<float32 name="Near Fade Cutoff" offset="0x40" visible="true" />
-			<float32 name="Near Fade Override" offset="0x44" visible="true" />
-			<float32 name="Far Fade Range" offset="0x48" visible="true" />
-			<float32 name="Far Fade Cutoff" offset="0x4C" visible="true" />
+			<float32 name="Near Fade Range" offset="0x3C" visible="true" tooltip="distance beyond cutoff over which particles fade" />
+			<float32 name="Near Fade Cutoff" offset="0x40" visible="true" tooltip="distance in front of camera where fade is complete*" />
+			<float32 name="Near Fade Override" offset="0x44" visible="true" tooltip="distance in front of camera where fade is complete" />
+			<float32 name="Far Fade Range" offset="0x48" visible="true" tooltip="distance before cutoff over which particles fade" />
+			<float32 name="Far Fade Cutoff" offset="0x4C" visible="true" tooltip="distance from camera where fade is complete" />
 			<float32 name="LOD In Distance" offset="0x50" visible="true" />
-			<float32 name="LOD Feather In Delta" offset="0x54" visible="true" />
+			<float32 name="LOD Feather In Delta" offset="0x54" visible="true" tooltip="minimum is 0.0001" />
 			<float32 name="Inverse LOD Feather In" offset="0x58" visible="true" />
-			<float32 name="LOD Out Distance" offset="0x5C" visible="true" />
-			<float32 name="LOD Feather Out Delta" offset="0x60" visible="true" />
+			<float32 name="LOD Out Distance" offset="0x5C" visible="true" tooltip="defaults to 20.0" />
+			<float32 name="LOD Feather Out Delta" offset="0x60" visible="true" tooltip="0 defaults to 5.0, minimum is 0.0001" />
 			<float32 name="Inverse LOD Feather Out" offset="0x64" visible="true" />
 			<tagblock name="Emitters" offset="0x68" visible="true" elementSize="0x3AC">
 				<stringid name="Emitter Name" offset="0x0" visible="true" />
@@ -476,15 +454,7 @@ child
 					<option name="Planar Orbit" value="0x12" />
 					<option name="Sphere Orbit" value="0x13" />
 				</enum8>
-				<flags8 name="Flags" offset="0x5" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Bit 1" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
+				<flags8 name="Flags!" offset="0x5" visible="true">
 				</flags8>
 				<flags8 name="Emitter Flags" offset="0x6" visible="true">
 					<bit name="Volume Emitter Particle Velocities Are Random" index="0" />
@@ -506,12 +476,9 @@ child
 				<tagRef name="Boat Hull" offset="0x1C" visible="true" />
 				<float32 name="Bounding Radius Estimate" offset="0x2C" visible="true" />
 				<float32 name="Bounding Radius Override" offset="0x30" visible="true" />
-				<float32 name="Axis Scale x" offset="0x34" visible="true" />
-				<float32 name="Axis Scale y" offset="0x38" visible="true" />
-				<float32 name="Axis Scale z" offset="0x3C" visible="true" />
-				<float32 name="UV Scrolling i" offset="0x40" visible="true" />
-				<float32 name="UV Scrolling j" offset="0x44" visible="true" />
-				<comment title="Translational Offset" />
+				<point3 name="Axis Scale" offset="0x34" visible="true" />
+				<vector2 name="UV Scrolling" offset="0x40" visible="true" />
+				<comment title="Translational Offset (World Units)">XYZ controls that offset the emitter's origin from the original location</comment>
 				<enum8 name="Input Variable" offset="0x48" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="System Age" value="0x1" />
@@ -610,13 +577,9 @@ child
 					<bit name="Bit 15" index="15" />
 				</flags16>
 				<int16 name="Unknown" offset="0x66" visible="false" />
-				<float32 name="Starting Interpolant x" offset="0x68" visible="true" />
-				<float32 name="Starting Interpolant y" offset="0x6C" visible="true" />
-				<float32 name="Starting Interpolant z" offset="0x70" visible="true" />
-				<float32 name="Ending Interpolant x" offset="0x74" visible="true" />
-				<float32 name="Ending Interpolant y" offset="0x78" visible="true" />
-				<float32 name="Ending Interpolant z" offset="0x7C" visible="true" />
-				<comment title="Relative Direction" />
+				<point3 name="Starting Interpolant" offset="0x68" visible="true" />
+				<point3 name="Ending Interpolant" offset="0x74" visible="true" />
+				<comment title="Relative Direction">yaw/pitch that changes the initial rotation of the emitter</comment>
 				<enum8 name="Input Variable" offset="0x80" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="System Age" value="0x1" />
@@ -715,11 +678,9 @@ child
 					<bit name="Bit 15" index="15" />
 				</flags16>
 				<int16 name="Unknown" offset="0x9E" visible="false" />
-				<degree name="Direction At 0 y" offset="0xA0" visible="true" />
-				<degree name="Direction At 0 p" offset="0xA4" visible="true" />
-				<degree name="Direction At 1 y" offset="0xA8" visible="true" />
-				<degree name="Direction At 1 p" offset="0xAC" visible="true" />
-				<comment title="Emission Radius" />
+				<degree2 name="Direction At 0" offset="0xA0" visible="true" />
+				<degree2 name="Direction At 1" offset="0xA8" visible="true" />
+				<comment title="Emission Radius (World Units)">defines the size of the emitter</comment>
 				<enum8 name="Input Variable" offset="0xB0" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="System Age" value="0x1" />
@@ -821,7 +782,7 @@ child
 					<bit name="Force Constant" index="0" />
 				</flags8>
 				<int8 name="Unknown" offset="0xCF" visible="false" />
-				<comment title="Emission Angle" />
+				<comment title="Emission Angle (Degrees)">determines the angle at which particles are emitted</comment>
 				<enum8 name="Input Variable" offset="0xD0" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="System Age" value="0x1" />
@@ -923,7 +884,7 @@ child
 					<bit name="Force Constant" index="0" />
 				</flags8>
 				<int8 name="Unknown" offset="0xEF" visible="false" />
-				<comment title="Emission Axis Angle" />
+				<comment title="Emission Axis Angle (Degrees)">determines the max tilt for particle axis</comment>
 				<enum8 name="Input Variable" offset="0xF0" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="System Age" value="0x1" />
@@ -1025,7 +986,7 @@ child
 					<bit name="Force Constant" index="0" />
 				</flags8>
 				<int8 name="Unknown" offset="0x10F" visible="false" />
-				<comment title="Particle Starting Count" />
+				<comment title="Particle Starting Count">number of particles that are spawned at the birth of the effect</comment>
 				<enum8 name="Input Variable" offset="0x110" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="System Age" value="0x1" />
@@ -1127,7 +1088,7 @@ child
 					<bit name="Force Constant" index="0" />
 				</flags8>
 				<int8 name="Unknown" offset="0x12F" visible="false" />
-				<comment title="Particle Max Count" />
+				<comment title="Particle Max Count (0=unlimited)">max number of particles allowed to exist at one time</comment>
 				<enum8 name="Input Variable" offset="0x130" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="System Age" value="0x1" />
@@ -1229,7 +1190,7 @@ child
 					<bit name="Force Constant" index="0" />
 				</flags8>
 				<int8 name="Unknown" offset="0x14F" visible="false" />
-				<comment title="Particle Emission Rate" />
+				<comment title="Particle Emission Rate (Particles Per Second)">number of particles that are spawned every second from the emitters</comment>
 				<enum8 name="Input Variable" offset="0x150" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="System Age" value="0x1" />
@@ -1331,7 +1292,7 @@ child
 					<bit name="Force Constant" index="0" />
 				</flags8>
 				<int8 name="Unknown" offset="0x16F" visible="false" />
-				<comment title="Particle Emission Per Distance" />
+				<comment title="Particle Emission Per Distance (Particles Per World Units)">number of particles that are spawned every world unit of motion from the emitters</comment>
 				<enum8 name="Input Variable" offset="0x170" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="System Age" value="0x1" />
@@ -1433,7 +1394,7 @@ child
 					<bit name="Force Constant" index="0" />
 				</flags8>
 				<int8 name="Unknown" offset="0x18F" visible="false" />
-				<comment title="Particle Lifespan" />
+				<comment title="Particle Lifespan (Seconds)">the number of seconds a particle will live after emission</comment>
 				<enum8 name="Input Variable" offset="0x190" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="System Age" value="0x1" />
@@ -1535,7 +1496,8 @@ child
 					<bit name="Force Constant" index="0" />
 				</flags8>
 				<int8 name="Unknown" offset="0x1AF" visible="false" />
-				<tagRef name="Particle Physics Template" offset="0x1B0" visible="true" />
+				<comment title="Particle Movement" />
+				<tagRef name="Template" offset="0x1B0" visible="true" />
 				<flags16 name="Flags" offset="0x1C0" visible="true">
 					<bit name="Physics" index="0" />
 					<bit name="Collide With Structure" index="1" />
@@ -1685,20 +1647,14 @@ child
 					<float32 name="Force Strength" offset="0x4" visible="true" />
 					<float32 name="Sphere Falloff Begin" offset="0x8" visible="true" />
 					<float32 name="Sphere Falloff End" offset="0xC" visible="true" />
-					<float32 name="Offset i" offset="0x10" visible="true" />
-					<float32 name="Offset j" offset="0x14" visible="true" />
-					<float32 name="Offset k" offset="0x18" visible="true" />
-					<float32 name="Direction (For Cylinder Forces) i" offset="0x1C" visible="true" />
-					<float32 name="Direction (For Cylinder Forces) j" offset="0x20" visible="true" />
-					<float32 name="Direction (For Cylinder Forces) k" offset="0x24" visible="true" />
+					<vector3 name="Offset" offset="0x10" visible="true" />
+					<vector3 name="Direction (For Cylinder Forces)" offset="0x1C" visible="true" />
 				</tagblock>
 				<tagblock name="Particle Clip Sphere" offset="0x1F0" visible="true" elementSize="0x10">
-					<float32 name="Offset i" offset="0x0" visible="true" />
-					<float32 name="Offset j" offset="0x4" visible="true" />
-					<float32 name="Offset k" offset="0x8" visible="true" />
+					<vector3 name="Offset" offset="0x0" visible="true" />
 					<float32 name="Radius" offset="0xC" visible="true" />
 				</tagblock>
-				<comment title="Particle Self-Acceleration" />
+				<comment title="Particle Self-Acceleration (World Units Per Second Per Second)" />
 				<enum8 name="Input Variable" offset="0x1FC" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="System Age" value="0x1" />
@@ -1797,13 +1753,9 @@ child
 					<bit name="Bit 15" index="15" />
 				</flags16>
 				<int16 name="Unknown" offset="0x21A" visible="false" />
-				<float32 name="Starting Interpolant i" offset="0x21C" visible="true" />
-				<float32 name="Starting Interpolant j" offset="0x220" visible="true" />
-				<float32 name="Starting Interpolant k" offset="0x224" visible="true" />
-				<float32 name="Ending Interpolant i" offset="0x228" visible="true" />
-				<float32 name="Ending Interpolant j" offset="0x22C" visible="true" />
-				<float32 name="Ending Interpolant k" offset="0x230" visible="true" />
-				<comment title="Particle Initial Velocity" />
+				<vector3 name="Starting Interpolant" offset="0x21C" visible="true" />
+				<vector3 name="Ending Interpolant" offset="0x228" visible="true" />
+				<comment title="Particle Initial Velocity (World Units Per Second)" />
 				<enum8 name="Input Variable" offset="0x234" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="System Age" value="0x1" />
@@ -1905,7 +1857,7 @@ child
 					<bit name="Force Constant" index="0" />
 				</flags8>
 				<int8 name="Unknown" offset="0x253" visible="false" />
-				<comment title="Particle Rotation" />
+				<comment title="Particle Rotation (.25=90°, .5=180°, 1=360° ... adds to physics)" />
 				<enum8 name="Input Variable" offset="0x254" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="System Age" value="0x1" />
@@ -2007,7 +1959,7 @@ child
 					<bit name="Force Constant" index="0" />
 				</flags8>
 				<int8 name="Unknown" offset="0x273" visible="false" />
-				<comment title="Particle Initial Rotation Rate" />
+				<comment title="Particle Initial Rotation Rate (360 Degree Rotations Per Second)" />
 				<enum8 name="Input Variable" offset="0x274" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="System Age" value="0x1" />
@@ -2109,7 +2061,7 @@ child
 					<bit name="Force Constant" index="0" />
 				</flags8>
 				<int8 name="Unknown" offset="0x293" visible="false" />
-				<comment title="Particle Size" />
+				<comment title="Particle Size (World Units)" />
 				<enum8 name="Input Variable" offset="0x294" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="System Age" value="0x1" />
@@ -2211,7 +2163,7 @@ child
 					<bit name="Force Constant" index="0" />
 				</flags8>
 				<int8 name="Unknown" offset="0x2B3" visible="false" />
-				<comment title="Particle Scale" />
+				<comment title="Particle Scale (Multiple Of Size)" />
 				<enum8 name="Input Variable" offset="0x2B4" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="System Age" value="0x1" />
@@ -2313,7 +2265,7 @@ child
 					<bit name="Force Constant" index="0" />
 				</flags8>
 				<int8 name="Unknown" offset="0x2D3" visible="false" />
-				<comment title="Particle Scale X" />
+				<comment title="Particle Scale X (Multiple Of Size)" />
 				<enum8 name="Input Variable" offset="0x2D4" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="System Age" value="0x1" />
@@ -2415,7 +2367,7 @@ child
 					<bit name="Force Constant" index="0" />
 				</flags8>
 				<int8 name="Unknown" offset="0x2F3" visible="false" />
-				<comment title="Particle Scale Y" />
+				<comment title="Particle Scale Y (Multiple Of Size)" />
 				<enum8 name="Input Variable" offset="0x2F4" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="System Age" value="0x1" />
@@ -2517,7 +2469,7 @@ child
 					<bit name="Force Constant" index="0" />
 				</flags8>
 				<int8 name="Unknown" offset="0x313" visible="false" />
-				<comment title="Particle Tint" />
+				<comment title="Particle Tint">controls the overall tint of the particle</comment>
 				<enum8 name="Input Variable" offset="0x314" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="System Age" value="0x1" />
@@ -2718,7 +2670,7 @@ child
 					<bit name="Force Constant" index="0" />
 				</flags8>
 				<int8 name="Unknown" offset="0x353" visible="false" />
-				<comment title="Particle Alpha Black Point" />
+				<comment title="Particle Alpha Black Point (0=Normal, 1=Clamped)" />
 				<enum8 name="Input Variable" offset="0x354" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="System Age" value="0x1" />
@@ -2820,7 +2772,7 @@ child
 					<bit name="Force Constant" index="0" />
 				</flags8>
 				<int8 name="Unknown" offset="0x373" visible="false" />
-				<comment title="Particle Alpha White Point" />
+				<comment title="Particle Alpha White Point (1=Normal, 0=Clamped)" />
 				<enum8 name="Input Variable" offset="0x374" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="System Age" value="0x1" />

@@ -152,5 +152,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			PluginEditor pe = (PluginEditor)tabPluginEditor.Content;
 			pe.Dispose();
 		}
+
+		public void ExternalSave()
+		{
+			if (_metaEditor != null)
+				_metaEditor.ExternalSave();
+		}
 	}
 }

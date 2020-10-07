@@ -6,47 +6,70 @@
 		<revision author="OrangeMohawk" version="2">Tagrefs, lowpass struct.</revision>
 		<revision author="Lord Zedd" version="3">Updating and standardizing</revision>
 	</revisions>
-	<tagblock name="Responses" offset="0x0" visible="true" elementSize="0x84">
-		<enum16 name="Response Type" offset="0x0" visible="true">
+	<tagblock name="Classes" offset="0x0" visible="true" elementSize="0x84">
+		<enum16 name="Type" offset="0x0" visible="true">
 			<option name="Shielded" value="0x0" />
 			<option name="Unshielded" value="0x1" />
 			<option name="All" value="0x2" />
 		</enum16>
-		<int16 name="Unknown" offset="0x2" visible="false" />
-		<float32 name="Unknown" offset="0x4" visible="false" />
-		<int16 name="Unknown" offset="0x8" visible="false" />
+		<flags16 name="Flags" offset="0x2" visible="true">
+			<bit name="Ignore On No Damage" index="0" />
+			<bit name="Suppress Directional Damage Flashes" index="1" />
+			<bit name="Suppress Directional Damage Arrows" index="2" />
+			<bit name="Only When Zoomed" index="3" tooltip="if target is zoomed" />
+			<bit name="Sound Effect Only Applied When Scale Is Full" index="4" />
+		</flags16>
+		<comment title="Directional Flash" />
+		<float32 name="Flash Duration" offset="0x4" visible="true" />
+		<enum16 name="Fade Function" offset="0x8" visible="true">
+			<option name="Linear" value="0x0" />
+			<option name="Late" value="0x1" />
+			<option name="Very Late" value="0x2" />
+			<option name="Early" value="0x3" />
+			<option name="Very Early" value="0x4" />
+			<option name="Cosine" value="0x5" />
+			<option name="Zero" value="0x6" />
+			<option name="One" value="0x7" />
+		</enum16>
 		<int16 name="Unknown" offset="0xA" visible="false" />
-		<float32 name="Unknown" offset="0xC" visible="false" />
-		<float32 name="Unknown" offset="0x10" visible="false" />
-		<float32 name="Unknown" offset="0x14" visible="false" />
-		<float32 name="Unknown" offset="0x18" visible="false" />
-		<float32 name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<float32 name="Unknown" offset="0x24" visible="false" />
-		<float32 name="Unknown" offset="0x28" visible="false" />
-		<float32 name="Unknown" offset="0x2C" visible="false" />
-		<float32 name="Unknown" offset="0x30" visible="false" />
-		<float32 name="Unknown" offset="0x34" visible="false" />
-		<float32 name="Unknown" offset="0x38" visible="false" />
-		<float32 name="Unknown" offset="0x3C" visible="false" />
-		<float32 name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
+		<float32 name="Center Size" offset="0xC" visible="true" />
+		<float32 name="Offscreen Size" offset="0x10" visible="true" />
+		<float32 name="Center Alpha" offset="0x14" visible="true" />
+		<float32 name="Offscreen Alpha" offset="0x18" visible="true" />
+		<float32 name="Inner Alpha" offset="0x1C" visible="true" />
+		<float32 name="Outer Alpha" offset="0x20" visible="true" />
+		<colorf name="Flash Color" offset="0x24" alpha="true" visible="true" />
+		<colorf name="Arrow Color" offset="0x34" alpha="true" visible="true" />
+		<comment title="Motion Sensor Ping" />
+		<int16 name="Ping Duration" offset="0x44" visible="true" />
+		<int16 name="Ping Scale" offset="0x46" visible="true" />
 		<tagRef name="Rumble" offset="0x48" visible="true" />
 		<tagRef name="Camera Shake" offset="0x58" visible="true" />
 		<tagRef name="Simulated Input" offset="0x68" visible="true" />
-		<tagblock name="Lowpass" offset="0x78" visible="true" elementSize="0x18">
-			<stringid name="Name" offset="0x0" visible="true" />
-			<dataRef name="Lowpass Function" offset="0x4" visible="true" />
+		<tagblock name="Global Sound Effect" offset="0x78" visible="true" elementSize="0x18">
+			<stringid name="Effect Name" offset="0x0" visible="true" />
+			<dataRef name="Scale To Duration Function" offset="0x4" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Unknown" offset="0xC" visible="false" elementSize="0x4C"><!-- falcon turbo -->
-		<int16 name="Unknown" offset="0x0" visible="true" />
-		<int16 name="Unknown" offset="0x2" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="true" />
-		<dataRef name="Unknown" offset="0x8" visible="true" />
-		<dataRef name="Unknown" offset="0x1C" visible="true" />
-		<stringid name="Unknown" offset="0x30" visible="true" />
-		<undefined name="Unknown" offset="0x34" visible="true" />
-		<dataRef name="Unknown" offset="0x38" visible="true" />
+	<tagblock name="Area Control" offset="0xC" visible="true" elementSize="0x4C"><!-- falcon turbo -->
+		<comment title="AREA CONTROL">Higher level scale controls for camera shake, camera impulse and rumble.</comment>
+		<flags16 name="Flags" offset="0x0" visible="true">
+			<bit name="Distance Falloff" index="0" />
+			<bit name="Angle Falloff" index="1" />
+			<bit name="Object Function Falloff" index="2" />
+			<bit name="Use Unit Position" index="3" tooltip="use the head position and facing vector of the unit instead of the player camera" />
+		</flags16>
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<comment title="Distance Falloff">controls the maximum distance and the distance falloff of this effect
+NOTE: not used for scenario global effects</comment>
+		<float32 name="Maximum Distance" offset="0x4" visible="true" tooltip="the maximum distance this player feedback will affect" />
+		<dataRef name="Distance Falloff Function" offset="0x8" visible="true" />
+		<comment title="Angle Falloff">controls the falloff of this effect based on how close you are to looking directly at it
+NOTE: not used for scenario global effects</comment>
+		<dataRef name="Angle Falloff Function" offset="0x1C" visible="true" />
+		<comment title="Object Falloff">applies a falloff based on an object function - ignored if the effect is not attached to an object</comment>
+		<stringid name="Input Variable" offset="0x30" visible="true" />
+		<stringid name="Range Variable" offset="0x34" visible="true" />
+		<dataRef name="Object Falloff Function" offset="0x38" visible="true" />
 	</tagblock>
 </plugin>

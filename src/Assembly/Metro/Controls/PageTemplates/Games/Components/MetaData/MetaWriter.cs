@@ -161,11 +161,23 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			SeekToOffset(field.Offset);
 
-			if (field.Alpha)
-				_writer.WriteFloat(field.Value.ScA);
-			_writer.WriteFloat(field.Value.ScR);
-			_writer.WriteFloat(field.Value.ScG);
-			_writer.WriteFloat(field.Value.ScB);
+			// colors are handled differently prior to thirdgen, but there are edge cases in thirdgen
+			if (_cache.Engine < EngineType.ThirdGeneration || field.Basic)
+			{
+				if (field.Alpha)
+					_writer.WriteFloat(field.Value.A / 255f);
+				_writer.WriteFloat(field.Value.R / 255f);
+				_writer.WriteFloat(field.Value.G / 255f);
+				_writer.WriteFloat(field.Value.B / 255f);
+			}
+			else
+			{
+				if (field.Alpha)
+					_writer.WriteFloat(field.Value.ScA);
+				_writer.WriteFloat(field.Value.ScR);
+				_writer.WriteFloat(field.Value.ScG);
+				_writer.WriteFloat(field.Value.ScB);
+			}
 		}
 
 		public void VisitTagBlock(TagBlockData field)

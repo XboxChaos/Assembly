@@ -324,12 +324,21 @@ namespace Blamite.Plugins
 					ReadUnicList(reader, name, offset, visible, visitor, pluginLine, tooltip);
 					break;
 
+				case "color8":
+				case "color16":
+					// these should not have been used in Alteration/Ascension
+					break;
+
+				case "color24":
+					visitor.VisitColorInt(name, offset - 1, visible, false, pluginLine, tooltip);
+					break;
+
 				case "color32":
 					visitor.VisitColorInt(name, offset, visible, ReadColorAlpha(reader), pluginLine, tooltip);
 					break;
 
 				case "colorf":
-					visitor.VisitColorF(name, offset, visible, ReadColorAlpha(reader), pluginLine, tooltip);
+					visitor.VisitColorF(name, offset, visible, ReadColorAlpha(reader), ReadColorBasicValue(reader), pluginLine, tooltip);
 					break;
 
 				case "id":
@@ -555,8 +564,8 @@ namespace Blamite.Plugins
 		{
 			string format;
 
-			if (!reader.MoveToAttribute("alpha") && !reader.MoveToAttribute("order"))
-				throw new ArgumentException("Color tags must have a alpha or order attribute." + PositionInfo(reader));
+			if (!reader.MoveToAttribute("alpha") && !reader.MoveToAttribute("format") && !reader.MoveToAttribute("order"))
+				throw new ArgumentException("Color tags must have a alpha, format, or order attribute." + PositionInfo(reader));
 			format = reader.Value.ToLower();
 
 			if (format.ToLower() == "true")
@@ -564,9 +573,15 @@ namespace Blamite.Plugins
 			else if (format.ToLower() == "false")
 				return false;
 			else
-			{
 				return format.ToLower().Contains("a");
-			}
+		}
+
+		private static bool ReadColorBasicValue(XmlReader reader)
+		{
+			if (reader.MoveToAttribute("basic"))
+				return reader.Value.ToLower() == "true";
+
+			return false;
 		}
 
 		private void ReadTagBlock(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
