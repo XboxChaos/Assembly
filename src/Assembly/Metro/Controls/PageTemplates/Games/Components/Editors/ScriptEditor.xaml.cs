@@ -7,12 +7,15 @@ using Assembly.SyntaxHighlighting;
 using Blamite.Blam;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.Scripting.Compiler;
-using Blamite.Blam.Scripting.Context;
+
 using Blamite.IO;
 using Blamite.Serialization;
 using Blamite.Util;
+using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Search;
 using ICSharpCode.AvalonEdit.CodeCompletion;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Document;
 using Microsoft.Win32;
 using System;
 using System.CodeDom.Compiler;
@@ -26,14 +29,11 @@ using System.Windows.Controls;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
-using ICSharpCode.AvalonEdit.Document;
 using Assembly.Helpers.CodeCompletion.Scripting;
 using System.Threading;
-using ICSharpCode.AvalonEdit.Highlighting;
 using System.Windows.Media;
 using System.ComponentModel;
 using System.Text;
-using ICSharpCode.AvalonEdit.Editing;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 {
@@ -50,6 +50,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private Endian _endian;
         private CompletionWindow _completionWindow = null;
         private CancellationTokenSource _searchToken;
+        private BackgroundWorker searchWorker = new BackgroundWorker();
         private Regex _scriptRegex;
         private Regex _globalsRegex;
         private IEnumerable<ICompletionData> _staticCompletionData = new ICompletionData[0];
@@ -94,6 +95,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             srch.MarkerBrush = srchbrsh;
 
             txtScript.SyntaxHighlighting = LoadSyntaxHighlighting(_opcodes);
+
+            // With syntax highlighting and HTML formatting, copying text takes ages. Disable the HTML formatting for copied text.
+            DataObject.AddSettingDataHandler(txtScript, onTextViewSettingDataHandler);
 
             _progress = new Progress<int>(i =>
             {
@@ -356,7 +360,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             }
         }
 
+        static public void onTextViewSettingDataHandler(object sender, DataObjectSettingDataEventArgs e)
+        {
+            // Disable HTML formatting for copied text.
+            var textView = sender as TextEditor;
+            if (textView != null && e.Format == DataFormats.Html)
+            {
+                e.CancelCommand();
+            }
+        }
+
         #endregion
+
 
 
         #region Functions
@@ -753,7 +768,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         {
             progressBar.Value = 0;
         }
-
 
         #endregion
     }
