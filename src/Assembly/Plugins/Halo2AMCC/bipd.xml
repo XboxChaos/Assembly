@@ -1424,14 +1424,14 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 			<bit name="Supresses Effects" index="0" />
 			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
 		</flags8>
-		<int16 name="Global Material Index" offset="0x6" visible="true" />
+		<int16 name="Material Global Index" offset="0x6" visible="true" />
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
 		<float32 name="Volume" offset="0x14" visible="true" />
 		<float32 name="Mass" offset="0x18" visible="true" />
 		<int16 name="Mass Distribution Index" offset="0x1C" visible="true" />
-		<int8 name="Phantom Index" offset="0x1E" visible="true" />
+		<int8 name="Phantom Type Index" offset="0x1E" visible="true" />
 		<enum8 name="Collision Group" offset="0x1F" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
 			<option name="No Override" value="0xFF" />
 			<option name="Everything" value="0x0" />
@@ -1467,7 +1467,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 			<option name="Environment Bullet Collision" value="0x1E" />
 		</enum8>
 		<comment title="Sphere" />
-		<uint64 name="Runtime Pointer" offset="0x20" visible="true" />
+		<uint64 name="Runtime Code Pointer" offset="0x20" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x28" visible="true" />
 		<int16 name="Count" offset="0x2A" visible="true" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
@@ -1476,8 +1476,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<int8 name="Bits Per Key" offset="0x32" visible="true" />
 		<int8 name="Codec Type" offset="0x33" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
-		<int32 name="User Data" offset="0x38" visible="true" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<uint64 name="User Data" offset="0x38" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 		<float32 name="Radius" offset="0x40" visible="true" />
 		<undefined name="Unknown" offset="0x44" visible="true" />
 		<undefined name="Unknown" offset="0x48" visible="true" />
@@ -1487,7 +1486,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<undefined name="Unknown" offset="0x58" visible="true" />
 		<undefined name="Unknown" offset="0x5C" visible="true" />
 		<comment title="Translate" />
-		<uint64 name="Runtime Pointer" offset="0x60" visible="true" />
+		<uint64 name="Runtime Code Pointer" offset="0x60" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x68" visible="true" />
 		<int16 name="Count" offset="0x6A" visible="true" />
 		<undefined name="Unknown" offset="0x6C" visible="false" />
@@ -1496,20 +1495,19 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<int8 name="Bits Per Key" offset="0x72" visible="true" />
 		<int8 name="Codec Type" offset="0x73" visible="true" />
 		<undefined name="Unknown" offset="0x74" visible="false" />
-		<int32 name="User Data" offset="0x78" visible="true" />
-		<undefined name="Unknown" offset="0x7C" visible="false" />
+		<uint64 name="User Data" offset="0x78" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 		<float32 name="Radius" offset="0x80" visible="true" />
 		<undefined name="Unknown" offset="0x84" visible="true" />
-		<uint64 name="Runtime Pointer" offset="0x88" visible="true" />
+		<uint64 name="Runtime Code Pointer" offset="0x88" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<comment title="Havok Reference" />
-		<enum16 name="Shape Type" offset="0x90" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me">
+		<enum16 name="Shape Type" offset="0x90" visible="true" tooltip="this and the shape index below becomes a pointer to the given shape in memory at runtime. don't poke me">
 			<option name="Sphere" value="0x0" />
 			<option name="Pill" value="0x1" />
 			<option name="Box" value="0x2" />
 			<option name="Triangle" value="0x3" />
 			<option name="Polyhedron" value="0x4" />
 			<option name="Multi Sphere" value="0x5" />
-			<option name="Unused 0" value="0x6" />
+			<option name="Phantom" value="0x6" />
 			<option name="Unused 1" value="0x7" />
 			<option name="Unused 2" value="0x8" />
 			<option name="Unused 3" value="0x9" />
@@ -1520,8 +1518,8 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 			<option name="List" value="0xE" />
 			<option name="MOPP" value="0xF" />
 		</enum16>
-		<int16 name="Shape Index" offset="0x92" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
-		<undefined name="Unknown" offset="0x94" visible="false" />
+		<int16 name="Shape Index" offset="0x92" visible="true" />
+		<uint32 name="Runtime Shape Pointer Pad" offset="0x94" visible="false" />
 		<int32 name="Child Shape Size" offset="0x98" visible="true" />
 		<undefined name="Unknown" offset="0x9C" visible="true" />
 		<vector3 name="Translation" offset="0xA0" visible="true" />
@@ -1534,14 +1532,14 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 			<bit name="Supresses Effects" index="0" />
 			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
 		</flags8>
-		<int16 name="Global Material Index" offset="0x6" visible="true" />
+		<int16 name="Material Global Index" offset="0x6" visible="true" />
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
 		<float32 name="Volume" offset="0x14" visible="true" />
 		<float32 name="Mass" offset="0x18" visible="true" />
 		<int16 name="Mass Distribution Index" offset="0x1C" visible="true" />
-		<int8 name="Phantom Index" offset="0x1E" visible="true" />
+		<int8 name="Phantom Type Index" offset="0x1E" visible="true" />
 		<enum8 name="Collision Group" offset="0x1F" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
 			<option name="No Override" value="0xFF" />
 			<option name="Everything" value="0x0" />
@@ -1577,7 +1575,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 			<option name="Environment Bullet Collision" value="0x1E" />
 		</enum8>
 		<comment title="Capsule" />
-		<uint64 name="Runtime Pointer" offset="0x20" visible="true" />
+		<uint64 name="Runtime Code Pointer" offset="0x20" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x28" visible="true" />
 		<int16 name="Count" offset="0x2A" visible="true" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
@@ -1586,8 +1584,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<int8 name="Bits Per Key" offset="0x32" visible="true" />
 		<int8 name="Codec Type" offset="0x33" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
-		<int32 name="User Data" offset="0x38" visible="true" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<uint64 name="User Data" offset="0x38" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 		<float32 name="Radius" offset="0x40" visible="true" />
 		<undefined name="Unknown" offset="0x44" visible="true" />
 		<undefined name="Unknown" offset="0x48" visible="true" />
@@ -1604,14 +1601,14 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 			<bit name="Supresses Effects" index="0" />
 			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
 		</flags8>
-		<int16 name="Global Material Index" offset="0x6" visible="true" />
+		<int16 name="Material Global Index" offset="0x6" visible="true" />
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
 		<float32 name="Volume" offset="0x14" visible="true" />
 		<float32 name="Mass" offset="0x18" visible="true" />
 		<int16 name="Mass Distribution Index" offset="0x1C" visible="true" />
-		<int8 name="Phantom Index" offset="0x1E" visible="true" />
+		<int8 name="Phantom Type Index" offset="0x1E" visible="true" />
 		<enum8 name="Collision Group" offset="0x1F" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
 			<option name="No Override" value="0xFF" />
 			<option name="Everything" value="0x0" />
@@ -1647,7 +1644,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 			<option name="Environment Bullet Collision" value="0x1E" />
 		</enum8>
 		<comment title="Sphere" />
-		<uint64 name="Runtime Pointer" offset="0x20" visible="true" />
+		<uint64 name="Runtime Code Pointer" offset="0x20" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x28" visible="true" />
 		<int16 name="Count" offset="0x2A" visible="true" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
@@ -1656,8 +1653,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<int8 name="Bits Per Key" offset="0x32" visible="true" />
 		<int8 name="Codec Type" offset="0x33" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
-		<int32 name="User Data" offset="0x38" visible="true" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<uint64 name="User Data" offset="0x38" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 		<float32 name="Radius" offset="0x40" visible="true" />
 		<undefined name="Unknown" offset="0x44" visible="true" />
 		<undefined name="Unknown" offset="0x48" visible="true" />
@@ -1667,7 +1663,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<undefined name="Unknown" offset="0x58" visible="true" />
 		<undefined name="Unknown" offset="0x5C" visible="true" />
 		<comment title="Translate" />
-		<uint64 name="Runtime Pointer" offset="0x60" visible="true" />
+		<uint64 name="Runtime Code Pointer" offset="0x60" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x68" visible="true" />
 		<int16 name="Count" offset="0x6A" visible="true" />
 		<undefined name="Unknown" offset="0x6C" visible="false" />
@@ -1676,20 +1672,19 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<int8 name="Bits Per Key" offset="0x72" visible="true" />
 		<int8 name="Codec Type" offset="0x73" visible="true" />
 		<undefined name="Unknown" offset="0x74" visible="false" />
-		<int32 name="User Data" offset="0x78" visible="true" />
-		<undefined name="Unknown" offset="0x7C" visible="false" />
+		<uint64 name="User Data" offset="0x78" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 		<float32 name="Radius" offset="0x80" visible="true" />
 		<undefined name="Unknown" offset="0x84" visible="true" />
-		<uint64 name="Runtime Pointer" offset="0x88" visible="true" />
+		<uint64 name="Runtime Code Pointer" offset="0x88" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<comment title="Havok Reference" />
-		<enum16 name="Shape Type" offset="0x90" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me">
+		<enum16 name="Shape Type" offset="0x90" visible="true" tooltip="this and the shape index below becomes a pointer to the given shape in memory at runtime. don't poke me">
 			<option name="Sphere" value="0x0" />
 			<option name="Pill" value="0x1" />
 			<option name="Box" value="0x2" />
 			<option name="Triangle" value="0x3" />
 			<option name="Polyhedron" value="0x4" />
 			<option name="Multi Sphere" value="0x5" />
-			<option name="Unused 0" value="0x6" />
+			<option name="Phantom" value="0x6" />
 			<option name="Unused 1" value="0x7" />
 			<option name="Unused 2" value="0x8" />
 			<option name="Unused 3" value="0x9" />
@@ -1700,8 +1695,8 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 			<option name="List" value="0xE" />
 			<option name="MOPP" value="0xF" />
 		</enum16>
-		<int16 name="Shape Index" offset="0x92" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
-		<undefined name="Unknown" offset="0x94" visible="false" />
+		<int16 name="Shape Index" offset="0x92" visible="true" />
+		<uint32 name="Runtime Shape Pointer Pad" offset="0x94" visible="false" />
 		<int32 name="Child Shape Size" offset="0x98" visible="true" />
 		<undefined name="Unknown" offset="0x9C" visible="true" />
 		<vector3 name="Translation" offset="0xA0" visible="true" />
@@ -1714,14 +1709,14 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 			<bit name="Supresses Effects" index="0" />
 			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
 		</flags8>
-		<int16 name="Global Material Index" offset="0x6" visible="true" />
+		<int16 name="Material Global Index" offset="0x6" visible="true" />
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
 		<float32 name="Volume" offset="0x14" visible="true" />
 		<float32 name="Mass" offset="0x18" visible="true" />
 		<int16 name="Mass Distribution Index" offset="0x1C" visible="true" />
-		<int8 name="Phantom Index" offset="0x1E" visible="true" />
+		<int8 name="Phantom Type Index" offset="0x1E" visible="true" />
 		<enum8 name="Collision Group" offset="0x1F" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
 			<option name="No Override" value="0xFF" />
 			<option name="Everything" value="0x0" />
@@ -1757,7 +1752,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 			<option name="Environment Bullet Collision" value="0x1E" />
 		</enum8>
 		<comment title="Sphere" />
-		<uint64 name="Runtime Pointer" offset="0x20" visible="true" />
+		<uint64 name="Runtime Code Pointer" offset="0x20" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x28" visible="true" />
 		<int16 name="Count" offset="0x2A" visible="true" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
@@ -1766,8 +1761,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<int8 name="Bits Per Key" offset="0x32" visible="true" />
 		<int8 name="Codec Type" offset="0x33" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
-		<int32 name="User Data" offset="0x38" visible="true" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<uint64 name="User Data" offset="0x38" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 		<float32 name="Radius" offset="0x40" visible="true" />
 		<undefined name="Unknown" offset="0x44" visible="true" />
 		<undefined name="Unknown" offset="0x48" visible="true" />
@@ -1777,7 +1771,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<undefined name="Unknown" offset="0x58" visible="true" />
 		<undefined name="Unknown" offset="0x5C" visible="true" />
 		<comment title="Translate" />
-		<uint64 name="Runtime Pointer" offset="0x60" visible="true" />
+		<uint64 name="Runtime Code Pointer" offset="0x60" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x68" visible="true" />
 		<int16 name="Count" offset="0x6A" visible="true" />
 		<undefined name="Unknown" offset="0x6C" visible="false" />
@@ -1786,20 +1780,19 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<int8 name="Bits Per Key" offset="0x72" visible="true" />
 		<int8 name="Codec Type" offset="0x73" visible="true" />
 		<undefined name="Unknown" offset="0x74" visible="false" />
-		<int32 name="User Data" offset="0x78" visible="true" />
-		<undefined name="Unknown" offset="0x7C" visible="false" />
+		<uint64 name="User Data" offset="0x78" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 		<float32 name="Radius" offset="0x80" visible="true" />
 		<undefined name="Unknown" offset="0x84" visible="true" />
-		<uint64 name="Runtime Pointer" offset="0x88" visible="true" />
+		<uint64 name="Runtime Code Pointer" offset="0x88" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<comment title="Havok Reference" />
-		<enum16 name="Shape Type" offset="0x90" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me">
+		<enum16 name="Shape Type" offset="0x90" visible="true" tooltip="this and the shape index below becomes a pointer to the given shape in memory at runtime. don't poke me">
 			<option name="Sphere" value="0x0" />
 			<option name="Pill" value="0x1" />
 			<option name="Box" value="0x2" />
 			<option name="Triangle" value="0x3" />
 			<option name="Polyhedron" value="0x4" />
 			<option name="Multi Sphere" value="0x5" />
-			<option name="Unused 0" value="0x6" />
+			<option name="Phantom" value="0x6" />
 			<option name="Unused 1" value="0x7" />
 			<option name="Unused 2" value="0x8" />
 			<option name="Unused 3" value="0x9" />
@@ -1810,39 +1803,37 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 			<option name="List" value="0xE" />
 			<option name="MOPP" value="0xF" />
 		</enum16>
-		<int16 name="Shape Index" offset="0x92" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
-		<undefined name="Unknown" offset="0x94" visible="false" />
+		<int16 name="Shape Index" offset="0x92" visible="true" />
+		<uint32 name="Runtime Shape Pointer Pad" offset="0x94" visible="false" />
 		<int32 name="Child Shape Size" offset="0x98" visible="true" />
 		<undefined name="Unknown" offset="0x9C" visible="true" />
 		<vector3 name="Translation" offset="0xA0" visible="true" />
 		<float32 name="w Translation" offset="0xAC" visible="true" />
 	</tagblock>
-	<tagblock name="Lists" offset="0x774" visible="true" elementSize="0x90" align="0x10">
-		<uint64 name="Runtime Pointer" offset="0x0" visible="true" />
+	<tagblock name="List Shapes" offset="0x774" visible="true" elementSize="0x90" align="0x10">
+		<uint64 name="Runtime Code Pointer" offset="0x0" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x8" visible="true" />
 		<int16 name="Count" offset="0xA" visible="true" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
-		<int32 name="User Data" offset="0x10" visible="true" />
-		<undefined name="Unknown" offset="0x14" visible="true" />
+		<uint64 name="User Data" offset="0x10" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 		<int32 name="Type" offset="0x18" visible="true" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
+		<uint64 name="Runtime Code Pointer" offset="0x20" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int8 name="Disable Welding" offset="0x28" visible="true" />
 		<int8 name="Collection Type" offset="0x29" visible="true" />
 		<int16 name="Unknown" offset="0x2A" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<uint64 name="Runtime Pointer" offset="0x30" visible="true" />
+		<uint64 name="Runtime List Pointer" offset="0x30" visible="true" tooltip="becomes a pointer to where the child shapes for this list start in memory at runtime. don't poke me" />
 		<int32 name="Child Shapes Size" offset="0x38" visible="true" />
 		<uint32 name="Child Shapes Capacity" offset="0x3C" visible="true" />
 		<undefined name="Unknown" offset="0x40" visible="false" />
 		<undefined name="Unknown" offset="0x44" visible="false" />
 		<undefined name="Unknown" offset="0x48" visible="false" />
 		<undefined name="Unknown" offset="0x4C" visible="false" />
-		<vector3 name="AABB Half Extents" offset="0x50" visible="true" />
-		<float32 name="w AABB Half Extents" offset="0x5C" visible="true" />
-		<vector3 name="AABB Center" offset="0x60" visible="true" />
-		<float32 name="w AABB Center" offset="0x6C" visible="true" />
+		<vector3 name="Axis-Aligned Bounding Box Half Extents" offset="0x50" visible="true" />
+		<float32 name="w Axis-Aligned Bounding Box Half Extents" offset="0x5C" visible="true" />
+		<vector3 name="Axis-Aligned Bounding Box Center" offset="0x60" visible="true" />
+		<float32 name="w Axis-Aligned Bounding Box Center" offset="0x6C" visible="true" />
 		<int32 name="Enabled Children 0" offset="0x70" visible="true" />
 		<int32 name="Enabled Children 1" offset="0x74" visible="true" />
 		<int32 name="Enabled Children 2" offset="0x78" visible="true" />
@@ -1853,14 +1844,14 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<int32 name="Enabled Children 7" offset="0x8C" visible="true" />
 	</tagblock>
 	<tagblock name="List Shape Child Info" offset="0x780" visible="true" elementSize="0x20">
-		<enum16 name="Shape Type" offset="0x0" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me">
+		<enum16 name="Shape Type" offset="0x0" visible="true" tooltip="this and the shape index below becomes a pointer to the given shape in memory at runtime. don't poke me">
 			<option name="Sphere" value="0x0" />
 			<option name="Pill" value="0x1" />
 			<option name="Box" value="0x2" />
 			<option name="Triangle" value="0x3" />
 			<option name="Polyhedron" value="0x4" />
 			<option name="Multi Sphere" value="0x5" />
-			<option name="Unused 0" value="0x6" />
+			<option name="Phantom" value="0x6" />
 			<option name="Unused 1" value="0x7" />
 			<option name="Unused 2" value="0x8" />
 			<option name="Unused 3" value="0x9" />
@@ -1871,11 +1862,44 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 			<option name="List" value="0xE" />
 			<option name="MOPP" value="0xF" />
 		</enum16>
-		<int16 name="Shape Index" offset="0x2" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
-		<int32 name="Unknown" offset="0x4" visible="false" />
-		<int32 name="Collision Filter" offset="0x8" visible="true" />
+		<int16 name="Shape Index" offset="0x2" visible="true" />
+		<uint32 name="Runtime Shape Pointer Pad" offset="0x4" visible="false" />
+		<enum32 name="Collision Group" offset="0x8" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
+			<option name="No Override" value="0xFF" />
+			<option name="Everything" value="0x0" />
+			<option name="Environment Default" value="0x1" />
+			<option name="Environment Only" value="0x2" />
+			<option name="Small Crate" value="0x3" />
+			<option name="Crate" value="0x4" />
+			<option name="Huge Crate" value="0x5" />
+			<option name="Item" value="0x6" />
+			<option name="Projectile" value="0x7" />
+			<option name="Machine" value="0x8" />
+			<option name="Early Mover Machine" value="0x9" />
+			<option name="Creature" value="0xA" />
+			<option name="Biped" value="0xB" />
+			<option name="Dead Biped" value="0xC" />
+			<option name="Super Collidable Ragdoll" value="0xD" />
+			<option name="Ragdoll" value="0xE" />
+			<option name="Vehicle" value="0xF" />
+			<option name="Decal" value="0x10" />
+			<option name="Forge Dynamic Scenary" value="0x11" />
+			<option name="Small Expensive Plant" value="0x12" />
+			<option name="Tech Art Custom" value="0x13" />
+			<option name="Proxy" value="0x14" />
+			<option name="Huge Vehicle" value="0x15" />
+			<option name="Ignore Environment" value="0x16" />
+			<option name="Character Posture" value="0x17" />
+			<option name="Item Blocker" value="0x18" />
+			<option name="User00" value="0x19" />
+			<option name="Zero Extent" value="0x1A" />
+			<option name="Physical Projectile" value="0x1B" />
+			<option name="Environment Invisible Wall" value="0x1C" />
+			<option name="Environment Play Collision" value="0x1D" />
+			<option name="Environment Bullet Collision" value="0x1E" />
+		</enum32>
 		<int32 name="Shape Size" offset="0xC" visible="true" />
-		<int32 name="Number of Child Shapes" offset="0x10" visible="true" />
+		<int32 name="Number Of Child Shapes" offset="0x10" visible="true" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
