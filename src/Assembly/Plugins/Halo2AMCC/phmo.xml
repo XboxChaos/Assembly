@@ -1341,7 +1341,61 @@
 		<undefined name="Unknown" offset="0x4C" visible="true" />
 		<uint64 name="User Data" offset="0x50" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 	</tagblock>
-	<uint32 name="Serialized Shapes Block Here" offset="0x19C" visible="false" />
-	<uint32 name="Serialized Shapes Block Here" offset="0x1A0" visible="false" />
-	<uint32 name="Serialized Shapes Block Here" offset="0x1A4" visible="false" />
+	<tagblock name="Serialized Shapes" offset="0x19C" visible="true" elementSize="0xC">
+		<tagblock name="MOPP Serialized Data" offset="0x0" visible="true" elementSize="0x58" align="0x10">
+			<stringid name="Name" offset="0x0" visible="true" />
+			<int8 name="Material Index" offset="0x4" visible="true" />
+			<flags8 name="Material Flags" offset="0x5" visible="true">
+				<bit name="Supresses Effects" index="0" />
+				<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
+			</flags8>
+			<int16 name="Material Global Index" offset="0x6" visible="true" />
+			<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
+			<float32 name="Friction" offset="0xC" visible="true" />
+			<float32 name="Restitution" offset="0x10" visible="true" />
+			<float32 name="Volume" offset="0x14" visible="true" />
+			<float32 name="Mass" offset="0x18" visible="true" />
+			<int16 name="Mass Distribution Index" offset="0x1C" visible="true" />
+			<int8 name="Phantom Type Index" offset="0x1E" visible="true" />
+			<enum8 name="Collision Group" offset="0x1F" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
+				<option name="No Override" value="0xFF" />
+				<option name="Everything" value="0x0" />
+				<option name="Environment Default" value="0x1" />
+				<option name="Environment Only" value="0x2" />
+				<option name="Small Crate" value="0x3" />
+				<option name="Crate" value="0x4" />
+				<option name="Huge Crate" value="0x5" />
+				<option name="Item" value="0x6" />
+				<option name="Projectile" value="0x7" />
+				<option name="Machine" value="0x8" />
+				<option name="Early Mover Machine" value="0x9" />
+				<option name="Creature" value="0xA" />
+				<option name="Biped" value="0xB" />
+				<option name="Dead Biped" value="0xC" />
+				<option name="Super Collidable Ragdoll" value="0xD" />
+				<option name="Ragdoll" value="0xE" />
+				<option name="Vehicle" value="0xF" />
+				<option name="Decal" value="0x10" />
+				<option name="Forge Dynamic Scenary" value="0x11" />
+				<option name="Small Expensive Plant" value="0x12" />
+				<option name="Tech Art Custom" value="0x13" />
+				<option name="Proxy" value="0x14" />
+				<option name="Huge Vehicle" value="0x15" />
+				<option name="Ignore Environment" value="0x16" />
+				<option name="Character Posture" value="0x17" />
+				<option name="Item Blocker" value="0x18" />
+				<option name="User00" value="0x19" />
+				<option name="Zero Extent" value="0x1A" />
+				<option name="Physical Projectile" value="0x1B" />
+				<option name="Environment Invisible Wall" value="0x1C" />
+				<option name="Environment Play Collision" value="0x1D" />
+				<option name="Environment Bullet Collision" value="0x1E" />
+			</enum8>
+			<int32 name="Version" offset="0x20" visible="true" />
+			<undefined name="Unknown" offset="0x24" visible="false" />
+			<uint64 name="Runtime Deserialized Shape Pointer" offset="0x28" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
+			<dataref name="Serialized Havok Data" offset="0x30" visible="true" />
+			<dataref name="Serialized Havok Data Any Temp" offset="0x44" visible="true" />
+		</tagblock>
+	</tagblock>
 </plugin>
