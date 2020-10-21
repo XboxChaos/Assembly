@@ -605,6 +605,9 @@ namespace Blamite.Injection
 			SeekToOffset(block, offset);
 			var address = _reader.ReadUInt32();
 
+			if (address == 0)
+				return;
+
 			long expand = _cacheFile.PointerExpander.Expand(address);
 
 			int length = _dataRefLayout.Size * refCount;
