@@ -698,7 +698,9 @@ namespace Blamite.Injection
 					if (pa != null)
 						pc.BEntry.AEntries.Add(pa);
 				}
-				newpred.CEntries.Add(pc);
+
+				if (!pc.BEntry.IsEmpty)
+					newpred.CEntries.Add(pc);
 			}
 
 			foreach (ExtractedResourcePredictionA expa in pred.AEntries)
@@ -708,7 +710,8 @@ namespace Blamite.Injection
 					newpred.AEntries.Add(pa);
 			}
 
-			_resources.Predictions.Add(newpred);
+			if (!newpred.IsEmpty)
+				_resources.Predictions.Add(newpred);
 			return;
 		}
 
