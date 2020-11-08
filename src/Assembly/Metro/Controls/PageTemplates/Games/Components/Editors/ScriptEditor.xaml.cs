@@ -7,7 +7,6 @@ using Assembly.SyntaxHighlighting;
 using Blamite.Blam;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.Scripting.Compiler;
-
 using Blamite.IO;
 using Blamite.Serialization;
 using Blamite.Util;
