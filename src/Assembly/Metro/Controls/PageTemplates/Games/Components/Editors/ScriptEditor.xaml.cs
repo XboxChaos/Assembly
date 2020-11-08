@@ -209,12 +209,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                         ScriptData compileData = await Task.Run(() => CompileScripts(hsc, _progress, logger, exceptionCollector));
                         stopWatch.Stop();
                         var timeSpan = stopWatch.Elapsed;
-                        string compilationMessage = $"The scripts were successfully compiled in {timeSpan.TotalSeconds} seconds.";
+                        string compilationMessage = $"The scripts were successfully compiled in {Math.Round(timeSpan.TotalSeconds, 3)} seconds.";
                         logger.Information(compilationMessage);
 
                         // Show the message box.
                         var saveResult = MetroMessageBox.Show("Scripts Compiled", compilationMessage
-                                + "\nWARNING: This compiler is not 100% accurate and could corrupt your map."
+                                + "\nWARNING: This compiler is not 100% accurate and could corrupt the map in rare cases. Making a backup before proceeding is advisable."
                                 + "\n\nDo you want to save the changes to the file?", MetroMessageBox.MessageBoxButtons.YesNo);
                         if(saveResult == MetroMessageBox.MessageBoxResult.Yes)
                         {

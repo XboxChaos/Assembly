@@ -190,7 +190,8 @@ namespace Blamite.Blam.Scripting
 
         public override string ToString()
         {
-            return value.ToString("X8");
+            byte[] bytes = BitConverter.GetBytes(value);
+            return BitConverter.ToUInt32(bytes, 0).ToString("X8");
         }
     }
 }
