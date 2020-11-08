@@ -1,6 +1,5 @@
 ﻿using Blamite.Serialization;
 using Blamite.IO;
-using System;
 
 namespace Blamite.Blam.Scripting
 {
@@ -9,12 +8,14 @@ namespace Blamite.Blam.Scripting
 	/// </summary>
 	public class ScriptExpression
 	{
-		public ScriptExpression()
+        #region constructors
+
+        public ScriptExpression()
 		{
 		}
 
-		public ScriptExpression(DatumIndex index, ushort opcode, ushort valType, ScriptExpressionType expType,
-			uint strOffset, object value, short line)
+		private ScriptExpression(DatumIndex index, ushort opcode, ushort valType, ScriptExpressionType expType,
+			uint strOffset, short line)
 		{
 			Index = index;
 			Opcode = opcode;
@@ -22,25 +23,84 @@ namespace Blamite.Blam.Scripting
 			Type = expType;
 			Next = DatumIndex.Null;
 			StringOffset = strOffset;
-			SetValue(value);
 			LineNumber = line;
 		}
 
-		public ScriptExpression(DatumIndex index, ushort opcode, ushort valType, ScriptExpressionType expType, 
-			DatumIndex nextExp, uint strOffset, object value, Int16 line) : this(index, opcode, valType, expType, strOffset, value, line)
+		// uint
+		public ScriptExpression(DatumIndex index, ushort opcode, ushort valType, ScriptExpressionType expType,
+			uint strOffset, short line, uint value) : this (index, opcode, valType, expType, strOffset, line)
+        {
+			Value = new LongExpressionValue(value);
+        }
+
+		// short
+		public ScriptExpression(DatumIndex index, ushort opcode, ushort valType, ScriptExpressionType expType,
+			uint strOffset, short line, ushort value) : this(index, opcode, valType, expType, strOffset, line)
 		{
-			Next = nextExp;
+			Value = new ShortValue(value);
 		}
+
+		// short, short
+		public ScriptExpression(DatumIndex index, ushort opcode, ushort valType, ScriptExpressionType expType,
+			uint strOffset, short line, ushort value1, ushort value2) : this(index, opcode, valType, expType, strOffset, line)
+		{
+			Value = new LongExpressionValue(value1, value2);
+		}
+
+		// byte, byte, byte, byte
+		public ScriptExpression(DatumIndex index, ushort opcode, ushort valType, ScriptExpressionType expType,
+			uint strOffset, short line, byte value1, byte value2, byte value3, byte value4) : this(index, opcode, valType, expType, strOffset, line)
+		{
+			Value = new LongExpressionValue(value1, value2, value3, value4);
+		}
+
+		// byte
+		public ScriptExpression(DatumIndex index, ushort opcode, ushort valType, ScriptExpressionType expType,
+			uint strOffset, short line, byte value) : this(index, opcode, valType, expType, strOffset, line)
+		{
+			Value = new ByteValue(value);
+		}
+
+		// float
+		public ScriptExpression(DatumIndex index, ushort opcode, ushort valType, ScriptExpressionType expType,
+			uint strOffset, short line, float value) : this(index, opcode, valType, expType, strOffset, line)
+		{
+			Value = new FloatValue(value);
+		}
+
+		// StringID
+		public ScriptExpression(DatumIndex index, ushort opcode, ushort valType, ScriptExpressionType expType,
+			uint strOffset, short line, StringID value) : this(index, opcode, valType, expType, strOffset, line)
+		{
+			Value = new LongExpressionValue(value);
+		}
+
+		// DatumIndex
+		public ScriptExpression(DatumIndex index, ushort opcode, ushort valType, ScriptExpressionType expType,
+			uint strOffset, short line, DatumIndex value) : this(index, opcode, valType, expType, strOffset, line)
+		{
+			Value = new LongExpressionValue(value);
+		}
+
+		// Tag
+		public ScriptExpression(DatumIndex index, ushort opcode, ushort valType, ScriptExpressionType expType,
+			uint strOffset, short line, ITag value) : this(index, opcode, valType, expType, strOffset, line)
+		{
+			Value = new LongExpressionValue(value);
+		}
+
 
 		internal ScriptExpression(StructureValueCollection values, ushort index, StringTableReader stringReader, int stringTableSize)
 		{
 			Load(values, index, stringReader, stringTableSize);
 		}
 
-		/// <summary>
-		///     Gets or sets the expression's datum index.
-		/// </summary>
-		public DatumIndex Index { get; set; }
+        #endregion
+
+        /// <summary>
+        ///     Gets or sets the expression's datum index.
+        /// </summary>
+        public DatumIndex Index { get; set; }
 
 		/// <summary>
 		///     Gets or sets the opcode associated with the expression.
@@ -70,7 +130,7 @@ namespace Blamite.Blam.Scripting
 		/// <summary>
 		///     Gets or sets the value of the expression.
 		/// </summary>
-		public uint Value { get; set; }
+		public IExpressionValue Value { get; set; }
 
 		/// <summary>
 		///     Gets or sets the expression's line number, or 0 if the expression is implicit.
@@ -87,12 +147,22 @@ namespace Blamite.Blam.Scripting
 		/// </summary>
 		public DatumIndex Next { get; set; }
 
+		/// <summary>
+		/// Resolves the next expression.
+		/// </summary>
+		/// <param name="allExpressions">The map's script expression table.</param>
 		internal void ResolveReferences(ScriptExpressionTable allExpressions)
 		{
 			if (Next.IsValid)
+            {
 				NextExpression = allExpressions.FindExpression(Next);
+			}
 		}
 
+		/// <summary>
+		/// Resolves the string value.
+		/// </summary>
+		/// <param name="requestedStrings">The table containing the expression strings.</param>
 		internal void ResolveStrings(CachedStringTable requestedStrings)
 		{
 			StringValue = requestedStrings.GetString(StringOffset);
@@ -106,11 +176,13 @@ namespace Blamite.Blam.Scripting
 			Type = (ScriptExpressionType) values.GetInteger("expression type");
 			Next = new DatumIndex(values.GetInteger("next expression index"));
 			StringOffset = (uint)values.GetIntegerOrDefault("string table offset", 0);
-			Value = (uint)values.GetInteger("value");
+			Value = new LongExpressionValue((uint)values.GetInteger("value"));
 			LineNumber = (short) values.GetIntegerOrDefault("source line", 1);
 
             if(StringOffset < stringTableSize)
-			    stringReader.RequestString(StringOffset);
+            {
+				stringReader.RequestString(StringOffset);
+			}
 		}
 
 		/// <summary>
@@ -125,97 +197,21 @@ namespace Blamite.Blam.Scripting
 			writer.WriteInt16((short)Type);
 			writer.WriteUInt32(Next.Value);
 			writer.WriteUInt32(StringOffset);
-			writer.WriteUInt32(Value);
+			Value.Write(writer);
 			writer.WriteInt16(LineNumber);
 			// zero could be part of the line number
 			writer.WriteUInt16(0);
 		}
 
-		public void SetValue(object data)
-		{
-			uint result = data switch
-			{
-				uint u32 => u32,
-				ushort u16 => (uint)(0xFFFF << 16 | u16),
-				ushort[] u16Arr => UInt16ArrToValue(u16Arr),
-				byte by => (uint)(0xFFFFFF << 8 | by),
-				byte[] byArr => ByteArrToValue(byArr),
-				float fl => BitConverter.ToUInt32(BitConverter.GetBytes(fl), 0),
-				StringID sid => sid.Value,
-				DatumIndex datum => datum.Value,
-				ITag tag => tag.Index.Value,
-				_ => throw new NotImplementedException($"Unable to convert an object of the type {data.GetType()} " +
-					$"to an expression value."),
-			};
-			Value = result;
-		}
-
+		/// <summary>
+		/// Clones a script expression.
+		/// </summary>
+		/// <returns>The cloned expression.</returns>
 		public ScriptExpression Clone()
 		{
 			var clone = (ScriptExpression)this.MemberwiseClone();
 			clone.Next = new DatumIndex(Next.Salt, Next.Index);
 			return clone;
 		}
-
-		private uint UInt16ArrToValue(ushort[] data)
-		{
-			int len = data.Length;
-			uint result;
-
-			if (len == 2)
-			{
-				result = (uint)(data[0] << 16) | data[1];
-			}
-			else if (len == 1)
-			{
-				result = (uint)(data[0] << 16 | 0xFFFF);
-			}
-			else
-				throw new ArgumentException("Unable to convert the array to an expression value.");
-
-			return result;
-		}
-
-		private uint ByteArrToValue(byte[] data)
-		{
-			int len = data.Length;
-			uint upper;
-			uint lower;
-
-			uint result;
-
-			switch (len)
-			{
-				case 4:
-					upper = (uint)(data[0] << 24 | data[1] << 16);
-					lower = (uint)(data[2] << 8 | data[3]);
-					result = upper | lower;
-					break;
-
-				case 3:
-					upper = (uint)(data[0] << 24 | data[1] << 16);
-					lower = (uint)(data[2] << 8 | 0xFF);
-					result = upper | lower;
-					break;
-
-				case 2:
-					upper = (uint)(data[0] << 24 | data[1] << 16);
-					lower = 0xFFFF;
-					result = upper | lower;
-					break;
-
-				case 1:
-					upper = (uint)(data[0] << 24 | 0xFF << 16);
-					lower = 0xFFFF;
-					result = upper | lower;
-					break;
-
-				default:
-					throw new ArgumentNullException($"Unable to convert a byte array of the length {len} to an expression value.");
-			}
-
-			return result;
-		}
-
 	}
 }

@@ -257,7 +257,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
             ushort opcode = _opcodes.GetTypeInfo("boolean").Opcode;
             return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
-                context.GetCorrectTextPosition(_missingCarriageReturnPositions), val, (short)context.Start.Line);
+                context.GetCorrectTextPosition(_missingCarriageReturnPositions), (short)context.Start.Line, val);
         }
 
         private ScriptExpression GetEnum32Expression(BS_ReachParser.LiteralContext context, string valueType, string castTo)
@@ -273,7 +273,7 @@ namespace Blamite.Blam.Scripting.Compiler
             }
 
             return new ScriptExpression(_currentIndex, info.Opcode, _opcodes.GetTypeInfo(castTo).Opcode, ScriptExpressionType.Expression,
-                _strings.Cache(text), (uint)index, (short)context.Start.Line);
+                _strings.Cache(text), (short)context.Start.Line, (uint)index);
         }
 
         private ScriptExpression GetEnum16Expression(BS_ReachParser.LiteralContext context, string expectedValueType)
@@ -289,7 +289,7 @@ namespace Blamite.Blam.Scripting.Compiler
             }
 
             return new ScriptExpression(_currentIndex, info.Opcode, info.Opcode, ScriptExpressionType.Expression, 
-                _strings.Cache(text), (ushort)val, (short)context.Start.Line);
+                _strings.Cache(text), (short)context.Start.Line, (ushort)val);
         }
 
         private ScriptExpression GetNumberExpression(BS_ReachParser.LiteralContext context)
@@ -332,7 +332,7 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 ushort opcode = _opcodes.GetTypeInfo(valueType).Opcode;
                 return new ScriptExpression(_currentIndex, opcode, _opcodes.GetTypeInfo(castTo).Opcode, ScriptExpressionType.Expression,
-                    _strings.Cache(name), (ushort)obj.Index, (short)context.Start.Line);
+                    _strings.Cache(name), (short)context.Start.Line, (ushort)obj.Index);
             }
             else
             {
@@ -347,18 +347,22 @@ namespace Blamite.Blam.Scripting.Compiler
             ushort opcode = _opcodes.GetTypeInfo("ai").Opcode;
             ushort valuetype = _opcodes.GetTypeInfo(expectedValueType).Opcode;
 
-            byte[] values = new byte[4];
+            byte b1;
+            byte b2;
+            byte b3;
+            byte b4;
+
             #region value generation
             // Squads.
-            if(TryGetObjectFromContext(out ScriptingContextObject squadObject, Tuple.Create("ai_squad", subStrings[0])))
+            if (TryGetObjectFromContext(out ScriptingContextObject squadObject, Tuple.Create("ai_squad", subStrings[0])))
             {
                 // Squad.
                 if(subStrings.Length == 1)
                 {
-                    values[0] = 32;
-                    values[1] = 0;
-                    values[2] = 0;
-                    values[3] = (byte)squadObject.Index;
+                    b1 = 32;
+                    b2 = 0;
+                    b3 = 0;
+                    b4 = (byte)squadObject.Index;
                 }
                 // Locations.
                 else if(subStrings.Length == 2)
@@ -366,18 +370,18 @@ namespace Blamite.Blam.Scripting.Compiler
                     // Group Location.
                     if (TryGetChildObjectFromObject(squadObject, "ai_group_location", subStrings[1], out ScriptingContextObject groupLocationObject))
                     {
-                        values[0] = 160;
-                        values[1] = (byte)squadObject.Index;
-                        values[2] = 0;
-                        values[3] = (byte)groupLocationObject.Index;
+                        b1 = 160;
+                        b2 = (byte)squadObject.Index;
+                        b3 = 0;
+                        b4 = (byte)groupLocationObject.Index;
                     }
                     // Single Location.
                     else if (TryGetChildObjectFromObject(squadObject, "ai_single_location", subStrings[1], out ScriptingContextObject singleLocationObject))
                     {
-                        values[0] = 128;
-                        values[1] = (byte)squadObject.Index;
-                        values[2] = 0;
-                        values[3] = (byte)singleLocationObject.Index;
+                        b1 = 128;
+                        b2 = (byte)squadObject.Index;
+                        b3 = 0;
+                        b4 = (byte)singleLocationObject.Index;
                     }
                     else
                     {
@@ -392,10 +396,10 @@ namespace Blamite.Blam.Scripting.Compiler
             // Squad Groups.
             else if (subStrings.Length == 1 && TryGetObjectFromContext(out ScriptingContextObject groupObject, Tuple.Create("ai_squad_group", subStrings[0])))
             {
-                values[0] = 64;
-                values[1] = 0;
-                values[2] = 0;
-                values[3] = (byte)groupObject.Index;
+                b1 = 64;
+                b2 = 0;
+                b3 = 0;
+                b4 = (byte)groupObject.Index;
             }
             // Objectives.
             else if (TryGetObjectFromContext(out ScriptingContextObject objectiveObject, Tuple.Create("ai_objective", subStrings[0])))
@@ -403,20 +407,20 @@ namespace Blamite.Blam.Scripting.Compiler
                 // Objective.
                 if (subStrings.Length == 1)
                 {
-                    values[0] = 223;
-                    values[1] = 255;
-                    values[2] = 0;
-                    values[3] = (byte)objectiveObject.Index;
+                    b1 = 223;
+                    b2 = 255;
+                    b3 = 0;
+                    b4 = (byte)objectiveObject.Index;
                 }
                 else if (subStrings.Length == 2)
                 {
                     // Objective Role.
                     if (TryGetChildObjectFromObject(objectiveObject, "ai_role", subStrings[1], out ScriptingContextObject roleObject))
                     {
-                        values[0] = 192;
-                        values[1] = (byte)roleObject.Index;
-                        values[2] = 0;
-                        values[3] = (byte)objectiveObject.Index;
+                        b1 = 192;
+                        b2 = (byte)roleObject.Index;
+                        b3 = 0;
+                        b4 = (byte)objectiveObject.Index;
                     }
                     else
                     {
@@ -434,7 +438,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 return null;
             }
             #endregion
-            return new ScriptExpression(_currentIndex, opcode, valuetype, ScriptExpressionType.Expression, _strings.Cache(text), values, (short)context.Start.Line);
+            return new ScriptExpression(_currentIndex, opcode, valuetype, ScriptExpressionType.Expression, _strings.Cache(text), (short)context.Start.Line, b1, b2, b3, b4);
         }
 
         private ScriptExpression GetIndex16Expression(BS_ReachParser.LiteralContext context, string expectedValueType)
@@ -473,7 +477,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
             ushort opcode = _opcodes.GetTypeInfo(expectedValueType).Opcode;
             return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression, 
-                _strings.Cache(name), (ushort)value, (short)context.Start.Line);
+                _strings.Cache(name), (short)context.Start.Line, (ushort)value);
         }
 
         private ScriptExpression GetDeviceGroupExpression(BS_ReachParser.LiteralContext context)
@@ -489,7 +493,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 ushort deviceSalt = (ushort)(SaltGenerator.GetSalt("device groups") + index);
                 DatumIndex value = new DatumIndex(deviceSalt, (ushort)index);
 
-                return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression, _strings.Cache(name), value, (short)context.Start.Line);
+                return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression, _strings.Cache(name), (short)context.Start.Line, value);
             }
             else
             {
@@ -525,11 +529,8 @@ namespace Blamite.Blam.Scripting.Compiler
                 }
 
                 ushort opCode = _opcodes.GetTypeInfo("point_reference").Opcode;
-                ushort[] value = new ushort[2];
-                value[0] = (ushort)set;
-                value[1] = (ushort)point;
                 return new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression,
-                    _strings.Cache(text), value, (short)context.Start.Line);
+                    _strings.Cache(text), (short)context.Start.Line, (ushort)set, (ushort)point);
             }
             else
             {
@@ -546,7 +547,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 int index = folderObject.Index;
                 ushort opcode = _opcodes.GetTypeInfo("folder").Opcode;
                 return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
-                    _strings.Cache(name), (uint)index, (short)context.Start.Line);
+                    _strings.Cache(name), (short)context.Start.Line, (uint)index);
             }
             else
             {
@@ -615,7 +616,7 @@ namespace Blamite.Blam.Scripting.Compiler
             // Create expression.
             var opcode = _opcodes.GetTypeInfo(expectedValueType).Opcode;
             return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
-                _strings.Cache(text), datum, (short)context.Start.Line);
+                _strings.Cache(text), (short)context.Start.Line, datum);
         }
 
         private ScriptExpression CreateLineExpression(BS_ReachParser.LiteralContext context)
@@ -652,7 +653,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
             ushort opcode = _opcodes.GetTypeInfo("ai_line").Opcode;
             return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
-                _strings.Cache(name), value, (short)context.Start.Line);
+                _strings.Cache(name), (short)context.Start.Line, value);
         }
 
         private ScriptExpression GetStringExpression(BS_ReachParser.LiteralContext context)
@@ -667,7 +668,7 @@ namespace Blamite.Blam.Scripting.Compiler
             var opcode = _opcodes.GetTypeInfo("string").Opcode;
             uint value = _strings.Cache(text);
             return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
-                value, value, (short)context.Start.Line);
+                value, (short)context.Start.Line, value);
         }
 
         private ScriptExpression GetLongExpression(BS_ReachParser.LiteralContext context)
@@ -680,7 +681,7 @@ namespace Blamite.Blam.Scripting.Compiler
             }
 
             return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
-                context.GetCorrectTextPosition(_missingCarriageReturnPositions), (uint)value, (short)context.Start.Line);
+                context.GetCorrectTextPosition(_missingCarriageReturnPositions), (short)context.Start.Line, (uint)value);
         }
 
         private ScriptExpression GetShortExpression(BS_ReachParser.LiteralContext context)
@@ -693,7 +694,7 @@ namespace Blamite.Blam.Scripting.Compiler
             }
 
             return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
-                context.GetCorrectTextPosition(_missingCarriageReturnPositions), (ushort)value, (short)context.Start.Line);
+                context.GetCorrectTextPosition(_missingCarriageReturnPositions), (short)context.Start.Line, (ushort)value);
         }
 
         private ScriptExpression GetRealExpression(BS_ReachParser.LiteralContext context)
@@ -706,7 +707,7 @@ namespace Blamite.Blam.Scripting.Compiler
             }
 
             return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
-                context.GetCorrectTextPosition(_missingCarriageReturnPositions), value, (short)context.Start.Line);
+                context.GetCorrectTextPosition(_missingCarriageReturnPositions), (short)context.Start.Line, value);
         }
 
         private ScriptExpression CreateSIDExpression(BS_ReachParser.LiteralContext context)
@@ -715,7 +716,7 @@ namespace Blamite.Blam.Scripting.Compiler
             ushort opcode = _opcodes.GetTypeInfo("string_id").Opcode;
             StringID id = _cacheFile.StringIDs.FindOrAddStringID(text);
             return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
-                _strings.Cache(text), id, (short)context.Start.Line);
+                _strings.Cache(text), (short)context.Start.Line, id);
         }
 
         private ScriptExpression CreateUnitSeatMappingExpression(BS_ReachParser.LiteralContext context)
@@ -728,11 +729,8 @@ namespace Blamite.Blam.Scripting.Compiler
             }
 
             ushort opcode = _opcodes.GetTypeInfo("unit_seat_mapping").Opcode;
-            ushort[] value = new ushort[2];
-            value[0] = (ushort)mapping.Count;
-            value[1] = (ushort)mapping.Index;
             return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression, 
-                _strings.Cache(mapping.Name), value, (short)context.Start.Line);
+                _strings.Cache(mapping.Name), (short)context.Start.Line, (ushort)mapping.Count, (ushort)mapping.Index);
         }
     }
 }

@@ -221,7 +221,7 @@ namespace Blamite.Blam.Scripting
 
 					if (actualType.Quoted)
 					{
-						if (expression.Value != 0xFFFFFFFF)
+						if (expression.Value.UintValue != 0xFFFFFFFF)
 							output.Write("\"{0}\"", expression.StringValue);
 						else
 							output.Write("none");
@@ -288,7 +288,7 @@ namespace Blamite.Blam.Scripting
 					// This isn't the technical way of doing this,
 					// but since seat mapping names aren't stored anywhere,
 					// it would be tricky to resolve them unless we just use an index for now
-					if (expression.Value != 0xFFFFFFFF)
+					if (expression.Value.UintValue != 0xFFFFFFFF)
 						output.Write(expression.StringValue);
 					else
 						output.Write("none");
@@ -301,7 +301,7 @@ namespace Blamite.Blam.Scripting
 					{
 						output.Write(enumValue);
 					}
-					else if (expression.Value == 0xFFFFFFFF)
+					else if (expression.Value.IsNull)
 					{
 						output.Write("none");
 					}
@@ -344,7 +344,7 @@ namespace Blamite.Blam.Scripting
 		{
 			_onNewLine = false;
 			output.Write("(local ");
-			var expressionIndex = new DatumIndex(expression.Value);
+			var expressionIndex = new DatumIndex(expression.Value.UintValue);
 			_nextExpressionIsVar = true;
 			_varTypeWritten = false;
 			GenerateCode(_scripts.Expressions.FindExpression(expressionIndex), output);
@@ -356,7 +356,7 @@ namespace Blamite.Blam.Scripting
 
 		private bool GenerateScriptReference(ScriptExpression expression, IndentedTextWriter output)
 		{
-			var expressionIndex = new DatumIndex(expression.Value);
+			var expressionIndex = new DatumIndex(expression.Value.UintValue);
 
 			_nextFunctionIsScript = true;
 			GenerateCode(_scripts.Expressions.FindExpression(expressionIndex), output);
@@ -366,7 +366,7 @@ namespace Blamite.Blam.Scripting
 
 		private bool GenerateGroup(ScriptExpression expression, IndentedTextWriter output)
 		{
-			var childIndex = new DatumIndex(expression.Value);
+			var childIndex = new DatumIndex(expression.Value.UintValue);
 			if (!childIndex.IsValid)
 				throw new InvalidOperationException("Group expression has no child");
 
@@ -377,9 +377,9 @@ namespace Blamite.Blam.Scripting
 		private uint GetValue(ScriptExpression expression, ScriptValueType type, Endian endian)
 		{
 			if (endian == Endian.BigEndian)
-				return expression.Value >> (32 - (type.Size * 8));
+				return expression.Value.UintValue >> (32 - (type.Size * 8));
 			else
-				return expression.Value;
+				return expression.Value.UintValue;
 		}
 	}
 }

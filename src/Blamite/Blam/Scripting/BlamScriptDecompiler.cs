@@ -310,7 +310,7 @@ namespace Blamite.Blam.Scripting
 		/// <returns>Returns true if code was generated.</returns>
 		private bool GenerateGroup(ScriptExpression expression, bool newLine)
 		{
-			DatumIndex nameIndex = new DatumIndex(expression.Value);
+			DatumIndex nameIndex = new DatumIndex(expression.Value.UintValue);
 			FunctionInfo info = _opcodes.GetFunctionInfo(expression.Opcode);
 
 			// filter out begin groups which were added by the compiler.
@@ -377,7 +377,7 @@ namespace Blamite.Blam.Scripting
 				_output.Write("(");
 
 				// generate code.
-				DatumIndex nameIndex = new DatumIndex(expression.Value);
+				DatumIndex nameIndex = new DatumIndex(expression.Value.UintValue);
 				FollowRootIndex(nameIndex, false, BranchType.Cond);
 
 				// write the closing parenthesis of the last conditional.
@@ -401,7 +401,7 @@ namespace Blamite.Blam.Scripting
 				_output.Write("(");
 
 				// generate code.
-				DatumIndex nameIndex = new DatumIndex(expression.Value);
+				DatumIndex nameIndex = new DatumIndex(expression.Value.UintValue);
 				FollowRootIndex(nameIndex, false, BranchType.Cond);
 
 				_output.Indent = startIndent;
@@ -420,7 +420,7 @@ namespace Blamite.Blam.Scripting
 		private bool GenerateScriptReference(ScriptExpression expression, bool newLine)
 		{
 			// we need to retrieve the script's name from its function_name expression. Otherwise branch calls will become corrupt.
-			DatumIndex nameIndex = new DatumIndex(expression.Value);
+			DatumIndex nameIndex = new DatumIndex(expression.Value.UintValue);
 			var nameExp =_scripts.Expressions.FindExpression(nameIndex);
 
 			// write the call's opening parenthesis and name.
@@ -481,7 +481,7 @@ namespace Blamite.Blam.Scripting
 				if (actualType.Quoted)
 				{
 					// Don't quote the keyword none.
-					if(expression.Value == 0xFFFFFFFF || expression.StringValue == "none")
+					if(expression.Value.IsNull || expression.StringValue == "none")
                     {
 						_output.Write("none");
 					}
@@ -534,7 +534,7 @@ namespace Blamite.Blam.Scripting
 					text = expression.StringValue;
 					break;
 				case "unit_seat_mapping":
-					if (expression.Value != 0xFFFFFFFF)
+					if (!expression.Value.IsNull)
 					{
 						text = expression.StringValue;
 					}
@@ -545,7 +545,7 @@ namespace Blamite.Blam.Scripting
 					break;
 
 				default:
-					if(expression.Value == 0xFFFFFFFF)
+					if(expression.Value.IsNull)
 					{
 						text = "none";
 					}
@@ -585,15 +585,15 @@ namespace Blamite.Blam.Scripting
 		{
 			if (_endian == Endian.BigEndian)
 			{
-				return expression.Value >> (32 - (type.Size * 8));
+				return expression.Value.UintValue >> (32 - (type.Size * 8));
 
 			}
 			else
 			{
-				var bytes = BitConverter.GetBytes(expression.Value);
+				var bytes = BitConverter.GetBytes(expression.Value.UintValue);
 				uint result = type.Size switch
 				{
-					4 => expression.Value,
+					4 => expression.Value.UintValue,
 					2 => (uint)BitConverter.ToUInt16(bytes, 0),
 					1 => (uint)bytes[0],
 					_ => throw new ArgumentException($"Script value types can only have a size of 1, 2 or 4 bytes. The size {type.Size} is invalid.")

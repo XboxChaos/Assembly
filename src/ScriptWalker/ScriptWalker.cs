@@ -126,6 +126,7 @@ namespace ScriptWalker
 
         private void CompareNormalExpressions(ScriptExpression origExp, ScriptExpression modExp)
         {
+            ExpressionValueComparer valComparer = new ExpressionValueComparer();
             bool areEqual = true;
 
             // the opcodes always have to match.
@@ -143,7 +144,7 @@ namespace ScriptWalker
                 case "short":
                 case "long":
                     // ignore random strings.
-                    areEqual = areEqual && (origExp.Value == modExp.Value);
+                    areEqual = areEqual && valComparer.Equals(origExp.Value, modExp.Value);
                     break;
 
                 case "string":
@@ -173,9 +174,9 @@ namespace ScriptWalker
                 case "any_tag_not_resolving":
                 case "ai_line":
                 case "unit_seat_mapping":
-                    areEqual = areEqual && (origExp.Value == modExp.Value);
+                    areEqual = areEqual && valComparer.Equals(origExp.Value, modExp.Value);
                     // ignore missing tags, ai lines and unit seat mappings
-                    if(origExp.Value != 0xFFFFFFFF)
+                    if(!origExp.Value.IsNull)
                     {
                         areEqual = areEqual && (origExp.StringValue == modExp.StringValue);
                     }
@@ -184,7 +185,7 @@ namespace ScriptWalker
 
                 default:
                     areEqual = areEqual && (origExp.StringValue == modExp.StringValue);
-                    areEqual = areEqual && (origExp.Value == modExp.Value);
+                    areEqual = areEqual && valComparer.Equals(origExp.Value, modExp.Value);
                     break;
             }
 
@@ -204,11 +205,13 @@ namespace ScriptWalker
 
         private void CompareGlobalsReferences(ScriptExpression origExp, ScriptExpression modExp)
         {
+            ExpressionValueComparer valComparer = new ExpressionValueComparer();
+
             bool areEqual = true;
             areEqual = areEqual && (origExp.Opcode == modExp.Opcode);
             areEqual = areEqual && (origExp.ReturnType == modExp.ReturnType);
             areEqual = areEqual && (origExp.StringValue == modExp.StringValue);
-            areEqual = areEqual && (origExp.Value == modExp.Value);
+            areEqual = areEqual && valComparer.Equals(origExp.Value, modExp.Value);
 
             if (!areEqual)
             {
@@ -241,8 +244,8 @@ namespace ScriptWalker
                 _output.WriteLine();
             }
 
-            DatumIndex origVal = new DatumIndex(origExp.Value);
-            DatumIndex modVal = new DatumIndex(modExp.Value);
+            DatumIndex origVal = new DatumIndex(origExp.Value.UintValue);
+            DatumIndex modVal = new DatumIndex(modExp.Value.UintValue);
             var origValExp = _orig.Expressions.FindExpression(origVal);
             var modValExp = _mod.Expressions.FindExpression(modVal);
 
@@ -261,11 +264,13 @@ namespace ScriptWalker
 
         private void CompareParameterReferences(ScriptExpression origExp, ScriptExpression modExp)
         {
+            ExpressionValueComparer valComparer = new ExpressionValueComparer();
+
             bool areEqual = true;
             areEqual = areEqual && (origExp.Opcode == modExp.Opcode);
             areEqual = areEqual && (origExp.ReturnType == modExp.ReturnType);
             areEqual = areEqual && (origExp.StringValue == modExp.StringValue);
-            areEqual = areEqual && (origExp.Value == modExp.Value);
+            areEqual = areEqual && valComparer.Equals(origExp.Value, modExp.Value);
 
             if (!areEqual)
             {
@@ -298,8 +303,8 @@ namespace ScriptWalker
                 _output.WriteLine();
             }
 
-            DatumIndex origVal = new DatumIndex(origExp.Value);
-            DatumIndex modVal = new DatumIndex(modExp.Value);
+            DatumIndex origVal = new DatumIndex(origExp.Value.UintValue);
+            DatumIndex modVal = new DatumIndex(modExp.Value.UintValue);
             var origValExp = _orig.Expressions.FindExpression(origVal);
             var modValExp = _mod.Expressions.FindExpression(modVal);
 
@@ -380,7 +385,7 @@ namespace ScriptWalker
             sb.Append($" ExpType: \"{exp.Type.ToString()}\"");
             sb.Append($" NextSalt: \"{exp.Next.Salt.ToString("X4")}\"");
             sb.Append($" NextIndex: \"{exp.Next.Index.ToString("X4")}\"");
-            sb.Append($" Value: \"{exp.Value.ToString("X8")}\"");
+            sb.Append($" Value: \"{exp.Value.ToString()}\"");
             sb.Append($" Line: \"{exp.LineNumber.ToString()}\"");
 
             if (exp.Type == ScriptExpressionType.Group)

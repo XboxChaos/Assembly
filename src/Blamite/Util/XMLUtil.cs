@@ -283,20 +283,20 @@ namespace Blamite.Util
 					writer.WriteAttributeString("ExpressionType", "Expression");
 					break;
 				case ScriptExpressionType.ScriptReference:
-					writer.WriteAttributeString("ExpressionType", "ScriptRef");
+					writer.WriteAttributeString("ExpressionType", "Script");
 					break;
 				case ScriptExpressionType.GlobalsReference:
-					writer.WriteAttributeString("ExpressionType", "GlobalRef");
+					writer.WriteAttributeString("ExpressionType", "Global");
 					break;
 				case ScriptExpressionType.ParameterReference:
-					writer.WriteAttributeString("ExpressionType", "ScriptPar");
+					writer.WriteAttributeString("ExpressionType", "Parameter");
 					break;
 			}
 			writer.WriteAttributeString("NextSalt", expression.Next.Salt.ToString("X4"));
 			writer.WriteAttributeString("NextIndex", expression.Next.Index.ToString("X4"));
 			writer.WriteAttributeString("StringOff", expression.StringOffset.ToString("X"));
 			writer.WriteAttributeString("String", expression.StringValue);
-			writer.WriteAttributeString("Value", expression.Value.ToString("X8"));
+			writer.WriteAttributeString("Value", expression.Value.ToString());
 			writer.WriteAttributeString("LineNum", expression.LineNumber.ToString("X4"));
 			writer.WriteEndElement();
 		}

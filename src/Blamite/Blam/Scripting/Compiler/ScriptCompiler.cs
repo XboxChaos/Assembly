@@ -7,6 +7,7 @@ using Blamite.Blam.Scripting.Context;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Blamite.Util;
+using Blamite.Blam.Scripting;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -361,10 +362,6 @@ namespace Blamite.Blam.Scripting.Compiler
             // Tell the groups what type to expect.
             _condReturnType = _expectedTypes.PopType();
 
-            // Is this still necessary?
-            //if (_condReturnType == "ANY")
-            //    _condReturnType = "void";
-
             // Push the index to the first group, so that we can open it later on.
             _condIndeces.Push(_expressions.Count);
         }
@@ -389,7 +386,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 Type = ScriptExpressionType.Expression,
                 Next = DatumIndex.Null,
                 StringOffset = context.GetCorrectTextPosition(_missingCarriageReturnPositions),
-                Value = 0,
+                Value = new LongExpressionValue(0),
                 LineNumber = 0
             };
             AddExpressionIncrement(expression);
@@ -423,9 +420,9 @@ namespace Blamite.Blam.Scripting.Compiler
                 Type = ScriptExpressionType.Group,
                 Next = DatumIndex.Null,
                 StringOffset = context.GetCorrectTextPosition(_missingCarriageReturnPositions),
+                Value = new LongExpressionValue(_currentIndex.Next),
                 LineNumber = 0
             };
-            compilerIf.SetValue(_currentIndex.Next);
 
             // Keep the if call closed. We will open the initial one later on.
             AddExpressionIncrement(compilerIf);
@@ -438,7 +435,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 Type = ScriptExpressionType.Expression,
                 Next = DatumIndex.Null,
                 StringOffset = _strings.Cache(ifInfo.Name),
-                Value = 0,
+                Value = new LongExpressionValue(0),
                 LineNumber = GetLineNumber(context)
             };
             OpenDatumAddExpressionIncrement(compilerIfName);
@@ -474,9 +471,9 @@ namespace Blamite.Blam.Scripting.Compiler
                 Type = ScriptExpressionType.Group,
                 Next = DatumIndex.Null,
                 StringOffset = context.GetCorrectTextPosition(_missingCarriageReturnPositions),
+                Value = new LongExpressionValue(_currentIndex.Next),
                 LineNumber = 0
             };
-            compilerBeginCall.SetValue(_currentIndex.Next);
             OpenDatumAddExpressionIncrement(compilerBeginCall);
 
             var compilerBeginName = new ScriptExpression
@@ -487,7 +484,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 Type = ScriptExpressionType.Expression,
                 Next = valueExpressionDatum,
                 StringOffset = _strings.Cache(beginInfo.Name),
-                Value = 0,
+                Value = new LongExpressionValue(0),
                 LineNumber = 0
             };
             AddExpressionIncrement(compilerBeginName);
@@ -522,7 +519,7 @@ namespace Blamite.Blam.Scripting.Compiler
                     Type = ScriptExpressionType.Expression,
                     Next = DatumIndex.Null,
                     StringOffset = _strings.Cache(text),
-                    Value = 0xFFFFFFFF,
+                    Value = new LongExpressionValue(0xFFFFFFFF),
                     LineNumber = GetLineNumber(context)
                 };
                 OpenDatumAddExpressionIncrement(expression);
@@ -548,19 +545,19 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             string text = context.GetTextSanitized();
             GlobalInfo globalInfo = _opcodes.GetGlobalInfo(text);
-            object value;
+            IExpressionValue value;
 
             // Engine global.
             if(globalInfo != null)
             {
-                ushort[] arr = { 0xFFFF, globalInfo.MaskedOpcode };
-                value = arr;
+                //ushort[] arr = { 0xFFFF, globalInfo.MaskedOpcode };
+                value = new LongExpressionValue(0xFFFF, globalInfo.MaskedOpcode);
             }
             // Map global.
             else if(_mapGlobalsLookup.ContainsKey(text))
             {
                 globalInfo = _mapGlobalsLookup[text];
-                value = (uint)globalInfo.Opcode;
+                value = new LongExpressionValue((uint)globalInfo.Opcode);
             }
             // Not a global...
             else if (expectedType == TypeHelper.GlobalsReference)
@@ -582,9 +579,9 @@ namespace Blamite.Blam.Scripting.Compiler
                 Type = ScriptExpressionType.GlobalsReference,
                 Next = DatumIndex.Null,
                 StringOffset = _strings.Cache(text),
+                Value = value,
                 LineNumber = GetLineNumber(context)
             };
-            expression.SetValue(value);
             OpenDatumAddExpressionIncrement(expression);
 
             return true;
@@ -725,7 +722,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 Type = ScriptExpressionType.ParameterReference,
                 Next = DatumIndex.Null,
                 StringOffset = _strings.Cache(info.Name),
-                Value = info.Opcode,
+                Value = new LongExpressionValue(info.Opcode),
                 LineNumber = GetLineNumber(context)
             };
             EqualityPush(info.ReturnType);
@@ -980,9 +977,9 @@ namespace Blamite.Blam.Scripting.Compiler
                 Type = ScriptExpressionType.Group,
                 Next = DatumIndex.Null,
                 StringOffset = textPosition,
+                Value = new LongExpressionValue(_currentIndex.Next),
                 LineNumber = 0
             };
-            beginCall.SetValue(_currentIndex.Next);
             AddExpressionIncrement(beginCall);
 
             // Create the function name.
@@ -994,7 +991,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 Type = ScriptExpressionType.Expression,
                 Next = DatumIndex.Null,
                 StringOffset = _strings.Cache(info.Name),
-                Value = 0,
+                Value = new LongExpressionValue(0),
                 LineNumber = 0
             };
             OpenDatumAddExpressionIncrement(beginName);
@@ -1010,9 +1007,9 @@ namespace Blamite.Blam.Scripting.Compiler
                 Type = ScriptExpressionType.Group,
                 Next = DatumIndex.Null,
                 StringOffset = textPosition,
+                Value = new LongExpressionValue(_currentIndex.Next),
                 LineNumber = lineNumber
             };
-            callExpression.SetValue(_currentIndex.Next);
             OpenDatumAddExpressionIncrement(callExpression);
 
             var nameExpression = new ScriptExpression
@@ -1023,7 +1020,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 Type = ScriptExpressionType.Expression,
                 Next = DatumIndex.Null,
                 StringOffset = _strings.Cache(info.Name),
-                Value = 0,
+                Value = new LongExpressionValue(0),
                 LineNumber = lineNumber
             };
             OpenDatumAddExpressionIncrement(nameExpression);
@@ -1039,9 +1036,9 @@ namespace Blamite.Blam.Scripting.Compiler
                 Type = ScriptExpressionType.ScriptReference,
                 Next = DatumIndex.Null,
                 StringOffset = textPosition,
+                Value = new LongExpressionValue(_currentIndex.Next),
                 LineNumber = lineNumber
             };
-            scriptReference.SetValue(_currentIndex.Next);
             OpenDatumAddExpressionIncrement(scriptReference);
 
             var nameExpression = new ScriptExpression
@@ -1052,7 +1049,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 Type = ScriptExpressionType.Expression,
                 Next = DatumIndex.Null,
                 StringOffset = _strings.Cache(info.Name),
-                Value = 0,
+                Value = new LongExpressionValue(0),
                 LineNumber = lineNumber
             };
             OpenDatumAddExpressionIncrement(nameExpression);
