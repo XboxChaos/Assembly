@@ -31,6 +31,7 @@ using CloseableTabItemDemo;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using XBDMCommunicator;
+using Blamite.Blam.SecondGen;
 using Blamite.Blam.ThirdGen;
 using Blamite.RTE.ThirdGen;
 using Blamite.Blam.Resources.Sounds;
@@ -368,11 +369,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (_cacheFile.Resources == null)
 				Dispatcher.Invoke(new Action(() => btnImport.IsEnabled = false));
 
-			// Hide import/save name buttons if the cache file isn't thirdgen
+			// Hide import button if the cache file isn't thirdgen
 			if (_cacheFile.Engine != EngineType.ThirdGeneration)
-				Dispatcher.Invoke(new Action(() => { btnImport.Visibility = Visibility.Collapsed;
-					menuSaveTagNames.Visibility = Visibility.Collapsed; }));
-				
+				Dispatcher.Invoke(new Action(() => btnImport.Visibility = Visibility.Collapsed));
+
+			// Hide save name button if the cache file isn't secondgen or thirdgen
+			if (_cacheFile.Engine < EngineType.SecondGeneration)
+				Dispatcher.Invoke(new Action(() => menuSaveTagNames.Visibility = Visibility.Collapsed));
 
 			_tagEntries = _cacheFile.Tags.Select(WrapTag).ToList();
 			_allTags = BuildTagHierarchy(
@@ -1362,28 +1365,29 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			var tagContext = sender as ContextMenu;
 
-			// Check if we need to hide stuff because the cache isn't thirdgen
-			if (_cacheFile.Engine != EngineType.ThirdGeneration)
-				foreach (object tagItem in tagContext.Items)
+			foreach (object tagItem in tagContext.Items)
+			{
+				// Check for particular names/objects to hide because datatemplate
+				if (tagItem is MenuItem)
 				{
-					// Check for particular names/objects to hide because datatemplate
-					if (tagItem is MenuItem)
-					{
-						MenuItem tagMenuItem = tagItem as MenuItem;
-						if (tagMenuItem.Name == "itemRename" ||
-							tagMenuItem.Name == "itemDuplicate" ||
-							tagMenuItem.Name == "itemExtract" ||
-							tagMenuItem.Name == "itemForce" ||
-							tagMenuItem.Name == "itemTagBatch")
-							tagMenuItem.Visibility = Visibility.Collapsed;
-					}
-					if (tagItem is Separator)
-					{
-						Separator tagMenuItem = tagItem as Separator;
-						if (tagMenuItem.Name == "sepTopBookmark")
-							tagMenuItem.Visibility = Visibility.Collapsed;
-					}
+					MenuItem tagMenuItem = tagItem as MenuItem;
+
+					if (tagMenuItem.Name == "itemRename" && _cacheFile.Engine < EngineType.SecondGeneration)
+						tagMenuItem.Visibility = Visibility.Collapsed;
+					else if (tagMenuItem.Name == "itemDuplicate" ||
+						tagMenuItem.Name == "itemExtract" ||
+						tagMenuItem.Name == "itemForce" ||
+						tagMenuItem.Name == "itemTagBatch"
+						&& _cacheFile.Engine != EngineType.ThirdGeneration)
+						tagMenuItem.Visibility = Visibility.Collapsed;
 				}
+				if (tagItem is Separator)
+				{
+					Separator tagMenuItem = tagItem as Separator;
+					if (tagMenuItem.Name == "sepTopBookmark")
+						tagMenuItem.Visibility = Visibility.Collapsed;
+				}
+			}
 		}
 
 		private void GroupContextMenu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)

@@ -116,7 +116,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 				code.Write("(script {0} {1} ", opcodes.GetScriptTypeName((ushort) script.ExecutionType),
 					opcodes.GetTypeInfo((ushort) script.ReturnType).Name);
 
-				if (script.Parameters.Count > 0)
+				if (script.Parameters != null && script.Parameters.Count > 0)
 				{
 					code.Write("({0} (", script.Name);
 

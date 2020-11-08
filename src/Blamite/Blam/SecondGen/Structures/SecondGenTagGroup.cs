@@ -14,6 +14,17 @@ namespace Blamite.Blam.SecondGen.Structures
 		public int GrandparentMagic { get; set; }
 		public StringID Description { get; set; }
 
+		public StructureValueCollection Serialize()
+		{
+			var result = new StructureValueCollection();
+
+			result.SetInteger("magic", (uint)Magic);
+			result.SetInteger("parent magic", (uint)ParentMagic);
+			result.SetInteger("grandparent magic", (uint)GrandparentMagic);
+
+			return result;
+		}
+
 		private void Load(StructureValueCollection values)
 		{
 			Magic = (int) values.GetInteger("magic");
