@@ -31,7 +31,7 @@
 		<uint32 name="checksum" offset="0x30C" />
 	</layout>
 
-	<layout for="meta header">
+	<layout for="meta header" size="0x20">
 		<int32 name="tag group table offset" offset="0x0" />
 		<int32 name="number of tag groups" offset="0x4" />
 		<int32 name="tag table offset" offset="0x8" />
@@ -44,17 +44,32 @@
 		<int32 name="magic" offset="0x1C" />
 	</layout>
 
-	<layout for="tag group element">
+	<layout for="tag group element" size="0xC">
 		<int32 name="magic" offset="0x0" />
 		<int32 name="parent magic" offset="0x4" />
 		<int32 name="grandparent magic" offset="0x8" />
 	</layout>
 
-	<layout for="tag element">
+	<layout for="tag element" size="0x10">
 		<int32 name="tag group magic" offset="0x0" />
 		<uint32 name="datum index" offset="0x4" />
 		<int32 name="offset" offset="0x8" />
 		<int32 name="data size" offset="0xC" />
+	</layout>
+
+	<!-- Map globals meta -->
+	<layout for="matg">
+		<array name="languages" offset="0x190" entrySize="0x1C" count="9">
+			<uint32 name="string count" offset="0x0" />
+			<uint32 name="locale table size" offset="0x4" />
+			<uint32 name="locale index table offset" offset="0x8" />
+			<uint32 name="locale data index offset" offset="0xC" />
+		</array>
+	</layout>
+
+	<layout for="locale index table element">
+		<uint32 name="stringid" offset="0x0" />
+		<uint32 name="offset" offset="0x4" />
 	</layout>
 
 	<layout for="tag block">
@@ -70,5 +85,13 @@
 	<layout for="data reference">
 		<int32 name="size" offset="0x0" />
 		<uint32 name="pointer" offset="0x4" />
+	</layout>
+
+	<!-- unic (multilingual_unicode_string_list) -->
+	<layout for="unic">
+		<array name="language ranges" offset="0x10" entrySize="0x4" count="9">
+			<int16 name="range start index" offset="0x0" />
+			<int16 name="range size" offset="0x2" />
+		</array>
 	</layout>
 </layouts>

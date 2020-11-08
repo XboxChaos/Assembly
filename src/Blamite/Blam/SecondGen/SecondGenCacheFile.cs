@@ -4,6 +4,7 @@ using Blamite.Blam.Localization;
 using Blamite.Blam.Resources;
 using Blamite.Blam.Resources.Sounds;
 using Blamite.Blam.Scripting;
+using Blamite.Blam.SecondGen.Localization;
 using Blamite.Blam.SecondGen.Structures;
 using Blamite.Blam.Shaders;
 using Blamite.Blam.Util;
@@ -15,16 +16,18 @@ namespace Blamite.Blam.SecondGen
 	public class SecondGenCacheFile : ICacheFile
 	{
 		private readonly EngineDescription _buildInfo;
-		private readonly ILanguagePackLoader _languageLoader = new DummyLanguagePackLoader();
 		private readonly FileSegmenter _segmenter;
 		private IndexedFileNameSource _fileNames;
 		private SecondGenHeader _header;
+		private SecondGenLanguageGlobals _languageInfo;
+		private SecondGenLanguagePackLoader _languageLoader;
 		private IndexedStringIDSource _stringIDs;
 		private SecondGenTagTable _tags;
 		private SecondGenPointerExpander _expander;
 		private Endian _endianness;
 		private EffectInterop _effects;
 		private SoundResourceManager _soundGestalt;
+		private SecondGenSimulationDefinitionTable _simulationDefinitions;
 
 		public SecondGenCacheFile(IReader reader, EngineDescription buildInfo, string fileName, string buildString)
 		{
@@ -33,15 +36,21 @@ namespace Blamite.Blam.SecondGen
 			_buildInfo = buildInfo;
 			_segmenter = new FileSegmenter(buildInfo.SegmentAlignment);
 			_expander = new SecondGenPointerExpander();
-			Allocator = new MetaAllocator(this, 0x10000);
+			Allocator = new MetaAllocator(this, 0x1000);
 			Load(reader, buildInfo, buildString);
 		}
 
 		public void SaveChanges(IStream stream)
 		{
+			_tags.SaveChanges(stream);
+			WriteStringBlock(stream);
+			_fileNames.SaveChanges(stream);
+			_stringIDs.SaveChanges(stream);
+			if (_simulationDefinitions != null)
+				_simulationDefinitions.SaveChanges(stream);
 			CalculateChecksum(stream);
 			WriteHeader(stream);
-			// TODO: Write the tag table
+			WriteLanguageInfo(stream);
 		}
 
 		public string FileName { get; private set; }
@@ -145,7 +154,7 @@ namespace Blamite.Blam.SecondGen
 
 		public FileSegmentGroup LocaleArea
 		{
-			get { return _header.LocaleArea; }
+			get { return (_languageInfo != null ? _languageInfo.LocaleArea : null); }
 		}
 
 		public ILanguagePackLoader Languages
@@ -185,10 +194,7 @@ namespace Blamite.Blam.SecondGen
 
 		public MetaAllocator Allocator { get; private set; }
 
-		public IScriptFile[] ScriptFiles
-		{
-			get { return new IScriptFile[0]; }
-		}
+		public IScriptFile[] ScriptFiles { get; private set; }
 
 		public IShaderStreamer ShaderStreamer
 		{
@@ -197,7 +203,7 @@ namespace Blamite.Blam.SecondGen
 
 		public ISimulationDefinitionTable SimulationDefinitions
 		{
-			get { return null; }
+			get { return _simulationDefinitions; }
 		}
 
 		public IList<ITagInterop> TagInteropTable
@@ -231,6 +237,10 @@ namespace Blamite.Blam.SecondGen
 			_tags = LoadTagTable(reader, buildInfo);
 			_fileNames = LoadFileNames(reader, buildInfo);
 			_stringIDs = LoadStringIDs(reader, buildInfo);
+
+			LoadLanguageGlobals(reader);
+			LoadScriptFiles(reader);
+			LoadSimulationDefinitions(reader);
 		}
 
 		private SecondGenHeader LoadHeader(IReader reader, EngineDescription buildInfo, string buildString)
@@ -242,9 +252,7 @@ namespace Blamite.Blam.SecondGen
 
 		private SecondGenTagTable LoadTagTable(IReader reader, EngineDescription buildInfo)
 		{
-			reader.SeekTo(MetaArea.Offset);
-			StructureValueCollection values = StructureReader.ReadStructure(reader, buildInfo.Layouts.GetLayout("meta header"));
-			return new SecondGenTagTable(reader, values, MetaArea, buildInfo);
+			return new SecondGenTagTable(reader, MetaArea, Allocator, buildInfo);
 		}
 
 		private IndexedFileNameSource LoadFileNames(IReader reader, EngineDescription buildInfo)
@@ -261,6 +269,69 @@ namespace Blamite.Blam.SecondGen
 			return new IndexedStringIDSource(strings, new LengthBasedStringIDResolver(strings));
 		}
 
+		private void LoadLanguageGlobals(IReader reader)
+		{
+			// Find the language data
+			ITag languageTag;
+			StructureLayout tagLayout;
+			if (!FindLanguageTable(out languageTag, out tagLayout))
+			{
+				// No language data
+				_languageLoader = new SecondGenLanguagePackLoader();
+				return;
+			}
+
+			// Read it
+			reader.SeekTo(languageTag.MetaLocation.AsOffset());
+			StructureValueCollection values = StructureReader.ReadStructure(reader, tagLayout);
+			_languageInfo = new SecondGenLanguageGlobals(values, _segmenter, _buildInfo);
+			_languageLoader = new SecondGenLanguagePackLoader(this, _languageInfo, _buildInfo, reader);
+		}
+
+		private bool FindLanguageTable(out ITag tag, out StructureLayout layout)
+		{
+			tag = null;
+			layout = null;
+
+			if (_tags == null)
+				return false;
+
+			tag = _tags.FindTagByGroup("matg");
+			layout = _buildInfo.Layouts.GetLayout("matg");
+
+			return (tag != null && layout != null && tag.MetaLocation != null);
+		}
+
+		private void LoadScriptFiles(IReader reader)
+		{
+			ScriptFiles = new IScriptFile[0];
+
+			if (_tags != null)
+			{
+				List<SecondGenScenarioScriptFile> l_scriptfiles = new List<SecondGenScenarioScriptFile>();
+
+				if (_buildInfo.Layouts.HasLayout("scnr"))
+				{
+					foreach (ITag hs in _tags.FindTagsByGroup("scnr"))
+						l_scriptfiles.Add(new SecondGenScenarioScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, StringIDs, _buildInfo, _expander));
+				}
+				else
+					return;
+
+				ScriptFiles = l_scriptfiles.ToArray();
+			}
+		}
+
+		private void LoadSimulationDefinitions(IReader reader)
+		{
+			if (_tags != null && _buildInfo.Layouts.HasLayout("scnr") && _buildInfo.Layouts.HasLayout("simulation definition table element"))
+			{
+				ITag scnr = _tags.FindTagByGroup("scnr");
+				if (scnr != null)
+					_simulationDefinitions = new SecondGenSimulationDefinitionTable(scnr, _tags, reader, MetaArea, Allocator, _buildInfo);
+			}
+		}
+
 		private void CalculateChecksum(IReader reader)
 		{
 			// XOR all of the uint32s in the file after the header
@@ -272,10 +343,49 @@ namespace Blamite.Blam.SecondGen
 			_header.Checksum = checksum;
 		}
 
+		private void WriteStringBlock(IStream stream)
+		{
+			var segment = StringArea.Segments[0];
+
+			int newSize = _stringIDs.Count * 0x80;
+
+			if (segment.ActualSize < newSize)
+				segment.Resize(newSize, stream);
+
+			stream.SeekTo(segment.Offset);
+
+			for (int i = 0; i < _stringIDs.Count; i++)
+			{
+				byte[] data = new byte[0x80];
+				byte[] stringData = System.Text.Encoding.UTF8.GetBytes(_stringIDs.GetString(i));
+
+				Array.Copy(stringData, 0, data, 0, stringData.Length > 0x80 ? 0x80 : stringData.Length);
+				stream.WriteBlock(data);
+			}
+		}
+
 		private void WriteHeader(IWriter writer)
 		{
+			// Update tagname and stringid info (so. ugly.)
+			_header.FileNameCount = _fileNames.Count;
+			_header.StringIDCount = _stringIDs.Count;
+
 			writer.SeekTo(0);
 			StructureWriter.WriteStructure(_header.Serialize(), _buildInfo.Layouts.GetLayout("header"), writer);
+		}
+
+		private void WriteLanguageInfo(IWriter writer)
+		{
+			// Find the language data
+			ITag languageTag;
+			StructureLayout tagLayout;
+			if (!FindLanguageTable(out languageTag, out tagLayout))
+				return;
+
+			// Write it
+			StructureValueCollection values = _languageInfo.Serialize();
+			writer.SeekTo(languageTag.MetaLocation.AsOffset());
+			StructureWriter.WriteStructure(values, tagLayout, writer);
 		}
 	}
 }

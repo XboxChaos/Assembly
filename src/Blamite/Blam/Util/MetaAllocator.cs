@@ -278,10 +278,14 @@ namespace Blamite.Blam.Util
 
 			// Round the size up to the next multiple of the page size and expand the meta area
 			int roundedSize = (minSize + _pageSize - 1) & ~(_pageSize - 1);
+			int oldSize = _cacheFile.MetaArea.Size;
 			_cacheFile.MetaArea.Resize(_cacheFile.MetaArea.Size + roundedSize, stream);
 
 			// Free the newly-allocated area
-			return FreeBlock(_cacheFile.MetaArea.BasePointer, roundedSize);
+			if (_cacheFile.MetaArea.Segments[_cacheFile.MetaArea.Segments.Count - 1].ResizeOrigin == SegmentResizeOrigin.End)
+				return FreeBlock(_cacheFile.MetaArea.BasePointer + oldSize, roundedSize);
+			else
+				return FreeBlock(_cacheFile.MetaArea.BasePointer, roundedSize);
 		}
 
 		private void RegisterAreaAddress(FreeArea area)
