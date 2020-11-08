@@ -1207,7 +1207,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			Dialogs.ControlDialogs.InjectSettings injs = new Dialogs.ControlDialogs.InjectSettings(_allTags, container);
 
 			// Handle defaults
-			injs.UniqueShaders = (_cacheFile.HeaderSize > 0x3000 && _cacheFile.Endianness == Endian.BigEndian);
+			injs.UniqueShaders = _buildInfo.OptimizedShaders;
 
 			// H3 MCC currently doesnt store a checksum for uncompressed resources, so this must be unticked
 			injs.FindRaw = _buildInfo.UsesRawHashes;

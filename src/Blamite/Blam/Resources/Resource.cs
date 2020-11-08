@@ -101,6 +101,12 @@ namespace Blamite.Blam.Resources
 
 			return result;
 		}
+
+		public bool IsEmpty
+		{
+			get { return (CEntries == null || CEntries.Count == 0) &&
+					(AEntries == null || AEntries.Count == 0); }
+		}
 	}
 
 	public class ResourcePredictionC
@@ -113,6 +119,11 @@ namespace Blamite.Blam.Resources
 		public long GetBHash()
 		{
 			return (BEntry.GetAHash() << 1) * 5233;
+		}
+
+		public bool IsEmpty
+		{
+			get { return BEntry == null || BEntry.IsEmpty; }
 		}
 	}
 
@@ -135,6 +146,11 @@ namespace Blamite.Blam.Resources
 				result = result * 8171 + (AEntries[i].Value.Value << i);
 
 			return result;
+		}
+
+		public bool IsEmpty
+		{
+			get { return AEntries == null || AEntries.Count == 0; }
 		}
 	}
 

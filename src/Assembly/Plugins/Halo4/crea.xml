@@ -513,14 +513,14 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<bit name="Supresses Effects" index="0" />
 			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
 		</flags8>
-		<int16 name="Global Material Index" offset="0x6" visible="true" />
+		<int16 name="Material Global Index" offset="0x6" visible="true" />
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
 		<float32 name="Volume" offset="0x14" visible="true" />
 		<float32 name="Mass" offset="0x18" visible="true" />
 		<int16 name="Mass Distribution Index" offset="0x1C" visible="true" />
-		<int8 name="Phantom Index" offset="0x1E" visible="true" />
+		<int8 name="Phantom Type Index" offset="0x1E" visible="true" />
 		<enum8 name="Collision Group" offset="0x1F" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
 			<option name="No Override" value="0xFF" />
 			<option name="Everything" value="0x0" />
@@ -556,38 +556,38 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<option name="Environment Bullet Collision" value="0x1E" />
 		</enum8>
 		<comment title="Sphere" />
-		<uint32 name="Runtime Pointer" offset="0x20" visible="true" />
+		<uint32 name="Runtime Code Pointer" offset="0x20" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x24" visible="true" />
 		<int16 name="Count" offset="0x26" visible="true" />
 		<int8 name="Type" offset="0x28" visible="true" />
 		<int8 name="Dispatch Type" offset="0x29" visible="true" />
 		<int8 name="Bits Per Key" offset="0x2A" visible="true" />
 		<int8 name="Codec Type" offset="0x2B" visible="true" />
-		<int32 name="User Data" offset="0x2C" visible="true" />
+		<uint32 name="User Data" offset="0x2C" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 		<float32 name="Radius" offset="0x30" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<comment title="Translate" />
-		<uint32 name="Runtime Pointer" offset="0x40" visible="true" />
+		<uint32 name="Runtime Code Pointer" offset="0x40" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x44" visible="true" />
 		<int16 name="Count" offset="0x46" visible="true" />
 		<int8 name="Type" offset="0x48" visible="true" />
 		<int8 name="Dispatch Type" offset="0x49" visible="true" />
 		<int8 name="Bits Per Key" offset="0x4A" visible="true" />
 		<int8 name="Codec Type" offset="0x4B" visible="true" />
-		<int32 name="User Data" offset="0x4C" visible="true" />
+		<uint32 name="User Data" offset="0x4C" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 		<float32 name="Radius" offset="0x50" visible="true" />
-		<uint32 name="Runtime Pointer" offset="0x54" visible="true" />
+		<uint32 name="Runtime Code Pointer" offset="0x54" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<comment title="Havok Reference" />
-		<enum16 name="Shape Type" offset="0x58" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me">
+		<enum16 name="Shape Type" offset="0x58" visible="true" tooltip="this and the shape index below becomes a pointer to the given shape in memory at runtime. don't poke me">
 			<option name="Sphere" value="0x0" />
 			<option name="Pill" value="0x1" />
 			<option name="Box" value="0x2" />
 			<option name="Triangle" value="0x3" />
 			<option name="Polyhedron" value="0x4" />
 			<option name="Multi Sphere" value="0x5" />
-			<option name="Unused 0" value="0x6" />
+			<option name="Phantom" value="0x6" />
 			<option name="Unused 1" value="0x7" />
 			<option name="Unused 2" value="0x8" />
 			<option name="Unused 3" value="0x9" />
@@ -598,7 +598,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<option name="List" value="0xE" />
 			<option name="MOPP" value="0xF" />
 		</enum16>
-		<int16 name="Shape Index" offset="0x5A" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
+		<int16 name="Shape Index" offset="0x5A" visible="true" />
 		<int32 name="Child Shape Size" offset="0x5C" visible="true" />
 		<vector3 name="Translation" offset="0x60" visible="true" />
 		<float32 name="w Translation" offset="0x6C" visible="true" />
@@ -610,14 +610,14 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<bit name="Supresses Effects" index="0" />
 			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
 		</flags8>
-		<int16 name="Global Material Index" offset="0x6" visible="true" />
+		<int16 name="Material Global Index" offset="0x6" visible="true" />
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
 		<float32 name="Volume" offset="0x14" visible="true" />
 		<float32 name="Mass" offset="0x18" visible="true" />
 		<int16 name="Mass Distribution Index" offset="0x1C" visible="true" />
-		<int8 name="Phantom Index" offset="0x1E" visible="true" />
+		<int8 name="Phantom Type Index" offset="0x1E" visible="true" />
 		<enum8 name="Collision Group" offset="0x1F" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
 			<option name="No Override" value="0xFF" />
 			<option name="Everything" value="0x0" />
@@ -653,14 +653,14 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<option name="Environment Bullet Collision" value="0x1E" />
 		</enum8>
 		<comment title="Capsule" />
-		<uint32 name="Runtime Pointer" offset="0x20" visible="true" />
+		<uint32 name="Runtime Code Pointer" offset="0x20" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x24" visible="true" />
 		<int16 name="Count" offset="0x26" visible="true" />
 		<int8 name="Type" offset="0x28" visible="true" />
 		<int8 name="Dispatch Type" offset="0x29" visible="true" />
 		<int8 name="Bits Per Key" offset="0x2A" visible="true" />
 		<int8 name="Codec Type" offset="0x2B" visible="true" />
-		<int32 name="User Data" offset="0x2C" visible="true" />
+		<uint32 name="User Data" offset="0x2C" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 		<float32 name="Radius" offset="0x30" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
@@ -677,14 +677,14 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<bit name="Supresses Effects" index="0" />
 			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
 		</flags8>
-		<int16 name="Global Material Index" offset="0x6" visible="true" />
+		<int16 name="Material Global Index" offset="0x6" visible="true" />
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
 		<float32 name="Volume" offset="0x14" visible="true" />
 		<float32 name="Mass" offset="0x18" visible="true" />
 		<int16 name="Mass Distribution Index" offset="0x1C" visible="true" />
-		<int8 name="Phantom Index" offset="0x1E" visible="true" />
+		<int8 name="Phantom Type Index" offset="0x1E" visible="true" />
 		<enum8 name="Collision Group" offset="0x1F" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
 			<option name="No Override" value="0xFF" />
 			<option name="Everything" value="0x0" />
@@ -720,38 +720,38 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<option name="Environment Bullet Collision" value="0x1E" />
 		</enum8>
 		<comment title="Sphere" />
-		<uint32 name="Runtime Pointer" offset="0x20" visible="true" />
+		<uint32 name="Runtime Code Pointer" offset="0x20" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x24" visible="true" />
 		<int16 name="Count" offset="0x26" visible="true" />
 		<int8 name="Type" offset="0x28" visible="true" />
 		<int8 name="Dispatch Type" offset="0x29" visible="true" />
 		<int8 name="Bits Per Key" offset="0x2A" visible="true" />
 		<int8 name="Codec Type" offset="0x2B" visible="true" />
-		<int32 name="User Data" offset="0x2C" visible="true" />
+		<uint32 name="User Data" offset="0x2C" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 		<float32 name="Radius" offset="0x30" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<comment title="Translate" />
-		<uint32 name="Runtime Pointer" offset="0x40" visible="true" />
+		<uint32 name="Runtime Code Pointer" offset="0x40" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x44" visible="true" />
 		<int16 name="Count" offset="0x46" visible="true" />
 		<int8 name="Type" offset="0x48" visible="true" />
 		<int8 name="Dispatch Type" offset="0x49" visible="true" />
 		<int8 name="Bits Per Key" offset="0x4A" visible="true" />
 		<int8 name="Codec Type" offset="0x4B" visible="true" />
-		<int32 name="User Data" offset="0x4C" visible="true" />
+		<uint32 name="User Data" offset="0x4C" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 		<float32 name="Radius" offset="0x50" visible="true" />
-		<uint32 name="Runtime Pointer" offset="0x54" visible="true" />
+		<uint32 name="Runtime Code Pointer" offset="0x54" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<comment title="Havok Reference" />
-		<enum16 name="Shape Type" offset="0x58" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me">
+		<enum16 name="Shape Type" offset="0x58" visible="true" tooltip="this and the shape index below becomes a pointer to the given shape in memory at runtime. don't poke me">
 			<option name="Sphere" value="0x0" />
 			<option name="Pill" value="0x1" />
 			<option name="Box" value="0x2" />
 			<option name="Triangle" value="0x3" />
 			<option name="Polyhedron" value="0x4" />
 			<option name="Multi Sphere" value="0x5" />
-			<option name="Unused 0" value="0x6" />
+			<option name="Phantom" value="0x6" />
 			<option name="Unused 1" value="0x7" />
 			<option name="Unused 2" value="0x8" />
 			<option name="Unused 3" value="0x9" />
@@ -762,7 +762,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<option name="List" value="0xE" />
 			<option name="MOPP" value="0xF" />
 		</enum16>
-		<int16 name="Shape Index" offset="0x5A" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
+		<int16 name="Shape Index" offset="0x5A" visible="true" />
 		<int32 name="Child Shape Size" offset="0x5C" visible="true" />
 		<vector3 name="Translation" offset="0x60" visible="true" />
 		<float32 name="w Translation" offset="0x6C" visible="true" />
@@ -774,14 +774,14 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<bit name="Supresses Effects" index="0" />
 			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
 		</flags8>
-		<int16 name="Global Material Index" offset="0x6" visible="true" />
+		<int16 name="Material Global Index" offset="0x6" visible="true" />
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
 		<float32 name="Volume" offset="0x14" visible="true" />
 		<float32 name="Mass" offset="0x18" visible="true" />
 		<int16 name="Mass Distribution Index" offset="0x1C" visible="true" />
-		<int8 name="Phantom Index" offset="0x1E" visible="true" />
+		<int8 name="Phantom Type Index" offset="0x1E" visible="true" />
 		<enum8 name="Collision Group" offset="0x1F" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
 			<option name="No Override" value="0xFF" />
 			<option name="Everything" value="0x0" />
@@ -817,38 +817,38 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<option name="Environment Bullet Collision" value="0x1E" />
 		</enum8>
 		<comment title="Sphere" />
-		<uint32 name="Runtime Pointer" offset="0x20" visible="true" />
+		<uint32 name="Runtime Code Pointer" offset="0x20" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x24" visible="true" />
 		<int16 name="Count" offset="0x26" visible="true" />
 		<int8 name="Type" offset="0x28" visible="true" />
 		<int8 name="Dispatch Type" offset="0x29" visible="true" />
 		<int8 name="Bits Per Key" offset="0x2A" visible="true" />
 		<int8 name="Codec Type" offset="0x2B" visible="true" />
-		<int32 name="User Data" offset="0x2C" visible="true" />
+		<uint32 name="User Data" offset="0x2C" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 		<float32 name="Radius" offset="0x30" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<comment title="Translate" />
-		<uint32 name="Runtime Pointer" offset="0x40" visible="true" />
+		<uint32 name="Runtime Code Pointer" offset="0x40" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x44" visible="true" />
 		<int16 name="Count" offset="0x46" visible="true" />
 		<int8 name="Type" offset="0x48" visible="true" />
 		<int8 name="Dispatch Type" offset="0x49" visible="true" />
 		<int8 name="Bits Per Key" offset="0x4A" visible="true" />
 		<int8 name="Codec Type" offset="0x4B" visible="true" />
-		<int32 name="User Data" offset="0x4C" visible="true" />
+		<uint32 name="User Data" offset="0x4C" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 		<float32 name="Radius" offset="0x50" visible="true" />
-		<uint32 name="Runtime Pointer" offset="0x54" visible="true" />
+		<uint32 name="Runtime Code Pointer" offset="0x54" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<comment title="Havok Reference" />
-		<enum16 name="Shape Type" offset="0x58" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me">
+		<enum16 name="Shape Type" offset="0x58" visible="true" tooltip="this and the shape index below becomes a pointer to the given shape in memory at runtime. don't poke me">
 			<option name="Sphere" value="0x0" />
 			<option name="Pill" value="0x1" />
 			<option name="Box" value="0x2" />
 			<option name="Triangle" value="0x3" />
 			<option name="Polyhedron" value="0x4" />
 			<option name="Multi Sphere" value="0x5" />
-			<option name="Unused 0" value="0x6" />
+			<option name="Phantom" value="0x6" />
 			<option name="Unused 1" value="0x7" />
 			<option name="Unused 2" value="0x8" />
 			<option name="Unused 3" value="0x9" />
@@ -859,31 +859,31 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<option name="List" value="0xE" />
 			<option name="MOPP" value="0xF" />
 		</enum16>
-		<int16 name="Shape Index" offset="0x5A" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
+		<int16 name="Shape Index" offset="0x5A" visible="true" />
 		<int32 name="Child Shape Size" offset="0x5C" visible="true" />
 		<vector3 name="Translation" offset="0x60" visible="true" />
 		<float32 name="w Translation" offset="0x6C" visible="true" />
 	</tagblock>
 	<tagblock name="List Shapes" offset="0x26C" visible="true" elementSize="0x70" align="0x10">
-		<int32 name="Unknown" offset="0x0" visible="false" />
+		<uint32 name="Runtime Code Pointer" offset="0x0" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x4" visible="true" />
 		<int16 name="Count" offset="0x6" visible="true" />
-		<int32 name="User Data" offset="0x8" visible="true" />
+		<uint32 name="User Data" offset="0x8" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 		<int32 name="Type" offset="0xC" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
+		<uint32 name="Runtime Code Pointer" offset="0x10" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int8 name="Disable Welding" offset="0x14" visible="true" />
 		<int8 name="Collection Type" offset="0x15" visible="true" />
 		<int16 name="Unknown" offset="0x16" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
+		<uint32 name="Runtime List Pointer" offset="0x18" visible="true" tooltip="becomes a pointer to where the child shapes for this list start in memory at runtime. don't poke me" />
 		<int32 name="Child Shapes Size" offset="0x1C" visible="true" />
 		<uint32 name="Child Shapes Capacity" offset="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<vector3 name="AABB Half Extents" offset="0x30" visible="true" />
-		<float32 name="w AABB Half Extents" offset="0x3C" visible="true" />
-		<vector3 name="AABB Center" offset="0x40" visible="true" />
-		<float32 name="w AABB Center" offset="0x4C" visible="true" />
+		<float32 name="Unknown" offset="0x2C" visible="true" />
+		<vector3 name="Axis-Aligned Bounding Box Half Extents" offset="0x30" visible="true" />
+		<float32 name="w Axis-Aligned Bounding Box Half Extents" offset="0x3C" visible="true" />
+		<vector3 name="Axis-Aligned Bounding Box Center" offset="0x40" visible="true" />
+		<float32 name="w Axis-Aligned Bounding Box Center" offset="0x4C" visible="true" />
 		<int32 name="Enabled Children 0" offset="0x50" visible="true" />
 		<int32 name="Enabled Children 1" offset="0x54" visible="true" />
 		<int32 name="Enabled Children 2" offset="0x58" visible="true" />
@@ -894,14 +894,14 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<int32 name="Enabled Children 7" offset="0x6C" visible="true" />
 	</tagblock>
 	<tagblock name="List Shape Child Info" offset="0x278" visible="true" elementSize="0x10">
-		<enum16 name="Shape Type" offset="0x0" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me">
+		<enum16 name="Shape Type" offset="0x0" visible="true" tooltip="this and the shape index below becomes a pointer to the given shape in memory at runtime. don't poke me">
 			<option name="Sphere" value="0x0" />
 			<option name="Pill" value="0x1" />
 			<option name="Box" value="0x2" />
 			<option name="Triangle" value="0x3" />
 			<option name="Polyhedron" value="0x4" />
 			<option name="Multi Sphere" value="0x5" />
-			<option name="Unused 0" value="0x6" />
+			<option name="Phantom" value="0x6" />
 			<option name="Unused 1" value="0x7" />
 			<option name="Unused 2" value="0x8" />
 			<option name="Unused 3" value="0x9" />
@@ -912,10 +912,43 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<option name="List" value="0xE" />
 			<option name="MOPP" value="0xF" />
 		</enum16>
-		<int16 name="Shape Index" offset="0x2" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
-		<int32 name="Collision Filter" offset="0x4" visible="true" />
+		<int16 name="Shape Index" offset="0x2" visible="true" />
+		<enum32 name="Collision Group" offset="0x4" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
+			<option name="No Override" value="0xFF" />
+			<option name="Everything" value="0x0" />
+			<option name="Environment Default" value="0x1" />
+			<option name="Environment Only" value="0x2" />
+			<option name="Small Crate" value="0x3" />
+			<option name="Crate" value="0x4" />
+			<option name="Huge Crate" value="0x5" />
+			<option name="Item" value="0x6" />
+			<option name="Projectile" value="0x7" />
+			<option name="Machine" value="0x8" />
+			<option name="Early Mover Machine" value="0x9" />
+			<option name="Creature" value="0xA" />
+			<option name="Biped" value="0xB" />
+			<option name="Dead Biped" value="0xC" />
+			<option name="Super Collidable Ragdoll" value="0xD" />
+			<option name="Ragdoll" value="0xE" />
+			<option name="Vehicle" value="0xF" />
+			<option name="Decal" value="0x10" />
+			<option name="Forge Dynamic Scenary" value="0x11" />
+			<option name="Small Expensive Plant" value="0x12" />
+			<option name="Tech Art Custom" value="0x13" />
+			<option name="Proxy" value="0x14" />
+			<option name="Huge Vehicle" value="0x15" />
+			<option name="Ignore Environment" value="0x16" />
+			<option name="Character Posture" value="0x17" />
+			<option name="Item Blocker" value="0x18" />
+			<option name="User00" value="0x19" />
+			<option name="Zero Extent" value="0x1A" />
+			<option name="Physical Projectile" value="0x1B" />
+			<option name="Environment Invisible Wall" value="0x1C" />
+			<option name="Environment Play Collision" value="0x1D" />
+			<option name="Environment Bullet Collision" value="0x1E" />
+		</enum32>
 		<int32 name="Shape Size" offset="0x8" visible="true" />
-		<int32 name="Number of Child Shapes" offset="0xC" visible="true" />
+		<int32 name="Number Of Child Shapes" offset="0xC" visible="true" />
 	</tagblock>
 	<comment title="Ground" />
 	<degree name="Maximum Slope Angle" offset="0x284" visible="true" />

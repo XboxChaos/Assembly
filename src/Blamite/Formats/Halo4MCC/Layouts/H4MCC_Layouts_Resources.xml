@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<layouts>
+	<!-- zone (cache_file_resource_gestalt) -->
+	<layout for="resource gestalt">
+		<int32 name="number of resource types" offset="0x4" />
+		<uint32 name="resource type table address" offset="0x8" />
+
+		<int32 name="number of resources" offset="0x58" />
+		<uint32 name="resource table address" offset="0x5C" />
+		
+		<int32 name="number of general zone sets" offset="0x64" />
+		<uint32 name="general zone set table address" offset="0x68" />
+		<int32 name="number of global zone sets" offset="0x70" />
+		<uint32 name="global zone set table address" offset="0x74" />
+		<int32 name="number of unattached zone sets" offset="0x88" />
+		<uint32 name="unattached zone set table address" offset="0x8C" />
+		<int32 name="number of disc forbidden zone sets" offset="0x94" />
+		<uint32 name="disc forbidden zone set table address" offset="0x98" />
+		<int32 name="number of disc always streaming zone sets" offset="0xA0" />
+		<uint32 name="disc always streaming zone set table address" offset="0xA4" />
+		<int32 name="number of bsp zone sets" offset="0xAC" />
+		<uint32 name="bsp zone set table address" offset="0xB0" />
+		<int32 name="number of bsp 2 zone sets" offset="0xB8" />
+		<uint32 name="bsp 2 zone set table address" offset="0xBC" />
+		<int32 name="number of bsp 3 zone sets" offset="0xC4" />
+		<uint32 name="bsp 3 zone set table address" offset="0xC8" />
+		<int32 name="number of cinematic zone sets" offset="0xD0" />
+		<uint32 name="cinematic zone set table address" offset="0xD4" />
+		<int32 name="number of required map variant zone sets" offset="0xDC" />
+		<uint32 name="required map variant zone set table address" offset="0xE0" />
+		<int32 name="number of sandbox map variant zone sets" offset="0xE8" />
+		<uint32 name="sandbox map variant zone set table address" offset="0xEC" />
+		<int32 name="number of scenario zone sets" offset="0xF4" />
+		<uint32 name="scenario zone set table address" offset="0xF8" />
+
+		<int32 name="resource info buffer size" offset="0x154" />
+		<uint32 name="resource info buffer address" offset="0x160" />
+
+		<int32 name="number of prediction as" offset="0x1E8" />
+		<uint32 name="prediction a table address" offset="0x1EC" />
+		<int32 name="number of prediction bs" offset="0x1F4" />
+		<uint32 name="prediction b table address" offset="0x1F8" />
+		<int32 name="number of prediction cs" offset="0x200" />
+		<uint32 name="prediction c table address" offset="0x204" />
+		<int32 name="number of prediction ds" offset="0x20C" />
+		<uint32 name="prediction d table address" offset="0x210" />
+		<int32 name="number of prediction d2s" offset="0x218" />
+		<uint32 name="prediction d2 table address" offset="0x21C" />
+	</layout>
+
+	<!-- Block at 0x4 in zone -->
+	<layout for="resource type element" size="0x20">
+		<raw name="guid" offset="0x0" size="0x10" />
+		<uint32 name="name stringid" offset="0x14" />
+	</layout>
+
+	<!-- Block at 0x58 in zone -->
+	<layout for="resource table element" size="0x44">
+		<int32 name="parent tag group magic" offset="0x0" />
+		<uint32 name="parent tag datum index" offset="0xC" />
+		<uint16 name="datum index salt" offset="0x10" />
+		<sbyte name="resource type index" offset="0x12" />
+		<byte name="flags" offset="0x13" />
+		<int32 name="resource info size" offset="0x14" />
+		<uint16 name="resource bits" offset="0x18" />
+		<int16 name="segment index" offset="0x1A" />
+		<uint32 name="base definition address" offset="0x1C" />
+		<int32 name="number of resource fixups" offset="0x20" />
+		<uint32 name="resource fixup table address" offset="0x24" />
+		<int32 name="number of definition fixups" offset="0x2C" />
+		<uint32 name="definition fixup table address" offset="0x30" />
+		<int32 name="number of resource info offsets" offset="0x38" />
+		<uint32 name="resource info offsets table address" offset="0x3C" />
+	</layout>
+
+	<!-- Block at 0x20 in resource table entry -->
+	<layout for="resource fixup element" size="0x8">
+		<int32 name="offset" offset="0x0" />
+		<uint32 name="address" offset="0x4" />
+	</layout>
+
+	<!-- Block at 0x2C in resource table entry -->
+	<layout for="definition fixup element" size="0x8">
+		<int32 name="offset" offset="0x0" />
+		<int32 name="type index" offset="0x4" />
+	</layout>
+
+	<!-- Block at 0x38 in resource table entry -->
+	<layout for="resource info offset element" size="0x4">
+		<int32 name="offset" offset="0x0" />
+	</layout>
+	
+	<layout for="zone set definition" size="0x90">
+		<int32 name="number of raw pool flags" offset="0x0" />
+		<uint32 name="raw pool flag table address" offset="0x4" />
+
+		<int32 name="number of raw pool 2 flags" offset="0xC" />
+		<uint32 name="raw pool 2 flag table address" offset="0x10" />
+
+		<uint32 name="name stringid" offset="0x18" />
+
+		<int32 name="number of tag flags" offset="0x58" />
+		<uint32 name="tag flag table address" offset="0x5C" />
+
+		<int32 name="number of tag 2 flags" offset="0x64" />
+		<uint32 name="tag 2 flag table address" offset="0x68" />
+	</layout>
+
+	<!-- Block at 0x1E8 in resource table entry -->
+	<layout for="prediction a element" size="0x4">
+		<int32 name="value" offset="0x0" />
+	</layout>
+
+	<!-- Block at 0x1F4 in resource table entry -->
+	<layout for="prediction b element" size="0x8">
+		<int16 name="overall index" offset="0x0" />
+		<int16 name="a count" offset="0x2" />
+		<int32 name="a index" offset="0x4" />
+	</layout>
+
+	<!-- Block at 0x200 in resource table entry -->
+	<layout for="prediction c element" size="0x4">
+		<int16 name="overall index" offset="0x2" />
+		<int16 name="b index" offset="0x0" />
+	</layout>
+
+	<!-- Block at 0x20C in resource table entry -->
+	<layout for="prediction d element" size="0x8">
+		<int16 name="c count" offset="0x0" />
+		<uint16 name="c index" offset="0x2" />
+		<int16 name="a count" offset="0x4" />
+		<int16 name="a index" offset="0x6" />
+	</layout>
+
+	<!-- Block at 0x218 in resource table entry -->
+	<layout for="prediction d2 element" size="0xC">
+		<int32 name="tag datum" offset="0x0" />
+		<int32 name="unknown 1" offset="0x4" />
+		<int32 name="unknown 2" offset="0x8" />
+	</layout>
+	
+
+	<!-- play (cache_file_resource_layout_table) -->
+	<layout for="resource layout table">
+		<int32 name="number of external cache files" offset="0xC" />
+		<uint32 name="external cache file table address" offset="0x10" />
+
+		<int32 name="number of raw pages" offset="0x18" />
+		<uint32 name="raw page table address" offset="0x1C" />
+		
+		<int32 name="number of raw sizes" offset="0x24" />
+		<uint32 name="raw size table address" offset="0x28" />
+
+		<int32 name="number of raw segments" offset="0x30" />
+		<uint32 name="raw segment table address" offset="0x34" />
+	</layout>
+	<!-- zone version of (cache_file_resource_layout_table) -->
+	<layout for="resource layout table alt">
+		<int32 name="number of external cache files" offset="0x28" />
+		<uint32 name="external cache file table address" offset="0x2C" />
+
+		<int32 name="number of raw pages" offset="0x34" />
+		<uint32 name="raw page table address" offset="0x38" />
+		
+		<int32 name="number of raw sizes" offset="0x40" />
+		<uint32 name="raw size table address" offset="0x44" />
+
+		<int32 name="number of raw segments" offset="0x4C" />
+		<uint32 name="raw segment table address" offset="0x50" />
+	</layout>
+
+	<!-- Block at 0xC in play -->
+	<layout for="external cache file table element" size="0x108">
+		<asciiz name="map path" offset="0x0" />
+	</layout>
+
+	<!-- Block at 0x18 in play -->
+	<layout for="raw page table element" size="0x58">
+		<uint16 name="salt" offset="0x0" />
+		<byte name="flags" offset="0x2" />
+		<sbyte name="compression codec index" offset="0x3" />
+		<int16 name="shared cache file index" offset="0x4" />
+		<int16 name="unknown 1" offset="0x6" />
+		<int32 name="compressed block offset" offset="0x8" />
+		<int32 name="compressed block size" offset="0xC" />
+		<int32 name="uncompressed block size" offset="0x10" />
+		<uint32 name="checksum" offset="0x14" />
+		<raw name="hash 1" offset="0x18" size="0x14" />
+		<raw name="hash 2" offset="0x2C" size="0x14" />
+		<raw name="hash 3" offset="0x40" size="0x14" />
+		<int16 name="asset count" offset="0x54" />
+		<int16 name="unknown 2" offset="0x56" />
+	</layout>
+	
+	<!-- Block at 0x24 in play -->
+	<layout for="raw size table element" size="0x10">
+		<int32 name="overall size" offset="0x0" />
+		<int32 name="number of size parts" offset="0x4" />
+		<uint32 name="size part table address" offset="0x8" />
+	</layout>
+	
+	<layout for="size part table element" size="0x8">
+		<int32 name="offset" offset="0x0" />
+		<int32 name="size" offset="0x4" />
+	</layout>
+
+	<!-- Block at 0x30 in play -->
+	<layout for="raw segment table element" size="0x18">
+		<int32 name="primary offset" offset="0x0" />
+		<int32 name="secondary offset" offset="0x4" />
+		<int32 name="tertiary offset" offset="0x8" />
+		<int16 name="primary page index" offset="0xC" />
+		<int16 name="secondary page index" offset="0xE" />
+		<int16 name="tertiary page index" offset="0x10" />
+		<int16 name="primary size index" offset="0x12" />
+		<int16 name="secondary size index" offset="0x14" />
+		<int16 name="tertiary size index" offset="0x16" />
+	</layout>
+</layouts>

@@ -424,7 +424,7 @@
 			<tagblock name="Strip Indices" offset="0x20" visible="true" elementSize="0x2">
 				<int16 name="Index" offset="0x0" visible="true" />
 			</tagblock>
-			<dataref name="Visibility MOPP Codes" offset="0x28" visible="true" />
+			<dataref name="Visibility MOPP Codes" offset="0x28" visible="true" align="0x10" />
 			<tagblock name="MOPP Reorder Table" offset="0x30" visible="true" elementSize="0x2">
 				<int16 name="Index" offset="0x0" visible="true" />
 			</tagblock>
@@ -503,7 +503,7 @@
 		<tagblock name="Index Reorder Table" offset="0xA0" visible="true" elementSize="0x2">
 			<int16 name="Index" offset="0x0" visible="true" />
 		</tagblock>
-		<dataref name="Collision MOPP Codes" offset="0xA8" visible="true" />
+		<dataref name="Collision MOPP Codes" offset="0xA8" visible="true" align="0x10" />
 	</tagblock>
 	<tagblock name="Materials" offset="0xA4" visible="true" elementSize="0x20">
 		<tagRef name="Old Shader" offset="0x0" visible="true" />
@@ -1127,7 +1127,7 @@
 			<tagblock name="Strip Indices" offset="0x20" visible="true" elementSize="0x2">
 				<int16 name="Index" offset="0x0" visible="true" />
 			</tagblock>
-			<dataref name="Visibility MOPP Codes" offset="0x28" visible="true" />
+			<dataref name="Visibility MOPP Codes" offset="0x28" visible="true" align="0x10" />
 			<tagblock name="MOPP Reorder Table" offset="0x30" visible="true" elementSize="0x2">
 				<int16 name="Index" offset="0x0" visible="true" />
 			</tagblock>
@@ -1208,32 +1208,32 @@
 			<int16 name="First Edge" offset="0xC" visible="true" />
 			<int16 name="Unknown" offset="0xE" visible="false" />
 		</tagblock>
-		<tagblock name="BSP Physics" offset="0xB0" visible="true" elementSize="0x70">
-			<uint32 name="Runtime Pointer" offset="0x0" visible="true" />
+		<tagblock name="BSP Physics" offset="0xB0" visible="true" elementSize="0x70" align="0x10">
+			<uint32 name="Runtime Code Pointer" offset="0x0" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 			<int16 name="Size" offset="0x4" visible="true" />
 			<int16 name="Count" offset="0x6" visible="true" />
-			<int32 name="User Data" offset="0x8" visible="true" />
+			<uint32 name="User Data" offset="0x8" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 			<uint32 name="Unknown" offset="0xC" visible="false" />
-			<vector3 name="Unknown" offset="0x10" visible="true" />
-			<float32 name="w Unknown" offset="0x1C" visible="true" />
-			<vector3 name="Unknown" offset="0x20" visible="true" />
-			<float32 name="w Unknown" offset="0x2C" visible="true" />
-			<tagref name="Owner Tag" offset="0x30" withGroup="false" visible="true" />
+			<vector3 name="Center" offset="0x10" visible="true" />
+			<float32 name="w Center" offset="0x1C" visible="true" />
+			<vector3 name="Half Extent" offset="0x20" visible="true" />
+			<float32 name="w Half Extent" offset="0x2C" visible="true" />
+			<tagref name="Runtime Model Tag" offset="0x30" withGroup="false" visible="true" />
 			<undefined name="Unknown" offset="0x34" visible="false" />
 			<undefined name="Unknown" offset="0x38" visible="false" />
 			<undefined name="Unknown" offset="0x3C" visible="false" />
-			<uint32 name="Runtime Pointer" offset="0x40" visible="true" />
+			<uint32 name="Runtime Code Pointer" offset="0x40" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 			<int16 name="Size" offset="0x44" visible="true" />
 			<int16 name="Count" offset="0x46" visible="true" />
-			<int32 name="User Data" offset="0x48" visible="true" />
+			<uint32 name="User Data" offset="0x48" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 			<uint32 name="Unknown" offset="0x4C" visible="false" />
-			<uint32 name="Runtime Pointer" offset="0x50" visible="true" />
+			<uint32 name="Runtime Code Pointer" offset="0x50" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 			<int16 name="Size" offset="0x54" visible="true" />
 			<int16 name="Count" offset="0x56" visible="true" />
-			<int32 name="User Data" offset="0x58" visible="true" />
+			<uint32 name="User Data" offset="0x58" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 			<uint32 name="Unknown" offset="0x5C" visible="false" />
 			<uint32 name="Unknown" offset="0x60" visible="false" />
-			<dataref name="MOPP Code Data" offset="0x64" visible="true" />
+			<dataref name="MOPP Code Data" offset="0x64" visible="true" align="0x10" />
 			<undefined name="Unknown" offset="0x6C" visible="false" />
 		</tagblock>
 		<tagblock name="Render Leaves" offset="0xB8" visible="true" elementSize="0x8">
@@ -1509,7 +1509,7 @@
 		</tagblock>
 	</tagblock>
 	<tagRef name="Decorators" offset="0x1D8" visible="true" />
-	<dataref name="MOPP Codes" offset="0x1E0" visible="true" />
+	<dataref name="MOPP Codes" offset="0x1E0" visible="true" align="0x10" />
 	<undefined name="Unknown" offset="0x1E8" visible="false" />
 	<float32 name="MOPP Bounds Min X" offset="0x1EC" visible="true" />
 	<float32 name="MOPP Bounds Min Y" offset="0x1F0" visible="true" />
@@ -1517,7 +1517,7 @@
 	<float32 name="MOPP Bounds Max X" offset="0x1F8" visible="true" />
 	<float32 name="MOPP Bounds Max Y" offset="0x1FC" visible="true" />
 	<float32 name="MOPP Bounds Max Z" offset="0x200" visible="true" />
-	<dataref name="Breakable Surface MOPP Codes" offset="0x204" visible="true" />
+	<dataref name="Breakable Surface MOPP Codes" offset="0x204" visible="true" align="0x10" />
 	<tagblock name="Breakable Surface Key Table" offset="0x20C" visible="true" elementSize="0x20">
 		<int16 name="Instance Geometry Index" offset="0x0" visible="true" />
 		<int16 name="Breakable Surface Index" offset="0x2" visible="true" />
@@ -1654,7 +1654,7 @@
 			<tagblock name="Strip Indices" offset="0x20" visible="true" elementSize="0x2">
 				<int16 name="Index" offset="0x0" visible="true" />
 			</tagblock>
-			<dataref name="Visibility MOPP Codes" offset="0x28" visible="true" />
+			<dataref name="Visibility MOPP Codes" offset="0x28" visible="true" align="0x10" />
 			<tagblock name="MOPP Reorder Table" offset="0x30" visible="true" elementSize="0x2">
 				<int16 name="Index" offset="0x0" visible="true" />
 			</tagblock>

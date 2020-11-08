@@ -643,22 +643,23 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<int16 name="Unknown" offset="0x4A" visible="false" />
 	</tagblock>
 	<tagblock name="Phantom Shapes" offset="0x2F8" visible="true" elementSize="0x2A0" align="0x10">
-		<uint32 name="Runtime Pointer" offset="0x0" visible="true" />
+		<comment title="List" />
+		<uint32 name="Runtime Code Pointer" offset="0x0" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x4" visible="true" />
 		<int16 name="Count" offset="0x6" visible="true" />
-		<int32 name="User Data" offset="0x8" visible="true" />
-		<int32 name="Offset" offset="0xC" visible="true" />
-		<uint32 name="Child Shapes Size" offset="0x10" visible="true" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<uint32 name="User Data" offset="0xC" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
+		<int32 name="Child Shapes Size" offset="0x10" visible="true" />
 		<uint32 name="Child Shapes Capacity" offset="0x14" visible="true" />
-		<comment title="Child Shapes Storage 1" />
-		<enum16 name="Shape Type" offset="0x18" visible="true">
+		<comment title="Child Shapes Storage" />
+		<enum16 name="Shape Type 0" offset="0x18" visible="true" tooltip="this and the shape index below becomes a pointer to the given shape in memory at runtime. don't poke me">
 			<option name="Sphere" value="0x0" />
 			<option name="Pill" value="0x1" />
 			<option name="Box" value="0x2" />
 			<option name="Triangle" value="0x3" />
 			<option name="Polyhedron" value="0x4" />
-			<option name="Multi-Sphere" value="0x5" />
-			<option name="Unused 0" value="0x6" />
+			<option name="Multi Sphere" value="0x5" />
+			<option name="Phantom" value="0x6" />
 			<option name="Unused 1" value="0x7" />
 			<option name="Unused 2" value="0x8" />
 			<option name="Unused 3" value="0x9" />
@@ -667,19 +668,18 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 			<option name="Unused 6" value="0xC" />
 			<option name="Unused 7" value="0xD" />
 			<option name="List" value="0xE" />
-			<option name="Mopp" value="0xF" />
+			<option name="MOPP" value="0xF" />
 		</enum16>
-		<int16 name="Shape Index" offset="0x1A" visible="true" />
-		<uint32 name="Collision Filter" offset="0x1C" visible="true" />
-		<comment title="Child Shapes Storage 2" />
-		<enum16 name="Shape Type" offset="0x20" visible="true">
+		<int16 name="Shape Index 0" offset="0x1A" visible="true" />
+		<int32 name="Collision Filter 0" offset="0x1C" visible="true" />
+		<enum16 name="Shape Type 1" offset="0x20" visible="true" tooltip="this and the shape index below becomes a pointer to the given shape in memory at runtime. don't poke me">
 			<option name="Sphere" value="0x0" />
 			<option name="Pill" value="0x1" />
 			<option name="Box" value="0x2" />
 			<option name="Triangle" value="0x3" />
 			<option name="Polyhedron" value="0x4" />
-			<option name="Multi-Sphere" value="0x5" />
-			<option name="Unused 0" value="0x6" />
+			<option name="Multi Sphere" value="0x5" />
+			<option name="Phantom" value="0x6" />
 			<option name="Unused 1" value="0x7" />
 			<option name="Unused 2" value="0x8" />
 			<option name="Unused 3" value="0x9" />
@@ -688,19 +688,18 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 			<option name="Unused 6" value="0xC" />
 			<option name="Unused 7" value="0xD" />
 			<option name="List" value="0xE" />
-			<option name="Mopp" value="0xF" />
+			<option name="MOPP" value="0xF" />
 		</enum16>
-		<int16 name="Shape Index" offset="0x22" visible="true" />
-		<uint32 name="Collision Filter" offset="0x24" visible="true" />
-		<comment title="Child Shapes Storage 3" />
-		<enum16 name="Shape Type" offset="0x28" visible="true">
+		<int16 name="Shape Index 1" offset="0x22" visible="true" />
+		<int32 name="Collision Filter 1" offset="0x24" visible="true" />
+		<enum16 name="Shape Type 2" offset="0x28" visible="true" tooltip="this and the shape index below becomes a pointer to the given shape in memory at runtime. don't poke me">
 			<option name="Sphere" value="0x0" />
 			<option name="Pill" value="0x1" />
 			<option name="Box" value="0x2" />
 			<option name="Triangle" value="0x3" />
 			<option name="Polyhedron" value="0x4" />
-			<option name="Multi-Sphere" value="0x5" />
-			<option name="Unused 0" value="0x6" />
+			<option name="Multi Sphere" value="0x5" />
+			<option name="Phantom" value="0x6" />
 			<option name="Unused 1" value="0x7" />
 			<option name="Unused 2" value="0x8" />
 			<option name="Unused 3" value="0x9" />
@@ -709,19 +708,18 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 			<option name="Unused 6" value="0xC" />
 			<option name="Unused 7" value="0xD" />
 			<option name="List" value="0xE" />
-			<option name="Mopp" value="0xF" />
+			<option name="MOPP" value="0xF" />
 		</enum16>
-		<int16 name="Shape Index" offset="0x2A" visible="true" />
-		<uint32 name="Collision Filter" offset="0x2C" visible="true" />
-		<comment title="Child Shapes Storage 4" />
-		<enum16 name="Shape Type" offset="0x30" visible="true">
+		<int16 name="Shape Index 2" offset="0x2A" visible="true" />
+		<int32 name="Collision Filter 2" offset="0x2C" visible="true" />
+		<enum16 name="Shape Type 3" offset="0x30" visible="true" tooltip="this and the shape index below becomes a pointer to the given shape in memory at runtime. don't poke me">
 			<option name="Sphere" value="0x0" />
 			<option name="Pill" value="0x1" />
 			<option name="Box" value="0x2" />
 			<option name="Triangle" value="0x3" />
 			<option name="Polyhedron" value="0x4" />
-			<option name="Multi-Sphere" value="0x5" />
-			<option name="Unused 0" value="0x6" />
+			<option name="Multi Sphere" value="0x5" />
+			<option name="Phantom" value="0x6" />
 			<option name="Unused 1" value="0x7" />
 			<option name="Unused 2" value="0x8" />
 			<option name="Unused 3" value="0x9" />
@@ -730,13 +728,14 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 			<option name="Unused 6" value="0xC" />
 			<option name="Unused 7" value="0xD" />
 			<option name="List" value="0xE" />
-			<option name="Mopp" value="0xF" />
+			<option name="MOPP" value="0xF" />
 		</enum16>
-		<int16 name="Shape Index" offset="0x32" visible="true" />
-		<uint32 name="Collision Filter" offset="0x34" visible="true" />
+		<int16 name="Shape Index 3" offset="0x32" visible="true" />
+		<int32 name="Collision Filter 3" offset="0x34" visible="true" />
+		<comment title="Base" />
 		<uint32 name="Multisphere Count" offset="0x38" visible="true" />
 		<flags32 name="Flags" offset="0x3C" visible="true">
-			<bit name="Has AABB Phantom" index="0" />
+			<bit name="Has Axis-Aligned Bounding Box Phantom" index="0" />
 			<bit name="Bit 1" index="1" />
 		</flags32>
 		<undefined name="Unknown" offset="0x40" visible="false" />
@@ -747,13 +746,13 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<float32 name="y1" offset="0x54" visible="true" />
 		<float32 name="z0" offset="0x58" visible="true" />
 		<float32 name="z1" offset="0x5C" visible="true" />
-		<comment title="Multispheres 1" />
-		<uint32 name="Runtime Pointer" offset="0x60" visible="true" />
+		<comment title="Sphere Representation 0" />
+		<uint32 name="Runtime Code Pointer" offset="0x60" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x64" visible="true" />
 		<int16 name="Count" offset="0x66" visible="true" />
-		<int32 name="User Data" offset="0x68" visible="true" />
+		<uint32 name="User Data" offset="0x68" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 		<uint32 name="Number of Spheres" offset="0x6C" visible="true" />
-		<comment title="Four Vectors Storage" />
+		<comment title="Four Vectors 0" />
 		<vector3 name="Sphere 0" offset="0x70" visible="true" />
 		<float32 name="w Sphere 0" offset="0x7C" visible="true" />
 		<vector3 name="Sphere 1" offset="0x80" visible="true" />
@@ -770,13 +769,13 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<float32 name="w Sphere 6" offset="0xDC" visible="true" />
 		<vector3 name="Sphere 7" offset="0xE0" visible="true" />
 		<float32 name="w Sphere 7" offset="0xEC" visible="true" />
-		<comment title="Multispheres 2" />
-		<uint32 name="Runtime Pointer" offset="0xF0" visible="true" />
+		<comment title="Sphere Representation 1" />
+		<uint32 name="Runtime Code Pointer" offset="0xF0" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0xF4" visible="true" />
 		<int16 name="Count" offset="0xF6" visible="true" />
-		<int32 name="User Data" offset="0xF8" visible="true" />
+		<uint32 name="User Data" offset="0xF8" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 		<uint32 name="Number of Spheres" offset="0xFC" visible="true" />
-		<comment title="Four Vectors Storage" />
+		<comment title="Four Vectors 1" />
 		<vector3 name="Sphere 0" offset="0x100" visible="true" />
 		<float32 name="w Sphere 0" offset="0x10C" visible="true" />
 		<vector3 name="Sphere 1" offset="0x110" visible="true" />
@@ -793,13 +792,13 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<float32 name="w Sphere 6" offset="0x16C" visible="true" />
 		<vector3 name="Sphere 7" offset="0x170" visible="true" />
 		<float32 name="w Sphere 7" offset="0x17C" visible="true" />
-		<comment title="Multispheres 3" />
-		<uint32 name="Runtime Pointer" offset="0x180" visible="true" />
+		<comment title="Sphere Representation 2" />
+		<uint32 name="Runtime Code Pointer" offset="0x180" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x184" visible="true" />
 		<int16 name="Count" offset="0x186" visible="true" />
-		<int32 name="User Data" offset="0x188" visible="true" />
+		<uint32 name="User Data" offset="0x188" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 		<uint32 name="Number of Spheres" offset="0x18C" visible="true" />
-		<comment title="Four Vectors Storage" />
+		<comment title="Four Vectors 2" />
 		<vector3 name="Sphere 0" offset="0x190" visible="true" />
 		<float32 name="w Sphere 0" offset="0x19C" visible="true" />
 		<vector3 name="Sphere 1" offset="0x1A0" visible="true" />
@@ -816,13 +815,13 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<float32 name="w Sphere 6" offset="0x1FC" visible="true" />
 		<vector3 name="Sphere 7" offset="0x200" visible="true" />
 		<float32 name="w Sphere 7" offset="0x20C" visible="true" />
-		<comment title="Multispheres 4" />
-		<uint32 name="Runtime Pointer" offset="0x210" visible="true" />
+		<comment title="Sphere Representation 3" />
+		<uint32 name="Runtime Code Pointer" offset="0x210" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x214" visible="true" />
 		<int16 name="Count" offset="0x216" visible="true" />
-		<int32 name="User Data" offset="0x218" visible="true" />
+		<uint32 name="User Data" offset="0x218" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
 		<uint32 name="Number of Spheres" offset="0x21C" visible="true" />
-		<comment title="Four Vectors Storage" />
+		<comment title="Four Vectors 3" />
 		<vector3 name="Sphere 0" offset="0x220" visible="true" />
 		<float32 name="w Sphere 0" offset="0x22C" visible="true" />
 		<vector3 name="Sphere 1" offset="0x230" visible="true" />

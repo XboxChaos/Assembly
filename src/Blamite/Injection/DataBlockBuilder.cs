@@ -179,7 +179,8 @@ namespace Blamite.Injection
 			{
 				ReadReferences(offset, (b, o)
 					=> ReadInteropPointer(b, o,
-					lowerName.Contains("shader") ? 5 : 1));
+					lowerName.Contains("shader") ? 5 : 1,
+					lowerName.Contains("polyart")));
 			}
 			if (lowerName.Contains("scenario interop index"))
 			{
@@ -599,22 +600,25 @@ namespace Blamite.Injection
 				return;
 		}
 
-		private void ReadInteropPointer(DataBlock block, uint offset, int refCount)
+		private void ReadInteropPointer(DataBlock block, uint offset, int refCount, bool polyart)
 		{
 			// Read the address
 			SeekToOffset(block, offset);
 			var address = _reader.ReadUInt32();
 
+			if (address == 0)
+				return;
+
 			long expand = _cacheFile.PointerExpander.Expand(address);
 
-			int length = _dataRefLayout.Size * refCount;
+			int length = _dataRefLayout.Size * refCount + (polyart ? refCount * 4 : 0);
 
 			if (!_cacheFile.MetaArea.ContainsBlockPointer(expand, length)) return;
 
 			var newBlock = ReadDataBlock(expand, length, 1, 16, false);
 			for (int i = 0; i < refCount; i++)
 			{
-				ReadDataReference(newBlock, (uint)(i * _dataRefLayout.Size), 16);
+				ReadDataReference(newBlock, (uint)(i * (_dataRefLayout.Size + (polyart ? 4 : 0))), 16);
 			}
 
 			//get the type from the table

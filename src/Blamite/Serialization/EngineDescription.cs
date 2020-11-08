@@ -154,6 +154,11 @@ namespace Blamite.Serialization
 		/// </summary>
 		public bool UsesRawHashes { get; private set; }
 
+		/// <summary>
+		///		Some/later builds have optimization which removes unused shader code from maps to save space. Injection can mean these removed shaders can be referenced and cause issues.
+		/// </summary>
+		public bool OptimizedShaders { get; private set; }
+
 		private void LoadSettings()
 		{
 			LoadEngineSettings();
@@ -169,6 +174,7 @@ namespace Blamite.Serialization
 			UsesCompression = Settings.GetSettingOrDefault("engineInfo/usesCompression", false);
 			UsesStringHashes = Settings.GetSettingOrDefault("engineInfo/usesStringHashes", true);
 			UsesRawHashes = Settings.GetSettingOrDefault("engineInfo/usesRawHashes", true);
+			OptimizedShaders = Settings.GetSettingOrDefault("engineInfo/optimizedShaders", false);
 
 			if (Settings.PathExists("engineInfo/pokingOffset"))
 				PokingOffset = Settings.GetSettingOrDefault("engineInfo/pokingOffset", 0);
