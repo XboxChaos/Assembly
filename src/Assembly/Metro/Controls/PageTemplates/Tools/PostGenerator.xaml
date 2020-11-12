@@ -2,12 +2,11 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converter="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.Converters"
              mc:Ignorable="d"
              Background="#28282b"
-             d:DesignHeight="3000" d:DesignWidth="1800">
+             d:DesignHeight="1800" d:DesignWidth="1800">
 	<UserControl.Resources>
 		<!-- Converters -->
 		<converter:ImageConverter x:Key="IValueImageConverter" />
@@ -21,22 +20,15 @@
 		</Grid.ColumnDefinitions>
 
 		<Grid Grid.Column="0" Background="#2d2d30">
-			<TextBlock x:Name="lblHeader" FontFamily="{DynamicResource MetroFontLight}" Text="Post Generator" Foreground="White"
-			           FontSize="32" Margin="25,36.5,13,0" Height="50" VerticalAlignment="Top" />
-			<ed:RegularPolygon Fill="#FF4A4A4C" HorizontalAlignment="Left" Height="19" InnerRadius="1" Margin="-16,51,0,0"
-			                   PointCount="3" Stretch="Fill" VerticalAlignment="Top" Width="48" RenderTransformOrigin="0.5,0.5">
-				<ed:RegularPolygon.RenderTransform>
-					<TransformGroup>
-						<ScaleTransform />
-						<SkewTransform />
-						<RotateTransform Angle="90" />
-						<TranslateTransform />
-					</TransformGroup>
-				</ed:RegularPolygon.RenderTransform>
-			</ed:RegularPolygon>
+			<Grid Margin="0,36,0,0" Height="48" VerticalAlignment="Top">
+				<TextBlock x:Name="lblHeader" FontFamily="{DynamicResource MetroFontLight}" Text="Post Generator" Foreground="White" FontSize="32"
+			           Margin="25,0,0,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+				<Polygon Points="0,0 20,24 0,48" Fill="#FF4A4A4C" HorizontalAlignment="Left" VerticalAlignment="Center" />
+			</Grid>
 
-			<StackPanel Margin="25,114,25,0">
-				<Rectangle Fill="#FF363639" Height="1" VerticalAlignment="Top" Margin="0,0,0,20" d:LayoutOverrides="Height" />
+			<Rectangle Fill="#FF363639" Height="1" Margin="25,114,25,0" VerticalAlignment="Top"
+			           d:LayoutOverrides="Height" />
+			<StackPanel VerticalAlignment="Top" Margin="25,120,15,20">
 
 				<TextBlock
 					Text="The Post Generator creates simple and clean forum posts quickly. Just enter basic information about your mod, and hit `Generate`. We'll do all the hard work. Then just simple paste the returned BBCode into the forum of your choice."
