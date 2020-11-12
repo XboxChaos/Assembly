@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Blamite.Blam;
 using Blamite.Blam.Scripting;
 using Blamite.Serialization;
-using Blamite.Serialization.Settings;
 using System.Linq;
 using Blamite.IO;
 using System.IO;
-using Blamite.Blam.Resources.Sounds;
+using Blamite.Blam.Util;
+using Blamite.Blam.ThirdGen.Structures;
 
 namespace ScriptTool
 {
@@ -26,6 +24,7 @@ namespace ScriptTool
             }
             return result;
         }
+
 
         public static Dictionary<string, ScriptTable> LoadAllScriptFiles(string path, EngineDatabase db, out EngineDescription engineInfo)
         {
@@ -46,6 +45,7 @@ namespace ScriptTool
             return result;
         }
 
+
         public static Dictionary<string, IEnumerable<UnitSeatMapping>> LoadAllSeatMappings(string path, EngineDatabase db, out EngineDescription engineInfo)
         {
             Dictionary<string, IEnumerable<UnitSeatMapping>> result = new Dictionary<string, IEnumerable<UnitSeatMapping>>();
@@ -56,16 +56,18 @@ namespace ScriptTool
             {
                 var reader = new EndianReader(stream, Endian.BigEndian);
                 var cache = CacheFileLoader.LoadCacheFile(reader, fileName, db, out engineInfo);
-                var info = engineInfo.ScriptInfo.GetTypeInfo("unit_seat_mapping");
-                if (info != null && cache.Type != CacheFileType.Shared && cache.Type != CacheFileType.SinglePlayerShared && cache.ScriptFiles.Length > 0)
+                if (cache.Type != CacheFileType.Shared && cache.Type != CacheFileType.SinglePlayerShared && cache.ScriptFiles.Length > 0)
                 {
                     foreach (var file in cache.ScriptFiles)
                     {
-                        var mappings = file.GetUniqueSeatMappings(reader, info.Opcode);
-
-                        if(mappings.Any())
+                        if(file is ScnrScriptFile scnr)
                         {
-                            result[file.Name] = mappings;
+                            var mappings = SeatMappingNameExtractor.ExtractScnrSeatMappings(scnr, reader, engineInfo.ScriptInfo);
+
+                            if (mappings.Any())
+                            {
+                                result[file.Name] = mappings;
+                            }
                         }
                     }
                 }

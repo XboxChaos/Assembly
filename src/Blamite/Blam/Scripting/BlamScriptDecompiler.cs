@@ -147,7 +147,7 @@ namespace Blamite.Blam.Scripting
 					_opcodes.GetTypeInfo((ushort)scr.ReturnType).Name, scr.Name);
 
 				// Write script parameter declarations.
-				if (scr.Parameters.Count > 0)
+				if (scr.Parameters?.Count > 0)
 				{
 					_output.Write(" (");
 					bool firstParam = true;

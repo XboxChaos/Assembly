@@ -7,34 +7,36 @@ using Blamite.Blam.Util;
 using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Util;
-using System.Diagnostics;
 using Blamite.Blam.Scripting.Context;
 
 namespace Blamite.Blam.ThirdGen.Structures
 {
-	public class ThirdGenScenarioScriptFile : IScriptFile
+	public class ScnrScriptFile : IScriptFile
 	{
-		private readonly EngineDescription _buildInfo;
-		private readonly StringIDSource _stringIDs;
-        private readonly MetaAllocator _allocator;
-        private readonly IPointerExpander _expander;
+        private readonly ITag _scnrTag;
         private readonly FileSegmentGroup _metaArea;
-		private readonly ITag _scriptTag;
+        private readonly EngineDescription _buildInfo;
+		private readonly StringIDSource _stringIDs;
+        private readonly IPointerExpander _expander;
+        private readonly MetaAllocator _allocator;
 
-        // For Games other than Halo 4
-        public ThirdGenScenarioScriptFile(ITag scriptTag, string tagName, FileSegmentGroup metaArea,
-            StringIDSource stringIDs, EngineDescription buildInfo, IPointerExpander expander, MetaAllocator allocator)
+        public ScnrScriptFile(ITag scnrTag, string tagName, FileSegmentGroup metaArea, EngineDescription buildInfo, StringIDSource stringIDs, IPointerExpander expander, MetaAllocator allocator)
         {
-            _scriptTag = scriptTag;
-            _stringIDs = stringIDs;
-            _buildInfo = buildInfo;
-            _expander = expander;
+            if (CharConstant.ToString(scnrTag.Group.Magic) != "scnr")
+            {
+                throw new ArgumentException("Invalid tag. The tag must belong to the scnr group.");
+            }
+
+            _scnrTag = scnrTag;
+            Name = tagName.Substring(tagName.LastIndexOf('\\') + 1) + ".hsc"; ;
             _metaArea = metaArea;
+            _buildInfo = buildInfo;
+            _stringIDs = stringIDs;
+            _expander = expander;
             _allocator = allocator;
-            Name = tagName.Substring(tagName.LastIndexOf('\\') + 1) + ".hsc";
         }
 
-		public string Name { get; private set; }
+        public string Name { get; private set; }
 
 		public string Text
 		{
@@ -44,12 +46,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		public ScriptTable LoadScripts(IReader reader)
 		{
-            StructureValueCollection values = LoadScriptTag(reader, _scriptTag);
-
-			//if (_scriptTag != _scenarioTag)
-			//	values = LoadScriptTag(reader);
-			//else
-			//	values = LoadTag(reader);
+            StructureValueCollection values = LoadScriptTag(reader, _scnrTag);
                 
             ulong strSize = values.GetInteger("script string table size");
 			var result = new ScriptTable();
@@ -57,7 +54,6 @@ namespace Blamite.Blam.ThirdGen.Structures
 				
 			result.Scripts = LoadScripts(reader, values);
 			result.Globals = LoadGlobals(reader, values);
-			result.Variables = LoadVariables(reader, values);
 			result.Expressions = LoadExpressions(reader, values, stringReader);
 
 			CachedStringTable strings = LoadStrings(reader, values, stringReader);
@@ -72,7 +68,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 		public void SaveScripts(ScriptData data, IStream stream, IProgress<int> progress)
 		{
             progress.Report(0);
-            StructureValueCollection values = LoadScriptTag(stream, _scriptTag);
+            StructureValueCollection values = LoadScriptTag(stream, _scnrTag);
             StructureLayout scnrLayout = _buildInfo.Layouts.GetLayout("scnr");
             progress.Report(10);
 
@@ -91,119 +87,40 @@ namespace Blamite.Blam.ThirdGen.Structures
             WriteScripts(data, stream, values);
             progress.Report(90);
 
-            stream.SeekTo(_scriptTag.MetaLocation.AsOffset());
+            stream.SeekTo(_scnrTag.MetaLocation.AsOffset());
             StructureWriter.WriteStructure(values, scnrLayout, stream);
             progress.Report(100);
         }
 
         public ScriptingContextCollection LoadContext(IReader reader, ICacheFile cache)
         {
-            if(CharConstant.ToString(_scriptTag.Group.Magic) == "scnr")
-            {
-                return ScriptingContextGenerator.GenerateContext(reader, cache, _buildInfo);
-            }
-            else
-            {
-                return new ScriptingContextCollection();
-            }
-        }
-
-        public IEnumerable<UnitSeatMapping> GetUniqueSeatMappings(IReader reader, ushort opcode)
-        {
-            // load the expressions
-            StructureValueCollection values = LoadScriptTag(reader, _scriptTag);
-            var stringReader = new StringTableReader();
-            ScriptExpressionTable expressions = LoadExpressions(reader, values, stringReader);
-            CachedStringTable strings = LoadStrings(reader, values, stringReader);
-            foreach (ScriptExpression expr in expressions.Where(e => (e != null)))
-                expr.ResolveStrings(strings);
-
-
-            // find all unique mappings
-            SortedDictionary<uint, UnitSeatMapping> uniqueMappings = new SortedDictionary<uint, UnitSeatMapping>();
-
-            foreach (var exp in expressions)
-            {
-                if (exp.Opcode == opcode && exp.ReturnType == opcode && !exp.Value.IsNull)
-                {
-                    // Calculate the index and only add it if it doesn't exist yet.
-                    uint index = exp.Value.UintValue & 0xFFFF;
-                    if (!uniqueMappings.ContainsKey(index))
-                    {
-                        uint count = (exp.Value.UintValue & 0xFFFF0000) >> 16;
-                        string name = exp.StringValue;
-                        UnitSeatMapping mapping = new UnitSeatMapping((short)index, (short)count, name);
-                        uniqueMappings.Add(index, mapping);
-                    }
-                }
-            }
-            return uniqueMappings.Values;
+            return ScriptingContextGenerator.GenerateContext(reader, cache, _buildInfo);
         }
 
         private StructureValueCollection LoadScriptTag(IReader reader, ITag tag)
         {
             reader.SeekTo(tag.MetaLocation.AsOffset());
-            string groupMagic = CharConstant.ToString(tag.Group.Magic);
-            switch (groupMagic)
-            {
-                case "scnr":
-                    {
-                        return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("scnr"));
-                    }
-                case "hsdt":
-                    {
-                        return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("hsdt"));
-                    }
-                default:
-                    {
-                        throw new Exception("The tag doesn't belong to a script related tag class");
-                    }
-            }
+            return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("scnr"));
         }
 
         private List<ScriptGlobal> LoadGlobals(IReader reader, StructureValueCollection values)
 		{
-			var count = (int) values.GetInteger("number of script globals");
+			int count = (int) values.GetInteger("number of script globals");
 			uint address = (uint)values.GetInteger("script global table address");
-
 			long expand = _expander.Expand(address);
-
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("script global element");
 			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, expand, layout, _metaArea);
 			return entries.Select(e => new ScriptGlobal(e, _stringIDs)).ToList();
 		}
 
-		private List<ScriptGlobal> LoadVariables(IReader reader, StructureValueCollection values)
-		{
-			if (_buildInfo.Layouts.HasLayout("script variable element"))
-			{
-				var count = (int)values.GetInteger("number of script variables");
-				uint address = (uint)values.GetInteger("script variable table address");
-
-				long expand = _expander.Expand(address);
-
-				StructureLayout layout = _buildInfo.Layouts.GetLayout("script variable element");
-				StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, expand, layout, _metaArea);
-				return entries.Select(e => new ScriptGlobal(e, _stringIDs)).ToList();
-			}
-			else
-				return null;
-
-		}
-
 		private List<Script> LoadScripts(IReader reader, StructureValueCollection values)
 		{
-			var count = (int) values.GetInteger("number of scripts");
+			int count = (int) values.GetInteger("number of scripts");
 			uint address = (uint)values.GetInteger("script table address");
-
 			long expand = _expander.Expand(address);
-
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("script element");
 			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, expand, layout, _metaArea);
-
-
 			var result = entries.Select(e => new Script(e, reader, _metaArea, _stringIDs, _buildInfo, _expander)).ToList();
-
             return result;
 		}
 
@@ -231,23 +148,19 @@ namespace Blamite.Blam.ThirdGen.Structures
 		{
 			var stringsSize = (int) values.GetInteger("script string table size");
 			if (stringsSize == 0)
-				return new CachedStringTable();
+            {
+                return new CachedStringTable();
+            }
 
-			var result = new CachedStringTable();
-
-			uint tableAddr = (uint)values.GetInteger("script string table address");
-
+            uint tableAddr = (uint)values.GetInteger("script string table address");
 			long expand = _expander.Expand(tableAddr);
-
 			int tableOffset = _metaArea.PointerToOffset(expand);
-			stringReader.ReadRequestedStrings(reader, tableOffset, result);
+
+            var result = new CachedStringTable();
+            stringReader.ReadRequestedStrings(reader, tableOffset, result);
 			return result;
 		}
 
-		private ScriptObject[] ReadObjects(IReader reader, StructureValueCollection values, ScriptObjectTagBlock block)
-		{
-			return block.ReadObjects(values, reader, _metaArea, _stringIDs, _buildInfo, _expander);
-		}
 
         /// <summary>
         ///     Frees the old Script Parameters and writes new ones to the stream.

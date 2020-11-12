@@ -10,6 +10,7 @@ using Blamite.Blam.Shaders;
 using Blamite.Blam.Util;
 using Blamite.Serialization;
 using Blamite.IO;
+using Blamite.Blam.ThirdGen.Structures;
 
 namespace Blamite.Blam.SecondGen
 {
@@ -239,7 +240,7 @@ namespace Blamite.Blam.SecondGen
 			_stringIDs = LoadStringIDs(reader, buildInfo);
 
 			LoadLanguageGlobals(reader);
-			LoadScriptFiles(reader);
+			LoadScriptFiles();
 			LoadSimulationDefinitions(reader);
 		}
 
@@ -302,21 +303,25 @@ namespace Blamite.Blam.SecondGen
 			return (tag != null && layout != null && tag.MetaLocation != null);
 		}
 
-		private void LoadScriptFiles(IReader reader)
+		private void LoadScriptFiles()
 		{
 			ScriptFiles = new IScriptFile[0];
 
 			if (_tags != null)
 			{
-				List<SecondGenScenarioScriptFile> l_scriptfiles = new List<SecondGenScenarioScriptFile>();
+				List<IScriptFile> l_scriptfiles = new List<IScriptFile>();
 
 				if (_buildInfo.Layouts.HasLayout("scnr"))
 				{
 					foreach (ITag hs in _tags.FindTagsByGroup("scnr"))
-						l_scriptfiles.Add(new SecondGenScenarioScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, StringIDs, _buildInfo, _expander));
+                    {
+						l_scriptfiles.Add(new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, _buildInfo, StringIDs, _expander, Allocator));
+					}
 				}
 				else
+                {
 					return;
+				}
 
 				ScriptFiles = l_scriptfiles.ToArray();
 			}

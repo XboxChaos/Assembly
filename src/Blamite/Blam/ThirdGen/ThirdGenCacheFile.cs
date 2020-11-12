@@ -251,7 +251,7 @@ namespace Blamite.Blam.ThirdGen
 			LoadStringIDs(reader, resolver);
 			LoadTags(reader);
 			LoadLanguageGlobals(reader);
-			LoadScriptFiles(reader);
+			LoadScriptFiles();
 			LoadResourceManager(reader);
 			LoadSoundResourceManager(reader);
 			LoadSimulationDefinitions(reader);
@@ -424,40 +424,22 @@ namespace Blamite.Blam.ThirdGen
 			}
 		}
 
-		private void LoadScriptFiles(IReader reader)
+		private void LoadScriptFiles()
 		{
-			ScriptFiles = new IScriptFile[0];
-
 			if (_tags != null)
 			{
-				List<ThirdGenScenarioScriptFile> l_scriptfiles = new List<ThirdGenScenarioScriptFile>();
-
 				if (_buildInfo.Layouts.HasLayout("hsdt"))
 				{
-					ITag mainScenario = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
-					if (mainScenario == null)
-                    {
-						return;
-
-					}
-
-					foreach (ITag hs in _tags.FindTagsByGroup("hsdt"))
-                    {
-						l_scriptfiles.Add(new ThirdGenScenarioScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, StringIDs, _buildInfo, _expander, Allocator));
-					}
+					ScriptFiles = _tags.FindTagsByGroup("hsdt").Select(t => new HsdtScriptFile(t, _fileNames.GetTagName(t.Index), MetaArea, _buildInfo, StringIDs, _expander)).ToArray();
 				}
 				else if (_buildInfo.Layouts.HasLayout("scnr"))
 				{
-					ITag scnr = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
-					if(scnr != null)
-                    {
-						l_scriptfiles.Add(new ThirdGenScenarioScriptFile(scnr, _fileNames.GetTagName(scnr.Index), MetaArea, StringIDs, _buildInfo, _expander, Allocator));
-					}
+					ScriptFiles = _tags.FindTagsByGroup("scnr").Select(t => new ScnrScriptFile(t, _fileNames.GetTagName(t.Index), MetaArea, _buildInfo, StringIDs, _expander, Allocator)).ToArray();
 				}
 				else
-					return;
-
-				ScriptFiles = l_scriptfiles.ToArray();
+                {
+					ScriptFiles = new IScriptFile[0];
+				}
 			}
 		}
 

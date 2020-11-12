@@ -46,7 +46,5 @@ namespace Blamite.Blam.Scripting
 		/// <param name="cache">The cache file containing the script file.</param>
 		/// <returns>The context that was loaded.</returns>
 		ScriptingContextCollection LoadContext(IReader reader, ICacheFile cache);
-
-		public IEnumerable<UnitSeatMapping> GetUniqueSeatMappings(IReader reader, ushort opcode);
 	}
 }
