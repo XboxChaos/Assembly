@@ -1374,10 +1374,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 					if (tagMenuItem.Name == "itemRename" && _cacheFile.Engine < EngineType.SecondGeneration)
 						tagMenuItem.Visibility = Visibility.Collapsed;
-					else if (tagMenuItem.Name == "itemDuplicate" ||
+					else if ((tagMenuItem.Name == "itemDuplicate" ||
 						tagMenuItem.Name == "itemExtract" ||
 						tagMenuItem.Name == "itemForce" ||
-						tagMenuItem.Name == "itemTagBatch"
+						tagMenuItem.Name == "itemTagBatch")
 						&& _cacheFile.Engine != EngineType.ThirdGeneration)
 						tagMenuItem.Visibility = Visibility.Collapsed;
 				}
