@@ -269,7 +269,6 @@ namespace Blamite.Blam.ThirdGen.Structures
                 stream.SeekTo(_metaArea.PointerToOffset(newScriptAddress));
 
                 // write scripts
-                int writtenScripts = 0;
                 foreach (var scr in data.Scripts)
                 {
                     int paramCount = scr.Parameters.Count;

@@ -17,9 +17,7 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Document;
 using Microsoft.Win32;
 using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
@@ -93,7 +91,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             var srchbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#40F0F0F0");
             srch.MarkerBrush = srchbrsh;
 
-            txtScript.SyntaxHighlighting = LoadSyntaxHighlighting(_opcodes);
+            txtScript.SyntaxHighlighting = LoadSyntaxHighlighting();
 
             // With syntax highlighting and HTML formatting, copying text takes ages. Disable the HTML formatting for copied text.
             DataObject.AddSettingDataHandler(txtScript, onTextViewSettingDataHandler);
@@ -119,7 +117,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                     List<Task> tasks = new List<Task>();
 
                     Task regexTask = Task.Run(() => CreateRegex());
-                    Task<string> decompilationTask = Task.Run(() => DecompileToLISP());
+                    Task<string> decompilationTask = Task.Run(() => DecompileScnrScripts());
                     Task<IEnumerable<ICompletionData>> completionTask = Task.Run(() => GenerateStaticCompletionData());
                     tasks.Add(regexTask);
                     tasks.Add(decompilationTask);
@@ -131,7 +129,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                 }
                 else
                 {
-                    txtScript.Text = await Task.Run(() => DecompileHsdtOld());
+                    txtScript.Text = await Task.Run(() => DecompileHsdtScripts());
                 }
                 txtScript.IsReadOnly = false;
                 _loaded = true;
@@ -313,11 +311,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             {
                 if(_buildInfo.Layouts.HasLayout("hsdt"))
                 {
-                    txtScript.Text = await Task.Run(() => DecompileHsdtOld());
+                    txtScript.Text = await Task.Run(() => DecompileHsdtScripts());
                 }
                 else
                 {
-                    txtScript.Text = await Task.Run(() => DecompileToLISP() );
+                    txtScript.Text = await Task.Run(() => DecompileScnrScripts() );
                 }
             }
             else if(e.PropertyName == "ApplicationAccent")
@@ -374,144 +372,36 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
 
         #region Functions
-        private string DecompileHsdtOld()
+        private string DecompileHsdtScripts()
         {
-            bool _showInfo = App.AssemblyStorage.AssemblySettings.ShowScriptInfo;
-
-            DateTime startTime = DateTime.Now;
-
-            ScriptTable scripts;
-            using (IReader reader = ((IStreamManager)_streamManager).OpenRead())
+            using (IReader reader = _streamManager.OpenRead())
             {
-                scripts = _scriptFile.LoadScripts(reader);
-                if (scripts == null)
+                ScriptTable scripts = _scriptFile.LoadScripts(reader);
+                if (scripts is null)
+                {
                     return "";
-            }
-
-            OpcodeLookup opcodes = _buildInfo.ScriptInfo;
-            var generator = new BlamScriptGenerator(scripts, opcodes, _endian);
-            var code = new IndentedTextWriter(new StringWriter(CultureInfo.InvariantCulture));
-
-            generator.WriteComment("Decompiled with Assembly", code);
-            generator.WriteComment("", code);
-            generator.WriteComment("Source file: " + _scriptFile.Name, code);
-            generator.WriteComment("Start time: " + startTime, code);
-            generator.WriteComment("", code);
-            generator.WriteComment("Remember that all script code is property of Bungie/343 Industries.", code);
-            generator.WriteComment("You have no rights. Play nice.", code);
-            code.WriteLine();
-
-            int counter = 0;
-
-            if (scripts.Variables != null)
-            {
-                generator.WriteComment("VARIABLES", code);
-                foreach (ScriptGlobal variable in scripts.Variables)
-                {
-                    code.Write("(variable {0} {1} ", opcodes.GetTypeInfo((ushort)variable.Type).Name, variable.Name);
-                    generator.WriteExpression(variable.ExpressionIndex, code);
-                    if (_showInfo)
-                        code.WriteLine(")\t\t; Index: {0}, Expression Index: {1}", counter.ToString(), variable.ExpressionIndex.Index.ToString());
-                    else
-                        code.WriteLine(")");
-                    counter++;
-                }
-                code.WriteLine();
-                counter = 0;
-            }
-
-            generator.WriteComment("GLOBALS", code);
-            foreach (ScriptGlobal global in scripts.Globals)
-            {
-                code.Write("(global {0} {1} ", _opcodes.GetTypeInfo((ushort)global.Type).Name, global.Name);
-                generator.WriteExpression(global.ExpressionIndex, code);
-                if (_showInfo)
-                    code.WriteLine(")\t\t; Index: {0}, Expression Index: {1}", counter.ToString(), global.ExpressionIndex.Index.ToString());
-                else
-                    code.WriteLine(")");
-                counter++;
-            }
-            code.WriteLine();
-            counter = 0;
-
-            generator.WriteComment("SCRIPTS", code);
-            foreach (Script script in scripts.Scripts)
-            {
-                // filter out branch scripts which were generated by the compiler
-                var split = script.Name.Split(new string[] { "_to_" }, StringSplitOptions.RemoveEmptyEntries);
-                if (split.Length > 1 && scripts.Scripts.Exists(s => s.Name == split[0]))
-                {
-                    continue;
                 }
 
-                if (_showInfo)
-                {
-                    generator.WriteComment(string.Format("Index: {0}, Expression Index: {1}", counter.ToString(), script.RootExpressionIndex.Index.ToString()), code);
-                }
-
-                code.Write("(script {0} {1} {2}", _opcodes.GetScriptTypeName((ushort)script.ExecutionType),
-                    _opcodes.GetTypeInfo((ushort)script.ReturnType).Name, script.Name);
-
-                if (script.Parameters.Count > 0)
-                {
-                    code.Write(" (");
-
-                    bool firstParam = true;
-                    foreach (ScriptParameter param in script.Parameters)
-                    {
-                        if (!firstParam)
-                            code.Write(", ");
-                        code.Write("{1} {0}", param.Name, _opcodes.GetTypeInfo((ushort)param.Type).Name);
-                        firstParam = false;
-                    }
-
-                    code.Write(")");
-                }
-
-                code.Indent++;
-                code.WriteLine();
-                generator.WriteExpression(script.RootExpressionIndex, code, _buildInfo.HeaderSize == 0x1E000);
-                code.Indent--;
-
-                code.WriteLine();
-                code.WriteLine(")");
-                code.WriteLine();
-
-                code.Indent = 0;
-                counter++;
+                OpcodeLookup opcodes = _buildInfo.ScriptInfo;
+                var generator = new BlamScriptGenerator(scripts, opcodes, _buildInfo, _endian);
+                return generator.Decompile(_scriptFile.Name, App.AssemblyStorage.AssemblySettings.ShowScriptInfo);
             }
-
-            DateTime endTime = DateTime.Now;
-            TimeSpan duration = endTime.Subtract(startTime);
-            generator.WriteComment("Decompilation finished in ~" + duration.TotalSeconds + "s", code);
-
-            return code.InnerWriter.ToString();
         }
 
-        private string DecompileToLISP()
+        private string DecompileScnrScripts()
         {
-            var watch = Stopwatch.StartNew();
-
-            ScriptTable scripts;
-            using (IReader reader = ((IStreamManager)_streamManager).OpenRead())
+            using (IReader reader = _streamManager.OpenRead())
             {
-                scripts = _scriptFile.LoadScripts(reader);
-                if (scripts == null)
+                ScriptTable scripts = _scriptFile.LoadScripts(reader);
+                if (scripts is null)
+                {
                     return "";
-            }
+                }
 
-            OpcodeLookup opcodes = _buildInfo.ScriptInfo;
-            var code = new IndentedTextWriter(new StringWriter(CultureInfo.InvariantCulture));
-            var decompiler = new BlamScriptDecompiler(code, scripts, opcodes, _endian);
-            decompiler.WriteComment("Decompiled with Assembly");
-            decompiler.WriteComment("Source file: " + _scriptFile.Name);
-            decompiler.WriteComment("Start time: " + DateTime.Now);
-            decompiler.WriteComment("Remember that all script code is property of Bungie/343 Industries.");
-            decompiler.WriteComment("You have no rights. Play nice.");
-            decompiler.Decompile(App.AssemblyStorage.AssemblySettings.ShowScriptInfo);
-            watch.Stop();
-            decompiler.WriteComment("Decompilation finished in ~" + watch.Elapsed.TotalSeconds + "s");
-            return code.InnerWriter.ToString();
+                OpcodeLookup opcodes = _buildInfo.ScriptInfo;
+                var decompiler = new BlamScriptDecompiler(scripts, opcodes, _endian);
+                return decompiler.DecompileAll(_scriptFile.Name, App.AssemblyStorage.AssemblySettings.ShowScriptInfo, true);
+            }
         }
 
         private ScriptData CompileScripts(string code, IProgress<int> progress, ScriptCompilerLogger logger, ParsingExceptionCollector collector)
@@ -580,7 +470,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             txtScript.TextArea.SelectionBrush = selbrsh;
         }
 
-        private IHighlightingDefinition LoadSyntaxHighlighting(OpcodeLookup lookup)
+        private IHighlightingDefinition LoadSyntaxHighlighting()
         {
             string filename = "BlamScriptSolarized.xshd";
             return HighlightLoader.LoadEmbeddedBlamScriptDefinition(filename, _opcodes);

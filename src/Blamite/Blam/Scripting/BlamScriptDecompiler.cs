@@ -1,7 +1,10 @@
 ﻿using Blamite.IO;
+using System.IO;
 using System;
 using System.CodeDom.Compiler;
 using System.Globalization;
+using System.Text;
+using System.Diagnostics;
 
 namespace Blamite.Blam.Scripting
 {
@@ -13,7 +16,6 @@ namespace Blamite.Blam.Scripting
 		private readonly OpcodeLookup _opcodes;
 		private readonly ScriptTable _scripts;
 		private readonly Endian _endian;
-		private readonly IndentedTextWriter _output;
 		private bool _cond = false;
 		private int _condIndent;
 
@@ -28,86 +30,155 @@ namespace Blamite.Blam.Scripting
 		}
 
 		/// <summary>
-		///		Creates a decompiler object.
+		/// Initializes a new instance of the <see cref="BlamScriptDecompiler"/> class.
 		/// </summary>
-		/// <param name="output">The IndendetTextWriter to write to.</param>
-		/// <param name="scripts">The Scripting data contained in the map.</param>
-		/// <param name="opcodes">Opcode Lookup.</param>
-		/// <param name="endian">Endianness of the .map file.</param>
-		public BlamScriptDecompiler(IndentedTextWriter output, ScriptTable scripts, OpcodeLookup opcodes, Endian endian)
+		/// <param name="scripts">The scripting data of the script file.</param>
+		/// <param name="opcodes">A lookup containing script type information.</param>
+		/// <param name="endian">The endianness of the parent cache file.</param>
+		public BlamScriptDecompiler(ScriptTable scripts, OpcodeLookup opcodes, Endian endian)
 		{
-			_output = output;
 			_scripts = scripts;
 			_opcodes = opcodes;
 			_endian = endian;
 		}
 
 		/// <summary>
-		/// Decompiles all Globals and Scripts of a map and writes them to an IndentedTextWriter.
+		/// Decompiles the Scripts and Globals of a script file.
 		/// </summary>
-		/// <param name="showInfo">Option to show additional Information such as indeces.</param>
-		public void Decompile(bool showInfo)
+		/// <param name="sourceFile">The name of the source file containing the scripts.</param>
+		/// <param name="showInfo">If set to true, writes additional information to the decompiled text.</param>
+		/// <param name="writeHeader">If set to true, writes a header to the decompiled text.</param>
+		/// <returns>Returns the decompiled Globals and Scripts.</returns>
+		public string DecompileAll(string sourceFile, bool showInfo, bool writeHeader)
 		{
-			if(_output.InnerWriter.ToString() != "")
+			IndentedTextWriter output = new IndentedTextWriter(new StringWriter(CultureInfo.InvariantCulture));
+			DateTime startTime = DateTime.Now;
+			Stopwatch watch = Stopwatch.StartNew();
+			if(WriteGlobals(output, showInfo))
+            {
+				WriteEmptyLines(output, 2);
+			}
+			WriteScripts(output, showInfo);
+			watch.Stop();
+
+			string text = "";
+
+			if (writeHeader)
 			{
-				_output.Write("\n\n\n");
+				text = GenerateHeader(sourceFile, startTime, watch.Elapsed) + "\n";
 			}
 
-			DecompileGlobals(showInfo);
-			_output.Write("\n\n\n");
-			DecompileScripts(showInfo);
+			text += output.InnerWriter.ToString();
+			return text;
 		}
 
 		/// <summary>
-		/// Decompiles all Globals of a map and writes them to an IndentedTextWriter.
+		/// Decompiles the Globals of a script file.
 		/// </summary>
-		/// <param name="showInfo">Option to show additional Information such as indeces.</param>
-		public void DecompileGlobals(bool showInfo)
+		/// <param name="sourceFile">The name of the source file containing the scripts.</param>
+		/// <param name="showInfo">If set to true, writes additional information to the decompiled text.</param>
+		/// <param name="writeHeader">If set to true, writes a header to the decompiled text.</param>
+		/// <returns>Returns the decompiled Globals.</returns>
+		public string DecompileGlobals(string sourceFile, bool showInfo, bool writeHeader)
 		{
-			if (_scripts.Globals is null)
+			IndentedTextWriter output = new IndentedTextWriter(new StringWriter(CultureInfo.InvariantCulture));
+			DateTime startTime = DateTime.Now;
+			var watch = Stopwatch.StartNew();
+			WriteGlobals(output, showInfo);
+			watch.Stop();
+			string text = "";
+
+			if(writeHeader)
+            {
+				text = GenerateHeader(sourceFile, startTime, watch.Elapsed) + "\n";
+            }
+
+			text += output.InnerWriter.ToString();
+			return text;
+		}
+
+		/// <summary>
+		/// Decompiles the Scripts of a script file.
+		/// </summary>
+		/// <param name="sourceFile">The name of the source file containing the scripts.</param>
+		/// <param name="showInfo">If set to true, writes additional information to the decompiled text.</param>
+		/// <param name="writeHeader">If set to true, writes a header to the decompiled text.</param>
+		/// <returns>Returns the decompiled Scripts.</returns>
+		public string DecompileScripts(string sourceFile, bool showInfo, bool writeHeader)
+		{
+			IndentedTextWriter output = new IndentedTextWriter(new StringWriter(CultureInfo.InvariantCulture));
+			DateTime startTime = DateTime.Now;
+			var watch = Stopwatch.StartNew();
+			WriteScripts(output, showInfo);
+			watch.Stop();
+			string text = "";
+
+			if (writeHeader)
 			{
-				return;
+				text = GenerateHeader(sourceFile, startTime, watch.Elapsed) + "\n";
+			}
+
+			text += output.InnerWriter.ToString();
+			return text;
+		}
+
+
+		/// <summary>
+		/// Writes the globals to the output.
+		/// </summary>
+		/// <param name="output">The output.</param>
+		/// <param name="showInfo">If set to true, writes additional information to the decompiled text.</param>
+		/// <returns>Returns true if globals were written to the output.</returns>
+		private bool WriteGlobals(IndentedTextWriter output, bool showInfo)
+        {
+			if (_scripts.Globals is null || _scripts.Globals.Count == 0)
+			{
+				return false;
 			}
 
 			// write Header.
-			WriteComment("GLOBALS");
-			_output.WriteLine();
+			WriteComment(output, "GLOBALS");
+			output.WriteLine();
 
-			for(int i = 0; i < _scripts.Globals.Count; i++)
+			for (int i = 0; i < _scripts.Globals.Count; i++)
 			{
 				var glo = _scripts.Globals[i];
 
 				// write global declaration.
-				_output.Write("(global {0} {1} ", _opcodes.GetTypeInfo((ushort)glo.Type).Name, glo.Name);
+				output.Write("(global {0} {1} ", _opcodes.GetTypeInfo((ushort)glo.Type).Name, glo.Name);
 
 				// write value.
-				FollowRootIndex(glo.ExpressionIndex, false, BranchType.Call);
+				FollowRootIndex(output, glo.ExpressionIndex, false, BranchType.Call);
 
 				// write additional Information.
 				if (showInfo)
 				{
-					_output.WriteLine(")\t\t; Index: {0}, Expression Index: {1}", i, glo.ExpressionIndex.Index.ToString());
-				}				
+					output.WriteLine(")\t\t; Index: {0}, Expression Index: {1}", i, glo.ExpressionIndex.Index.ToString());
+				}
 				else
 				{
-					_output.WriteLine(")");
+					output.WriteLine(")");
 				}
 			}
+
+			return true;
 		}
 
 		/// <summary>
-		/// Decompiles all Scripts of a map and writes them to an IndentedTextWriter.
+		/// Writes scripts to the output.
 		/// </summary>
-		/// <param name="showInfo">Option to show additional Information such as indeces.</param>
-		public void DecompileScripts(bool showInfo)
-		{
+		/// <param name="output">The outout.</param>
+		/// <param name="showInfo">If set to true, writes additional information to the decompiled text.</param>
+		/// <returns>Returns true if scripts were written to the output.</returns>
+		private bool WriteScripts(IndentedTextWriter output, bool showInfo)
+        {
 			// return if the map doesn't contain scripts.
-			if(_scripts.Scripts is null)
+			if (_scripts.Scripts is null || _scripts.Scripts.Count == 0)
 			{
-				return;
+				return false;
 			}
-			WriteComment("SCRIPTS");
-			_output.WriteLine();
+			WriteComment(output, "SCRIPTS");
+			output.WriteLine();
 
 			for (int i = 0; i < _scripts.Scripts.Count; i++)
 			{
@@ -117,18 +188,18 @@ namespace Blamite.Blam.Scripting
 				var split = scr.Name.Split(new string[] { "_to_" }, StringSplitOptions.RemoveEmptyEntries);
 				if (split.Length == 2)
 				{
-					if(_scripts.Scripts.Exists(s => s.Name == split[0]) && _scripts.Scripts.Exists(s => s.Name == split[split.Length - 1]))
+					if (_scripts.Scripts.Exists(s => s.Name == split[0]) && _scripts.Scripts.Exists(s => s.Name == split[split.Length - 1]))
 						continue;
 				}
-				else if(split.Length == 3)
+				else if (split.Length == 3)
 				{
 					string firstTwo = string.Join("_to_", split, 0, 2);
 					string lastTwo = string.Join("_to_", split, 1, 2);
-					if ((_scripts.Scripts.Exists(s => s.Name == firstTwo) && _scripts.Scripts.Exists(s => s.Name == split[2])) 
+					if ((_scripts.Scripts.Exists(s => s.Name == firstTwo) && _scripts.Scripts.Exists(s => s.Name == split[2]))
 						|| (_scripts.Scripts.Exists(s => s.Name == lastTwo) && _scripts.Scripts.Exists(s => s.Name == split[0])))
 						continue;
 				}
-				else if(split.Length == 4)
+				else if (split.Length == 4)
 				{
 					string firstHalf = string.Join("_to_", split, 0, 2);
 					string secondHalf = string.Join("_to_", split, 2, 2);
@@ -139,61 +210,96 @@ namespace Blamite.Blam.Scripting
 				// Write additional information.
 				if (showInfo)
 				{
-					WriteComment($"Index: {i}, Expression Index: {scr.RootExpressionIndex.Index.ToString()}");
+					WriteComment(output, $"Index: {i}, Expression Index: {scr.RootExpressionIndex.Index.ToString()}");
 				}
 
 				// Write script declaration.
-				_output.Write("(script {0} {1} {2}", _opcodes.GetScriptTypeName((ushort)scr.ExecutionType),
+				output.Write("(script {0} {1} {2}", _opcodes.GetScriptTypeName((ushort)scr.ExecutionType),
 					_opcodes.GetTypeInfo((ushort)scr.ReturnType).Name, scr.Name);
 
 				// Write script parameter declarations.
 				if (scr.Parameters?.Count > 0)
 				{
-					_output.Write(" (");
+					output.Write(" (");
 					bool firstParam = true;
 					foreach (ScriptParameter param in scr.Parameters)
 					{
 						if (!firstParam)
-							_output.Write(", ");
-						_output.Write("{1} {0}", param.Name, _opcodes.GetTypeInfo((ushort)param.Type).Name);
+							output.Write(", ");
+						output.Write("{1} {0}", param.Name, _opcodes.GetTypeInfo((ushort)param.Type).Name);
 						firstParam = false;
 					}
-					_output.WriteLine(")");
+					output.WriteLine(")");
 				}
 				else
 				{
-					_output.WriteLine();
+					output.WriteLine();
 				}
 
-				_output.Indent++;
+				output.Indent++;
 
 				// Write code.
-				FollowRootIndex(scr.RootExpressionIndex, true, BranchType.InitialBegin);
+				FollowRootIndex(output, scr.RootExpressionIndex, true, BranchType.InitialBegin);
 
 				// Close parenthesis
-				_output.Indent = 0;
-				_output.WriteLine(")");
-				_output.WriteLine();
+				output.Indent = 0;
+				output.WriteLine(")");
+				output.WriteLine();
 			}
+
+			return true;
 		}
 
 		/// <summary>
-		/// Writes a comment to the script file.
+		/// Generates a header containing general infomation about the decompilation process.
 		/// </summary>
-		/// <param name="comment">The comment to write.</param>
-		public void WriteComment(string comment)
+		/// <param name="sourceFile">The name of the source file.</param>
+		/// <param name="startTime">The time when the decompilation process was started.</param>
+		/// <param name="duration">The duration of the decompilation process.</param>
+		/// <returns>A header containing general information about the decompilation process.</returns>
+		private string GenerateHeader(string sourceFile, DateTime startTime, TimeSpan duration)
 		{
-			_output.WriteLine("; {0}", comment);
+			StringBuilder sb = new StringBuilder();
+			sb.AppendLine("; Decompiled with Blamite");
+			sb.AppendLine("; Source file: " + sourceFile);
+			sb.AppendLine("; Start time: " + startTime);
+			sb.AppendLine("; Decompilation finished in ~" + duration.TotalSeconds + "s");
+			sb.AppendLine("; Remember that all script code is property of Bungie/343 Industries.");
+			sb.AppendLine("; You have no rights. Play nice.\n");
+			return sb.ToString();
 		}
 
+		/// <summary>
+		/// Writes a comment to the output
+		/// </summary>
+		/// <param name="output">The output.</param>
+		/// <param name="comment">The comment to write.</param>
+		private void WriteComment(IndentedTextWriter output, string comment)
+		{
+			output.WriteLine("; {0}", comment);
+		}
+
+		/// <summary>
+		/// Writes empty lines to the output.
+		/// </summary>
+		/// <param name="output">The output.</param>
+		/// <param name="count">The number of empty lines to write.</param>
+		private void WriteEmptyLines(IndentedTextWriter output, int count)
+        {
+			for(int i = 0; i < count; i++)
+            {
+				output.WriteLine();
+			}
+        }
 
 		/// <summary>
 		/// The decompiler follows a branch based on a datum index and generates code. Also handles most of the text formatting.
 		/// </summary>
+		/// <param name="output">The output.</param>
 		/// <param name="root">The datumn index to follow.</param>
 		/// <param name="newLine">Indicates whether the expressions of the branch start on a new line.</param>
 		/// <param name="type">The type of the branch.</param>
-		private void FollowRootIndex(DatumIndex root, bool newLine, BranchType type)
+		private void FollowRootIndex(IndentedTextWriter output, DatumIndex root, bool newLine, BranchType type)
 		{
 			ScriptExpression exp = _scripts.Expressions.FindExpression(root);
 			int index = 0;
@@ -201,7 +307,7 @@ namespace Blamite.Blam.Scripting
 			// iterate through the branch.
 			while(exp != null)
 			{
-				int startIndent = _output.Indent;
+				int startIndent = output.Indent;
 				bool endOfExpression = exp.NextExpression is null;
 				bool endOfInlineMultiline = false;
 
@@ -213,60 +319,60 @@ namespace Blamite.Blam.Scripting
 				// if: indent the condition if it is a multiline expression.
 				else if (type == BranchType.If && index == 1 && IsMultilineExpression(exp))
 				{
-					_output.WriteLine();
-					_output.Indent++;
+					output.WriteLine();
+					output.Indent++;
 				}
 				// if: indent after the condition.
 				else if(type == BranchType.If && index == 2)
 				{
-					_output.WriteLine();
-					_output.Indent++;
+					output.WriteLine();
+					output.Indent++;
 				}
 				// begin, and, or (multiline): indent after the function name.
 				else if(type == BranchType.Multiline && index == 1)
 				{
-					_output.WriteLine();
-					_output.Indent++;
+					output.WriteLine();
+					output.Indent++;
 				}
 				// cond: indent after the condition.
 				else if (type == BranchType.Cond && index == 2)
 				{
-					_output.WriteLine();
-					_output.Indent += 4;
+					output.WriteLine();
+					output.Indent += 4;
 				}
 				// make begin, or and if calls always start on a new line.
 				else if (type == BranchType.Call && IsMultilineExpression(exp))
 				{
-					_output.WriteLine();
-					_output.Indent++;
+					output.WriteLine();
+					output.Indent++;
 					endOfInlineMultiline = true;
 				}
 
 				// write code.
-				HandleExpression(exp, newLine);
+				HandleExpression(output, exp, newLine);
 
 				// insert space between the parameters of calls and script references.
 				if ((type == BranchType.Call || type == BranchType.If) && !endOfExpression && !newLine)
 				{
-					_output.Write(" ");
+					output.Write(" ");
 				}
 
 				// handle the line break after inline multiline expressions and reset the indent.
 				if(endOfInlineMultiline && !endOfExpression)
 				{
-					_output.WriteLine();
-					_output.Indent = startIndent;
+					output.WriteLine();
+					output.Indent = startIndent;
 				}
 				// handle the line break after if statements which end on a multiline expression.
 				else if(type == BranchType.If && IsMultilineExpression(exp) && endOfExpression)
 				{
-					_output.WriteLine();
+					output.WriteLine();
 				}
 				// If a regular call ends on a multiline call, insert a line break and reset the indent. Mostly applies to sleep_until in combination with or.
 				else if(type == BranchType.Call && IsMultilineExpression(exp) && endOfExpression)
                 {
-					_output.WriteLine();
-					_output.Indent = startIndent;
+					output.WriteLine();
+					output.Indent = startIndent;
 				}
 
 
@@ -276,11 +382,12 @@ namespace Blamite.Blam.Scripting
 		}
 
 		/// <summary>
-		/// Decides how to handle an expression and which actions to perform based on the expression type.
+		/// Decides how an expression will be handled and which actions to perform, based on the expression type.
 		/// </summary>
+		/// <param name="output">The output.</param>
 		/// <param name="expression">The expression, which is being handled.</param>
 		/// <param name="newLine">Indicates whether the expressions of the branch start on a new line.</param>
-		private void HandleExpression(ScriptExpression expression, bool newLine)
+		private void HandleExpression(IndentedTextWriter output, ScriptExpression expression, bool newLine)
 		{
 			ushort ifOp = _opcodes.GetFunctionInfo("if")[0].Opcode;
 			ushort funcNameOp = _opcodes.GetTypeInfo("function_name").Opcode;
@@ -288,15 +395,15 @@ namespace Blamite.Blam.Scripting
 
 			bool _ = (ScriptExpressionType)clippedtype switch
 			{
-				ScriptExpressionType.Group when expression.Opcode == ifOp && expression.LineNumber == 0 => GenerateCond(expression, newLine),
-				ScriptExpressionType.Group => GenerateGroup(expression, newLine),
+				ScriptExpressionType.Group when expression.Opcode == ifOp && expression.LineNumber == 0 => GenerateCond(output, expression, newLine),
+				ScriptExpressionType.Group => GenerateGroup(output, expression, newLine),
 
 				ScriptExpressionType.Expression when expression.ReturnType == funcNameOp => true,
-				ScriptExpressionType.Expression => GenerateExpression(expression, newLine),
+				ScriptExpressionType.Expression => GenerateExpression(output, expression, newLine),
 
-				ScriptExpressionType.ScriptReference => GenerateScriptReference(expression, newLine),
-				ScriptExpressionType.GlobalsReference => GenerateGlobalsReference(expression, newLine),
-				ScriptExpressionType.ParameterReference => GenerateParameterReference(expression, newLine),
+				ScriptExpressionType.ScriptReference => GenerateScriptReference(output, expression, newLine),
+				ScriptExpressionType.GlobalsReference => GenerateGlobalsReference(output, expression, newLine),
+				ScriptExpressionType.ParameterReference => GenerateParameterReference(output, expression, newLine),
 
 				_ => throw new NotImplementedException($"The Decompiler encountered an unknown Expression Type: \"{(ScriptExpressionType)clippedtype}\".")
 			};
@@ -305,10 +412,11 @@ namespace Blamite.Blam.Scripting
 		/// <summary>
 		/// The decompiler generates a function group based on an expression.
 		/// </summary>
+		/// <param name="output">The output.</param>
 		/// <param name="expression">The group expression.</param>
 		/// <param name="newLine">Indicates whether the expressions of the branch start on a new line.</param>
 		/// <returns>Returns true if code was generated.</returns>
-		private bool GenerateGroup(ScriptExpression expression, bool newLine)
+		private bool GenerateGroup(IndentedTextWriter output, ScriptExpression expression, bool newLine)
 		{
 			DatumIndex nameIndex = new DatumIndex(expression.Value.UintValue);
 			FunctionInfo info = _opcodes.GetFunctionInfo(expression.Opcode);
@@ -319,74 +427,75 @@ namespace Blamite.Blam.Scripting
 				if (info.Name == "if")
 					throw new Exception("The decompiler failed to catch a cond call.");
 
-				FollowRootIndex(nameIndex, true, BranchType.CompilerBegin);
+				FollowRootIndex(output, nameIndex, true, BranchType.CompilerBegin);
 				return true;
 			}
 
-			int startIndent = _output.Indent;
+			int startIndent = output.Indent;
 
 			// write the call's opening parenthesis and name.
-			_output.Write($"({info.Name}");
+			output.Write($"({info.Name}");
 
 			// handle regular begin calls.
 			if (info.Name.StartsWith("begin")|| info.Name == "or" || info.Name == "and" || info.Name == "branch")
 			{
-				FollowRootIndex(nameIndex, true, BranchType.Multiline);
-				_output.Indent = startIndent;
+				FollowRootIndex(output, nameIndex, true, BranchType.Multiline);
+				output.Indent = startIndent;
 			}
 			// handle if calls.
 			else if(info.Name == "if")
 			{
-				FollowRootIndex(nameIndex, false, BranchType.If);
-				_output.Indent = startIndent;
+				FollowRootIndex(output, nameIndex, false, BranchType.If);
+				output.Indent = startIndent;
 			}
 			// handle all other (normal) calls.
 			else
 			{
-				FollowRootIndex(nameIndex, false, BranchType.Call);
+				FollowRootIndex(output, nameIndex, false, BranchType.Call);
 			}
 
 			// write the call's closing parenthesis.
-			_output.Write(")");
+			output.Write(")");
 
-			HandleNewLine(newLine);
+			HandleNewLine(output, newLine);
 			return true;
 		}
 
 		/// <summary>
 		/// The decompiler generates a cond construct based on an expression.
 		/// </summary>
+		/// <param name="output">The output.</param>
 		/// <param name="expression">The cond expression.</param>
 		/// <param name="newLine">Indicates whether the expressions of the branch start on a new line.</param>
 		/// <returns>Returns true if code was generated.</returns>
-		private bool GenerateCond(ScriptExpression expression, bool newLine)
+		private bool GenerateCond(IndentedTextWriter output, ScriptExpression expression, bool newLine)
 		{
-			int startIndent = _output.Indent;
+			int startIndent = output.Indent;
 
 			// Handle the initial con group.
 			if (!_cond)
 			{
 				// indicate that the following expressions are part of a cond construct. 
 				_cond = true;
-				_condIndent = _output.Indent + 1;
+				_condIndent = output.Indent + 1;
 
-				_output.WriteLine("(cond");
+				output.WriteLine("(cond");
 
 				// increase indent for the first conditional and write the opening parenthesis.
-				_output.Indent++;
-				_output.Write("(");
+				output.Indent++;
+				output.Write("(");
 
 				// generate code.
 				DatumIndex nameIndex = new DatumIndex(expression.Value.UintValue);
-				FollowRootIndex(nameIndex, false, BranchType.Cond);
+				FollowRootIndex(output, nameIndex, false, BranchType.Cond);
 
 				// write the closing parenthesis of the last conditional.
-				_output.Indent = startIndent + 1;
-				_output.WriteLine(")");
+				output.Indent = startIndent + 1;
+				output.WriteLine(")");
 
 				// write the closing parenthesis of the cond call.
-				_output.Indent = startIndent;
-				_output.Write(")");
+				output.Indent = startIndent;
+				output.Write(")");
 
 				_cond = false;
 			}
@@ -394,80 +503,84 @@ namespace Blamite.Blam.Scripting
 			// handle all following conditionals.
 			else
 			{
-				_output.Indent = _condIndent;
+				output.Indent = _condIndent;
 
 				// close the previous cond group and open the current one.
-				_output.WriteLine(")");
-				_output.Write("(");
+				output.WriteLine(")");
+				output.Write("(");
 
 				// generate code.
 				DatumIndex nameIndex = new DatumIndex(expression.Value.UintValue);
-				FollowRootIndex(nameIndex, false, BranchType.Cond);
+				FollowRootIndex(output, nameIndex, false, BranchType.Cond);
 
-				_output.Indent = startIndent;
+				output.Indent = startIndent;
 			}
 
-			HandleNewLine(newLine);
+			HandleNewLine(output, newLine);
 			return true;
 		}
 
 		/// <summary>
 		/// The decompiler generates a script reference based on an expression.
 		/// </summary>
+		/// <param name="output">The output.</param>
 		/// <param name="expression">The script reference expression.</param>
 		/// <param name="newLine">Indicates whether the expressions of the branch start on a new line.</param>
 		/// <returns>Returns true if code was generated.</returns>
-		private bool GenerateScriptReference(ScriptExpression expression, bool newLine)
+		private bool GenerateScriptReference(IndentedTextWriter output, ScriptExpression expression, bool newLine)
 		{
 			// we need to retrieve the script's name from its function_name expression. Otherwise branch calls will become corrupt.
 			DatumIndex nameIndex = new DatumIndex(expression.Value.UintValue);
 			var nameExp =_scripts.Expressions.FindExpression(nameIndex);
 
 			// write the call's opening parenthesis and name.
-			_output.Write($"({nameExp.StringValue}");
+			output.Write($"({nameExp.StringValue}");
 
 			// write code
-			FollowRootIndex(nameIndex, false, BranchType.Call);
+			FollowRootIndex(output, nameIndex, false, BranchType.Call);
 
 			// write the call's closing parenthesis.
-			_output.Write(")");
-			HandleNewLine(newLine);
+			output.Write(")");
+			HandleNewLine(output, newLine);
 			return true;
 		}
 
 		/// <summary>
 		/// The decompiler generates a globals reference based on an expression.
 		/// </summary>
+		/// <param name="output">The output.</param>
 		/// <param name="expression">The globals reference expression.</param>
 		/// <param name="newLine">Indicates whether the expressions of the branch start on a new line.</param>
 		/// <returns>Returns true if code was generated.</returns>
-		private bool GenerateGlobalsReference(ScriptExpression expression, bool newLine)
+		private bool GenerateGlobalsReference(IndentedTextWriter output, ScriptExpression expression, bool newLine)
 		{
-			_output.Write(expression.StringValue);
-			HandleNewLine(newLine);
+			output.Write(expression.StringValue);
+			HandleNewLine(output, newLine);
 			return true;
 		}
 
 		/// <summary>
 		/// The decompiler generates a script parameter reference based on an expression.
 		/// </summary>
+		/// <param name="output">The output.</param>
 		/// <param name="expression">The parameter reference expression.</param>
 		/// <param name="newLine">Indicates whether the expressions of the branch start on a new line.</param>
 		/// <returns>Returns true if code was generated.</returns>
-		private bool GenerateParameterReference(ScriptExpression expression, bool newLine)
+		private bool GenerateParameterReference(IndentedTextWriter output, ScriptExpression expression, bool newLine)
 		{
-			_output.Write(expression.StringValue);
-			HandleNewLine(newLine);
+			output.Write(expression.StringValue);
+			HandleNewLine(output, newLine);
 			return true;
 		}
 
 		/// <summary>
 		/// The decompiler generates a literal (expression) on an expression.
 		/// </summary>
+		/// <param name="output">The output.</param>
 		/// <param name="expression">The expression.</param>
 		/// <param name="newLine">Indicates whether the expressions of the branch start on a new line.</param>
 		/// <returns>Returns true if code was generated.</returns>
-		private bool GenerateExpression(ScriptExpression expression, bool newLine)
+		private bool GenerateExpression(IndentedTextWriter output, ScriptExpression expression, bool newLine)
 		{		
 			ScriptValueType type = _opcodes.GetTypeInfo(expression.ReturnType);
 			ScriptValueType actualType = type;
@@ -483,11 +596,11 @@ namespace Blamite.Blam.Scripting
 					// Don't quote the keyword none.
 					if(expression.Value.IsNull || expression.StringValue == "none")
                     {
-						_output.Write("none");
+						output.Write("none");
 					}
                     else
                     {
-						_output.Write("\"{0}\"", expression.StringValue);
+						output.Write("\"{0}\"", expression.StringValue);
 					}
 					return false;
 				}
@@ -570,8 +683,8 @@ namespace Blamite.Blam.Scripting
 					break;
 			}
 
-			_output.Write(text);
-			HandleNewLine(newLine);
+			output.Write(text);
+			HandleNewLine(output, newLine);
 			return false;
 		}
 
@@ -605,12 +718,13 @@ namespace Blamite.Blam.Scripting
 		/// <summary>
 		/// Finishes the current line and causes a line break if the next expression begins on a new line.
 		/// </summary>
+		/// <param name="output">The output.</param>
 		/// <param name="newLine">Indicates whether the expressions of the branch start on a new line.</param>
-		private void HandleNewLine(bool newLine)
+		private void HandleNewLine(IndentedTextWriter output, bool newLine)
 		{
 			if(newLine)
 			{
-				_output.WriteLine();
+				output.WriteLine();
 			}
 		}
 
