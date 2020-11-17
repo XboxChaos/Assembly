@@ -272,6 +272,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 			new MapEntry("ca_spiderweb", "Daybreak", "13130", MapType.Multiplayer),
 			new MapEntry("dlc_dejewel", "Shatter", "13302", MapType.Multiplayer),
 			new MapEntry("dlc_dejunkyard", "Wreckage", "13301", MapType.Multiplayer),
+			new MapEntry("dlc_forge_island", "Forge Island", "14100", MapType.Multiplayer),
 			new MapEntry("zd_02_grind", "Harvest", "10102", MapType.Multiplayer),
 
 			new MapEntry("dlc01_engine", "Infinity", "11250", MapType.Survival),
