@@ -1341,10 +1341,77 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				var _zonesets = _cacheFile.Resources.LoadZoneSets(stream);
 
 				foreach (ExtractedTag et in container.Tags)
+				{
+					//add to global and remove from the rest
 					_zonesets.GlobalZoneSet.ActivateTag(et.OriginalIndex, true);
 
+					_zonesets.UnattachedZoneSet?.ActivateTag(et.OriginalIndex, false);
+					_zonesets.DiscForbiddenZoneSet?.ActivateTag(et.OriginalIndex, false);
+					_zonesets.DiscAlwaysStreamingZoneSet?.ActivateTag(et.OriginalIndex, false);
+					_zonesets.RequiredMapVariantsZoneSet?.ActivateTag(et.OriginalIndex, false);
+					_zonesets.SandboxMapVariantsZoneSet?.ActivateTag(et.OriginalIndex, false);
+
+					if (_zonesets.GeneralZoneSets != null)
+						foreach (var set in _zonesets.GeneralZoneSets)
+							set?.ActivateTag(et.OriginalIndex, false);
+
+					if (_zonesets.BSPZoneSets != null)
+						foreach (var set in _zonesets.BSPZoneSets)
+							set?.ActivateTag(et.OriginalIndex, false);
+
+					if (_zonesets.BSPZoneSets2 != null)
+						foreach (var set in _zonesets.BSPZoneSets2)
+							set?.ActivateTag(et.OriginalIndex, false);
+
+					if (_zonesets.BSPZoneSets3 != null)
+						foreach (var set in _zonesets.BSPZoneSets3)
+							set?.ActivateTag(et.OriginalIndex, false);
+
+					if (_zonesets.CinematicZoneSets != null)
+						foreach (var set in _zonesets.CinematicZoneSets)
+							set?.ActivateTag(et.OriginalIndex, false);
+
+					if (_zonesets.ScenarioZoneSets != null)
+						foreach (var set in _zonesets.ScenarioZoneSets)
+							set?.ActivateTag(et.OriginalIndex, false);
+				}
+					
+
 				foreach (ExtractedResourceInfo eri in container.Resources)
+				{
+					//add to global and remove from the rest
 					_zonesets.GlobalZoneSet.ActivateResource(eri.OriginalIndex, true);
+
+					_zonesets.UnattachedZoneSet?.ActivateResource(eri.OriginalIndex, false);
+					_zonesets.DiscForbiddenZoneSet?.ActivateResource(eri.OriginalIndex, false);
+					_zonesets.DiscAlwaysStreamingZoneSet?.ActivateResource(eri.OriginalIndex, false);
+					_zonesets.RequiredMapVariantsZoneSet?.ActivateResource(eri.OriginalIndex, false);
+					_zonesets.SandboxMapVariantsZoneSet?.ActivateResource(eri.OriginalIndex, false);
+
+					if (_zonesets.GeneralZoneSets != null)
+						foreach (var set in _zonesets.GeneralZoneSets)
+							set?.ActivateResource(eri.OriginalIndex, false);
+
+					if (_zonesets.BSPZoneSets != null)
+						foreach (var set in _zonesets.BSPZoneSets)
+							set?.ActivateResource(eri.OriginalIndex, false);
+
+					if (_zonesets.BSPZoneSets2 != null)
+						foreach (var set in _zonesets.BSPZoneSets2)
+							set?.ActivateResource(eri.OriginalIndex, false);
+
+					if (_zonesets.BSPZoneSets3 != null)
+						foreach (var set in _zonesets.BSPZoneSets3)
+							set?.ActivateResource(eri.OriginalIndex, false);
+
+					if (_zonesets.CinematicZoneSets != null)
+						foreach (var set in _zonesets.CinematicZoneSets)
+							set?.ActivateResource(eri.OriginalIndex, false);
+
+					if (_zonesets.ScenarioZoneSets != null)
+						foreach (var set in _zonesets.ScenarioZoneSets)
+							set?.ActivateResource(eri.OriginalIndex, false);
+				}
 
 				_zonesets.SaveChanges(stream);
 
