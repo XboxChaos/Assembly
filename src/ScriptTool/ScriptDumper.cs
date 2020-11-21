@@ -66,12 +66,28 @@ namespace ScriptTool
 
                 // Collect all matching expressions.
                 List<ScriptExpression> matchingExpressions = new List<ScriptExpression>();
-                foreach (ScriptTable data in scriptTables.Values)
+
+                if(info.Name == "function_name")
                 {
-                    var expressions = data.Expressions.ExpressionsAsReadonly.Where(expr =>
-                    expr.Type == ScriptExpressionType.Expression && (expr.Opcode == info.Opcode || expr.ReturnType == info.Opcode));
-                    matchingExpressions.AddRange(expressions);
+                    foreach (ScriptTable data in scriptTables.Values)
+                    {
+                        var expressions = data.Expressions.ExpressionsAsReadonly.Where(expr =>
+                        expr.Type == ScriptExpressionType.Expression && (expr.Opcode == info.Opcode || expr.ReturnType == info.Opcode));
+                        matchingExpressions.AddRange(expressions);
+                    }
                 }
+                else
+                {
+                    ScriptValueType funcNameInfo = engine.ScriptInfo.GetTypeInfo("function_name");
+                    foreach (ScriptTable data in scriptTables.Values)
+                    {
+                        var expressions = data.Expressions.ExpressionsAsReadonly.Where(expr =>
+                        expr.Type == ScriptExpressionType.Expression && expr.ReturnType != funcNameInfo.Opcode && (expr.Opcode == info.Opcode || expr.ReturnType == info.Opcode));
+                        matchingExpressions.AddRange(expressions);
+                    }
+                }
+
+
 
                 // Add the expressions to the collection.
                 if(matchingExpressions.Count > 0)
@@ -80,9 +96,16 @@ namespace ScriptTool
                 }
             }
 
-            // Write the data to xml.
-            XmlHelper.FilteredExpressionsToXml(mapExpressions, outputPath);
-            Console.WriteLine($"\nAll {type} Expressions have been saved to {outputPath}.");
+            if(mapExpressions.Count > 0)
+            {
+                // Write the data to xml.
+                XmlHelper.FilteredExpressionsToXml(mapExpressions, outputPath);
+                Console.WriteLine($"\nAll {type} Expressions have been saved to {outputPath}.");
+            }
+            else
+            {
+                Console.WriteLine($"\nNo {type} Expressions were found in the map files.");
+            }
         }
 
         public void DumpUnitSeatMappings(string[] mapPaths, string outputDirectory)
