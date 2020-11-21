@@ -1,5 +1,6 @@
 ﻿using Blamite.Blam;
 using Blamite.Blam.Scripting;
+using Blamite.Blam.Scripting.Context;
 using Blamite.Blam.Util;
 using Blamite.Serialization.Settings;
 
@@ -97,7 +98,7 @@ namespace Blamite.Serialization
 		///     Can be <c>null</c> if not present.
 		/// </summary>
 		public VertexLayoutCollection VertexLayouts { get; private set; }
-
+		
 		/// <summary>
 		///     Gets group names for the engine.
 		///     Can be <c>null</c> if not present.

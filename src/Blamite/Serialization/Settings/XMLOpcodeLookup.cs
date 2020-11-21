@@ -2,6 +2,8 @@
 using System.Xml.Linq;
 using Blamite.Blam.Scripting;
 using Blamite.Util;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Blamite.Serialization.Settings
 {
@@ -26,6 +28,8 @@ namespace Blamite.Serialization.Settings
 			RegisterExecutionTypes(root, result);
 			RegisterValueTypes(root, result);
 			RegisterFunctions(root, result);
+            RegisterGlobals(root, result);
+            RegisterTypeCasts(root, result);
 
 			return result;
 		}
@@ -49,7 +53,12 @@ namespace Blamite.Serialization.Settings
 				int size = (int)XMLUtil.GetNumericAttribute(element, "size");
 				bool quoted = XMLUtil.GetBoolAttribute(element, "quoted", false);
 				string tag = XMLUtil.GetStringAttribute(element, "tag", null);
-				var valueType = new ScriptValueType(name, opcode, size, quoted, tag);
+				bool obj = XMLUtil.GetBoolAttribute(element, "object", false);
+				var valueType = new ScriptValueType(name, opcode, size, quoted, tag, obj);
+                foreach(XElement option in element.Descendants("enum"))
+                {
+                    valueType.AddEnumValue(option.Value);
+                }
 				lookup.RegisterValueType(valueType);
 			}
 		}
@@ -60,16 +69,53 @@ namespace Blamite.Serialization.Settings
 			{
 				string name = XMLUtil.GetStringAttribute(element, "name");
 				if (name == "")
+				{
 					continue;
+
+				}
 
 				var opcode = (ushort) XMLUtil.GetNumericAttribute(element, "opcode");
 				string returnType = XMLUtil.GetStringAttribute(element, "returnType", "void");
 				var flags = (uint) XMLUtil.GetNumericAttribute(element, "flags", 0);
+                string group = XMLUtil.GetStringAttribute(element, "group", null);
+				bool isNull = XMLUtil.GetBoolAttribute(element, "null", false);
 				string[] parameterTypes = element.Descendants("arg").Select(e => XMLUtil.GetStringAttribute(e, "type")).ToArray();
 
-				var info = new ScriptFunctionInfo(name, opcode, returnType, flags, parameterTypes);
+				var info = new FunctionInfo(name, opcode, returnType, flags, group, parameterTypes, !isNull);
 				lookup.RegisterFunction(info);
 			}
 		}
-	}
+
+        private void RegisterGlobals(XContainer root, OpcodeLookup lookup)
+        {
+            foreach (XElement element in root.Element("globals").Descendants("global"))
+            {
+                string name = XMLUtil.GetStringAttribute(element, "name");
+                if (name == "")
+				{
+					continue;
+				}
+
+				ushort opcode = (ushort)XMLUtil.GetNumericAttribute(element, "opcode");
+                string returnType = XMLUtil.GetStringAttribute(element, "type");
+				bool isNull = XMLUtil.GetBoolAttribute(element, "null", false);
+
+				var info = new GlobalInfo(name, opcode, returnType, !isNull);
+                lookup.RegisterGlobal(info);
+            }
+        }
+
+        private void RegisterTypeCasts(XContainer root, OpcodeLookup lookup)
+        {
+            foreach (XElement element in root.Element("typecasting").Elements("to"))
+            {
+                string to = XMLUtil.GetStringAttribute(element, "name");
+                bool castOnly = XMLUtil.GetBoolAttribute(element, "castOnly", false);
+                List<string> from = element.Elements("from").Select(e => e.Value).ToList();
+                CastInfo info = new CastInfo(to, castOnly, from);
+                lookup.RegisterTypeCast(to, info);
+            }
+        }
+
+    }
 }

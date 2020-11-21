@@ -183,11 +183,45 @@ namespace Blamite.IO
 			WriteByte(0);
 		}
 
-		/// <summary>
-		///     Writes a UTF-8 string to the stream, followed by a null terminator.
-		/// </summary>
-		/// <param name="str">The UTF-8 string to write.</param>
-		public void WriteUTF8(string str)
+        /// <summary>
+        ///     Writes an ASCII string to the stream and pads it with trailing null bytes to the specified length.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="length"></param>
+        public void WriteAscii(string str, int length)
+        {
+            byte[] bytes = Encoding.ASCII.GetBytes(str);
+
+            if(bytes.Length >= length)
+            {
+                throw new ArgumentException("The strings exceeds the specified length.");
+            }
+
+            WriteBlock(bytes);
+            int padding = length - bytes.Length;
+            for(int i = 0; i < padding; i++)
+            {
+                WriteByte(0);
+            }
+        }
+
+        /// <summary>
+        ///     Writes a Windows-1252 string to the stream, followed by a null terminator.
+        /// </summary>
+        /// <param name="str">The Windows-1252 string to write.</param>
+        public void WriteWin1252(string str)
+        {
+            var enc = Encoding.GetEncoding(1252);
+            byte[] bytes = enc.GetBytes(str);
+            WriteBlock(bytes);
+            WriteByte(0);
+        }
+
+        /// <summary>
+        ///     Writes a UTF-8 string to the stream, followed by a null terminator.
+        /// </summary>
+        /// <param name="str">The UTF-8 string to write.</param>
+        public void WriteUTF8(string str)
 		{
 			byte[] bytes = Encoding.UTF8.GetBytes(str);
 			WriteBlock(bytes);

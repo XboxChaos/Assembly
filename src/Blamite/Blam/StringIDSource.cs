@@ -93,6 +93,20 @@ namespace Blamite.Blam
 			return StringID.Null;
 		}
 
+
+        /// <summary>
+        ///     Returns the stringID corresponding to a string in the table. Adds the string if necessary.
+        /// </summary>
+        /// <param name="str">The string to search for.</param>
+        /// <returns>The stringID corresponding to the string.</returns>
+        public StringID FindOrAddStringID(string str)
+        {
+            int index = FindStringIndex(str);
+            if (index != -1)
+                return IndexToStringID(index);
+            return AddString(str);
+        }
+
 		/// <summary>
 		///     Adds a string and returns its corresponding stringID.
 		/// </summary>

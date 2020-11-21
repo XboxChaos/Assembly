@@ -47,6 +47,17 @@ namespace Blamite.Blam.Scripting
 		/// </summary>
 		public DatumIndex RootExpressionIndex { get; set; }
 
+        public void Write(IWriter writer, StringIDSource stringIDs, int parameterCount, uint parameterAddress)
+        {
+            writer.WriteUInt32(stringIDs.FindOrAddStringID(Name).Value);
+            writer.WriteInt16(ExecutionType);
+            writer.WriteInt16(ReturnType);
+            writer.WriteUInt32(RootExpressionIndex.Value);
+            writer.WriteInt32(parameterCount);
+            writer.WriteUInt32(parameterAddress);
+            writer.WriteUInt32(0);
+        }
+
 		private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs,
 			EngineDescription buildInfo, IPointerExpander expander)
 		{

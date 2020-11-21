@@ -68,7 +68,7 @@ namespace Blamite.Serialization.Settings
 			loader.RegisterComplexSettingLoader("scripting", new XMLOpcodeLookupLoader());
 			loader.RegisterComplexSettingLoader("vertexLayouts", new XMLVertexLayoutLoader());
 			loader.RegisterComplexSettingLoader("poking", new XMLPokingLoader());
-			return loader;
+            return loader;
 		}
 	}
 }

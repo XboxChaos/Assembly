@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 
 namespace Blamite.Serialization
 {
@@ -7,8 +9,8 @@ namespace Blamite.Serialization
 	/// </summary>
 	public class StructureLayout
 	{
-		private readonly List<LayoutField> _fields = new List<LayoutField>();
-		private readonly Dictionary<string, LayoutField> _fieldsByName = new Dictionary<string, LayoutField>();
+		private readonly List<ILayoutField> _fields = new List<ILayoutField>();
+		private readonly Dictionary<string, ILayoutField> _fieldsByName = new Dictionary<string, ILayoutField>();
 
 		/// <summary>
 		///     Constructs a new StructureLayout with a structure size of 0.
@@ -41,6 +43,26 @@ namespace Blamite.Serialization
 		public void AddBasicField(string name, StructureValueType type, int offset)
 		{
 			AddField(new BasicField(name, type, offset));
+		}
+
+		/// <summary>
+		///		Adds a StringID field to the structure layout.
+		/// </summary>
+		/// <param name="name">The name of the field.</param>
+		/// <param name="offset">The offset (in bytes) of the field from the beginning of the structure.</param>
+		public void AddStringIDField(string name, int offset)
+        {
+			AddField(new StringIDField(name, offset));
+        }
+
+		/// <summary>
+		///		Adds a tag reference field to the structure layout.
+		/// </summary>
+		/// <param name="name">The name of the field.</param>
+		/// <param name="offset">The offset (in bytes) of the field from the beginning of the structure.</param>
+		public void AddTagReferenceField(string name, int offset, bool withGroup)
+		{
+			AddField(new TagReferenceField(name, offset, withGroup));
 		}
 
 		/// <summary>
@@ -77,6 +99,11 @@ namespace Blamite.Serialization
 			AddField(new StructField(name, offset, layout));
 		}
 
+		public void AddTagBlockField(string name, int offset, StructureLayout entryLayout)
+		{
+			AddField(new TagBlockField(name, offset, entryLayout));
+		}
+
 		/// <summary>
 		///     Returns whether or not a field is defined in the layout.
 		/// </summary>
@@ -105,28 +132,72 @@ namespace Blamite.Serialization
 		/// <param name="visitor">The IStructureLayoutVisitor that should visit each structure field.</param>
 		public void Accept(IStructureLayoutVisitor visitor)
 		{
-			foreach (LayoutField field in _fields)
-				field.Accept(visitor);
+			foreach (ILayoutField field in _fields)
+            {
+				if(field is PrimitiveLayoutField primitive)
+                {
+					primitive.Accept(visitor);
+				}
+			}
 		}
 
-		private void AddField(LayoutField field)
+		/// <summary>
+		///     Traverses the structure layout in order of field definition and
+		///     calls a method defined in an ICacheStructureLayoutVisitor for each field
+		///     in the structure.
+		/// </summary>
+		/// <param name="visitor">The ICacheStructureLayoutVisitor that should visit each structure field.</param>
+		public void Accept(ICacheStructureLayoutVisitor visitor)
+		{
+			foreach (ILayoutField field in _fields)
+			{
+				if(field is PrimitiveLayoutField primitive)
+                {
+					primitive.Accept(visitor);
+                }
+				else if(field is CacheLayoutField cache)
+                {
+					cache.Accept(visitor);
+                }
+				else
+                {
+					throw new NotImplementedException($"Unhandled field type {field.GetType().Name}.");
+                }
+			}
+		}
+
+		private void AddField(ILayoutField field)
 		{
 			_fields.Add(field);
 			_fieldsByName[field.Name] = field;
 		}
 
-		/// <summary>
-		///     Base class for a field in a structure.
-		/// </summary>
-		private abstract class LayoutField
+		private interface ILayoutField
+        {
+			/// <summary>
+			///     Gets the name of the field.
+			/// </summary>
+			public string Name { get;}
+
+			/// <summary>
+			///     Gets the offset of the field.
+			/// </summary>
+			public int Offset { get;}
+		}
+
+        #region Primitive
+        /// <summary>
+        ///     Base class for a primitve field in a structure.
+        /// </summary>
+        private abstract class PrimitiveLayoutField : ILayoutField
 		{
 
 			/// <summary>
-			/// Initializes a new instance of the <see cref="LayoutField"/> class.
+			/// Initializes a new instance of the <see cref="PrimitiveLayoutField"/> class.
 			/// </summary>
 			/// <param name="name">The field's name.</param>
 			/// <param name="offset">The field's offset.</param>
-			public LayoutField(string name, int offset)
+			public PrimitiveLayoutField(string name, int offset)
 			{
 				Name = name;
 				Offset = offset;
@@ -152,7 +223,7 @@ namespace Blamite.Serialization
 		/// <summary>
 		///     Represents an array field in a structure.
 		/// </summary>
-		private class ArrayField : LayoutField
+		private class ArrayField : PrimitiveLayoutField
 		{
 			private readonly int _count;
 			private readonly StructureLayout _subLayout;
@@ -184,7 +255,7 @@ namespace Blamite.Serialization
 		/// <summary>
 		///     Represents a basic field in a structure.
 		/// </summary>
-		private class BasicField : LayoutField
+		private class BasicField : PrimitiveLayoutField
 		{
 			private readonly StructureValueType _type;
 
@@ -213,7 +284,7 @@ namespace Blamite.Serialization
 		/// <summary>
 		///     Represents a byte array field in a structure.
 		/// </summary>
-		private class RawField : LayoutField
+		private class RawField : PrimitiveLayoutField
 		{
 			private readonly int _size;
 
@@ -242,7 +313,7 @@ namespace Blamite.Serialization
 		/// <summary>
 		///		Represents an embedded structure in a structure.
 		/// </summary>
-		private class StructField : LayoutField
+		private class StructField : PrimitiveLayoutField
 		{
 			private readonly StructureLayout _layout;
 
@@ -267,5 +338,104 @@ namespace Blamite.Serialization
 				visitor.VisitStructField(Name, Offset, _layout);
 			}
 		}
-	}
+        #endregion
+
+        #region Cache
+        /// <summary>
+        ///		Base class for a cache layout field in a structure.
+        /// </summary>
+        private abstract class CacheLayoutField : ILayoutField
+		{
+			/// <summary>
+			/// Initializes a new instance of the <see cref="PrimitiveLayoutField"/> class.
+			/// </summary>
+			/// <param name="name">The field's name.</param>
+			/// <param name="offset">The field's offset.</param>
+			public CacheLayoutField(string name, int offset)
+			{
+				Name = name;
+				Offset = offset;
+			}
+
+			/// <summary>
+			///     Gets the name of the field.
+			/// </summary>
+			public string Name { get; private set; }
+
+			/// <summary>
+			///     Gets the offset of the field.
+			/// </summary>
+			public int Offset { get; private set; }
+
+			/// <summary>
+			///     Depending on the type of the field, calls a corresponding method defined in the visitor object.
+			/// </summary>
+			/// <param name="visitor">The ICacheStructureLayoutVisitor to accept.</param>
+			public abstract void Accept(ICacheStructureLayoutVisitor visitor);
+		}
+
+		/// <summary>
+		///		Represents a StringID in a structure.
+		/// </summary>
+		private class StringIDField : CacheLayoutField
+		{
+			public StringIDField(string name, int offset) : base(name, offset)
+			{
+			}
+
+			/// <summary>
+			///     Accepts an ICacheStructureLayoutVisitor, calling the VisitStringID method on it.
+			/// </summary>
+			/// <param name="visitor">The ICacheStructureLayoutVisitor to accept.</param>
+			public override void Accept(ICacheStructureLayoutVisitor visitor)
+			{
+				visitor.VisitStringIDField(Name, Offset);
+			}
+		}
+
+		/// <summary>
+		///		Represents a tag reference in a structure.
+		/// </summary>
+		private class TagReferenceField : CacheLayoutField
+		{
+			private readonly bool _withGroup;
+
+			public TagReferenceField(string name, int offset, bool withGroup) : base(name, offset)
+			{
+				_withGroup = withGroup;
+			}
+
+			/// <summary>
+			///     Accepts an ICacheStructureLayoutVisitor, calling the VisitTagReference method on it.
+			/// </summary>
+			/// <param name="visitor">The ICacheStructureLayoutVisitor to accept.</param>
+			public override void Accept(ICacheStructureLayoutVisitor visitor)
+			{
+				visitor.VisitTagReferenceField(Name, Offset, _withGroup);
+			}
+		}
+
+		/// <summary>
+		///		Represents a tag block in a structure.
+		/// </summary>
+		private class TagBlockField : CacheLayoutField
+		{
+			private readonly StructureLayout _layout;
+			public TagBlockField (string name, int offset, StructureLayout entryLayout) : base (name, offset)
+            {
+				_layout = entryLayout;
+            }
+
+			/// <summary>
+			///     Accepts an ICacheStructureLayoutVisitor, calling the VisitTagReference method on it.
+			/// </summary>
+			/// <param name="visitor">The ICacheStructureLayoutVisitor to accept.</param>
+			public override void Accept(ICacheStructureLayoutVisitor visitor)
+            {
+				visitor.VisitTagBlockField(Name, Offset, _layout);
+            }
+        }
+        #endregion
+
+    }
 }

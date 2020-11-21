@@ -35,6 +35,7 @@ using Blamite.Blam.SecondGen;
 using Blamite.Blam.ThirdGen;
 using Blamite.RTE.ThirdGen;
 using Blamite.Blam.Resources.Sounds;
+using System.Reflection;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -105,7 +106,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			cbShowBookmarkedTagsOnly.IsChecked = App.AssemblyStorage.AssemblySettings.HalomapOnlyShowBookmarkedTags;
 			cbOpenDuplicate.IsChecked = App.AssemblyStorage.AssemblySettings.AutoOpenDuplicates;
 			cbTabOpenMode.SelectedIndex = (int) App.AssemblyStorage.AssemblySettings.HalomapTagOpenMode;
-			cbShowHSInfo.IsChecked = App.AssemblyStorage.AssemblySettings.ShowScriptInfo;
 
 			App.AssemblyStorage.AssemblySettings.PropertyChanged += SettingsChanged;
 
@@ -155,12 +155,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			{
 				var reader = new EndianReader(fileStream, Endian.BigEndian);
 		#if DEBUG
-				_cacheFile = CacheFileLoader.LoadCacheFile(reader, App.AssemblyStorage.AssemblySettings.DefaultDatabase,
+				_cacheFile = CacheFileLoader.LoadCacheFile(reader, Path.GetFileName(_cacheLocation), App.AssemblyStorage.AssemblySettings.DefaultDatabase,
 					out _buildInfo);
 		#else
 				try
 				{
-					_cacheFile = CacheFileLoader.LoadCacheFile(reader, App.AssemblyStorage.AssemblySettings.DefaultDatabase,
+					_cacheFile = CacheFileLoader.LoadCacheFile(reader, Path.GetFileName(_cacheLocation), App.AssemblyStorage.AssemblySettings.DefaultDatabase,
 						out _buildInfo);
 				}
 				catch (Exception ex)
@@ -490,7 +490,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				));
 		}
 
-		private void HeaderValueData_MouseDown(object sender, MouseButtonEventArgs e)
+        private void HeaderValueData_MouseDown(object sender, MouseButtonEventArgs e)
 		{
 			if (e.ClickCount == 2)
 				Clipboard.SetText(((TextBlock) e.OriginalSource).Text);
@@ -606,11 +606,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
-		private void cbShowHSInfo_Altered(object sender, RoutedEventArgs e)
-		{
-			App.AssemblyStorage.AssemblySettings.ShowScriptInfo = cbShowHSInfo.IsChecked;
-		}
-
 		private void ScriptButtonClick(object sender, RoutedEventArgs e)
 		{
 			var elem = e.Source as FrameworkElement;
@@ -625,14 +620,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 			else
 			{
-				var tab = new CloseableTabItem
-				{
-					Header = new ContentControl
-					{
-						Content = tabName,
-						ContextMenu = BaseContextMenu
-					},
-					Content = new ScriptEditor(_buildInfo, script, _mapManager, _cacheFile.Endianness)
+                var tab = new CloseableTabItem
+                {
+                    Header = new ContentControl
+                    {
+                        Content = tabName,
+                        ContextMenu = BaseContextMenu
+                    },
+                    Content = new ScriptEditor(_buildInfo, script, _mapManager, _cacheFile, _cacheFile.Endianness)
 				};
 
 				contentTabs.Items.Add(tab);
@@ -1117,9 +1112,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 											return null;
 										}
 
-										resourceStream =
-											File.OpenRead(resourceCachePath);
-										resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, _cacheFile.Endianness), _buildInfo,
+										resourceStream = File.OpenRead(resourceCachePath);
+										resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, _cacheFile.Endianness), _buildInfo, Path.GetFileName(_cacheLocation),
 											_cacheFile.BuildString);
 									}
 
@@ -1460,19 +1454,30 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private void GroupContextMenu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
 			var tagContext = sender as ContextMenu;
+			var group = tagContext.DataContext as TagGroup;
 
-			// Check if we need to hide stuff because the cache isn't thirdgen
-			if (_cacheFile.Engine != EngineType.ThirdGeneration)
-				foreach (object tagItem in tagContext.Items)
+
+			foreach (object tagItem in tagContext.Items)
+			{
+				// Check for particular names/objects to hide because datatemplate
+				if (tagItem is MenuItem)
 				{
-					// Check for particular names/objects to hide because datatemplate
-					if (tagItem is MenuItem)
+					MenuItem tagMenuItem = tagItem as MenuItem;
+
+					// Check if we need to hide stuff because the cache isn't thirdgen
+					if (_cacheFile.Engine != EngineType.ThirdGeneration)
 					{
-						MenuItem tagMenuItem = tagItem as MenuItem;
+						
 						if (tagMenuItem.Name == "itemGroupBatch")
 							tagMenuItem.Visibility = Visibility.Collapsed;
 					}
+
+					if(group.TagGroupMagic != "hsc*" && tagMenuItem.Name == "hscItem")
+					{
+						tagMenuItem.Visibility = Visibility.Collapsed;
+					}
 				}
+			}
 		}
 
 		private void SIDButton_Click(object sender, RoutedEventArgs e)
@@ -1528,6 +1533,63 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				contentTabs.SelectedItem = tab;
 			}
 
+		}
+
+		private void HscItem_Click(object sender, RoutedEventArgs e)
+		{
+			DumpHscs();
+		}
+
+		private void DumpHscs()
+		{
+			var tags = _cacheFile.Tags.FindTagsByGroup("hsc*");
+
+			if (_buildInfo.Layouts.HasLayout("hsc*") && tags != null)
+			{
+				string folder;
+
+				using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+				{
+					System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+					if (result == System.Windows.Forms.DialogResult.OK)
+					{
+						folder = dialog.SelectedPath;
+					}
+					else
+					{
+						return;
+					}
+				}
+
+				foreach (var tag in tags)
+				{
+					string fileName;
+					byte[] data;
+
+					using (IReader reader = _mapManager.OpenRead())
+					{
+						reader.SeekTo(tag.MetaLocation.AsOffset());
+						var values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("hsc*"));
+
+						uint pointer = (uint)values.GetInteger("source pointer");
+						var exp = _cacheFile.PointerExpander.Expand(pointer);
+						var offset = _cacheFile.MetaArea.PointerToOffset(exp);
+						reader.SeekTo(offset);
+						data = reader.ReadBlock((int)values.GetInteger("source size"));
+						fileName = values.GetString("file name") + ".hsc";
+					}
+
+					string path = Path.Combine(folder, fileName);
+
+					File.WriteAllBytes(path, data);
+				}
+
+				MetroMessageBox.Show("All source files have been extracted.");
+			}
+			else
+			{
+				MetroMessageBox.Show("This map doesn't contain hsc files.");
+			}
 		}
 
 		#region Tag List
@@ -2008,6 +2070,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			throw new Exception();
 		}
+
+        public void RefreshTags()
+        {
+            foreach (CloseableTabItem tab in contentTabs.Items)
+            {
+                var meta = tab.Content as MetaContainer;
+                if(meta != null)
+                {
+                    meta.RefreshMetaEditor();
+                }
+            }
+        }
 
 		private void UpdateTagOpenMode()
 		{

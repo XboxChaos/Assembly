@@ -15,12 +15,12 @@ namespace Blamite.Blam
 		/// <summary>
 		///     The index part of the datum index.
 		/// </summary>
-		public readonly ushort Index;
+		public ushort Index { get; private set; }
 
 		/// <summary>
 		///     The salt part of the datum index.
 		/// </summary>
-		public readonly ushort Salt;
+		public ushort Salt { get; private set; }
 
 		public DatumIndex(uint value)
 		{
@@ -69,6 +69,25 @@ namespace Blamite.Blam
 		public void WriteTo(IWriter writer)
 		{
 			writer.WriteUInt32(Value);
+		}
+
+		/// <summary>
+		///		Increments the Datum Index by one.
+		/// </summary>
+		public void Increment()
+		{
+			Salt++;
+			Index++;
+
+			// Reset Salt
+			if (Salt == 0xFFFF)
+				Salt = 0x8000;
+		}
+
+		public DatumIndex Next 
+		{ 
+			get { return new DatumIndex((ushort)(Salt + 1), (ushort)(Index + 1)); }
+				
 		}
 
 		public override bool Equals(object obj)

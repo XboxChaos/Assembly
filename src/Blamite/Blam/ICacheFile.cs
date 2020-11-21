@@ -15,6 +15,11 @@ namespace Blamite.Blam
 	public interface ICacheFile
 	{
 		/// <summary>
+		///		The file name of the cache file.
+		/// </summary>
+		string FileName { get; }
+
+		/// <summary>
 		///     The size of the file header.
 		/// </summary>
 		int HeaderSize { get; }

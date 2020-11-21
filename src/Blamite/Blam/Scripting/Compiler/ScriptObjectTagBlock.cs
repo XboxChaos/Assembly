@@ -77,12 +77,12 @@ namespace Blamite.Blam.Scripting.Compiler
 		{
 			if (values.HasString("name"))
 			{
-				return values.GetString("name");
+				return values.GetString("name").ToLowerInvariant();
 			}
 			if (values.HasInteger("name stringid"))
 			{
 				var sid = new StringID(values.GetInteger("name stringid"));
-				return stringIDs.GetString(sid);
+				return stringIDs.GetString(sid).ToLowerInvariant();
 			}
 			throw new InvalidOperationException("Unable to determine the name of objects in the \"" + _layoutName + "\" layout");
 		}

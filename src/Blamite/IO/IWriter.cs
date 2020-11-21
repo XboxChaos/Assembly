@@ -79,11 +79,24 @@ namespace Blamite.IO
 		/// <param name="str">The ASCII string to write.</param>
 		void WriteAscii(string str);
 
-		/// <summary>
-		///     Writes a UTF-8 string to the stream, followed by a null terminator.
-		/// </summary>
-		/// <param name="str">The UTF-8 string to write.</param>
-		void WriteUTF8(string str);
+        /// <summary>
+        ///     Writes an ASCII string to the stream and pads it with trailing null bytes to the specified length.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="length"></param>
+        void WriteAscii(string str, int length);
+
+        /// <summary>
+        ///     Writes a Windows-1252 string to the stream, followed by a null terminator.
+        /// </summary>
+        /// <param name="str">The Windows-1252 string to write.</param>
+        void WriteWin1252(string str);
+
+        /// <summary>
+        ///     Writes a UTF-8 string to the stream, followed by a null terminator.
+        /// </summary>
+        /// <param name="str">The UTF-8 string to write.</param>
+        void WriteUTF8(string str);
 
 		/// <summary>
 		///     Writes a UTF-16 string to the stream, followed by a null terminator.
