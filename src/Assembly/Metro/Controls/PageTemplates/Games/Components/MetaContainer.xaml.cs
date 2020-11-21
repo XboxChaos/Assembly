@@ -90,12 +90,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			#region Sound
 
-			if (_cache.ResourceMetaLoader.SupportsSounds && _tag.RawTag.Group.Magic == CharConstant.FromString("snd!"))
-			{
-				tabSoundEditor.Visibility = Visibility.Visible;
-				tabSoundEditor.Content = new SoundEditor(_buildInfo, _cacheLocation, _tag, _cache, _streamManager);
-			}
-			else
+			//if (_cache.ResourceMetaLoader.SupportsSounds && _tag.RawTag.Group.Magic == CharConstant.FromString("snd!"))
+			//{
+			//	tabSoundEditor.Visibility = Visibility.Visible;
+			//	tabSoundEditor.Content = new SoundEditor(_buildInfo, _cacheLocation, _tag, _cache, _streamManager);
+			//}
+			//else
 			{
 				tabSoundEditor.Visibility = Visibility.Collapsed;
 				if (App.AssemblyStorage.AssemblySettings.HalomapLastSelectedMetaEditor == 
@@ -146,6 +146,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			PluginEditor pe = (PluginEditor)tabPluginEditor.Content;
 			pe.Dispose();
+		}
+
+		public void ExternalSave()
+		{
+			if (_metaEditor != null)
+				_metaEditor.ExternalSave();
 		}
 	}
 }

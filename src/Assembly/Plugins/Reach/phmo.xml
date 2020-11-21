@@ -5,34 +5,66 @@
 		<revision author="DarkShallFall" version="1">Mapped plugin structure a new.</revision>
 		<revision author="Lord Zedd" version="2">Yo Dawg</revision>
 	</revisions>
-	<undefined name="Unknown" offset="0x0" visible="false" />
-	<undefined name="Unknown" offset="0x4" visible="false" />
-	<float32 name="Mass" offset="0x8" visible="true" />
-	<float32 name="Low Frequency Decativation Scale" offset="0xC" visible="true" />
-	<float32 name="High Frequency Decativation Scale" offset="0x10" visible="true" />
-	<undefined name="Unknown" offset="0x14" visible="false" />
-	<undefined name="Unknown" offset="0x18" visible="false" />
-	<int8 name="Unknown" offset="0x1C" visible="false" />
+	<flags32 name="Flags" offset="0x0" visible="true">
+		<bit name="Bit 0" index="0" />
+		<bit name="Bit 1" index="1" />
+		<bit name="Bit 2" index="2" />
+		<bit name="Bit 3" index="3" />
+		<bit name="Bit 4" index="4" />
+		<bit name="Bit 5" index="5" />
+		<bit name="Bit 6" index="6" />
+		<bit name="Bit 7" index="7" />
+		<bit name="Bit 8" index="8" />
+		<bit name="Bit 9" index="9" />
+		<bit name="Bit 10" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
+		<bit name="Bit 16" index="16" />
+		<bit name="Bit 17" index="17" />
+		<bit name="Bit 18" index="18" />
+		<bit name="Bit 19" index="19" />
+		<bit name="Bit 20" index="20" />
+		<bit name="Bit 21" index="21" />
+		<bit name="Bit 22" index="22" />
+		<bit name="Bit 23" index="23" />
+		<bit name="Bit 24" index="24" />
+		<bit name="Bit 25" index="25" />
+		<bit name="Bit 26" index="26" />
+		<bit name="Bit 27" index="27" />
+		<bit name="Bit 28" index="28" />
+		<bit name="Bit 29" index="29" />
+		<bit name="Bit 30" index="30" />
+		<bit name="Bit 31" index="31" />
+	</flags32>
+	<float32 name="Mass Scale" offset="0x4" visible="true" tooltip="scales the mass of each rigid body. If you leave this field as 0, then it will be calculated from the total mass below." />
+	<float32 name="Mass" offset="0x8" visible="true" tooltip="override total mass of all rigid bodies. Note that this will NOT be the mass of the object if not all rigid bodies are present (for example if you are using permutations). If you set a mass scale above, this field is unused." />
+	<float32 name="Low Frequency Deactivation Scale" offset="0xC" visible="true" tooltip="0 is default (1). LESS than 1 deactivates less aggressively. GREATER than 1 is more agressive." />
+	<float32 name="High Frequency Deactivation Scale" offset="0x10" visible="true" tooltip="0 is default (1). LESS than 1 deactivates less aggressively. GREATER than 1 is more agressive." />
+	<float32 name="Custom Shape Radius" offset="0x14" visible="true" tooltip="0 defaults to .016. This field is intentionally hidden because we should only alter this for very special situations. Lower number == lower performance" />
+	<float32 name="Maximum Penetration Depth Scale" offset="0x18" visible="true" tooltip="0 is default (1). for objects that are prone to falling through the world we can reduce this number at the cost of performance" />
+	<int8 name="Import Version" offset="0x1C" visible="true" />
 	<int8 name="Unknown" offset="0x1D" visible="false" />
-	<int8 name="Unknown" offset="0x1E" visible="false" />
-	<int8 name="Unknown" offset="0x1F" visible="false" />
-	<tagblock name="Unknown" offset="0x20" visible="true" elementSize="0x18">
-		<stringid name="Unknown" offset="0x0" visible="true" />
-		<float32 name="Unknown" offset="0x4" visible="false" />
-		<float32 name="Unknown" offset="0x8" visible="false" />
-		<float32 name="Unknown" offset="0xC" visible="false" />
-		<float32 name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
+	<int16 name="Unknown" offset="0x1E" visible="false" />
+	<tagblock name="Damped Spring Motors" offset="0x20" visible="true" elementSize="0x18">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<float32 name="Maximum Force" offset="0x4" visible="true" tooltip="0 defaults to k_real_max" />
+		<float32 name="Minimum Force" offset="0x8" visible="true" tooltip="0 defaults to maximum force. In general you should leave this alone unless working on ragdolls or something like them" />
+		<float32 name="Spring k" offset="0xC" visible="true" />
+		<float32 name="Damping" offset="0x10" visible="true" tooltip="0 means default daming of 1.0f" />
+		<float32 name="Initial Position" offset="0x14" visible="true" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0x2C" visible="true" elementSize="0x20">
-		<stringId name="Name" offset="0x0" visible="true" />
-		<float32 name="Unknown" offset="0x4" visible="true" />
-		<float32 name="Unknown" offset="0x8" visible="true" />
-		<float32 name="Unknown" offset="0xC" visible="true" />
-		<float32 name="Unknown" offset="0x10" visible="true" />
-		<float32 name="Unknown" offset="0x14" visible="true" />
-		<undefined name="Unknown" offset="0x18" visible="true" />
-		<undefined name="Unknown" offset="0x1C" visible="true" />
+	<tagblock name="Position Motors" offset="0x2C" visible="true" elementSize="0x20">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<float32 name="Maximum Force" offset="0x4" visible="true" />
+		<float32 name="Minimum Force" offset="0x8" visible="true" tooltip="0 defaults to maximum force. In general you should leave this alone unless working on ragdolls or something like them" />
+		<float32 name="Tau" offset="0xC" visible="true" tooltip="from 0-1. relative stiffness" />
+		<float32 name="Damping" offset="0x10" visible="true" tooltip="from 0-1" />
+		<float32 name="Proportion Recover Velocity" offset="0x14" visible="true" tooltip="fraction of recover velocity used. 0 defaults to 1" />
+		<float32 name="Consant Recover Velocity" offset="0x18" visible="true" tooltip="velocity used to recover when errors happen. in degress per second" />
+		<float32 name="Initial Position" offset="0x1C" visible="true" />
 	</tagblock>
 	<tagblock name="Phantom Types" offset="0x38" visible="true" elementSize="0x6C">
 		<flags32 name="Flags" offset="0x0" visible="true">
@@ -40,7 +72,7 @@
 			<bit name="Use Acceleration As Force" index="1" />
 			<bit name="Negates Gravity" index="2" />
 			<bit name="Ignores Players" index="3" />
-			<bit name="Ignores NonPlayers" index="4" />
+			<bit name="Ignores Non-Players" index="4" />
 			<bit name="Ignores Bipeds" index="5" />
 			<bit name="Ignores Vehicles" index="6" />
 			<bit name="Ignores Weapons" index="7" />
@@ -60,16 +92,16 @@
 			<bit name="Bit 21" index="21" />
 			<bit name="Bit 22" index="22" />
 			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
+			<bit name="Localizes Physics" index="24" />
+			<bit name="Disable Linear Damping" index="25" />
+			<bit name="Disable Angular Damping" index="26" />
+			<bit name="Ignores Dead Bipeds" index="27" />
 			<bit name="Bit 28" index="28" />
 			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
+			<bit name="Latching Disabled" index="30" />
 			<bit name="Bit 31" index="31" />
 		</flags32>
-		<undefined name="Unknown" offset="0x4" visible="false" />
+		<float32 name="Brittle Timer" offset="0x4" visible="true" tooltip="objects in this phantom volume will be set to brittle collision damage for this amount of time." />
 		<enum8 name="Minimum Size" offset="0x8" visible="true">
 			<option name="Default" value="0x0" />
 			<option name="Tiny" value="0x1" />
@@ -89,62 +121,92 @@
 			<option name="Extra Huge" value="0x6" />
 		</enum8>
 		<int16 name="Unknown" offset="0xA" visible="false" />
-		<stringid name="Marker Name" offset="0xC" visible="true" />
-		<stringid name="Alignment Marker Name" offset="0x10" visible="true" />
+		<stringid name="Marker Name" offset="0xC" visible="true" tooltip="you don't need this if you're just generating effects. If empty it defaults to the up of the object" />
+		<stringid name="Alignment Marker Name" offset="0x10" visible="true" tooltip="you don't need this if you're just generating effects. If empty it defaults to &quot;marker name&quot;" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
-		<float32 name="Hooke's Law 'E'" offset="0x1C" visible="true" />
-		<float32 name="Linear Dead Radius" offset="0x20" visible="true" />
-		<float32 name="Center Acceleration" offset="0x24" visible="true" />
-		<float32 name="Center Max Velocity" offset="0x28" visible="true" />
-		<float32 name="Axis Acceleration" offset="0x2C" visible="true" />
-		<float32 name="Axis Max Velocity" offset="0x30" visible="true" />
-		<float32 name="Direction Acceleration" offset="0x34" visible="true" />
-		<float32 name="Direction Max Velocity" offset="0x38" visible="true" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
+		<comment title="Linear Motion">0 means do nothing</comment>
+		<float32 name="Hooke's Law E" offset="0x1C" visible="true" tooltip="0 if you don't want this to behave like spring. 1 is a good starting point if you do." />
+		<float32 name="Linear Dead Radius" offset="0x20" visible="true" tooltip="radius from linear motion origin in which acceleration is dead." />
+		<float32 name="Center Acceleration" offset="0x24" visible="true" tooltip="motion towards marker position" />
+		<float32 name="Center Maximum Velocity" offset="0x28" visible="true" tooltip="motion towards marker position" />
+		<float32 name="Axis Acceleration" offset="0x2C" visible="true" tooltip="motion towards marker axis, such that object is on the axis" />
+		<float32 name="Axis Maximum Velocity" offset="0x30" visible="true" tooltip="motion towards marker axis, such that object is on the axis" />
+		<float32 name="Direction Acceleration" offset="0x34" visible="true" tooltip="motion along marker direction" />
+		<float32 name="Direction Maximum Velocity" offset="0x38" visible="true" tooltip="motion along marker direction" />
+		<float32 name="Orbit Acceleration" offset="0x3C" visible="true" tooltip="negative values spin the opposite direction from positive ones" />
+		<float32 name="Orbit Maximum Velocity" offset="0x40" visible="true" />
 		<undefined name="Unknown" offset="0x44" visible="false" />
 		<undefined name="Unknown" offset="0x48" visible="false" />
 		<undefined name="Unknown" offset="0x4C" visible="false" />
 		<undefined name="Unknown" offset="0x50" visible="false" />
 		<undefined name="Unknown" offset="0x54" visible="false" />
-		<undefined name="Unknown" offset="0x58" visible="false" />
-		<undefined name="Unknown" offset="0x5C" visible="false" />
-		<undefined name="Unknown" offset="0x60" visible="false" />
+		<comment title="Angular Motion">0 means do nothing</comment>
+		<float32 name="Alignment Hooke's Law E" offset="0x58" visible="true" tooltip="0 if you don't want this to behave like spring. 1 is a good starting point if you do." />
+		<float32 name="Alignment Acceleration" offset="0x5C" visible="true" tooltip="align objects in the phantom with the marker" />
+		<float32 name="Alignment Maximum Velocity" offset="0x60" visible="true" tooltip="align objects in the phantom with the marker" />
 		<undefined name="Unknown" offset="0x64" visible="false" />
 		<undefined name="Unknown" offset="0x68" visible="false" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0x44" visible="false" elementSize="0x18">
-		<tagblock name="Unknown" offset="0x0" visible="false" elementSize="0x2">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+	<tagblock name="Powered Chains" offset="0x44" visible="true" elementSize="0x18">
+		<tagblock name="Nodes" offset="0x0" visible="true" elementSize="0x2">
+			<int16 name="Node Index" offset="0x0" visible="true" />
 		</tagblock>
-		<tagblock name="Unknown" offset="0xC" visible="false" elementSize="0x10">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
+		<tagblock name="Constraints" offset="0xC" visible="true" elementSize="0x10">
+			<enum16 name="Constraint Type" offset="0x0" visible="true">
+				<option name="Hinge" value="0x0" />
+				<option name="Limited Hinge" value="0x1" />
+				<option name="Ragdoll" value="0x2" />
+				<option name="Stiff Spring" value="0x3" />
+				<option name="Ball And Socket" value="0x4" />
+				<option name="Prismatic" value="0x5" />
+				<option name="Powered Chain" value="0x6" />
+			</enum16>
+			<int16 name="Constraint Index" offset="0x2" visible="true" />
+			<comment title="X" />
+			<enum16 name="Motor Type" offset="0x4" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Damped Spring" value="0x1" />
+				<option name="Stongest Force" value="0x2" />
+			</enum16>
+			<int16 name="Motor Index" offset="0x6" visible="true" />
+			<comment title="Y" />
+			<enum16 name="Motor Type" offset="0x8" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Damped Spring" value="0x1" />
+				<option name="Stongest Force" value="0x2" />
+			</enum16>
+			<int16 name="Motor Index" offset="0xA" visible="true" />
+			<comment title="Z" />
+			<enum16 name="Motor Type" offset="0xC" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Damped Spring" value="0x1" />
+				<option name="Stongest Force" value="0x2" />
+			</enum16>
+			<int16 name="Motor Index" offset="0xE" visible="true" />
 		</tagblock>
 	</tagblock>
 	<tagblock name="Node Edges" offset="0x50" visible="true" elementSize="0x1C">
-		<int16 name="Node A Global Material Index" offset="0x0" visible="true" />
-		<int16 name="Node B Global Material Index" offset="0x2" visible="true" />
-		<int16 name="Node A" offset="0x4" visible="true" />
-		<int16 name="Node B" offset="0x6" visible="true" />
+		<int16 name="Node A Material Global Index" offset="0x0" visible="true" />
+		<int16 name="Node B Material Global Index" offset="0x2" visible="true" />
+		<int16 name="Node A Index" offset="0x4" visible="true" />
+		<int16 name="Node B Index" offset="0x6" visible="true" />
 		<tagblock name="Constraints" offset="0x8" visible="true" elementSize="0x24">
 			<enum16 name="Type" offset="0x0" visible="true">
 				<option name="Hinge" value="0x0" />
 				<option name="Limited Hinge" value="0x1" />
 				<option name="Ragdoll" value="0x2" />
 				<option name="Stiff Spring" value="0x3" />
-				<option name="Ball and Socket" value="0x4" />
+				<option name="Ball And Socket" value="0x4" />
 				<option name="Prismatic" value="0x5" />
+				<option name="Powered Chain" value="0x6" />
 			</enum16>
 			<int16 name="Index" offset="0x2" visible="true" />
 			<flags32 name="Flags" offset="0x4" visible="true">
-				<bit name="Bit 0" index="0" />
-				<bit name="Bit 1" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
+				<bit name="Is Physical Child" index="0" tooltip="this constraint will only be created when this object is a child of another physical object (turrets on vehicles for example)" />
+				<bit name="Is Rigid" index="1" tooltip="this constraint makes the edge rigid until it is loosened by damage" />
+				<bit name="Disable Effects" index="2" tooltip="this constraint will not generate impact effects" />
+				<bit name="Not Created Automatically" index="3" tooltip="this flag is used for special systems that need to create constraints dynamically" />
 				<bit name="Bit 4" index="4" />
 				<bit name="Bit 5" index="5" />
 				<bit name="Bit 6" index="6" />
@@ -174,40 +236,57 @@
 				<bit name="Bit 30" index="30" />
 				<bit name="Bit 31" index="31" />
 			</flags32>
-			<float32 name="Friction" offset="0x8" visible="true" />
-			<tagblock name="Unknown" offset="0xC" visible="false" elementSize="0xC">
-				<int16 name="Unknown" offset="0x0" visible="false" />
-				<int16 name="Unknown" offset="0x2" visible="false" />
-				<int16 name="Unknown" offset="0x4" visible="false" />
-				<int16 name="Unknown" offset="0x6" visible="false" />
-				<int16 name="Unknown" offset="0x8" visible="false" />
-				<int16 name="Unknown" offset="0xA" visible="false" />
+			<float32 name="Friction" offset="0x8" visible="true" tooltip="0 is the default (takes what it was set in max) anything else overrides that value" />
+			<tagblock name="Ragdoll Motors" offset="0xC" visible="true" elementSize="0xC">
+				<comment title="Twist" />
+				<enum16 name="Motor Type" offset="0x0" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Damped Spring" value="0x1" />
+					<option name="Stongest Force" value="0x2" />
+				</enum16>
+				<int16 name="Motor Index" offset="0x2" visible="true" />
+				<comment title="Cone" />
+				<enum16 name="Motor Type" offset="0x4" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Damped Spring" value="0x1" />
+					<option name="Stongest Force" value="0x2" />
+				</enum16>
+				<int16 name="Motor Index" offset="0x6" visible="true" />
+				<comment title="Plane" />
+				<enum16 name="Motor Type" offset="0x8" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Damped Spring" value="0x1" />
+					<option name="Stongest Force" value="0x2" />
+				</enum16>
+				<int16 name="Motor Index" offset="0xA" visible="true" />
 			</tagblock>
-			<tagblock name="Unknown" offset="0x18" visible="false" elementSize="0x4">
-				<int16 name="Unknown" offset="0x0" visible="false" />
-				<int16 name="Unknown" offset="0x2" visible="false" />
+			<tagblock name="Limited Hinge Motors" offset="0x18" visible="true" elementSize="0x4">
+				<enum16 name="Motor Type" offset="0x0" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Damped Spring" value="0x1" />
+					<option name="Stongest Force" value="0x2" />
+				</enum16>
+				<int16 name="Motor Index" offset="0x2" visible="true" />
 			</tagblock>
 		</tagblock>
-		<stringid name="Node A Material" offset="0x14" visible="true" />
-		<stringid name="Node B Material" offset="0x18" visible="true" />
+		<stringid name="Node A Material Name" offset="0x14" visible="true" tooltip="if you don't fill this out we will pluck the material from the first primitive, of the first rigid body attached to node a" />
+		<stringid name="Node B Material Name" offset="0x18" visible="true" tooltip="if you don't fill this out we will pluck the material from the first primitive, of the first rigid body attached to node b, if node b is none we use whatever material a has" />
 	</tagblock>
 	<tagblock name="Rigid Bodies" offset="0x5C" visible="true" elementSize="0xC0" align="0x10">
-		<int16 name="Node" offset="0x0" visible="true" />
-		<int16 name="Region" offset="0x2" visible="true" />
-		<int16 name="Permutations" offset="0x4" visible="true" />
+		<int16 name="Node Index" offset="0x0" visible="true" />
+		<int16 name="Region Index" offset="0x2" visible="true" />
+		<int16 name="Permutation Index" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x6" visible="true" />
-		<float32 name="Bounding Sphere Offset x" offset="0x8" visible="true" />
-		<float32 name="Bounding Sphere Offset y" offset="0xC" visible="true" />
-		<float32 name="Bounding Sphere Offset z" offset="0x10" visible="true" />
+		<point3 name="Bounding Sphere Offset" offset="0x8" visible="true" />
 		<float32 name="Bounding Sphere Radius" offset="0x14" visible="true" />
 		<flags16 name="Flags" offset="0x18" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Locked In Place" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Does Not Interact With Environment" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
+			<bit name="Has No Phantom Power Version" index="0" />
+			<bit name="Infinite Inertia Tensor" index="1" tooltip="rigid body will never have angular velocity" />
+			<bit name="Can Use MOPPs" index="2" tooltip="this flag was invented for the behemoth and is dangerous to use anywhere else (obsolete)" />
+			<bit name="Havok Rigid Body" index="3" tooltip="rigid body properties like center of mass and inertia tensor come from Havok Content Tools (and shouldn't be edited in Bonobo)" />
+			<bit name="Explicit Mass" index="4" tooltip="the mass is explicit, and not computed based on volume and density" />
+			<bit name="Absolute Center Of Mass" index="5" tooltip="the 'center of mass offset' is relative to the pivot and not to the computed center" />
+			<bit name="Force Keyframed" index="6" tooltip="rigid body is always keyframed and can't be overriden to dynamic or fixed" />
 			<bit name="Bit 7" index="7" />
 			<bit name="Bit 8" index="8" />
 			<bit name="Bit 9" index="9" />
@@ -218,7 +297,7 @@
 			<bit name="Bit 14" index="14" />
 			<bit name="Bit 15" index="15" />
 		</flags16>
-		<int16 name="Unknown" offset="0x1A" visible="true" />
+		<int16 name="No Phantom Power Alternative Rigid Body Index" offset="0x1A" visible="true" />
 		<enum8 name="Motion Type" offset="0x1C" visible="true">
 			<option name="Sphere" value="0x0" />
 			<option name="Stabilized Sphere" value="0x1" />
@@ -227,7 +306,29 @@
 			<option name="Keyframed" value="0x4" />
 			<option name="Fixed" value="0x5" />
 		</enum8>
-		<int8 name="Unknown" offset="0x1D" visible="true" />
+		<enum8 name="Proxy Collision Group" offset="0x1D" visible="true" tooltip="does not affect anything, change the groups in the individual shapes instead.">
+			<option name="None" value="0x0" />
+			<option name="Small Crate" value="0x1" />
+			<option name="Crate" value="0x2" />
+			<option name="Huge Crate" value="0x3" />
+			<option name="Item" value="0x4" />
+			<option name="Projectile" value="0x5" />
+			<option name="Biped" value="0x6" />
+			<option name="Machine" value="0x7" />
+			<option name="Early Mover Machine" value="0x8" />
+			<option name="Only Collide With Environment" value="0x9" />
+			<option name="Tech Art Custom" value="0xA" />
+			<option name="Small Expensive Plant" value="0xB" />
+			<option name="Ignore Environment" value="0xC" />
+			<option name="Huge Vehicle" value="0xD" />
+			<option name="Ragdoll" value="0xE" />
+			<option name="Super Collidable Ragdoll" value="0xF" />
+			<option name="Item Blocker" value="0x10" />
+			<option name="Unknown x11" value="0x11" />
+			<option name="Unknown x12" value="0x12" />
+			<option name="Unknown x13" value="0x13" />
+			<option name="Unknown x14" value="0x14" />
+		</enum8>
 		<enum16 name="Size" offset="0x1E" visible="true">
 			<option name="Default" value="0x0" />
 			<option name="Tiny" value="0x1" />
@@ -237,49 +338,65 @@
 			<option name="Huge" value="0x5" />
 			<option name="Extra Huge" value="0x6" />
 		</enum16>
-		<float32 name="Unknown" offset="0x20" visible="true" />
-		<float32 name="Unknown" offset="0x24" visible="true" />
-		<float32 name="Unknown" offset="0x28" visible="true" />
-		<float32 name="Inertia Tensor Scale" offset="0x2C" visible="true" />
-		<float32 name="Linear Dampening" offset="0x30" visible="true" />
-		<float32 name="Angular Dampening" offset="0x34" visible="true" />
-		<float32 name="Center Of Mass Offset x" offset="0x38" visible="true" />
-		<float32 name="Center Of Mass Offset y" offset="0x3C" visible="true" />
-		<float32 name="Center Of Mass Offset z" offset="0x40" visible="true" />
-		<undefined name="Unknown" offset="0x44" visible="true" />
-		<undefined name="Unknown" offset="0x48" visible="true" />
-		<undefined name="Unknown" offset="0x4C" visible="true" />
-		<undefined name="Unknown" offset="0x50" visible="true" />
-		<undefined name="Unknown" offset="0x54" visible="true" />
-		<undefined name="Unknown" offset="0x58" visible="true" />
-		<undefined name="Unknown" offset="0x5C" visible="true" />
-		<float32 name="Center of Mass i" offset="0x60" visible="true" />
-		<float32 name="Center of Mass j" offset="0x64" visible="true" />
-		<float32 name="Center of Mass k" offset="0x68" visible="true" />
-		<float32 name="Center of Mass Radius" offset="0x6C" visible="true" />
-		<float32 name="Inertia Tensor x i" offset="0x70" visible="true" />
-		<float32 name="Inertia Tensor x j" offset="0x74" visible="true" />
-		<float32 name="Inertia Tensor x k" offset="0x78" visible="true" />
-		<float32 name="Inertia Tensor x Radius" offset="0x7C" visible="true" />
-		<float32 name="Inertia Tensor y i" offset="0x80" visible="true" />
-		<float32 name="Inertia Tensor y j" offset="0x84" visible="true" />
-		<float32 name="Inertia Tensor y k" offset="0x88" visible="true" />
-		<float32 name="Inertia Tensor y Radius" offset="0x8C" visible="true" />
-		<float32 name="Inertia Tensor z i" offset="0x90" visible="true" />
-		<float32 name="Inertia Tensor z j" offset="0x94" visible="true" />
-		<float32 name="Inertia Tensor z k" offset="0x98" visible="true" />
-		<float32 name="Inertia Tensor z Radius" offset="0x9C" visible="true" />
-		<int32 name="Unknown Interaction" offset="0xA0" visible="true" />
-		<comment title="Shape Type/Index">You can't just poke the following 2 values. In memory they become a pointer, pointing directly to the memory address of the destination shape.
-If you want to poke it, you'll want to View Value As on the Shape Type enum for its address and use another poking tool to paste the memory address of the new shape. Use the address of the "Size" value.</comment>
-		<enum16 name="Shape Type" offset="0xA4" visible="true">
+		<comment title="Inertia Tensor Scales">if you want to set the scale uniforml just set "inertia tensor scale". If you want to set the values seperately per axis you can set "inertia tensor scale x\y\z"</comment>
+		<float32 name="Inertia Tensor Scale" offset="0x20" visible="true" tooltip="0.0 defaults to 1.0" />
+		<point3 name="Inertia Tensor Scale" offset="0x24" visible="true" tooltip="0.0 defaults to 1.0" />
+		<float32 name="Linear Damping" offset="0x30" visible="true" tooltip="this goes from 0-10 (10 is really, really high)" />
+		<float32 name="Angular Damping" offset="0x34" visible="true" tooltip="this goes from 0-10 (10 is really, really high)" />
+		<vector3 name="Center Of Mass Offset" offset="0x38" visible="true" />
+		<comment title="Water Physics Bounding Box">if any of these fields are non-zero, this overrides the bounding box used for water physics</comment>
+		<float32 name="Water Physics X0" offset="0x44" visible="true" tooltip="x0 value of the water physics Axis-Aligned Bounding Box" />
+		<float32 name="Water Physics X1" offset="0x48" visible="true" tooltip="x1 value of the water physics Axis-Aligned Bounding Box" />
+		<float32 name="Water Physics Y0" offset="0x4C" visible="true" tooltip="y0 value of the water physics Axis-Aligned Bounding Box" />
+		<float32 name="Water Physics Y1" offset="0x50" visible="true" tooltip="y1 value of the water physics Axis-Aligned Bounding Box" />
+		<float32 name="Water Physics Z0" offset="0x54" visible="true" tooltip="z0 value of the water physics Axis-Aligned Bounding Box" />
+		<float32 name="Water Physics Z1" offset="0x58" visible="true" tooltip="z1 value of the water physics Axis-Aligned Bounding Box" />
+		<undefined name="Unknown" offset="0x5C" visible="false" />
+		<vector3 name="Center Of Mass" offset="0x60" visible="true" />
+		<float32 name="w Center Of Mass" offset="0x6C" visible="true" />
+		<vector3 name="Inertia Tensor x" offset="0x70" visible="true" />
+		<float32 name="w Inertia Tensor x" offset="0x7C" visible="true" />
+		<vector3 name="Inertia Tensor y" offset="0x80" visible="true" />
+		<float32 name="w Inertia Tensor y" offset="0x8C" visible="true" />
+		<vector3 name="Inertia Tensor z" offset="0x90" visible="true" />
+		<float32 name="w Inertia Tensor z" offset="0x9C" visible="true" />
+		<flags32 name="Collision Group Mask" offset="0xA0" visible="true">
+			<bit name="Everything" index="0" />
+			<bit name="Environment Default" index="1" />
+			<bit name="Environment Only" index="2" />
+			<bit name="Small Crate" index="3" />
+			<bit name="Crate" index="4" />
+			<bit name="Huge Crate" index="5" />
+			<bit name="Item" index="6" />
+			<bit name="Projectile" index="7" />
+			<bit name="Machine" index="8" />
+			<bit name="Early Mover Machine" index="9" />
+			<bit name="Creature" index="10" />
+			<bit name="Biped" index="11" />
+			<bit name="Dead Biped" index="12" />
+			<bit name="Super Collidable Ragdoll" index="13" />
+			<bit name="Ragdoll" index="14" />
+			<bit name="Vehicle" index="15" />
+			<bit name="Decal" index="16" />
+			<bit name="Forge Dynamic Scenary" index="17" />
+			<bit name="Small Expensive Plant" index="18" />
+			<bit name="Tech Art Custom" index="19" />
+			<bit name="Unknown x14" index="20" />
+			<bit name="Unknown x15" index="21" />
+			<bit name="Unknown x16" index="22" />
+			<bit name="Unknown x17" index="23" />
+			<bit name="Unknown x18" index="24" />
+			<bit name="Unknown x19" index="25" />
+			<bit name="Unknown x1A" index="26" />
+		</flags32>
+		<enum16 name="Shape Type" offset="0xA4" visible="true" tooltip="this and the shape index below becomes a pointer to the given shape in memory at runtime. don't poke me">
 			<option name="Sphere" value="0x0" />
 			<option name="Pill" value="0x1" />
 			<option name="Box" value="0x2" />
 			<option name="Triangle" value="0x3" />
 			<option name="Polyhedron" value="0x4" />
-			<option name="Multi-Sphere" value="0x5" />
-			<option name="Unused 0" value="0x6" />
+			<option name="Multi Sphere" value="0x5" />
+			<option name="Phantom" value="0x6" />
 			<option name="Unused 1" value="0x7" />
 			<option name="Unused 2" value="0x8" />
 			<option name="Unused 3" value="0x9" />
@@ -292,398 +409,18 @@ If you want to poke it, you'll want to View Value As on the Shape Type enum for 
 		</enum16>
 		<int16 name="Shape Index" offset="0xA6" visible="true" />
 		<float32 name="Mass" offset="0xA8" visible="true" />
-		<undefined name="Unknown" offset="0xAC" visible="true" />
-		<int16 name="Interaction A" offset="0xB0" visible="true" />
-		<int16 name="Interaction B" offset="0xB2" visible="true" />
-		<undefined name="Unknown" offset="0xB4" visible="true" />
-		<undefined name="Unknown" offset="0xB8" visible="true" />
-		<undefined name="Unknown" offset="0xBC" visible="true" />
-	</tagblock>
-	<tagblock name="Materials" offset="0x68" visible="true" elementSize="0x10">
-		<stringid name="Name" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="true" />
-		<stringid name="Material Name" offset="0x8" visible="true" />
-		<int16 name="Phantom Type Index" offset="0xC" visible="true" />
-		<int8 name="Unknown" offset="0xE" visible="false" />
-		<int8 name="Unknown" offset="0xF" visible="false" />
-	</tagblock>
-	<tagblock name="Spheres" offset="0x74" visible="true" elementSize="0x70" align="0x10">
-		<stringid name="Name" offset="0x0" visible="true" />
-		<int8 name="Material Index" offset="0x4" visible="true" />
-		<int8 name="Unknown" offset="0x5" visible="false" />
-		<int16 name="Global Material Index" offset="0x6" visible="true" />
-		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
-		<float32 name="Friction" offset="0xC" visible="true" />
-		<float32 name="Restitution" offset="0x10" visible="true" />
-		<float32 name="Volume" offset="0x14" visible="true" />
-		<float32 name="Mass" offset="0x18" visible="true" />
-		<int16 name="Overall Shape Index" offset="0x1C" visible="true" />
-		<int8 name="Phantom Index" offset="0x1E" visible="true" />
-		<int8 name="Interaction Unknown" offset="0x1F" visible="true" />
-		<int32 name="Unknown" offset="0x20" visible="false" />
-		<int16 name="Size" offset="0x24" visible="true" />
-		<int16 name="Count" offset="0x26" visible="true" />
-		<int32 name="Offset" offset="0x28" visible="true" />
-		<int32 name="Unknown" offset="0x2C" visible="true" />
-		<float32 name="Radius" offset="0x30" visible="true" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<int32 name="Unknown" offset="0x40" visible="false" />
-		<int16 name="Size" offset="0x44" visible="true" />
-		<int16 name="Count" offset="0x46" visible="true" />
-		<int32 name="Offset" offset="0x48" visible="true" />
-		<int32 name="Unknown" offset="0x4C" visible="true" />
-		<float32 name="Radius" offset="0x50" visible="true" />
-		<undefined name="Unknown" offset="0x54" visible="false" />
-		<undefined name="Unknown" offset="0x58" visible="false" />
-		<undefined name="Unknown" offset="0x5C" visible="false" />
-		<float32 name="Translation i" offset="0x60" visible="true" />
-		<float32 name="Translation j" offset="0x64" visible="true" />
-		<float32 name="Translation k" offset="0x68" visible="true" />
-		<float32 name="Translation Radius" offset="0x6C" visible="true" />
-	</tagblock>
-	<uint32 name="Multi Spheres Block Here" offset="0x80" visible="false" />
-	<uint32 name="Multi Spheres Block Here" offset="0x84" visible="false" />
-	<uint32 name="Multi Spheres Block Here" offset="0x88" visible="false" />
-	<tagblock name="Pills" offset="0x8C" visible="true" elementSize="0x60" align="0x10">
-		<stringid name="Name" offset="0x0" visible="true" />
-		<int8 name="Material Index" offset="0x4" visible="true" />
-		<int8 name="Unknown" offset="0x5" visible="false" />
-		<int16 name="Global Material Index" offset="0x6" visible="true" />
-		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
-		<float32 name="Friction" offset="0xC" visible="true" />
-		<float32 name="Restitution" offset="0x10" visible="true" />
-		<float32 name="Volume" offset="0x14" visible="true" />
-		<float32 name="Mass" offset="0x18" visible="true" />
-		<int16 name="Overall Shape Index" offset="0x1C" visible="true" />
-		<int8 name="Phantom Index" offset="0x1E" visible="true" />
-		<int8 name="Interaction Unknown" offset="0x1F" visible="true" />
-		<int32 name="Unknown" offset="0x20" visible="false" />
-		<int16 name="Size" offset="0x24" visible="true" />
-		<int16 name="Count" offset="0x26" visible="true" />
-		<int32 name="Offset" offset="0x28" visible="true" />
-		<int32 name="Unknown" offset="0x2C" visible="true" />
-		<float32 name="Radius" offset="0x30" visible="true" />
-		<undefined name="Unknown" offset="0x34" visible="true" />
-		<undefined name="Unknown" offset="0x38" visible="true" />
-		<undefined name="Unknown" offset="0x3C" visible="true" />
-		<float32 name="Bottom i" offset="0x40" visible="true" />
-		<float32 name="Bottom j" offset="0x44" visible="true" />
-		<float32 name="Bottom k" offset="0x48" visible="true" />
-		<float32 name="Bottom Radius" offset="0x4C" visible="true" />
-		<float32 name="Top i" offset="0x50" visible="true" />
-		<float32 name="Top j" offset="0x54" visible="true" />
-		<float32 name="Top k" offset="0x58" visible="true" />
-		<float32 name="Top Radius" offset="0x5C" visible="true" />
-	</tagblock>
-	<tagblock name="Boxes" offset="0x98" visible="true" elementSize="0xB0" align="0x10">
-		<stringid name="Name" offset="0x0" visible="true" />
-		<int8 name="Material Index" offset="0x4" visible="true" />
-		<int8 name="Unknown" offset="0x5" visible="false" />
-		<int16 name="Global Material Index" offset="0x6" visible="true" />
-		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
-		<float32 name="Friction" offset="0xC" visible="true" />
-		<float32 name="Restitution" offset="0x10" visible="true" />
-		<float32 name="Volume" offset="0x14" visible="true" />
-		<float32 name="Mass" offset="0x18" visible="true" />
-		<int16 name="Overall Shape Index" offset="0x1C" visible="true" />
-		<int8 name="Phantom Index" offset="0x1E" visible="true" />
-		<int8 name="Interaction Unknown" offset="0x1F" visible="true" />
-		<int32 name="Unknown" offset="0x20" visible="false" />
-		<int16 name="Size" offset="0x24" visible="true" />
-		<int16 name="Count" offset="0x26" visible="true" />
-		<int32 name="Offset" offset="0x28" visible="true" />
-		<int32 name="Unknown" offset="0x2C" visible="true" />
-		<float32 name="Radius" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<float32 name="Half Extents i" offset="0x40" visible="true" />
-		<float32 name="Half Extents j" offset="0x44" visible="true" />
-		<float32 name="Half Extents k" offset="0x48" visible="true" />
-		<float32 name="Half Extents Radius" offset="0x4C" visible="true" />
-		<int32 name="Unknown" offset="0x50" visible="false" />
-		<int16 name="Size" offset="0x54" visible="true" />
-		<int16 name="Count" offset="0x56" visible="true" />
-		<int32 name="Offset" offset="0x58" visible="false" />
-		<int32 name="Unknown" offset="0x5C" visible="false" />
-		<float32 name="Radius" offset="0x60" visible="true" />
-		<undefined name="Unknown" offset="0x64" visible="true" />
-		<undefined name="Unknown" offset="0x68" visible="true" />
-		<undefined name="Unknown" offset="0x6C" visible="true" />
-		<float32 name="Rotation i i" offset="0x70" visible="true" />
-		<float32 name="Rotation i j" offset="0x74" visible="true" />
-		<float32 name="Rotation i k" offset="0x78" visible="true" />
-		<float32 name="Rotation i Radius" offset="0x7C" visible="true" />
-		<float32 name="Rotation j i" offset="0x80" visible="true" />
-		<float32 name="Rotation j j" offset="0x84" visible="true" />
-		<float32 name="Rotation j k" offset="0x88" visible="true" />
-		<float32 name="Rotation j Radius" offset="0x8C" visible="true" />
-		<float32 name="Rotation k i" offset="0x90" visible="true" />
-		<float32 name="Rotation k j" offset="0x94" visible="true" />
-		<float32 name="Rotation k k" offset="0x98" visible="true" />
-		<float32 name="Rotation k Radius" offset="0x9C" visible="true" />
-		<float32 name="Translation i" offset="0xA0" visible="true" />
-		<float32 name="Translation j" offset="0xA4" visible="true" />
-		<float32 name="Translation k" offset="0xA8" visible="true" />
-		<float32 name="Translation Radius" offset="0xAC" visible="true" />
-	</tagblock>
-	<uint32 name="Triangles Block Here" offset="0xA4" visible="false" />
-	<uint32 name="Triangles Block Here" offset="0xA8" visible="false" />
-	<uint32 name="Triangles Block Here" offset="0xAC" visible="false" />
-	<tagblock name="Polyhedra" offset="0xB0" visible="true" elementSize="0x90" align="0x10">
-		<stringid name="Name" offset="0x0" visible="true" />
-		<int8 name="Material Index" offset="0x4" visible="true" />
-		<int8 name="Unknown" offset="0x5" visible="false" />
-		<int16 name="Global Material Index" offset="0x6" visible="true" />
-		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
-		<float32 name="Friction" offset="0xC" visible="true" />
-		<float32 name="Restitution" offset="0x10" visible="true" />
-		<float32 name="Volume" offset="0x14" visible="true" />
-		<float32 name="Mass" offset="0x18" visible="true" />
-		<int16 name="Overall Shape Index" offset="0x1C" visible="true" />
-		<int8 name="Phantom Index" offset="0x1E" visible="true" />
-		<int8 name="Interaction Unknown" offset="0x1F" visible="true" />
-		<int32 name="Unknown" offset="0x20" visible="false" />
-		<int16 name="Size" offset="0x24" visible="true" />
-		<int16 name="Count" offset="0x26" visible="true" />
-		<int32 name="Offset" offset="0x28" visible="true" />
-		<int32 name="Unknown" offset="0x2C" visible="true" />
-		<float32 name="Radius" offset="0x30" visible="true" />
-		<undefined name="Unknown" offset="0x34" visible="true" />
-		<undefined name="Unknown" offset="0x38" visible="true" />
-		<undefined name="Unknown" offset="0x3C" visible="true" />
-		<float32 name="AABB Half Extents i" offset="0x40" visible="true" />
-		<float32 name="AABB Half Extents j" offset="0x44" visible="true" />
-		<float32 name="AABB Half Extents k" offset="0x48" visible="true" />
-		<float32 name="AABB Half Extents Radius" offset="0x4C" visible="true" />
-		<float32 name="AABB Center i" offset="0x50" visible="true" />
-		<float32 name="AABB Center j" offset="0x54" visible="true" />
-		<float32 name="AABB Center k" offset="0x58" visible="true" />
-		<float32 name="AABB Center Radius" offset="0x5C" visible="true" />
-		<undefined name="Unknown" offset="0x60" visible="true" />
-		<int32 name="Four Vectors Size" offset="0x64" visible="true" />
-		<uint32 name="Four Vectors Capacity" offset="0x68" visible="true" />
-		<int32 name="Unknown" offset="0x6C" visible="true" />
-		<undefined name="Unknown" offset="0x70" visible="true" />
-		<undefined name="Unknown" offset="0x74" visible="true" />
-		<int32 name="Plane Equations Size" offset="0x78" visible="true" />
-		<uint32 name="Plane Equations Capacity" offset="0x7C" visible="true" />
-		<undefined name="Unknown" offset="0x80" visible="true" />
-		<undefined name="Unknown" offset="0x84" visible="true" />
-		<undefined name="Unknown" offset="0x88" visible="true" />
-		<undefined name="Unknown" offset="0x8C" visible="true" />
-	</tagblock>
-	<tagblock name="Polyhedron Four Vectors" offset="0xBC" visible="true" elementSize="0x30" align="0x10">
-		<float32 name="Four Vectors x i" offset="0x0" visible="true" />
-		<float32 name="Four Vectors x j" offset="0x4" visible="true" />
-		<float32 name="Four Vectors x k" offset="0x8" visible="true" />
-		<float32 name="Four Vectors x Radius" offset="0xC" visible="true" />
-		<float32 name="Four Vectors y i" offset="0x10" visible="true" />
-		<float32 name="Four Vectors y j" offset="0x14" visible="true" />
-		<float32 name="Four Vectors y k" offset="0x18" visible="true" />
-		<float32 name="Four Vectors y Radius" offset="0x1C" visible="true" />
-		<float32 name="Four Vectors z i" offset="0x20" visible="true" />
-		<float32 name="Four Vectors z j" offset="0x24" visible="true" />
-		<float32 name="Four Vectors z k" offset="0x28" visible="true" />
-		<float32 name="Four Vectors z Radius" offset="0x2C" visible="true" />
-	</tagblock>
-	<tagblock name="Polyhedron Plane Equations" offset="0xC8" visible="true" elementSize="0x10" align="0x10">
-		<float32 name="Unknown" offset="0x0" visible="true" />
-		<float32 name="Unknown" offset="0x4" visible="true" />
-		<float32 name="Unknown" offset="0x8" visible="true" />
-		<float32 name="Unknown" offset="0xC" visible="true" />
-	</tagblock>
-	<uint32 name="Mass Distributions Block Here" offset="0xD4" visible="false" />
-	<uint32 name="Mass Distributions Block Here" offset="0xD8" visible="false" />
-	<uint32 name="Mass Distributions Block Here" offset="0xDC" visible="false" />
-	<tagblock name="Lists" offset="0xE0" visible="true" elementSize="0x70" align="0x10">
-		<int32 name="Unknown" offset="0x0" visible="false" />
-		<int16 name="Size" offset="0x4" visible="true" />
-		<int16 name="Count" offset="0x6" visible="true" />
-		<int32 name="Offset" offset="0x8" visible="true" />
-		<int32 name="Unknown" offset="0xC" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="true" />
-		<undefined name="Unknown" offset="0x14" visible="true" />
-		<undefined name="Unknown" offset="0x18" visible="true" />
-		<int32 name="Child Shapes Size" offset="0x1C" visible="true" />
-		<uint32 name="Child Shapes Capacity" offset="0x20" visible="true" />
-		<undefined name="Unknown" offset="0x24" visible="true" />
-		<undefined name="Unknown" offset="0x28" visible="true" />
-		<float32 name="Unknown" offset="0x2C" visible="true" />
-		<float32 name="Unknown" offset="0x30" visible="true" />
-		<float32 name="Unknown" offset="0x34" visible="true" />
-		<float32 name="Unknown" offset="0x38" visible="true" />
-		<float32 name="Unknown" offset="0x3C" visible="true" />
-		<float32 name="Unknown" offset="0x40" visible="true" />
-		<float32 name="Unknown" offset="0x44" visible="true" />
-		<float32 name="Unknown" offset="0x48" visible="true" />
-		<float32 name="Unknown" offset="0x4C" visible="true" />
-		<int32 name="Unknown" offset="0x50" visible="true" />
-		<int32 name="Unknown" offset="0x54" visible="true" />
-		<int32 name="Unknown" offset="0x58" visible="true" />
-		<int32 name="Unknown" offset="0x5C" visible="true" />
-		<int32 name="Unknown" offset="0x60" visible="true" />
-		<int32 name="Unknown" offset="0x64" visible="true" />
-		<int32 name="Unknown" offset="0x68" visible="true" />
-		<int32 name="Unknown" offset="0x6C" visible="true" />
-	</tagblock>
-	<tagblock name="List Shapes" offset="0xEC" visible="true" elementSize="0x10">
-		<comment title="These two also turn into pointers, FYI" />
-		<enum16 name="Shape Type" offset="0x0" visible="true">
-			<option name="Sphere" value="0x0" />
-			<option name="Pill" value="0x1" />
-			<option name="Box" value="0x2" />
-			<option name="Triangle" value="0x3" />
-			<option name="Polyhedron" value="0x4" />
-			<option name="Multi-Sphere" value="0x5" />
-			<option name="Unknown Shape" value="0x6" />
-			<option name="Unused 1" value="0x7" />
-			<option name="Unused 2" value="0x8" />
-			<option name="Unused 3" value="0x9" />
-			<option name="Unused 4" value="0xA" />
-			<option name="Unused 5" value="0xB" />
-			<option name="Unused 6" value="0xC" />
-			<option name="Unused 7" value="0xD" />
-			<option name="List" value="0xE" />
-			<option name="MOPP" value="0xF" />
-		</enum16>
-		<int16 name="Shape Index" offset="0x2" visible="true" />
-		<int32 name="Unknown" offset="0x4" visible="true" />
-		<int32 name="Unknown" offset="0x8" visible="true" />
-		<int32 name="Unknown" offset="0xC" visible="true" />
-	</tagblock>
-	<tagblock name="MOPPs" offset="0xF8" visible="true" elementSize="0x50" align="0x10">
-		<int32 name="Unknown" offset="0x0" visible="false" />
-		<int16 name="Size" offset="0x4" visible="true" />
-		<int16 name="Count" offset="0x6" visible="true" />
-		<int32 name="Offset" offset="0x8" visible="true" />
-		<int32 name="Unknown" offset="0xC" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<comment title="These two also turn into pointers, FYI" />
-		<enum16 name="Shape Type" offset="0x34" visible="true">
-			<option name="Sphere" value="0x0" />
-			<option name="Pill" value="0x1" />
-			<option name="Box" value="0x2" />
-			<option name="Triangle" value="0x3" />
-			<option name="Polyhedron" value="0x4" />
-			<option name="Multi-Sphere" value="0x5" />
-			<option name="Unknown Shape" value="0x6" />
-			<option name="Unused 1" value="0x7" />
-			<option name="Unused 2" value="0x8" />
-			<option name="Unused 3" value="0x9" />
-			<option name="Unused 4" value="0xA" />
-			<option name="Unused 5" value="0xB" />
-			<option name="Unused 6" value="0xC" />
-			<option name="Unused 7" value="0xD" />
-			<option name="List" value="0xE" />
-			<option name="MOPP" value="0xF" />
-		</enum16>
-		<int16 name="Shape Index" offset="0x36" visible="true" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
-	</tagblock>
-	<dataRef name="MOPP Codes" offset="0x104" visible="true" align="0x10" />
-	<tagblock name="Hinge Constraints" offset="0x118" visible="true" elementSize="0x78" align="0x10">
-		<stringid name="Name" offset="0x0" visible="true" />
-		<int16 name="Node A" offset="0x4" visible="true" />
-		<int16 name="Node B" offset="0x6" visible="true" />
-		<float32 name="A Scale" offset="0x8" visible="true" />
-		<float32 name="A Forward i" offset="0xC" visible="true" />
-		<float32 name="A Forward j" offset="0x10" visible="true" />
-		<float32 name="A Forward k" offset="0x14" visible="true" />
-		<float32 name="A Left i" offset="0x18" visible="true" />
-		<float32 name="A Left j" offset="0x1C" visible="true" />
-		<float32 name="A Left k" offset="0x20" visible="true" />
-		<float32 name="A Up i" offset="0x24" visible="true" />
-		<float32 name="A Up j" offset="0x28" visible="true" />
-		<float32 name="A Up k" offset="0x2C" visible="true" />
-		<float32 name="A Position x" offset="0x30" visible="true" />
-		<float32 name="A Position y" offset="0x34" visible="true" />
-		<float32 name="A Position z" offset="0x38" visible="true" />
-		<float32 name="B Scale" offset="0x3C" visible="true" />
-		<float32 name="B Forward i" offset="0x40" visible="true" />
-		<float32 name="B Forward j" offset="0x44" visible="true" />
-		<float32 name="B Forward k" offset="0x48" visible="true" />
-		<float32 name="B Left i" offset="0x4C" visible="true" />
-		<float32 name="B Left j" offset="0x50" visible="true" />
-		<float32 name="B Left k" offset="0x54" visible="true" />
-		<float32 name="B Up i" offset="0x58" visible="true" />
-		<float32 name="B Up j" offset="0x5C" visible="true" />
-		<float32 name="B Up k" offset="0x60" visible="true" />
-		<float32 name="B Position i" offset="0x64" visible="true" />
-		<float32 name="B Position j" offset="0x68" visible="true" />
-		<float32 name="B Position k" offset="0x6C" visible="true" />
-		<int16 name="Edge Index" offset="0x70" visible="true" />
-		<int16 name="Unknown" offset="0x72" visible="true" />
-		<undefined name="Unknown" offset="0x74" visible="true" />
-	</tagblock>
-	<tagblock name="Ragdoll Constraints" offset="0x124" visible="true" elementSize="0x94">
-		<stringid name="Name" offset="0x0" visible="true" />
-		<int16 name="Node A" offset="0x4" visible="true" />
-		<int16 name="Node B" offset="0x6" visible="true" />
-		<float32 name="A Scale" offset="0x8" visible="true" />
-		<float32 name="A Forward i" offset="0xC" visible="true" />
-		<float32 name="A Forward j" offset="0x10" visible="true" />
-		<float32 name="A Forward k" offset="0x14" visible="true" />
-		<float32 name="A Left i" offset="0x18" visible="true" />
-		<float32 name="A Left j" offset="0x1C" visible="true" />
-		<float32 name="A Left k" offset="0x20" visible="true" />
-		<float32 name="A Up i" offset="0x24" visible="true" />
-		<float32 name="A Up j" offset="0x28" visible="true" />
-		<float32 name="A Up k" offset="0x2C" visible="true" />
-		<float32 name="A Position x" offset="0x30" visible="true" />
-		<float32 name="A Position y" offset="0x34" visible="true" />
-		<float32 name="A Position z" offset="0x38" visible="true" />
-		<float32 name="B Scale" offset="0x3C" visible="true" />
-		<float32 name="B Forward i" offset="0x40" visible="true" />
-		<float32 name="B Forward j" offset="0x44" visible="true" />
-		<float32 name="B Forward k" offset="0x48" visible="true" />
-		<float32 name="B Left i" offset="0x4C" visible="true" />
-		<float32 name="B Left j" offset="0x50" visible="true" />
-		<float32 name="B Left k" offset="0x54" visible="true" />
-		<float32 name="B Up i" offset="0x58" visible="true" />
-		<float32 name="B Up j" offset="0x5C" visible="true" />
-		<float32 name="B Up k" offset="0x60" visible="true" />
-		<float32 name="B Position x" offset="0x64" visible="true" />
-		<float32 name="B Position y" offset="0x68" visible="true" />
-		<float32 name="B Position z" offset="0x6C" visible="true" />
-		<int16 name="Edge Index" offset="0x70" visible="true" />
-		<int16 name="Unknown" offset="0x72" visible="true" />
-		<undefined name="Unknown" offset="0x74" visible="true" />
-		<float32 name="Min Twist" offset="0x78" visible="true" />
-		<float32 name="Max Twist" offset="0x7C" visible="true" />
-		<float32 name="Min Cone" offset="0x80" visible="true" />
-		<float32 name="Max Cone" offset="0x84" visible="true" />
-		<float32 name="Min Plane" offset="0x88" visible="true" />
-		<float32 name="Max Plane" offset="0x8C" visible="true" />
-		<float32 name="Max Friction Torque" offset="0x90" visible="true" />
-	</tagblock>
-	<tagblock name="Regions" offset="0x130" visible="true" elementSize="0x10">
-		<stringid name="Name" offset="0x0" visible="true" />
-		<tagblock name="Permutations" offset="0x4" visible="true" elementSize="0x10">
-			<stringid name="Name" offset="0x0" visible="true" />
-			<tagblock name="Rigid Bodies" offset="0x4" visible="true" elementSize="0x2">
-				<int16 name="Rigid Body Index" offset="0x0" visible="true" />
-			</tagblock>
-		</tagblock>
-	</tagblock>
-	<tagblock name="Nodes" offset="0x13C" visible="true" elementSize="0xC">
-		<stringid name="Name" offset="0x0" visible="true" />
-		<flags16 name="Flags" offset="0x4" visible="true">
+		<float32 name="Bounding Sphere Pad" offset="0xAC" visible="true" tooltip="the bounding sphere for this rigid body will be outset by this much" />
+		<enum8 name="Collision Quality Override Type" offset="0xB0" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Debris Simple Toi" value="0x1" />
+			<option name="Moving" value="0x2" />
+			<option name="Critical" value="0x3" />
+			<option name="Bullet" value="0x4" />
+			<option name="Character" value="0x5" />
+			<option name="Fixed" value="0x6" />
+		</enum8>
+		<int8 name="Unknown" offset="0xB1" visible="false" />
+		<flags16 name="Runtime Flags" offset="0xB2" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -701,77 +438,807 @@ If you want to poke it, you'll want to View Value As on the Shape Type enum for 
 			<bit name="Bit 14" index="14" />
 			<bit name="Bit 15" index="15" />
 		</flags16>
-		<int16 name="Parent" offset="0x6" visible="true" />
-		<int16 name="Sibling" offset="0x8" visible="true" />
-		<int16 name="Child" offset="0xA" visible="true" />
+		<float32 name="Mass Body Override" offset="0xB4" visible="true" tooltip="If you want to override what the calculated mass distribution or artist set mass is, this is where you do it. Also, this will show up as n/100 in the game debugger. Awesome." />
+		<undefined name="Unknown" offset="0xB8" visible="false" />
+		<undefined name="Unknown" offset="0xBC" visible="false" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x148" visible="false" />
-	<undefined name="Unknown" offset="0x14C" visible="false" />
-	<undefined name="Unknown" offset="0x150" visible="false" />
-	<undefined name="Unknown" offset="0x154" visible="false" />
-	<undefined name="Unknown" offset="0x158" visible="false" />
-	<undefined name="Unknown" offset="0x15C" visible="false" />
-	<tagblock name="Limited Hinge Constraints" offset="0x160" visible="true" elementSize="0x84">
+	<tagblock name="Materials" offset="0x68" visible="true" elementSize="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<int16 name="Node A" offset="0x4" visible="true" />
-		<int16 name="Node B" offset="0x6" visible="true" />
-		<float32 name="A Scale" offset="0x8" visible="true" />
-		<float32 name="A Forward i" offset="0xC" visible="true" />
-		<float32 name="A Forward j" offset="0x10" visible="true" />
-		<float32 name="A Forward k" offset="0x14" visible="true" />
-		<float32 name="A Left i" offset="0x18" visible="true" />
-		<float32 name="A Left j" offset="0x1C" visible="true" />
-		<float32 name="A Left k" offset="0x20" visible="true" />
-		<float32 name="A Up i" offset="0x24" visible="true" />
-		<float32 name="A Up j" offset="0x28" visible="true" />
-		<float32 name="A Up k" offset="0x2C" visible="true" />
-		<float32 name="A Position x" offset="0x30" visible="true" />
-		<float32 name="A Position y" offset="0x34" visible="true" />
-		<float32 name="A Position z" offset="0x38" visible="true" />
-		<float32 name="B Scale" offset="0x3C" visible="true" />
-		<float32 name="B Forward i" offset="0x40" visible="true" />
-		<float32 name="B Forward j" offset="0x44" visible="true" />
-		<float32 name="B Forward k" offset="0x48" visible="true" />
-		<float32 name="B Left i" offset="0x4C" visible="true" />
-		<float32 name="B Left j" offset="0x50" visible="true" />
-		<float32 name="B Left k" offset="0x54" visible="true" />
-		<float32 name="B Up i" offset="0x58" visible="true" />
-		<float32 name="B Up j" offset="0x5C" visible="true" />
-		<float32 name="B Up k" offset="0x60" visible="true" />
-		<float32 name="B Position x" offset="0x64" visible="true" />
-		<float32 name="B Position y" offset="0x68" visible="true" />
-		<float32 name="B Position z" offset="0x6C" visible="true" />
-		<int16 name="Edge Index" offset="0x70" visible="true" />
-		<int16 name="Unknown" offset="0x72" visible="true" />
-		<undefined name="Unknown" offset="0x74" visible="true" />
-		<float32 name="Limit Friction" offset="0x78" visible="true" />
-		<degree name="Limit Min Angle" offset="0x7C" visible="true" />
-		<degree name="Limit Max Angle" offset="0x80" visible="true" />
+		<flags8 name="Flags" offset="0x4" visible="true">
+			<bit name="Supresses Effects" index="0" />
+			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
+		</flags8>
+		<int8 name="Unknown" offset="0x5" visible="false" />
+		<int16 name="Unknown" offset="0x6" visible="false" />
+		<stringid name="Global Material Name" offset="0x8" visible="true" />
+		<int16 name="Phantom Type Index" offset="0xC" visible="true" />
+		<enum8 name="Proxy Collision Group" offset="0xE" visible="true" tooltip="does not affect anything, change the groups in the individual shapes instead.">
+			<option name="None" value="0x0" />
+			<option name="Small Crate" value="0x1" />
+			<option name="Crate" value="0x2" />
+			<option name="Huge Crate" value="0x3" />
+			<option name="Item" value="0x4" />
+			<option name="Projectile" value="0x5" />
+			<option name="Biped" value="0x6" />
+			<option name="Machine" value="0x7" />
+			<option name="Early Mover Machine" value="0x8" />
+			<option name="Only Collide With Environment" value="0x9" />
+			<option name="Tech Art Custom" value="0xA" />
+			<option name="Small Expensive Plant" value="0xB" />
+			<option name="Ignore Environment" value="0xC" />
+			<option name="Huge Vehicle" value="0xD" />
+			<option name="Ragdoll" value="0xE" />
+			<option name="Super Collidable Ragdoll" value="0xF" />
+			<option name="Item Blocker" value="0x10" />
+			<option name="Unknown x11" value="0x11" />
+			<option name="Unknown x12" value="0x12" />
+			<option name="Unknown x13" value="0x13" />
+			<option name="Unknown x14" value="0x14" />
+		</enum8>
+		<enum8 name="Collision Group" offset="0xF" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
+			<option name="No Override" value="0xFF" />
+			<option name="Everything" value="0x0" />
+			<option name="Environment Default" value="0x1" />
+			<option name="Environment Only" value="0x2" />
+			<option name="Small Crate" value="0x3" />
+			<option name="Crate" value="0x4" />
+			<option name="Huge Crate" value="0x5" />
+			<option name="Item" value="0x6" />
+			<option name="Projectile" value="0x7" />
+			<option name="Machine" value="0x8" />
+			<option name="Early Mover Machine" value="0x9" />
+			<option name="Creature" value="0xA" />
+			<option name="Biped" value="0xB" />
+			<option name="Dead Biped" value="0xC" />
+			<option name="Super Collidable Ragdoll" value="0xD" />
+			<option name="Ragdoll" value="0xE" />
+			<option name="Vehicle" value="0xF" />
+			<option name="Decal" value="0x10" />
+			<option name="Forge Dynamic Scenary" value="0x11" />
+			<option name="Small Expensive Plant" value="0x12" />
+			<option name="Tech Art Custom" value="0x13" />
+			<option name="Unknown x14" value="0x14" />
+			<option name="Unknown x15" value="0x15" />
+			<option name="Unknown x16" value="0x16" />
+			<option name="Unknown x17" value="0x17" />
+			<option name="Unknown x18" value="0x18" />
+			<option name="Unknown x19" value="0x19" />
+			<option name="Unknown x1A" value="0x1A" />
+		</enum8>
 	</tagblock>
-	<uint32 name="Ball And Socket Constraint Block" offset="0x16C" visible="false" />
-	<uint32 name="Ball And Socket Constraint Block" offset="0x170" visible="false" />
-	<uint32 name="Ball And Socket Constraint Block" offset="0x174" visible="false" />
-	<uint32 name="Stiff Spring Constraint Block" offset="0x178" visible="false" />
-	<uint32 name="Stiff Spring Constraint Block" offset="0x17C" visible="false" />
-	<uint32 name="Stiff Spring Constraint Block" offset="0x180" visible="false" />
-	<uint32 name="Prismatic Constraint Block" offset="0x184" visible="false" />
-	<uint32 name="Prismatic Constraint Block" offset="0x188" visible="false" />
-	<uint32 name="Prismatic Constraint Block" offset="0x18C" visible="false" />
-	<tagblock name="Phantoms" offset="0x190" visible="true" elementSize="0x2C" align="0x10">
-		<int32 name="Unknown" offset="0x0" visible="false" />
-		<int16 name="Size" offset="0x4" visible="true" />
-		<int16 name="Count" offset="0x6" visible="true" />
-		<int32 name="Offset" offset="0x8" visible="true" />
-		<int32 name="Unknown" offset="0xC" visible="true" />
-		<comment title="These two also turn into pointers, FYI" />
-		<enum16 name="Shape Type" offset="0x10" visible="true">
+	<tagblock name="Spheres" offset="0x74" visible="true" elementSize="0x70" align="0x10">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int8 name="Material Index" offset="0x4" visible="true" />
+		<flags8 name="Material Flags" offset="0x5" visible="true">
+			<bit name="Supresses Effects" index="0" />
+			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
+		</flags8>
+		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
+		<float32 name="Friction" offset="0xC" visible="true" />
+		<float32 name="Restitution" offset="0x10" visible="true" />
+		<float32 name="Volume" offset="0x14" visible="true" />
+		<float32 name="Mass" offset="0x18" visible="true" />
+		<int16 name="Mass Distribution Index" offset="0x1C" visible="true" />
+		<int8 name="Phantom Type Index" offset="0x1E" visible="true" />
+		<enum8 name="Collision Group" offset="0x1F" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
+			<option name="No Override" value="0xFF" />
+			<option name="Everything" value="0x0" />
+			<option name="Environment Default" value="0x1" />
+			<option name="Environment Only" value="0x2" />
+			<option name="Small Crate" value="0x3" />
+			<option name="Crate" value="0x4" />
+			<option name="Huge Crate" value="0x5" />
+			<option name="Item" value="0x6" />
+			<option name="Projectile" value="0x7" />
+			<option name="Machine" value="0x8" />
+			<option name="Early Mover Machine" value="0x9" />
+			<option name="Creature" value="0xA" />
+			<option name="Biped" value="0xB" />
+			<option name="Dead Biped" value="0xC" />
+			<option name="Super Collidable Ragdoll" value="0xD" />
+			<option name="Ragdoll" value="0xE" />
+			<option name="Vehicle" value="0xF" />
+			<option name="Decal" value="0x10" />
+			<option name="Forge Dynamic Scenary" value="0x11" />
+			<option name="Small Expensive Plant" value="0x12" />
+			<option name="Tech Art Custom" value="0x13" />
+			<option name="Unknown x14" value="0x14" />
+			<option name="Unknown x15" value="0x15" />
+			<option name="Unknown x16" value="0x16" />
+			<option name="Unknown x17" value="0x17" />
+			<option name="Unknown x18" value="0x18" />
+			<option name="Unknown x19" value="0x19" />
+			<option name="Unknown x1A" value="0x1A" />
+		</enum8>
+		<comment title="Sphere" />
+		<uint32 name="Runtime Code Pointer" offset="0x20" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
+		<int16 name="Size" offset="0x24" visible="true" />
+		<int16 name="Count" offset="0x26" visible="true" />
+		<uint32 name="User Data" offset="0x28" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
+		<int32 name="Type" offset="0x2C" visible="true" />
+		<float32 name="Radius" offset="0x30" visible="true" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<comment title="Translate" />
+		<uint32 name="Runtime Code Pointer" offset="0x40" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
+		<int16 name="Size" offset="0x44" visible="true" />
+		<int16 name="Count" offset="0x46" visible="true" />
+		<uint32 name="User Data" offset="0x48" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
+		<int32 name="Type" offset="0x4C" visible="true" />
+		<float32 name="Radius" offset="0x50" visible="true" />
+		<uint32 name="Runtime Code Pointer" offset="0x54" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
+		<comment title="Havok Reference" />
+		<enum16 name="Shape Type" offset="0x58" visible="true" tooltip="this and the shape index below becomes a pointer to the given shape in memory at runtime. don't poke me">
 			<option name="Sphere" value="0x0" />
 			<option name="Pill" value="0x1" />
 			<option name="Box" value="0x2" />
 			<option name="Triangle" value="0x3" />
 			<option name="Polyhedron" value="0x4" />
-			<option name="Multi-Sphere" value="0x5" />
-			<option name="Unknown Shape" value="0x6" />
+			<option name="Multi Sphere" value="0x5" />
+			<option name="Phantom" value="0x6" />
+			<option name="Unused 1" value="0x7" />
+			<option name="Unused 2" value="0x8" />
+			<option name="Unused 3" value="0x9" />
+			<option name="Unused 4" value="0xA" />
+			<option name="Unused 5" value="0xB" />
+			<option name="Unused 6" value="0xC" />
+			<option name="Unused 7" value="0xD" />
+			<option name="List" value="0xE" />
+			<option name="MOPP" value="0xF" />
+		</enum16>
+		<int16 name="Shape Index" offset="0x5A" visible="true" />
+		<int32 name="Child Shape Size" offset="0x5C" visible="true" />
+		<vector3 name="Translation" offset="0x60" visible="true" />
+		<float32 name="w Translation" offset="0x6C" visible="true" />
+	</tagblock>
+	<tagblock name="Multi Spheres" offset="0x80" visible="true" elementSize="0xC0" align="0x10">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int8 name="Material Index" offset="0x4" visible="true" />
+		<flags8 name="Material Flags" offset="0x5" visible="true">
+			<bit name="Supresses Effects" index="0" />
+			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
+		</flags8>
+		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
+		<float32 name="Friction" offset="0xC" visible="true" />
+		<float32 name="Restitution" offset="0x10" visible="true" />
+		<float32 name="Volume" offset="0x14" visible="true" />
+		<float32 name="Mass" offset="0x18" visible="true" />
+		<int16 name="Mass Distribution Index" offset="0x1C" visible="true" />
+		<int8 name="Phantom Type Index" offset="0x1E" visible="true" />
+		<enum8 name="Collision Group" offset="0x1F" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
+			<option name="No Override" value="0xFF" />
+			<option name="Everything" value="0x0" />
+			<option name="Environment Default" value="0x1" />
+			<option name="Environment Only" value="0x2" />
+			<option name="Small Crate" value="0x3" />
+			<option name="Crate" value="0x4" />
+			<option name="Huge Crate" value="0x5" />
+			<option name="Item" value="0x6" />
+			<option name="Projectile" value="0x7" />
+			<option name="Machine" value="0x8" />
+			<option name="Early Mover Machine" value="0x9" />
+			<option name="Creature" value="0xA" />
+			<option name="Biped" value="0xB" />
+			<option name="Dead Biped" value="0xC" />
+			<option name="Super Collidable Ragdoll" value="0xD" />
+			<option name="Ragdoll" value="0xE" />
+			<option name="Vehicle" value="0xF" />
+			<option name="Decal" value="0x10" />
+			<option name="Forge Dynamic Scenary" value="0x11" />
+			<option name="Small Expensive Plant" value="0x12" />
+			<option name="Tech Art Custom" value="0x13" />
+			<option name="Unknown x14" value="0x14" />
+			<option name="Unknown x15" value="0x15" />
+			<option name="Unknown x16" value="0x16" />
+			<option name="Unknown x17" value="0x17" />
+			<option name="Unknown x18" value="0x18" />
+			<option name="Unknown x19" value="0x19" />
+			<option name="Unknown x1A" value="0x1A" />
+		</enum8>
+		<comment title="Sphere Representation" />
+		<uint32 name="Runtime Code Pointer" offset="0x20" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
+		<int16 name="Size" offset="0x24" visible="true" />
+		<int16 name="Count" offset="0x26" visible="true" />
+		<uint32 name="User Data" offset="0x28" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
+		<int32 name="Type" offset="0x2C" visible="true" />
+		<int32 name="Number Of Spheres" offset="0x30" visible="true" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<comment title="Four Vectors" />
+		<vector3 name="Sphere 0" offset="0x40" visible="true" />
+		<float32 name="w Sphere 0" offset="0x4C" visible="true" />
+		<vector3 name="Sphere 1" offset="0x50" visible="true" />
+		<float32 name="w Sphere 1" offset="0x5C" visible="true" />
+		<vector3 name="Sphere 2" offset="0x60" visible="true" />
+		<float32 name="w Sphere 2" offset="0x6C" visible="true" />
+		<vector3 name="Sphere 3" offset="0x70" visible="true" />
+		<float32 name="w Sphere 3" offset="0x7C" visible="true" />
+		<vector3 name="Sphere 4" offset="0x80" visible="true" />
+		<float32 name="w Sphere 4" offset="0x8C" visible="true" />
+		<vector3 name="Sphere 5" offset="0x90" visible="true" />
+		<float32 name="w Sphere 5" offset="0x9C" visible="true" />
+		<vector3 name="Sphere 6" offset="0xA0" visible="true" />
+		<float32 name="w Sphere 6" offset="0xAC" visible="true" />
+		<vector3 name="Sphere 7" offset="0xB0" visible="true" />
+		<float32 name="w Sphere 7" offset="0xBC" visible="true" />
+	</tagblock>
+	<tagblock name="Pills" offset="0x8C" visible="true" elementSize="0x60" align="0x10">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int8 name="Material Index" offset="0x4" visible="true" />
+		<flags8 name="Material Flags" offset="0x5" visible="true">
+			<bit name="Supresses Effects" index="0" />
+			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
+		</flags8>
+		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
+		<float32 name="Friction" offset="0xC" visible="true" />
+		<float32 name="Restitution" offset="0x10" visible="true" />
+		<float32 name="Volume" offset="0x14" visible="true" />
+		<float32 name="Mass" offset="0x18" visible="true" />
+		<int16 name="Mass Distribution Index" offset="0x1C" visible="true" />
+		<int8 name="Phantom Type Index" offset="0x1E" visible="true" />
+		<enum8 name="Collision Group" offset="0x1F" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
+			<option name="No Override" value="0xFF" />
+			<option name="Everything" value="0x0" />
+			<option name="Environment Default" value="0x1" />
+			<option name="Environment Only" value="0x2" />
+			<option name="Small Crate" value="0x3" />
+			<option name="Crate" value="0x4" />
+			<option name="Huge Crate" value="0x5" />
+			<option name="Item" value="0x6" />
+			<option name="Projectile" value="0x7" />
+			<option name="Machine" value="0x8" />
+			<option name="Early Mover Machine" value="0x9" />
+			<option name="Creature" value="0xA" />
+			<option name="Biped" value="0xB" />
+			<option name="Dead Biped" value="0xC" />
+			<option name="Super Collidable Ragdoll" value="0xD" />
+			<option name="Ragdoll" value="0xE" />
+			<option name="Vehicle" value="0xF" />
+			<option name="Decal" value="0x10" />
+			<option name="Forge Dynamic Scenary" value="0x11" />
+			<option name="Small Expensive Plant" value="0x12" />
+			<option name="Tech Art Custom" value="0x13" />
+			<option name="Unknown x14" value="0x14" />
+			<option name="Unknown x15" value="0x15" />
+			<option name="Unknown x16" value="0x16" />
+			<option name="Unknown x17" value="0x17" />
+			<option name="Unknown x18" value="0x18" />
+			<option name="Unknown x19" value="0x19" />
+			<option name="Unknown x1A" value="0x1A" />
+		</enum8>
+		<comment title="Capsule" />
+		<uint32 name="Runtime Code Pointer" offset="0x20" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
+		<int16 name="Size" offset="0x24" visible="true" />
+		<int16 name="Count" offset="0x26" visible="true" />
+		<uint32 name="User Data" offset="0x28" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
+		<int32 name="Type" offset="0x2C" visible="true" />
+		<float32 name="Radius" offset="0x30" visible="true" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<vector3 name="Bottom" offset="0x40" visible="true" />
+		<float32 name="w Bottom" offset="0x4C" visible="true" />
+		<vector3 name="Top" offset="0x50" visible="true" />
+		<float32 name="w Top" offset="0x5C" visible="true" />
+	</tagblock>
+	<tagblock name="Boxes" offset="0x98" visible="true" elementSize="0xB0" align="0x10">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int8 name="Material Index" offset="0x4" visible="true" />
+		<flags8 name="Material Flags" offset="0x5" visible="true">
+			<bit name="Supresses Effects" index="0" />
+			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
+		</flags8>
+		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
+		<float32 name="Friction" offset="0xC" visible="true" />
+		<float32 name="Restitution" offset="0x10" visible="true" />
+		<float32 name="Volume" offset="0x14" visible="true" />
+		<float32 name="Mass" offset="0x18" visible="true" />
+		<int16 name="Mass Distribution Index" offset="0x1C" visible="true" />
+		<int8 name="Phantom Type Index" offset="0x1E" visible="true" />
+		<enum8 name="Collision Group" offset="0x1F" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
+			<option name="No Override" value="0xFF" />
+			<option name="Everything" value="0x0" />
+			<option name="Environment Default" value="0x1" />
+			<option name="Environment Only" value="0x2" />
+			<option name="Small Crate" value="0x3" />
+			<option name="Crate" value="0x4" />
+			<option name="Huge Crate" value="0x5" />
+			<option name="Item" value="0x6" />
+			<option name="Projectile" value="0x7" />
+			<option name="Machine" value="0x8" />
+			<option name="Early Mover Machine" value="0x9" />
+			<option name="Creature" value="0xA" />
+			<option name="Biped" value="0xB" />
+			<option name="Dead Biped" value="0xC" />
+			<option name="Super Collidable Ragdoll" value="0xD" />
+			<option name="Ragdoll" value="0xE" />
+			<option name="Vehicle" value="0xF" />
+			<option name="Decal" value="0x10" />
+			<option name="Forge Dynamic Scenary" value="0x11" />
+			<option name="Small Expensive Plant" value="0x12" />
+			<option name="Tech Art Custom" value="0x13" />
+			<option name="Unknown x14" value="0x14" />
+			<option name="Unknown x15" value="0x15" />
+			<option name="Unknown x16" value="0x16" />
+			<option name="Unknown x17" value="0x17" />
+			<option name="Unknown x18" value="0x18" />
+			<option name="Unknown x19" value="0x19" />
+			<option name="Unknown x1A" value="0x1A" />
+		</enum8>
+		<comment title="Box" />
+		<uint32 name="Runtime Code Pointer" offset="0x20" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
+		<int16 name="Size" offset="0x24" visible="true" />
+		<int16 name="Count" offset="0x26" visible="true" />
+		<uint32 name="User Data" offset="0x28" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
+		<int32 name="Type" offset="0x2C" visible="true" />
+		<float32 name="Radius" offset="0x30" visible="true" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<vector3 name="Half Extents" offset="0x40" visible="true" />
+		<float32 name="w Half Extents" offset="0x4C" visible="true" />
+		<comment title="Transform" />
+		<uint32 name="Runtime Code Pointer" offset="0x50" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
+		<int16 name="Size" offset="0x54" visible="true" />
+		<int16 name="Count" offset="0x56" visible="true" />
+		<uint32 name="User Data" offset="0x58" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
+		<int32 name="Type" offset="0x5C" visible="true" />
+		<float32 name="Radius" offset="0x60" visible="true" />
+		<uint32 name="Runtime Code Pointer" offset="0x64" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
+		<comment title="Havok Reference" />
+		<enum16 name="Shape Type" offset="0x68" visible="true" tooltip="this and the shape index below becomes a pointer to the given shape in memory at runtime. don't poke me">
+			<option name="Sphere" value="0x0" />
+			<option name="Pill" value="0x1" />
+			<option name="Box" value="0x2" />
+			<option name="Triangle" value="0x3" />
+			<option name="Polyhedron" value="0x4" />
+			<option name="Multi Sphere" value="0x5" />
+			<option name="Phantom" value="0x6" />
+			<option name="Unused 1" value="0x7" />
+			<option name="Unused 2" value="0x8" />
+			<option name="Unused 3" value="0x9" />
+			<option name="Unused 4" value="0xA" />
+			<option name="Unused 5" value="0xB" />
+			<option name="Unused 6" value="0xC" />
+			<option name="Unused 7" value="0xD" />
+			<option name="List" value="0xE" />
+			<option name="MOPP" value="0xF" />
+		</enum16>
+		<int16 name="Shape Index" offset="0x6A" visible="true" />
+		<int32 name="Child Shape Size" offset="0x6C" visible="true" />
+		<vector3 name="Rotation i" offset="0x70" visible="true" />
+		<float32 name="w Rotation i" offset="0x7C" visible="true" />
+		<vector3 name="Rotation j" offset="0x80" visible="true" />
+		<float32 name="w Rotation j" offset="0x8C" visible="true" />
+		<vector3 name="Rotation k" offset="0x90" visible="true" />
+		<float32 name="w Rotation k" offset="0x9C" visible="true" />
+		<vector3 name="Translation" offset="0xA0" visible="true" />
+		<float32 name="w Translation" offset="0xAC" visible="true" />
+	</tagblock>
+	<tagblock name="Triangles" offset="0xA4" visible="true" elementSize="0x80" align="0x10">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int8 name="Material Index" offset="0x4" visible="true" />
+		<flags8 name="Material Flags" offset="0x5" visible="true">
+			<bit name="Supresses Effects" index="0" />
+			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
+		</flags8>
+		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
+		<float32 name="Friction" offset="0xC" visible="true" />
+		<float32 name="Restitution" offset="0x10" visible="true" />
+		<float32 name="Volume" offset="0x14" visible="true" />
+		<float32 name="Mass" offset="0x18" visible="true" />
+		<int16 name="Mass Distribution Index" offset="0x1C" visible="true" />
+		<int8 name="Phantom Type Index" offset="0x1E" visible="true" />
+		<enum8 name="Collision Group" offset="0x1F" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
+			<option name="No Override" value="0xFF" />
+			<option name="Everything" value="0x0" />
+			<option name="Environment Default" value="0x1" />
+			<option name="Environment Only" value="0x2" />
+			<option name="Small Crate" value="0x3" />
+			<option name="Crate" value="0x4" />
+			<option name="Huge Crate" value="0x5" />
+			<option name="Item" value="0x6" />
+			<option name="Projectile" value="0x7" />
+			<option name="Machine" value="0x8" />
+			<option name="Early Mover Machine" value="0x9" />
+			<option name="Creature" value="0xA" />
+			<option name="Biped" value="0xB" />
+			<option name="Dead Biped" value="0xC" />
+			<option name="Super Collidable Ragdoll" value="0xD" />
+			<option name="Ragdoll" value="0xE" />
+			<option name="Vehicle" value="0xF" />
+			<option name="Decal" value="0x10" />
+			<option name="Forge Dynamic Scenary" value="0x11" />
+			<option name="Small Expensive Plant" value="0x12" />
+			<option name="Tech Art Custom" value="0x13" />
+			<option name="Unknown x14" value="0x14" />
+			<option name="Unknown x15" value="0x15" />
+			<option name="Unknown x16" value="0x16" />
+			<option name="Unknown x17" value="0x17" />
+			<option name="Unknown x18" value="0x18" />
+			<option name="Unknown x19" value="0x19" />
+			<option name="Unknown x1A" value="0x1A" />
+		</enum8>
+		<comment title="Triangle" />
+		<uint32 name="Runtime Code Pointer" offset="0x20" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
+		<int16 name="Size" offset="0x24" visible="true" />
+		<int16 name="Count" offset="0x26" visible="true" />
+		<uint32 name="User Data" offset="0x28" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
+		<int32 name="Type" offset="0x2C" visible="true" />
+		<float32 name="Radius" offset="0x30" visible="true" />
+		<int16 name="Welding Info" offset="0x34" visible="true" />
+		<int8 name="Welding Type" offset="0x36" visible="true" />
+		<int8 name="Is Extruded" offset="0x37" visible="true" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<vector3 name="Point a" offset="0x40" visible="true" />
+		<float32 name="w Point a" offset="0x4C" visible="true" />
+		<vector3 name="Point b" offset="0x50" visible="true" />
+		<float32 name="w Point b" offset="0x5C" visible="true" />
+		<vector3 name="Point c" offset="0x60" visible="true" />
+		<float32 name="w Point c" offset="0x6C" visible="true" />
+		<vector3 name="Extrusion" offset="0x70" visible="true" />
+		<float32 name="w Extrusion" offset="0x7C" visible="true" />
+	</tagblock>
+	<tagblock name="Polyhedra" offset="0xB0" visible="true" elementSize="0x90" align="0x10">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int8 name="Material Index" offset="0x4" visible="true" />
+		<flags8 name="Material Flags" offset="0x5" visible="true">
+			<bit name="Supresses Effects" index="0" />
+			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
+		</flags8>
+		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
+		<float32 name="Friction" offset="0xC" visible="true" />
+		<float32 name="Restitution" offset="0x10" visible="true" />
+		<float32 name="Volume" offset="0x14" visible="true" />
+		<float32 name="Mass" offset="0x18" visible="true" />
+		<int16 name="Mass Distribution Index" offset="0x1C" visible="true" />
+		<int8 name="Phantom Type Index" offset="0x1E" visible="true" />
+		<enum8 name="Collision Group" offset="0x1F" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
+			<option name="No Override" value="0xFF" />
+			<option name="Everything" value="0x0" />
+			<option name="Environment Default" value="0x1" />
+			<option name="Environment Only" value="0x2" />
+			<option name="Small Crate" value="0x3" />
+			<option name="Crate" value="0x4" />
+			<option name="Huge Crate" value="0x5" />
+			<option name="Item" value="0x6" />
+			<option name="Projectile" value="0x7" />
+			<option name="Machine" value="0x8" />
+			<option name="Early Mover Machine" value="0x9" />
+			<option name="Creature" value="0xA" />
+			<option name="Biped" value="0xB" />
+			<option name="Dead Biped" value="0xC" />
+			<option name="Super Collidable Ragdoll" value="0xD" />
+			<option name="Ragdoll" value="0xE" />
+			<option name="Vehicle" value="0xF" />
+			<option name="Decal" value="0x10" />
+			<option name="Forge Dynamic Scenary" value="0x11" />
+			<option name="Small Expensive Plant" value="0x12" />
+			<option name="Tech Art Custom" value="0x13" />
+			<option name="Unknown x14" value="0x14" />
+			<option name="Unknown x15" value="0x15" />
+			<option name="Unknown x16" value="0x16" />
+			<option name="Unknown x17" value="0x17" />
+			<option name="Unknown x18" value="0x18" />
+			<option name="Unknown x19" value="0x19" />
+			<option name="Unknown x1A" value="0x1A" />
+		</enum8>
+		<comment title="Polyhedron" />
+		<uint32 name="Runtime Code Pointer" offset="0x20" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
+		<int16 name="Size" offset="0x24" visible="true" />
+		<int16 name="Count" offset="0x26" visible="true" />
+		<uint32 name="User Data" offset="0x28" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
+		<int32 name="Type" offset="0x2C" visible="true" />
+		<float32 name="Radius" offset="0x30" visible="true" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<vector3 name="Axis-Aligned Bounding Box Half Extents" offset="0x40" visible="true" />
+		<float32 name="w Axis-Aligned Bounding Box Half Extents" offset="0x4C" visible="true" />
+		<vector3 name="Axis-Aligned Bounding Box Center" offset="0x50" visible="true" />
+		<float32 name="w Axis-Aligned Bounding Box Center" offset="0x5C" visible="true" />
+		<uint32 name="Runtime Four Vectors Pointer" offset="0x60" visible="true" tooltip="becomes a pointer to where the four vectors for this list start in memory at runtime. don't poke me" />
+		<int32 name="Four Vectors Size" offset="0x64" visible="true" />
+		<uint32 name="Four Vectors Capacity" offset="0x68" visible="true" />
+		<int32 name="Number Of Vertices" offset="0x6C" visible="true" />
+		<int8 name="Use SPU Buffer" offset="0x70" visible="true" />
+		<int8 name="Unknown" offset="0x71" visible="false" />
+		<int16 name="Unknown" offset="0x72" visible="false" />
+		<uint32 name="Runtime Plane Equations Pointer" offset="0x74" visible="true" tooltip="becomes a pointer to where the plane equations for this list start in memory at runtime. don't poke me" />
+		<int32 name="Plane Equations Size" offset="0x78" visible="true" />
+		<uint32 name="Plane Equations Capacity" offset="0x7C" visible="true" />
+		<int32 name="Connectivity" offset="0x80" visible="true" />
+		<undefined name="Unknown" offset="0x84" visible="false" />
+		<undefined name="Unknown" offset="0x88" visible="false" />
+		<undefined name="Unknown" offset="0x8C" visible="false" />
+	</tagblock>
+	<tagblock name="Polyhedron Four Vectors" offset="0xBC" visible="true" elementSize="0x30" align="0x10">
+		<vector3 name="Four Vectors x" offset="0x0" visible="true" />
+		<float32 name="w Four Vectors x" offset="0xC" visible="true" />
+		<vector3 name="Four Vectors y" offset="0x10" visible="true" />
+		<float32 name="w Four Vectors y" offset="0x1C" visible="true" />
+		<vector3 name="Four Vectors z" offset="0x20" visible="true" />
+		<float32 name="w Four Vectors z" offset="0x2C" visible="true" />
+	</tagblock>
+	<tagblock name="Polyhedron Plane Equations" offset="0xC8" visible="true" elementSize="0x10" align="0x10">
+		<vector3 name="Plane Equations" offset="0x0" visible="true" />
+		<float32 name="w Plane Equations" offset="0xC" visible="true" />
+	</tagblock>
+	<tagblock name="Mass Distributions" offset="0xD4" visible="true" elementSize="0x40" align="0x10">
+		<vector3 name="Center Of Mass" offset="0x0" visible="true" />
+		<float32 name="w Center Of Mass" offset="0xC" visible="true" />
+		<vector3 name="Inertia Tensor i" offset="0x10" visible="true" />
+		<float32 name="w Inertia Tensor i" offset="0x1C" visible="true" />
+		<vector3 name="Inertia Tensor j" offset="0x20" visible="true" />
+		<float32 name="w Inertia Tensor j" offset="0x2C" visible="true" />
+		<vector3 name="Inertia Tensor k" offset="0x30" visible="true" />
+		<float32 name="w Inertia Tensor k" offset="0x3C" visible="true" />
+	</tagblock>
+	<tagblock name="Lists" offset="0xE0" visible="true" elementSize="0x70" align="0x10">
+		<uint32 name="Runtime Code Pointer" offset="0x0" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
+		<int16 name="Size" offset="0x4" visible="true" />
+		<int16 name="Count" offset="0x6" visible="true" />
+		<uint32 name="User Data" offset="0x8" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
+		<int32 name="Type" offset="0xC" visible="true" />
+		<uint32 name="Runtime Code Pointer" offset="0x10" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
+		<int8 name="Disable Welding" offset="0x14" visible="true" />
+		<int8 name="Collection Type" offset="0x15" visible="true" />
+		<int16 name="Unknown" offset="0x16" visible="false" />
+		<uint32 name="Runtime List Pointer" offset="0x18" visible="true" tooltip="becomes a pointer to where the child shapes for this list start in memory at runtime. don't poke me" />
+		<int32 name="Child Shapes Size" offset="0x1C" visible="true" />
+		<uint32 name="Child Shapes Capacity" offset="0x20" visible="true" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<float32 name="Unknown" offset="0x2C" visible="true" />
+		<vector3 name="Axis-Aligned Bounding Box Half Extents" offset="0x30" visible="true" />
+		<float32 name="w Axis-Aligned Bounding Box Half Extents" offset="0x3C" visible="true" />
+		<vector3 name="Axis-Aligned Bounding Box Center" offset="0x40" visible="true" />
+		<float32 name="w Axis-Aligned Bounding Box Center" offset="0x4C" visible="true" />
+		<int32 name="Enabled Children 0" offset="0x50" visible="true" />
+		<int32 name="Enabled Children 1" offset="0x54" visible="true" />
+		<int32 name="Enabled Children 2" offset="0x58" visible="true" />
+		<int32 name="Enabled Children 3" offset="0x5C" visible="true" />
+		<int32 name="Enabled Children 4" offset="0x60" visible="true" />
+		<int32 name="Enabled Children 5" offset="0x64" visible="true" />
+		<int32 name="Enabled Children 6" offset="0x68" visible="true" />
+		<int32 name="Enabled Children 7" offset="0x6C" visible="true" />
+	</tagblock>
+	<tagblock name="List Shapes" offset="0xEC" visible="true" elementSize="0x10">
+		<enum16 name="Shape Type" offset="0x0" visible="true" tooltip="this and the shape index below becomes a pointer to the given shape in memory at runtime. don't poke me">
+			<option name="Sphere" value="0x0" />
+			<option name="Pill" value="0x1" />
+			<option name="Box" value="0x2" />
+			<option name="Triangle" value="0x3" />
+			<option name="Polyhedron" value="0x4" />
+			<option name="Multi Sphere" value="0x5" />
+			<option name="Phantom" value="0x6" />
+			<option name="Unused 1" value="0x7" />
+			<option name="Unused 2" value="0x8" />
+			<option name="Unused 3" value="0x9" />
+			<option name="Unused 4" value="0xA" />
+			<option name="Unused 5" value="0xB" />
+			<option name="Unused 6" value="0xC" />
+			<option name="Unused 7" value="0xD" />
+			<option name="List" value="0xE" />
+			<option name="MOPP" value="0xF" />
+		</enum16>
+		<int16 name="Shape Index" offset="0x2" visible="true" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<int32 name="Number Of Child Shapes" offset="0xC" visible="true" />
+	</tagblock>
+	<tagblock name="MOPPs" offset="0xF8" visible="true" elementSize="0x50" align="0x10">
+		<uint32 name="Runtime Code Pointer" offset="0x0" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
+		<int16 name="Size" offset="0x4" visible="true" />
+		<int16 name="Count" offset="0x6" visible="true" />
+		<uint32 name="User Data" offset="0x8" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
+		<int32 name="Type" offset="0xC" visible="true" />
+		<int8 name="Unknown" offset="0x10" visible="false" />
+		<int8 name="Unknown" offset="0x11" visible="false" />
+		<int16 name="Unknown" offset="0x12" visible="false" />
+		<uint32 name="Runtime MOPP Code Pointer" offset="0x14" visible="true" tooltip="becomes a pointer to the start of the MOPP code data in memory at runtime. don't poke me" />
+		<uint32 name="Runtime MOPP Code Pointer 2" offset="0x18" visible="true" tooltip="becomes a pointer inside the MOPP code data in memory at runtime. don't poke me" />
+		<int32 name="MOPP Data Size" offset="0x1C" visible="true" />
+		<vector3 name="Code Info Copy" offset="0x20" visible="true" />
+		<float32 name="w Code Info Copy" offset="0x2C" visible="true" />
+		<uint32 name="Runtime Child Shape VTable Pointer" offset="0x30" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
+		<enum16 name="Shape Type" offset="0x34" visible="true" tooltip="this and the shape index below becomes a pointer to the given shape in memory at runtime. don't poke me">
+			<option name="Sphere" value="0x0" />
+			<option name="Pill" value="0x1" />
+			<option name="Box" value="0x2" />
+			<option name="Triangle" value="0x3" />
+			<option name="Polyhedron" value="0x4" />
+			<option name="Multi Sphere" value="0x5" />
+			<option name="Phantom" value="0x6" />
+			<option name="Unused 1" value="0x7" />
+			<option name="Unused 2" value="0x8" />
+			<option name="Unused 3" value="0x9" />
+			<option name="Unused 4" value="0xA" />
+			<option name="Unused 5" value="0xB" />
+			<option name="Unused 6" value="0xC" />
+			<option name="Unused 7" value="0xD" />
+			<option name="List" value="0xE" />
+			<option name="MOPP" value="0xF" />
+		</enum16>
+		<int16 name="Shape Index" offset="0x36" visible="true" />
+		<int32 name="Child Size" offset="0x38" visible="true" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<float32 name="Scale" offset="0x40" visible="true" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+	</tagblock>
+	<dataRef name="MOPP Codes" offset="0x104" visible="true" align="0x10" />
+	<tagblock name="Hinge Constraints" offset="0x118" visible="true" elementSize="0x78">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int16 name="Node A Index" offset="0x4" visible="true" />
+		<int16 name="Node B Index" offset="0x6" visible="true" />
+		<float32 name="A Scale" offset="0x8" visible="true" />
+		<vector3 name="A Forward" offset="0xC" visible="true" />
+		<vector3 name="A Left" offset="0x18" visible="true" />
+		<vector3 name="A Up" offset="0x24" visible="true" />
+		<point3 name="A Position" offset="0x30" visible="true" />
+		<float32 name="B Scale" offset="0x3C" visible="true" />
+		<vector3 name="B Forward" offset="0x40" visible="true" />
+		<vector3 name="B Left" offset="0x4C" visible="true" />
+		<vector3 name="B Up" offset="0x58" visible="true" />
+		<point3 name="B Position" offset="0x64" visible="true" />
+		<int16 name="Edge Index" offset="0x70" visible="true" />
+		<int16 name="Unknown" offset="0x72" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+	</tagblock>
+	<tagblock name="Ragdoll Constraints" offset="0x124" visible="true" elementSize="0x94">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int16 name="Node A Index" offset="0x4" visible="true" />
+		<int16 name="Node B Index" offset="0x6" visible="true" />
+		<float32 name="A Scale" offset="0x8" visible="true" />
+		<vector3 name="A Forward" offset="0xC" visible="true" />
+		<vector3 name="A Left" offset="0x18" visible="true" />
+		<vector3 name="A Up" offset="0x24" visible="true" />
+		<point3 name="A Position" offset="0x30" visible="true" />
+		<float32 name="B Scale" offset="0x3C" visible="true" />
+		<vector3 name="B Forward" offset="0x40" visible="true" />
+		<vector3 name="B Left" offset="0x4C" visible="true" />
+		<vector3 name="B Up" offset="0x58" visible="true" />
+		<point3 name="B Position" offset="0x64" visible="true" />
+		<int16 name="Edge Index" offset="0x70" visible="true" />
+		<int16 name="Unknown" offset="0x72" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+		<rangef name="Twist" offset="0x78" visible="true" />
+		<rangef name="Cone" offset="0x80" visible="true" />
+		<rangef name="Plane" offset="0x88" visible="true" />
+		<float32 name="Maximum Friction Torque" offset="0x90" visible="true" />
+	</tagblock>
+	<tagblock name="Regions" offset="0x130" visible="true" elementSize="0x10">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<tagblock name="Permutations" offset="0x4" visible="true" elementSize="0x10">
+			<stringid name="Name" offset="0x0" visible="true" />
+			<tagblock name="Rigid Bodies" offset="0x4" visible="true" elementSize="0x2">
+				<int16 name="Rigid Body Index" offset="0x0" visible="true" />
+			</tagblock>
+		</tagblock>
+	</tagblock>
+	<tagblock name="Nodes" offset="0x13C" visible="true" elementSize="0xC">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<flags16 name="Flags" offset="0x4" visible="true">
+			<bit name="Does Not Animate" index="0" />
+		</flags16>
+		<int16 name="Parent Index" offset="0x6" visible="true" />
+		<int16 name="Sibling Index" offset="0x8" visible="true" />
+		<int16 name="Child Index" offset="0xA" visible="true" />
+	</tagblock>
+	<undefined name="Unknown" offset="0x148" visible="false" />
+	<undefined name="Unknown" offset="0x14C" visible="false" />
+	<undefined name="Unknown" offset="0x150" visible="false" />
+	<tagblock name="Point To Path Curves" offset="0x154" visible="true" elementSize="0x14">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int16 name="Node Index" offset="0x4" visible="true" />
+		<int16 name="Unknown" offset="0x6" visible="false" />
+		<tagblock name="Points" offset="0x8" visible="true" elementSize="0x10">
+			<point3 name="Position" offset="0x0" visible="true" />
+			<float32 name="t Value" offset="0xC" visible="true" />
+		</tagblock>
+	</tagblock>
+	<tagblock name="Limited Hinge Constraints" offset="0x160" visible="true" elementSize="0x84">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int16 name="Node A Index" offset="0x4" visible="true" />
+		<int16 name="Node B Index" offset="0x6" visible="true" />
+		<float32 name="A Scale" offset="0x8" visible="true" />
+		<vector3 name="A Forward" offset="0xC" visible="true" />
+		<vector3 name="A Left" offset="0x18" visible="true" />
+		<vector3 name="A Up" offset="0x24" visible="true" />
+		<point3 name="A Position" offset="0x30" visible="true" />
+		<float32 name="B Scale" offset="0x3C" visible="true" />
+		<vector3 name="B Forward" offset="0x40" visible="true" />
+		<vector3 name="B Left" offset="0x4C" visible="true" />
+		<vector3 name="B Up" offset="0x58" visible="true" />
+		<point3 name="B Position" offset="0x64" visible="true" />
+		<int16 name="Edge Index" offset="0x70" visible="true" />
+		<int16 name="Unknown" offset="0x72" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+		<float32 name="Limit Friction" offset="0x78" visible="true" />
+		<ranged name="Limit Angle" offset="0x7C" visible="true" />
+	</tagblock>
+	<tagblock name="Ball And Socket Constraints" offset="0x16C" visible="true" elementSize="0x78">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int16 name="Node A Index" offset="0x4" visible="true" />
+		<int16 name="Node B Index" offset="0x6" visible="true" />
+		<float32 name="A Scale" offset="0x8" visible="true" />
+		<vector3 name="A Forward" offset="0xC" visible="true" />
+		<vector3 name="A Left" offset="0x18" visible="true" />
+		<vector3 name="A Up" offset="0x24" visible="true" />
+		<point3 name="A Position" offset="0x30" visible="true" />
+		<float32 name="B Scale" offset="0x3C" visible="true" />
+		<vector3 name="B Forward" offset="0x40" visible="true" />
+		<vector3 name="B Left" offset="0x4C" visible="true" />
+		<vector3 name="B Up" offset="0x58" visible="true" />
+		<point3 name="B Position" offset="0x64" visible="true" />
+		<int16 name="Edge Index" offset="0x70" visible="true" />
+		<int16 name="Unknown" offset="0x72" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+	</tagblock>
+	<tagblock name="Stiff Spring Constraints" offset="0x178" visible="true" elementSize="0x7C">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int16 name="Node A Index" offset="0x4" visible="true" />
+		<int16 name="Node B Index" offset="0x6" visible="true" />
+		<float32 name="A Scale" offset="0x8" visible="true" />
+		<vector3 name="A Forward" offset="0xC" visible="true" />
+		<vector3 name="A Left" offset="0x18" visible="true" />
+		<vector3 name="A Up" offset="0x24" visible="true" />
+		<point3 name="A Position" offset="0x30" visible="true" />
+		<float32 name="B Scale" offset="0x3C" visible="true" />
+		<vector3 name="B Forward" offset="0x40" visible="true" />
+		<vector3 name="B Left" offset="0x4C" visible="true" />
+		<vector3 name="B Up" offset="0x58" visible="true" />
+		<point3 name="B Position" offset="0x64" visible="true" />
+		<int16 name="Edge Index" offset="0x70" visible="true" />
+		<int16 name="Unknown" offset="0x72" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+		<float32 name="Spring Length" offset="0x78" visible="true" />
+	</tagblock>
+	<tagblock name="Prismatic Constraints" offset="0x184" visible="true" elementSize="0x84">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int16 name="Node A Index" offset="0x4" visible="true" />
+		<int16 name="Node B Index" offset="0x6" visible="true" />
+		<float32 name="A Scale" offset="0x8" visible="true" />
+		<vector3 name="A Forward" offset="0xC" visible="true" />
+		<vector3 name="A Left" offset="0x18" visible="true" />
+		<vector3 name="A Up" offset="0x24" visible="true" />
+		<point3 name="A Position" offset="0x30" visible="true" />
+		<float32 name="B Scale" offset="0x3C" visible="true" />
+		<vector3 name="B Forward" offset="0x40" visible="true" />
+		<vector3 name="B Left" offset="0x4C" visible="true" />
+		<vector3 name="B Up" offset="0x58" visible="true" />
+		<point3 name="B Position" offset="0x64" visible="true" />
+		<int16 name="Edge Index" offset="0x70" visible="true" />
+		<int16 name="Unknown" offset="0x72" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+		<rangef name="Limit Angle" offset="0x78" visible="true" />
+		<float32 name="Maximum Friction Force" offset="0x80" visible="true" />
+	</tagblock>
+	<tagblock name="Phantoms" offset="0x190" visible="true" elementSize="0x2C" align="0x10">
+		<uint32 name="Runtime Code Pointer" offset="0x0" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
+		<int16 name="Size" offset="0x4" visible="true" />
+		<int16 name="Count" offset="0x6" visible="true" />
+		<uint32 name="User Data" offset="0x8" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
+		<int32 name="Type" offset="0xC" visible="true" />
+		<enum16 name="Shape Type" offset="0x10" visible="true" tooltip="this and the shape index below becomes a pointer to the given shape in memory at runtime. don't poke me">
+			<option name="Sphere" value="0x0" />
+			<option name="Pill" value="0x1" />
+			<option name="Box" value="0x2" />
+			<option name="Triangle" value="0x3" />
+			<option name="Polyhedron" value="0x4" />
+			<option name="Multi Sphere" value="0x5" />
+			<option name="Phantom" value="0x6" />
 			<option name="Unused 1" value="0x7" />
 			<option name="Unused 2" value="0x8" />
 			<option name="Unused 3" value="0x9" />
@@ -783,12 +1250,13 @@ If you want to poke it, you'll want to View Value As on the Shape Type enum for 
 			<option name="MOPP" value="0xF" />
 		</enum16>
 		<int16 name="Shape Index" offset="0x12" visible="true" />
-		<undefined name="Unknown" offset="0x14" visible="true" />
-		<undefined name="Unknown" offset="0x18" visible="true" />
-		<int32 name="Unknown" offset="0x1C" visible="false" />
+		<uint32 name="Runtime Child Shape VTable Pointer" offset="0x14" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
+		<uint32 name="Runtime Self Pointer" offset="0x18" visible="true" tooltip="becomes a pointer to the current shape, starting at the next value in memory at runtime. don't poke me" />
+		<comment title="Phantom" />
+		<uint32 name="Runtime Code Pointer" offset="0x1C" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x20" visible="true" />
 		<int16 name="Count" offset="0x22" visible="true" />
-		<int32 name="Offset" offset="0x24" visible="true" />
-		<int32 name="Unknown" offset="0x28" visible="true" />
+		<uint32 name="User Data" offset="0x24" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
+		<int32 name="Type" offset="0x28" visible="true" />
 	</tagblock>
 </plugin>

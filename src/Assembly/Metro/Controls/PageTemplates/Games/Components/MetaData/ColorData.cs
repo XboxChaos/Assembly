@@ -9,14 +9,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	{
 		private string _dataType;
 		private bool _alpha;
+		private bool _basic;
 		private Color _value;
 
-		public ColorData(string name, uint offset, long address, bool alpha, string dataType, Color value,
+		public ColorData(string name, uint offset, long address, bool alpha, bool basic, string dataType, Color value,
 			uint pluginLine, string tooltip)
 			: base(name, offset, address, pluginLine, tooltip)
 		{
 			_value = value;
 			_alpha = alpha;
+			_basic = basic;
 			_dataType = dataType;
 		}
 
@@ -27,6 +29,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			{
 				_alpha = value;
 				NotifyPropertyChanged("Alpha");
+			}
+		}
+
+		public bool Basic
+		{
+			get { return _basic; }
+			set
+			{
+				_basic = value;
+				NotifyPropertyChanged("Basic");
 			}
 		}
 
@@ -52,7 +64,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override void Accept(IMetaFieldVisitor visitor)
 		{
-			if (DataType == "int")
+			if (DataType == "color32")
 				visitor.VisitColourInt(this);
 			else
 				visitor.VisitColourFloat(this);
@@ -60,7 +72,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new ColorData(Name, Offset, FieldAddress, Alpha, DataType, Value, PluginLine, ToolTip);
+			return new ColorData(Name, Offset, FieldAddress, Alpha, Basic, DataType, Value, PluginLine, ToolTip);
 		}
 	}
 }

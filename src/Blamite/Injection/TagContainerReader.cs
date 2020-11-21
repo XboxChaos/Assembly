@@ -1,6 +1,7 @@
 ﻿using System;
 using Blamite.Blam;
 using Blamite.Blam.Resources;
+using Blamite.Blam.Resources.Sounds;
 using Blamite.IO;
 
 namespace Blamite.Injection
@@ -57,13 +58,53 @@ namespace Blamite.Injection
 						// Prediction info
 						tags.AddPrediction(ReadPrediction(reader, containerFile.BlockVersion));
 						break;
+
+					case "sndc":
+						// Sound platform codec
+						tags.AddSoundCodec(ReadSoundCodec(reader, containerFile.BlockVersion));
+						break;
+
+					case "snpr":
+						// Sound pitch range
+						tags.AddSoundPitchRange(ReadSoundPitchRange(reader, containerFile.BlockVersion));
+						break;
+
+					case "snld":
+						// Sound language pitch range
+						tags.AddSoundLanguageDuration(ReadSoundLanguageDuration(reader, containerFile.BlockVersion));
+						break;
+
+					case "snpb":
+						// Sound playback parameter
+						tags.AddSoundPlayback(ReadSoundPlayback(reader, containerFile.BlockVersion));
+						break;
+
+					case "snsc":
+						// Sound scale
+						tags.AddSoundScale(ReadSoundScale(reader, containerFile.BlockVersion));
+						break;
+
+					case "spro":
+						// Sound promotion
+						tags.AddSoundPromotion(ReadSoundPromotion(reader, containerFile.BlockVersion));
+						break;
+
+					case "scpb":
+						// Sound custom playback
+						tags.AddSoundCustomPlayback(ReadSoundCustomPlayback(reader, containerFile.BlockVersion));
+						break;
+
+					case "snex":
+						// Sound extra info
+						tags.AddSoundExtraInfo(ReadSoundExtraInfo(reader, containerFile.BlockVersion));
+						break;
 				}
 			}
 		}
 
 		private static DataBlock ReadDataBlock(IReader reader, byte version)
 		{
-			if (version > 7)
+			if (version > 8)
 				throw new InvalidOperationException("Unrecognized \"data\" block version");
 
 			// Block data
@@ -175,6 +216,25 @@ namespace Blamite.Injection
 					int effectDataSize = reader.ReadInt32();
 					byte[] effectData = reader.ReadBlock(effectDataSize);
 					block.EffectFixups.Add(new DataBlockEffectFixup(type, index, writeOffset, effectData));
+				}
+			}
+
+			if (version >= 8)
+			{
+				int numSoundFixups = reader.ReadInt32();
+
+				for (int i = 0; i < numSoundFixups; i++)
+				{
+					int codec = reader.ReadInt32();
+					int prcount = reader.ReadInt32();
+					int pr = reader.ReadInt32();
+					int lpr = reader.ReadInt32();
+					int pb = reader.ReadInt32();
+					int sc = reader.ReadInt32();
+					int promo = reader.ReadInt32();
+					int cpb = reader.ReadInt32();
+					int ex = reader.ReadInt32();
+					block.SoundFixups.Add(new DataBlockSoundFixup(codec, prcount, pr, lpr, pb, sc, promo, cpb, ex));
 				}
 			}
 
@@ -407,6 +467,507 @@ namespace Blamite.Injection
 			}
 
 			return prediction;
+		}
+
+		private static ExtractedSoundCodec ReadSoundCodec(IReader reader, byte version)
+		{
+			if (version > 0)
+				throw new InvalidOperationException("Unrecognized \"sndc\" block version");
+
+			var codec = new SoundCodec();
+
+			int originalIndex = reader.ReadInt32();
+
+			codec.SampleRate = reader.ReadInt32();
+			codec.Encoding = reader.ReadInt32();
+			codec.Compression = reader.ReadInt32();
+
+			return new ExtractedSoundCodec(originalIndex, codec);
+		}
+
+		private static ExtractedSoundPitchRange ReadSoundPitchRange(IReader reader, byte version)
+		{
+			if (version > 0)
+				throw new InvalidOperationException("Unrecognized \"snpr\" block version");
+
+			int originalIndex = reader.ReadInt32();
+
+			string name = reader.ReadAscii();
+
+			SoundPitchRangeParameter param = null;
+
+			if (reader.ReadByte() == 1)
+			{
+				param = new SoundPitchRangeParameter();
+				param.NaturalPitch = reader.ReadInt32();
+				param.BendMin = reader.ReadInt32();
+				param.BendMax = reader.ReadInt32();
+				param.MaxGainPitchMin = reader.ReadInt32();
+				param.MaxGainPitchMax = reader.ReadInt32();
+				param.PlaybackPitchMin = reader.ReadInt32();
+				param.PlaybackPitchMax = reader.ReadInt32();
+
+				if (reader.ReadByte() == 1)
+				{
+					SoundPitchRangeDistance dist = new SoundPitchRangeDistance();
+					dist.DontPlayDistance = reader.ReadFloat();
+					dist.AttackDistance = reader.ReadFloat();
+					dist.MinDistance = reader.ReadFloat();
+					dist.MaxDistance = reader.ReadFloat();
+					param.Distance = dist;
+				}
+			}
+
+			bool hasdata = (reader.ReadByte() == 1);
+
+			int reqcount = reader.ReadInt32();
+
+			System.Collections.Generic.List<ExtractedSoundPermutation> perms = new System.Collections.Generic.List<ExtractedSoundPermutation>();
+
+			int permcount = reader.ReadInt32();
+			for (int p = 0; p < permcount; p++)
+			{
+				ExtractedSoundPermutation perm = new ExtractedSoundPermutation();
+				perm.Name = reader.ReadAscii();
+				perm.EncodedSkipFraction = reader.ReadInt32();
+				perm.SampleSize = reader.ReadInt32();
+				perm.EncodedGain = reader.ReadInt32();
+				perm.EncodedPermutationInfoIndex = reader.ReadInt32();
+				perm.FSBInfo = reader.ReadInt32();
+
+				int chunkcount = reader.ReadInt32();
+				perm.Chunks = new System.Collections.Generic.List<ExtractedSoundChunk>();
+				for (int c = 0; c < chunkcount; c++)
+				{
+					SoundChunk chunk = new SoundChunk();
+					chunk.FileOffset = reader.ReadInt32();
+					chunk.EncodedSizeAndFlags = reader.ReadInt32();
+					chunk.CacheIndex = reader.ReadInt32();
+					chunk.XMA2BufferStart = reader.ReadInt32();
+					chunk.XMA2BufferEnd = reader.ReadInt32();
+					chunk.Unknown = reader.ReadInt32();
+					chunk.Unknown1 = reader.ReadInt32();
+					perm.Chunks.Add(new ExtractedSoundChunk(chunk));
+				}
+
+				int langcount = reader.ReadInt32();
+				perm.Languages = new System.Collections.Generic.List<ExtractedSoundLanguagePermutation>();
+				for (int l = 0; l < langcount; l++)
+				{
+					ExtractedSoundLanguagePermutation lang = new ExtractedSoundLanguagePermutation();
+					lang.LanguageIndex = reader.ReadInt32();
+					lang.SampleSize = reader.ReadInt32();
+
+					int lchunkcount = reader.ReadInt32();
+					lang.Chunks = new System.Collections.Generic.List<ExtractedSoundChunk>();
+					for (int c = 0; c < lchunkcount; c++)
+					{
+						SoundChunk chunk = new SoundChunk();
+						chunk.FileOffset = reader.ReadInt32();
+						chunk.EncodedSizeAndFlags = reader.ReadInt32();
+						chunk.CacheIndex = reader.ReadInt32();
+						chunk.XMA2BufferStart = reader.ReadInt32();
+						chunk.XMA2BufferEnd = reader.ReadInt32();
+						chunk.Unknown = reader.ReadInt32();
+						chunk.Unknown1 = reader.ReadInt32();
+						lang.Chunks.Add(new ExtractedSoundChunk(chunk));
+					}
+
+					perm.Languages.Add(lang);
+				}
+
+				int markercount = reader.ReadInt32();
+				perm.LayerMarkers = new System.Collections.Generic.List<int>();
+				for (int m = 0; m < markercount; m++)
+				{
+					perm.LayerMarkers.Add(reader.ReadInt32());
+				}
+
+				perms.Add(perm);
+			}
+
+			return new ExtractedSoundPitchRange(originalIndex, name, param, hasdata, reqcount, perms);
+		}
+
+		private static ExtractedSoundLanguageDuration ReadSoundLanguageDuration(IReader reader, byte version)
+		{
+			if (version > 0)
+				throw new InvalidOperationException("Unrecognized \"snld\" block version");
+
+			int originalIndex = reader.ReadInt32();
+			var lpd = new ExtractedSoundLanguageDuration(originalIndex);
+
+			int langcount = reader.ReadInt32();
+			for (int l = 0; l < langcount; l++)
+			{
+				ExtractedSoundLanguageDurationInfo info = new ExtractedSoundLanguageDurationInfo();
+				info.Durations = new System.Collections.Generic.List<int>();
+				info.LanguageIndex = reader.ReadInt32();
+
+				int durcount = reader.ReadInt32();
+				for (int d = 0; d < durcount; d++)
+				{
+					info.Durations.Add(reader.ReadInt32());
+				}
+				lpd.Languages.Add(info);
+			}
+
+			return lpd;
+		}
+
+		private static ExtractedSoundPlayback ReadSoundPlayback(IReader reader, byte version)
+		{
+			if (version > 0)
+				throw new InvalidOperationException("Unrecognized \"snpb\" block version");
+
+			var playback = new SoundPlayback();
+
+			int originalIndex = reader.ReadInt32();
+
+			playback.InternalFlags = reader.ReadInt32();
+			playback.DontObstructDistance = reader.ReadFloat();
+			playback.DontPlayDistance = reader.ReadFloat();
+			playback.AttackDistance = reader.ReadFloat();
+			playback.MinDistance = reader.ReadFloat();
+			playback.SustainBeginDistance = reader.ReadFloat();
+			playback.SustainEndDistance = reader.ReadFloat();
+			playback.MaxDistance = reader.ReadFloat();
+			playback.SustainDB = reader.ReadFloat();
+			playback.SkipFraction = reader.ReadFloat();
+			playback.MaxPendPerSec = reader.ReadFloat();
+
+			playback.GainBase = reader.ReadFloat();
+			playback.GainVariance = reader.ReadFloat();
+			playback.RandomPitchBoundsMin = reader.ReadInt32();
+			playback.RandomPitchBoundsMax = reader.ReadInt32();
+			playback.InnerConeAngle = reader.ReadFloat();
+			playback.OuterConeAngle = reader.ReadFloat();
+			playback.OuterConeGain = reader.ReadFloat();
+			playback.Flags = reader.ReadInt32();
+			playback.Azimuth = reader.ReadFloat();
+			playback.PositionalGain = reader.ReadFloat();
+			playback.FirstPersonGain = reader.ReadFloat();
+
+			return new ExtractedSoundPlayback(originalIndex, playback);
+		}
+
+		private static ExtractedSoundScale ReadSoundScale(IReader reader, byte version)
+		{
+			if (version > 0)
+				throw new InvalidOperationException("Unrecognized \"snsc\" block version");
+
+			int originalIndex = reader.ReadInt32();
+
+			var scale = new SoundScale();
+
+			scale.GainMin = reader.ReadFloat();
+			scale.GainMax = reader.ReadFloat();
+			scale.PitchMin = reader.ReadInt32();
+			scale.PitchMax = reader.ReadInt32();
+			scale.SkipFractionMin = reader.ReadFloat();
+			scale.SkipFractionMax = reader.ReadFloat();
+
+			return new ExtractedSoundScale(originalIndex, scale);
+		}
+
+		private static ExtractedSoundPromotion ReadSoundPromotion(IReader reader, byte version)
+		{
+			if (version > 0)
+				throw new InvalidOperationException("Unrecognized \"spro\" block version");
+
+			int originalIndex = reader.ReadInt32();
+
+			SoundPromotion promo = new SoundPromotion();
+
+			promo.ActivePromotionIndex = reader.ReadInt32();
+			promo.LastPromotionTime = reader.ReadInt32();
+			promo.SuppressionTimeout = reader.ReadInt32();
+
+			var rules = new System.Collections.Generic.List<SoundPromotionRule>();
+
+			int rulecount = reader.ReadInt32();
+			for (int i = 0; i < rulecount; i++)
+			{
+				SoundPromotionRule rule = new SoundPromotionRule();
+
+				rule.LocalPitchRangeIndex = reader.ReadInt32();
+				rule.MaximumPlayCount = reader.ReadInt32();
+				rule.SupressionTime = reader.ReadFloat();
+				rule.RolloverTime = reader.ReadInt32();
+				rule.ImpulseTime = reader.ReadInt32();
+				rules.Add(rule);
+			}
+
+			promo.Rules = rules.ToArray();
+
+			return new ExtractedSoundPromotion(originalIndex, promo);
+		}
+
+		private static ExtractedSoundCustomPlayback ReadSoundCustomPlayback(IReader reader, byte version)
+		{
+			if (version > 0)
+				throw new InvalidOperationException("Unrecognized \"scpb\" block version");
+
+			var cplayback = new ExtractedSoundCustomPlayback();
+
+			cplayback.OriginalIndex = reader.ReadInt32();
+
+			cplayback.Version = (SoundCustomPlaybackVersion)reader.ReadByte();
+
+			cplayback.Flags = reader.ReadInt32();
+
+			cplayback.Unknown = reader.ReadInt32();
+			cplayback.Unknown1 = reader.ReadInt32();
+
+			cplayback.Mixes = new System.Collections.Generic.List<SoundCustomPlaybackMix>();
+			int mixcount = reader.ReadInt32();
+			for (int i = 0; i < mixcount; i++)
+			{
+				SoundCustomPlaybackMix mix = new SoundCustomPlaybackMix();
+
+				mix.Mixbin = reader.ReadInt32();
+				mix.Gain = reader.ReadFloat();
+
+				cplayback.Mixes.Add(mix);
+			}
+
+			cplayback.Filters = new System.Collections.Generic.List<SoundCustomPlaybackFilter>();
+			int filtercount = reader.ReadInt32();
+			for (int i = 0; i < filtercount; i++)
+			{
+				SoundCustomPlaybackFilter filter = new SoundCustomPlaybackFilter();
+
+				filter.Type = reader.ReadInt32();
+				filter.Width = reader.ReadInt32();
+
+				filter.LeftFreqScaleMin = reader.ReadFloat();
+				filter.LeftFreqScaleMax = reader.ReadFloat();
+				filter.LeftFreqRandomBase = reader.ReadFloat();
+				filter.LeftFreqRandomVariance = reader.ReadFloat();
+
+				filter.LeftGainScaleMin = reader.ReadFloat();
+				filter.LeftGainScaleMax = reader.ReadFloat();
+				filter.LeftGainRandomBase = reader.ReadFloat();
+				filter.LeftGainRandomVariance = reader.ReadFloat();
+
+				filter.RightFreqScaleMin = reader.ReadFloat();
+				filter.RightFreqScaleMax = reader.ReadFloat();
+				filter.RightFreqRandomBase = reader.ReadFloat();
+				filter.RightFreqRandomVariance = reader.ReadFloat();
+
+				filter.RightGainScaleMin = reader.ReadFloat();
+				filter.RightGainScaleMax = reader.ReadFloat();
+				filter.RightGainRandomBase = reader.ReadFloat();
+				filter.RightGainRandomVariance = reader.ReadFloat();
+
+				cplayback.Filters.Add(filter);
+			}
+
+			cplayback.PitchLFOs = new System.Collections.Generic.List<SoundCustomPlaybackPitchLFO>();
+			int pitchlfocount = reader.ReadInt32();
+			for (int i = 0; i < pitchlfocount; i++)
+			{
+				SoundCustomPlaybackPitchLFO pitchlfo = new SoundCustomPlaybackPitchLFO();
+
+				pitchlfo.DelayScaleMin = reader.ReadFloat();
+				pitchlfo.DelayScaleMax = reader.ReadFloat();
+				pitchlfo.DelayRandomBase = reader.ReadFloat();
+				pitchlfo.DelayRandomVariance = reader.ReadFloat();
+
+				pitchlfo.FreqScaleMin = reader.ReadFloat();
+				pitchlfo.FreqScaleMax = reader.ReadFloat();
+				pitchlfo.FreqRandomBase = reader.ReadFloat();
+				pitchlfo.FreqRandomVariance = reader.ReadFloat();
+
+				pitchlfo.PitchModScaleMin = reader.ReadFloat();
+				pitchlfo.PitchModScaleMax = reader.ReadFloat();
+				pitchlfo.PitchModRandomBase = reader.ReadFloat();
+				pitchlfo.PitchModRandomVariance = reader.ReadFloat();
+
+				cplayback.PitchLFOs.Add(pitchlfo);
+			}
+
+			cplayback.FilterLFOs = new System.Collections.Generic.List<SoundCustomPlaybackFilterLFO>();
+			int filterlfocount = reader.ReadInt32();
+			for (int i = 0; i < filterlfocount; i++)
+			{
+				SoundCustomPlaybackFilterLFO filterlfo = new SoundCustomPlaybackFilterLFO();
+
+				filterlfo.DelayScaleMin = reader.ReadFloat();
+				filterlfo.DelayScaleMax = reader.ReadFloat();
+				filterlfo.DelayRandomBase = reader.ReadFloat();
+				filterlfo.DelayRandomVariance = reader.ReadFloat();
+
+				filterlfo.FreqScaleMin = reader.ReadFloat();
+				filterlfo.FreqScaleMax = reader.ReadFloat();
+				filterlfo.FreqRandomBase = reader.ReadFloat();
+				filterlfo.FreqRandomVariance = reader.ReadFloat();
+
+				filterlfo.CutoffModScaleMin = reader.ReadFloat();
+				filterlfo.CutoffModScaleMax = reader.ReadFloat();
+				filterlfo.CutoffModRandomBase = reader.ReadFloat();
+				filterlfo.CutoffModRandomVariance = reader.ReadFloat();
+
+				filterlfo.GainModScaleMin = reader.ReadFloat();
+				filterlfo.GainModScaleMax = reader.ReadFloat();
+				filterlfo.GainModRandomBase = reader.ReadFloat();
+				filterlfo.GainModRandomVariance = reader.ReadFloat();
+
+				cplayback.FilterLFOs.Add(filterlfo);
+			}
+
+			//bug fix because I released this with the writer only writing half the datum, so the tag should be thrown out if it predates this commit
+			cplayback.OriginalRadioEffect = new DatumIndex(reader.ReadUInt32());
+			if (cplayback.OriginalRadioEffect.Salt == 0)
+				cplayback.OriginalRadioEffect = DatumIndex.Null;
+
+			cplayback.LowpassEffects = new System.Collections.Generic.List<SoundCustomPlaybackLowpassEffect>();
+			int lowpasscount = reader.ReadInt32();
+			for (int i = 0; i < lowpasscount; i++)
+			{
+				SoundCustomPlaybackLowpassEffect lp = new SoundCustomPlaybackLowpassEffect();
+
+				lp.Attack = reader.ReadFloat();
+				lp.Release = reader.ReadFloat();
+				lp.CutoffFrequency = reader.ReadFloat();
+				lp.OutputGain = reader.ReadFloat();
+
+				cplayback.LowpassEffects.Add(lp);
+			}
+
+			cplayback.Components = new System.Collections.Generic.List<ExtractedSoundCustomPlaybackComponent>();
+			int compcount = reader.ReadInt32();
+			for (int i = 0; i < compcount; i++)
+			{
+				ExtractedSoundCustomPlaybackComponent c = new ExtractedSoundCustomPlaybackComponent();
+
+				//bug fix because I released this with the writer only writing half the datum, so the tag should be thrown out if it predates this commit
+				c.OriginalSound = new DatumIndex(reader.ReadUInt32());
+				if (c.OriginalSound.Salt == 0)
+					c.OriginalSound = DatumIndex.Null;
+
+				c.Gain = reader.ReadFloat();
+				c.Flags = reader.ReadInt32();
+
+				cplayback.Components.Add(c);
+			}
+
+			return cplayback;
+		}
+
+		private static ExtractedSoundExtraInfo ReadSoundExtraInfo(IReader reader, byte version)
+		{
+			if (version > 0)
+				throw new InvalidOperationException("Unrecognized \"snex\" block version");
+
+			int originalIndex = reader.ReadInt32();
+
+			var extra = new SoundExtraInfo();
+
+			var permSections = new System.Collections.Generic.List<SoundExtraInfoPermutationSection>();
+
+			int permsectioncount = reader.ReadInt32();
+			for (int i = 0; i < permsectioncount; i++)
+			{
+				var permsection = new SoundExtraInfoPermutationSection();
+
+				var dialogInfos = new System.Collections.Generic.List<SoundExtraInfoDialogueInfo>();
+				var unk1s = new System.Collections.Generic.List<SoundExtraInfoUnknown1>();
+
+				int datalength = reader.ReadInt32();
+				byte[] data = reader.ReadBlock(datalength);
+				permsection.EncodedData = data;
+
+				int dialogueinfocount = reader.ReadInt32();
+				for (int d = 0; d < dialogueinfocount; d++)
+				{
+					var dialogueinfo = new SoundExtraInfoDialogueInfo();
+
+					dialogueinfo.MouthOffset = reader.ReadInt32();
+					dialogueinfo.MouthLength = reader.ReadInt32();
+					dialogueinfo.LipsyncOffset = reader.ReadInt32();
+					dialogueinfo.LipsyncLength = reader.ReadInt32();
+
+					dialogInfos.Add(dialogueinfo);
+				}
+
+				int unk1count = reader.ReadInt32();
+				for (int a = 0; a < unk1count; a++)
+				{
+					var unk1 = new SoundExtraInfoUnknown1();
+					var unk2s = new System.Collections.Generic.List<SoundExtraInfoUnknown2>();
+
+					unk1.Unknown = reader.ReadInt32();
+					unk1.Unknown1 = reader.ReadInt32();
+					unk1.Unknown2 = reader.ReadInt32();
+					unk1.Unknown3 = reader.ReadInt32();
+					unk1.Unknown4 = reader.ReadInt32();
+					unk1.Unknown5 = reader.ReadInt32();
+					unk1.Unknown6 = reader.ReadInt32();
+					unk1.Unknown7 = reader.ReadInt32();
+					unk1.Unknown8 = reader.ReadInt32();
+					unk1.Unknown9 = reader.ReadInt32();
+					unk1.Unknown10 = reader.ReadInt32();
+					unk1.Unknown11 = reader.ReadInt32();
+
+					int unk2count = reader.ReadInt32();
+					for (int b = 0; b < unk2count; b++)
+					{
+						var unk2 = new SoundExtraInfoUnknown2();
+						var unk5s = new System.Collections.Generic.List<SoundExtraInfoUnknown3>();
+						var unk6s = new System.Collections.Generic.List<SoundExtraInfoUnknown4>();
+
+						unk2.Unknown = reader.ReadFloat();
+						unk2.Unknown1 = reader.ReadFloat();
+						unk2.Unknown2 = reader.ReadFloat();
+						unk2.Unknown3 = reader.ReadFloat();
+
+						int unk3count = reader.ReadInt32();
+						for (int c = 0; c < unk3count; c++)
+						{
+							var unk3 = new SoundExtraInfoUnknown3();
+
+							unk3.Unknown = reader.ReadInt32();
+							unk3.Unknown1 = reader.ReadInt32();
+							unk5s.Add(unk3);
+						}
+
+						int unk4count = reader.ReadInt32();
+						for (int c = 0; c < unk4count; c++)
+						{
+							var unk4 = new SoundExtraInfoUnknown4();
+
+							unk4.Unknown = reader.ReadInt32();
+							unk4.Unknown1 = reader.ReadInt32();
+							unk6s.Add(unk4);
+						}
+
+						unk2.Unknown5s = unk5s.ToArray();
+						unk2.Unknown6s = unk6s.ToArray();
+
+						unk2s.Add(unk2);
+						unk1.Unknown12s = unk2s.ToArray();
+					}
+
+					unk1s.Add(unk1);
+
+					permsection.DialogueInfos = dialogInfos.ToArray();
+					permsection.Unknown1s = unk1s.ToArray();
+				}
+
+				permSections.Add(permsection);
+			}
+
+			extra.PermutationSections = permSections.ToArray();
+
+			int datumscount = reader.ReadInt32();
+			var datums = new System.Collections.Generic.List<DatumIndex>();
+			for (int i = 0; i < datumscount; i++)
+				datums.Add(new DatumIndex(reader.ReadUInt32()));
+
+			extra.Datums = datums.ToArray();
+
+			return new ExtractedSoundExtraInfo(originalIndex, extra);
 		}
 
 		private static byte[] ReadByteArray(IReader reader)

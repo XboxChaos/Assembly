@@ -31,8 +31,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 		private readonly string _cacheLocation;
 		private readonly IStreamManager _streamManager;
 		private readonly Resource _soundResource;
-		private readonly ISound _sound;
-		private readonly ISoundResourceGestalt _soundResourceGestalt;
+		private readonly CacheSound _sound;
+		private readonly SoundResourceTable _soundResourceTable;
 
 		private readonly byte[] _monoFooter = 
 		{
@@ -54,6 +54,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 		{
 			InitializeComponent();
 
+			/*
+			This was been fixed up to support the changes that came from sound injection, but has not really been tested
+			but it still isn't great/complete and was mainly only done so I didn't leave in a control where most of its code has been commented out and broken
+			not to mention this is all moot with MCC using external proprietary files for sounds
+			if i had to complete it, id probably add extra methods to SoundResourceTable and SoundGestalt to grab pitch ranges on demand instead of loading in everything every time
+				-Zedd
+			*/
+
 			_buildInfo = buildInfo;
 			_cacheLocation = cacheLocation;
 			_tag = tag;
@@ -74,7 +82,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
 			using (var reader = _streamManager.OpenRead())
 			{
-				_soundResourceGestalt = _cache.LoadSoundResourceGestaltData(reader);
+				// load gestalt
+				if (_cache.SoundGestalt != null)
+					_soundResourceTable = _cache.SoundGestalt.LoadSoundResourceTable(reader);
+
 				_sound = _cache.ResourceMetaLoader.LoadSoundMeta(_tag.RawTag, reader);
 				var resourceTable = _cache.Resources.LoadResourceTable(reader);
 				_soundResource = resourceTable.Resources.First(r => r.Index == _sound.ResourceIndex);
@@ -89,19 +100,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 					new ObservableCollection<ResourcePage>(_resourcePages.ToList());
 			}
 
-			var playback = _soundResourceGestalt.SoundPlaybacks[_sound.PlaybackIndex];
-
-			var soundPermutations = new ISoundPermutation[playback.EncodedPermutationCount];
-			for (var i = 0; i < playback.EncodedPermutationCount; i++)
+			for (int i = 0; i < _sound.PitchRangeCount; i++)
 			{
-				var permutation = _soundResourceGestalt.SoundPermutations[i + playback.FirstPermutationIndex];
-				soundPermutations[i] = permutation;
-				viewModel.Permutations.Add(new ViewModel.ViewPermutation
+				var pitchrange = _soundResourceTable.PitchRanges[_sound.FirstPitchRangeIndex + i];
+
+				foreach (var permutation in pitchrange.Permutations)
 				{
-					Name = _cache.StringIDs.GetString(permutation.SoundName),
-					Index = i,
-					SoundPermutation = permutation
-				});
+					viewModel.Permutations.Add(new ViewModel.ViewPermutation
+					{
+						Name = _cache.StringIDs.GetString(permutation.Name),
+						Index = i,
+						SoundPermutation = permutation
+					});
+				}
+				
 			}
 			
 		}
@@ -111,7 +123,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			var perm = (ViewModel.ViewPermutation)SoundPermutationListBox.SelectedValue;
 			if (perm == null) return;
 
-			_soundPlayer = new SoundPlayer(ConvertToAudioFile(ExtractRawPerm(perm.SoundPermutation)));
+			string tempLocation = ConvertToAudioFile(ExtractRawPerm(perm.SoundPermutation));
+
+			if (tempLocation == null)
+				return;
+
+			_soundPlayer = new SoundPlayer(tempLocation);
 			_soundPlayer.Play();
 		}
 
@@ -151,17 +168,24 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
 		private string ConvertToAudioFile(ICollection<byte> data, string path = null)
 		{
+			string towav = Path.Combine(VariousFunctions.GetApplicationLocation(), "helpers", "towav.exe");
+			if (!File.Exists(towav))
+			{
+				MetroMessageBox.Show("Cannot Convert Sound", "Sounds cannot be converted because towav.exe is not present. Copy it to the \\helpers folder inside your Assembly installation.");
+				return null;
+			}
+
 			var tempFile = Path.GetTempFileName();
 
 			byte[] footer;
-			var codec = _soundResourceGestalt.SoundPlatformCodecs[_sound.CodecIndex];
-			switch (codec.Channel)
+			var codec = _soundResourceTable.Codecs[_sound.CodecIndex];
+			switch ((SoundEncoding)codec.Encoding)
 			{
-				case Channel.Mono:
+				case SoundEncoding.Mono:
 					footer = _monoFooter;
 					break;
 
-				case Channel.Stereo:
+				case SoundEncoding.Stereo:
 					footer = _stereoFooter;
 					break;
 
@@ -169,9 +193,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 					throw new NotImplementedException();
 			}
 
-			switch (_sound.Encoding)
+			switch ((SoundCompression)codec.Compression)
 			{
-				case Encoding.XMA:
+				case SoundCompression.XMA2:
 					using (var fileStream = new FileStream(tempFile, FileMode.OpenOrCreate))
 					{
 						using (var writer = new EndianWriter(fileStream, Endian.BigEndian))
@@ -203,7 +227,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 						}
 					}
 
-					VariousFunctions.RunProgramSilently(@"A:\Xbox\Games\towav.exe",
+					VariousFunctions.RunProgramSilently(towav,
 						string.Format("\"{0}\"", Path.GetFileName(tempFile)),
 						Path.GetDirectoryName(tempFile));
 
@@ -222,7 +246,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			}
 		}
 
-		private byte[] ExtractRawPerm(ISoundPermutation permutation)
+		private byte[] ExtractRawPerm(SoundPermutation permutation)
 		{
 			var data = ExtractRaw();
 			var permutationData = new List<byte>();
@@ -230,14 +254,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			var memoryStream = new MemoryStream(data);
 			var stream = new EndianStream(memoryStream, Endian.BigEndian);
 
-			for (var i = permutation.PermutationChunkIndex; 
-				i < permutation.ChunkCount + permutation.PermutationChunkIndex; 
-				i++)
+			foreach (var chunk in permutation.Chunks)
 			{
-				var permutationChunk = _soundResourceGestalt.SoundPermutationChunks[i];
-
-				stream.SeekTo(permutationChunk.Offset);
-				permutationData.AddRange(stream.ReadBlock(permutationChunk.Size));
+				stream.SeekTo(chunk.FileOffset);
+				permutationData.AddRange(stream.ReadBlock(chunk.DecodedSize));
 			}
 
 			return permutationData.ToArray();
@@ -264,18 +284,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 					if (page.FilePath != null)
 					{
 						var resourceCacheInfo =
-								App.AssemblyStorage.AssemblySettings.HalomapResourceCachePaths.FirstOrDefault(
-									r => r.EngineName == _buildInfo.Name);
+						App.AssemblyStorage.AssemblySettings.HalomapResourceCachePaths.FirstOrDefault(
+							r => r.EngineName == _buildInfo.Name);
 
-						var resourceCachePath = (resourceCacheInfo != null)
-							? resourceCacheInfo.ResourceCachePath
-							: Path.GetDirectoryName(_cacheLocation);
+						var resourceCachePath = (resourceCacheInfo != null && resourceCacheInfo.ResourceCachePath != "")
+							? resourceCacheInfo.ResourceCachePath : Path.GetDirectoryName(_cacheLocation);
 
 						resourceCachePath = Path.Combine(resourceCachePath ?? "", Path.GetFileName(page.FilePath));
 
 						if (!File.Exists(resourceCachePath))
 						{
-							throw new FileNotFoundException("Unable to extract tag, because a resource it relies on is in a external cache '{0}' that could not be found. Check Assembly's settings and set the file path to resource caches.");
+							MetroMessageBox.Show("Unable to extract tag",
+								string.Format("Unable to extract tag, because a resource it relies on is stored in an external cache, \"{0}\" which could not be found.\r\nCheck Assembly's settings and set the file path to resource caches, or verify that the missing cache is in the same folder as the open cache file.",
+								Path.GetFileName(resourceCachePath)));
+							return null;
 						}
 
 						resourceStream =
@@ -347,12 +369,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			}
 			private string _tagName;
 
-			public ISound Sound
+			public CacheSound Sound
 			{
 				get { return _sound; }
 				set { SetField(ref _sound, value, "Sound"); }
 			}
-			private ISound _sound;
+			private CacheSound _sound;
 
 			public ResourcePage PrimaryResourcePage { get { return _resourcePages[0]; } }
 			public ResourcePage SecondaryResourcePage { get { return _resourcePages[1]; } }
@@ -378,7 +400,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
 				public int Index { get; set; }
 
-				public ISoundPermutation SoundPermutation { get; set; }
+				public SoundPermutation SoundPermutation { get; set; }
 			}
 
 			#endregion

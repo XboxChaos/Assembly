@@ -406,8 +406,7 @@
 		<float32 name="Scale" offset="0x3C" visible="true" />
 		<int16 name="Palette Index" offset="0x40" visible="true" />
 		<int16 name="Unknown" offset="0x42" visible="false" />
-		<uint16 name="Unique ID Salt" offset="0x44" visible="true" />
-		<uint16 name="Unique ID Index" offset="0x46" visible="true" />
+		<datum name="Unique ID" offset="0x44" visible="true" />
 		<ascii name="Scenario Object Name" offset="0x48" length="0x4" visible="true" />
 		<stringid name="Name" offset="0x4C" visible="true" />
 		<int32 name="Unknown" offset="0x50" visible="false" />
@@ -598,7 +597,7 @@
 				<int16 name="Instanced Geometry Index" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
-		<tagblock name="Unknown Water" offset="0x40" visible="false" elementSize="0x2">
+		<tagblock name="Unknown Water" offset="0x40" visible="true" elementSize="0x2">
 			<int16 name="Unknown" offset="0x0" visible="true" />
 		</tagblock>
 		<undefined name="Unknown" offset="0x4C" visible="false" />
@@ -701,8 +700,7 @@
 		<float32 name="Z Min" offset="0x14" visible="true" />
 		<float32 name="Z Max" offset="0x18" visible="true" />
 	</tagblock>
-	<uint16 name="[zone] Asset Salt 1" offset="0x31C" visible="false" />
-	<uint16 name="[zone] Asset Index 1" offset="0x31E" visible="false" />
+	<datum name="[zone] Asset Datum 1" offset="0x31C" visible="true" />
 	<int32 name="Useless Padding" offset="0x320" visible="false" />
 	<tagblock name="Decals" offset="0x324" visible="true" elementSize="0x1C">
 		<tagref name="Decal" offset="0x0" withGroup="false" visible="true" />
@@ -835,7 +833,7 @@
 				<int16 name="Instanced Geometry Index" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
-		<tagblock name="Unknown Water" offset="0x40" visible="false" elementSize="0x2">
+		<tagblock name="Unknown Water" offset="0x40" visible="true" elementSize="0x2">
 			<int16 name="Unknown" offset="0x0" visible="true" />
 		</tagblock>
 		<undefined name="Unknown" offset="0x4C" visible="false" />
@@ -938,8 +936,7 @@
 		<float32 name="Z Min" offset="0x14" visible="true" />
 		<float32 name="Z Max" offset="0x18" visible="true" />
 	</tagblock>
-	<uint16 name="[zone] Asset Salt 2" offset="0x3D0" visible="false" />
-	<uint16 name="[zone] Asset Index 2" offset="0x3D2" visible="false" />
+	<datum name="[zone] Asset Datum 2" offset="0x3D0" visible="true" />
 	<int32 name="Useless Padding" offset="0x3D4" visible="false" />
 	<tagblock name="Unknown Sound Clusters A" offset="0x3D8" visible="true" elementSize="0x1C">
 		<int16 name="Background Sound Environment Index" offset="0x0" visible="true" />
@@ -963,26 +960,25 @@
 	<undefined name="Unknown" offset="0x3F4" visible="false" />
 	<undefined name="Unknown" offset="0x3F8" visible="false" />
 	<tagblock name="Collision MOPP Codes" offset="0x3FC" visible="true" elementSize="0x40" align="0x10">
-		<int32 name="Unknown" offset="0x0" visible="false" />
+		<uint32 name="Runtime Code Pointer" offset="0x0" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x4" visible="true" />
 		<int16 name="Count" offset="0x6" visible="true" />
-		<int32 name="Offset" offset="0x8" visible="true" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<float32 name="Offset x" offset="0x10" visible="true" />
-		<float32 name="Offset y" offset="0x14" visible="true" />
-		<float32 name="Offset z" offset="0x18" visible="true" />
-		<float32 name="Offset Scale" offset="0x1C" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
+		<uint32 name="User Data" offset="0x8" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
+		<int32 name="Type" offset="0xC" visible="true" />
+		<vector3 name="v" offset="0x10" visible="true" />
+		<float32 name="w v" offset="0x1C" visible="true" />
+		<uint32 name="Runtime MOPP Code Pointer" offset="0x20" visible="true" tooltip="becomes a pointer to the start of the MOPP code data in memory at runtime. don't poke me" />
 		<int32 name="Data Size" offset="0x24" visible="true" />
 		<uint32 name="Data Capacity" offset="0x28" visible="true" />
-		<int8 name="Unknown" offset="0x2C" visible="false" />
+		<int8 name="Build Type" offset="0x2C" visible="true" />
 		<int8 name="Unknown" offset="0x2D" visible="false" />
-		<int8 name="Unknown" offset="0x2E" visible="false" />
-		<int8 name="Unknown" offset="0x2F" visible="false" />
-		<tagblock name="Data" offset="0x30" visible="true" elementSize="0x1">
-			<uint8 name="Data Byte" offset="0x0" visible="true" />
+		<int16 name="Unknown" offset="0x2E" visible="false" />
+		<tagblock name="MOPP Data" offset="0x30" visible="true" elementSize="0x1">
+			<uint8 name="Data" offset="0x0" visible="true" />
 		</tagblock>
-		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<int8 name="MOPP Build Type" offset="0x3C" visible="true" />
+		<int8 name="Unknown" offset="0x3D" visible="false" />
+		<int16 name="Unknown" offset="0x3E" visible="false" />
 	</tagblock>
 	<undefined name="Unknown" offset="0x408" visible="false" />
 	<float32 name="Collision Bounds Min X" offset="0x40C" visible="true" />
@@ -992,26 +988,25 @@
 	<float32 name="Collision Bounds Max Y" offset="0x41C" visible="true" />
 	<float32 name="Collision Bounds Max Z" offset="0x420" visible="true" />
 	<tagblock name="Breakable Surface MOPP Codes" offset="0x424" visible="true" elementSize="0x40" align="0x10">
-		<int32 name="Unknown" offset="0x0" visible="false" />
+		<uint32 name="Runtime Code Pointer" offset="0x0" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x4" visible="true" />
 		<int16 name="Count" offset="0x6" visible="true" />
-		<int32 name="Offset" offset="0x8" visible="true" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<float32 name="Offset x" offset="0x10" visible="true" />
-		<float32 name="Offset y" offset="0x14" visible="true" />
-		<float32 name="Offset z" offset="0x18" visible="true" />
-		<float32 name="Offset Scale" offset="0x1C" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
+		<uint32 name="User Data" offset="0x8" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
+		<int32 name="Type" offset="0xC" visible="true" />
+		<vector3 name="v" offset="0x10" visible="true" />
+		<float32 name="w v" offset="0x1C" visible="true" />
+		<uint32 name="Runtime MOPP Code Pointer" offset="0x20" visible="true" tooltip="becomes a pointer to the start of the MOPP code data in memory at runtime. don't poke me" />
 		<int32 name="Data Size" offset="0x24" visible="true" />
 		<uint32 name="Data Capacity" offset="0x28" visible="true" />
-		<int8 name="Unknown" offset="0x2C" visible="false" />
+		<int8 name="Build Type" offset="0x2C" visible="true" />
 		<int8 name="Unknown" offset="0x2D" visible="false" />
-		<int8 name="Unknown" offset="0x2E" visible="false" />
-		<int8 name="Unknown" offset="0x2F" visible="false" />
-		<tagblock name="Data" offset="0x30" visible="true" elementSize="0x1">
-			<uint8 name="Data Byte" offset="0x0" visible="true" />
+		<int16 name="Unknown" offset="0x2E" visible="false" />
+		<tagblock name="MOPP Data" offset="0x30" visible="true" elementSize="0x1">
+			<uint8 name="Data" offset="0x0" visible="true" />
 		</tagblock>
-		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<int8 name="MOPP Build Type" offset="0x3C" visible="true" />
+		<int8 name="Unknown" offset="0x3D" visible="false" />
+		<int16 name="Unknown" offset="0x3E" visible="false" />
 	</tagblock>
 	<tagblock name="Breakable Surface Key Table" offset="0x430" visible="true" elementSize="0x20">
 		<int16 name="Instanced Geometry Index" offset="0x0" visible="true" />
@@ -1136,7 +1131,7 @@
 				<int16 name="Instanced Geometry Index" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
-		<tagblock name="Unknown Water" offset="0x40" visible="false" elementSize="0x2">
+		<tagblock name="Unknown Water" offset="0x40" visible="true" elementSize="0x2">
 			<int16 name="Unknown" offset="0x0" visible="true" />
 		</tagblock>
 		<undefined name="Unknown" offset="0x4C" visible="false" />
@@ -1239,8 +1234,7 @@
 		<float32 name="Z Min" offset="0x14" visible="true" />
 		<float32 name="Z Max" offset="0x18" visible="true" />
 	</tagblock>
-	<uint16 name="[zone] Asset Salt 3" offset="0x4DC" visible="false" />
-	<uint16 name="[zone] Asset Index 3" offset="0x4DE" visible="false" />
+	<datum name="[zone] Asset Datum 3" offset="0x4DC" visible="true" />
 	<int32 name="Useless Padding" offset="0x4E0" visible="false" />
 	<undefined name="Unknown" offset="0x4E4" visible="false" />
 	<undefined name="Unknown" offset="0x4E8" visible="false" />
@@ -1251,11 +1245,9 @@
 	<undefined name="Unknown" offset="0x4FC" visible="false" />
 	<undefined name="Unknown" offset="0x500" visible="false" />
 	<undefined name="Unknown" offset="0x504" visible="false" />
-	<uint16 name="[zone] Asset Salt 4" offset="0x508" visible="false" />
-	<uint16 name="[zone] Asset Index 4" offset="0x50A" visible="false" />
+	<datum name="[zone] Asset Datum 4" offset="0x508" visible="true" />
 	<int32 name="Useless Padding" offset="0x50C" visible="false" />
-	<uint16 name="[zone] Asset Salt 5" offset="0x510" visible="false" />
-	<uint16 name="[zone] Asset Index 5" offset="0x512" visible="false" />
+	<datum name="[zone] Asset Datum 5" offset="0x510" visible="true" />
 	<int32 name="Useless Padding" offset="0x514" visible="false" />
 	<int32 name="Unknown" offset="0x518" visible="false" />
 </plugin>

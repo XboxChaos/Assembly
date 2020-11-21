@@ -8,7 +8,6 @@ using Blamite.Blam.ThirdGen.Resources.Models;
 using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Util;
-using Blamite.Blam.ThirdGen.Resources.Sounds;
 
 namespace Blamite.Blam.ThirdGen.Resources
 {
@@ -67,7 +66,7 @@ namespace Blamite.Blam.ThirdGen.Resources
 			get { return _buildInfo.Layouts.HasLayout("sound"); }
 		}
 
-		public ISound LoadSoundMeta(ITag sndTag, IReader reader)
+		public CacheSound LoadSoundMeta(ITag sndTag, IReader reader)
 		{
 			if (sndTag.MetaLocation == null || sndTag.Group == null || sndTag.Group.Magic != SndMagic)
 				throw new ArgumentException("sndTag");
@@ -77,7 +76,7 @@ namespace Blamite.Blam.ThirdGen.Resources
 			reader.SeekTo(sndTag.MetaLocation.AsOffset());
 			var layout = _buildInfo.Layouts.GetLayout("sound");
 			var values = StructureReader.ReadStructure(reader, layout);
-			return new ThirdGenSound(values, reader, _metaArea, _buildInfo);
+			return new CacheSound(values);
 		}
 	}
 }

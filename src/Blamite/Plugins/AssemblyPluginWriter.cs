@@ -228,10 +228,11 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
-		public void VisitColorF(string name, uint offset, bool visible, bool alpha, uint pluginLine, string tooltip)
+		public void VisitColorF(string name, uint offset, bool visible, bool alpha, bool basic, uint pluginLine, string tooltip)
 		{
 			WriteValueStart("colorf", name, offset, visible, tooltip);
 			_output.WriteAttributeString("alpha", alpha.ToString().ToLower());
+			_output.WriteAttributeString("basic", basic.ToString().ToLower());
 			_output.WriteEndElement();
 		}
 
@@ -330,7 +331,7 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
-		public void VisitRangeUInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		public void VisitRangeInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 			WriteBasicValue("range16", name, offset, visible, tooltip);
 		}
@@ -350,6 +351,11 @@ namespace Blamite.Plugins
 			WriteValueStart("unicList", name, offset, visible, tooltip);
 			_output.WriteAttributeString("languages", languages.ToString());
 			_output.WriteEndElement();
+		}
+
+		public void VisitDatum(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			WriteBasicValue("datum", name, offset, visible, tooltip);
 		}
 
 		private void WriteValueStart(string element, string name, uint offset, bool visible, string tooltip)

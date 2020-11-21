@@ -161,7 +161,7 @@
 		<float32 name="Runtime Body Recharge Velocity" offset="0x48" visible="true" />
 		<float32 name="Runtime Shield Recharge Velocity" offset="0x4C" visible="true" />
 		<tagRef name="Resurrect Weapon" offset="0x50" visible="true" tooltip="If I'm being automatically resurrected then I pull out a ..." />
-		<undefined name="Unknown" offset="0x60" visible="false" />
+		<float32 name="Player Damage Scale" offset="0x60" visible="true" tooltip="If the player is hurting me, scale the damage by this amount. (0 value defaults to 1)" />
 	</tagblock>
 	<tagblock name="Placement Properties" offset="0x9C" visible="true" elementSize="0x34">
 		<undefined name="Unknown" offset="0x0" visible="false" />
@@ -253,23 +253,23 @@
 			<bit name="Danger Crouch Allow Movement" index="0" />
 			<bit name="No Side-Step" index="1" />
 			<bit name="Prefer To Combar Near Friends" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
+			<bit name="Hop (To Cover Path Segment)" index="0x3" />
+			<bit name="Allow Jump to Firing Position" index="0x4" />
+			<bit name="Allow Boosted Jump" index="0x5" />
+			<bit name="Perch" index="0x6" />
+			<bit name="Climb" index="7" />
+			<bit name="Prefer Wall Movement" index="8" />
+			<bit name="Has Flying Mode" index="9" />
+			<bit name="Disallow Crouch" index="10" />
+			<bit name="Disallow All Movement" index="11" />
+			<bit name="Always Use Search Points" index="12" />
+			<bit name="Keep Moving" index="13" />
+			<bit name="Cure Isolation Jump" index="14" />
+			<bit name="Gain Elevation" index="15" />
+			<bit name="Reposition Distant" index="16" />
+			<bit name="Only Use Aerial Firing Positions" index="17" />
+			<bit name="Use High Priority Pathfinding" index="18" />
+			<bit name="Lower Weapon When No Alert Movement Override" index="19" />
 			<bit name="Bit 20" index="20" />
 			<bit name="Bit 21" index="21" />
 			<bit name="Bit 22" index="22" />
@@ -660,7 +660,7 @@
 		<float32 name="Unreachable Enemy Danger Threshold" offset="0x44" visible="true" tooltip="When danger from an unreachable enemy surpasses threshold, actor cover (assuming unreachable_enemy_cover impulse is enabled)" />
 		<float32 name="Unassailable Enemy Danger Threshold" offset="0x48" visible="true" tooltip="When target is unassailable, and danger goes over this value - cover (assuming unassailable_enemy_cover impulse is enabled)" />
 		<float32 name="Scary Target Threshold" offset="0x4C" visible="true" tooltip="When target is aware of me and surpasses the given scariness, self-preserve (assuming scary_target_cover_impulse is enabled)" />
-		<float32 name="Vitality Fraction Shield Equipment{Vitality Fraction Bubbleshield}" offset="0x50" visible="true" tooltip="Fraction of vitality below which an equipped shield equipment (instant cover/bubbleshield) will be activated (once damage has died down, and assuming shield_equipment_impulse is enabled)" />
+		<float32 name="Vitality Fraction Shield Equipment" offset="0x50" visible="true" tooltip="Fraction of vitality below which an equipped shield equipment (instant cover/bubbleshield) will be activated (once damage has died down, and assuming shield_equipment_impulse is enabled)" />
 		<float32 name="Recent Damage Shield Equipment" offset="0x54" visible="true" tooltip="Must have less than this amount of recent body damage before we can deploy our equipped shield equipment." />
 	</tagblock>
 	<tagblock name="Retreat Properties" offset="0x150" visible="true" elementSize="0x58">
@@ -985,6 +985,7 @@ for example if the burst origin angle and the burst return angle were both zero,
 		<float32 name="AI Minimum Urgency" offset="0xB0" visible="true" tooltip="The minimum urgency with which a turn can be made (urgency = percent of maximum steering delta)" />
 		<degree name="Destination Behind Angle" offset="0xB4" visible="true" tooltip="The angle from facing that is considered to be behind us (we do the ugly floaty slidey turn to things behind us)" />
 		<float32 name="Skid Scale" offset="0xB8" visible="true" tooltip="When approaching a corner at speed, we may want to skid around that corner, by turning slightly too early. This is (roughly) how many seconds ahead we should start turning." />
+		<comment title="Throttle" />
 		<float32 name="AI Throttle Maximum" offset="0xBC" visible="true" />
 		<float32 name="AI Reverse Throttle Maximum" offset="0xC0" visible="true" tooltip="If zero, default to ai throttle maximum" />
 		<float32 name="AI Goal Min Throttle Scale" offset="0xC4" visible="true" tooltip="scale on throttle when within 'ai deceleration distance' of goal (0...1)" />
@@ -1159,7 +1160,7 @@ for example if the burst origin angle and the burst return angle were both zero,
 		<flags8 name="Flags" offset="0x0" visible="true">
 			<bit name="Only Counts With Riders" index="0" />
 		</flags8>
-		<enum8 name="Unit" offset="0x1" visible="true">
+		<enum8 name="Type" offset="0x1" visible="true">
 			<option name="Brute" value="0x0" />
 			<option name="Grunt" value="0x1" />
 			<option name="Jackal" value="0x2" />

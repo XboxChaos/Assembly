@@ -43,7 +43,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			_fields = fields;
 			_cacheOffsetOriginal = _cacheOffset = cacheOffset;
 
-			_memOffset = _cacheOffset + _cacheFile.MetaArea.PointerMask;
+			_memOffset = _cacheFile.MetaArea.OffsetToPointer((int)_cacheOffset);
 
 			// Set Textboxes
 			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
@@ -108,8 +108,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 				success = uint.TryParse(txtOffset.Text, out offset);
 			}
 
-			if (!success || offset < _cacheFile.MetaArea.Offset ||
-				offset >= _cacheFile.MetaArea.Offset + _cacheFile.MetaArea.Size)
+			if (!success || !_cacheFile.MetaArea.ContainsOffset((int)offset))
 			{
 				MetroMessageBox.Show(
 					"Invalid offset.",
@@ -120,7 +119,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			_cacheOffset = offset;
 
 			//Update the other textbox
-			_memOffset = _cacheOffset + _cacheFile.MetaArea.PointerMask;
+			_memOffset = _cacheFile.MetaArea.OffsetToPointer((int)_cacheOffset);
 			txtMemOffset.Text = "0x" + _memOffset.ToString("X");
 
 			RefreshMeta();
@@ -143,8 +142,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 				success = long.TryParse(txtMemOffset.Text, out offset);
 			}
 
-			if (!success || offset < _cacheFile.MetaArea.Offset + _cacheFile.MetaArea.PointerMask ||
-				offset >= _cacheFile.MetaArea.Offset + _cacheFile.MetaArea.Size + _cacheFile.MetaArea.PointerMask)
+			if (!success || !_cacheFile.MetaArea.ContainsPointer(offset))
 			{
 				MetroMessageBox.Show(
 					"Invalid address.",
@@ -152,7 +150,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 					);
 				return;
 			}
-			_cacheOffset = (uint)(offset - _cacheFile.MetaArea.PointerMask);
+			_cacheOffset = (uint)_cacheFile.MetaArea.PointerToOffset(offset);
 
 			//Update the other textbox
 			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
@@ -175,7 +173,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		private void btnReset_Click(object sender, RoutedEventArgs e)
 		{
 			_cacheOffset = _cacheOffsetOriginal;
-			_memOffset = _cacheOffset + _cacheFile.MetaArea.PointerMask;
+			_memOffset = _cacheFile.MetaArea.OffsetToPointer((int)_cacheOffset);
 
 			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
 			txtMemOffset.Text = "0x" + _memOffset.ToString("X");
@@ -185,7 +183,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		private void btnDown_Click(object sender, RoutedEventArgs e)
 		{
 			_cacheOffset -= GetSkip();
-			_memOffset = _cacheOffset + _cacheFile.MetaArea.PointerMask;
+			_memOffset = _cacheFile.MetaArea.OffsetToPointer((int)_cacheOffset);
 
 			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
 			txtMemOffset.Text = "0x" + _memOffset.ToString("X");
@@ -195,7 +193,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		private void btnUp_Click(object sender, RoutedEventArgs e)
 		{
 			_cacheOffset += GetSkip();
-			_memOffset = _cacheOffset + _cacheFile.MetaArea.PointerMask;
+			_memOffset = _cacheFile.MetaArea.OffsetToPointer((int)_cacheOffset);
 
 			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
 			txtMemOffset.Text = "0x" + _memOffset.ToString("X");

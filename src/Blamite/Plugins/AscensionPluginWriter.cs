@@ -246,7 +246,7 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
-		public void VisitColorF(string name, uint offset, bool visible, bool alpha, uint pluginLine, string tooltip)
+		public void VisitColorF(string name, uint offset, bool visible, bool alpha, bool basic, uint pluginLine, string tooltip)
 		{
 			WriteValueStart("colorf", name, offset, visible);
 			_output.WriteAttributeString("order", alpha ? "ARGB" : "RGB");
@@ -339,10 +339,10 @@ namespace Blamite.Plugins
 			WriteBasicValue("uint32", name, offset, visible);
 		}
 
-		public void VisitRangeUInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		public void VisitRangeInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
-			WriteBasicValue("uint16", name + " min", offset, visible);
-			WriteBasicValue("uint16", name + " max", offset + 4, visible);
+			WriteBasicValue("int16", name + " min", offset, visible);
+			WriteBasicValue("int16", name + " max", offset + 2, visible);
 		}
 
 		public void VisitRangeFloat32(string name, uint offset, bool visible, uint pluginLine, string tooltip)
@@ -364,6 +364,11 @@ namespace Blamite.Plugins
 				WriteBasicValue("uint16", "Language " + i + " " + name + " Index", (uint)(offset + i * 4), visible);
 				WriteBasicValue("uint16", "Language " + i + " " + name + " Count", (uint)(offset + i * 4 + 2), visible);
 			}
+		}
+
+		public void VisitDatum(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			WriteBasicValue("uint32", name, offset, visible);
 		}
 
 		private void WriteValueStart(string element, string name, uint offset, bool visible)

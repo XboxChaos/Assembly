@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin game="Reach" baseSize="0x220">
+<plugin game="ReachMCC" baseSize="0x220">
 	<revisions>
 		<revision author="Lord Zedd" version="1">Blah.</revision>
 		<revision author="Lord Zedd/Gamecheat13" version="2">thanks h5</revision>
@@ -65,7 +65,7 @@
 				<bit name="Bit 7" index="7" />
 			</flags8>
 			<int16 name="Parent Variant Index" offset="0x6" visible="true" />
-			<tagblock name="Permutation" offset="0x8" visible="true" elementSize="0x24">
+			<tagblock name="Permutations" offset="0x8" visible="true" elementSize="0x24">
 				<stringid name="Permutation Name" offset="0x0" visible="true" />
 				<int8 name="Model Permutation Index" offset="0x4" visible="true" />
 				<flags8 name="Flags" offset="0x5" visible="true">
@@ -74,8 +74,8 @@
 				<int16 name="Unknown" offset="0x6" visible="false" />
 				<float32 name="Probability" offset="0x8" visible="true" />
 				<tagblock name="States" offset="0xC" visible="true" elementSize="0xC">
-					<stringid name="Name" offset="0x0" visible="true" />
-					<int8 name="Model Permutation Index" offset="0x4" visible="true" />
+					<stringid name="Permutation Name" offset="0x0" visible="true" />
+					<int8 name="Permutation Index" offset="0x4" visible="true" />
 					<flags8 name="Property Flags" offset="0x5" visible="true">
 						<bit name="Blurred" index="0" />
 						<bit name="Hella Blurred" index="1" />
@@ -100,7 +100,7 @@
 				<int16 name="Unknown" offset="0x1E" visible="false" />
 				<undefined name="Unknown" offset="0x20" visible="false" />
 			</tagblock>
-			<enum32 name="Sort Order" offset="0x14" visible="true" tooltip="negative values mean closer to the camera">
+			<enum16 name="Sort Order" offset="0x14" visible="true" tooltip="negative values mean closer to the camera">
 				<option name="No Sorting" value="0x0" />
 				<option name="-5 (Closest)" value="0x1" />
 				<option name="-4" value="0x2" />
@@ -113,7 +113,8 @@
 				<option name="3" value="0x9" />
 				<option name="4" value="0xA" />
 				<option name="5 (Farthest)" value="0xB" />
-			</enum32>
+			</enum16>
+			<int16 name="Unknown" offset="0x16" visible="false" />
 		</tagblock>
 		<tagblock name="Objects" offset="0x20" visible="true" elementSize="0x20">
 			<stringId name="Parent Marker" offset="0x0" visible="true" />
@@ -136,7 +137,7 @@
 			<option name="Choose One Member" value="0x0" />
 			<option name="Choose All Members" value="0x1" />
 		</enum32>
-		<tagblock name="Instance Members" offset="0x8" visible="true" elementSize="0x1C">
+		<tagblock name="Member List" offset="0x8" visible="true" elementSize="0x1C">
 			<int32 name="Subgroup Index" offset="0x0" visible="true" tooltip="if this member is chosen, this subgroup will be chosen as well" />
 			<stringid name="Instance Name" offset="0x4" visible="true" tooltip="instance name, a partial name will choose all matching instances, leave blank for NONE" />
 			<float32 name="Probability" offset="0x8" visible="true" tooltip="higher numbers make it more likely" />
@@ -529,8 +530,8 @@
 		<float32 name="Shield Overcharge Time" offset="0x94" visible="true" tooltip="time it takes to reach full &quot;shield overcharge fraction&quot;" />
 		<float32 name="Shield Damaged Threshold" offset="0x98" visible="true" />
 		<tagRef name="Shield Damaged Effect" offset="0x9C" visible="true" />
-		<tagRef name="Shield Depletion Effect" offset="0xAC" visible="true" />
-		<tagRef name="Shield Recharge Effect" offset="0xBC" visible="true" />
+		<tagRef name="Shield Depleted Effect" offset="0xAC" visible="true" />
+		<tagRef name="Shield Recharging Effect" offset="0xBC" visible="true" />
 		<tagblock name="Damage Sections" offset="0xCC" visible="true" elementSize="0x44">
 			<stringid name="Name" offset="0x0" visible="true" />
 			<flags32 name="Flags" offset="0x4" visible="true">
@@ -550,9 +551,9 @@
 			<float32 name="Vitality Percentage" offset="0x8" visible="true" tooltip="percentage of total object vitality" />
 			<tagblock name="Instant Responses" offset="0xC" visible="true" elementSize="0x90">
 				<enum16 name="Response Type" offset="0x0" visible="true">
-					<option name="Recieves All Damage" value="0x0" />
-					<option name="Recieves Area Effect Damage" value="0x1" />
-					<option name="Recieves Local Damage" value="0x2" />
+					<option name="Receives All Damage" value="0x0" />
+					<option name="Receives Area Effect Damage" value="0x1" />
+					<option name="Receives Local Damage" value="0x2" />
 				</enum16>
 				<comment title="Constraint Damage Type">* if you specify a constraint group name (see lower section of this block) you can specify a constraint damage
 * loosening a constraint takes it out of the rigid state - activates it
@@ -600,11 +601,11 @@
 					<bit name="Kills Giants" index="28" />
 					<bit name="Skip Sounds On Special Death" index="29" />
 				</flags32>
-				<float32 name="Damage Threshold" offset="0xC" visible="true" tooltip="response fires after crossing this threshold.  1=full health" />
+				<float32 name="Damage Threshold" offset="0xC" visible="true" tooltip="response fires after crossing this threshold. 1=full health" />
 				<flags32 name="Body Threshold Flags" offset="0x10" visible="true">
 					<bit name="Body Threshold Active" index="0" tooltip="this resoponse fires when the body healh fraction crosses this boundary" />
 				</flags32>
-				<float32 name="Body Damage Threshold" offset="0x14" visible="true" tooltip="response fires after object body damage crosses this threshold, numbers can be negative.  You need to set the flag &quot;body threshold active&quot; for this number to be used. 1=full health" />
+				<float32 name="Body Damage Threshold" offset="0x14" visible="true" tooltip="response fires after object body damage crosses this threshold, numbers can be negative. You need to set the flag &quot;body threshold active&quot; for this number to be used. 1=full health" />
 				<tagref name="Generic Transition Effect" offset="0x18" visible="true" />
 				<tagref name="Specific Transition Effect" offset="0x28" visible="true" />
 				<tagref name="Transition Damage Effect" offset="0x38" visible="true" />
@@ -653,8 +654,8 @@
 			<float32 name="Stun Time" offset="0x30" visible="true" />
 			<float32 name="Recharge Time" offset="0x34" visible="true" />
 			<float32 name="Runtime Recharge Velocity" offset="0x38" visible="true" />
-			<stringid name="Resurrection Region Name" offset="0x3C" visible="true" />
-			<int16 name="Ressurection Region Runtime Index" offset="0x40" visible="true" />
+			<stringid name="Resurrection Restored Region Name" offset="0x3C" visible="true" />
+			<int16 name="Ressurection Restored Region Runtime Index" offset="0x40" visible="true" />
 			<int16 name="Unknown" offset="0x42" visible="false" />
 		</tagblock>
 		<tagblock name="Nodes" offset="0xD8" visible="true" elementSize="0x10">
@@ -696,7 +697,7 @@
 			<stringid name="Damage Constraint Name" offset="0x4" visible="true" />
 			<stringid name="Damage Constraint Group Name" offset="0x8" visible="true" />
 			<float32 name="Group Probability Scale" offset="0xC" visible="true" />
-			<enum16 name="Type" offset="0x10" visible="true">
+			<enum16 name="Constraint Type" offset="0x10" visible="true">
 				<option name="Hinge" value="0x0" />
 				<option name="Limited Hinge" value="0x1" />
 				<option name="Ragdoll" value="0x2" />
@@ -704,7 +705,7 @@
 				<option name="Ball and Socket" value="0x4" />
 				<option name="Prismatic" value="0x5" />
 			</enum16>
-			<int16 name="Index" offset="0x12" visible="true" />
+			<int16 name="Constraint Index" offset="0x12" visible="true" />
 		</tagblock>
 	</tagblock>
 	<comment title="Damage Info">Use these fields instead of the above &quot;Old Damage Info&quot; block.</comment>
@@ -892,8 +893,8 @@
 		<stringid name="Name" offset="0x0" visible="true" />
 		<flags32 name="Flags" offset="0x4" visible="true">
 			<bit name="Starts Inactive" index="0" tooltip="this section will be initialized with zero health and will be stunned indefinitely" />
-			<bit name="Takes Full Dmg When Object Dies" index="1" />
-			<bit name="Takes Full Dmg When Obj Dstryd" index="2" />
+			<bit name="Takes Full Damage When Object Dies" index="1" />
+			<bit name="Takes Full Damage When Object Destroyed" index="2" />
 			<bit name="Restored On Ressurection" index="3" />
 			<bit name="Headshot" index="4" tooltip="takes extra headshot damage when shot" />
 			<bit name="Depletion Is Permanent" index="5" />
@@ -924,7 +925,7 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</flags32>
-		<float32 name="Vitality Percentage" offset="0x8" visible="true" />
+		<float32 name="Vitality Percentage" offset="0x8" visible="true" tooltip="percentage of total object vitality" />
 		<stringid name="Shield Material Name" offset="0xC" visible="true" tooltip="set this to make this damage section a shield" />
 		<float32 name="Stun Time" offset="0x10" visible="true" />
 		<float32 name="Minimum Stun Damage" offset="0x14" visible="true" tooltip="the minimum damage required to stun this object's health" />
@@ -941,10 +942,10 @@
 		<stringid name="Pre-Recharge Effect Marker" offset="0x58" visible="true" tooltip="(main shield only)" />
 		<tagRef name="Pre-Recharge Abort Effect" offset="0x5C" visible="true" tooltip="(main shield only) if the pre-recharge effect is aborted before the actual recharge starts, this effect plays" />
 		<stringid name="Pre-Recharge Abort Effect Marker" offset="0x6C" visible="true" tooltip="(main shield only)" />
-		<float32 name="Overcharge-Time" offset="0x70" visible="true" tooltip="time it takes to reach full &quot;overcharge fraction&quot;" />
-		<float32 name="Overcharge-Fraction" offset="0x74" visible="true" tooltip="fraction to which shields will automatically overcharge, values &lt;= 1.0 are ignored" />
-		<float32 name="Pre-Decay-Time" offset="0x78" visible="true" tooltip="time for this section to be active before it will start to decay" />
-		<float32 name="Decay-Time" offset="0x7C" visible="true" tooltip="time for need for this section to fully decay with full health." />
+		<float32 name="Overcharge Time" offset="0x70" visible="true" tooltip="time it takes to reach full &quot;overcharge fraction&quot;" />
+		<float32 name="Overcharge Fraction" offset="0x74" visible="true" tooltip="fraction to which shields will automatically overcharge, values &lt;= 1.0 are ignored" />
+		<float32 name="Pre-Decay Time" offset="0x78" visible="true" tooltip="time for this section to be active before it will start to decay" />
+		<float32 name="Decay Time" offset="0x7C" visible="true" tooltip="time for need for this section to fully decay with full health." />
 		<stringid name="Resurrection Restored Region Name" offset="0x80" visible="true" />
 		<tagblock name="Instant Responses" offset="0x84" visible="true" elementSize="0xB0">
 			<flags32 name="Flags" offset="0x0" visible="true">
@@ -974,15 +975,9 @@
 				<bit name="Force Hard Ping" index="23" />
 				<bit name="Can Refire" index="24" tooltip="can fire again if the section ever recharges past its threshold" />
 				<bit name="Can Skip Transition Effects" index="25" tooltip="will not spawn effects if previous response also fired" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</flags32>
 			<stringid name="Label" offset="0x4" visible="true" />
-			<float32 name="Damage Threshold" offset="0x8" visible="true" tooltip="response fires after crossing this threshold.  1=full health" />
+			<float32 name="Damage Threshold" offset="0x8" visible="true" tooltip="response fires after crossing this threshold. 1=full health" />
 			<tagRef name="Generic Transition Effect" offset="0xC" visible="true" />
 			<stringid name="Generic Effect Marker" offset="0x1C" visible="true" />
 			<tagRef name="Specific Transition Effect" offset="0x20" visible="true" />
@@ -990,7 +985,7 @@
 			<tagRef name="Transition Damage Effect" offset="0x34" visible="true" />
 			<stringid name="Damage Effect Marker Name" offset="0x44" visible="true" />
 			<tagRef name="Looping Effect" offset="0x48" visible="true" tooltip="will play until the next response is triggered." />
-			<tagblock name="Region State Changes" offset="0x58" visible="true" elementSize="0x8">
+			<tagblock name="Region Transitions" offset="0x58" visible="true" elementSize="0x8">
 				<stringid name="Region" offset="0x0" visible="true" />
 				<enum16 name="New State" offset="0x4" visible="true">
 					<option name="Default" value="0x0" />
@@ -1098,7 +1093,7 @@
 		<stringid name="Damage Constraint Name" offset="0x4" visible="true" />
 		<stringid name="Damage Constraint Group Name" offset="0x8" visible="true" />
 		<float32 name="Group Probability Scale" offset="0xC" visible="true" />
-		<enum16 name="Type" offset="0x10" visible="true">
+		<enum16 name="Constraint Type" offset="0x10" visible="true">
 			<option name="Hinge" value="0x0" />
 			<option name="Limited Hinge" value="0x1" />
 			<option name="Ragdoll" value="0x2" />
@@ -1106,7 +1101,7 @@
 			<option name="Ball and Socket" value="0x4" />
 			<option name="Prismatic" value="0x5" />
 		</enum16>
-		<int16 name="Index" offset="0x12" visible="true" />
+		<int16 name="Constraint Index" offset="0x12" visible="true" />
 	</tagblock>
 	<tagblock name="Nodes" offset="0xF8" visible="true" elementSize="0x10">
 		<int16 name="Runtime Damage Part" offset="0x0" visible="true" />
@@ -1124,7 +1119,7 @@
 		<int16 name="Damage Section Index" offset="0xC" visible="true" tooltip="the target is associated with this damage section" />
 		<int16 name="Variant Index" offset="0xE" visible="true" tooltip="the target will only appear with this variant" />
 		<float32 name="Targeting Relevance" offset="0x10" visible="true" tooltip="higher relevances turn into stronger magnetisms" />
-		<float32 name="AOE Exclusion Radius" offset="0x14" visible="true" tooltip="ignored if zero" />
+		<float32 name="Area Of Effect Exclusion Radius" offset="0x14" visible="true" tooltip="ignored if zero" />
 		<flags8 name="Lock-On Flags" offset="0x18" visible="true">
 			<bit name="Headshot" index="0" />
 			<bit name="Vulnerable" index="1" />
@@ -1138,8 +1133,8 @@
 	</tagblock>
 	<tagblock name="Model Targets" offset="0x114" visible="true" elementSize="0x28">
 		<flags8 name="Flags" offset="0x0" visible="true">
-			<bit name="AOE Top Level" index="0" />
-			<bit name="AOE Test Obstruction" index="1" />
+			<bit name="Area Of Effect Top Level" index="0" />
+			<bit name="Area Of Effect Test Obstruction" index="1" />
 			<bit name="Shows Tracking Reticle" index="2" tooltip="use this model targets center for displaying the targetting reticle" />
 		</flags8>
 		<int8 name="Unknown" offset="0x1" visible="false" />
@@ -1150,7 +1145,7 @@
 		<int16 name="Damage Section index" offset="0x10" visible="true" tooltip="the target is associated with this damage section" />
 		<int16 name="Variant index" offset="0x12" visible="true" tooltip="the target will only appear with this variant" />
 		<float32 name="Targeting Relevance" offset="0x14" visible="true" tooltip="higher relevances turn into stronger magnetisms" />
-		<float32 name="Aoe Exclusion Radius" offset="0x18" visible="true" tooltip="ignored if zero" />
+		<float32 name="Area Of Effect Exclusion Radius" offset="0x18" visible="true" tooltip="ignored if zero" />
 		<flags8 name="Lock-On Flags" offset="0x1C" visible="true">
 			<bit name="Headshot" index="0" />
 			<bit name="Vulnerable" index="1" />
@@ -1198,7 +1193,7 @@
 		<bit name="Active Camo Always On" index="0" />
 		<bit name="Active Camo Never" index="1" />
 		<bit name="Inconsequential Target" index="2" tooltip="used in magnetism and campaign saving" />
-		<bit name="Model Use Airprobe Lighting First{Model Use Airprobe Lighting}" index="3" />
+		<bit name="Model Use Airprobe Lighting First" index="3" />
 		<bit name="Locked Precomputed Probes" index="4" tooltip="air or scenery probe" />
 		<bit name="If Sky Attaches To Camera" index="5" tooltip="parallax % between sky pos and camera pos below" />
 		<bit name="Model Is Big Battle Object" index="6" />
@@ -1757,22 +1752,35 @@
 	<flags32 name="Runtime Flags" offset="0x1A4" visible="true">
 		<bit name="Contains Runtime Nodes" index="0" />
 	</flags32>
-	<uint32 name="Scenario Load Parameters Block" offset="0x1A8" visible="false" />
-	<uint32 name="Scenario Load Parameters Block" offset="0x1AC" visible="false" />
-	<uint32 name="Scenario Load Parameters Block" offset="0x1B0" visible="false" />
+	<tagblock name="Scenario Load Parameters" offset="0x1A8" visible="true" elementSize="0x44">
+		<comment title="SCENARIO LOAD PARAMETERS">strip-variant &lt;variant-name&gt;
+strips a given variant out of the model tag
+strip-dialogue
+strips all the dialogue for this model i.e. cinematic only</comment>
+		<tagRef name="Scenario" offset="0x0" visible="true" />
+		<dataref name="Parameters" offset="0x10" visible="true" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+	</tagblock>
 	<float32 name="Sky Parallax Percent" offset="0x1B4" visible="true" tooltip="If flag checked % between sky pos and camera pos 0=camera" />
 	<float32 name="Shadow Depth Compare Bias" offset="0x1B8" visible="true" tooltip="Default is 0.002" />
-	<float32 name="Shadow Slope Scale Bias" offset="0x1BC" visible="true" tooltip="controls cutoff point for shadows around edges.  Default is 81 degrees" />
+	<float32 name="Shadow Slope Scale Bias" offset="0x1BC" visible="true" tooltip="controls cutoff point for shadows around edges. Default is 81 degrees" />
 	<float32 name="Shadow Depth Compare Bias (Dynamic Lights)" offset="0x1C0" visible="true" tooltip="Default is 0.0008" />
-	<float32 name="Shadow Slope Scale Bias (Dynamic Lights)" offset="0x1C4" visible="true" tooltip="controls cutoff point for shadows around edges.  Default is 81 degrees" />
+	<float32 name="Shadow Slope Scale Bias (Dynamic Lights)" offset="0x1C4" visible="true" tooltip="controls cutoff point for shadows around edges. Default is 81 degrees" />
 	<comment title="PRT Shadows (Soft Self-Shadow)">By default, the shadows on each permutation are computed using the first permutation in
-every other region as shadow casters.  You can override this behavior below by specifying
+every other region as shadow casters. You can override this behavior below by specifying
 which permutation to use as a shadow caster in a given region.
 
   PRT shadow bounces:
     the number of light bounces to use when computing the global illumination.
-    (0 bounces gets only direct light).  Increasing the number of bounces
-    increases the calculation time.  1 or 2 bounces should be good enough for
+    (0 bounces gets only direct light). Increasing the number of bounces
+    increases the calculation time. 1 or 2 bounces should be good enough for
     almost all models.</comment>
 	<enum8 name="PRT Shadow Detail" offset="0x1C8" visible="true" tooltip="how much information is recorded about different light directions">
 		<option name="Ambient Occlusion (2 Bytes Per Vertex)" value="0x0" />
@@ -1809,6 +1817,6 @@ which permutation to use as a shadow caster in a given region.
 	<tagRef name="Shield Impact Parameter Override" offset="0x1F0" visible="true" />
 	<tagRef name="1st Person Shield Impact Parameter Override" offset="0x200" visible="true" />
 	<comment title="Model Object Data" />
-	<float32 name="Radius" offset="0x210" visible="true" />
-	<point3 name="Offset" offset="0x214" visible="true" />
+	<float32 name="Bounding Radius" offset="0x210" visible="true" />
+	<point3 name="Bounding Offset" offset="0x214" visible="true" />
 </plugin>

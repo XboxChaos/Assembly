@@ -30,7 +30,7 @@ namespace Blamite.Blam.SecondGen
 
 		public long OffsetToPointer(int offset, int areaStartOffset)
 		{
-			return (uint) (offset - areaStartOffset + _mask);
+			return (int) (offset - areaStartOffset + _mask);
 		}
 	}
 }

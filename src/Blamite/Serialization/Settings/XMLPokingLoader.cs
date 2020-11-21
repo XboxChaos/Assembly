@@ -37,11 +37,16 @@ namespace Blamite.Serialization.Settings
 			foreach (XElement cl in container.Elements("version"))
 			{
 				string name = XMLUtil.GetStringAttribute(cl, "name");
-				long pointer = XMLUtil.GetNumericAttribute(cl, "address");
+
+				long headerPointer = XMLUtil.GetNumericAttribute(cl, "headerPointer", -1);
+
+				long headerAddress = XMLUtil.GetNumericAttribute(cl, "headerAddress", -1);
+				long magicAddress = XMLUtil.GetNumericAttribute(cl, "magicAddress", -1);
+				long sharedMagicAddress = XMLUtil.GetNumericAttribute(cl, "sharedMagicAddress", -1);
 
 				Version version = new Version(name);
 
-				result.AddName(version, pointer);
+				result.AddName(version, new PokingInformation(headerPointer, headerAddress, magicAddress, sharedMagicAddress));
 			}
 			return result;
 		}

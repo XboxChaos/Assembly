@@ -13,6 +13,7 @@ namespace Blamite.Blam.ThirdGen.Localization
 		private readonly AESKey _encryptionKey;
 		private readonly StructureLayout _pointerLayout;
 		private readonly int _sizeAlign;
+		private readonly bool _hashes;
 
 		public ThirdGenLanguage(GameLanguage language, StructureValueCollection values, FileSegmenter segmenter,
 			FileSegmentGroup localeArea, EngineDescription buildInfo)
@@ -20,6 +21,7 @@ namespace Blamite.Blam.ThirdGen.Localization
 			Language = language;
 			_pointerLayout = buildInfo.Layouts.GetLayout("locale index table element");
 			_encryptionKey = buildInfo.LocaleKey;
+			_hashes = buildInfo.UsesStringHashes;
 			_sizeAlign = (_encryptionKey != null) ? AES.BlockSize : 1;
 			Load(values, segmenter, localeArea);
 		}
@@ -130,9 +132,19 @@ namespace Blamite.Blam.ThirdGen.Localization
 				// Update the two locale data hashes if we need to
 				// (the hash arrays are set to null if the build doesn't need them)
 				if (IndexTableHash != null)
-					IndexTableHash = SHA1.Transform(offsetData.ToArray(), 0, (int) offsetData.Length);
+				{
+					if (_hashes)
+						IndexTableHash = SHA1.Transform(offsetData.ToArray(), 0, (int)offsetData.Length);
+					else
+						IndexTableHash = new byte[20];
+				}
 				if (StringDataHash != null)
-					StringDataHash = SHA1.Transform(stringData.ToArray(), 0, dataSize);
+				{
+					if (_hashes)
+						StringDataHash = SHA1.Transform(stringData.ToArray(), 0, dataSize);
+					else
+						StringDataHash = new byte[20];
+				}
 
 				// Make sure there's free space for the offset table and then write it to the file
 				LocaleIndexTable.Resize((int) offsetData.Length, stream);

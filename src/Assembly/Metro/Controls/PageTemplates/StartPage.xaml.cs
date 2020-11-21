@@ -75,7 +75,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 				int recentsCount = 0;
 				foreach (Settings.RecentFileEntry entry in App.AssemblyStorage.AssemblySettings.ApplicationRecents)
 				{
-					if (recentsCount > 31)
+					if (recentsCount > 29)
 						break;
 
 					var btnRecent = new Button

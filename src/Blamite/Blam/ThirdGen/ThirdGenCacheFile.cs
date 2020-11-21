@@ -6,7 +6,6 @@ using Blamite.Blam.Scripting;
 using Blamite.Blam.Shaders;
 using Blamite.Blam.ThirdGen.Localization;
 using Blamite.Blam.ThirdGen.Resources;
-using Blamite.Blam.ThirdGen.Resources.Sounds;
 using Blamite.Blam.ThirdGen.Shaders;
 using Blamite.Blam.ThirdGen.Structures;
 using Blamite.Blam.Util;
@@ -35,6 +34,7 @@ namespace Blamite.Blam.ThirdGen
 		private ThirdGenPointerExpander _expander;
 		private Endian _endianness;
 		private EffectInterop _effects;
+		private SoundResourceManager _soundGestalt;
 
 		private bool _zoneOnly = false;
 
@@ -43,7 +43,7 @@ namespace Blamite.Blam.ThirdGen
 			_endianness = reader.Endianness;
 			_buildInfo = buildInfo;
 			_segmenter = new FileSegmenter(buildInfo.SegmentAlignment);
-			_expander = new ThirdGenPointerExpander((uint)buildInfo.ExpandMagic);
+			_expander = new ThirdGenPointerExpander(buildInfo.ExpandMagic);
 			Allocator = new MetaAllocator(this, 0x10000);
 			Load(reader, buildString);
 		}
@@ -234,15 +234,22 @@ namespace Blamite.Blam.ThirdGen
 			get { return _effects; }
 		}
 
+		public SoundResourceManager SoundGestalt
+		{
+			get { return _soundGestalt; }
+		}
+
 		private void Load(IReader reader, string buildString)
 		{
 			LoadHeader(reader, buildString);
 			LoadFileNames(reader);
-			LoadStringIDs(reader);
+			var resolver = LoadStringIDNamespaces(reader);
+			LoadStringIDs(reader, resolver);
 			LoadTags(reader);
 			LoadLanguageGlobals(reader);
 			LoadScriptFiles(reader);
 			LoadResourceManager(reader);
+			LoadSoundResourceManager(reader);
 			LoadSimulationDefinitions(reader);
 			LoadEffects(reader);
 			ShaderStreamer = new ThirdGenShaderStreamer(this, _buildInfo);
@@ -277,13 +284,53 @@ namespace Blamite.Blam.ThirdGen
 			}
 		}
 
-		private void LoadStringIDs(IReader reader)
+		private StringIDNamespaceResolver LoadStringIDNamespaces(IReader reader)
+		{
+			// making some assumptions here based on all current stringid xmls
+			if (_header.StringIDNamespaceCount > 1)
+			{
+				int[] namespaces = new int[_header.StringIDNamespaceCount];
+				reader.SeekTo(_header.StringIDNamespaceTable.Offset);
+				for (int i = 0; i < namespaces.Length; i++)
+					namespaces[i] = reader.ReadInt32();
+
+				// shift our way to the namespace bits, assuming index is always at least 16 bits
+				int firstNamespaceBit = -1;
+				for (int i = 16; i < 32; i++)
+					if (namespaces[1] >> i == 1)
+					{
+						firstNamespaceBit = i;
+						break;
+					}
+
+				if (firstNamespaceBit == -1)
+					return null;
+
+				// assuming here that the namespace is always 8 bits
+				var resolver = new StringIDNamespaceResolver(new StringIDLayout(firstNamespaceBit, 8, 32 - 8 - firstNamespaceBit));
+				int indexMask = (1 << firstNamespaceBit) - 1;
+
+				// register all but the first namespace as that needs the final count
+				int counter = namespaces[0] & indexMask;
+				for (int i = 1; i < namespaces.Length; i++)
+				{
+					resolver.RegisterSet(i, 0, counter);
+					counter += namespaces[i] & indexMask;
+				}
+				resolver.RegisterSet(0, namespaces[0] & indexMask, counter);
+				return resolver;
+			}
+			else
+				return null;
+		}
+
+		private void LoadStringIDs(IReader reader, StringIDNamespaceResolver resolver = null)
 		{
 			if (_header.StringIDCount > 0)
 			{
 				var stringTable = new IndexedStringTable(reader, _header.StringIDCount, _header.StringIDIndexTable,
 					_header.StringIDData, _buildInfo.StringIDKey);
-				_stringIds = new IndexedStringIDSource(stringTable, _buildInfo.StringIDs);
+				_stringIds = new IndexedStringIDSource(stringTable, resolver != null ? resolver : _buildInfo.StringIDs);
 			}
 		}
 
@@ -357,69 +404,49 @@ namespace Blamite.Blam.ThirdGen
 			}
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="reader"></param>
-		/// <returns></returns>
-		public ISoundResourceGestalt LoadSoundResourceGestaltData(IReader reader)
+		private void LoadSoundResourceManager(IReader reader)
 		{
-			if (_tags == null || !_buildInfo.Layouts.HasLayout("sound resource gestalt"))
-				return null;
+			ITag ughTag = _tags.FindTagByGroup("ugh!");
+			bool haveUghLayout = _buildInfo.Layouts.HasLayout("sound resource gestalt");
+			bool canLoadUgh = (ughTag != null && ughTag.MetaLocation != null && haveUghLayout);
 
-			var layout = _buildInfo.Layouts.GetLayout("sound resource gestalt");
+			if (ughTag != null && ughTag.MetaLocation != null && haveUghLayout)
+			{
+				SoundResourceGestalt gestalt = null;
+				if (canLoadUgh)
+					gestalt = new SoundResourceGestalt(reader, ughTag, MetaArea, Allocator, _buildInfo, _expander);
 
-			var ugh = _tags.FindTagByGroup("ugh!");
-			if (ugh == null)
-				return null;
-
-			reader.SeekTo(ugh.MetaLocation.AsOffset());
-			var values = StructureReader.ReadStructure(reader, layout);
-			return new ThirdGenSoundResourceGestalt(values, reader, MetaArea, _buildInfo);
+				_soundGestalt = new SoundResourceManager(gestalt, _tags, MetaArea, Allocator, _buildInfo, _expander);
+			}
 		}
 
 		private void LoadScriptFiles(IReader reader)
 		{
-			if (_tags != null && _buildInfo.Layouts.HasLayout("hsdt"))
-			{
-				int tagCount = 0;
-
-				IEnumerable<ITag> scripttags = _tags.FindTagsByGroup("hsdt");
-
-				ITag scnr = _tags.FindTagByGroup("scnr");
-				if (scnr == null)
-				{
-					ScriptFiles = new IScriptFile[0];
-					return;
-				}
-
-
-				foreach (ITag aHS in scripttags)
-					tagCount++;
-
-				ScriptFiles = new IScriptFile[tagCount];
-
-				int i = 0;
-				foreach (ITag aHS in scripttags)
-				{
-					string tagname = _fileNames.GetTagName(aHS.Index);
-					ScriptFiles[i] = new ThirdGenScenarioScriptFile(scnr, aHS, tagname, MetaArea, StringIDs, _buildInfo, _expander);
-					i++;
-				}
-
-				return;
-			}
-			else if (_tags != null && _buildInfo.Layouts.HasLayout("scnr"))
-			{
-				ITag scnr = _tags.FindTagByGroup("scnr");
-				if (scnr != null)
-				{
-					ScriptFiles = new IScriptFile[1];
-					ScriptFiles[0] = new ThirdGenScenarioScriptFile(scnr, ScenarioName, MetaArea, StringIDs, _buildInfo, _expander);
-					return;
-				}
-			}
 			ScriptFiles = new IScriptFile[0];
+
+			if (_tags != null)
+			{
+				List<ThirdGenScenarioScriptFile> l_scriptfiles = new List<ThirdGenScenarioScriptFile>();
+
+				if (_buildInfo.Layouts.HasLayout("hsdt"))
+				{
+					ITag mainScenario = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
+					if (mainScenario == null)
+						return;
+
+					foreach (ITag hs in _tags.FindTagsByGroup("hsdt"))
+						l_scriptfiles.Add(new ThirdGenScenarioScriptFile(mainScenario, hs, _fileNames.GetTagName(hs.Index), MetaArea, StringIDs, _buildInfo, _expander));
+				}
+				else if (_buildInfo.Layouts.HasLayout("scnr"))
+				{
+					foreach (ITag hs in _tags.FindTagsByGroup("scnr"))
+						l_scriptfiles.Add(new ThirdGenScenarioScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, StringIDs, _buildInfo, _expander));
+				}
+				else
+					return;
+
+				ScriptFiles = l_scriptfiles.ToArray();
+			}
 		}
 
 		private void LoadSimulationDefinitions(IReader reader)

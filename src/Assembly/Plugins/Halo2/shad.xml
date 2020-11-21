@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin game="Halo2" baseSize="0x54">
+<plugin game="Halo2" baseSize="0x5C">
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="trepdimeflou" version="1">named some unknowns...</revision>
@@ -28,8 +28,42 @@
 		<bit name="Sort First" index="1" />
 		<bit name="No Active Camo" index="2" />
 	</flags16>
-	<undefined name="Unknown" offset="0x18" visible="false" />
-	<undefined name="Unknown" offset="0x1C" visible="false" />
+	<tagblock name="Parameters" offset="0x18" visible="true" elementSize="0x28">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<enum16 name="Type" offset="0x4" visible="true">
+			<option name="Bitmap" value="0x0" />
+			<option name="Value" value="0x1" />
+			<option name="Color" value="0x2" />
+			<option name="Switch" value="0x3" />
+		</enum16>
+		<int16 name="Unknown" offset="0x6" visible="false" />
+		<tagRef name="Bitmap" offset="0x8" visible="true" />
+		<float32 name="Const Value" offset="0x10" visible="true" />
+		<colorf name="Const Color" offset="0x14" alpha="false" visible="true" />
+		<tagblock name="Animation Properties" offset="0x20" visible="true" elementSize="0x18">
+			<enum16 name="Type" offset="0x0" visible="true">
+				<option name="Bitmap Scale Uniform" value="0x0" />
+				<option name="Bitmap Scale X" value="0x1" />
+				<option name="Bitmap Scale Y" value="0x2" />
+				<option name="Bitmap Scale Z" value="0x3" />
+				<option name="Bitmap Translation X" value="0x4" />
+				<option name="Bitmap Translation Y" value="0x5" />
+				<option name="Bitmap Translation Z" value="0x6" />
+				<option name="Bitmap Rotation Angle" value="0x7" />
+				<option name="Bitmap Rotation Axis X" value="0x8" />
+				<option name="Bitmap Rotation Axis Y" value="0x9" />
+				<option name="Bitmap Rotation Axis Z" value="0xA" />
+				<option name="Value" value="0xB" />
+				<option name="Color" value="0xC" />
+				<option name="Bitmap Index" value="0xD" />
+			</enum16>
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<stringid name="Input Name" offset="0x4" visible="true" />
+			<stringid name="Range Name" offset="0x8" visible="true" />
+			<float32 name="Time Period" offset="0xC" visible="true" />
+			<dataref name="Animation Function" offset="0x10" visible="true" />
+		</tagblock>
+	</tagblock>
 	<tagblock name="Postprocess Definition" offset="0x20" visible="true" elementSize="0x7C">
 		<tagRef name="Shader Template" offset="0x0" withGroup="false" visible="true" />
 		<tagblock name="Bitmaps" offset="0x4" visible="true" elementSize="0xC">
@@ -41,20 +75,18 @@
 			<color32 name="Color" offset="0x0" alpha="true" visible="true" />
 		</tagblock>
 		<tagblock name="Vertex Constants" offset="0x14" visible="true" elementSize="0x10">
-			<float32 name="x" offset="0x0" visible="true" />
-			<float32 name="y" offset="0x4" visible="true" />
-			<float32 name="z" offset="0x8" visible="true" />
+			<vector3 name="vector" offset="0x0" visible="true" />
 			<float32 name="w" offset="0xC" visible="true" />
 		</tagblock>
 		<tagblock name="Levels Of Detail" offset="0x1C" visible="true" elementSize="0x6">
 			<int32 name="Available Layer Flags" offset="0x0" visible="true" />
-			<int16 name="Block Index Data" offset="0x4" visible="true" />
+			<int16 name="Layers Block Index Data" offset="0x4" visible="true" />
 		</tagblock>
 		<tagblock name="Layers" offset="0x24" visible="true" elementSize="0x2">
-			<int16 name="Block Index Data" offset="0x0" visible="true" />
+			<int16 name="Indices Block Index Data" offset="0x0" visible="true" />
 		</tagblock>
 		<tagblock name="Passes" offset="0x2C" visible="true" elementSize="0x2">
-			<int16 name="Block Index Data" offset="0x0" visible="true" />
+			<int16 name="Indices Block Index Data" offset="0x0" visible="true" />
 		</tagblock>
 		<tagblock name="Implementations" offset="0x34" visible="true" elementSize="0xA">
 			<int16 name="Bitmap Transforms Block Index Data" offset="0x0" visible="true" />
@@ -74,11 +106,10 @@
 			<int16 name="Transform Index" offset="0x2" visible="true" />
 		</tagblock>
 		<tagblock name="Animated Parameters" offset="0x4C" visible="true" elementSize="0x2">
-			<int16 name="Block Index Data" offset="0x0" visible="true" />
+			<int16 name="Overlay References Block Index Data" offset="0x0" visible="true" />
 		</tagblock>
 		<tagblock name="Animated Parameter References" offset="0x54" visible="true" elementSize="0x4">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int16 name="Unknown" offset="0x0" visible="false" />
 			<int8 name="Unknown" offset="0x2" visible="false" />
 			<int8 name="Parameter Index" offset="0x3" visible="true" />
 		</tagblock>
@@ -97,7 +128,17 @@
 	</tagblock>
 	<undefined name="Unknown" offset="0x28" visible="false" />
 	<tagblock name="Predicted Resources" offset="0x2C" visible="true" elementSize="0x8">
-		<int16 name="Type" offset="0x0" visible="true" />
+		<enum16 name="Type" offset="0x0" visible="true">
+			<option name="Bitmap" value="0x0" />
+			<option name="Sound" value="0x1" />
+			<option name="Render Model Geometry" value="0x2" />
+			<option name="Cluster Geometry" value="0x3" />
+			<option name="Cluster Instanced Geometry" value="0x4" />
+			<option name="Lightmap Geometry Object Buckets" value="0x5" />
+			<option name="Lightmap Geometry Instance Buckets" value="0x6" />
+			<option name="Lightmap Cluster Bitmaps" value="0x7" />
+			<option name="Lightmap Instance Bitmaps" value="0x8" />
+		</enum16>
 		<int16 name="Resource Index" offset="0x2" visible="true" />
 		<tagRef name="Tag Index" offset="0x4" withGroup="false" visible="true" />
 	</tagblock>
@@ -126,6 +167,9 @@
 	<int16 name="Unknown" offset="0x42" visible="false" />
 	<float32 name="Lightmap Specular Brightness" offset="0x44" visible="true" />
 	<float32 name="Lightmap Ambient Bias" offset="0x48" visible="true" />
-	<float32 name="Diffuse Level" offset="0x4C" visible="true" />
-	<undefined name="Unknown" offset="0x50" visible="false" />
+	<tagblock name="Postprocess Properties" offset="0x4C" visible="true" elementSize="0x4">
+		<int32 name="Bitmap Group Index" offset="0x0" visible="true" />
+	</tagblock>
+	<float32 name="Added Depth Bias Offset" offset="0x54" visible="true" />
+	<float32 name="Added Depth Bias Slope Scale" offset="0x58" visible="true" />
 </plugin>

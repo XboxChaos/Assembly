@@ -161,11 +161,23 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			SeekToOffset(field.Offset);
 
-			if (field.Alpha)
-				_writer.WriteFloat(field.Value.ScA);
-			_writer.WriteFloat(field.Value.ScR);
-			_writer.WriteFloat(field.Value.ScG);
-			_writer.WriteFloat(field.Value.ScB);
+			// colors are handled differently prior to thirdgen, but there are edge cases in thirdgen
+			if (_cache.Engine < EngineType.ThirdGeneration || field.Basic)
+			{
+				if (field.Alpha)
+					_writer.WriteFloat(field.Value.A / 255f);
+				_writer.WriteFloat(field.Value.R / 255f);
+				_writer.WriteFloat(field.Value.G / 255f);
+				_writer.WriteFloat(field.Value.B / 255f);
+			}
+			else
+			{
+				if (field.Alpha)
+					_writer.WriteFloat(field.Value.ScA);
+				_writer.WriteFloat(field.Value.ScR);
+				_writer.WriteFloat(field.Value.ScG);
+				_writer.WriteFloat(field.Value.ScB);
+			}
 		}
 
 		public void VisitTagBlock(TagBlockData field)
@@ -442,11 +454,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			// Don't do anything
 		}
 
-		public void VisitRangeUint16(RangeUint16Data field)
+		public void VisitRangeInt16(RangeInt16Data field)
 		{
 			SeekToOffset(field.Offset);
-			_writer.WriteUInt16(field.Min);
-			_writer.WriteUInt16(field.Max);
+			_writer.WriteInt16(field.Min);
+			_writer.WriteInt16(field.Max);
 		}
 
 		public void VisitRangeFloat32(RangeFloat32Data field)
@@ -461,6 +473,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			SeekToOffset(field.Offset);
 			_writer.WriteFloat(field.RadianMin);
 			_writer.WriteFloat(field.RadianMax);
+		}
+
+		public void VisitDatum(DatumData field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteUInt32((uint)(field.Salt << 16) | field.Index);
 		}
 
 		public void WriteFields(IList<MetaField> fields)
@@ -481,7 +499,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public void WriteTagBlockChildren(TagBlockData field)
 		{
-			if (field.CurrentIndex < 0 || !field.HasChildren)
+			if (field.CurrentIndex < 0 || !field.HasChildren ||
+				!_cache.MetaArea.ContainsBlockPointer(field.FirstElementAddress, (int)(field.Length * field.ElementSize)))
 				return;
 
 			// Get the base address and convert it to an offset if we're writing to the file

@@ -59,7 +59,8 @@ namespace Blamite.Blam.Scripting
 			if (Name == null)
 				Name = "script_" + RootExpressionIndex.Value.ToString("X8");
 
-			Parameters = LoadParameters(reader, values, metaArea, buildInfo, expander);
+			if (buildInfo.Layouts.HasLayout("script parameter element"))
+				Parameters = LoadParameters(reader, values, metaArea, buildInfo, expander);
 		}
 
 		private IList<ScriptParameter> LoadParameters(IReader reader, StructureValueCollection values,

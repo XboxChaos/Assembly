@@ -133,6 +133,31 @@ namespace Blamite.Serialization
 		/// </summary>
 		public PokingCollection Poking { get; private set; }
 
+		/// <summary>
+		///		The offset past the header from a poking xml pointer to the value to add for address conversion.
+		/// </summary>
+		public int PokingOffset { get; private set; }
+
+		/// <summary>
+		///		Whether the cache file itself uses compression.
+		/// </summary>
+		public bool UsesCompression { get; private set; }
+
+		/// <summary>
+		///		MCC sometimes ships maps with string hashes 0'd out, in some cases adding a hash can cause issues.
+		/// </summary>
+		public bool UsesStringHashes { get; private set; }
+
+		/// <summary>
+		///		MCC sometimes ships maps with resource hashes and checksums 0'd out, this makes some injection optimizations impossible.
+		/// </summary>
+		public bool UsesRawHashes { get; private set; }
+
+		/// <summary>
+		///		Some/later builds have optimization which removes unused shader code from maps to save space. Injection can mean these removed shaders can be referenced and cause issues.
+		/// </summary>
+		public bool OptimizedShaders { get; private set; }
+
 		private void LoadSettings()
 		{
 			LoadEngineSettings();
@@ -143,7 +168,15 @@ namespace Blamite.Serialization
 		{
 			HeaderSize = Settings.GetSetting<int>("engineInfo/headerSize");
 			SegmentAlignment = Settings.GetSettingOrDefault("engineInfo/segmentAlignment", 0x1000);
-			ExpandMagic = Settings.GetSettingOrDefault("engineInfo/expandMagic", 0);
+			ExpandMagic = Settings.GetSettingOrDefault("engineInfo/expandMagic", -1);
+
+			UsesCompression = Settings.GetSettingOrDefault("engineInfo/usesCompression", false);
+			UsesStringHashes = Settings.GetSettingOrDefault("engineInfo/usesStringHashes", true);
+			UsesRawHashes = Settings.GetSettingOrDefault("engineInfo/usesRawHashes", true);
+			OptimizedShaders = Settings.GetSettingOrDefault("engineInfo/optimizedShaders", false);
+
+			if (Settings.PathExists("engineInfo/pokingOffset"))
+				PokingOffset = Settings.GetSettingOrDefault("engineInfo/pokingOffset", 0);
 
 			if (Settings.PathExists("engineInfo/gameExecutable"))
 				GameExecutable = Settings.GetSetting<string>("engineInfo/gameExecutable");

@@ -9,10 +9,10 @@
 		<float32 name="Grid Origin z" offset="0x8" visible="true" />
 		<int32 name="Cell Count Per Dimension" offset="0xC" visible="true" />
 		<tagblock name="Cache Blocks" offset="0x10" visible="true" elementSize="0x34">
-			<int32 name="Block Offset" offset="0x0" visible="true" />
-			<int32 name="Block Size" offset="0x4" visible="true" />
-			<int32 name="Section Data Size" offset="0x8" visible="true" />
-			<int32 name="Resource Data Size" offset="0xC" visible="true" />
+			<int32 name="Resource Block Offset" offset="0x0" visible="true" />
+			<uint32 name="Resource Block Size" offset="0x4" visible="true" />
+			<uint32 name="Section Data Size" offset="0x8" visible="true" />
+			<uint32 name="Resource Data Size" offset="0xC" visible="true" />
 			<tagblock name="Resources" offset="0x10" visible="true" elementSize="0x10">
 				<enum8 name="Type" offset="0x0" visible="true">
 					<option name="Tag Block" value="0x0" />
@@ -23,13 +23,13 @@
 				<int16 name="Unknown" offset="0x2" visible="false" />
 				<int16 name="Primary Locator" offset="0x4" visible="true" />
 				<int16 name="Secondary Locator" offset="0x6" visible="true" />
-				<int32 name="Resource Data Size" offset="0x8" visible="true" />
-				<int32 name="Resource Data Offset" offset="0xC" visible="true" />
+				<uint32 name="Resource Data Size" offset="0x8" visible="true" />
+				<uint32 name="Resource Data Offset" offset="0xC" visible="true" />
 			</tagblock>
-			<undefined name="Unknown" offset="0x18" visible="false" />
+			<tagref name="Owner Tag" offset="0x18" withGroup="false" visible="true" />
 			<int16 name="Owner Tag Section Offset" offset="0x1C" visible="true" />
 			<int16 name="Unknown" offset="0x1E" visible="false" />
-			<undefined name="Unknown" offset="0x20" visible="false" />
+			<int32 name="Unknown" offset="0x20" visible="false" />
 			<tagblock name="Cache Block Data" offset="0x24" visible="true" elementSize="0x50">
 				<tagblock name="Placements" offset="0x0" visible="true" elementSize="0x18">
 					<int32 name="Internal Data 1" offset="0x0" visible="true" />
