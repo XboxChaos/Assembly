@@ -709,7 +709,8 @@ namespace Blamite.Blam.Scripting
 					4 => expression.Value.UintValue,
 					2 => (uint)BitConverter.ToUInt16(bytes, 0),
 					1 => (uint)bytes[0],
-					_ => throw new ArgumentException($"Script value types can only have a size of 1, 2 or 4 bytes. The size {type.Size} is invalid.")
+					0 => 0,
+					_ => throw new ArgumentException($"Script value types can only have a size of 0, 1, 2 or 4 bytes. The size {type.Size} is invalid.")
 				};
 				return result;
 			}
