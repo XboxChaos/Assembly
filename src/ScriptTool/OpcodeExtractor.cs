@@ -73,7 +73,7 @@ namespace ScriptTool
             {
                 if (exp.Type == ScriptExpressionType.Group)
                 {
-                    DatumIndex index = new DatumIndex(exp.Value);
+                    DatumIndex index = new DatumIndex(exp.Value.UintValue);
                     ScriptExpression name = expressions.FindExpression(index);
 
                     if (exp.Opcode != name.Opcode)
@@ -99,7 +99,7 @@ namespace ScriptTool
             {
                 if (expr.Type == ScriptExpressionType.GlobalsReference)
                 {
-                    var bytes = BitConverter.GetBytes(expr.Value);
+                    var bytes = BitConverter.GetBytes(expr.Value.UintValue);
                     ushort first16 = BitConverter.ToUInt16(bytes, 2);
                     ushort second16 = (ushort)(BitConverter.ToUInt16(bytes, 0) ^ 0x8000);
 

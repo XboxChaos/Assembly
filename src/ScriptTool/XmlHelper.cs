@@ -229,7 +229,7 @@ namespace ScriptTool
             writer.WriteAttributeString("NextIndex", expression.Next.Index.ToString("X4"));
             writer.WriteAttributeString("StringOff", expression.StringOffset.ToString("X"));
             writer.WriteAttributeString("String", expression.StringValue);
-            writer.WriteAttributeString("Value", expression.Value.ToString("X8"));
+            writer.WriteAttributeString("Value", expression.Value.UintValue.ToString("X8"));
             writer.WriteAttributeString("LineNum", expression.LineNumber.ToString("X4"));
             writer.WriteEndElement();
         }

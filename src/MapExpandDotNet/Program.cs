@@ -44,7 +44,7 @@ namespace MapExpandDotNet
 
 			var database = XMLEngineDatabaseLoader.LoadDatabase("Formats/Engines.xml");
 			var buildInfo = database.FindEngineByVersion(version.BuildString);
-			var cacheFile = new ThirdGenCacheFile(stream, buildInfo, version.BuildString);
+			var cacheFile = new ThirdGenCacheFile(stream, buildInfo, Path.GetFileName(args[0]), version.BuildString);
 
 			FileSegmentGroup area;
 			FileSegment section;
