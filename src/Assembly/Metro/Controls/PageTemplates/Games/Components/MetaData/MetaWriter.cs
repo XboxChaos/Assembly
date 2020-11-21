@@ -499,7 +499,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public void WriteTagBlockChildren(TagBlockData field)
 		{
-			if (field.CurrentIndex < 0 || !field.HasChildren)
+			if (field.CurrentIndex < 0 || !field.HasChildren ||
+				!_cache.MetaArea.ContainsBlockPointer(field.FirstElementAddress, (int)(field.Length * field.ElementSize)))
 				return;
 
 			// Get the base address and convert it to an offset if we're writing to the file
