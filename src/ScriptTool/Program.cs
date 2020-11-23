@@ -34,6 +34,8 @@ namespace ScriptTool
             string exeDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string[] maps = Directory.GetFiles(options.MapFolder, "*.map");
             string outputFolder = options.OutputFolder == null ? exeDir : options.OutputFolder;
+            ScriptDumper scriptDumper = new ScriptDumper();
+            MapDatadumper mapDatadumper = new MapDatadumper();
 
             if (!Directory.Exists(options.MapFolder))
             {
@@ -58,31 +60,34 @@ namespace ScriptTool
             // Dump Expressions.
             if(options.DumpExpressions != null)
             {
-                var extractor = new ScriptDumper();
-
                 if (options.DumpExpressions == "ALL")
                 {
-                    extractor.DumpExpressionsAll(maps, outputFolder);
+                    scriptDumper.DumpExpressionsAll(maps, outputFolder);
                 }
                 else
                 {
                     string outputFile = Path.Combine(outputFolder, options.DumpExpressions + "_expressions.xml");
-                    extractor.DumpExpressionsType(maps, options.DumpExpressions, outputFile);
+                    scriptDumper.DumpExpressionsType(maps, options.DumpExpressions, outputFile);
                 }
             }
 
             // Dump StringIDs.
             if(options.DumpStringIDs == true)
             {
-                var dumper = new  MapDatadumper();
                 string outputFile = Path.Combine(outputFolder, "StringIDs.xml");
-                dumper.DumpUniqueStringIDs(maps, outputFile);
+                mapDatadumper.DumpUniqueStringIDs(maps, outputFile);
             }
 
+            // Dump Unit Seat Mappings.
             if(options.DumpUnitSeatMappings == true)
             {
-                ScriptDumper dumper = new ScriptDumper();
-                dumper.DumpUnitSeatMappings(maps, outputFolder);
+                scriptDumper.DumpUnitSeatMappings(maps, outputFolder);
+            }
+
+            // Dump Type Casts
+            if(options.DumpTypeCasts == true)
+            {
+                scriptDumper.DumpTypeCasts(maps, outputFolder);
             }
         }
 

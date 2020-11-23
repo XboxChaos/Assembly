@@ -23,6 +23,9 @@ namespace ScriptTool
 
         //[Option("strings", Group = "ScriptObject", Default = (bool)false, HelpText = "Dump script strings.")]
         //public bool DumpStrings { get; set; }
+        [Option("casts", Group = "ScriptObject", Default = (bool)false, HelpText = "Dump Type Casts.")]
+        public bool DumpTypeCasts { get; set; }
+
         [Option("stringids", Group = "ScriptObject", Default = (bool)false, HelpText = "Dump StringIDs.")]
         public bool DumpStringIDs { get; set; }
 
