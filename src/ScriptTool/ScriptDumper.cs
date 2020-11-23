@@ -119,5 +119,42 @@ namespace ScriptTool
                 XmlHelper.SeatMappingsToXml(mappings, outputPath);
             }
         }
+
+        public void DumpTypeCasts(string[] mapPaths, string outputDirectory)
+        {
+            Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
+
+            foreach(string path in mapPaths)
+            {
+                Console.WriteLine($"Searching for type casts in {Path.GetFileName(path)}.");
+                var scriptFiles = MapLoader.LoadAllScriptFiles(path, _db, out EngineDescription engine);
+                ushort funcNameOp = engine.ScriptInfo.GetTypeInfo("function_name").Opcode;
+
+                foreach(var file in scriptFiles)
+                {
+                    foreach(var expression in file.Value.Expressions)
+                    {
+                        if(expression.Type == ScriptExpressionType.Expression && expression.ReturnType != funcNameOp && expression.Opcode != 0xFFFF && expression.Opcode != expression.ReturnType)
+                        {
+                            string from = engine.ScriptInfo.GetTypeInfo(expression.Opcode).Name;
+                            string to = engine.ScriptInfo.GetTypeInfo(expression.ReturnType).Name;
+
+                            if(!result.ContainsKey(to))
+                            {
+                                result[to] = new List<string> { from };
+                            }
+                            else if(!result[to].Contains(from))
+                            {
+                                result[to].Add(from);
+                            }
+                        }
+                    }
+                }
+            }
+
+            XmlHelper.TypeCastsToXml(result, Path.Combine(outputDirectory, "TypeCasting.xml"));
+        }
+
+
     }
 }

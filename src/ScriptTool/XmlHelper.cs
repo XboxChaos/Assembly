@@ -267,5 +267,35 @@ namespace ScriptTool
                 }
             }
         }
+
+        public static void TypeCastsToXml(Dictionary<string, List<string>> casts, string filePath)
+        {
+            var settings = new XmlWriterSettings
+            {
+                Indent = true
+            };
+
+            using (var writer = XmlWriter.Create(filePath, settings))
+            {
+                writer.WriteStartDocument();
+                writer.WriteStartElement("typecasting");
+                foreach (KeyValuePair<string, List<string>> to in casts)
+                {
+                    writer.WriteStartElement("to");
+                    writer.WriteAttributeString("name", to.Key);
+
+                    foreach (string from in to.Value)
+                    {
+                        writer.WriteStartElement("from");
+                        writer.WriteString(from);
+                        writer.WriteEndElement();
+                    }
+                    writer.WriteEndElement();
+                }
+                writer.WriteEndElement();
+                writer.WriteEndDocument();
+                writer.Close();
+            }
+        }
     }
 }
