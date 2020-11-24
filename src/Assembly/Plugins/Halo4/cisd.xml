@@ -3,77 +3,182 @@
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
 	</revisions>
-	<tagblock name="Puppets" offset="0x0" visible="true" elementSize="0x30">
-		<stringid name="Import Name" offset="0x0" visible="true" />
-		<stringid name="Name" offset="0x4" visible="true" />
-		<tagref name="Puppet Animation" offset="0x8" visible="true" />
-		<tagref name="Puppet Object" offset="0x18" visible="true" />
-		<int32 name="Unknown" offset="0x28" visible="true" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
+	<tagblock name="Objects" offset="0x0" visible="true" elementSize="0x30">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<stringid name="Identifier" offset="0x4" visible="true" />
+		<tagref name="Model Animation Graph" offset="0x8" visible="true" />
+		<tagref name="Object" offset="0x18" visible="true" />
+		<flags32 name="Shots Active Flags 1" offset="0x28" visible="true">
+			<bit name="Shot 0" index="0" />
+			<bit name="Shot 1" index="1" />
+			<bit name="Shot 2" index="2" />
+			<bit name="Shot 3" index="3" />
+			<bit name="Shot 4" index="4" />
+			<bit name="Shot 5" index="5" />
+			<bit name="Shot 6" index="6" />
+			<bit name="Shot 7" index="7" />
+			<bit name="Shot 8" index="8" />
+			<bit name="Shot 9" index="9" />
+			<bit name="Shot 10" index="10" />
+			<bit name="Shot 11" index="11" />
+			<bit name="Shot 12" index="12" />
+			<bit name="Shot 13" index="13" />
+			<bit name="Shot 14" index="14" />
+			<bit name="Shot 15" index="15" />
+			<bit name="Shot 16" index="16" />
+			<bit name="Shot 17" index="17" />
+			<bit name="Shot 18" index="18" />
+			<bit name="Shot 19" index="19" />
+			<bit name="Shot 20" index="20" />
+			<bit name="Shot 21" index="21" />
+			<bit name="Shot 22" index="22" />
+			<bit name="Shot 23" index="23" />
+			<bit name="Shot 24" index="24" />
+			<bit name="Shot 25" index="25" />
+			<bit name="Shot 26" index="26" />
+			<bit name="Shot 27" index="27" />
+			<bit name="Shot 28" index="28" />
+			<bit name="Shot 29" index="29" />
+			<bit name="Shot 30" index="30" />
+			<bit name="Shot 31" index="31" />
+		</flags32>
+		<flags32 name="Shots Active Flags 2" offset="0x2C" visible="true">
+			<bit name="Shot 32" index="0" />
+			<bit name="Shot 33" index="1" />
+			<bit name="Shot 34" index="2" />
+			<bit name="Shot 35" index="3" />
+			<bit name="Shot 36" index="4" />
+			<bit name="Shot 37" index="5" />
+			<bit name="Shot 38" index="6" />
+			<bit name="Shot 39" index="7" />
+			<bit name="Shot 40" index="8" />
+			<bit name="Shot 41" index="9" />
+			<bit name="Shot 42" index="10" />
+			<bit name="Shot 43" index="11" />
+			<bit name="Shot 44" index="12" />
+			<bit name="Shot 45" index="13" />
+			<bit name="Shot 46" index="14" />
+			<bit name="Shot 47" index="15" />
+			<bit name="Shot 48" index="16" />
+			<bit name="Shot 49" index="17" />
+			<bit name="Shot 50" index="18" />
+			<bit name="Shot 51" index="19" />
+			<bit name="Shot 52" index="20" />
+			<bit name="Shot 53" index="21" />
+			<bit name="Shot 54" index="22" />
+			<bit name="Shot 55" index="23" />
+			<bit name="Shot 56" index="24" />
+			<bit name="Shot 57" index="25" />
+			<bit name="Shot 58" index="26" />
+			<bit name="Shot 59" index="27" />
+			<bit name="Shot 60" index="28" />
+			<bit name="Shot 61" index="29" />
+			<bit name="Shot 62" index="30" />
+			<bit name="Shot 63" index="31" />
+		</flags32>
 	</tagblock>
 	<tagblock name="Shots" offset="0xC" visible="true" elementSize="0x4C">
-		<tagblock name="Sounds" offset="0x0" visible="true" elementSize="0x3C">
-			<tagRef name="Sound" offset="0x0" visible="true" />
-			<tagRef name="Sound" offset="0x10" visible="true" />
+		<tagblock name="Dialogue" offset="0x0" visible="true" elementSize="0x3C">
+			<tagRef name="Dialogue" offset="0x0" visible="true" />
+			<tagRef name="Female Dialogue" offset="0x10" visible="true" />
 			<int32 name="Frame" offset="0x20" visible="true" />
-			<float32 name="Unknown" offset="0x24" visible="false" />
-			<stringid name="Unknown" offset="0x28" visible="true" />
-			<undefined name="Unknown" offset="0x2C" visible="false" />
-			<stringid name="Unknown" offset="0x30" visible="true" />
-			<stringid name="Unknown" offset="0x34" visible="true" />
-			<stringid name="Unknown" offset="0x38" visible="true" />
+			<float32 name="Scale" offset="0x24" visible="true" />
+			<stringid name="Lipsync Actor" offset="0x28" visible="true" />
+			<stringid name="Default Sound Effect" offset="0x2C" visible="true" />
+			<stringid name="Subtitle" offset="0x30" visible="true" />
+			<stringid name="Female Subtitle" offset="0x34" visible="true" />
+			<stringid name="Character" offset="0x38" visible="true" />
 		</tagblock>
 		<tagblock name="Effects" offset="0xC" visible="true" elementSize="0x34">
-			<undefined name="Unknown" offset="0x0" visible="false" />
+			<flags8 name="Flags" offset="0x0" visible="true">
+				<bit name="Use Maya Value" index="0" />
+				<bit name="Looping" index="1" />
+			</flags8>
+			<enum8 name="State" offset="0x1" visible="true">
+				<option name="Start" value="0x0" />
+				<option name="Stop" value="0x1" />
+				<option name="Kill" value="0x2" />
+			</enum8>
+			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagRef name="Effect" offset="0x4" visible="true" />
-			<float32 name="Unknown" offset="0x14" visible="true" />
+			<float32 name="Size Scale" offset="0x14" visible="true" />
 			<int32 name="Frame" offset="0x18" visible="true" />
-			<stringid name="Marker" offset="0x1C" visible="true" />
-			<int32 name="Owner Puppet Index" offset="0x20" visible="true" />
-			<undefined name="Unknown" offset="0x24" visible="false" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<undefined name="Unknown" offset="0x2C" visible="false" />
-			<undefined name="Unknown" offset="0x30" visible="false" />
+			<stringid name="Marker Name" offset="0x1C" visible="true" />
+			<int32 name="Marker Parent Index" offset="0x20" visible="true" />
+			<stringid name="Function a" offset="0x24" visible="true" />
+			<stringid name="Function b" offset="0x28" visible="true" />
+			<int32 name="Node ID" offset="0x2C" visible="true" />
+			<int32 name="Sequence ID" offset="0x30" visible="true" />
 		</tagblock>
-		<tagblock name="Import Scripts" offset="0x18" visible="true" elementSize="0x24">
-			<int8 name="Unknown" offset="0x0" visible="false" />
+		<tagblock name="Custom Script" offset="0x18" visible="true" elementSize="0x24">
+			<flags8 name="Flags" offset="0x0" visible="true">
+				<bit name="Use Maya Value" index="0" />
+			</flags8>
 			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int8 name="Unknown" offset="0x2" visible="false" />
-			<int8 name="Unknown" offset="0x3" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
 			<int32 name="Frame" offset="0x4" visible="true" />
-			<dataRef name="Import Script" format="asciiz" offset="0x8" visible="true" />
-			<uint32 name="Unknown" offset="0x1C" visible="false" />
-			<int32 name="Unknown" offset="0x20" visible="false" />
+			<dataref name="Script" format="asciiz" offset="0x8" visible="true" tooltip="leftover import data, editing won't do anything" />
+			<int32 name="Node ID" offset="0x1C" visible="true" />
+			<int32 name="Sequence ID" offset="0x20" visible="true" />
 		</tagblock>
-		<int32 name="Loaded Frame Count" offset="0x24" visible="true" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<tagblock name="Camera Frames" offset="0x34" visible="true" elementSize="0x24">
-			<float32 name="X" offset="0x0" visible="true" />
-			<float32 name="Y" offset="0x4" visible="true" />
-			<float32 name="Z" offset="0x8" visible="true" />
-			<undefined name="Unknown" offset="0xC" visible="true" />
-			<undefined name="Unknown" offset="0x10" visible="true" />
-			<undefined name="Unknown" offset="0x14" visible="true" />
-			<undefined name="Unknown" offset="0x18" visible="true" />
-			<undefined name="Unknown" offset="0x1C" visible="true" />
-			<undefined name="Unknown" offset="0x20" visible="true" />
+		<int32 name="Frame Count" offset="0x24" visible="true" />
+		<tagblock name="Frame Data" offset="0x28" visible="true" elementSize="0x44">
+			<point3 name="Camera Position" offset="0x0" visible="true" />
+			<vector3 name="Camera Forward" offset="0xC" visible="true" />
+			<vector3 name="Camera Up" offset="0x18" visible="true" />
+			<float32 name="Focal Length" offset="0x24" visible="true" />
+			<int32 name="Depth Of Field" offset="0x28" visible="true" />
+			<float32 name="Near Focal Plane Distance" offset="0x2C" visible="true" />
+			<float32 name="Far Focal Plane Distance" offset="0x30" visible="true" />
+			<float32 name="Near Focal Depth" offset="0x34" visible="true" />
+			<float32 name="Far Focal Depth" offset="0x38" visible="true" />
+			<float32 name="Near Blur Amount" offset="0x3C" visible="true" />
+			<float32 name="Far Blur Amount" offset="0x40" visible="true" />
 		</tagblock>
-		<tagblock name="Depth Of Field Frames" offset="0x40" visible="true" elementSize="0x24">
-			<int32 name="Frame" offset="0x0" visible="true" />
-			<float32 name="FOV" offset="0x4" visible="true" />
-			<int32 name="Unknown" offset="0x8" visible="true" />
-			<undefined name="Unknown" offset="0xC" visible="true" />
-			<undefined name="Unknown" offset="0x10" visible="true" />
-			<undefined name="Unknown" offset="0x14" visible="true" />
-			<undefined name="Unknown" offset="0x18" visible="true" />
-			<undefined name="Unknown" offset="0x1C" visible="true" />
-			<undefined name="Unknown" offset="0x20" visible="true" />
+		<tagblock name="Dynamic Frame Data" offset="0x34" visible="true" elementSize="0x24">
+			<point3 name="Camera Position" offset="0x0" visible="true" />
+			<vector3 name="Camera Forward" offset="0xC" visible="true" />
+			<vector3 name="Camera Up" offset="0x18" visible="true" />
+		</tagblock>
+		<tagblock name="Constant Frame Data" offset="0x40" visible="true" elementSize="0x24">
+			<int32 name="Frame Index" offset="0x0" visible="true" />
+			<float32 name="Focal Length" offset="0x4" visible="true" />
+			<comment title="Depth Of Field" />
+			<flags32 name="Flags" offset="0x8" visible="true">
+				<bit name="Enable Depth Of Field" index="0" />
+			</flags32>
+			<float32 name="Near Focal Plane Distance" offset="0xC" visible="true" />
+			<float32 name="Far Focal Plane Distance" offset="0x10" visible="true" />
+			<float32 name="Near Focal Depth" offset="0x14" visible="true" />
+			<float32 name="Far Focal Depth" offset="0x18" visible="true" />
+			<float32 name="Near Blur Amount" offset="0x1C" visible="true" />
+			<float32 name="Far Blur Amount" offset="0x20" visible="true" />
 		</tagblock>
 	</tagblock>
-	<uint32 name="probably texture camera block" offset="0x18" visible="true" />
-	<uint32 name="probably texture camera block" offset="0x1C" visible="true" />
-	<uint32 name="probably texture camera block" offset="0x20" visible="true" />
-	<undefined name="Unknown" offset="0x24" visible="false" />
+	<tagblock name="Extra Camera Frame Data" offset="0x18" visible="true" elementSize="0x14">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<stringid name="Type" offset="0x4" visible="true" />
+		<tagblock name="Shots" offset="0x8" visible="true" elementSize="0xC">
+			<tagblock name="Frame Data" offset="0x0" visible="true" elementSize="0x48">
+				<flags32 name="Flags" offset="0x0" visible="true">
+					<bit name="Enabled" index="0" />
+				</flags32>
+				<point3 name="Camera Position" offset="0x4" visible="true" />
+				<vector3 name="Camera Forward" offset="0x10" visible="true" />
+				<vector3 name="Camera Up" offset="0x1C" visible="true" />
+				<float32 name="Focal Length" offset="0x28" visible="true" />
+				<comment title="Depth Of Field" />
+				<flags32 name="Flags" offset="0x2C" visible="true">
+					<bit name="Enable Depth Of Field" index="0" />
+				</flags32>
+				<float32 name="Near Focal Plane Distance" offset="0x30" visible="true" />
+				<float32 name="Far Focal Plane Distance" offset="0x34" visible="true" />
+				<float32 name="Near Focal Depth" offset="0x38" visible="true" />
+				<float32 name="Far Focal Depth" offset="0x3C" visible="true" />
+				<float32 name="Near Blur Amount" offset="0x40" visible="true" />
+				<float32 name="Far Blur Amount" offset="0x44" visible="true" />
+			</tagblock>
+		</tagblock>
+	</tagblock>
+	<int32 name="Version" offset="0x24" visible="true" />
 </plugin>

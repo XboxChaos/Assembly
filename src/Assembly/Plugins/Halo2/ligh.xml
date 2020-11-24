@@ -8,31 +8,31 @@
 		<revision author="Lord Zedd" version="4">Emum fixes</revision>
 	</revisions>
 	<flags32 name="Flags" offset="0x0" visible="true">
-		<bit name="No Illumination" index="0" />
-		<bit name="No Specular" index="1" />
-		<bit name="Force Cast Environment Shadow" index="2" />
-		<bit name="No Shadow" index="3" />
-		<bit name="Force Frustum Visibility On Small" index="4" />
+		<bit name="No Illumination" index="0" tooltip="don't cast any per-pixel dynamic light" />
+		<bit name="No Specular" index="1" tooltip="don't cast any specular highlights" />
+		<bit name="Force Cast Environment Shadows Through Portals" index="2" />
+		<bit name="No Shadow" index="3" tooltip="don't cast any stencil shadows" />
+		<bit name="Force Frustum Visibility On Small Light" index="4" />
 		<bit name="Only Render In First Person" index="5" />
 		<bit name="Only Render In Third Person" index="6" />
-		<bit name="Don't Fade When Invisible" index="7" />
-		<bit name="Multiplayer Override" index="8" />
+		<bit name="Don't Fade When Invisible?" index="7" tooltip="don't fade out this light when under active-camouflage" />
+		<bit name="Multiplayer Override" index="8" tooltip="don't turn off in multiplayer" />
 		<bit name="Animated Gel" index="9" />
-		<bit name="Only In Dynamic Envmap" index="10" />
-		<bit name="Ignore Parent Object" index="11" />
-		<bit name="Don't Show Parent" index="12" />
-		<bit name="Ignore All Parents" index="13" />
-		<bit name="March Milestone Hack" index="14" />
-		<bit name="Force Light Inside World" index="15" />
-		<bit name="Environment Doesn't Cast Stencil Shadows" index="16" />
-		<bit name="Objects Don't Cast Stencil Shadows" index="17" />
-		<bit name="1st Person From Camera" index="18" />
+		<bit name="Only In Dynamic Envmap?" index="10" tooltip="only draw this light in dynamic reflection maps" />
+		<bit name="Ignore Parent Object" index="11" tooltip="don't illuminate or shadow the single object we are attached to" />
+		<bit name="Don't Shadow Parent" index="12" tooltip="don't shadow the object we are attached to" />
+		<bit name="Ignore All Parents" index="13" tooltip="don't illuminate or shadow all the way up to our parent object" />
+		<bit name="March Milestone Hack" index="14" tooltip="don't click this unless you know what you're doing" />
+		<bit name="Force Light Inside World" index="15" tooltip="every update will push light back inside the world" />
+		<bit name="Environment Doesnt Cast Stencil Shadows" index="16" tooltip="environment in this light will not cast stencil shadows" />
+		<bit name="Objects Don't Cast Stencil Shadows" index="17" tooltip="objects in this light will not cast stencil shadows" />
+		<bit name="First Person From Camera" index="18" />
 		<bit name="Texture Camera Gel" index="19" />
 		<bit name="Light Framerate Killer" index="20" />
-		<bit name="Allowed In Splitscreen" index="21" />
+		<bit name="Allowed In Split Screen" index="21" />
 		<bit name="Only On Parent Bipeds" index="22" />
 	</flags32>
-	<comment title="Shape" />
+	<comment title="Shape">overall shape of the light</comment>
 	<enum16 name="Type" offset="0x4" visible="true">
 		<option name="Sphere" value="0x0" />
 		<option name="Orthogonal" value="0x1" />
@@ -40,47 +40,44 @@
 		<option name="Pyramid" value="0x3" />
 	</enum16>
 	<int16 name="Unknown" offset="0x6" visible="false" />
-	<float32 name="Size Modifier min" offset="0x8" visible="true" />
-	<float32 name="Size Modifier max" offset="0xC" visible="true" />
-	<float32 name="Shadow Quality Bias" offset="0x10" visible="true" />
-	<enum16 name="Shadow Tap Bias" offset="0x14" visible="true">
+	<rangef name="Size Modifer" offset="0x8" visible="true" tooltip="how the light's size changes with external scale" />
+	<float32 name="Shadow Quality Bias" offset="0x10" visible="true" tooltip="larger positive numbers improve quality, larger negative numbers improve speed" />
+	<enum16 name="Shadow Tap Bias" offset="0x14" visible="true" tooltip="the less taps you use, the faster the light (but edges can look worse)">
 		<option name="3 Tap" value="0x0" />
 		<option name="Unknown" value="0x1" />
 		<option name="1 Tap" value="0x2" />
 	</enum16>
 	<int16 name="Unknown" offset="0x16" visible="false" />
-	<comment title="Sphere Light" />
-	<float32 name="Radius" offset="0x18" visible="true" />
-	<float32 name="Specular Radius" offset="0x1C" visible="true" />
-	<comment title="Frustum Light" />
-	<float32 name="Near Width" offset="0x20" visible="true" />
-	<float32 name="Height Stretch" offset="0x24" visible="true" />
-	<degree name="Field Of View" offset="0x28" visible="true" />
-	<float32 name="Falloff Distance" offset="0x2C" visible="true" />
-	<float32 name="Cutoff Distance" offset="0x30" visible="true" />
+	<comment title="Sphere Light">default shape parameters for spherical lights</comment>
+	<float32 name="Radius" offset="0x18" visible="true" tooltip="the radius at which illumination falls off to zero" />
+	<float32 name="Specular Radius" offset="0x1C" visible="true" tooltip="the radius at which specular highlights fall off to zero (if zero, same as maximum radius)" />
+	<comment title="Frustum Light">default shape parameters for frustum lights (orthogonal, projective or pyramid types)</comment>
+	<float32 name="Near Width" offset="0x20" visible="true" tooltip="width of the frustum light at its near plane" />
+	<float32 name="Height Stretch" offset="0x24" visible="true" tooltip="how much the gel is stretched vertically (0.0 or 1.0 = aspect ratio same as gel)" />
+	<float32 name="Field Of View" offset="0x28" visible="true" tooltip="horizontal angle that the frustum light covers (0.0 = no spread, a parallel beam)" />
+	<float32 name="Falloff Distance" offset="0x2C" visible="true" tooltip="distance from near plane to where the light falloff starts" />
+	<float32 name="Cutoff Distance" offset="0x30" visible="true" tooltip="distance from near plane to where illumination falls off to zero" />
 	<comment title="Color" />
 	<flags32 name="Interpolation Flags" offset="0x34" visible="true">
-		<bit name="Blend In HSV" index="0" />
-		<bit name="...More Colors" index="1" />
+		<bit name="Blend In HSV" index="0" tooltip="blends colors in hsv rather than rgb space" />
+		<bit name="...More Colors" index="1" tooltip="blends colors through more hues (goes the long way around the color wheel)" />
 	</flags32>
-	<float32 name="Bloom Bounds min" offset="0x38" visible="true" />
-	<float32 name="Bloom Bounds max" offset="0x3C" visible="true" />
+	<rangef name="Bloom Bounds" offset="0x38" visible="true" />
 	<colorf name="Specular Lower Bound" offset="0x40" alpha="false" visible="true" />
 	<colorf name="Specular Upper Bound" offset="0x4C" alpha="false" visible="true" />
 	<colorf name="Diffuse Lower Bound" offset="0x58" alpha="false" visible="true" />
 	<colorf name="Diffuse Upper Bound" offset="0x64" alpha="false" visible="true" />
-	<float32 name="Brightness Bounds min" offset="0x70" visible="true" />
-	<float32 name="Brightness Bounds max" offset="0x74" visible="true" />
-	<comment title="Gel" />
-	<tagRef name="Gel Map" offset="0x78" visible="true" />
+	<rangef name="Brightness Bounds" offset="0x70" visible="true" />
+	<comment title="Gel">the gel map tints the light's illumination per-pixel</comment>
+	<tagRef name="Gel Map" offset="0x78" visible="true" tooltip="must be a cubemap for spherical light and a 2d texture for frustum light" />
 	<enum16 name="Specular Mask" offset="0x80" visible="true">
 		<option name="Default" value="0x0" />
-		<option name="None (no mask)" value="0x1" />
+		<option name="None (No Mask)" value="0x1" />
 		<option name="Gel Alpha" value="0x2" />
 		<option name="Gel Color" value="0x3" />
 	</enum16>
 	<int16 name="Unknown" offset="0x82" visible="false" />
-	<undefined name="Unknown" offset="0x84" visible="false" />
+	<undefined name="Unknown" offset="0x84" visible="true" />
 	<comment title="Falloff" />
 	<enum16 name="Falloff Function" offset="0x88" visible="true">
 		<option name="Default" value="0x0" />
@@ -89,14 +86,14 @@
 		<option name="Very Broad" value="0x3" />
 	</enum16>
 	<enum16 name="Diffuse Contrast" offset="0x8A" visible="true">
-		<option name="Default (linear)" value="0x0" />
+		<option name="Default (Linear)" value="0x0" />
 		<option name="High" value="0x1" />
 		<option name="Low" value="0x2" />
 		<option name="Very Low" value="0x3" />
 	</enum16>
 	<enum16 name="Specular Contrast" offset="0x8C" visible="true">
-		<option name="Default (none)" value="0x0" />
-		<option name="High (linear)" value="0x1" />
+		<option name="Default (None)" value="0x0" />
+		<option name="High (Linear)" value="0x1" />
 		<option name="Low" value="0x2" />
 		<option name="Very Low" value="0x3" />
 	</enum16>
@@ -105,11 +102,11 @@
 		<option name="Directional" value="0x1" />
 		<option name="Spherical" value="0x2" />
 	</enum16>
-	<comment title="Lens Flare" />
+	<comment title="Lens Flare">optional lens flare and light volume associated with this light</comment>
 	<tagRef name="Lens Flare" offset="0x90" visible="true" />
-	<float32 name="Bounding Radius" offset="0x98" visible="true" />
+	<float32 name="Bounding Radius" offset="0x98" visible="true" tooltip="used to generate a bounding radius for lensflare-only lights" />
 	<tagRef name="Light Volume" offset="0x9C" visible="true" />
-	<comment title="Radiosity" />
+	<comment title="Radiosity">how the light affects the lightmaps (ignored for dynamic lights)</comment>
 	<enum16 name="Default Lightmap Setting" offset="0xA4" visible="true">
 		<option name="Dynamic Only" value="0x0" />
 		<option name="Dynamic With Lightmaps" value="0x1" />
@@ -118,10 +115,10 @@
 	<int16 name="Unknown" offset="0xA6" visible="false" />
 	<float32 name="Lightmap Half Life" offset="0xA8" visible="true" />
 	<float32 name="Lightmap Light Scale" offset="0xAC" visible="true" />
-	<comment title="Effect Parameters" />
+	<comment title="Effect Parameters">if the light is created by an effect, it will animate itself as follows</comment>
 	<float32 name="Duration" offset="0xB0" visible="true" />
 	<int16 name="Unknown" offset="0xB4" visible="false" />
-	<enum16 name="Falloff Function" offset="0xB6" visible="true">
+	<enum16 name="Falloff Function" offset="0xB6" visible="true" tooltip="the scale of the light will diminish over time according to this function">
 		<option name="Linear" value="0x0" />
 		<option name="Late" value="0x1" />
 		<option name="Very Late" value="0x2" />
@@ -131,7 +128,7 @@
 		<option name="Zero" value="0x6" />
 		<option name="One" value="0x7" />
 	</enum16>
-	<comment title="Distance Fading Parameters" />
+	<comment title="Distance Fading Parameters">To fade the light's illumination and shadow casting abilities</comment>
 	<enum16 name="Illumination Fade" offset="0xB8" visible="true">
 		<option name="Fade Very Far" value="0x0" />
 		<option name="Fade Far" value="0x1" />
