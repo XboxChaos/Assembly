@@ -54,6 +54,12 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			set { dupePrediction.IsChecked = value; }
 		}
 
+		public bool? DupeSoundGestalt
+		{
+			get { return dupeSound.IsChecked; }
+			set { dupeSound.IsChecked = value; }
+		}
+
 		private void tagName_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Key == Key.Return)

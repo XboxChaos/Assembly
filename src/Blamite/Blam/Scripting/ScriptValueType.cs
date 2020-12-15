@@ -10,14 +10,16 @@ namespace Blamite.Blam.Scripting
 		private readonly bool _quoted;
 		private readonly int _size;
 		private readonly string _tag;
+		private readonly bool _object;
 
-		public ScriptValueType(string name, ushort opcode, int size, bool quoted, string tag)
+		public ScriptValueType(string name, ushort opcode, int size, bool quoted, string tag, bool obj)
 		{
 			_name = name;
 			_opcode = opcode;
 			_size = size;
 			_quoted = quoted;
 			_tag = tag;
+			_object = obj;
 		}
 
 		public string Name
@@ -45,6 +47,11 @@ namespace Blamite.Blam.Scripting
 			get { return _tag; }
 		}
 
+		public bool Object
+		{
+			get { return _object; }
+		}
+
 		public void AddEnumValue(string name)
 		{
 			_enumValues.Add(name);
@@ -56,5 +63,12 @@ namespace Blamite.Blam.Scripting
 				return _enumValues[(int) value];
 			return null;
 		}
+
+        public int GetEnumIndex(string name)
+        {
+            return _enumValues.FindIndex(e => e == name);
+        }
+
+		public bool IsEnum { get { return _enumValues.Count > 0; } }
 	}
 }

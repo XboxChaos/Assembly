@@ -4,12 +4,27 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
-	<int32 name="Unknown" offset="0x0" visible="false" />
-	<undefined name="Unknown" offset="0x4" visible="false" />
-	<undefined name="Unknown" offset="0x8" visible="false" />
-	<tagblock name="Bank Reference" offset="0xC" visible="true" elementSize="0x4">
-		<raw name="Sound ID" offset="0x0" size="0x4" visible="true" />
+	<flags32 name="Flags" offset="0x0" visible="true">
+		<bit name="Don't Use FP Bank in Split-Screen" index="0" tooltip="don't use the high quality first person bank in split-screen" />
+		<bit name="Deterministic" index="1" tooltip="Bank contains deterministic sounds (voices)" />
+		<bit name="Stream Off DVD Only" index="2" tooltip="Files will not be played off HD, only DVD (for music, etc)" />
+		<bit name="Can Delay Start" index="3" tooltip="Can delay start time for a short period waiting for bank to load" />
+		<bit name="Don't Load For Player" index="4" tooltip="Use this if there's a special player bank that's loaded by other means (ie weapon, vehicle)." />
+		<bit name="Ground Forces Sound Bank" index="5" tooltip="Don't load this bank if player is in a vehicle (ie bipeds, footsteps)" />
+	</flags32>
+	<flags32 name="Import Flags" offset="0x4" visible="true">
+		<bit name="Duplicate Directory Name" index="0" />
+		<bit name="Cut To Block Size" index="1" />
+		<bit name="Use Markers" index="2" />
+		<bit name="Use Layer Markers" index="3" />
+	</flags32>
+	<flags32 name="XSync Flags" offset="0x8" visible="true">
+		<bit name="Processed Language Times" index="0" />
+		<bit name="Optimized Facial Animation" index="1" />
+	</flags32>
+	<tagblock name="Sound Bank List" offset="0xC" visible="true" elementSize="0x4" tooltip="List of names of soundbanks. If more than one, one will be randomly chosen at load">
+		<uint32 name="Sound Bank Name Hash" offset="0x0" visible="true" />
 	</tagblock>
-	<int32 name="Unknown" offset="0x18" visible="false" />
-	<raw name="Sound ID" offset="0x1C" size="0x4" visible="true" />
+	<int32 name="Bank Priority" offset="0x18" visible="true" tooltip="the importance of this bank over others. 1 is highest priority (ie will bump all others)" />
+	<int32 name="Bank Unique ID" offset="0x1C" size="0x4" visible="true" />
 </plugin>

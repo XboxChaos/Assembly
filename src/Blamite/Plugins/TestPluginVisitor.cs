@@ -277,9 +277,9 @@ namespace Blamite.Plugins
 			Debug.WriteLine(Indent() + "Color32 \"{0}\" at {1}, visible = {2}, alpha = {3}, tooltip = {4}", name, offset, visible, alpha, tooltip);
 		}
 
-		public void VisitColorF(string name, uint offset, bool visible, bool alpha, uint pluginLine, string tooltip)
+		public void VisitColorF(string name, uint offset, bool visible, bool alpha, bool basic, uint pluginLine, string tooltip)
 		{
-			Debug.WriteLine(Indent() + "ColorF \"{0}\" at {1}, visible = {2}, alpha = {3}, tooltip = {4}", name, offset, visible, alpha, tooltip);
+			Debug.WriteLine(Indent() + "ColorF \"{0}\" at {1}, visible = {2}, alpha = {3}, basic = {4}, tooltip = {5}", name, offset, visible, alpha, basic, tooltip);
 		}
 
 		public void VisitRawData(string name, uint offset, bool visible, int size, uint pluginLine, string tooltip)
@@ -297,7 +297,7 @@ namespace Blamite.Plugins
 			Debug.WriteLine(Indent() + "Shader \"{0}\" at {1}, visible = {2}, type = {3}, tooltip = {4}", name, offset, visible, type, tooltip);
 		}
 
-		public void VisitRangeUInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		public void VisitRangeInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 			PrintBasicValue("Range16", name, offset, visible, tooltip);
 		}
@@ -315,6 +315,11 @@ namespace Blamite.Plugins
 		public void VisitUnicList(string name, uint offset, bool visible, int languages, uint pluginLine, string tooltip)
 		{
 			Debug.WriteLine(Indent() + "Unicode string list \"{0}\" at {1}, visible = {2}, languages = {3}, tooltip = {4}", name, offset, visible, languages, tooltip);
+		}
+
+		public void VisitDatum(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			PrintBasicValue("Datum", name, offset, visible, tooltip);
 		}
 	}
 }

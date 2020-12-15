@@ -147,13 +147,13 @@ namespace Assembly.Helpers.Plugins
 		public void VisitColorInt(string name, uint offset, bool visible, bool alpha, uint pluginLine, string tooltip)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new ColorData(name, offset, 0, alpha, "color32", Colors.Transparent, pluginLine, tooltip));
+				AddValue(new ColorData(name, offset, 0, alpha, true, "color32", Colors.Transparent, pluginLine, tooltip));
 		}
 
-		public void VisitColorF(string name, uint offset, bool visible, bool alpha, uint pluginLine, string tooltip)
+		public void VisitColorF(string name, uint offset, bool visible, bool alpha, bool basic, uint pluginLine, string tooltip)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new ColorData(name, offset, 0, alpha, "colorf", Colors.Transparent, pluginLine, tooltip));
+				AddValue(new ColorData(name, offset, 0, alpha, basic, "colorf", Colors.Transparent, pluginLine, tooltip));
 		}
 
 		public void VisitStringID(string name, uint offset, bool visible, uint pluginLine, string tooltip)
@@ -214,12 +214,18 @@ namespace Assembly.Helpers.Plugins
 			}
 		}
 
-		#region Range
-
-		public void VisitRangeUInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		public void VisitDatum(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new RangeUint16Data(name, offset, 0, "range16", 0, 0, pluginLine, tooltip));
+				AddValue(new DatumData(name, offset, 0, 0, 0, pluginLine, tooltip));
+		}
+
+		#region Range
+
+		public void VisitRangeInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new RangeInt16Data(name, offset, 0, "range16", 0, 0, pluginLine, tooltip));
 		}
 
 		public void VisitRangeFloat32(string name, uint offset, bool visible, uint pluginLine, string tooltip)

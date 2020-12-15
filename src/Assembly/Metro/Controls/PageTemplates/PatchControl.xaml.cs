@@ -469,9 +469,9 @@ namespace Assembly.Metro.Controls.PageTemplates
 					originalReader = new EndianReader(File.OpenRead(cleanMapPath), Endian.BigEndian);
 					newReader = new EndianReader(File.OpenRead(moddedMapPath), Endian.BigEndian);
 
-					ICacheFile originalFile = CacheFileLoader.LoadCacheFile(originalReader,
+					ICacheFile originalFile = CacheFileLoader.LoadCacheFile(originalReader, cleanMapPath,
 						App.AssemblyStorage.AssemblySettings.DefaultDatabase);
-					ICacheFile newFile = CacheFileLoader.LoadCacheFile(newReader, App.AssemblyStorage.AssemblySettings.DefaultDatabase);
+					ICacheFile newFile = CacheFileLoader.LoadCacheFile(newReader, moddedMapPath, App.AssemblyStorage.AssemblySettings.DefaultDatabase);
 
 					if (cbCreatePatchHasCustomMeta.IsChecked != null && (bool) cbCreatePatchHasCustomMeta.IsChecked &&
 					    cboxCreatePatchTargetGame.SelectedIndex < 4)
@@ -708,7 +708,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 				using (var stream = new EndianStream(File.Open(outputPath, FileMode.Open, FileAccess.ReadWrite), Endian.BigEndian))
 				{
 					EngineDatabase engineDb = XMLEngineDatabaseLoader.LoadDatabase("Formats/Engines.xml");
-					ICacheFile cacheFile = CacheFileLoader.LoadCacheFile(stream, engineDb);
+					ICacheFile cacheFile = CacheFileLoader.LoadCacheFile(stream, outputPath, engineDb);
 					if (currentPatch.MapInternalName != null && cacheFile.InternalName != currentPatch.MapInternalName)
 					{
 						MetroMessageBox.Show("Unable to apply patch",

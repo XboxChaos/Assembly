@@ -155,7 +155,7 @@
 		<tagblock name="BSP Checksums" offset="0x8" visible="true" elementSize="0x4">
 			<int32 name="Structure Checksum" offset="0x0" visible="true" />
 		</tagblock>
-		<tagblock name="BSPs" offset="0x14" visible="false" elementSize="0x48">
+		<tagblock name="BSPs" offset="0x14" visible="true" elementSize="0x48">
 			<tagblock name="Clusters" offset="0x0" visible="true" elementSize="0xC">
 				<tagblock name="BSPs" offset="0x0" visible="true" elementSize="0xC">
 					<tagblock name="Unknown" offset="0x0" visible="true" elementSize="0x4">
@@ -680,7 +680,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
-			<tagblock name="Node Flags" offset="0x4" visible="false" elementSize="0x1">
+			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
 				<flags8 name="Flags" offset="0x0" visible="true">
 					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
 					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
@@ -692,7 +692,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
 				</flags8>
 			</tagblock>
-			<tagblock name="Orientations" offset="0x10" visible="false" elementSize="0x2">
+			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
 				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
@@ -772,8 +772,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</flags16>
 		<int16 name="Unknown" offset="0x36" visible="false" />
 		<stringid name="Unique Name" offset="0x38" visible="true" />
-		<uint16 name="Unique ID Salt" offset="0x3C" visible="true" />
-		<uint16 name="Unique ID Index" offset="0x3E" visible="true" />
+		<datum name="Unique ID" offset="0x3C" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x40" visible="true" />
 		<enum8 name="Type" offset="0x42" visible="true">
 			<option name="Biped" value="0x0" />
@@ -803,23 +802,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Parent Name Index" offset="0x4A" visible="true" />
 		<stringid name="Child Name" offset="0x4C" visible="true" />
 		<stringid name="Unknown" offset="0x50" visible="true" />
-		<flags16 name="Allowed Zonesets" offset="0x54" visible="true">
-			<bit name="Set 0" index="0" />
-			<bit name="Set 1" index="1" />
-			<bit name="Set 2" index="2" />
-			<bit name="Set 3" index="3" />
-			<bit name="Set 4" index="4" />
-			<bit name="Set 5" index="5" />
-			<bit name="Set 6" index="6" />
-			<bit name="Set 7" index="7" />
-			<bit name="Set 8" index="8" />
-			<bit name="Set 9" index="9" />
-			<bit name="Set 10" index="10" />
-			<bit name="Set 11" index="11" />
-			<bit name="Set 12" index="12" />
-			<bit name="Set 13" index="13" />
-			<bit name="Set 14" index="14" />
-			<bit name="Set 15" index="15" />
+		<flags16 name="Can Attach To BSP Flags" offset="0x54" visible="true">
+			<bit name="BSP 0" index="0" />
+			<bit name="BSP 1" index="1" />
+			<bit name="BSP 2" index="2" />
+			<bit name="BSP 3" index="3" />
+			<bit name="BSP 4" index="4" />
+			<bit name="BSP 5" index="5" />
+			<bit name="BSP 6" index="6" />
+			<bit name="BSP 7" index="7" />
+			<bit name="BSP 8" index="8" />
+			<bit name="BSP 9" index="9" />
+			<bit name="BSP 10" index="10" />
+			<bit name="BSP 11" index="11" />
+			<bit name="BSP 12" index="12" />
+			<bit name="BSP 13" index="13" />
+			<bit name="BSP 14" index="14" />
+			<bit name="BSP 15" index="15" />
 		</flags16>
 		<int16 name="Unknown" offset="0x56" visible="false" />
 		<comment title="Permutation Data" />
@@ -971,7 +970,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
-			<tagblock name="Node Flags" offset="0x4" visible="false" elementSize="0x1">
+			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
 				<flags8 name="Flags" offset="0x0" visible="true">
 					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
 					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
@@ -983,7 +982,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
 				</flags8>
 			</tagblock>
-			<tagblock name="Orientations" offset="0x10" visible="false" elementSize="0x2">
+			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
 				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
@@ -1063,8 +1062,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</flags16>
 		<int16 name="Unknown" offset="0x36" visible="false" />
 		<stringid name="Unique Name" offset="0x38" visible="true" />
-		<uint16 name="Unique ID Salt" offset="0x3C" visible="true" />
-		<uint16 name="Unique ID Index" offset="0x3E" visible="true" />
+		<datum name="Unique ID" offset="0x3C" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x40" visible="true" />
 		<enum8 name="Type" offset="0x42" visible="true">
 			<option name="Biped" value="0x0" />
@@ -1094,23 +1092,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Parent Name Index" offset="0x4A" visible="true" />
 		<stringid name="Child Name" offset="0x4C" visible="true" />
 		<stringid name="Unknown" offset="0x50" visible="true" />
-		<flags16 name="Allowed Zonesets" offset="0x54" visible="true">
-			<bit name="Set 0" index="0" />
-			<bit name="Set 1" index="1" />
-			<bit name="Set 2" index="2" />
-			<bit name="Set 3" index="3" />
-			<bit name="Set 4" index="4" />
-			<bit name="Set 5" index="5" />
-			<bit name="Set 6" index="6" />
-			<bit name="Set 7" index="7" />
-			<bit name="Set 8" index="8" />
-			<bit name="Set 9" index="9" />
-			<bit name="Set 10" index="10" />
-			<bit name="Set 11" index="11" />
-			<bit name="Set 12" index="12" />
-			<bit name="Set 13" index="13" />
-			<bit name="Set 14" index="14" />
-			<bit name="Set 15" index="15" />
+		<flags16 name="Can Attach To BSP Flags" offset="0x54" visible="true">
+			<bit name="BSP 0" index="0" />
+			<bit name="BSP 1" index="1" />
+			<bit name="BSP 2" index="2" />
+			<bit name="BSP 3" index="3" />
+			<bit name="BSP 4" index="4" />
+			<bit name="BSP 5" index="5" />
+			<bit name="BSP 6" index="6" />
+			<bit name="BSP 7" index="7" />
+			<bit name="BSP 8" index="8" />
+			<bit name="BSP 9" index="9" />
+			<bit name="BSP 10" index="10" />
+			<bit name="BSP 11" index="11" />
+			<bit name="BSP 12" index="12" />
+			<bit name="BSP 13" index="13" />
+			<bit name="BSP 14" index="14" />
+			<bit name="BSP 15" index="15" />
 		</flags16>
 		<int16 name="Unknown" offset="0x56" visible="false" />
 		<comment title="Permutation Data" />
@@ -1218,7 +1216,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
-			<tagblock name="Node Flags" offset="0x4" visible="false" elementSize="0x1">
+			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
 				<flags8 name="Flags" offset="0x0" visible="true">
 					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
 					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
@@ -1230,7 +1228,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
 				</flags8>
 			</tagblock>
-			<tagblock name="Orientations" offset="0x10" visible="false" elementSize="0x2">
+			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
 				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
@@ -1310,8 +1308,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</flags16>
 		<int16 name="Unknown" offset="0x36" visible="false" />
 		<stringid name="Unique Name" offset="0x38" visible="true" />
-		<uint16 name="Unique ID Salt" offset="0x3C" visible="true" />
-		<uint16 name="Unique ID Index" offset="0x3E" visible="true" />
+		<datum name="Unique ID" offset="0x3C" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x40" visible="true" />
 		<enum8 name="Type" offset="0x42" visible="true">
 			<option name="Biped" value="0x0" />
@@ -1341,23 +1338,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Parent Name Index" offset="0x4A" visible="true" />
 		<stringid name="Child Name" offset="0x4C" visible="true" />
 		<stringid name="Unknown" offset="0x50" visible="true" />
-		<flags16 name="Allowed Zonesets" offset="0x54" visible="true">
-			<bit name="Set 0" index="0" />
-			<bit name="Set 1" index="1" />
-			<bit name="Set 2" index="2" />
-			<bit name="Set 3" index="3" />
-			<bit name="Set 4" index="4" />
-			<bit name="Set 5" index="5" />
-			<bit name="Set 6" index="6" />
-			<bit name="Set 7" index="7" />
-			<bit name="Set 8" index="8" />
-			<bit name="Set 9" index="9" />
-			<bit name="Set 10" index="10" />
-			<bit name="Set 11" index="11" />
-			<bit name="Set 12" index="12" />
-			<bit name="Set 13" index="13" />
-			<bit name="Set 14" index="14" />
-			<bit name="Set 15" index="15" />
+		<flags16 name="Can Attach To BSP Flags" offset="0x54" visible="true">
+			<bit name="BSP 0" index="0" />
+			<bit name="BSP 1" index="1" />
+			<bit name="BSP 2" index="2" />
+			<bit name="BSP 3" index="3" />
+			<bit name="BSP 4" index="4" />
+			<bit name="BSP 5" index="5" />
+			<bit name="BSP 6" index="6" />
+			<bit name="BSP 7" index="7" />
+			<bit name="BSP 8" index="8" />
+			<bit name="BSP 9" index="9" />
+			<bit name="BSP 10" index="10" />
+			<bit name="BSP 11" index="11" />
+			<bit name="BSP 12" index="12" />
+			<bit name="BSP 13" index="13" />
+			<bit name="BSP 14" index="14" />
+			<bit name="BSP 15" index="15" />
 		</flags16>
 		<int16 name="Unknown" offset="0x56" visible="false" />
 		<comment title="Permutation Data" />
@@ -1526,7 +1523,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
-			<tagblock name="Node Flags" offset="0x4" visible="false" elementSize="0x1">
+			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
 				<flags8 name="Flags" offset="0x0" visible="true">
 					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
 					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
@@ -1538,7 +1535,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
 				</flags8>
 			</tagblock>
-			<tagblock name="Orientations" offset="0x10" visible="false" elementSize="0x2">
+			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
 				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
@@ -1618,8 +1615,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</flags16>
 		<int16 name="Unknown" offset="0x36" visible="false" />
 		<stringid name="Unique Name" offset="0x38" visible="true" />
-		<uint16 name="Unique ID Salt" offset="0x3C" visible="true" />
-		<uint16 name="Unique ID Index" offset="0x3E" visible="true" />
+		<datum name="Unique ID" offset="0x3C" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x40" visible="true" />
 		<enum8 name="Type" offset="0x42" visible="true">
 			<option name="Biped" value="0x0" />
@@ -1649,23 +1645,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Parent Name Index" offset="0x4A" visible="true" />
 		<stringid name="Child Name" offset="0x4C" visible="true" />
 		<stringid name="Unknown" offset="0x50" visible="true" />
-		<flags16 name="Allowed Zonesets" offset="0x54" visible="true">
-			<bit name="Set 0" index="0" />
-			<bit name="Set 1" index="1" />
-			<bit name="Set 2" index="2" />
-			<bit name="Set 3" index="3" />
-			<bit name="Set 4" index="4" />
-			<bit name="Set 5" index="5" />
-			<bit name="Set 6" index="6" />
-			<bit name="Set 7" index="7" />
-			<bit name="Set 8" index="8" />
-			<bit name="Set 9" index="9" />
-			<bit name="Set 10" index="10" />
-			<bit name="Set 11" index="11" />
-			<bit name="Set 12" index="12" />
-			<bit name="Set 13" index="13" />
-			<bit name="Set 14" index="14" />
-			<bit name="Set 15" index="15" />
+		<flags16 name="Can Attach To BSP Flags" offset="0x54" visible="true">
+			<bit name="BSP 0" index="0" />
+			<bit name="BSP 1" index="1" />
+			<bit name="BSP 2" index="2" />
+			<bit name="BSP 3" index="3" />
+			<bit name="BSP 4" index="4" />
+			<bit name="BSP 5" index="5" />
+			<bit name="BSP 6" index="6" />
+			<bit name="BSP 7" index="7" />
+			<bit name="BSP 8" index="8" />
+			<bit name="BSP 9" index="9" />
+			<bit name="BSP 10" index="10" />
+			<bit name="BSP 11" index="11" />
+			<bit name="BSP 12" index="12" />
+			<bit name="BSP 13" index="13" />
+			<bit name="BSP 14" index="14" />
+			<bit name="BSP 15" index="15" />
 		</flags16>
 		<int16 name="Unknown" offset="0x56" visible="false" />
 		<comment title="Equipment Data" />
@@ -1818,7 +1814,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
-			<tagblock name="Node Flags" offset="0x4" visible="false" elementSize="0x1">
+			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
 				<flags8 name="Flags" offset="0x0" visible="true">
 					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
 					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
@@ -1830,7 +1826,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
 				</flags8>
 			</tagblock>
-			<tagblock name="Orientations" offset="0x10" visible="false" elementSize="0x2">
+			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
 				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
@@ -1910,8 +1906,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</flags16>
 		<int16 name="Unknown" offset="0x36" visible="false" />
 		<stringid name="Unique Name" offset="0x38" visible="true" />
-		<uint16 name="Unique ID Salt" offset="0x3C" visible="true" />
-		<uint16 name="Unique ID Index" offset="0x3E" visible="true" />
+		<datum name="Unique ID" offset="0x3C" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x40" visible="true" />
 		<enum8 name="Type" offset="0x42" visible="true">
 			<option name="Biped" value="0x0" />
@@ -1941,23 +1936,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Parent Name Index" offset="0x4A" visible="true" />
 		<stringid name="Child Name" offset="0x4C" visible="true" />
 		<stringid name="Unknown" offset="0x50" visible="true" />
-		<flags16 name="Allowed Zonesets" offset="0x54" visible="true">
-			<bit name="Set 0" index="0" />
-			<bit name="Set 1" index="1" />
-			<bit name="Set 2" index="2" />
-			<bit name="Set 3" index="3" />
-			<bit name="Set 4" index="4" />
-			<bit name="Set 5" index="5" />
-			<bit name="Set 6" index="6" />
-			<bit name="Set 7" index="7" />
-			<bit name="Set 8" index="8" />
-			<bit name="Set 9" index="9" />
-			<bit name="Set 10" index="10" />
-			<bit name="Set 11" index="11" />
-			<bit name="Set 12" index="12" />
-			<bit name="Set 13" index="13" />
-			<bit name="Set 14" index="14" />
-			<bit name="Set 15" index="15" />
+		<flags16 name="Can Attach To BSP Flags" offset="0x54" visible="true">
+			<bit name="BSP 0" index="0" />
+			<bit name="BSP 1" index="1" />
+			<bit name="BSP 2" index="2" />
+			<bit name="BSP 3" index="3" />
+			<bit name="BSP 4" index="4" />
+			<bit name="BSP 5" index="5" />
+			<bit name="BSP 6" index="6" />
+			<bit name="BSP 7" index="7" />
+			<bit name="BSP 8" index="8" />
+			<bit name="BSP 9" index="9" />
+			<bit name="BSP 10" index="10" />
+			<bit name="BSP 11" index="11" />
+			<bit name="BSP 12" index="12" />
+			<bit name="BSP 13" index="13" />
+			<bit name="BSP 14" index="14" />
+			<bit name="BSP 15" index="15" />
 		</flags16>
 		<int16 name="Unknown" offset="0x56" visible="false" />
 		<comment title="Permutation Data" />
@@ -2167,7 +2162,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
-			<tagblock name="Node Flags" offset="0x4" visible="false" elementSize="0x1">
+			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
 				<flags8 name="Flags" offset="0x0" visible="true">
 					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
 					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
@@ -2179,7 +2174,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
 				</flags8>
 			</tagblock>
-			<tagblock name="Orientations" offset="0x10" visible="false" elementSize="0x2">
+			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
 				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
@@ -2259,8 +2254,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</flags16>
 		<int16 name="Unknown" offset="0x36" visible="false" />
 		<stringid name="Unique Name" offset="0x38" visible="true" />
-		<uint16 name="Unique ID Salt" offset="0x3C" visible="true" />
-		<uint16 name="Unique ID Index" offset="0x3E" visible="true" />
+		<datum name="Unique ID" offset="0x3C" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x40" visible="true" />
 		<enum8 name="Type" offset="0x42" visible="true">
 			<option name="Biped" value="0x0" />
@@ -2290,23 +2284,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Parent Name Index" offset="0x4A" visible="true" />
 		<stringid name="Child Name" offset="0x4C" visible="true" />
 		<stringid name="Unknown" offset="0x50" visible="true" />
-		<flags16 name="Allowed Zonesets" offset="0x54" visible="true">
-			<bit name="Set 0" index="0" />
-			<bit name="Set 1" index="1" />
-			<bit name="Set 2" index="2" />
-			<bit name="Set 3" index="3" />
-			<bit name="Set 4" index="4" />
-			<bit name="Set 5" index="5" />
-			<bit name="Set 6" index="6" />
-			<bit name="Set 7" index="7" />
-			<bit name="Set 8" index="8" />
-			<bit name="Set 9" index="9" />
-			<bit name="Set 10" index="10" />
-			<bit name="Set 11" index="11" />
-			<bit name="Set 12" index="12" />
-			<bit name="Set 13" index="13" />
-			<bit name="Set 14" index="14" />
-			<bit name="Set 15" index="15" />
+		<flags16 name="Can Attach To BSP Flags" offset="0x54" visible="true">
+			<bit name="BSP 0" index="0" />
+			<bit name="BSP 1" index="1" />
+			<bit name="BSP 2" index="2" />
+			<bit name="BSP 3" index="3" />
+			<bit name="BSP 4" index="4" />
+			<bit name="BSP 5" index="5" />
+			<bit name="BSP 6" index="6" />
+			<bit name="BSP 7" index="7" />
+			<bit name="BSP 8" index="8" />
+			<bit name="BSP 9" index="9" />
+			<bit name="BSP 10" index="10" />
+			<bit name="BSP 11" index="11" />
+			<bit name="BSP 12" index="12" />
+			<bit name="BSP 13" index="13" />
+			<bit name="BSP 14" index="14" />
+			<bit name="BSP 15" index="15" />
 		</flags16>
 		<int16 name="Unknown" offset="0x56" visible="false" />
 		<comment title="Permutation Data" />
@@ -2522,7 +2516,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
-			<tagblock name="Node Flags" offset="0x4" visible="false" elementSize="0x1">
+			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
 				<flags8 name="Flags" offset="0x0" visible="true">
 					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
 					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
@@ -2534,7 +2528,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
 				</flags8>
 			</tagblock>
-			<tagblock name="Orientations" offset="0x10" visible="false" elementSize="0x2">
+			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
 				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
@@ -2614,8 +2608,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</flags16>
 		<int16 name="Unknown" offset="0x36" visible="false" />
 		<stringid name="Unique Name" offset="0x38" visible="true" />
-		<uint16 name="Unique ID Salt" offset="0x3C" visible="true" />
-		<uint16 name="Unique ID Index" offset="0x3E" visible="true" />
+		<datum name="Unique ID" offset="0x3C" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x40" visible="true" />
 		<enum8 name="Type" offset="0x42" visible="true">
 			<option name="Biped" value="0x0" />
@@ -2645,23 +2638,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Parent Name Index" offset="0x4A" visible="true" />
 		<stringid name="Child Name" offset="0x4C" visible="true" />
 		<stringid name="Unknown" offset="0x50" visible="true" />
-		<flags16 name="Allowed Zonesets" offset="0x54" visible="true">
-			<bit name="Set 0" index="0" />
-			<bit name="Set 1" index="1" />
-			<bit name="Set 2" index="2" />
-			<bit name="Set 3" index="3" />
-			<bit name="Set 4" index="4" />
-			<bit name="Set 5" index="5" />
-			<bit name="Set 6" index="6" />
-			<bit name="Set 7" index="7" />
-			<bit name="Set 8" index="8" />
-			<bit name="Set 9" index="9" />
-			<bit name="Set 10" index="10" />
-			<bit name="Set 11" index="11" />
-			<bit name="Set 12" index="12" />
-			<bit name="Set 13" index="13" />
-			<bit name="Set 14" index="14" />
-			<bit name="Set 15" index="15" />
+		<flags16 name="Can Attach To BSP Flags" offset="0x54" visible="true">
+			<bit name="BSP 0" index="0" />
+			<bit name="BSP 1" index="1" />
+			<bit name="BSP 2" index="2" />
+			<bit name="BSP 3" index="3" />
+			<bit name="BSP 4" index="4" />
+			<bit name="BSP 5" index="5" />
+			<bit name="BSP 6" index="6" />
+			<bit name="BSP 7" index="7" />
+			<bit name="BSP 8" index="8" />
+			<bit name="BSP 9" index="9" />
+			<bit name="BSP 10" index="10" />
+			<bit name="BSP 11" index="11" />
+			<bit name="BSP 12" index="12" />
+			<bit name="BSP 13" index="13" />
+			<bit name="BSP 14" index="14" />
+			<bit name="BSP 15" index="15" />
 		</flags16>
 		<int16 name="Unknown" offset="0x56" visible="false" />
 		<comment title="Permutation Data" />
@@ -2772,7 +2765,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
-			<tagblock name="Node Flags" offset="0x4" visible="false" elementSize="0x1">
+			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
 				<flags8 name="Flags" offset="0x0" visible="true">
 					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
 					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
@@ -2784,7 +2777,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
 				</flags8>
 			</tagblock>
-			<tagblock name="Orientations" offset="0x10" visible="false" elementSize="0x2">
+			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
 				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
@@ -2864,8 +2857,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</flags16>
 		<int16 name="Unknown" offset="0x36" visible="false" />
 		<stringid name="Unique Name" offset="0x38" visible="true" />
-		<uint16 name="Unique ID Salt" offset="0x3C" visible="true" />
-		<uint16 name="Unique ID Index" offset="0x3E" visible="true" />
+		<datum name="Unique ID" offset="0x3C" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x40" visible="true" />
 		<enum8 name="Type" offset="0x42" visible="true">
 			<option name="Biped" value="0x0" />
@@ -2895,23 +2887,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Parent Name Index" offset="0x4A" visible="true" />
 		<stringid name="Child Name" offset="0x4C" visible="true" />
 		<stringid name="Unknown" offset="0x50" visible="true" />
-		<flags16 name="Allowed Zonesets" offset="0x54" visible="true">
-			<bit name="Set 0" index="0" />
-			<bit name="Set 1" index="1" />
-			<bit name="Set 2" index="2" />
-			<bit name="Set 3" index="3" />
-			<bit name="Set 4" index="4" />
-			<bit name="Set 5" index="5" />
-			<bit name="Set 6" index="6" />
-			<bit name="Set 7" index="7" />
-			<bit name="Set 8" index="8" />
-			<bit name="Set 9" index="9" />
-			<bit name="Set 10" index="10" />
-			<bit name="Set 11" index="11" />
-			<bit name="Set 12" index="12" />
-			<bit name="Set 13" index="13" />
-			<bit name="Set 14" index="14" />
-			<bit name="Set 15" index="15" />
+		<flags16 name="Can Attach To BSP Flags" offset="0x54" visible="true">
+			<bit name="BSP 0" index="0" />
+			<bit name="BSP 1" index="1" />
+			<bit name="BSP 2" index="2" />
+			<bit name="BSP 3" index="3" />
+			<bit name="BSP 4" index="4" />
+			<bit name="BSP 5" index="5" />
+			<bit name="BSP 6" index="6" />
+			<bit name="BSP 7" index="7" />
+			<bit name="BSP 8" index="8" />
+			<bit name="BSP 9" index="9" />
+			<bit name="BSP 10" index="10" />
+			<bit name="BSP 11" index="11" />
+			<bit name="BSP 12" index="12" />
+			<bit name="BSP 13" index="13" />
+			<bit name="BSP 14" index="14" />
+			<bit name="BSP 15" index="15" />
 		</flags16>
 		<int16 name="Unknown" offset="0x56" visible="false" />
 		<comment title="Permutation Data" />
@@ -3119,7 +3111,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
-			<tagblock name="Node Flags" offset="0x4" visible="false" elementSize="0x1">
+			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
 				<flags8 name="Flags" offset="0x0" visible="true">
 					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
 					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
@@ -3131,7 +3123,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
 				</flags8>
 			</tagblock>
-			<tagblock name="Orientations" offset="0x10" visible="false" elementSize="0x2">
+			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
 				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
@@ -3211,8 +3203,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</flags16>
 		<int16 name="Unknown" offset="0x36" visible="false" />
 		<stringid name="Unique Name" offset="0x38" visible="true" />
-		<uint16 name="Unique ID Salt" offset="0x3C" visible="true" />
-		<uint16 name="Unique ID Index" offset="0x3E" visible="true" />
+		<datum name="Unique ID" offset="0x3C" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x40" visible="true" />
 		<enum8 name="Type" offset="0x42" visible="true">
 			<option name="Biped" value="0x0" />
@@ -3242,23 +3233,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Parent Name Index" offset="0x4A" visible="true" />
 		<stringid name="Child Name" offset="0x4C" visible="true" />
 		<stringid name="Unknown" offset="0x50" visible="true" />
-		<flags16 name="Allowed Zonesets" offset="0x54" visible="true">
-			<bit name="Set 0" index="0" />
-			<bit name="Set 1" index="1" />
-			<bit name="Set 2" index="2" />
-			<bit name="Set 3" index="3" />
-			<bit name="Set 4" index="4" />
-			<bit name="Set 5" index="5" />
-			<bit name="Set 6" index="6" />
-			<bit name="Set 7" index="7" />
-			<bit name="Set 8" index="8" />
-			<bit name="Set 9" index="9" />
-			<bit name="Set 10" index="10" />
-			<bit name="Set 11" index="11" />
-			<bit name="Set 12" index="12" />
-			<bit name="Set 13" index="13" />
-			<bit name="Set 14" index="14" />
-			<bit name="Set 15" index="15" />
+		<flags16 name="Can Attach To BSP Flags" offset="0x54" visible="true">
+			<bit name="BSP 0" index="0" />
+			<bit name="BSP 1" index="1" />
+			<bit name="BSP 2" index="2" />
+			<bit name="BSP 3" index="3" />
+			<bit name="BSP 4" index="4" />
+			<bit name="BSP 5" index="5" />
+			<bit name="BSP 6" index="6" />
+			<bit name="BSP 7" index="7" />
+			<bit name="BSP 8" index="8" />
+			<bit name="BSP 9" index="9" />
+			<bit name="BSP 10" index="10" />
+			<bit name="BSP 11" index="11" />
+			<bit name="BSP 12" index="12" />
+			<bit name="BSP 13" index="13" />
+			<bit name="BSP 14" index="14" />
+			<bit name="BSP 15" index="15" />
 		</flags16>
 		<int16 name="Unknown" offset="0x56" visible="false" />
 		<comment title="Sound Scenery Data" />
@@ -3330,7 +3321,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
-			<tagblock name="Node Flags" offset="0x4" visible="false" elementSize="0x1">
+			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
 				<flags8 name="Flags" offset="0x0" visible="true">
 					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
 					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
@@ -3342,7 +3333,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
 				</flags8>
 			</tagblock>
-			<tagblock name="Orientations" offset="0x10" visible="false" elementSize="0x2">
+			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
 				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
@@ -3422,8 +3413,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</flags16>
 		<int16 name="Unknown" offset="0x36" visible="false" />
 		<stringid name="Unique Name" offset="0x38" visible="true" />
-		<uint16 name="Unique ID Salt" offset="0x3C" visible="true" />
-		<uint16 name="Unique ID Index" offset="0x3E" visible="true" />
+		<datum name="Unique ID" offset="0x3C" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x40" visible="true" />
 		<enum8 name="Type" offset="0x42" visible="true">
 			<option name="Biped" value="0x0" />
@@ -3453,23 +3443,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Parent Name Index" offset="0x4A" visible="true" />
 		<stringid name="Child Name" offset="0x4C" visible="true" />
 		<stringid name="Unknown" offset="0x50" visible="true" />
-		<flags16 name="Allowed Zonesets" offset="0x54" visible="true">
-			<bit name="Set 0" index="0" />
-			<bit name="Set 1" index="1" />
-			<bit name="Set 2" index="2" />
-			<bit name="Set 3" index="3" />
-			<bit name="Set 4" index="4" />
-			<bit name="Set 5" index="5" />
-			<bit name="Set 6" index="6" />
-			<bit name="Set 7" index="7" />
-			<bit name="Set 8" index="8" />
-			<bit name="Set 9" index="9" />
-			<bit name="Set 10" index="10" />
-			<bit name="Set 11" index="11" />
-			<bit name="Set 12" index="12" />
-			<bit name="Set 13" index="13" />
-			<bit name="Set 14" index="14" />
-			<bit name="Set 15" index="15" />
+		<flags16 name="Can Attach To BSP Flags" offset="0x54" visible="true">
+			<bit name="BSP 0" index="0" />
+			<bit name="BSP 1" index="1" />
+			<bit name="BSP 2" index="2" />
+			<bit name="BSP 3" index="3" />
+			<bit name="BSP 4" index="4" />
+			<bit name="BSP 5" index="5" />
+			<bit name="BSP 6" index="6" />
+			<bit name="BSP 7" index="7" />
+			<bit name="BSP 8" index="8" />
+			<bit name="BSP 9" index="9" />
+			<bit name="BSP 10" index="10" />
+			<bit name="BSP 11" index="11" />
+			<bit name="BSP 12" index="12" />
+			<bit name="BSP 13" index="13" />
+			<bit name="BSP 14" index="14" />
+			<bit name="BSP 15" index="15" />
 		</flags16>
 		<int16 name="Unknown" offset="0x56" visible="false" />
 		<comment title="Permutation Data" />
@@ -3584,7 +3574,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
-			<tagblock name="Node Flags" offset="0x4" visible="false" elementSize="0x1">
+			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
 				<flags8 name="Flags" offset="0x0" visible="true">
 					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
 					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
@@ -3596,7 +3586,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
 				</flags8>
 			</tagblock>
-			<tagblock name="Orientations" offset="0x10" visible="false" elementSize="0x2">
+			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
 				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
@@ -3676,8 +3666,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</flags16>
 		<int16 name="Unknown" offset="0x36" visible="false" />
 		<stringid name="Unique Name" offset="0x38" visible="true" />
-		<uint16 name="Unique ID Salt" offset="0x3C" visible="true" />
-		<uint16 name="Unique ID Index" offset="0x3E" visible="true" />
+		<datum name="Unique ID" offset="0x3C" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x40" visible="true" />
 		<enum8 name="Type" offset="0x42" visible="true">
 			<option name="Biped" value="0x0" />
@@ -3707,23 +3696,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Parent Name Index" offset="0x4A" visible="true" />
 		<stringid name="Child Name" offset="0x4C" visible="true" />
 		<stringid name="Unknown" offset="0x50" visible="true" />
-		<flags16 name="Allowed Zonesets" offset="0x54" visible="true">
-			<bit name="Set 0" index="0" />
-			<bit name="Set 1" index="1" />
-			<bit name="Set 2" index="2" />
-			<bit name="Set 3" index="3" />
-			<bit name="Set 4" index="4" />
-			<bit name="Set 5" index="5" />
-			<bit name="Set 6" index="6" />
-			<bit name="Set 7" index="7" />
-			<bit name="Set 8" index="8" />
-			<bit name="Set 9" index="9" />
-			<bit name="Set 10" index="10" />
-			<bit name="Set 11" index="11" />
-			<bit name="Set 12" index="12" />
-			<bit name="Set 13" index="13" />
-			<bit name="Set 14" index="14" />
-			<bit name="Set 15" index="15" />
+		<flags16 name="Can Attach To BSP Flags" offset="0x54" visible="true">
+			<bit name="BSP 0" index="0" />
+			<bit name="BSP 1" index="1" />
+			<bit name="BSP 2" index="2" />
+			<bit name="BSP 3" index="3" />
+			<bit name="BSP 4" index="4" />
+			<bit name="BSP 5" index="5" />
+			<bit name="BSP 6" index="6" />
+			<bit name="BSP 7" index="7" />
+			<bit name="BSP 8" index="8" />
+			<bit name="BSP 9" index="9" />
+			<bit name="BSP 10" index="10" />
+			<bit name="BSP 11" index="11" />
+			<bit name="BSP 12" index="12" />
+			<bit name="BSP 13" index="13" />
+			<bit name="BSP 14" index="14" />
+			<bit name="BSP 15" index="15" />
 		</flags16>
 		<int16 name="Unknown" offset="0x56" visible="false" />
 		<comment title="Multiplayer Data" />
@@ -3841,7 +3830,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
-			<tagblock name="Node Flags" offset="0x4" visible="false" elementSize="0x1">
+			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
 				<flags8 name="Flags" offset="0x0" visible="true">
 					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
 					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
@@ -3853,7 +3842,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
 				</flags8>
 			</tagblock>
-			<tagblock name="Orientations" offset="0x10" visible="false" elementSize="0x2">
+			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
 				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
@@ -3933,8 +3922,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</flags16>
 		<int16 name="Unknown" offset="0x36" visible="false" />
 		<stringid name="Unique Name" offset="0x38" visible="true" />
-		<uint16 name="Unique ID Salt" offset="0x3C" visible="true" />
-		<uint16 name="Unique ID Index" offset="0x3E" visible="true" />
+		<datum name="Unique ID" offset="0x3C" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x40" visible="true" />
 		<enum8 name="Type" offset="0x42" visible="true">
 			<option name="Biped" value="0x0" />
@@ -3964,23 +3952,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Parent Name Index" offset="0x4A" visible="true" />
 		<stringid name="Child Name" offset="0x4C" visible="true" />
 		<stringid name="Unknown" offset="0x50" visible="true" />
-		<flags16 name="Allowed Zonesets" offset="0x54" visible="true">
-			<bit name="Set 0" index="0" />
-			<bit name="Set 1" index="1" />
-			<bit name="Set 2" index="2" />
-			<bit name="Set 3" index="3" />
-			<bit name="Set 4" index="4" />
-			<bit name="Set 5" index="5" />
-			<bit name="Set 6" index="6" />
-			<bit name="Set 7" index="7" />
-			<bit name="Set 8" index="8" />
-			<bit name="Set 9" index="9" />
-			<bit name="Set 10" index="10" />
-			<bit name="Set 11" index="11" />
-			<bit name="Set 12" index="12" />
-			<bit name="Set 13" index="13" />
-			<bit name="Set 14" index="14" />
-			<bit name="Set 15" index="15" />
+		<flags16 name="Can Attach To BSP Flags" offset="0x54" visible="true">
+			<bit name="BSP 0" index="0" />
+			<bit name="BSP 1" index="1" />
+			<bit name="BSP 2" index="2" />
+			<bit name="BSP 3" index="3" />
+			<bit name="BSP 4" index="4" />
+			<bit name="BSP 5" index="5" />
+			<bit name="BSP 6" index="6" />
+			<bit name="BSP 7" index="7" />
+			<bit name="BSP 8" index="8" />
+			<bit name="BSP 9" index="9" />
+			<bit name="BSP 10" index="10" />
+			<bit name="BSP 11" index="11" />
+			<bit name="BSP 12" index="12" />
+			<bit name="BSP 13" index="13" />
+			<bit name="BSP 14" index="14" />
+			<bit name="BSP 15" index="15" />
 		</flags16>
 		<int16 name="Unknown" offset="0x56" visible="false" />
 		<comment title="Device Data" />
@@ -4866,7 +4854,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Unknown" offset="0x28" visible="false" />
 		<int16 name="Unknown" offset="0x2A" visible="false" />
 	</tagblock>
-	<tagblock name="AI Cues" offset="0x3D0" visible="false" elementSize="0xA0">
+	<tagblock name="AI Cues" offset="0x3D0" visible="true" elementSize="0xA0">
 		<stringid name="Unknown" offset="0x0" visible="true" />
 		<int16 name="Unknown" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x6" visible="true" />
@@ -5059,9 +5047,16 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<undefined name="Unknown" offset="0x14" visible="false" />
 		</tagblock>
 		<tagblock name="Unknown" offset="0x78" visible="false" elementSize="0xC">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
+			<tagblock name="Unknown" offset="0x0" visible="false" elementSize="0x20">
+				<undefined name="Unknown" offset="0x0" visible="false" />
+				<undefined name="Unknown" offset="0x4" visible="false" />
+				<undefined name="Unknown" offset="0x8" visible="false" />
+				<undefined name="Unknown" offset="0xC" visible="false" />
+				<undefined name="Unknown" offset="0x10" visible="false" />
+				<undefined name="Unknown" offset="0x14" visible="false" />
+				<undefined name="Unknown" offset="0x18" visible="false" />
+				<undefined name="Unknown" offset="0x1C" visible="false" />
+			</tagblock>
 		</tagblock>
 	</tagblock>
 	<undefined name="Unknown" offset="0x424" visible="false" />
@@ -5169,8 +5164,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="looping_sound_budget_reference" value="0x57" />
 			<option name="sound_budget_reference" value="0x58" />
 		</enum16>
-		<uint16 name="Root Expression Salt" offset="0x8" visible="true" />
-		<uint16 name="Root Expression Index" offset="0xA" visible="true" />
+		<datum name="Root Expression" offset="0x8" visible="true" />
 		<tagblock name="Parameters" offset="0xC" visible="true" elementSize="0x24">
 			<ascii name="Name" offset="0x0" visible="true" length="0x20" />
 			<enum16 name="Type" offset="0x20" visible="true">
@@ -5361,8 +5355,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="sound_budget_reference" value="0x58" />
 		</enum16>
 		<int16 name="Unknown" offset="0x22" visible="true" />
-		<uint16 name="Initialization Expression Salt" offset="0x24" visible="true" />
-		<uint16 name="Initialization Expression Index" offset="0x26" visible="true" />
+		<datum name="Initialization Expression" offset="0x24" visible="true" />
 	</tagblock>
 	<tagblock name="Script References" offset="0x45C" visible="true" elementSize="0x10">
 		<tagRef name="References" offset="0x0" visible="true" />
@@ -5796,8 +5789,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="sound_budget_reference" value="0x58" />
 		</enum16>
 		<int16 name="Expression Type" offset="0x6" visible="true" />
-		<uint16 name="Next Expression Salt" offset="0x8" visible="true" />
-		<uint16 name="Next Expression Index" offset="0xA" visible="true" />
+		<datum name="Next Expression" offset="0x8" visible="true" />
 		<uint32 name="String Address" offset="0xC" visible="true" />
 		<int8 name="Value 03 (MSB)" offset="0x10" visible="true" />
 		<int8 name="Value 02 Byte" offset="0x11" visible="true" />
@@ -5995,7 +5987,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
-			<tagblock name="Node Flags" offset="0x4" visible="false" elementSize="0x1">
+			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
 				<flags8 name="Flags" offset="0x0" visible="true">
 					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
 					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
@@ -6007,7 +5999,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
 				</flags8>
 			</tagblock>
-			<tagblock name="Orientations" offset="0x10" visible="false" elementSize="0x2">
+			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
 				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
@@ -6087,8 +6079,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</flags16>
 		<int16 name="Unknown" offset="0x36" visible="false" />
 		<stringid name="Unique Name" offset="0x38" visible="true" />
-		<uint16 name="Unique ID Salt" offset="0x3C" visible="true" />
-		<uint16 name="Unique ID Index" offset="0x3E" visible="true" />
+		<datum name="Unique ID" offset="0x3C" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x40" visible="true" />
 		<enum8 name="Type" offset="0x42" visible="true">
 			<option name="Biped" value="0x0" />
@@ -6118,23 +6109,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Parent Name Index" offset="0x4A" visible="true" />
 		<stringid name="Child Name" offset="0x4C" visible="true" />
 		<stringid name="Unknown" offset="0x50" visible="true" />
-		<flags16 name="Allowed Zonesets" offset="0x54" visible="true">
-			<bit name="Set 0" index="0" />
-			<bit name="Set 1" index="1" />
-			<bit name="Set 2" index="2" />
-			<bit name="Set 3" index="3" />
-			<bit name="Set 4" index="4" />
-			<bit name="Set 5" index="5" />
-			<bit name="Set 6" index="6" />
-			<bit name="Set 7" index="7" />
-			<bit name="Set 8" index="8" />
-			<bit name="Set 9" index="9" />
-			<bit name="Set 10" index="10" />
-			<bit name="Set 11" index="11" />
-			<bit name="Set 12" index="12" />
-			<bit name="Set 13" index="13" />
-			<bit name="Set 14" index="14" />
-			<bit name="Set 15" index="15" />
+		<flags16 name="Can Attach To BSP Flags" offset="0x54" visible="true">
+			<bit name="BSP 0" index="0" />
+			<bit name="BSP 1" index="1" />
+			<bit name="BSP 2" index="2" />
+			<bit name="BSP 3" index="3" />
+			<bit name="BSP 4" index="4" />
+			<bit name="BSP 5" index="5" />
+			<bit name="BSP 6" index="6" />
+			<bit name="BSP 7" index="7" />
+			<bit name="BSP 8" index="8" />
+			<bit name="BSP 9" index="9" />
+			<bit name="BSP 10" index="10" />
+			<bit name="BSP 11" index="11" />
+			<bit name="BSP 12" index="12" />
+			<bit name="BSP 13" index="13" />
+			<bit name="BSP 14" index="14" />
+			<bit name="BSP 15" index="15" />
 		</flags16>
 		<int16 name="Unknown" offset="0x56" visible="false" />
 		<comment title="Permutation Data" />
@@ -6307,8 +6298,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 	<tagRef name="Lightmap" offset="0x734" visible="true" />
 	<tagRef name="Performance Throttles" offset="0x744" visible="true" />
 	<tagblock name="Unknown Objects" offset="0x754" visible="true" elementSize="0x10">
-		<uint16 name="Unique ID Salt" offset="0x0" visible="true" />
-		<uint16 name="Unique ID Index" offset="0x2" visible="true" />
+		<datum name="Unique ID" offset="0x0" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x4" visible="true" />
 		<enum8 name="Type" offset="0x6" visible="true">
 			<option name="Biped" value="0x0" />
@@ -6487,6 +6477,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</tagblock>
 	</tagblock>
 	<tagblock name="Designer Zonesets" offset="0x76C" visible="true" elementSize="0xBC">
+		<comment title="Designer Zonesets">This block is essentially leftover import data and is only useful as a reference to where something is loaded. Modifying anything in this block won't change anything.</comment>
 		<stringid name="Name" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<tagblock name="Bipeds" offset="0x8" visible="true" elementSize="0x2">
@@ -6513,7 +6504,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<tagblock name="Controls" offset="0x5C" visible="true" elementSize="0x2">
 			<int16 name="Palette Index" offset="0x0" visible="true" />
 		</tagblock>
-		<tagblock name="Unknown" offset="0x68" visible="false" elementSize="0x2">
+		<tagblock name="Unknown" offset="0x68" visible="true" elementSize="0x2">
 			<int16 name="Palette Index" offset="0x0" visible="true" />
 		</tagblock>
 		<tagblock name="Crates" offset="0x74" visible="true" elementSize="0x2">
@@ -6525,7 +6516,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<tagblock name="Giants" offset="0x8C" visible="true" elementSize="0x2">
 			<int16 name="Palette Index" offset="0x0" visible="true" />
 		</tagblock>
-		<tagblock name="Unknown" offset="0x98" visible="false" elementSize="0x2">
+		<tagblock name="Unknown" offset="0x98" visible="true" elementSize="0x2">
 			<int16 name="Palette Index" offset="0x0" visible="true" />
 		</tagblock>
 		<tagblock name="Characters" offset="0xA4" visible="true" elementSize="0x2">
@@ -6645,30 +6636,30 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				<int16 name="Unknown" offset="0x4" visible="false" />
 				<int16 name="Unknown" offset="0x6" visible="false" />
 				<stringid name="Animation" offset="0x8" visible="false" />
-				<undefined name="ZUnknown" offset="0xC" visible="true" />
+				<undefined name="Unknown" offset="0xC" visible="true" />
 				<float32 name="Unknown" offset="0x10" visible="false" />
-				<undefined name="ZUnknown" offset="0x14" visible="true" />
-				<undefined name="ZUnknown" offset="0x18" visible="true" />
+				<undefined name="Unknown" offset="0x14" visible="true" />
+				<undefined name="Unknown" offset="0x18" visible="true" />
 			</tagblock>
 			<tagblock name="Unknown" offset="0x34" visible="false" elementSize="0x18">
 				<stringid name="Unknown" offset="0x0" visible="false" />
 				<float32 name="Unknown" offset="0x4" visible="false" />
 				<int16 name="Unknown" offset="0x8" visible="false" />
 				<int16 name="Unknown" offset="0xA" visible="false" />
-				<undefined name="ZUnknown" offset="0xC" visible="true" />
-				<undefined name="ZUnknown" offset="0x10" visible="true" />
-				<undefined name="ZUnknown" offset="0x14" visible="true" />
+				<undefined name="Unknown" offset="0xC" visible="true" />
+				<undefined name="Unknown" offset="0x10" visible="true" />
+				<undefined name="Unknown" offset="0x14" visible="true" />
 			</tagblock>
-			<undefined name="ZUnknown" offset="0x40" visible="false" />
-			<undefined name="ZUnknown" offset="0x44" visible="false" />
-			<undefined name="ZUnknown" offset="0x48" visible="false" />
+			<undefined name="Unknown" offset="0x40" visible="false" />
+			<undefined name="Unknown" offset="0x44" visible="false" />
+			<undefined name="Unknown" offset="0x48" visible="false" />
 			<tagblock name="Unknown" offset="0x4C" visible="false" elementSize="0x8">
 				<int32 name="Unknown" offset="0x0" visible="false" />
 				<float32 name="Unknown" offset="0x4" visible="true" />
 			</tagblock>
-			<undefined name="ZUnknown" offset="0x58" visible="false" />
-			<undefined name="ZUnknown" offset="0x5C" visible="false" />
-			<undefined name="ZUnknown" offset="0x60" visible="false" />
+			<undefined name="Unknown" offset="0x58" visible="false" />
+			<undefined name="Unknown" offset="0x5C" visible="false" />
+			<undefined name="Unknown" offset="0x60" visible="false" />
 		</tagblock>
 		<float32 name="X" offset="0x2C" visible="true" />
 		<float32 name="Y" offset="0x30" visible="true" />

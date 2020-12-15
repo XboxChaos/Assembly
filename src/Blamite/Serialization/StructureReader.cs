@@ -1,4 +1,8 @@
-﻿using Blamite.IO;
+﻿using Blamite.Blam;
+using Blamite.Blam.Util;
+using Blamite.IO;
+using System;
+using System.Runtime.InteropServices;
 
 namespace Blamite.Serialization
 {
@@ -8,16 +12,16 @@ namespace Blamite.Serialization
 	/// </summary>
 	public class StructureReader : IStructureLayoutVisitor
 	{
-		private readonly long _baseOffset; // The offset that the reader was at when reading began
-		private readonly StructureValueCollection _collection; // The values that have been read so far
-		private readonly IReader _reader; // The stream to read from
-		private long _offset; // The offset that the reader is currently at
+		protected readonly long _baseOffset; // The offset that the reader was at when reading began
+		protected readonly StructureValueCollection _collection; // The values that have been read so far
+		protected readonly IReader _reader; // The stream to read from
+		protected long _offset; // The offset that the reader is currently at
 
 		/// <summary>
 		///     (private) Constructs a new StructureReader.
 		/// </summary>
 		/// <param name="reader">The IReader to read from.</param>
-		private StructureReader(IReader reader)
+		protected StructureReader(IReader reader)
 		{
 			_reader = reader;
 			_baseOffset = reader.Position;
@@ -141,7 +145,7 @@ namespace Blamite.Serialization
 		/// <param name="layout">The structure layout to follow.</param>
 		/// <returns>A collection of the values that were read.</returns>
 		/// <seealso cref="StructureLayout" />
-		public static StructureValueCollection ReadStructure(IReader reader, StructureLayout layout)
+		public static StructureValueCollection ReadStructure(IReader reader,StructureLayout layout)
 		{
 			var structReader = new StructureReader(reader);
 			layout.Accept(structReader);
@@ -151,7 +155,7 @@ namespace Blamite.Serialization
 			return structReader._collection;
 		}
 
-		private void SeekReader(int offset)
+		protected void SeekReader(int offset)
 		{
 			// Seeking is SLOW - only seek if we actually have to
 			if (_offset != _baseOffset + offset)

@@ -29,10 +29,13 @@ namespace Blamite.Serialization
 				if (!_collection.HasString(name))
 					return;
 			}
-			else if (!_collection.HasInteger(name))
+			else if (type == StructureValueType.Float32)
 			{
-				return;
+				if (!_collection.HasFloat(name))
+					return;
 			}
+			else if (!_collection.HasInteger(name))
+				return;
 
 			SeekWriter(offset);
 			switch (type)

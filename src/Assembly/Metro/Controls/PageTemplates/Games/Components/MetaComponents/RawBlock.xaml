@@ -21,8 +21,8 @@
 			<ColumnDefinition Width="200"/>
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
-		<StackPanel Grid.Column="0" Orientation="Horizontal" Height="28" VerticalAlignment="Top" Background="Transparent">
-			<StackPanel.ToolTip>
+		<DockPanel Grid.Column="0" Background="Transparent" Height="28" VerticalAlignment="Top">
+			<DockPanel.ToolTip>
 				<StackPanel MaxWidth="500">
 					<TextBlock Text="{Binding Name}" TextWrapping="WrapWithOverflow" FontWeight="Bold" />
 					<TextBlock Text="{Binding Offset, StringFormat='Field Offset: 0x{0:X}'}" Foreground="#CCC" />
@@ -31,13 +31,13 @@
 					<TextBlock Text="{Binding ToolTip}" TextWrapping="WrapWithOverflow" 
 							   Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}, ConverterParameter={x:Static Visibility.Collapsed}}" />
 				</StackPanel>
-			</StackPanel.ToolTip>
-				<TextBlock Text="?" Foreground="{DynamicResource ExtryzeAccentBrush}" FontSize="12" FontWeight="Bold" Margin="0,0,2,0"
+			</DockPanel.ToolTip>
+			<TextBlock Text="?" Foreground="{DynamicResource ExtryzeAccentBrush}" FontSize="12" FontWeight="Bold" Margin="0,0,2,0"
 					   VerticalAlignment="Center" FontFamily="{DynamicResource MetroFontRegular}" Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}}" />
-				<TextBlock x:Name="lblValueName" Text="{Binding Path=Name}"
-			           Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" Margin="0,0,0,0"
+			<TextBlock x:Name="lblValueName" Text="{Binding Path=Name}"
+			           Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"
 			           TextTrimming="CharacterEllipsis" />
-			</StackPanel>
+		</DockPanel>
 		<Grid Grid.Column="1" Margin="0,0,4,0">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="*"/>

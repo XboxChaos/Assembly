@@ -7,6 +7,7 @@ using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Plugins;
 using Blamite.Blam.Localization;
+using Blamite.Blam.Resources.Sounds;
 
 namespace Blamite.Injection
 {
@@ -24,6 +25,9 @@ namespace Blamite.Injection
 		private readonly StructureLayout _tagRefLayout;
 		private CachedLanguagePackLoader _languageCache;
 		private List<DataBlock> _tagBlocks;
+		private readonly StructureLayout _soundLayout;
+
+		private static int SoundGroup = Util.CharConstant.FromString("snd!");
 
 		/// <summary>
 		///     Initializes a new instance of the <see cref="DataBlockBuilder" /> class.
@@ -42,9 +46,21 @@ namespace Blamite.Injection
 			_tagBlockLayout = buildInfo.Layouts.GetLayout("tag block");
 			_dataRefLayout = buildInfo.Layouts.GetLayout("data reference");
 
+			if (buildInfo.Layouts.HasLayout("sound"))
+				_soundLayout = buildInfo.Layouts.GetLayout("sound");
+
 			DataBlocks = new List<DataBlock>();
 			ReferencedTags = new HashSet<DatumIndex>();
 			ReferencedResources = new HashSet<DatumIndex>();
+
+			ReferencedSoundCodecs = new HashSet<int>();
+			ReferencedSoundPitchRanges = new HashSet<int>();
+			ReferencedSoundLanguagePitchRanges = new HashSet<int>();
+			ReferencedSoundPlaybacks = new HashSet<int>();
+			ReferencedSoundScales = new HashSet<int>();
+			ReferencedSoundPromotions = new HashSet<int>();
+			ReferencedSoundCustomPlaybacks = new HashSet<int>();
+			ReferencedSoundExtraInfo = new HashSet<int>();
 		}
 
 		/// <summary>
@@ -62,6 +78,17 @@ namespace Blamite.Injection
 		/// </summary>
 		public HashSet<DatumIndex> ReferencedResources { get; private set; }
 
+		public HashSet<int> ReferencedSoundCodecs { get; private set; }
+		public HashSet<int> ReferencedSoundPitchRanges { get; private set; }
+		public HashSet<int> ReferencedSoundLanguagePitchRanges { get; private set; }
+		public HashSet<int> ReferencedSoundPlaybacks { get; private set; }
+		public HashSet<int> ReferencedSoundScales { get; private set; }
+		public HashSet<int> ReferencedSoundPromotions { get; private set; }
+		public HashSet<int> ReferencedSoundCustomPlaybacks { get; private set; }
+		public HashSet<int> ReferencedSoundExtraInfo { get; private set; }
+
+		public bool ContainsSoundReferences { get; private set; }
+
 		public bool EnterPlugin(int baseSize)
 		{
 			// Read the tag data in based off the base size
@@ -76,6 +103,9 @@ namespace Blamite.Injection
 
 			var blockList = new List<DataBlock> {block};
 			_blockStack.Push(blockList);
+
+			if (_tag.Group.Magic == SoundGroup)
+				ReadSound(block, 0);
 
 			return true;
 		}
@@ -144,13 +174,13 @@ namespace Blamite.Injection
 			if (lowerName.Contains("global cache shader index"))
 			{
 				ReadReferences(offset, GlobalShaderFixup);
-
 			}
 			if (lowerName.Contains("interop pointer"))
 			{
 				ReadReferences(offset, (b, o)
 					=> ReadInteropPointer(b, o,
-					lowerName.Contains("shader") ? 5 : 1));
+					lowerName.Contains("shader") ? 5 : 1,
+					lowerName.Contains("polyart")));
 			}
 			if (lowerName.Contains("scenario interop index"))
 			{
@@ -279,7 +309,7 @@ namespace Blamite.Injection
 		{
 		}
 
-		public void VisitColorF(string name, uint offset, bool visible, bool alpha, uint pluginLine, string tooltip)
+		public void VisitColorF(string name, uint offset, bool visible, bool alpha, bool basic, uint pluginLine, string tooltip)
 		{
 		}
 
@@ -354,7 +384,7 @@ namespace Blamite.Injection
 			ReadReferences(offset, (b, o) => ReadShader(b, o, type));
 		}
 
-		public void VisitRangeUInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		public void VisitRangeInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 		}
 
@@ -387,6 +417,20 @@ namespace Blamite.Injection
 				var fixupStrings = strings.Strings.Select(CreateFixupString).ToArray();
 				var fixup = new DataBlockUnicListFixup(i, (int)(offset + i * 4), fixupStrings);
 				_blockStack.Peek()[0].UnicListFixups.Add(fixup); // These will never be in tag blocks and I don't want to deal with it
+			}
+		}
+
+		public void VisitDatum(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			// haxhaxhaxhax
+			// TODO: Fix this if/when cross-tag references are added to plugins
+			var lowerName = name.ToLower();
+			if (lowerName.Contains("asset index")
+				|| lowerName.Contains("resource index")
+				|| lowerName.Contains("asset datum")
+				|| lowerName.Contains("resource datum"))
+			{
+				ReadReferences(offset, ReadResourceFixup);
 			}
 		}
 
@@ -556,22 +600,25 @@ namespace Blamite.Injection
 				return;
 		}
 
-		private void ReadInteropPointer(DataBlock block, uint offset, int refCount)
+		private void ReadInteropPointer(DataBlock block, uint offset, int refCount, bool polyart)
 		{
 			// Read the address
 			SeekToOffset(block, offset);
 			var address = _reader.ReadUInt32();
 
+			if (address == 0)
+				return;
+
 			long expand = _cacheFile.PointerExpander.Expand(address);
 
-			int length = _dataRefLayout.Size * refCount;
+			int length = _dataRefLayout.Size * refCount + (polyart ? refCount * 4 : 0);
 
 			if (!_cacheFile.MetaArea.ContainsBlockPointer(expand, length)) return;
 
 			var newBlock = ReadDataBlock(expand, length, 1, 16, false);
 			for (int i = 0; i < refCount; i++)
 			{
-				ReadDataReference(newBlock, (uint)(i * _dataRefLayout.Size), 16);
+				ReadDataReference(newBlock, (uint)(i * (_dataRefLayout.Size + (polyart ? 4 : 0))), 16);
 			}
 
 			//get the type from the table
@@ -611,6 +658,43 @@ namespace Blamite.Injection
 			if (pack == null)
 				return null;
 			return pack.FindStringListByTag(tag);
+		}
+
+		private void ReadSound(DataBlock block, uint offset)
+		{
+			if (_soundLayout == null)
+				return;
+
+			ContainsSoundReferences = true;
+
+			SeekToOffset(block, 0);
+			var values = StructureReader.ReadStructure(_reader, _soundLayout);
+
+			int codec = (short)values.GetInteger("codec index");
+			int pitchRangeCount = (short)values.GetInteger("pitch range count");
+			int firstPitchRange = (short)values.GetInteger("first pitch range index");
+			int firstLangPitchRange = (short)values.GetInteger("first language duration pitch range index");
+			int playback = (short)values.GetInteger("playback index");
+			int scale = (short)values.GetInteger("scale index");
+			int promotion = (sbyte)values.GetInteger("promotion index");
+			int customPlayback = (sbyte)values.GetInteger("custom playback index");
+			int extraInfo = (short)values.GetIntegerOrDefault("extra info index", 0xFFFF);
+
+			block.SoundFixups.Add(new DataBlockSoundFixup(
+				codec, pitchRangeCount, firstPitchRange, firstLangPitchRange,
+				playback, scale, promotion, customPlayback, extraInfo));
+
+			if (codec != -1) ReferencedSoundCodecs.Add(codec);
+			for (int i = 0; i < pitchRangeCount; i++)
+			{
+				if (firstPitchRange != -1) ReferencedSoundPitchRanges.Add(firstPitchRange + i);
+				if (firstLangPitchRange != -1) ReferencedSoundLanguagePitchRanges.Add(firstLangPitchRange + i);
+			}
+			if (playback != -1) ReferencedSoundPlaybacks.Add(playback);
+			if (scale != -1) ReferencedSoundScales.Add(scale);
+			if (promotion != -1) ReferencedSoundPromotions.Add(promotion);
+			if (customPlayback != -1) ReferencedSoundCustomPlaybacks.Add(customPlayback);
+			if (extraInfo != -1) ReferencedSoundExtraInfo.Add(extraInfo);
 		}
 
 		private void SeekToOffset(DataBlock block, uint offset)

@@ -54,6 +54,10 @@ namespace Blamite.Blam.ThirdGen.Structures
 		public FileSegment StringIDData { get; private set; }
 		public SegmentPointer StringIDDataLocation { get; set; }
 
+		public int StringIDNamespaceCount { get; set; }
+		public FileSegment StringIDNamespaceTable { get; private set; }
+		public SegmentPointer StringIDNamespaceTableLocation { get; set; }
+
 		public FileSegment StringBlock { get; private set; }
 		public SegmentPointer StringBlockLocation { get; set; }
 
@@ -116,6 +120,12 @@ namespace Blamite.Blam.ThirdGen.Structures
 			{
 				values.SetInteger("string table size", (uint) StringIDData.Size);
 				values.SetInteger("string table offset", (ulong)StringIDDataLocation.AsPointer());
+			}
+
+			if (StringIDNamespaceTable != null)
+			{
+				values.SetInteger("string namespace table count", (uint)StringIDNamespaceCount);
+				values.SetInteger("string namespace table offset", (uint)StringIDNamespaceTableLocation.AsPointer());
 			}
 
 			if (StringIDIndexTableLocation != null)
@@ -253,10 +263,11 @@ namespace Blamite.Blam.ThirdGen.Structures
 			segmenter.DefineSegment(0, HeaderSize, 1, SegmentResizeOrigin.Beginning); // Define a segment for the header
 			_eofSegment = segmenter.WrapEOF((int) values.GetInteger("file size"));
 
+			Type = (CacheFileType)values.GetInteger("type");
+
 			LoadInteropData(values);
 			RawTable = CalculateRawTableSegment(segmenter);
 
-			Type = (CacheFileType) values.GetInteger("type");
 			InternalName = values.GetString("internal name");
 			ScenarioName = values.GetString("scenario name");
 			XDKVersion = (int) values.GetInteger("xdk version");
@@ -284,6 +295,16 @@ namespace Blamite.Blam.ThirdGen.Structures
 			// TODO: fix this shit for the h3beta
 			SectionOffsetMasks = headerValues.GetArray("offset masks").Select(v => (uint)v.GetInteger("mask")).ToArray();
 			Sections = headerValues.GetArray("sections").Select(v => new ThirdGenInteropSection(v)).ToArray();
+
+			// H3 MCC currently doesn't store section data for campaign/shared, so it must be hacked together
+			if (_expander.IsValid && (Type == CacheFileType.Shared || Type == CacheFileType.SinglePlayerShared))
+			{
+				if (Sections[(int)ThirdGenInteropSectionType.Resource].Size == 0)
+				{
+					Sections[(int)ThirdGenInteropSectionType.Resource].VirtualAddress = (uint)HeaderSize;
+					Sections[(int)ThirdGenInteropSectionType.Resource].Size = (uint)FileSize - (uint)HeaderSize;
+				}
+			}
 
 			DebugPointerConverter = MakePointerConverter(ThirdGenInteropSectionType.Debug);
 			ResourcePointerConverter = MakePointerConverter(ThirdGenInteropSectionType.Resource);
@@ -350,6 +371,21 @@ namespace Blamite.Blam.ThirdGen.Structures
 					int sidBlockOff = DebugPointerConverter.PointerToOffset((uint)values.GetInteger("string block offset"));
 					StringBlock = segmenter.WrapSegment(sidBlockOff, StringIDCount*0x80, 0x80, SegmentResizeOrigin.End);
 					StringBlockLocation = StringArea.AddSegment(StringBlock);
+				}
+
+				// newest reach mcc caches store namespace information, hopefully others follow because thats one less thing to worry about every update
+				if (values.HasInteger("string namespace table count"))
+				{
+					StringIDNamespaceCount = (int)values.GetInteger("string namespace table count");
+					if (StringIDNamespaceCount > 0)
+					{
+						int namespaceTableOff = DebugPointerConverter.PointerToOffset((uint)values.GetInteger("string namespace table offset"));
+
+						StringIDNamespaceTable = segmenter.WrapSegment(namespaceTableOff, StringIDNamespaceCount * 4, 4, SegmentResizeOrigin.End);
+
+						StringIDNamespaceTableLocation = StringArea.AddSegment(StringIDNamespaceTable);
+					}
+
 				}
 			}
 

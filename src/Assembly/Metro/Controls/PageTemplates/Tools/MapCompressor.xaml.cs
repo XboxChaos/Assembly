@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
@@ -110,6 +110,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 			}
 
 			EndWork();
+		}
+
+		private void btnOpenMap_Click(object sender, RoutedEventArgs e)
+		{
+			App.AssemblyStorage.AssemblySettings.HomeWindow.ProcessContentFile(txtInputFile.Text);
 		}
 
 		#endregion

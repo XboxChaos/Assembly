@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Blamite.Blam;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Blamite.Serialization
 {
@@ -10,11 +12,14 @@ namespace Blamite.Serialization
 	{
 		private readonly Dictionary<string, StructureValueCollection[]> _arrayValues =
 			new Dictionary<string, StructureValueCollection[]>();
-
+		private readonly Dictionary<string, StructureValueCollection[]> _tagBlockValues =
+			new Dictionary<string, StructureValueCollection[]>();
 		private readonly Dictionary<string, float> _floatValues = new Dictionary<string, float>();
 		private readonly Dictionary<string, ulong> _intValues = new Dictionary<string, ulong>();
 		private readonly Dictionary<string, byte[]> _rawValues = new Dictionary<string, byte[]>();
 		private readonly Dictionary<string, string> _stringValues = new Dictionary<string, string>();
+		private readonly Dictionary<string, string> _stringIDValues = new Dictionary<string, string>();
+		private readonly Dictionary<string, ITag> _tagReferenceValues = new Dictionary<string, ITag>();
 		private readonly Dictionary<string, StructureValueCollection> _structValues = new Dictionary<string, StructureValueCollection>();
 
 		/// <summary>
@@ -48,6 +53,26 @@ namespace Blamite.Serialization
 		}
 
 		/// <summary>
+		///     Checks if a StringID field is present in the value collection.
+		/// </summary>
+		/// <param name="name">The name of the StringID field to search for.</param>
+		/// <returns>true if the field is present.</returns>
+		public bool HasStringID(string name)
+        {
+			return _stringIDValues.ContainsKey(name);
+        }
+
+		/// <summary>
+		///     Checks if a tag reference field is present in the value collection.
+		/// </summary>
+		/// <param name="name">The name of the tag reference field to search for.</param>
+		/// <returns>true if the field is present.</returns>
+		public bool HasTagReference(string name)
+        {
+			return _tagReferenceValues.ContainsKey(name);
+        }
+
+		/// <summary>
 		///     Checks if an array field is present in the value collection.
 		/// </summary>
 		/// <param name="name">The name of the array field to search for.</param>
@@ -75,6 +100,16 @@ namespace Blamite.Serialization
 		public bool HasStruct(string name)
 		{
 			return _structValues.ContainsKey(name);
+		}
+
+		/// <summary>
+		///     Checks if a tag block field is present in the value collection.
+		/// </summary>
+		/// <param name="name">The name of the tag block field to search for.</param>
+		/// <returns>true if the field is present.</returns>
+		public bool HasTagBlock(string name)
+		{
+			return _tagBlockValues.ContainsKey(name);
 		}
 
 		/// <summary>
@@ -111,6 +146,28 @@ namespace Blamite.Serialization
 		}
 
 		/// <summary>
+		///     Sets the value of a named StringID field in a structure.
+		///     If the field does not exist, it will be created.
+		/// </summary>
+		/// <param name="name">The name of the StringID field to set.</param>
+		/// <param name="value">The value to assign to the field.</param>
+		public void SetStringID(string name, string value)
+		{
+			_stringIDValues[name] = value;
+		}
+
+		/// <summary>
+		///     Sets the value of a named tag reference field in a structure.
+		///     If the field does not exist, it will be created.
+		/// </summary>
+		/// <param name="name">The name of the tag reference field to set.</param>
+		/// <param name="value">The value to assign to the field.</param>
+		public void SetTagReference(string name, ITag value)
+		{
+			_tagReferenceValues[name] = value;
+		}
+
+		/// <summary>
 		///     Sets the value of a named array field in a structure.
 		///     If the field does not exist, it will be created.
 		/// </summary>
@@ -140,6 +197,16 @@ namespace Blamite.Serialization
 		{
 			_structValues[name] = value;
 		}
+
+		/// <summary>
+		///		Sets the value of a named tag block field in a structure.
+		/// </summary>
+		/// <param name="name">The name of the tag block field to set.</param>
+		/// <param name="value">The tag block elements to assign to the field.</param>
+		public void SetTagBlock(string name, StructureValueCollection[] value)
+        {
+			_tagBlockValues[name] = value;
+        }
 
 		/// <summary>
 		///     Finds an integer field with a given name and retrieves its value if it is found.
@@ -175,6 +242,28 @@ namespace Blamite.Serialization
 		}
 
 		/// <summary>
+		///     Finds a StringID field with a given name and retrieves its value if it is found.
+		/// </summary>
+		/// <param name="name">The name of the StringID field to find.</param>
+		/// <param name="value">The variable to store the field's value to (if the field exists).</param>
+		/// <returns>true if the field was found.</returns>
+		public bool FindStringID(string name, out string value)
+		{
+			return _stringIDValues.TryGetValue(name, out value);
+		}
+
+		/// <summary>
+		///     Finds a tag reference field with a given name and retrieves its value if it is found.
+		/// </summary>
+		/// <param name="name">The name of the tag reference field to find.</param>
+		/// <param name="value">The variable to store the field's value to (if the field exists).</param>
+		/// <returns>true if the field was found.</returns>
+		public bool FindTagReference(string name, out ITag value)
+		{
+			return _tagReferenceValues.TryGetValue(name, out value);
+		}
+
+		/// <summary>
 		///     Finds an array field with a given name and retrieves its value if it is found.
 		/// </summary>
 		/// <param name="name">The name of the array field to find.</param>
@@ -205,6 +294,17 @@ namespace Blamite.Serialization
 		public bool FindStruct(string name, out StructureValueCollection value)
 		{
 			return _structValues.TryGetValue(name, out value);
+		}
+
+		/// <summary>
+		///     Finds a tag block field with a given name and retrieves its value if it is found.
+		/// </summary>
+		/// <param name="name">The name of the tag block field to find.</param>
+		/// <param name="value">The variable to store the field's value to (if the field exists).</param>
+		/// <returns>true if the field was found.</returns>
+		public bool FindTagBlock(string name, out StructureValueCollection[] value)
+		{
+			return _tagBlockValues.TryGetValue(name, out value);
 		}
 
 		/// <summary>
@@ -250,6 +350,34 @@ namespace Blamite.Serialization
 		}
 
 		/// <summary>
+		///     Retrieves the value of a StringID field,
+		///     throwing an exception if the field does not exist.
+		/// </summary>
+		/// <param name="name">The name of the StringID field to retrieve the value of.</param>
+		/// <returns>The field's value.</returns>
+		/// <exception cref="ArgumentException">Thrown if the field does not exist.</exception>
+		public string GetStringID(string name)
+		{
+			if (!HasStringID(name))
+				ThrowMissingFieldException(name);
+			return _stringIDValues[name];
+		}
+
+		/// <summary>
+		///     Retrieves the value of a tag reference field,
+		///     throwing an exception if the field does not exist.
+		/// </summary>
+		/// <param name="name">The name of the tag reference field to retrieve the value of.</param>
+		/// <returns>The field's value.</returns>
+		/// <exception cref="ArgumentException">Thrown if the field does not exist.</exception>
+		public ITag GetTagReference(string name)
+		{
+			if (!HasTagReference(name))
+				ThrowMissingFieldException(name);
+			return _tagReferenceValues[name];
+		}
+
+		/// <summary>
 		///     Retrieves the value of a array field,
 		///     throwing an exception if the field does not exist.
 		/// </summary>
@@ -290,6 +418,29 @@ namespace Blamite.Serialization
 				ThrowMissingFieldException(name);
 			return _structValues[name];
 		}
+
+		/// <summary>
+		///     Retrieves the value of a tag block field,
+		///     throwing an exception if the field does not exist.
+		/// </summary>
+		/// <param name="name">The name of the tag block field to retrieve the value of.</param>
+		/// <returns>The field's value.</returns>
+		/// <exception cref="ArgumentException">Thrown if the field does not exist.</exception>
+		public StructureValueCollection[] GetTagBlock(string name)
+		{
+			if (!HasTagBlock(name))
+				ThrowMissingFieldException(name);
+			return _tagBlockValues[name];
+		}
+
+		/// <summary>
+		///		Retrieves all tag block values and their names as an array.
+		/// </summary>
+		/// <returns>The array containing all tag blocks.</returns>
+		public KeyValuePair<string, StructureValueCollection[]>[] GetTagBlocks()
+        {
+			return _tagBlockValues.ToArray();
+        }
 
 		/// <summary>
 		///     Attempts to retrieve the value of an integer field,

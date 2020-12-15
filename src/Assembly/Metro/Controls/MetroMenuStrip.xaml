@@ -160,7 +160,9 @@
 			           Stroke="{TemplateBinding BorderBrush}" StrokeThickness="0" />
 			<Rectangle x:Name="InnerBorder" Margin="1" StrokeThickness="0" />
 			<DockPanel>
-				<Path x:Name="GlyphPanel" Data="{StaticResource Checkmark}" Fill="{TemplateBinding Foreground}"
+                <ContentPresenter x:Name="Icon" ContentSource="Icon" Margin="4,0,4,0"
+				                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" />
+                <Path x:Name="GlyphPanel" Data="{StaticResource Checkmark}" Fill="{TemplateBinding Foreground}"
 				      FlowDirection="LeftToRight" Margin="5,0,0,0" Visibility="Collapsed" VerticalAlignment="Center" />
 				<ContentPresenter ContentSource="Header" Margin="10,1,10,2" RecognizesAccessKey="True"
 				                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
@@ -190,7 +192,10 @@
 			</Popup>
 		</Grid>
 		<ControlTemplate.Triggers>
-			<Trigger Property="IsSuspendingPopupAnimation" Value="true">
+            <Trigger Property="Icon" Value="{x:Null}">
+                <Setter Property="Visibility" TargetName="Icon" Value="Collapsed" />
+            </Trigger>
+            <Trigger Property="IsSuspendingPopupAnimation" Value="true">
 				<Setter Property="PopupAnimation" TargetName="PART_Popup" Value="None" />
 			</Trigger>
 			<Trigger Property="IsChecked" Value="true">
@@ -228,7 +233,7 @@
 			<Rectangle x:Name="Bg" Margin="1" RadiusY="0" RadiusX="0" StrokeThickness="0" Fill="{x:Null}" />
 			<Rectangle x:Name="InnerBorder" Margin="2" Fill="{x:Null}" />
 			<DockPanel>
-				<ContentPresenter x:Name="Icon" ContentSource="Icon" Margin="4,0,6,0"
+				<ContentPresenter x:Name="Icon" ContentSource="Icon" Margin="4,0,4,0"
 				                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" />
 				<Path x:Name="GlyphPanel" Data="{StaticResource Checkmark}" FlowDirection="LeftToRight" Margin="7,0,0,0"
 				      Visibility="Collapsed" VerticalAlignment="Center" Fill="Black" />

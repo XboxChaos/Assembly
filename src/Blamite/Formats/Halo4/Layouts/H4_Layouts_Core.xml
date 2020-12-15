@@ -132,6 +132,11 @@
 		</array>
 	</layout>
 
+  <layout for="hsc*">
+    <asciiz name="file name" offset="0x0" />
+    <int32 name="source size" offset="0x20" />
+    <uint32 name="source pointer" offset="0x2C" />
+  </layout>
 
 	<layout for="hsdt">
 
@@ -188,5 +193,15 @@
 		<int32 name="value type" offset="0x10" />
 		<int16 name="expression type" offset="0x14" />
 		<!--<int32 name="source line" offset="0x18" />-->
+	</layout>
+	
+	<!-- sbsp (scenario_structure_bsp) -->
+	<layout for="sbsp">
+		<int32 name="number of instanced geometry" offset="0x280" />
+		<uint32 name="instanced geometry table address" offset="0x284" />
+	</layout>
+	
+	<layout for="sbsp instanced geometry" size="0x4">
+		<int32 name="name stringid" offset="0x0" />
 	</layout>
 </layouts>

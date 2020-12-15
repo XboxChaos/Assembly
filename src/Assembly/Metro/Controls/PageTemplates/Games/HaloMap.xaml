@@ -2,7 +2,6 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
              xmlns:DataBind="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games"
              xmlns:Converters="clr-namespace:Assembly.Helpers.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -62,30 +61,20 @@
 
 			<Grid x:Name="sideBar" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
 			      Background="#2d2d30">
-				<TabControl x:Name="mapInfoSelection" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" Margin="0">
-					<TabItem Header="Header" Style="{StaticResource MetroHeaderTabItem}" Height="16" Margin="18,0,-18,-15"
+				<TabControl x:Name="mapInfoSelection" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}">
+					<TabItem Header="Header" Style="{StaticResource MetroHeaderTabItem}" Height="16" Margin="20,0,-20,-8"
 					         VerticalAlignment="Bottom">
-						<Grid>
-							<TextBlock x:Name="lblMapName" FontFamily="{DynamicResource MetroFontLight}" Text="" Foreground="White"
-							           FontSize="32" Margin="25,35.5,7,0" Height="50" VerticalAlignment="Top"
-							           TextTrimming="CharacterEllipsis" />
-							<ed:RegularPolygon Fill="#FF4A4A4C" HorizontalAlignment="Left" Height="19" InnerRadius="1" Margin="-18,51,0,0"
-							                   PointCount="3" Stretch="Fill" VerticalAlignment="Top" Width="48"
-							                   RenderTransformOrigin="0.5,0.5">
-								<ed:RegularPolygon.RenderTransform>
-									<TransformGroup>
-										<ScaleTransform />
-										<SkewTransform />
-										<RotateTransform Angle="90" />
-										<TranslateTransform />
-									</TransformGroup>
-								</ed:RegularPolygon.RenderTransform>
-							</ed:RegularPolygon>
+						<Grid Margin="-3,-21,0,0">
+							<Grid Margin="0,36,0,0" Height="48" VerticalAlignment="Top">
+								<TextBlock Name="lblMapName" FontFamily="{DynamicResource MetroFontLight}" Text="" Foreground="White" FontSize="32"
+								  Margin="25,0,0,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+								<Polygon Points="0,0 20,24 0,48" Fill="#FF4A4A4C" HorizontalAlignment="Left" VerticalAlignment="Center" />
+							</Grid>
 
-							<Rectangle Fill="#FF363639" Height="1" Margin="25,114.25,25,0" VerticalAlignment="Top"
+							<Rectangle Fill="#FF363639" Height="1" Margin="25,114,25,0" VerticalAlignment="Top"
 							           d:LayoutOverrides="Height" />
 
-							<ScrollViewer Margin="25,130,20,25" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+							<ScrollViewer Margin="25,120,15,20" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
 								<StackPanel>
 									<ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
 										<StackPanel>
@@ -115,7 +104,7 @@
 										</StackPanel>
 									</ScrollViewer>
 
-									<Rectangle Fill="#FF363639" Height="1" Margin="0,20,0,20" VerticalAlignment="Top"
+									<Rectangle Fill="#FF363639" Height="1" Margin="0,10,10,20" VerticalAlignment="Top"
 									           d:LayoutOverrides="Height" />
 
 								</StackPanel>
@@ -123,9 +112,9 @@
 						</Grid>
 					</TabItem>
 
-					<TabItem x:Name="tabTags" Header="Tags" Style="{StaticResource MetroHeaderTabItem}" Height="16" Margin="18,0,-18,-15"
+					<TabItem x:Name="tabTags" Header="Tags" Style="{StaticResource MetroHeaderTabItem}" Height="16" Margin="20,0,-20,-8"
 					         VerticalAlignment="Bottom">
-						<Grid Margin="15,25,15,5">
+						<Grid Margin="15,20,15,5">
 							<DockPanel>
 								<Grid DockPanel.Dock="Top">
 									<Grid.RowDefinitions>
@@ -133,18 +122,6 @@
 										<RowDefinition Height="32" />
 									</Grid.RowDefinitions>
 									<TextBlock Grid.Row="0" Text="Search:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-									<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-										<Button Grid.Row="0" Style="{DynamicResource TabActiveButtons}" Click="SIDButton_Click" ToolTip="Convert values to/from String IDs.">
-											<Button.Content>
-												<TextBlock Text="StringID Tool" TextDecorations="Underline" />
-											</Button.Content>
-										</Button>
-										<Button Grid.Row="0" Style="{DynamicResource TabActiveButtons}" Click="AddrButton_Click" ToolTip="Convert between memory addresses and file offsets." Margin="10,0,0,0">
-											<Button.Content>
-												<TextBlock Text="Address Tool" TextDecorations="Underline" />
-											</Button.Content>
-										</Button>
-									</StackPanel>
 
 									<TextBox Grid.Row="1" Name="txtTagSearch" Text="{Binding Path=SearchString, Mode=TwoWay}"
 									         TextChanged="txtTagSearch_TextChanged" ToolTip="Start typing here to search by name, or prefix &quot;0x&quot; to search by datum index. Injected tags always begin with 0x4153." />
@@ -154,17 +131,62 @@
 
 								<StackPanel x:Name="panelTagButtons" Orientation="Horizontal" VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Grid.Row="2" Margin="0,4,0,0">
 									<Button x:Name="btnImport" Content="Import..." Width="72" Margin="0,0,5,0" Click="btnImport_Click" />
-									<Button x:Name="btnSaveNames" Content="Save Tag Names" Width="110" Margin="0,0,5,0" Click="btnSaveNames_Click" />
-									<ToggleButton x:Name="btnOptions" Width="75" IsChecked="False" Style="{DynamicResource OptionsToggleButton}">
+
+									<ToggleButton x:Name="btnTagSaves" Width="56" Margin="0,0,5,0" IsChecked="False" HorizontalContentAlignment="Stretch" Style="{DynamicResource OptionsToggleButton}">
 										<Grid>
 											<Grid.ColumnDefinitions>
-												<ColumnDefinition Width="50"/>
 												<ColumnDefinition Width="*"/>
+												<ColumnDefinition Width="Auto"/>
 											</Grid.ColumnDefinitions>
 
-											<TextBlock Text="Options" Grid.Column="0" HorizontalAlignment="Center"/>
-											<Path x:Name="Arrow" Grid.Column="1" Data="M0,0L4,4 8,0z" Margin="5,0,2,0" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="#989898" Width="8"/>
+											<TextBlock Text="Save" Grid.Column="0" HorizontalAlignment="Center"/>
+											<Path x:Name="TagArrow" Grid.Column="1" Data="M0,0L4,4 8,0z" Margin="0,0,4,0" HorizontalAlignment="Right" VerticalAlignment="Center" Fill="#989898" Width="8"/>
 										</Grid>
+									</ToggleButton>
+									<Popup x:Name="popSaves" IsOpen="{Binding IsChecked, ElementName=btnTagSaves}" PlacementTarget="{x:Reference btnTagSaves}" StaysOpen="False" >
+										<Border BorderThickness="1" Background="#1b1b1c" BorderBrush="#333337">
+											<StackPanel>
+												<MenuItem x:Name="menuSaveTagEditors" Header="Save Changes In All Open Tags" Foreground="White" ToolTip="Saves any changes across all open tag tabs. String and script tabs are not saved. Adding String IDs may spam." Click="MenuSaveTagEditors_Click" />
+												<MenuItem x:Name="menuSaveTagNames" Header="Save Tag Names" Foreground="White" ToolTip="Saves any changes to tag names." Click="btnSaveNames_Click" />
+
+											</StackPanel>
+										</Border>
+									</Popup>
+
+									<ToggleButton x:Name="btnTagTools" Width="56" Margin="0,0,5,0" IsChecked="False" HorizontalContentAlignment="Stretch" Style="{DynamicResource OptionsToggleButton}">
+										<Grid>
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="*"/>
+												<ColumnDefinition Width="Auto"/>
+											</Grid.ColumnDefinitions>
+
+											<TextBlock Text="Tools" Grid.Column="0" HorizontalAlignment="Center"/>
+											<Path x:Name="ToolArrow" Grid.Column="1" Data="M0,0L4,4 8,0z" Margin="0,0,4,0" HorizontalAlignment="Right" VerticalAlignment="Center" Fill="#989898" Width="8"/>
+										</Grid>
+									</ToggleButton>
+									<Popup x:Name="popTagTools" IsOpen="{Binding IsChecked, ElementName=btnTagTools}" PlacementTarget="{x:Reference btnTagTools}" StaysOpen="False" >
+										<Border BorderThickness="1" Background="#1b1b1c" BorderBrush="#333337">
+											<StackPanel>
+												<MenuItem x:Name="menuSIDTool" Header="String ID Tool" Foreground="White" Click="SIDButton_Click" ToolTip="Convert values to/from String IDs." />
+												<MenuItem x:Name="menuAddressTool" Header="Address Tool" Foreground="White" Click="AddrButton_Click" ToolTip="Convert between memory addresses and file offsets." />
+												<MenuItem x:Name="menuSIDFree" Header="Free Up StringID Buffer" Foreground="White" Click="SIDFreeButton_Click">
+													<MenuItem.ToolTip>
+														<TextBlock>
+														(WARNING: DESTRUCTIVE) Frees up space in the StringID string buffer by replacing longer SBSP Instanced Geometry names with smaller strings.
+														<LineBreak/>
+														This can potentially allow your map to load if it started crashing after injecting something.
+														<LineBreak/>
+														It would be best to backup your map before use. Use at your own risk!
+														</TextBlock>
+													</MenuItem.ToolTip>
+												</MenuItem>
+
+											</StackPanel>
+										</Border>
+									</Popup>
+
+									<ToggleButton Grid.Row="1" Grid.Column="5" x:Name="btnOptions" VerticalAlignment="Center" IsChecked="False" ToolTip="Click to view options relating to this field.">
+										<Path VerticalAlignment="Center" Margin="2" Fill="#989898" Style="{StaticResource GearIcon}" />
 									</ToggleButton>
 									<Popup x:Name="popOptions" IsOpen="{Binding IsChecked, ElementName=btnOptions}" PlacementTarget="{x:Reference btnOptions}" StaysOpen="False" >
 										<Border BorderThickness="1" Background="#1b1b1c" BorderBrush="#333337">
@@ -186,13 +208,10 @@
 														<ComboBoxItem Content="Open in Existing" />
 													</ComboBox>
 												</StackPanel>
-
 											</StackPanel>
 										</Border>
 									</Popup>
 								</StackPanel>
-
-
 
 								<Grid Grid.Row="1" DockPanel.Dock="Top">
 									<Grid.RowDefinitions>
@@ -220,7 +239,8 @@
 														<ContextMenu IsVisibleChanged="GroupContextMenu_IsVisibleChanged">
 															<MenuItem Name="itemGroupBatch" Header="Add Group To Extract List..." Click="itemGroupBatch_Click" />
 															<MenuItem Header="Dump Tag List..." Click="DumpGroupTagList" />
-														</ContextMenu>
+                                                            <MenuItem Name="hscItem" Header="Extract Source Files" Click="HscItem_Click" />
+                                                        </ContextMenu>
 													</StackPanel.ContextMenu>
 												</StackPanel>
 											</HierarchicalDataTemplate>
@@ -310,9 +330,9 @@
 						</Grid>
 					</TabItem>
 
-					<TabItem x:Name="tabStrings" Header="Strings" Style="{StaticResource MetroHeaderTabItem}" Height="16" Margin="18,0,-18,-15"
+					<TabItem x:Name="tabStrings" Header="Strings" Style="{StaticResource MetroHeaderTabItem}" Height="16" Margin="20,0,-20,-8"
 					         VerticalAlignment="Bottom">
-						<Grid Margin="25,25,15,5">
+						<Grid Margin="25,20,15,5">
 							<TextBlock FontFamily="{DynamicResource MetroFontSemiLight}" Text="Localized Strings;" Foreground="White"
 							           FontSize="16" />
 							<ListBox x:Name="lbLanguages" Margin="0,30,0,0" BorderBrush="{x:Null}" Background="{x:Null}"
@@ -368,32 +388,11 @@
 						</Grid>
 					</TabItem>
 
-					<TabItem x:Name="tabScripts" Header="Scripts" Style="{StaticResource MetroHeaderTabItem}" Height="16"
-					         Margin="18,0,-18,-15" VerticalAlignment="Bottom">
-						<Grid Margin="25,25,15,5">
-							<DockPanel>
-								<ToggleButton x:Name="btnScriptOptions" Width="75" IsChecked="False" Style="{DynamicResource OptionsToggleButton}"
-											  VerticalAlignment="Stretch" HorizontalAlignment="Left" DockPanel.Dock="Bottom" Margin="-10,4,0,0">
-									<Grid>
-										<Grid.ColumnDefinitions>
-											<ColumnDefinition Width="50"/>
-											<ColumnDefinition Width="*"/>
-										</Grid.ColumnDefinitions>
-
-										<TextBlock Text="Options" Grid.Column="0" HorizontalAlignment="Center"/>
-										<Path x:Name="Arrow2" Grid.Column="1" Data="M0,0L4,4 8,0z" Margin="5,0,2,0" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="#989898" Width="8"/>
-									</Grid>
-								</ToggleButton>
-								<Popup x:Name="popScriptOptions" IsOpen="{Binding IsChecked, ElementName=btnScriptOptions}" PlacementTarget="{x:Reference btnScriptOptions}" StaysOpen="False" >
-									<Border BorderThickness="1" Background="#1b1b1c" BorderBrush="#333337">
-										<StackPanel>
-											<MenuItem x:Name="cbShowHSInfo" Header="Show Extra Information" IsCheckable="True" Foreground="White"
-														  Checked="cbShowHSInfo_Altered" Unchecked="cbShowHSInfo_Altered" ToolTip="Toggles the display of block indices and expression indices for variables/globals/scripts as comments. Will need to close/reopen any script tabs to take effect."/>
-
-										</StackPanel>
-									</Border>
-								</Popup>
-								<ListBox x:Name="lbScripts" BorderBrush="{x:Null}" Background="Transparent" VerticalAlignment="Stretch"
+                    <TabItem x:Name="tabScripts" Header="Scripts" Style="{StaticResource MetroHeaderTabItem}" Height="16" Margin="20,0,-20,-8"
+							 VerticalAlignment="Bottom">
+                        <Grid Margin="25,20,15,5">
+                            <DockPanel>
+                                <ListBox x:Name="lbScripts" BorderBrush="{x:Null}" Background="Transparent" VerticalAlignment="Stretch"
 							         ScrollViewer.CanContentScroll="False" DockPanel.Dock="Top">
 									<ListBox.ItemTemplate>
 										<DataTemplate>

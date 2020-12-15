@@ -216,6 +216,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			foreach (var map in globalMaps)
 			{
 				string filename = badChars.Aggregate(map.Key, (current, badChar) => current.Replace(badChar, '_'));
+				filename = filename.Replace(" ", "");
 				filename += ".xml";
 				string path = Path.Combine(outputPath, filename);
 
@@ -373,7 +374,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				App.AssemblyStorage.AssemblySettings.DefaultDatabase.FindEngineByVersion(versionInfo.BuildString);
 
 			return
-				new KeyValuePair<ICacheFile, EngineDescription>(new ThirdGenCacheFile(reader, buildInfo, versionInfo.BuildString),
+				new KeyValuePair<ICacheFile, EngineDescription>(new ThirdGenCacheFile(reader, buildInfo, path, versionInfo.BuildString),
 					buildInfo);
 		}
 

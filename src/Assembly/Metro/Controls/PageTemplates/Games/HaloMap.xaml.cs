@@ -31,8 +31,11 @@ using CloseableTabItemDemo;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using XBDMCommunicator;
+using Blamite.Blam.SecondGen;
 using Blamite.Blam.ThirdGen;
 using Blamite.RTE.ThirdGen;
+using Blamite.Blam.Resources.Sounds;
+using System.Reflection;
 using Blamite.RTE.FirstGen;
 using Blamite.RTE.H1PC;
 
@@ -105,7 +108,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			cbShowBookmarkedTagsOnly.IsChecked = App.AssemblyStorage.AssemblySettings.HalomapOnlyShowBookmarkedTags;
 			cbOpenDuplicate.IsChecked = App.AssemblyStorage.AssemblySettings.AutoOpenDuplicates;
 			cbTabOpenMode.SelectedIndex = (int) App.AssemblyStorage.AssemblySettings.HalomapTagOpenMode;
-			cbShowHSInfo.IsChecked = App.AssemblyStorage.AssemblySettings.ShowScriptInfo;
 
 			App.AssemblyStorage.AssemblySettings.PropertyChanged += SettingsChanged;
 
@@ -155,12 +157,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			{
 				var reader = new EndianReader(fileStream, Endian.BigEndian);
 		#if DEBUG
-				_cacheFile = CacheFileLoader.LoadCacheFile(reader, App.AssemblyStorage.AssemblySettings.DefaultDatabase,
+				_cacheFile = CacheFileLoader.LoadCacheFile(reader, Path.GetFileName(_cacheLocation), App.AssemblyStorage.AssemblySettings.DefaultDatabase,
 					out _buildInfo);
 		#else
 				try
 				{
-					_cacheFile = CacheFileLoader.LoadCacheFile(reader, App.AssemblyStorage.AssemblySettings.DefaultDatabase,
+					_cacheFile = CacheFileLoader.LoadCacheFile(reader, Path.GetFileName(_cacheLocation), App.AssemblyStorage.AssemblySettings.DefaultDatabase,
 						out _buildInfo);
 				}
 				catch (Exception ex)
@@ -379,11 +381,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (_cacheFile.Resources == null)
 				Dispatcher.Invoke(new Action(() => btnImport.IsEnabled = false));
 
-			// Hide import/save name buttons if the cache file isn't thirdgen
+			// Hide import button if the cache file isn't thirdgen
 			if (_cacheFile.Engine != EngineType.ThirdGeneration)
-				Dispatcher.Invoke(new Action(() => { btnImport.Visibility = Visibility.Collapsed;
-					btnSaveNames.Visibility = Visibility.Collapsed; }));
-				
+				Dispatcher.Invoke(new Action(() => btnImport.Visibility = Visibility.Collapsed));
+
+			// Hide save name button if the cache file isn't secondgen or thirdgen
+			if (_cacheFile.Engine < EngineType.SecondGeneration)
+				Dispatcher.Invoke(new Action(() => menuSaveTagNames.Visibility = Visibility.Collapsed));
 
 			_tagEntries = _cacheFile.Tags.Select(WrapTag).ToList();
 			_allTags = BuildTagHierarchy(
@@ -498,7 +502,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				));
 		}
 
-		private void HeaderValueData_MouseDown(object sender, MouseButtonEventArgs e)
+        private void HeaderValueData_MouseDown(object sender, MouseButtonEventArgs e)
 		{
 			if (e.ClickCount == 2)
 				Clipboard.SetText(((TextBlock) e.OriginalSource).Text);
@@ -614,11 +618,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
-		private void cbShowHSInfo_Altered(object sender, RoutedEventArgs e)
-		{
-			App.AssemblyStorage.AssemblySettings.ShowScriptInfo = cbShowHSInfo.IsChecked;
-		}
-
 		private void ScriptButtonClick(object sender, RoutedEventArgs e)
 		{
 			var elem = e.Source as FrameworkElement;
@@ -633,14 +632,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 			else
 			{
-				var tab = new CloseableTabItem
-				{
-					Header = new ContentControl
-					{
-						Content = tabName,
-						ContextMenu = BaseContextMenu
-					},
-					Content = new ScriptEditor(_buildInfo, script, _mapManager, _cacheFile.Endianness)
+                var tab = new CloseableTabItem
+                {
+                    Header = new ContentControl
+                    {
+                        Content = tabName,
+                        ContextMenu = BaseContextMenu
+                    },
+                    Content = new ScriptEditor(_buildInfo, script, _mapManager, _cacheFile, _cacheFile.Endianness)
 				};
 
 				contentTabs.Items.Add(tab);
@@ -784,10 +783,30 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			var resourcesProcessed = new HashSet<DatumIndex>();
 			var resourcePagesProcessed = new HashSet<ResourcePage>();
 
+			var soundCodecsToProcess = new Queue<int>();
+			var soundPitchRangesToProcess = new Queue<int>();
+			var soundLanguageDurationsToProcess = new Queue<int>();
+			var soundPlaybacksToProcess = new Queue<int>();
+			var soundScalesToProcess = new Queue<int>();
+			var soundPromotionsToProcess = new Queue<int>();
+			var soundCustomPlaybacksToProcess = new Queue<int>();
+			var soundExtraInfoToProcess = new Queue<int>();
+
+			var soundCodecsProcessed = new HashSet<int>();
+			var soundPitchRangesProcessed = new HashSet<int>();
+			var soundLanguageDurationsProcessed = new HashSet<int>();
+			var soundPlaybacksProcessed = new HashSet<int>();
+			var soundScalesProcessed = new HashSet<int>();
+			var soundPromotionsProcessed = new HashSet<int>();
+			var soundCustomPlaybacksProcessed = new HashSet<int>();
+			var soundExtraInfoProcessed = new HashSet<int>();
+
 			foreach (TagEntry t in tags)
 				tagsToProcess.Enqueue(t.RawTag);
 
 			ResourceTable resources = null;
+			SoundResourceTable soundResources = null;
+
 			using (var reader = _mapManager.OpenRead())
 			{
 				while (tagsToProcess.Count > 0)
@@ -853,11 +872,203 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 							tagsToProcess.Enqueue(_cacheFile.Tags[tagRef]);
 					foreach (var resource in blockBuilder.ReferencedResources)
 						resourcesToProcess.Enqueue(resource);
+
+					//this needs to be loaded early because there are referenced tags that need to be queued
+					if (blockBuilder.ContainsSoundReferences && soundResources == null && _cacheFile.SoundGestalt != null)
+						soundResources = _cacheFile.SoundGestalt.LoadSoundResourceTable(reader);
+
+					foreach (var codec in blockBuilder.ReferencedSoundCodecs)
+						soundCodecsToProcess.Enqueue(codec);
+					foreach (var pr in blockBuilder.ReferencedSoundPitchRanges)
+						soundPitchRangesToProcess.Enqueue(pr);
+					foreach (var lpr in blockBuilder.ReferencedSoundLanguagePitchRanges)
+						soundLanguageDurationsToProcess.Enqueue(lpr);
+					foreach (var playback in blockBuilder.ReferencedSoundPlaybacks)
+						soundPlaybacksToProcess.Enqueue(playback);
+					foreach (var scale in blockBuilder.ReferencedSoundScales)
+						soundScalesToProcess.Enqueue(scale);
+					foreach (var pro in blockBuilder.ReferencedSoundPromotions)
+						soundPromotionsToProcess.Enqueue(pro);
+
+					foreach (var cplayback in blockBuilder.ReferencedSoundCustomPlaybacks)
+					{
+						soundCustomPlaybacksToProcess.Enqueue(cplayback);
+						if (soundResources != null)
+						{
+							var cpb = soundResources.CustomPlaybacks[cplayback];
+							if (cpb.RadioEffect != null)
+								tagsToProcess.Enqueue(_cacheFile.Tags[cpb.RadioEffect.Index]);
+
+							if (cpb.Components != null)
+								foreach (var comp in cpb.Components)
+									if (comp.Sound != null)
+										tagsToProcess.Enqueue(_cacheFile.Tags[comp.Sound.Index]);
+						}
+					}
+
+					foreach (var extra in blockBuilder.ReferencedSoundExtraInfo)
+						soundExtraInfoToProcess.Enqueue(extra);
 				}
 
 				// Load the resource table in if necessary
-				if ( _cacheFile.Resources != null)
+				if (resourcesToProcess.Count > 0 && _cacheFile.Resources != null)
 					resources = _cacheFile.Resources.LoadResourceTable(reader);
+			}
+
+			// Extract sound info
+			if (soundResources != null)
+			{
+				while (soundCodecsToProcess.Count > 0)
+				{
+					var index = soundCodecsToProcess.Dequeue();
+					if (soundCodecsProcessed.Contains(index))
+						continue;
+
+					container.AddSoundCodec(new ExtractedSoundCodec(index, soundResources.Codecs[index]));
+				}
+
+				while (soundPitchRangesToProcess.Count > 0)
+				{
+					var index = soundPitchRangesToProcess.Dequeue();
+					if (soundPitchRangesProcessed.Contains(index))
+						continue;
+
+					var pRange = soundResources.PitchRanges[index];
+
+					string name = _cacheFile.StringIDs.GetString(pRange.Name);
+					bool hasSection = pRange.HasEncodedData;
+
+					List<ExtractedSoundPermutation> perms = new List<ExtractedSoundPermutation>();
+					for (int i = 0; i < pRange.Permutations.Length; i++)
+					{
+						var p = pRange.Permutations[i];
+
+						string pName = _cacheFile.StringIDs.GetString(p.Name);
+						ExtractedSoundPermutation exP = new ExtractedSoundPermutation();
+						exP.Name = pName;
+						exP.EncodedSkipFraction = p.EncodedSkipFraction;
+						exP.EncodedGain = p.EncodedGain;
+						exP.EncodedPermutationInfoIndex = p.EncodedPermutationInfoIndex;
+
+						exP.SampleSize = p.SampleSize;
+
+						exP.FSBInfo = p.FSBInfo;
+
+						exP.Chunks = new List<ExtractedSoundChunk>();
+
+						foreach (var chunk in p.Chunks)
+							exP.Chunks.Add(new ExtractedSoundChunk(chunk));
+
+						if (p.Languages != null)
+						{
+							exP.Languages = new List<ExtractedSoundLanguagePermutation>();
+
+							foreach (var lang in p.Languages)
+							{
+								ExtractedSoundLanguagePermutation exLP = new ExtractedSoundLanguagePermutation();
+
+								exLP.LanguageIndex = lang.LanguageIndex;
+								exLP.SampleSize = lang.SampleSize;
+
+								exLP.Chunks = new List<ExtractedSoundChunk>();
+
+								foreach (var chunk in p.Chunks)
+									exLP.Chunks.Add(new ExtractedSoundChunk(chunk));
+
+								exP.Languages.Add(exLP);
+							}
+						}
+
+						if (p.LayerMarkers != null)
+						{
+							exP.LayerMarkers = new List<int>();
+							exP.LayerMarkers.AddRange(p.LayerMarkers);
+						}
+
+						perms.Add(exP);
+					}
+
+					ExtractedSoundPitchRange exPRange = new ExtractedSoundPitchRange(index, name, pRange, perms);
+
+					container.AddSoundPitchRange(exPRange);
+				}
+
+				while (soundLanguageDurationsToProcess.Count > 0)
+				{
+					var index = soundLanguageDurationsToProcess.Dequeue();
+					if (soundLanguageDurationsProcessed.Contains(index))
+						continue;
+
+					ExtractedSoundLanguageDuration exLD = new ExtractedSoundLanguageDuration(index);
+
+					foreach (var lang in soundResources.LanguageDurations)
+					{
+						ExtractedSoundLanguageDurationInfo exLI = new ExtractedSoundLanguageDurationInfo();
+						exLI.Durations = new List<int>();
+
+						exLI.LanguageIndex = lang.LanguageIndex;
+
+						var pRange = lang.PitchRanges[index];
+
+						exLI.Durations = new List<int>();
+						exLI.Durations.AddRange(pRange.Durations);
+
+						exLD.Languages.Add(exLI);
+					}
+
+					container.AddSoundLanguageDuration(exLD);
+				}
+
+				while (soundPlaybacksToProcess.Count > 0)
+				{
+					var index = soundPlaybacksToProcess.Dequeue();
+					if (soundPlaybacksProcessed.Contains(index))
+						continue;
+
+					container.AddSoundPlayback(new ExtractedSoundPlayback(index, soundResources.Playbacks[index]));
+				}
+
+				while (soundScalesToProcess.Count > 0)
+				{
+					var index = soundScalesToProcess.Dequeue();
+					if (soundScalesProcessed.Contains(index))
+						continue;
+
+					container.AddSoundScale(new ExtractedSoundScale(index, soundResources.Scales[index]));
+				}
+
+				while (soundPromotionsToProcess.Count > 0)
+				{
+					var index = soundPromotionsToProcess.Dequeue();
+					if (soundPromotionsProcessed.Contains(index))
+						continue;
+
+					container.AddSoundPromotion(new ExtractedSoundPromotion(index, soundResources.Promotions[index]));
+				}
+
+				while (soundCustomPlaybacksToProcess.Count > 0)
+				{
+					var index = soundCustomPlaybacksToProcess.Dequeue();
+					if (soundCustomPlaybacksProcessed.Contains(index))
+						continue;
+
+					container.AddSoundCustomPlayback(new ExtractedSoundCustomPlayback(index, soundResources.CustomPlaybacks[index]));
+				}
+
+				while (soundExtraInfoToProcess.Count > 0)
+				{
+					var index = soundExtraInfoToProcess.Dequeue();
+					if (soundExtraInfoProcessed.Contains(index))
+						continue;
+
+					container.AddSoundExtraInfo(new ExtractedSoundExtraInfo(index, soundResources.ExtraInfos[index]));
+
+					// thar (possibly) be resources
+					if (soundResources.ExtraInfos[index].Datums != null)
+						foreach (var datum in soundResources.ExtraInfos[index].Datums)
+							if (datum != DatumIndex.Null)
+								resourcesToProcess.Enqueue(datum);
+				}
 			}
 
 			// Extract resource info
@@ -913,9 +1124,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 											return null;
 										}
 
-										resourceStream =
-											File.OpenRead(resourceCachePath);
-										resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, _cacheFile.Endianness), _buildInfo,
+										resourceStream = File.OpenRead(resourceCachePath);
+										resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, _cacheFile.Endianness), _buildInfo, Path.GetFileName(_cacheLocation),
 											_cacheFile.BuildString);
 									}
 
@@ -1009,17 +1219,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			using (var reader = new EndianReader(File.OpenRead(ofd.FileName), _cacheFile.Endianness))
 				container = TagContainerReader.ReadTagContainer(reader);
 
-
 			Dialogs.ControlDialogs.InjectSettings injs = new Dialogs.ControlDialogs.InjectSettings(_allTags, container);
+
 			// Handle defaults
-			injs.KeepSounds = (_cacheFile.HeaderSize == 0x1E000);
-			injs.UniqueShaders = (_cacheFile.HeaderSize > 0x3000 && _cacheFile.Endianness == Endian.BigEndian);
+			injs.UniqueShaders = _buildInfo.OptimizedShaders;
+
+			// H3 MCC currently doesnt store a checksum for uncompressed resources, so this must be unticked
+			injs.FindRaw = _buildInfo.UsesRawHashes;
 
 			injs.ShowDialog();
 
 			if (injs.DialogResult.HasValue && injs.DialogResult.Value)
 			{
-				var injector = new TagContainerInjector(_cacheFile, container, (bool)injs.KeepSounds, (bool)injs.InjectRaw, (bool)injs.FindRaw, (bool)injs.UniqueShaders);
+				var injector = new TagContainerInjector(_cacheFile, container, _buildInfo, (bool)injs.KeepSounds, (bool)injs.InjectRaw, (bool)injs.FindRaw, (bool)injs.UniqueShaders);
 				using (IStream stream = _mapManager.OpenReadWrite())
 				{
 					foreach (ExtractedTag tag in container.Tags)
@@ -1047,8 +1259,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					"\r\n\r\nPlease remember that you cannot poke to injected or modified tags without causing problems. Load the modified map in the game first.\r\n\r\nAdditionally, if applicable, make sure that your game executable is patched so that any map header hash checks are bypassed. Using an executable which only has RSA checks patched out will refuse to load the map.");
 
 			}
-
-
 		}
 
 		private void btnSaveNames_Click(object sender, RoutedEventArgs e)
@@ -1090,7 +1300,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				using (var stream = _mapManager.OpenReadWrite())
 				{
 					// Now inject the container
-					var injector = new TagContainerInjector(_cacheFile, container, true, false, true, false);
+					var injector = new TagContainerInjector(_cacheFile, container, _buildInfo, (bool)dupe.DupeSoundGestalt);
 					injector.InjectTag(container.Tags.First(), stream);
 					injector.InjectPredictions(container.Predictions, stream);
 					injector.SaveChanges(stream);
@@ -1143,10 +1353,77 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				var _zonesets = _cacheFile.Resources.LoadZoneSets(stream);
 
 				foreach (ExtractedTag et in container.Tags)
+				{
+					//add to global and remove from the rest
 					_zonesets.GlobalZoneSet.ActivateTag(et.OriginalIndex, true);
 
+					_zonesets.UnattachedZoneSet?.ActivateTag(et.OriginalIndex, false);
+					_zonesets.DiscForbiddenZoneSet?.ActivateTag(et.OriginalIndex, false);
+					_zonesets.DiscAlwaysStreamingZoneSet?.ActivateTag(et.OriginalIndex, false);
+					_zonesets.RequiredMapVariantsZoneSet?.ActivateTag(et.OriginalIndex, false);
+					_zonesets.SandboxMapVariantsZoneSet?.ActivateTag(et.OriginalIndex, false);
+
+					if (_zonesets.GeneralZoneSets != null)
+						foreach (var set in _zonesets.GeneralZoneSets)
+							set?.ActivateTag(et.OriginalIndex, false);
+
+					if (_zonesets.BSPZoneSets != null)
+						foreach (var set in _zonesets.BSPZoneSets)
+							set?.ActivateTag(et.OriginalIndex, false);
+
+					if (_zonesets.BSPZoneSets2 != null)
+						foreach (var set in _zonesets.BSPZoneSets2)
+							set?.ActivateTag(et.OriginalIndex, false);
+
+					if (_zonesets.BSPZoneSets3 != null)
+						foreach (var set in _zonesets.BSPZoneSets3)
+							set?.ActivateTag(et.OriginalIndex, false);
+
+					if (_zonesets.CinematicZoneSets != null)
+						foreach (var set in _zonesets.CinematicZoneSets)
+							set?.ActivateTag(et.OriginalIndex, false);
+
+					if (_zonesets.ScenarioZoneSets != null)
+						foreach (var set in _zonesets.ScenarioZoneSets)
+							set?.ActivateTag(et.OriginalIndex, false);
+				}
+					
+
 				foreach (ExtractedResourceInfo eri in container.Resources)
+				{
+					//add to global and remove from the rest
 					_zonesets.GlobalZoneSet.ActivateResource(eri.OriginalIndex, true);
+
+					_zonesets.UnattachedZoneSet?.ActivateResource(eri.OriginalIndex, false);
+					_zonesets.DiscForbiddenZoneSet?.ActivateResource(eri.OriginalIndex, false);
+					_zonesets.DiscAlwaysStreamingZoneSet?.ActivateResource(eri.OriginalIndex, false);
+					_zonesets.RequiredMapVariantsZoneSet?.ActivateResource(eri.OriginalIndex, false);
+					_zonesets.SandboxMapVariantsZoneSet?.ActivateResource(eri.OriginalIndex, false);
+
+					if (_zonesets.GeneralZoneSets != null)
+						foreach (var set in _zonesets.GeneralZoneSets)
+							set?.ActivateResource(eri.OriginalIndex, false);
+
+					if (_zonesets.BSPZoneSets != null)
+						foreach (var set in _zonesets.BSPZoneSets)
+							set?.ActivateResource(eri.OriginalIndex, false);
+
+					if (_zonesets.BSPZoneSets2 != null)
+						foreach (var set in _zonesets.BSPZoneSets2)
+							set?.ActivateResource(eri.OriginalIndex, false);
+
+					if (_zonesets.BSPZoneSets3 != null)
+						foreach (var set in _zonesets.BSPZoneSets3)
+							set?.ActivateResource(eri.OriginalIndex, false);
+
+					if (_zonesets.CinematicZoneSets != null)
+						foreach (var set in _zonesets.CinematicZoneSets)
+							set?.ActivateResource(eri.OriginalIndex, false);
+
+					if (_zonesets.ScenarioZoneSets != null)
+						foreach (var set in _zonesets.ScenarioZoneSets)
+							set?.ActivateResource(eri.OriginalIndex, false);
+				}
 
 				_zonesets.SaveChanges(stream);
 
@@ -1161,46 +1438,58 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			var tagContext = sender as ContextMenu;
 
-			// Check if we need to hide stuff because the cache isn't thirdgen
-			if (_cacheFile.Engine != EngineType.ThirdGeneration)
-				foreach (object tagItem in tagContext.Items)
+			foreach (object tagItem in tagContext.Items)
+			{
+				// Check for particular names/objects to hide because datatemplate
+				if (tagItem is MenuItem)
 				{
-					// Check for particular names/objects to hide because datatemplate
-					if (tagItem is MenuItem)
-					{
-						MenuItem tagMenuItem = tagItem as MenuItem;
-						if (tagMenuItem.Name == "itemRename" ||
-							tagMenuItem.Name == "itemDuplicate" ||
-							tagMenuItem.Name == "itemExtract" ||
-							tagMenuItem.Name == "itemForce" ||
-							tagMenuItem.Name == "itemTagBatch")
-							tagMenuItem.Visibility = Visibility.Collapsed;
-					}
-					if (tagItem is Separator)
-					{
-						Separator tagMenuItem = tagItem as Separator;
-						if (tagMenuItem.Name == "sepTopBookmark")
-							tagMenuItem.Visibility = Visibility.Collapsed;
-					}
+					MenuItem tagMenuItem = tagItem as MenuItem;
+
+					if (tagMenuItem.Name == "itemRename" && _cacheFile.Engine < EngineType.SecondGeneration)
+						tagMenuItem.Visibility = Visibility.Collapsed;
+					else if ((tagMenuItem.Name == "itemDuplicate" ||
+						tagMenuItem.Name == "itemExtract" ||
+						tagMenuItem.Name == "itemForce" ||
+						tagMenuItem.Name == "itemTagBatch")
+						&& _cacheFile.Engine != EngineType.ThirdGeneration)
+						tagMenuItem.Visibility = Visibility.Collapsed;
 				}
+				if (tagItem is Separator)
+				{
+					Separator tagMenuItem = tagItem as Separator;
+					if (tagMenuItem.Name == "sepTopBookmark")
+						tagMenuItem.Visibility = Visibility.Collapsed;
+				}
+			}
 		}
 
 		private void GroupContextMenu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
 			var tagContext = sender as ContextMenu;
+			var group = tagContext.DataContext as TagGroup;
 
-			// Check if we need to hide stuff because the cache isn't thirdgen
-			if (_cacheFile.Engine != EngineType.ThirdGeneration)
-				foreach (object tagItem in tagContext.Items)
+
+			foreach (object tagItem in tagContext.Items)
+			{
+				// Check for particular names/objects to hide because datatemplate
+				if (tagItem is MenuItem)
 				{
-					// Check for particular names/objects to hide because datatemplate
-					if (tagItem is MenuItem)
+					MenuItem tagMenuItem = tagItem as MenuItem;
+
+					// Check if we need to hide stuff because the cache isn't thirdgen
+					if (_cacheFile.Engine != EngineType.ThirdGeneration)
 					{
-						MenuItem tagMenuItem = tagItem as MenuItem;
+						
 						if (tagMenuItem.Name == "itemGroupBatch")
 							tagMenuItem.Visibility = Visibility.Collapsed;
 					}
+
+					if(group.TagGroupMagic != "hsc*" && tagMenuItem.Name == "hscItem")
+					{
+						tagMenuItem.Visibility = Visibility.Collapsed;
+					}
 				}
+			}
 		}
 
 		private void SIDButton_Click(object sender, RoutedEventArgs e)
@@ -1256,6 +1545,63 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				contentTabs.SelectedItem = tab;
 			}
 
+		}
+
+		private void HscItem_Click(object sender, RoutedEventArgs e)
+		{
+			DumpHscs();
+		}
+
+		private void DumpHscs()
+		{
+			var tags = _cacheFile.Tags.FindTagsByGroup("hsc*");
+
+			if (_buildInfo.Layouts.HasLayout("hsc*") && tags != null)
+			{
+				string folder;
+
+				using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+				{
+					System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+					if (result == System.Windows.Forms.DialogResult.OK)
+					{
+						folder = dialog.SelectedPath;
+					}
+					else
+					{
+						return;
+					}
+				}
+
+				foreach (var tag in tags)
+				{
+					string fileName;
+					byte[] data;
+
+					using (IReader reader = _mapManager.OpenRead())
+					{
+						reader.SeekTo(tag.MetaLocation.AsOffset());
+						var values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("hsc*"));
+
+						uint pointer = (uint)values.GetInteger("source pointer");
+						var exp = _cacheFile.PointerExpander.Expand(pointer);
+						var offset = _cacheFile.MetaArea.PointerToOffset(exp);
+						reader.SeekTo(offset);
+						data = reader.ReadBlock((int)values.GetInteger("source size"));
+						fileName = values.GetString("file name") + ".hsc";
+					}
+
+					string path = Path.Combine(folder, fileName);
+
+					File.WriteAllBytes(path, data);
+				}
+
+				MetroMessageBox.Show("All source files have been extracted.");
+			}
+			else
+			{
+				MetroMessageBox.Show("This map doesn't contain hsc files.");
+			}
 		}
 
 		#region Tag List
@@ -1737,6 +2083,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			throw new Exception();
 		}
 
+        public void RefreshTags()
+        {
+            foreach (CloseableTabItem tab in contentTabs.Items)
+            {
+                var meta = tab.Content as MetaContainer;
+                if(meta != null)
+                {
+                    meta.RefreshMetaEditor();
+                }
+            }
+        }
+
 		private void UpdateTagOpenMode()
 		{
 			_tagOpenMode = App.AssemblyStorage.AssemblySettings.HalomapTagOpenMode;
@@ -1943,6 +2301,88 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						w.Close();
 				}
 			}
+		}
+
+		private void MenuSaveTagEditors_Click(object sender, RoutedEventArgs e)
+		{
+			List<TabItem> tabs = contentTabs.Items.OfType<TabItem>().ToList();
+
+			foreach (TabItem tabItem in tabs)
+			{
+				if (tabItem.Content.GetType() == typeof(MetaContainer))
+					((MetaContainer)tabItem.Content).ExternalSave();
+			}
+
+			MetroMessageBox.Show("Tags Saved", "The changes have been saved back to the original file.");
+		}
+
+		private void SIDFreeButton_Click(object sender, RoutedEventArgs e)
+		{
+			string bspLayoutName = "sbsp";
+			string bspInstancedLayoutName = "sbsp instanced geometry";
+
+			string bspLayoutBlockCountName = "number of instanced geometry";
+			string bspLayoutBlockAddrName = "instanced geometry table address";
+
+			string bspInstancedLayoutStringIDName = "name stringid";
+
+			if (!_buildInfo.Layouts.HasLayout(bspLayoutName) || !_buildInfo.Layouts.HasLayout(bspInstancedLayoutName))
+			{
+				MetroMessageBox.Show("Free StringIDs", "This current engine does not contain the required \"" + bspLayoutName + "\" and \"" + bspInstancedLayoutName + "\" layouts in the Formats folder. Can not continue.");
+				return;
+			}
+
+			StructureLayout sbspLayout = _buildInfo.Layouts.GetLayout(bspLayoutName);
+			StructureLayout sbspInstancedLayout = _buildInfo.Layouts.GetLayout(bspInstancedLayoutName);
+
+			if (!sbspLayout.HasField(bspLayoutBlockCountName) || !sbspLayout.HasField(bspLayoutBlockAddrName))
+			{
+				MetroMessageBox.Show("Free StringIDs", "This current engine does not contain the required \"" + bspLayoutBlockCountName + "\" and \"" + bspLayoutBlockAddrName + "\" fields for the \"" + bspLayoutName + "\" layout in the Formats folder. Can not continue.");
+				return;
+			}
+			else if (!sbspLayout.HasField(bspLayoutBlockCountName))
+			{
+				MetroMessageBox.Show("Free StringIDs", "This current engine does not contain the required \"" + bspInstancedLayoutStringIDName + "\" field for the \"" + sbspInstancedLayout + "\" layout in the Formats folder. Can not continue.");
+				return;
+			}
+
+			int origLength = _cacheFile.StringIDDataTable.Size;
+
+			using (var stream = _mapManager.OpenReadWrite())
+			{
+				foreach (var tag in _cacheFile.Tags.FindTagsByGroup("sbsp"))
+				{
+					stream.SeekTo(tag.MetaLocation.AsOffset());
+
+					StructureValueCollection values = StructureReader.ReadStructure(stream, sbspLayout);
+
+					int count = (int)values.GetInteger(bspLayoutBlockCountName);
+					uint contractedAddr = (uint)values.GetInteger(bspLayoutBlockAddrName);
+					long expandedAddr = _cacheFile.PointerExpander.Expand(contractedAddr);
+
+					StructureValueCollection[] instancedGeo = Blamite.Blam.Util.TagBlockReader.ReadTagBlock(stream, count, expandedAddr, sbspInstancedLayout, _cacheFile.MetaArea);
+
+					foreach (var iGeo in instancedGeo)
+					{
+						uint rawVal = (uint)iGeo.GetInteger(bspInstancedLayoutStringIDName);
+						StringID sid = new StringID(rawVal);
+
+						string test = _cacheFile.StringIDs.GetString(sid);
+
+						if (test.Length <= 10)
+							continue;
+
+						_cacheFile.StringIDs.SetString(sid, "ig" + rawVal.ToString("X"));
+					}
+				}
+
+				_cacheFile.SaveChanges(stream);
+			}
+
+			int result = origLength - _cacheFile.StringIDDataTable.Size;
+
+			MetroMessageBox.Show("Free StringIDs", "A total of " + result + " bytes were freed.");
+				
 		}
 	}
 }

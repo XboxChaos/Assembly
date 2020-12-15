@@ -15,6 +15,11 @@ namespace Blamite.Blam
 	public interface ICacheFile
 	{
 		/// <summary>
+		///		The file name of the cache file.
+		/// </summary>
+		string FileName { get; }
+
+		/// <summary>
 		///     The size of the file header.
 		/// </summary>
 		int HeaderSize { get; }
@@ -156,12 +161,6 @@ namespace Blamite.Blam
 		IResourceMetaLoader ResourceMetaLoader { get; }
 
 		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="reader"></param>
-		ISoundResourceGestalt LoadSoundResourceGestaltData(IReader reader);
-
-		/// <summary>
 		///     A collection of segments that the file has been arbitrarily divided into.
 		///     For a given cache file, these segments will always be in the same order.
 		///     This could be used to compare two cache files and determine sizing differences between them.
@@ -190,6 +189,8 @@ namespace Blamite.Blam
 		ISimulationDefinitionTable SimulationDefinitions { get; }
 
 		IList<ITagInterop> TagInteropTable { get; }
+
+		SoundResourceManager SoundGestalt { get; }
 
 		/// <summary>
 		///     Saves any changes that were made to the file.

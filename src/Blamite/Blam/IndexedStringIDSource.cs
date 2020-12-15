@@ -35,7 +35,7 @@ namespace Blamite.Blam
 			return -1;
 		}
 
-		public override StringID IndexToStringID(int index)
+        public override StringID IndexToStringID(int index)
 		{
 			if (_resolver != null)
 				return _resolver.IndexToStringID(index);

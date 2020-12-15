@@ -5,210 +5,211 @@
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
 	<stringid name="Name" offset="0x0" visible="true" />
-	<ascii name="Anchor Name" offset="0x4" visible="true" length="0x20" />
-	<undefined name="Unknown" offset="0x24" visible="false" />
-	<dataRef name="Import Script" offset="0x28" visible="true" format="asciiz" />
+	<ascii name="Anchor" offset="0x4" length="0x20" visible="true" />
+	<enum16 name="Reset Object Lighting" offset="0x24" visible="true">
+		<option name="Default" value="0x0" />
+		<option name="Don't Reset Lighting" value="0x1" />
+		<option name="Reset Lighting" value="0x2" />
+	</enum16>
+	<int16 name="Unknown" offset="0x26" visible="false" />
+	<dataref name="Header Script" format="asciiz" offset="0x28" visible="true" tooltip="leftover import data, editing won't do anything" />
 	<tagblock name="Puppets" offset="0x3C" visible="true" elementSize="0x74">
-		<ascii name="Import Name" offset="0x0" visible="true" length="0x20" />
-		<stringId name="Name" offset="0x20" visible="true" />
-		<stringid name="Variant" offset="0x24" visible="true" />
-		<tagRef name="Puppet Animation" offset="0x28" visible="true" />
-		<tagRef name="Puppet Object" offset="0x38" visible="true" />
-		<int32 name="Unknown" offset="0x48" visible="false" />
-		<int8 name="Unknown" offset="0x4C" visible="false" />
-		<int8 name="Unknown" offset="0x4D" visible="false" />
-		<int8 name="Unknown" offset="0x4E" visible="false" />
-		<int8 name="Unknown" offset="0x4F" visible="false" />
-		<flags32 name="Coop Flags" offset="0x50" visible="true">
-			<bit name="Solo" index="0" />
-			<bit name="2 Players" index="1" />
-			<bit name="3 Players" index="2" />
-			<bit name="4 Players" index="3" />
+		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+		<stringid name="Identifier" offset="0x20" visible="true" />
+		<stringid name="Variant Name" offset="0x24" visible="true" />
+		<tagref name="Model Animation Graph" offset="0x28" visible="true" />
+		<tagref name="Object" offset="0x38" visible="true" />
+		<flags32 name="Flags" offset="0x48" visible="true">
+			<bit name="Placed Manually In Sapien" index="0" />
+			<bit name="Object Comes From Game" index="1" />
+			<bit name="Special Case (Like Player0)" index="2" />
+			<bit name="Effect Object" index="3" />
+			<bit name="No Lightmap Shadow" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</flags32>
-		<dataref name="Import Script" offset="0x54" visible="true" format="asciiz" />
+		<flags32 name="Unknown Shot Flags" offset="0x4C" visible="true">
+			<bit name="Shot 0" index="0" />
+			<bit name="Shot 1" index="1" />
+			<bit name="Shot 2" index="2" />
+			<bit name="Shot 3" index="3" />
+			<bit name="Shot 4" index="4" />
+			<bit name="Shot 5" index="5" />
+			<bit name="Shot 6" index="6" />
+			<bit name="Shot 7" index="7" />
+			<bit name="Shot 8" index="8" />
+			<bit name="Shot 9" index="9" />
+			<bit name="Shot 10" index="10" />
+			<bit name="Shot 11" index="11" />
+			<bit name="Shot 12" index="12" />
+			<bit name="Shot 13" index="13" />
+			<bit name="Shot 14" index="14" />
+			<bit name="Shot 15" index="15" />
+			<bit name="Shot 16" index="16" />
+			<bit name="Shot 17" index="17" />
+			<bit name="Shot 18" index="18" />
+			<bit name="Shot 19" index="19" />
+			<bit name="Shot 20" index="20" />
+			<bit name="Shot 21" index="21" />
+			<bit name="Shot 22" index="22" />
+			<bit name="Shot 23" index="23" />
+			<bit name="Shot 24" index="24" />
+			<bit name="Shot 25" index="25" />
+			<bit name="Shot 26" index="26" />
+			<bit name="Shot 27" index="27" />
+			<bit name="Shot 28" index="28" />
+			<bit name="Shot 29" index="29" />
+			<bit name="Shot 30" index="30" />
+			<bit name="Shot 31" index="31" />
+		</flags32>
+		<flags32 name="Override Creation Flags" offset="0x50" visible="true">
+			<bit name="Single Player" index="0" />
+			<bit name="2 Player Co-Op" index="1" />
+			<bit name="3 Player Co-Op" index="2" />
+			<bit name="4 Player Co-Op" index="3" />
+		</flags32>
+		<comment title="Custom Override Creation Condition">Used in combination with the override creation flags above</comment>
+		<dataref name="Custom Don't Create Condition Script" offset="0x54" visible="true" tooltip="leftover import data, editing won't do anything" />
 		<tagblock name="Attachments" offset="0x68" visible="true" elementSize="0x38">
-			<stringid name="Marker" offset="0x0" visible="true" />
-			<ascii name="Import Name" offset="0x4" length="0x20" visible="true" />
-			<undefined name="Unknown" offset="0x24" visible="false" />
-			<tagRef name="Object" offset="0x28" visible="true" />
+			<stringid name="Object Marker Name" offset="0x0" visible="true" />
+			<ascii name="Attachment Object Name" offset="0x4" length="0x20" visible="true" />
+			<stringid name="Attachment Marker Name" offset="0x24" visible="true" />
+			<tagRef name="Attachment Type" offset="0x28" visible="true" />
 		</tagblock>
 	</tagblock>
 	<tagblock name="Shots" offset="0x48" visible="true" elementSize="0xA4">
-		<dataRef name="Opening Import Script" offset="0x0" visible="true" format="asciiz" />
-		<int32 name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<float32 name="Unknown" offset="0x1C" visible="false" />
+		<dataref name="Header Script" format="asciiz" offset="0x0" visible="true" tooltip="leftover import data, editing won't do anything" />
+		<flags32 name="Flags" offset="0x14" visible="true">
+			<bit name="Instant Auto-Exposure" index="0" />
+			<bit name="Force Exposure" index="1" />
+			<bit name="Generate Looping Script" index="2" />
+		</flags32>
+		<float32 name="Environment Darken" offset="0x18" visible="true" tooltip="this works best with auto-exposure off" />
+		<float32 name="Forced Exposure" offset="0x1C" visible="true" tooltip="will disable auto-exposure" />
 		<tagblock name="Lighting" offset="0x20" visible="true" elementSize="0x18">
-			<tagRef name="Cinematic Light" offset="0x0" visible="true" />
-			<int32 name="Owner Puppet Index" offset="0x10" visible="true" />
+			<tagRef name="Lighting" offset="0x0" visible="true" />
+			<int32 name="Object Index" offset="0x10" visible="true" />
 			<stringid name="Marker" offset="0x14" visible="true" />
 		</tagblock>
-		<tagblock name="Unknown" offset="0x2C" visible="true" elementSize="0x2C">
-			<float32 name="Unknown" offset="0x0" visible="false" />
-			<float32 name="Unknown" offset="0x4" visible="false" />
-			<float32 name="Unknown" offset="0x8" visible="false" />
-			<float32 name="Unknown" offset="0xC" visible="false" />
-			<float32 name="Unknown" offset="0x10" visible="false" />
-			<float32 name="Unknown" offset="0x14" visible="false" />
-			<int32 name="Start Frame" offset="0x18" visible="true" />
-			<int32 name="End Frame" offset="0x1C" visible="true" />
-			<tagblock name="Puppets" offset="0x20" visible="true" elementSize="0x4">
-				<int32 name="Puppet Index" offset="0x0" visible="true" />
+		<tagblock name="Clip" offset="0x2C" visible="true" elementSize="0x2C">
+			<point3 name="Plane Center" offset="0x0" visible="true" />
+			<point3 name="Plane Direction" offset="0xC" visible="true" />
+			<int32 name="Frame Start" offset="0x18" visible="true" />
+			<int32 name="Frame End" offset="0x1C" visible="true" />
+			<tagblock name="Objects" offset="0x20" visible="true" elementSize="0x4">
+				<int32 name="Index" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
-		<tagblock name="Sounds" offset="0x38" visible="true" elementSize="0x24">
-			<tagRef name="Sound" offset="0x0" visible="true" />
+		<tagblock name="Dialogue" offset="0x38" visible="true" elementSize="0x24">
+			<tagRef name="Dialogue" offset="0x0" visible="true" />
 			<int32 name="Frame" offset="0x10" visible="true" />
-			<float32 name="Unknown" offset="0x14" visible="false" />
-			<stringid name="Unknown" offset="0x18" visible="true" />
-			<undefined name="Unknown" offset="0x1C" visible="false" />
-			<stringid name="Unknown" offset="0x20" visible="true" />
+			<float32 name="Scale" offset="0x14" visible="true" />
+			<stringid name="Lipsync Actor" offset="0x18" visible="true" />
+			<stringid name="Default Sound Effect" offset="0x1C" visible="true" />
+			<stringid name="Subtitle" offset="0x20" visible="true" />
 		</tagblock>
-		<tagblock name="Background Sounds" offset="0x44" visible="true" elementSize="0x18">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<tagRef name="Sound" offset="0x4" visible="true" />
+		<tagblock name="Music" offset="0x44" visible="true" elementSize="0x18">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Stop Music At Frame (Rather Than Starting It)" index="0" />
+			</flags32>
+			<tagRef name="Music/Foley" offset="0x4" visible="true" />
 			<int32 name="Frame" offset="0x14" visible="true" />
 		</tagblock>
 		<tagblock name="Effects" offset="0x50" visible="true" elementSize="0x1C">
 			<tagRef name="Effect" offset="0x0" visible="true" />
 			<int32 name="Frame" offset="0x10" visible="true" />
-			<stringid name="Marker" offset="0x14" visible="true" />
-			<int32 name="Owner Puppet Index" offset="0x18" visible="true" />
+			<stringid name="Marker Name" offset="0x14" visible="true" />
+			<int32 name="Marker Parent Index" offset="0x18" visible="true" />
 		</tagblock>
-		<tagblock name="Functions" offset="0x5C" visible="true" elementSize="0x14">
-			<int32 name="Owner Puppet Index" offset="0x0" visible="true" />
-			<stringid name="Target Function Name" offset="0x4" visible="true" />
-			<tagblock name="Values" offset="0x8" visible="false" elementSize="0x10">
-				<int32 name="Unknown" offset="0x0" visible="false" />
-				<int32 name="Unknown" offset="0x4" visible="false" />
-				<float32 name="Unknown" offset="0x8" visible="false" />
-				<float32 name="Unknown" offset="0xC" visible="false" />
+		<tagblock name="Object Functions" offset="0x5C" visible="true" elementSize="0x14">
+			<int32 name="Object Index" offset="0x0" visible="true" />
+			<stringid name="Function Name" offset="0x4" visible="true" />
+			<tagblock name="Keyframes" offset="0x8" visible="true" elementSize="0x10">
+				<flags32 name="Flags" offset="0x0" visible="true">
+					<bit name="Clear Function (Value And Interpolation Time Are Unused)" index="0" />
+				</flags32>
+				<int32 name="Frame" offset="0x4" visible="true" />
+				<float32 name="Value" offset="0x8" visible="true" />
+				<float32 name="Interpolation Time" offset="0xC" visible="true" />
 			</tagblock>
 		</tagblock>
 		<tagblock name="Cortana Effects" offset="0x68" visible="true" elementSize="0x14">
 			<tagRef name="Effect" offset="0x0" visible="true" />
 			<undefined name="Unknown" offset="0x10" visible="false" />
 		</tagblock>
-		<tagblock name="Import Scripts" offset="0x74" visible="true" elementSize="0x18">
+		<tagblock name="Custom Script" offset="0x74" visible="true" elementSize="0x18">
 			<int32 name="Frame" offset="0x0" visible="true" />
-			<dataRef name="Import Script" offset="0x4" visible="true" format="asciiz" />
+			<dataref name="Script" format="asciiz" offset="0x4" visible="true" tooltip="leftover import data, editing won't do anything" />
 		</tagblock>
-		<dataRef name="Import Script" offset="0x80" visible="true" format="asciiz" />
-		<int32 name="Loaded Frame Count" offset="0x94" visible="true" />
-		<tagblock name="Frames" offset="0x98" visible="true" elementSize="0x44">
-			<float32 name="X" offset="0x0" visible="true" />
-			<float32 name="Y" offset="0x4" visible="true" />
-			<float32 name="Z" offset="0x8" visible="true" />
-			<float32 name="Unknown" offset="0xC" visible="false" />
-			<float32 name="Unknown" offset="0x10" visible="false" />
-			<float32 name="Unknown" offset="0x14" visible="false" />
-			<float32 name="Unknown" offset="0x18" visible="false" />
-			<float32 name="Unknown" offset="0x1C" visible="false" />
-			<float32 name="Unknown" offset="0x20" visible="false" />
-			<float32 name="Unknown" offset="0x24" visible="false" />
-			<float32 name="Unknown" offset="0x28" visible="false" />
-			<float32 name="FOV" offset="0x2C" visible="true" />
+		<dataref name="Footer Script" format="asciiz" offset="0x80" visible="true" tooltip="leftover import data, editing won't do anything" />
+		<int32 name="Frame Count" offset="0x94" visible="true" />
+		<tagblock name="Frame Data" offset="0x98" visible="true" elementSize="0x44">
+			<point3 name="Camera Position" offset="0x0" visible="true" />
+			<vector3 name="Camera Forward" offset="0xC" visible="true" />
+			<vector3 name="Camera Up" offset="0x18" visible="true" />
+			<float32 name="Unknown" offset="0x24" visible="true" />
+			<float32 name="Unknown" offset="0x28" visible="true" />
+			<float32 name="Focal Length" offset="0x2C" visible="true" />
 			<comment title="Depth Of Field" />
 			<flags32 name="Flags" offset="0x30" visible="true">
 				<bit name="Enable Depth Of Field" index="0" />
-				<bit name="Bit 1" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</flags32>
-			<float32 name="Near Plane" offset="0x34" visible="true" />
-			<float32 name="Far Plane" offset="0x38" visible="true" />
+			<float32 name="Near Focal Plane Distance" offset="0x34" visible="true" />
+			<float32 name="Far Focal Plane Distance" offset="0x38" visible="true" />
 			<float32 name="Focal Depth" offset="0x3C" visible="true" />
 			<float32 name="Blur Amount" offset="0x40" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Texture Cameras" offset="0x54" visible="true" elementSize="0x14">
+	<tagblock name="Extra Camera Frame Data" offset="0x54" visible="true" elementSize="0x14">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<stringid name="Unknown" offset="0x4" visible="true" />
+		<stringid name="Type" offset="0x4" visible="true" />
 		<tagblock name="Shots" offset="0x8" visible="true" elementSize="0xC">
-			<tagblock name="Frames" offset="0x0" visible="true" elementSize="0x48">
-				<int32 name="Unknown" offset="0x0" visible="false" />
-				<float32 name="X" offset="0x4" visible="true" />
-				<float32 name="Y" offset="0x8" visible="true" />
-				<float32 name="Z" offset="0xC" visible="true" />
-				<float32 name="Unknown" offset="0x10" visible="false" />
-				<float32 name="Unknown" offset="0x14" visible="false" />
-				<float32 name="Unknown" offset="0x18" visible="false" />
-				<float32 name="Unknown" offset="0x1C" visible="false" />
-				<float32 name="Unknown" offset="0x20" visible="false" />
-				<float32 name="Unknown" offset="0x24" visible="false" />
+			<tagblock name="Frame Data" offset="0x0" visible="true" elementSize="0x48">
+				<flags32 name="Flags" offset="0x0" visible="true">
+					<bit name="Enabled" index="0" />
+				</flags32>
+				<point3 name="Camera Position" offset="0x4" visible="true" />
+				<vector3 name="Camera Forward" offset="0x10" visible="true" />
+				<vector3 name="Camera Up" offset="0x1C" visible="true" />
 				<float32 name="Unknown" offset="0x28" visible="false" />
 				<float32 name="Unknown" offset="0x2C" visible="false" />
-				<float32 name="FOV" offset="0x30" visible="true" />
+				<float32 name="Focal Length" offset="0x30" visible="true" />
 				<comment title="Depth Of Field" />
 				<flags32 name="Flags" offset="0x34" visible="true">
 					<bit name="Enable Depth Of Field" index="0" />
-					<bit name="Bit 1" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-					<bit name="Bit 16" index="16" />
-					<bit name="Bit 17" index="17" />
-					<bit name="Bit 18" index="18" />
-					<bit name="Bit 19" index="19" />
-					<bit name="Bit 20" index="20" />
-					<bit name="Bit 21" index="21" />
-					<bit name="Bit 22" index="22" />
-					<bit name="Bit 23" index="23" />
-					<bit name="Bit 24" index="24" />
-					<bit name="Bit 25" index="25" />
-					<bit name="Bit 26" index="26" />
-					<bit name="Bit 27" index="27" />
-					<bit name="Bit 28" index="28" />
-					<bit name="Bit 29" index="29" />
-					<bit name="Bit 30" index="30" />
-					<bit name="Bit 31" index="31" />
 				</flags32>
-				<float32 name="Near Plane" offset="0x38" visible="true" />
-				<float32 name="Far Plane" offset="0x3C" visible="true" />
+				<float32 name="Near Focal Plane Distance" offset="0x38" visible="true" />
+				<float32 name="Far Focal Plane Distance" offset="0x3C" visible="true" />
 				<float32 name="Focal Depth" offset="0x40" visible="true" />
 				<float32 name="Blur Amount" offset="0x44" visible="true" />
 			</tagblock>
 		</tagblock>
 	</tagblock>
-	<dataRef name="Import Script" offset="0x60" visible="true" format="asciiz" />
-	<undefined name="Unknown" offset="0x74" visible="false" />
+	<dataref name="Footer Script" format="asciiz" offset="0x60" visible="true" tooltip="leftover import data, editing won't do anything" />
+	<int32 name="Version" offset="0x74" visible="true" />
 </plugin>

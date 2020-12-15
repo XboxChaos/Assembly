@@ -56,9 +56,12 @@ namespace Blamite.Blam.SecondGen.Structures
 			var result = new StructureValueCollection();
 			result.SetInteger("file size", FileSize);
 			result.SetInteger("meta offset", (uint) MetaArea.Offset);
+			result.SetInteger("tag data offset", (uint)MetaArea.Segments[0].Size);
+			result.SetInteger("tag data size", (uint)MetaArea.Segments[1].Size);
 			result.SetInteger("meta size", (uint) MetaArea.Size);
 			result.SetInteger("meta offset mask", (uint)MetaArea.BasePointer);
 			result.SetInteger("type", (uint) Type);
+			result.SetInteger("string block offset", (uint) StringArea.Offset);
 			result.SetInteger("string table count", (uint) StringIDCount);
 			result.SetInteger("string table size", (uint) StringIDData.Size);
 			result.SetInteger("string index table offset", (uint) StringIDIndexTable.Offset);
@@ -79,14 +82,23 @@ namespace Blamite.Blam.SecondGen.Structures
 		{
 			_eofSegment = segmenter.WrapEOF((int) values.GetInteger("file size"));
 
-			var metaOffset = (int) values.GetInteger("meta offset");
-			var metaSize = (int) values.GetInteger("meta size");
-			uint metaOffsetMask = (uint)values.GetInteger("meta offset mask");
+			var metaOffset = (int)values.GetInteger("meta offset");
+
+			int tagTableSize = (int)values.GetInteger("tag data offset");
+			int tagDataSize = (int)values.GetInteger("tag data size");
+
+			var headSegment = new FileSegment(
+				segmenter.DefineSegment(metaOffset, tagTableSize, 0x1000, SegmentResizeOrigin.Beginning), segmenter);
+
+			var metaSize = (int)values.GetInteger("meta size");
+			int metaOffsetMask = (int)values.GetInteger("meta offset mask");
 
 			var metaSegment = new FileSegment(
-				segmenter.DefineSegment(metaOffset, metaSize, 0x200, SegmentResizeOrigin.Beginning), segmenter);
-			MetaArea = new FileSegmentGroup(new MetaOffsetConverter(metaSegment, metaOffsetMask));
-			IndexHeaderLocation = MetaArea.AddSegment(metaSegment);
+				segmenter.DefineSegment(metaOffset + tagTableSize, tagDataSize, 0x1000, SegmentResizeOrigin.End), segmenter);
+			MetaArea = new FileSegmentGroup(new MetaOffsetConverter(headSegment, (uint)metaOffsetMask));
+
+			IndexHeaderLocation = MetaArea.AddSegment(headSegment);
+			MetaArea.AddSegment(metaSegment);
 
 			Type = (CacheFileType) values.GetInteger("type");
 
@@ -130,7 +142,7 @@ namespace Blamite.Blam.SecondGen.Structures
 
 			// It is apparently possible to create a cache without a raw table, but -1 gets written as the offset
 			if (rawTableOffset != -1)
-				RawTable = segmenter.WrapSegment(rawTableOffset, rawTableSize, 1, SegmentResizeOrigin.End);
+				RawTable = segmenter.WrapSegment(rawTableOffset, rawTableSize, 0x80, SegmentResizeOrigin.End);
 
 			Checksum = (uint)values.GetInteger("checksum");
 

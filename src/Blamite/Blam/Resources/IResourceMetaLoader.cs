@@ -51,6 +51,6 @@ namespace Blamite.Blam.Resources
 		/// <param name="sndTag"></param>
 		/// <param name="reader"></param>
 		/// <returns></returns>
-		ISound LoadSoundMeta(ITag sndTag, IReader reader);
+		CacheSound LoadSoundMeta(ITag sndTag, IReader reader);
 	}
 }

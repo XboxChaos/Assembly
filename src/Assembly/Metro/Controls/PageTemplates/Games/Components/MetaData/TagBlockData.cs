@@ -88,7 +88,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 	public class TagBlockData : ValueField
 	{
-		private const double MinWidth = 525; // The minimum width that a block can have
+		private const double MinWidth = 602; // The minimum width that a block can have
 		private readonly FileSegmentGroup _metaArea;
 		private readonly ObservableCollection<TagBlockPage> _pages = new ObservableCollection<TagBlockPage>();
 		private readonly ObservableCollection<MetaField> _template = new ObservableCollection<MetaField>();

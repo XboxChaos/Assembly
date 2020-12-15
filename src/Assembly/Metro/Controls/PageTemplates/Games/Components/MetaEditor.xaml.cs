@@ -421,10 +421,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			{
 				case Key.S:
 					// Save Meta
+					btnPluginSave.Focus();
 					UpdateMeta(MetaWriter.SaveType.File, false);
 					break;
 
 				case Key.P:
+					sbPluginPoke.Focus();
 					if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0)
 					{
 						// Poke All
@@ -459,6 +461,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					txtSearch.Focus();
 					break;
 			}
+
+			e.Handled = true;
 		}
 
 		private void ViewValueAsCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -833,9 +837,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void ReallocateBlockCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (_cache.Engine != EngineType.ThirdGeneration)
+			if (_cache.Engine < EngineType.SecondGeneration)
 			{
-				MetroMessageBox.Show("Tag Block Reallocator", "Only third generation cache files are currently supported by the block reallocator.");
+				MetroMessageBox.Show("Tag Block Reallocator", "Only second and third generation cache files are currently supported by the block reallocator.");
 				return;
 			}
 
@@ -937,9 +941,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void IsolateBlockCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (_cache.Engine != EngineType.ThirdGeneration)
+			if (_cache.Engine < EngineType.SecondGeneration)
 			{
-				MetroMessageBox.Show("Tag Block Isolation", "Only third generation cache files are currently supported.");
+				MetroMessageBox.Show("Tag Block Isolation", "Only second and third generation cache files are currently supported.");
 				return;
 			}
 
@@ -998,9 +1002,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void AllocateDataRefCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (_cache.Engine != EngineType.ThirdGeneration)
+			if (_cache.Engine < EngineType.SecondGeneration)
 			{
-				MetroMessageBox.Show("Data Reference Allocator", "Only third generation cache files are currently supported by the data reference allocator.");
+				MetroMessageBox.Show("Data Reference Allocator", "Only second and third generation cache files are currently supported by the data reference allocator.");
 				return;
 			}
 
@@ -1047,9 +1051,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		
 		private void IsolateDataRefCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (_cache.Engine != EngineType.ThirdGeneration)
+			if (_cache.Engine < EngineType.SecondGeneration)
 			{
-				MetroMessageBox.Show("Data Reference Isolation", "Only third generation cache files are currently supported.");
+				MetroMessageBox.Show("Data Reference Isolation", "Only second and third generation cache files are currently supported.");
 				return;
 			}
 		
@@ -1105,6 +1109,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			if (e.ClickCount == 2)
 				Clipboard.SetText(((System.Windows.Documents.Run)e.OriginalSource).Text);
+		}
+
+		public void ExternalSave()
+		{
+			if (_pluginPath != null && File.Exists(_pluginPath))
+				UpdateMeta(MetaWriter.SaveType.File, true, false);
 		}
 	}
 }

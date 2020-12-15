@@ -21,7 +21,7 @@ namespace Blamite.Blam.ThirdGen.Localization
 			Language = language;
 			_pointerLayout = buildInfo.Layouts.GetLayout("locale index table element");
 			_encryptionKey = buildInfo.LocaleKey;
-			_hashes = buildInfo.UsesHashes;
+			_hashes = buildInfo.UsesStringHashes;
 			_sizeAlign = (_encryptionKey != null) ? AES.BlockSize : 1;
 			Load(values, segmenter, localeArea);
 		}

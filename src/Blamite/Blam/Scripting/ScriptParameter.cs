@@ -1,4 +1,6 @@
 ﻿using Blamite.Serialization;
+using Blamite.IO;
+using System.Collections.Generic;
 
 namespace Blamite.Blam.Scripting
 {
@@ -24,12 +26,36 @@ namespace Blamite.Blam.Scripting
 		/// <summary>
 		///     Gets or sets the type opcode of the parameter.
 		/// </summary>
-		public short Type { get; set; }
+		public ushort Type { get; set; }
+
+		public override bool Equals(object obj)
+		{
+			return obj is ScriptParameter parameter &&
+				   Name == parameter.Name &&
+				   Type == parameter.Type;
+		}
+
+		public override int GetHashCode()
+		{
+			var hashCode = -243844509;
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+			hashCode = hashCode * -1521134295 + Type.GetHashCode();
+			return hashCode;
+		}
+
+		public void Write(IWriter writer)
+        {
+            writer.WriteAscii(Name, 0x20);
+            writer.WriteUInt16(Type);
+            writer.WriteInt16(0);
+        }
 
 		private void Load(StructureValueCollection values)
 		{
 			Name = values.GetString("name");
-			Type = (short) values.GetInteger("type");
+			Type = (ushort) values.GetInteger("type");
 		}
+
+
 	}
 }

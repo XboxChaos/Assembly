@@ -391,7 +391,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				FilterString(field, field.DatabasePath);
 		}
 
-		public void VisitRangeUint16(RangeUint16Data field)
+		public void VisitRangeInt16(RangeInt16Data field)
 		{
 			if (!FilterString(field, field.Name))
 			{
@@ -420,6 +420,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				if (!FilterNumber(field, field.Min))
 				{
 					FilterNumber(field, field.Max);
+				}
+			}
+		}
+
+		public void VisitDatum(DatumData field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.Salt))
+				{
+					FilterNumber(field, field.Index);
 				}
 			}
 		}
