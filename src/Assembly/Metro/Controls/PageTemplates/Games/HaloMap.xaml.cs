@@ -33,6 +33,8 @@ using Newtonsoft.Json;
 using XBDMCommunicator;
 using Blamite.Blam.ThirdGen;
 using Blamite.RTE.ThirdGen;
+using Blamite.RTE.FirstGen;
+using Blamite.RTE.H1PC;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -200,6 +202,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				// Set up RTE
 				switch (_cacheFile.Engine)
 				{
+					case EngineType.FirstGeneration:
+						if (_cacheFile.Endianness == Endian.BigEndian) // CEA 360
+							_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm, 0xC226CC54);
+						// TODO (Dragon): really need to stop these buildstring checks
+						else if (_cacheFile.Endianness == Endian.LittleEndian && _buildInfo.Version == "01.00.01.0563") // CEA MCC
+							_rteProvider = new FirstGenMCCRTEProvider(_buildInfo);
+						else // PC or Custom
+							_rteProvider = new H1PCRTEProvider(_buildInfo);
+						break;
+
 					case EngineType.SecondGeneration:
 						if (!string.IsNullOrEmpty(_buildInfo.GameModule))
 							_rteProvider = new SecondGenMCCRTEProvider(_buildInfo);

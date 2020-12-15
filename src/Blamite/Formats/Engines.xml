@@ -3,6 +3,115 @@
 	<!-- Blamite Engine Information Database -->
 	<!-- Only edit this if you know what you're doing! -->
 
+    <!-- Halo 1 Builds -->
+
+    <!-- TODO (Dragon): turns out CEX actually has a different meta header layout -->
+    <!--                itd be nice to not have an entire new set for it but it works -->
+    <engine name="Halo 1" version="01.10.12.2276">
+        <shortName>Halo1</shortName>
+        <plugins>Halo1</plugins>
+        <engineInfo>
+            <headerSize>0x800</headerSize>
+            <!-- TODO: this might not be accurate since theres no real "segments" -->
+            <segmentAlignment>0x4</segmentAlignment>
+            <usesCompression>true</usesCompression>
+        </engineInfo>
+        <databases>
+            <layouts type="layouts" path="Formats/Halo1Xbox/Layouts" />
+            <groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
+        </databases>
+    </engine>
+
+    <engine name="Halo 1 Beta 2247" version="01.09.25.2247">
+        <shortName>H1B_2247</shortName>
+        <plugins>Halo1</plugins>
+        <engineInfo>
+            <headerSize>0x800</headerSize>
+            <!-- TODO: this might not be accurate since theres no real "segments" -->
+            <segmentAlignment>0x4</segmentAlignment>
+            <usesCompression>true</usesCompression>
+        </engineInfo>
+        <databases>
+            <layouts type="layouts" path="Formats/Halo1Xbox/Layouts" />
+            <groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
+        </databases>
+    </engine>
+
+    <engine name="Halo 1 PC" version="01.00.00.0564">
+        <shortName>H1PC</shortName>
+        <plugins>Halo1</plugins>
+        <engineInfo>
+            <headerSize>0x800</headerSize>
+            <!-- TODO: this might not be accurate since theres no real "segments" -->
+            <segmentAlignment>0x4</segmentAlignment>
+            <gameExecutable>halo</gameExecutable>
+        </engineInfo>
+        <databases>
+            <layouts type="layouts" path="Formats/Halo1/Layouts" />
+            <groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
+            <poking type="poking" path="Formats/Halo1/H1_Poking.xml" />
+        </databases>
+    </engine>
+
+    <engine name="Halo 1 PC" version="01.00.10.0621" inherits="Halo 1 PC" />
+
+    <engine name="Halo 1 Custom Edition" version="01.00.00.0609">
+        <shortName>H1CE</shortName>
+        <plugins>Halo1</plugins>
+        <engineInfo>
+            <headerSize>0x800</headerSize>
+            <!-- NOTE: custom edition apparently doesnt care if things are aligned at ALL -->
+            <segmentAlignment>0x1</segmentAlignment>
+            <gameExecutable>haloce</gameExecutable>
+        </engineInfo>
+        <databases>
+            <layouts type="layouts" path="Formats/Halo1/Layouts" />
+            <groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
+            <poking type="poking" path="Formats/Halo1/H1CE_Poking.xml" />
+        </databases>
+    </engine>
+
+    <engine name="Halo 1 Custom Edition" version="01.00.10.0621" inherits="Halo 1 Custom Edition" />
+
+    <!-- NOTE: CEA 360 and MCC have the same build strings, this makes things harder -->
+    <engine name="Halo 1 Anniversary" version="01.00.01.0563">
+        <shortName>H1A</shortName>
+        <plugins>Halo1</plugins>
+        <engineInfo>
+            <headerSize>0x800</headerSize>
+            <!-- TODO: this might not be accurate since theres no real "segments" -->
+            <segmentAlignment>0x4</segmentAlignment>
+            <usesCompression>true</usesCompression>
+        </engineInfo>
+        <databases>
+            <layouts type="layouts" path="Formats/Halo1/Layouts" />
+            <groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
+            <!-- TODO (Dragon): 360 poking is different so we hardcoded an address when we make the  -->
+            <!--                RTE provider. should probably set that up to support poking xmls -->
+        </databases>
+    </engine>
+
+
+    <!-- NOTE: CEA 360 and MCC have the same build strings, this makes things harder -->
+    <engine name="Halo 1 Anniversary MCC" version="01.00.01.0563">
+        <shortName>H1AMCC</shortName>
+        <plugins>Halo1</plugins>
+        <engineInfo>
+            <headerSize>0x800</headerSize>
+            <!-- TODO: this might not be accurate since theres no real "segments" -->
+            <segmentAlignment>0x4</segmentAlignment>
+            <gameExecutable>MCC-Win64-Shipping</gameExecutable>
+            <gameExecutableAlt>MCC-Win64-Shipping-WinStore</gameExecutableAlt>
+            <gameModule>halo1</gameModule>
+            <usesCompression>true</usesCompression>
+        </engineInfo>
+        <databases>
+            <layouts type="layouts" path="Formats/Halo1/Layouts" />
+            <groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
+            <poking type="poking" path="Formats/Halo1/H1AMCC_Poking.xml" />
+        </databases>
+    </engine>
+
 	<!-- Halo 2 Builds -->
 	<engine name="Halo 2 Vista" version="11081.07.04.30.0934.main">
 		<shortName>H2Vista</shortName>

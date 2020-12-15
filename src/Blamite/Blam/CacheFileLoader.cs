@@ -3,6 +3,7 @@ using Blamite.Blam.SecondGen;
 using Blamite.Blam.ThirdGen;
 using Blamite.Serialization;
 using Blamite.IO;
+using Blamite.Blam.FirstGen;
 
 namespace Blamite.Blam
 {
@@ -43,7 +44,9 @@ namespace Blamite.Blam
 
 			// Load engine version info
 			var version = new CacheFileVersionInfo(reader);
-			if (version.Engine != EngineType.SecondGeneration && version.Engine != EngineType.ThirdGeneration)
+			if (version.Engine != EngineType.FirstGeneration &&
+				version.Engine != EngineType.SecondGeneration &&
+				version.Engine != EngineType.ThirdGeneration)
 				throw new NotSupportedException("Engine not supported");
 
 			// Load build info
@@ -54,6 +57,9 @@ namespace Blamite.Blam
 			// Load the cache file depending upon the engine version
 			switch (version.Engine)
 			{
+				case EngineType.FirstGeneration:
+					return new FirstGenCacheFile(reader, engineInfo, version.BuildString);
+
 				case EngineType.SecondGeneration:
 					return new SecondGenCacheFile(reader, engineInfo, version.BuildString);
 
