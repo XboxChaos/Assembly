@@ -33,11 +33,6 @@ namespace Blamite.RTE
 		public string MapName { get; private set; }
 
 		/// <summary>
-		///     Gets the scenario name of the map that is currently loaded.
-		/// </summary>
-		public string ScenarioName { get; private set; }
-
-		/// <summary>
 		///     Gets the full header of the map that is currently loaded.
 		/// </summary>
 		public byte[] MapHeader { get; private set; }
@@ -51,9 +46,6 @@ namespace Blamite.RTE
 		// Offset (from the start of the map header) of the ASCII string indicating the map name
 		protected int MapNameOffset;
 
-		// Offset (from the start of the map header) of the ASCII string indicating the scenario name
-		protected int ScenarioNameOffset;
-
 		protected void GetLayoutConstants(EngineDescription engineInfo)
 		{
 			MapHeaderSize = engineInfo.HeaderSize;
@@ -61,7 +53,6 @@ namespace Blamite.RTE
 			var layout = engineInfo.Layouts.GetLayout("header");
 			MapTypeOffset = layout.GetFieldOffset("type");
 			MapNameOffset = layout.GetFieldOffset("internal name");
-			ScenarioNameOffset = layout.GetFieldOffset("scenario name");
 		}
 
 		protected abstract void ReadMapPointers32(IReader reader);
@@ -83,8 +74,6 @@ namespace Blamite.RTE
 				reader.SeekTo(MapNameOffset);
 				MapName = reader.ReadAscii();
 
-				reader.SeekTo(ScenarioNameOffset);
-				ScenarioName = reader.ReadAscii();
 			}
 		}
 

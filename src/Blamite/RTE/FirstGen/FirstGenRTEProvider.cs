@@ -6,17 +6,17 @@ using System;
 using System.Diagnostics;
 using System.IO;
 
-namespace Blamite.RTE.SecondGen
+namespace Blamite.RTE.FirstGen
 {
-	public class SecondGenRTEProvider : IRTEProvider
+	public class FirstGenRTEProvider : IRTEProvider
 	{
 		private readonly EngineDescription _buildInfo;
 
 		/// <summary>
-		///     Constructs a new SecondGenRTEProvider.
+		///     Constructs a new FirstGenRTEProvider.
 		/// </summary>
 		/// <param name="exeName">The name of the executable to connect to.</param>
-		public SecondGenRTEProvider(EngineDescription engine)
+		public FirstGenRTEProvider(EngineDescription engine)
 		{
 			_buildInfo = engine;
 		}
@@ -54,38 +54,18 @@ namespace Blamite.RTE.SecondGen
 				throw new InvalidOperationException("Game version " + version + " does not have poking information defined in the Formats folder.");
 
 			if (!info.HeaderAddress.HasValue)
-				throw new NotImplementedException("Second Generation poking requires a HeaderAddress value.");
+				throw new NotImplementedException("First Generation poking requires a HeaderAddress value.");
 			if (!info.MagicAddress.HasValue)
-				throw new NotImplementedException("Second Generation poking requires a MagicAddress value.");
-			if (!info.SharedMagicAddress.HasValue)
-				throw new NotImplementedException("Second Generation poking requires a SharedMagicAddress value.");
+				throw new NotImplementedException("First Generation poking requires a MagicAddress value.");
 
 			var gameMemory = new ProcessMemoryStream(gameProcess);
-			var mapInfo = new SecondGenMapPointerReader(gameMemory, _buildInfo, info);
+			var mapInfo = new FirstGenMapPointerReader(gameMemory, _buildInfo, info);
 
-			long metaAddress;
-			if (cacheFile.Type != CacheFileType.Shared)
+			long metaAddress = mapInfo.CurrentCacheAddress;
+			if (mapInfo.MapName != cacheFile.InternalName)
 			{
-				metaAddress = mapInfo.CurrentCacheAddress;
-
-				// The map isn't shared, so make sure the map names match
-				if (mapInfo.MapName != cacheFile.InternalName)
-				{
-					gameMemory.Close();
-					return null;
-				}
-			}
-			else
-			{
-				metaAddress = mapInfo.SharedCacheAddress;
-
-				// Make sure the shared and current map pointers are different,
-				// or that the current map is the shared map
-				if (mapInfo.MapType != CacheFileType.Shared && mapInfo.CurrentCacheAddress == mapInfo.SharedCacheAddress)
-				{
-					gameMemory.Close();
-					return null;
-				}
+				gameMemory.Close();
+				return null;
 			}
 
 			var metaStream = new OffsetStream(gameMemory, metaAddress - cacheFile.MetaArea.BasePointer);

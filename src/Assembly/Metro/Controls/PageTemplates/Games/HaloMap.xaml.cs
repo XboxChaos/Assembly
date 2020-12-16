@@ -37,7 +37,6 @@ using Blamite.RTE.ThirdGen;
 using Blamite.Blam.Resources.Sounds;
 using System.Reflection;
 using Blamite.RTE.FirstGen;
-using Blamite.RTE.H1PC;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -207,11 +206,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					case EngineType.FirstGeneration:
 						if (_cacheFile.Endianness == Endian.BigEndian) // CEA 360
 							_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm, 0xC226CC54);
-						// TODO (Dragon): really need to stop these buildstring checks
-						else if (_cacheFile.Endianness == Endian.LittleEndian && _buildInfo.Version == "01.00.01.0563") // CEA MCC
+						else if (!string.IsNullOrEmpty(_buildInfo.GameModule)) // CEA MCC
 							_rteProvider = new FirstGenMCCRTEProvider(_buildInfo);
 						else // PC or Custom
-							_rteProvider = new H1PCRTEProvider(_buildInfo);
+							_rteProvider = new FirstGenRTEProvider(_buildInfo);
 						break;
 
 					case EngineType.SecondGeneration:
