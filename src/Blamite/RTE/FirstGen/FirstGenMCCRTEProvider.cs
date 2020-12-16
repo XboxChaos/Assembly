@@ -26,10 +26,11 @@ namespace Blamite.RTE.FirstGen
             if (gameProcess == null)
                 return null;
 
-            long pointer = RetrievePointer(gameProcess);
+            //long pointer = RetrievePointer(gameProcess);
+            PokingInformation info = RetrieveInformation(gameProcess);
 
             var gameMemory = new ProcessModuleMemoryStream(gameProcess, _buildInfo.GameModule);
-            var mapInfo = new MapPointerReader(gameMemory, _buildInfo, pointer);
+            var mapInfo = new MapPointerReader(gameMemory, _buildInfo, info);
 
             long metaAddress;
             if (cacheFile.Type != CacheFileType.Shared)

@@ -43,12 +43,17 @@ namespace Blamite.RTE.H1PC
                 return null;
 
             string version = gameProcess.MainModule.FileVersionInfo.FileVersion;
-            long pointer = _buildInfo.Poking.RetrievePointer(version);
-            if (pointer == -1)
+
+            // TODO (Dragon): clean this up
+            //long pointer = _buildInfo.Poking.RetrieveInformation(_buildInfo.Version).HeaderAddress.Value;
+            //PokingInformation info = _buildInfo.Poking.RetrieveInformation(_buildInfo.Version);
+            PokingInformation info = _buildInfo.Poking.RetrieveInformation(version);
+
+            if (info.HeaderAddress.Value == -1)
                 throw new InvalidOperationException("Game version " + version + " does not have a pointer defined in the Formats folder.");
 
             var gameMemory = new ProcessMemoryStream(gameProcess);
-            var mapInfo = new H1PCMapPointerReader(gameMemory, pointer);
+            var mapInfo = new H1PCMapPointerReader(gameMemory, info.HeaderAddress.Value);
 
             long metaAddress;
             if (cacheFile.Type != CacheFileType.Shared)

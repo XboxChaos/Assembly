@@ -27,7 +27,7 @@ namespace Blamite.Blam.FirstGen
             get { return false; }
         }
 
-        public ISound LoadSoundMeta(ITag sndTag, IReader reader)
+        public CacheSound LoadSoundMeta(ITag sndTag, IReader reader)
         {
             throw new NotImplementedException();
         }
@@ -37,6 +37,11 @@ namespace Blamite.Blam.FirstGen
         }
 
         public IScenarioBSP LoadScenarioBspMeta(ITag sbspTag, IReader reader)
+        {
+            throw new NotImplementedException();
+        }
+
+        CacheSound IResourceMetaLoader.LoadSoundMeta(ITag sndTag, IReader reader)
         {
             throw new NotImplementedException();
         }

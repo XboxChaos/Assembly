@@ -193,7 +193,11 @@ namespace Blamite.Blam.FirstGen
             get { return _effects; }
         }
 
-        public ISoundResourceGestalt LoadSoundResourceGestaltData(IReader reader)
+        public string FileName => throw new NotImplementedException();
+
+        public SoundResourceManager SoundGestalt => throw new NotImplementedException();
+
+        public SoundResourceGestalt LoadSoundResourceGestaltData(IReader reader)
         {
             throw new NotImplementedException();
         }

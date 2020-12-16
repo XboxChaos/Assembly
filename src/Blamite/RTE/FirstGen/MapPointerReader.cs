@@ -15,10 +15,10 @@ namespace Blamite.RTE.FirstGen
         private readonly long _baseAddress;
         private long _mapHeaderAddress;
 
-        public MapPointerReader(ProcessMemoryStream stream, EngineDescription engineInfo, long pointer)
+        public MapPointerReader(ProcessMemoryStream stream, EngineDescription engineInfo, PokingInformation info)
         {
             _baseAddress = (long)stream.BaseProcess.MainModule.BaseAddress;
-            _mapHeaderAddress = _baseAddress + pointer;
+            _mapHeaderAddress = _baseAddress + info.HeaderAddress.Value;
 
             GetLayoutConstants(engineInfo);
 
@@ -28,10 +28,10 @@ namespace Blamite.RTE.FirstGen
             ProcessMapHeader();
         }
 
-        public MapPointerReader(ProcessModuleMemoryStream stream, EngineDescription engineInfo, long pointer)
+        public MapPointerReader(ProcessModuleMemoryStream stream, EngineDescription engineInfo, PokingInformation info)
         {
             _baseAddress = (long)stream.BaseModule.BaseAddress;
-            _mapHeaderAddress = _baseAddress + pointer;
+            _mapHeaderAddress = _baseAddress + info.HeaderAddress.Value;
 
             GetLayoutConstants(engineInfo);
 
