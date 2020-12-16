@@ -261,14 +261,22 @@ namespace Blamite.Blam.FirstGen
 
         private void CalculateChecksum(IReader reader)
         {
-            // XOR all of the uint32s in the file after the header
-            uint checksum = 0;
-            reader.SeekTo(_header.HeaderSize);
-            for (int offset = _header.HeaderSize; offset < _header.FileSize; offset += 4)
-                checksum ^= reader.ReadUInt32();
+			// XOR all of the uint32s in the file after the header
+			// based on http://codeescape.com/2009/05/optimized-c-halo-2-map-signing-algorithm/
+			uint checksum = 0;
+			int blockSize = 0x10000;
+			reader.SeekTo(_header.HeaderSize);
 
-            _header.Checksum = checksum;
-        }
+			while (reader.Position < reader.Length)
+			{
+				int actualSize = Math.Min(blockSize, (int)(reader.Length - reader.Position));
+				byte[] block = reader.ReadBlock(actualSize);
+				for (int i = 0; i < block.Length; i+=4)
+					checksum ^= BitConverter.ToUInt32(block, i);
+			}
+
+			_header.Checksum = checksum;
+		}
 
         private void WriteHeader(IWriter writer)
         {
