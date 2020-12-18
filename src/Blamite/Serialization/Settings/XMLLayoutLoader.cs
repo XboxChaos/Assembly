@@ -132,14 +132,6 @@ namespace Blamite.Serialization.Settings
 					HandleBasicElement(layout, element, name, offset);
 					break;
 			}
-			//if (IsArrayElement(element))
-			//	HandleArrayElement(layout, element, name, offset);
-			//else if (IsRawElement(element))
-			//	HandleRawElement(layout, element, name, offset);
-			//else if (IsStructElement(element))
-			//	HandleStructElement(layout, element, name, offset);
-			//else
-			//	HandleBasicElement(layout, element, name, offset);
 		}
 
 		/// <summary>

@@ -67,7 +67,7 @@ namespace Blamite.Blam.Scripting.Context
                 }
                 else if(IsWrapperBlock(block))
                 {
-                    HandleWrapperBlock(block, collection);
+                    HandleParentWrapperBlock(block, collection);
                 }
                 else
                 {
@@ -89,12 +89,12 @@ namespace Blamite.Blam.Scripting.Context
 
 
         /// <summary>
-        /// Processes a wrapper block and adds its child blocks to a context collection.
+        /// Processes a parent wrapper block and adds its child blocks to a context collection.
         /// </summary>
-        /// <param name="block">The wrapper block.</param>
+        /// <param name="block">The parent wrapper block.</param>
         /// <param name="collection">The context collection.</param>
-        /// <exception cref="ArgumentException">Thrown when a wrapper block has more than one element.</exception>
-        private static void HandleWrapperBlock(KeyValuePair<string, StructureValueCollection[]> block, ScriptingContextCollection collection)
+        /// <exception cref="ArgumentException">Thrown when a parent wrapper block has more than one element.</exception>
+        private static void HandleParentWrapperBlock(KeyValuePair<string, StructureValueCollection[]> block, ScriptingContextCollection collection)
         {
             if (block.Value.Length != 1)
             {
@@ -122,6 +122,11 @@ namespace Blamite.Blam.Scripting.Context
             return new ScriptingContextBlock(data.Key, objects);
         }
 
+        private static IEnumerable<ScriptingContextObject> GetWrapperContextObjects(KeyValuePair<string, StructureValueCollection[]> block, int wrapperIndex)
+        {
+            return block.Value.Select((values, index) => CreateContextObject(index, block.Key, true, values, wrapperIndex));
+        }
+
 
         /// <summary>
         /// Creates a context object from meta data.
@@ -131,17 +136,51 @@ namespace Blamite.Blam.Scripting.Context
         /// <param name="isChildObject">is true if thi sobject is the child of another object.</param>
         /// <param name="data">The meta data.</param>
         /// <returns>A context object.</returns>
-        private static ScriptingContextObject CreateContextObject(int index, string group, bool isChildObject, StructureValueCollection data)
+        private static ScriptingContextObject CreateContextObject(int index, string group, bool isChildObject, StructureValueCollection data, int wrapperIndex = -1)
         {
             string name = data.HasStringID("Name") ? data.GetStringID("Name") : data.GetString("Name");
-            var result = new ScriptingContextObject(name.ToLowerInvariant(), index, group, isChildObject);
+            var result = new ScriptingContextObject(name.ToLowerInvariant(), index, group, isChildObject, wrapperIndex);
 
             var childBlocks = data.GetTagBlocks();
             if(childBlocks.Length > 0)
             {
-                foreach(var block in childBlocks)
+                foreach(var block in childBlocks.Where(b => b.Value.Length > 0))
                 {
-                    result.AddChildBlock(CreateContextBlock(block, true));
+                    // Handle child blocks, which are wrapped up in another block without a name field.
+                    if(IsWrapperBlock(block))
+                    {
+                        var wrappedBlocks = new Dictionary<string, List<ScriptingContextObject>>();
+
+                        // Iterate through the wrapper elements and collect all wrapped blocks and their objects.
+                        for(int i = 0; i < block.Value.Length; i++)
+                        {
+                            var innerChildrenBlocks = block.Value[i].GetTagBlocks();
+                            foreach (var inner in innerChildrenBlocks)
+                            {
+                                var wrappedObjects = GetWrapperContextObjects(inner, i);
+                                if(wrappedBlocks.ContainsKey(inner.Key))
+                                {
+                                    wrappedBlocks[inner.Key].AddRange(wrappedObjects);
+                                }
+                                else
+                                {
+                                    wrappedBlocks[inner.Key] = wrappedObjects.ToList();
+                                }
+                            }
+                        }
+
+                        // Add the grouped blocks and objects to the result.
+                        foreach(var groupedBlock in wrappedBlocks)
+                        {
+                            result.AddChildBlock(new ScriptingContextBlock(groupedBlock.Key, groupedBlock.Value));
+                        }
+
+                    }
+                    // Handle regular child blocks.
+                    else
+                    {
+                        result.AddChildBlock(CreateContextBlock(block, true));
+                    }
                 }
             }
 

@@ -9,6 +9,7 @@ using Antlr4.Runtime.Misc;
 using Blamite.Util;
 using Blamite.Blam.Scripting;
 using System.IO;
+using Blamite.Serialization;
 using System.Text.RegularExpressions;
 
 namespace Blamite.Blam.Scripting.Compiler
@@ -21,11 +22,12 @@ namespace Blamite.Blam.Scripting.Compiler
 
         // lookups
         private readonly ICacheFile _cacheFile;
+        private readonly EngineDescription _buildInfo;
         private readonly OpcodeLookup _opcodes;
         private readonly ScriptingContextCollection _scriptingContext;
 
         // TODO: Change the script lookup from dictionary to lookup.
-        private Dictionary<string, ScriptInfo> _scriptLookup = new Dictionary<string, ScriptInfo>();
+        private Dictionary<string, List<ScriptInfo>> _scriptLookup = new Dictionary<string, List<ScriptInfo>>();
         private Dictionary<string, GlobalInfo> _mapGlobalsLookup = new Dictionary<string, GlobalInfo>();
         private readonly Dictionary<string, ParameterInfo> _parameterLookup = new Dictionary<string, ParameterInfo>();
 
@@ -66,8 +68,9 @@ namespace Blamite.Blam.Scripting.Compiler
         private ScriptData _result = null;
 
 
-        public ScriptCompiler(ICacheFile casheFile, OpcodeLookup opCodes, ScriptingContextCollection context, IProgress<int> progress, ScriptCompilerLogger logger, bool debug)
+        public ScriptCompiler(ICacheFile casheFile, EngineDescription buildInfo, OpcodeLookup opCodes, ScriptingContextCollection context, IProgress<int> progress, ScriptCompilerLogger logger, bool debug)
         {
+            _buildInfo = buildInfo;
             _progress = progress;
             _cacheFile = casheFile;
             _scriptingContext = context;
@@ -99,14 +102,20 @@ namespace Blamite.Blam.Scripting.Compiler
             }
 
             // Generate the script lookup.
-            if (context.scriptDeclaration() != null)
+            var declarations = context.scriptDeclaration();
+            if (declarations != null)
             {
-                _scriptLookup = context.scriptDeclaration().Select((s, index) => new ScriptInfo(s, (ushort)index)).ToDictionary(s => s.Name + "_" + s.Parameters.Count);
+                _scriptLookup = new Dictionary<string, List<ScriptInfo>>();
 
+                for(ushort i = 0; i < context.scriptDeclaration().Length; i++)
+                {
+                    var info = new ScriptInfo(declarations[i], i);
+                    AddScriptToLookup(info);
+                }
             }
 
-            // The declarations count is used to calculate the current progress.
-            _declarationCount = context.scriptDeclaration().Count() + context.globalDeclaration().Count();
+            // The declaration count is used to calculate the current progress.
+            _declarationCount = context.scriptDeclaration().Length + context.globalDeclaration().Length;
 
             // Find all missing carriage returns. Somehow antlr removes them under certain circumstances and messes up the text position indeces.
             string text = context.Start.InputStream.GetText(new Interval(0, context.Start.InputStream.Size));
@@ -252,7 +261,7 @@ namespace Blamite.Blam.Scripting.Compiler
             // Retrieve information from the context.
             string name = context.callID().GetTextSanitized();
             string expectedType = _expectedTypes.PopType();
-            int contextParameterCount = context.expression().Count();
+            int contextParameterCount = context.expression().Length;
 
             // Handle script references.
             if (IsScriptReference(expectedType, contextParameterCount, context))
@@ -260,18 +269,31 @@ namespace Blamite.Blam.Scripting.Compiler
                 return;
             }
 
-            FunctionInfo info = RetrieveFunctionInfo(name, contextParameterCount);
-            if(info is null)
+            // Handle functions.
+            var functions = _opcodes.GetFunctionInfo(name);
+            foreach(var func in functions)
             {
-                string message = contextParameterCount == 1 ?
-                    $"A function or script called \"{name}\" with 1 parameter could not be found." :
-                    $"A function or script called \"{name}\" with {contextParameterCount} parameters could not be found.";
-                throw new CompilerException(message, context);
+                if(!CheckParameterSanity(context, func))
+                {
+                    continue;
+                }
+
+                string returnType = DetermineReturnType(func, expectedType, context);
+
+                // If a function, which satisfies the requirements, was found, perform the necessary push operations and create expression nodes.
+                if (!(returnType is null))
+                {
+                    EqualityPush(func.ReturnType);
+                    PushCallParameters(func, contextParameterCount, expectedType, context);
+                    CreateFunctionCall(func, _opcodes.GetTypeInfo(returnType).Opcode, context.GetCorrectTextPosition(_missingCarriageReturnPositions), GetLineNumber(context));
+                    return;
+                }
             }
-            ushort returnTypeOpcode = DetermineReturnTypeOpcode(info, expectedType, context);
-            EqualityPush(info.ReturnType);
-            PushCallParameters(info, contextParameterCount, expectedType, context);
-            CreateFunctionCall(info, returnTypeOpcode, context.GetCorrectTextPosition(_missingCarriageReturnPositions), GetLineNumber(context));
+
+            string errorMessage = contextParameterCount == 1 ?
+                    $"Failed to process the call {name} with 1 parameter." :
+                    $"Failed to process the call {name} with {contextParameterCount} parameters.";
+            throw new CompilerException(errorMessage + $" The expected return type was {expectedType}.", context);
         }
 
         /// <summary>
@@ -342,10 +364,8 @@ namespace Blamite.Blam.Scripting.Compiler
 
             // Add the generated script to the lookup.
             ScriptInfo info = new ScriptInfo(generatedName, "static", "void", (ushort)_scriptLookup.Count);
-            string infoKey = info.Name + "_" + 0;
-            _scriptLookup[infoKey] = info;
+            AddScriptToLookup(info);
             _generatedBranches.Add(new Branch(generatedName, context.GetCorrectTextPosition(_missingCarriageReturnPositions), condition, scriptReference));
-
 
             CloseDatum();
         }
@@ -454,7 +474,6 @@ namespace Blamite.Blam.Scripting.Compiler
             // Close the final value expression.
             CloseDatum();
 
-            var parentCond = context.Parent as BS_ReachParser.CondContext;
             int index = _condIndeces.Pop();
             var beginInfo = _opcodes.GetFunctionInfo("begin")[0];
 
@@ -557,7 +576,7 @@ namespace Blamite.Blam.Scripting.Compiler
             else if(_mapGlobalsLookup.ContainsKey(text))
             {
                 globalInfo = _mapGlobalsLookup[text];
-                value = new LongExpressionValue((uint)globalInfo.Opcode);
+                value = new LongExpressionValue(globalInfo.Opcode);
             }
             // Not a global...
             else if (expectedType == TypeHelper.GlobalsReference)
@@ -569,7 +588,8 @@ namespace Blamite.Blam.Scripting.Compiler
                 return false;
             }
 
-            ushort returnTypeOpcode = DetermineReturnTypeOpcode(globalInfo, expectedType, context);
+            string returnType = DetermineReturnType(globalInfo, expectedType, context);
+            ushort returnTypeOpcode = _opcodes.GetTypeInfo(returnType).Opcode;
             ushort opcode = GetGlobalOpCode(returnTypeOpcode, context);
             var expression = new ScriptExpression
             {
@@ -587,10 +607,10 @@ namespace Blamite.Blam.Scripting.Compiler
             return true;
         }
 
-        private ushort GetGlobalOpCode(ushort expectedTypeOpcode, RuleContext context)
+        private ushort GetGlobalOpCode(ushort globalOpcode, RuleContext context)
         {
             RuleContext grandparent = GetParentContext(context, BS_ReachParser.RULE_call);
-            ushort opcode = expectedTypeOpcode;
+            ushort opcode = globalOpcode;
 
             // "set" and (in)equality functions are special.
             if (grandparent is BS_ReachParser.CallContext call)
@@ -600,9 +620,9 @@ namespace Blamite.Blam.Scripting.Compiler
 
                 if (funcInfo != null)
                 {
-                    if ((funcInfo[0].Group == "Equality" || funcInfo[0].Group == "Inequality") && _equality)
+                    if (funcInfo[0].Group == "Equality" || funcInfo[0].Group == "Inequality")
                     {
-                        opcode = 0;
+                        opcode = GetEqualityArgumentOP(globalOpcode);
                     }
                     else if (_set && funcInfo[0].Group == "Set")
                     {
@@ -613,17 +633,46 @@ namespace Blamite.Blam.Scripting.Compiler
                             _logger.Information("The Global belongs to a set call. It's value type will be pushed to the stack.");
                         }
                         // The next parameter must have the same return type as this global
-                        _expectedTypes.PushType(_opcodes.GetTypeInfo(expectedTypeOpcode).Name);
+                        _expectedTypes.PushType(_opcodes.GetTypeInfo(globalOpcode).Name);
                         _set = false;
                     }
                 }
             }
-            EqualityPush(_opcodes.GetTypeInfo(expectedTypeOpcode).Name);
+            EqualityPush(_opcodes.GetTypeInfo(globalOpcode).Name);
 
             return opcode;
         }
 
-        private ushort DetermineReturnTypeOpcode(IScriptingConstantInfo info, string expectedType, ParserRuleContext context)
+        private ushort GetEqualityArgumentOP(ushort normalOpcode)
+        {
+            // The opccode of global references and parameter references as part of equality checks is 0, unless the first argument of the comparison is a call.
+            // Find the last generated equality function name.
+            for(int i = _expressions.Count -1; i >= 0; i--)
+            {
+                var currentExpression = _expressions[i];
+                if(currentExpression.Type == ScriptExpressionType.Expression && currentExpression.ReturnType == _opcodes.GetTypeInfo("function_name").Opcode)
+                {
+                    var funcInfo = _opcodes.GetFunctionInfo(currentExpression.Opcode);
+                    if (funcInfo.Group == "Equality" || funcInfo.Group == "Inequality")
+                    {
+                        if(i == _expressions.Count - 1)
+                        {
+                            return 0;
+                        }                     
+                        else if(_expressions[i + 1].Type != ScriptExpressionType.Expression)
+                        {
+                            return normalOpcode;
+                        }
+
+                        return 0;
+                    }
+                }
+            }
+
+            return 0;
+        }
+
+        private string DetermineReturnType(IScriptingConstantInfo info, string expectedType, ParserRuleContext context)
         {
             string calculatedType = expectedType switch
             {
@@ -639,46 +688,58 @@ namespace Blamite.Blam.Scripting.Compiler
                 _ when expectedType == info.ReturnType => expectedType,
                 _ when info.ReturnType == "passthrough" => expectedType,
                 _ when TypeHelper.CanBeCasted(info.ReturnType, expectedType, _opcodes) => expectedType,
-                _ => ""
+                _ => null
             };
 
-            if (calculatedType == "")
-            {
-                throw new CompilerException($"Failed to calculate the return type of an expression. The expected return type for \"{info.Name}\" was \"{expectedType}\"." +
-                    $" Its actual return type was \"{info.ReturnType}\".", context);
-            }
-
-            return _opcodes.GetTypeInfo(calculatedType).Opcode;
+            return calculatedType;
         }
 
         private bool IsScriptReference(string expectedReturnType, int expectedParameterCount, BS_ReachParser.CallContext context)
         {
-            string key = context.callID().GetTextSanitized() + "_" + expectedParameterCount;
-            if(!_scriptLookup.TryGetValue(key, out ScriptInfo info))
+            string key = context.callID().GetTextSanitized();
+
+            if(!_scriptLookup.ContainsKey(key))
             {
                 if (expectedReturnType == TypeHelper.ScriptReference)
+                {
                     throw new CompilerException($"The compiler expected a Script Reference but a Script with the name \"{key}\" could not be found. " +
                         "Please check your script declarations and your spelling.", context);
+                }
                 else
+                {
                     return false;
+                }
             }
 
-            ushort returnTypeOpcode = DetermineReturnTypeOpcode(info, expectedReturnType, context);
-
-            // Check for equality functions.
-            EqualityPush(_opcodes.GetTypeInfo(returnTypeOpcode).Name);
-
-            // Push the parameters to the type stack.
-            if (expectedParameterCount > 0)
+            // Try to find a script, which satisfies all conditions.
+            foreach(ScriptInfo info in _scriptLookup[key])
             {
-                string[] parameterTypes = info.Parameters.Select(p=> p.ReturnType).ToArray();
-                _expectedTypes.PushTypes(parameterTypes);
+                if(info.Parameters.Count != expectedParameterCount)
+                {
+                    continue;
+                }
+
+                string returnType = DetermineReturnType(info, expectedReturnType, context);
+
+                if(!(returnType is null))
+                {
+                    // Check for equality functions.
+                    EqualityPush(returnType);
+
+                    // Push the parameters to the type stack.
+                    if (expectedParameterCount > 0)
+                    {
+                        string[] parameterTypes = info.Parameters.Select(p => p.ReturnType).ToArray();
+                        _expectedTypes.PushTypes(parameterTypes);
+                    }
+
+                    // Create a script reference node.
+                    CreateScriptReference(info, _opcodes.GetTypeInfo(returnType).Opcode, context.GetCorrectTextPosition(_missingCarriageReturnPositions), GetLineNumber(context));
+                    return true;
+                }
             }
 
-            // Create a script reference node.
-            CreateScriptReference(info, returnTypeOpcode, context.GetCorrectTextPosition(_missingCarriageReturnPositions), GetLineNumber(context));
-
-            return true;
+            return false;
         }
 
         private bool IsScriptParameter(string expectedReturnType, ParserRuleContext context)
@@ -697,7 +758,14 @@ namespace Blamite.Blam.Scripting.Compiler
                 return false;
             }
 
-            ushort returnTypeOpcode = DetermineReturnTypeOpcode(info, expectedReturnType, context);
+            string returnType = DetermineReturnType(info, expectedReturnType, context);
+
+            if(returnType is null)
+            {
+                throw new CompilerException($"Failed to determine the return type of the parameter {text}.", context);
+            }
+
+            ushort returnTypeOpcode = _opcodes.GetTypeInfo(returnType).Opcode;
             ushort opcode = returnTypeOpcode;
 
             // (In)Equality functions are special
@@ -707,9 +775,9 @@ namespace Blamite.Blam.Scripting.Compiler
                 var funcInfo = _opcodes.GetFunctionInfo(funcName);
                 if(funcInfo != null)
                 {
-                    if ((funcInfo[0].Group == "Equality" || funcInfo[0].Group == "Inequality") && _equality)
+                    if (funcInfo[0].Group == "Equality" || funcInfo[0].Group == "Inequality")
                     {
-                        opcode = 0;
+                        opcode = GetEqualityArgumentOP(returnTypeOpcode);
                     }
                 }
             }
@@ -826,7 +894,7 @@ namespace Blamite.Blam.Scripting.Compiler
                     case "Equality":
                     case "Inequality":
                         validNumberOfArgs = contextParameterCount == 2;
-                        _expectedTypes.PushTypes("ANY");
+                        _expectedTypes.PushType("ANY");
                         _equality = true;
                         break;
                     

@@ -14,18 +14,23 @@ namespace Blamite.Blam.Scripting.Context
 
         public int Index { get; set; }
 
+        public int WrapperIndex { get; set; }
+
         public string ObjectGroup { get; set; }
 
         public bool HasChildren { get { return _children.Count > 0; } }
 
+        public bool HasWrapperIndex { get { return WrapperIndex > -1; } }
+
         public bool IsChild { get; set; }
 
-        public ScriptingContextObject(string name, int index, string group, bool isChild)
+        public ScriptingContextObject(string name, int index, string group, bool isChild, int wrapperIndex = -1)
         {
             Name = name;
             Index = index;
             ObjectGroup = group;
             IsChild = isChild;
+            WrapperIndex = wrapperIndex;
         }
 
         public void AddChildBlock(ScriptingContextBlock child)

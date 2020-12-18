@@ -9,216 +9,271 @@ namespace Blamite.Blam.Scripting.Compiler
 {
     public partial class ScriptCompiler : BS_ReachBaseListener
     {
+        //private bool ProcessLiteralOld(string expectedValueType, BS_ReachParser.LiteralContext context)
+        //{
+        //    CastInfo info = _opcodes.GetTypeCast(expectedValueType);
+        //    // Types which can be casted to.
+        //    if (info != null)
+        //    {
+        //        // Check if casting is necessary.
+        //        if (HandleValueType(context, expectedValueType))
+        //        {
+        //            return true;
+        //        }
+        //        // Casting.
+        //        else
+        //        {
+        //            FIFOStack<string> remainingTypes = new FIFOStack<string>();
+        //            List<string> processedTypes = new List<string>();
+
+        //            // Push immediate casts.
+        //            foreach (string type in info.From)
+        //            {
+        //                remainingTypes.Push(type);
+        //            }
+
+        //            while (remainingTypes.Count > 0)
+        //            {
+        //                // Check if this is the right value type.
+        //                string typeToProcess = remainingTypes.Pop();
+        //                if (HandleValueType(context, typeToProcess))
+        //                {
+        //                    // Overwrite the value type of the added expression node with the casted type.
+        //                    _expressions[_expressions.Count - 1].ReturnType = _opcodes.GetTypeInfo(expectedValueType).Opcode;
+        //                    return true;
+        //                }
+        //                processedTypes.Add(typeToProcess);
+        //                info = _opcodes.GetTypeCast(typeToProcess);
+        //                if (info != null)
+        //                {
+        //                    // Push nested casts.
+        //                    foreach (string type in info.From)
+        //                    {
+        //                        if (!remainingTypes.Contains(type) && !processedTypes.Contains(type))
+        //                        {
+        //                            remainingTypes.Push(type);
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //            return false;
+        //        }
+        //    }
+        //    // This type can't be casted to.
+        //    else
+        //    {
+        //        return HandleValueType(context, expectedValueType);
+        //    }
+        //}
+
         private bool ProcessLiteral(string expectedValueType, BS_ReachParser.LiteralContext context)
         {
-            CastInfo info = _opcodes.GetTypeCast(expectedValueType);
-            // Types which can be casted to.
-            if (info != null)
+            // Casting might not be necessary.
+            if(HandleValueType(context, expectedValueType))
             {
-                // Check if casting is necessary.
-                if (HandleValueType(context, expectedValueType))
-                {
-                    return true;
-                }
-                // Casting.
-                else
-                {
-                    FIFOStack<string> remainingTypes = new FIFOStack<string>();
-                    List<string> processedTypes = new List<string>();
-
-                    // Push immediate casts.
-                    foreach (string type in info.From)
-                    {
-                        remainingTypes.Push(type);
-                    }
-
-                    while (remainingTypes.Count > 0)
-                    {
-                        // Check if this is the right value type.
-                        string typeToProcess = remainingTypes.Pop();
-                        if (HandleValueType(context, typeToProcess))
-                        {
-                            // Overwrite the value type of the added expression node with the casted type.
-                            _expressions[_expressions.Count - 1].ReturnType = _opcodes.GetTypeInfo(expectedValueType).Opcode;
-                            return true;
-                        }
-                        processedTypes.Add(typeToProcess);
-                        info = _opcodes.GetTypeCast(typeToProcess);
-                        if (info !=  null)
-                        {
-                            // Push nested casts.
-                            foreach (string type in info.From)
-                            {
-                                if (!remainingTypes.Contains(type) && !processedTypes.Contains(type))
-                                {
-                                    remainingTypes.Push(type);
-                                }
-                            }
-                        }
-                    }
-                    return false;
-                }
+                return true;
             }
-            // This type can't be casted to.
+            // Casting.
             else
             {
-                return HandleValueType(context, expectedValueType);
+                CastInfo info = _opcodes.GetTypeCast(expectedValueType);
+
+                // This type can't be casted to.
+                if(info is null)
+                {
+                    return false;
+                }
+
+                foreach(string cast in info.From)
+                {
+                    if(HandleValueType(context, cast))
+                    {
+                        // Overwrite the value type of the added expression node with the casted type.
+                        _expressions[_expressions.Count - 1].ReturnType = _opcodes.GetTypeInfo(expectedValueType).Opcode;
+                        return true;
+                    }
+                }
+                return false;
             }
         }
 
         private bool HandleValueType(BS_ReachParser.LiteralContext context, string expectedValueType)
         {
             ScriptExpression expression;
-            switch (expectedValueType)
+            if(_opcodes.GetTypeInfo(expectedValueType)?.IsEnum == true)
             {
-                case "ANY":
-                    expression = GetNumberExpression(context);
-                    if(expression is null)
-                    {
-                        throw new CompilerException($"Failed to process \"{context.GetTextSanitized()}\" because it didn't know which value type to expect. Try using a different function with clearly defined parameters.", context);
-                    }
-                    break;
-
-                case "NUMBER":
-                    expression = GetNumberExpression(context);
-                    break;
-
-                case "short":
-                    expression = GetShortExpression(context);
-                    break;
-
-                case "long":
-                    expression = GetLongExpression(context);
-                    break;
-
-                case "boolean":
-                    expression = GetBooleanExpression(context);
-                    break;
-
-                case "real":
-                    expression = GetRealExpression(context);
-                    break;
-
-                case "string":
-                    expression = GetStringExpression(context);
-                    break;
-
-                case "string_id":
-                    expression = CreateSIDExpression(context);
-                    break;
-
-                case "unit_seat_mapping":
-                    expression =  CreateUnitSeatMappingExpression(context);
-                    break;
-
-                case "script":
-                case "ai_command_script":
-                case "trigger_volume":
-                case "cutscene_flag":
-                case "cutscene_camera_point":
-                case "cutscene_title":
-                case "starting_profile":
-                case "zone_set":
-                case "designer_zone":
-                    expression = GetIndex16Expression(context, expectedValueType);
-                    break;
-
-                case "ai_line":
-                    expression = CreateLineExpression(context);
-                    break;
-
-                case "point_reference":
-                    expression = GetPointReferenceExpression(context);
-                    break;
-
-                case "object_list":
-                    expression = GetObjectNameExpression(context, "object_name", expectedValueType);
-                    if(expression is null)
-                    {
-                        expression = GetEnum32Expression(context, "player", expectedValueType);
-                    }
-                    break;
-
-                case "folder":
-                    expression = GetFolderExpression(context);
-                    break;
-
-                case "sound":
-                case "effect":
-                case "damage":
-                case "looping_sound":
-                case "animation_graph":
-                case "object_definition":
-                case "bitmap":
-                case "shader":
-                case "render_model":
-                case "structure_definition":
-                case "lightmap_definition":
-                case "cinematic_definition":
-                case "cinematic_scene_definition":
-                case "cinematic_transition_definition":
-                case "bink_definition":
-                case "cui_screen_definition":
-                case "any_tag":
-                case "any_tag_not_resolving":
-                    expression = GetTagrefExpression(context, expectedValueType);
-                    break;
-
-                case "device_group":
-                    expression = GetDeviceGroupExpression(context);
-                    break;
-
-                case "ai":
-                    expression = GetAIExpression(context, expectedValueType);
-                    break;
-
-                case "player":
-                case "game_difficulty":
-                case "team":
-                case "mp_team":
-                case "controller":
-                case "actor_type":
-                case "model_state":
-                case "event":
-                case "character_physics":
-                case "skull":
-                case "firing_point_evaluator":
-                case "damage_region":
-                    expression =  GetEnum32Expression(context, expectedValueType, expectedValueType);
-                    break;
-
-                case "button_preset":
-                case "joystick_preset":
-                case "player_color":
-                case "player_model_choice":
-                case "voice_output_setting":
-                case "voice_mask":
-                case "subtitle_setting":
-                    expression = GetEnum16Expression(context, expectedValueType);
-                    break;
-
-                case "object_name":
-                case "unit_name":
-                case "vehicle_name":
-                case "weapon_name":
-                case "device_name":
-                case "scenery_name":
-                case "effect_scenery_name":
-                    expression =  GetObjectNameExpression(context, expectedValueType, expectedValueType);
-                    break;
-                default:
-                    // Return false if this value type has not been implemented yet and the expression could not be handled.
-                    if(_opcodes.GetTypeInfo(expectedValueType) != null)
-                    {
-                        return false;
-                    }
-                    // Throw an exception for unknown and misspelled value types.
-                    else
-                    {
-                        throw new CompilerException($"Unknown Value Type: \"{expectedValueType}\". " +
-                            $"A type definition might be missing from the scripting XML file or this could be a bug.", context);
-                    }                   
+                expression = GetEnumExpression(context, expectedValueType);
             }
+            else
+            {
+                switch (expectedValueType)
+                {
+                    case "ANY":
+                        expression = GetNumberExpression(context);
+                        if (expression is null)
+                        {
+                            if(TryCreateObjectExpression(context))
+                            {
+                                return true;
+                            }
+
+                            throw new CompilerException($"Failed to process \"{context.GetTextSanitized()}\" because it didn't know which value type to expect. Try using a different function with clearly defined parameters.", context);
+                        }
+                        break;
+
+                    case "NUMBER":
+                        expression = GetNumberExpression(context);
+                        break;
+
+                    case "short":
+                        expression = GetShortExpression(context);
+                        break;
+
+                    case "long":
+                        expression = GetLongExpression(context);
+                        break;
+
+                    case "boolean":
+                        expression = GetBooleanExpression(context);
+                        break;
+
+                    case "real":
+                        expression = GetRealExpression(context);
+                        break;
+
+                    case "string":
+                        expression = GetStringExpression(context);
+                        break;
+
+                    case "string_id":
+                        expression = CreateSIDExpression(context);
+                        break;
+
+                    case "unit_seat_mapping":
+                        expression = CreateUnitSeatMappingExpression(context);
+                        break;
+
+                    // 16 Bit Index.
+                    case "script":
+                    case "ai_command_script":
+                    case "trigger_volume":
+                    case "cutscene_flag":
+                    case "cutscene_camera_point":
+                    case "cutscene_title":
+                    case "starting_profile":
+                    case "zone_set":
+                    case "designer_zone":
+                        expression = GetIndex16Expression(context, expectedValueType);
+                        break;
+
+                    // 32 Bit Index.
+                    case "folder":
+                    case "cinematic_lightprobe":
+                        expression = GetIndex32Expression(context, expectedValueType);
+                        break;
+
+                    case "ai_line":
+                        expression = CreateLineExpression(context);
+                        break;
+
+                    case "point_reference":
+                        expression = GetPointReferenceExpression(context);
+                        break;
+
+                    //case "object_list":
+                    //    expression = GetObjectNameExpression(context, "object_name", expectedValueType);
+                    //    if (expression is null)
+                    //    {
+                    //        expression = GetEnum32Expression(context, "player", expectedValueType);
+                    //    }
+                    //    break;
+
+                    case "sound":
+                    case "effect":
+                    case "damage":
+                    case "looping_sound":
+                    case "animation_graph":
+                    case "object_definition":
+                    case "bitmap":
+                    case "shader":
+                    case "render_model":
+                    case "structure_definition":
+                    case "lightmap_definition":
+                    case "cinematic_definition":
+                    case "cinematic_scene_definition":
+                    case "cinematic_transition_definition":
+                    case "bink_definition":
+                    case "cui_screen_definition":
+                    case "any_tag":
+                    case "any_tag_not_resolving":
+                        expression = GetTagrefExpression(context, expectedValueType);
+                        break;
+
+                    case "device_group":
+                        expression = GetDeviceGroupExpression(context);
+                        break;
+
+                    case "ai":
+                        // H3 and Reach do not share the same AI format.
+                        if (_buildInfo.Name.Contains("Reach"))
+                        {
+                            expression = GetAIExpressionReach(context, expectedValueType);
+                        }
+                        else
+                        {
+                            expression = GetAIExpressionH3(context, expectedValueType);
+                        }
+                        break;
+
+                    //case "player":
+                    //case "game_difficulty":
+                    //case "team":
+                    //case "mp_team":
+                    //case "controller":
+                    //case "actor_type":
+                    //case "model_state":
+                    //case "event":
+                    //case "character_physics":
+                    //case "skull":
+                    //case "firing_point_evaluator":
+                    //case "damage_region":
+                    //    expression = GetEnum32Expression(context, expectedValueType, expectedValueType);
+                    //    break;
+
+                    //case "button_preset":
+                    //case "joystick_preset":
+                    //case "player_color":
+                    //case "player_model_choice":
+                    //case "voice_output_setting":
+                    //case "voice_mask":
+                    //case "subtitle_setting":
+                    //    expression = GetEnumExpression(context, expectedValueType);
+                    //    break;
+
+                    case "object_name":
+                    case "unit_name":
+                    case "vehicle_name":
+                    case "weapon_name":
+                    case "device_name":
+                    case "scenery_name":
+                    case "effect_scenery_name":
+                        expression = GetObjectNameExpression(context, expectedValueType, expectedValueType);
+                        break;
+                    default:
+                        // Return false if this value type has not been implemented yet and the expression could not be handled.
+                        if (_opcodes.GetTypeInfo(expectedValueType) != null)
+                        {
+                            return false;
+                        }
+                        // Throw an exception for unknown and misspelled value types.
+                        else
+                        {
+                            throw new CompilerException($"Unknown Value Type: \"{expectedValueType}\". " +
+                                $"A type definition might be missing from the scripting XML file or this could be a bug.", context);
+                        }
+                }
+            }
+
             // Failed to generate an expression.
             if(expression is null)
             {
@@ -230,6 +285,20 @@ namespace Blamite.Blam.Scripting.Compiler
             string actualType = _opcodes.GetTypeInfo(expression.Opcode).Name;
             EqualityPush(actualType);
             return true;
+        }
+
+        private bool TryCreateObjectExpression(BS_ReachParser.LiteralContext context)
+        {
+            CastInfo info = _opcodes.GetTypeCast("object");
+            foreach (string type in info.From)
+            {
+                if (HandleValueType(context, type))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private ScriptExpression GetBooleanExpression(BS_ReachParser.LiteralContext context)
@@ -260,23 +329,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 context.GetCorrectTextPosition(_missingCarriageReturnPositions), (short)context.Start.Line, val);
         }
 
-        private ScriptExpression GetEnum32Expression(BS_ReachParser.LiteralContext context, string valueType, string castTo)
-        {
-            string text = context.GetTextSanitized();
-            ScriptValueType info = _opcodes.GetTypeInfo(valueType);
-            int index = info.GetEnumIndex(text);
-
-            if (index == -1)
-            {
-                return null;
-
-            }
-
-            return new ScriptExpression(_currentIndex, info.Opcode, _opcodes.GetTypeInfo(castTo).Opcode, ScriptExpressionType.Expression,
-                _strings.Cache(text), (short)context.Start.Line, (uint)index);
-        }
-
-        private ScriptExpression GetEnum16Expression(BS_ReachParser.LiteralContext context, string expectedValueType)
+        private ScriptExpression GetEnumExpression(BS_ReachParser.LiteralContext context, string expectedValueType)
         {
             string text = context.GetTextSanitized();
             ScriptValueType info = _opcodes.GetTypeInfo(expectedValueType);
@@ -285,11 +338,22 @@ namespace Blamite.Blam.Scripting.Compiler
             if (val == -1)
             {
                 return null;
-
             }
 
-            return new ScriptExpression(_currentIndex, info.Opcode, info.Opcode, ScriptExpressionType.Expression, 
-                _strings.Cache(text), (short)context.Start.Line, (ushort)val);
+            if(info.Size == 4)
+            {
+                return new ScriptExpression(_currentIndex, info.Opcode, info.Opcode, ScriptExpressionType.Expression,
+                    _strings.Cache(text), (short)context.Start.Line, (uint)val);
+            }
+            else if(info.Size == 2)
+            {
+                return new ScriptExpression(_currentIndex, info.Opcode, info.Opcode, ScriptExpressionType.Expression,
+                    _strings.Cache(text), (short)context.Start.Line, (ushort)val);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         private ScriptExpression GetNumberExpression(BS_ReachParser.LiteralContext context)
@@ -340,7 +404,7 @@ namespace Blamite.Blam.Scripting.Compiler
             }
         }
 
-        private ScriptExpression GetAIExpression(BS_ReachParser.LiteralContext context, string expectedValueType)
+        private ScriptExpression GetAIExpressionReach(BS_ReachParser.LiteralContext context, string expectedValueType)
         {
             string text = context.GetTextSanitized();
             string[] subStrings = text.Split(new char[] { '/' }, 2, StringSplitOptions.RemoveEmptyEntries);
@@ -441,6 +505,91 @@ namespace Blamite.Blam.Scripting.Compiler
             return new ScriptExpression(_currentIndex, opcode, valuetype, ScriptExpressionType.Expression, _strings.Cache(text), (short)context.Start.Line, b1, b2, b3, b4);
         }
 
+        private ScriptExpression GetAIExpressionH3(BS_ReachParser.LiteralContext context, string expectedValueType)
+        {
+            string text = context.GetTextSanitized();
+            string[] subStrings = text.Split(new char[] { '/' }, 2, StringSplitOptions.RemoveEmptyEntries);
+            ushort opcode = _opcodes.GetTypeInfo("ai").Opcode;
+            ushort valuetype = _opcodes.GetTypeInfo(expectedValueType).Opcode;
+
+            ushort value1;
+            ushort value2;
+
+            #region value generation
+            // Squads.
+            if (TryGetObjectFromContext(out ScriptingContextObject squadObject, Tuple.Create("ai_squad", subStrings[0])))
+            {
+                // Squad.
+                if (subStrings.Length == 1)
+                {
+                    value1 = 0x2000;
+                    value2 = (ushort)squadObject.Index;
+                }
+                // Locations.
+                else if (subStrings.Length == 2)
+                {
+                    // Starting location.
+                    if (TryGetChildObjectFromObject(squadObject, "ai_starting_location", subStrings[1], out ScriptingContextObject startingLocationObject))
+                    {
+                        byte[] squadIndexBytes = BitConverter.GetBytes((short)squadObject.Index);
+                        byte b1 = (byte)(squadIndexBytes[1] | 0x80);
+                        byte b2 = squadIndexBytes[0];
+                        byte b3 = (byte)startingLocationObject.WrapperIndex;
+                        byte b4 = (byte)startingLocationObject.Index;
+                        return new ScriptExpression(_currentIndex, opcode, valuetype, ScriptExpressionType.Expression, _strings.Cache(text), (short)context.Start.Line, b1, b2, b3, b4);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            // Squad Groups.
+            else if (subStrings.Length == 1 && TryGetObjectFromContext(out ScriptingContextObject groupObject, Tuple.Create("ai_squad_group", subStrings[0])))
+            {
+                value1 = 0x4000;
+                value2 = (ushort)groupObject.Index;
+            }
+            // Objectives.
+            else if (TryGetObjectFromContext(out ScriptingContextObject objectiveObject, Tuple.Create("ai_objective", subStrings[0])))
+            {
+                // Objective.
+                if (subStrings.Length == 1)
+                {
+                    value1 = 0xBFFF;
+                    value2 = (ushort)objectiveObject.Index;
+                }
+                else if (subStrings.Length == 2)
+                {
+                    // Objective Role.
+                    if (TryGetChildObjectFromObject(objectiveObject, "ai_role", subStrings[1], out ScriptingContextObject roleObject))
+                    {
+                        value1 = (ushort)(roleObject.Index | 0xA000);
+                        value2 = (ushort)objectiveObject.Index;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            // Not an AI object...
+            else
+            {
+                return null;
+            }
+            #endregion
+            return new ScriptExpression(_currentIndex, opcode, valuetype, ScriptExpressionType.Expression, _strings.Cache(text), (short)context.Start.Line, value1, value2);
+        }
+
         private ScriptExpression GetIndex16Expression(BS_ReachParser.LiteralContext context, string expectedValueType)
         {
             string name = context.GetTextSanitized();
@@ -449,10 +598,10 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 case "script":
                 case "ai_command_script":
-                    ScriptInfo info = _scriptLookup.Values.FirstOrDefault(info => info.Name == name);
-                    if(info != null)
+                    if(_scriptLookup.TryGetValue(name, out List<ScriptInfo> scripts))
                     {
-                        value = info.Opcode;
+                        // In case of overloaded scripts with matching names, choose the first script's index.
+                        value = scripts[0].Opcode;
                     }
                     break;
 
@@ -478,6 +627,23 @@ namespace Blamite.Blam.Scripting.Compiler
             ushort opcode = _opcodes.GetTypeInfo(expectedValueType).Opcode;
             return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression, 
                 _strings.Cache(name), (short)context.Start.Line, (ushort)value);
+        }
+
+        private ScriptExpression GetIndex32Expression(BS_ReachParser.LiteralContext context, string expectedValueType)
+        {
+            string name = context.GetTextSanitized();
+
+            if(TryGetObjectFromContext(out ScriptingContextObject obj, Tuple.Create(expectedValueType, name)))
+            {
+                ushort opcode = _opcodes.GetTypeInfo(expectedValueType).Opcode;
+                return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
+                    _strings.Cache(name), (short)context.Start.Line, (uint)obj.Index);
+            }
+            else
+            {
+                return null;
+            }
+
         }
 
         private ScriptExpression GetDeviceGroupExpression(BS_ReachParser.LiteralContext context)
@@ -531,23 +697,6 @@ namespace Blamite.Blam.Scripting.Compiler
                 ushort opCode = _opcodes.GetTypeInfo("point_reference").Opcode;
                 return new ScriptExpression(_currentIndex, opCode, opCode, ScriptExpressionType.Expression,
                     _strings.Cache(text), (short)context.Start.Line, (ushort)set, (ushort)point);
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        private ScriptExpression GetFolderExpression(BS_ReachParser.LiteralContext context)
-        {
-            string name = context.GetTextSanitized();
-
-            if (TryGetObjectFromContext(out ScriptingContextObject folderObject, Tuple.Create("object_folder", name)))
-            {
-                int index = folderObject.Index;
-                ushort opcode = _opcodes.GetTypeInfo("folder").Opcode;
-                return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
-                    _strings.Cache(name), (short)context.Start.Line, (uint)index);
             }
             else
             {
@@ -646,6 +795,12 @@ namespace Blamite.Blam.Scripting.Compiler
                 }
             }
 
+            if(name == "")
+            {
+                value = 0;
+                _logger.Warning($"A dialog line didn't have a name.");
+            }
+
             if(value == 0xFFFFFFFF)
             {
                 _logger.Warning($"The dialog line \"{name}\" appears to be missing from the map.");
@@ -665,8 +820,9 @@ namespace Blamite.Blam.Scripting.Compiler
                 return null;
             }
 
+            // Replace the escaped quotes, which were inserted by the decompiler, with regular ones.
+            uint value = _strings.Cache(ScriptStringHelpers.Unescape(text));
             var opcode = _opcodes.GetTypeInfo("string").Opcode;
-            uint value = _strings.Cache(text);
             return new ScriptExpression(_currentIndex, opcode, opcode, ScriptExpressionType.Expression,
                 value, (short)context.Start.Line, value);
         }

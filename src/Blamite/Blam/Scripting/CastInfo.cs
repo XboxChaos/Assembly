@@ -12,11 +12,11 @@ namespace Blamite.Blam.Scripting
         public Boolean CastOnly { get; private set; }
         public List<string> From { get; private set; }
 
-        public CastInfo(string to, Boolean castOnly, List<string> from)
+        public CastInfo(string to, Boolean castOnly, IEnumerable<string> from)
         {
             To = to;
             CastOnly = castOnly;
-            From = from;
+            From = from.ToList();
         }
     }
 }
