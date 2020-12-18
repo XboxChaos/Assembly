@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from f:\Dev\Antlr\BS_Reach.g4 by ANTLR 4.8
+// Generated from d:\Dev\Antlr\BS_Reach.g4 by ANTLR 4.8
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -32,7 +32,6 @@ using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 /// of the available methods.
 /// </summary>
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.8")]
-//[System.CLSCompliant(false)]
 public partial class BS_ReachBaseListener : IBS_ReachListener {
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="BS_ReachParser.hsc"/>.

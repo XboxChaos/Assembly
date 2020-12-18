@@ -239,8 +239,21 @@ namespace Blamite.Blam.ThirdGen.Structures
 
         private void WriteScripts(ScriptData data, IStream stream, StructureValueCollection scnr)
         {
-            Dictionary<int, uint> newParamAddresses = WriteParams(data, stream, scnr);
+            ScriptLayout layout;
+            if(_buildInfo.Name.Contains("Halo: Reach"))
+            {
+                layout = ScriptLayout.HaloReach;
+            }
+            else if(_buildInfo.Name.Contains("Halo 3") || _buildInfo.Name.Contains("Halo ODST"))
+            {
+                layout = ScriptLayout.Halo3;
+            }
+            else
+            {
+                throw new NotImplementedException("Saving this game's scripts is not supported yet.");
+            }
 
+            Dictionary<int, uint> newParamAddresses = WriteParams(data, stream, scnr);
             StructureLayout scrlayout = _buildInfo.Layouts.GetLayout("script element");
 
             int oldScriptCount = (int)scnr.GetInteger("number of scripts");
@@ -279,7 +292,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 
                         if (newParamAddresses.TryGetValue(hash, out uint addr))
                         {
-                            scr.Write(stream, _stringIDs, paramCount, addr);
+                            scr.Write(stream, _stringIDs, paramCount, addr, layout);
                         }
                         else
                         {
@@ -289,7 +302,7 @@ namespace Blamite.Blam.ThirdGen.Structures
                     }
                     else
                     {
-                        scr.Write(stream, _stringIDs, 0, 0);
+                        scr.Write(stream, _stringIDs, 0, 0, layout);
                     }
                 }
             }

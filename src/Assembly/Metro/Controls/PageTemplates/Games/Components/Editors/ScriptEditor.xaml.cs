@@ -47,7 +47,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private Endian _endian;
         private CompletionWindow _completionWindow = null;
         private CancellationTokenSource _searchToken;
-        private BackgroundWorker searchWorker = new BackgroundWorker();
         private Regex _scriptRegex;
         private Regex _globalsRegex;
         private IEnumerable<ICompletionData> _staticCompletionData = new ICompletionData[0];
@@ -180,7 +179,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
         private async void CompileClick(object sender, RoutedEventArgs e)
         {
-            if (_buildInfo.Name.Contains("Reach"))
+            if (_buildInfo.Name.Contains("Reach") || _buildInfo.Name.Contains("Halo 3"))
             {
                 // Logger Setup
                 string folder = "Compiler";
@@ -437,7 +436,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                 // Run the compiler.
                 logger.Information("Running the compiler...");
                 bool outputDebugData = App.AssemblyStorage.AssemblySettings.OutputCompilerDebugData;
-                ScriptCompiler compiler = new ScriptCompiler(_cashefile, _opcodes, context, progress, logger, outputDebugData);
+                ScriptCompiler compiler = new ScriptCompiler(_cashefile, _buildInfo, _opcodes, context, progress, logger, outputDebugData);
                 ParseTreeWalker.Default.Walk(compiler, tree);
                 return compiler.Result();
             }

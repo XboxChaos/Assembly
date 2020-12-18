@@ -25,14 +25,7 @@ namespace Blamite.Blam.Scripting.Context
 
         public IEnumerable<ScriptingContextObject> GetObjects(string name)
         {
-            if(_objects.Contains(name))
-            {
-                return _objects[name];
-            }
-            else
-            {
-                return new ScriptingContextObject[0];
-            }
+            return _objects[name];
         }
 
         public IEnumerable<ScriptingContextObject> GetAllObjects()

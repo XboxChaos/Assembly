@@ -14,26 +14,26 @@ namespace Blamite.Blam.Scripting.Compiler
 {
     public partial class ScriptCompiler : BS_ReachBaseListener
     {
-        private FunctionInfo RetrieveFunctionInfo(string function, int parameterCount)
-        {
-            List<FunctionInfo> infos = _opcodes.GetFunctionInfo(function);
-            if (infos == null || infos.Count == 0)
-            {
-                return null;
-            }
+        //private FunctionInfo RetrieveFunctionInfo(string function, int parameterCount)
+        //{
+        //    List<FunctionInfo> infos = _opcodes.GetFunctionInfo(function);
+        //    if (infos == null || infos.Count == 0)
+        //    {
+        //        return null;
+        //    }
 
-            // Overloaded functions exist. Select the right one based on its parameter count and whether the function is implemented or not.
-            if (infos.Count > 1)
-            {
-                return infos.Find(i => i.Implemented && i.ParameterTypes.Count() == parameterCount);
+        //    // Overloaded functions exist. Select the right one based on its parameter count and whether the function is implemented or not.
+        //    if (infos.Count > 1)
+        //    {
+        //        return infos.Find(i => i.Implemented && i.ParameterTypes.Count() == parameterCount);
 
-            }
-            else
-            {
-                return infos[0];
+        //    }
+        //    else
+        //    {
+        //        return infos[0];
 
-            }
-        }
+        //    }
+        //}
 
         private RuleContext GetParentContext(RuleContext context, int ruleIndex)
         {
@@ -306,6 +306,48 @@ namespace Blamite.Blam.Scripting.Compiler
         private bool IsNone(string text)
         {
             return text == "none" || text == "None" || text == "NONE";
+        }
+
+        private void AddScriptToLookup(ScriptInfo script)
+        {
+            if (_scriptLookup.ContainsKey(script.Name))
+            {
+                _scriptLookup[script.Name].Add(script);
+            }
+            else
+            {
+                _scriptLookup[script.Name] = new List<ScriptInfo>() { script };
+            }
+        }
+
+        private bool CheckParameterSanity(BS_ReachParser.CallContext context, FunctionInfo function)
+        {
+            var expressionContexts = context.expression();
+
+            // Ignore special functions. They will be handled during the parameter push operation.
+            if(!(function.Group is null))
+            {
+                return true;
+            }
+            // A function can only be valid if its parameter cound matches the number of parameters in the parser context.
+            else if(function.ParameterTypes.Length != expressionContexts.Length)
+            {
+                return false;
+            }
+            // Try to detect functions with invalid numeric parameters. 
+            // This is a desperate attempt to eliminate overloaded functions that share the same number of parameters.
+            for(int i = 0; i < function.ParameterTypes.Length; i++)
+            {
+                if(TypeHelper.IsNumType(function.ParameterTypes[i]))
+                {
+                    BS_ReachParser.LiteralContext literal = expressionContexts[i].literal();
+                    if (literal?.BOOLEAN() != null || literal?.STRING() != null)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
     }
 }

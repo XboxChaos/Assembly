@@ -105,16 +105,78 @@ namespace Blamite.Serialization.Settings
             }
         }
 
-        private void RegisterTypeCasts(XContainer root, OpcodeLookup lookup)
+        //private void RegisterTypeCasts2(XContainer root, OpcodeLookup lookup)
+        //{
+        //    foreach (XElement element in root.Element("typecasting").Elements("to"))
+        //    {
+        //        string to = XMLUtil.GetStringAttribute(element, "name");
+        //        bool castOnly = XMLUtil.GetBoolAttribute(element, "castOnly", false);
+        //        List<string> from = element.Elements("from").Select(e => e.Value).ToList();
+        //        CastInfo info = new CastInfo(to, castOnly, from);
+        //        lookup.RegisterTypeCast(to, info);
+        //    }
+        //}
+
+		private void RegisterTypeCasts(XContainer root, OpcodeLookup lookup)
         {
-            foreach (XElement element in root.Element("typecasting").Elements("to"))
+			List<TempTypeCast> info = new List<TempTypeCast>();
+			Dictionary<string, string[]> casts = new Dictionary<string, string[]>();
+
+			// Load type casting information.
+			foreach (XElement element in root.Element("typecasting").Elements("to"))
+			{
+				TempTypeCast temp = new TempTypeCast()
+				{
+					Name = XMLUtil.GetStringAttribute(element, "name"),
+					CastOnly = XMLUtil.GetBoolAttribute(element, "castOnly", false),
+					Types = element.Elements("from").Select(e => e.Value)
+				};
+				info.Add(temp);
+				casts[temp.Name] = temp.Types.ToArray();
+			}
+
+			bool itemsAdded = true;
+			
+			while(itemsAdded)
             {
-                string to = XMLUtil.GetStringAttribute(element, "name");
-                bool castOnly = XMLUtil.GetBoolAttribute(element, "castOnly", false);
-                List<string> from = element.Elements("from").Select(e => e.Value).ToList();
-                CastInfo info = new CastInfo(to, castOnly, from);
-                lookup.RegisterTypeCast(to, info);
+				itemsAdded = false;
+				// Iterate over all casts.
+				foreach(var i in info)
+                {
+					string[] newPredecessors = casts[i.Name];
+					// Iterate over all predecessors of the cast.
+					foreach (string type in casts[i.Name])
+                    {
+						// Check if the predecessor supports casting.
+						if(casts.TryGetValue(type, out string[] predecessors))
+                        {
+							// Try to add its predecessors to the predecessors of the cast.
+							newPredecessors = newPredecessors.Union(predecessors).ToArray();						
+                        }
+                    }
+
+					if(newPredecessors.Length > casts[i.Name].Length)
+                    {
+						casts[i.Name] = newPredecessors;
+						itemsAdded = true;
+                    }
+                }
+			}
+
+			foreach(TempTypeCast i in info)
+            {
+				CastInfo cast = new CastInfo(i.Name, i.CastOnly, casts[i.Name]);
+				lookup.RegisterTypeCast(i.Name, cast);
             }
+		}
+
+		private class TempTypeCast
+		{
+			public string Name { get; set; }
+
+			public bool CastOnly { get; set; }
+
+			public IEnumerable<string> Types { get; set; }
         }
 
     }

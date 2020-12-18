@@ -47,7 +47,7 @@ namespace Blamite.Blam.Scripting
 			get { return _tag; }
 		}
 
-		public bool Object
+		public bool IsObject
 		{
 			get { return _object; }
 		}
