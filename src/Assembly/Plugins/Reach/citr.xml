@@ -4,137 +4,554 @@
 	<revisions>
 		<revision author="DarkShallFall" version="1">Mapped plugin structure a new.</revision>
 	</revisions>
-	<undefined name="Unknown" offset="0x0" visible="false" />
-	<undefined name="Unknown" offset="0x4" visible="false" />
-	<undefined name="Unknown" offset="0x8" visible="false" />
-	<int32 name="Unknown" offset="0xC" visible="false" />
-	<tagblock name="Unknown" offset="0x10" visible="false" elementSize="0x8">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<int32 name="Unknown" offset="0x4" visible="false" />
+	<comment title="Fade Out From Game" />
+	<colorf name="Fade Color" offset="0x0" alpha="false" visible="true" />
+	<int32 name="Fade Time" offset="0xC" visible="true" />
+	<tagblock name="Sound Global Gain" offset="0x10" visible="true" elementSize="0x8">
+		<float32 name="Gain" offset="0x0" visible="true" />
+		<int32 name="Time" offset="0x4" visible="true" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0x1C" visible="false" elementSize="0xC">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-	</tagblock>
-	<undefined name="Unknown" offset="0x28" visible="false" />
-	<undefined name="Unknown" offset="0x2C" visible="false" />
-	<undefined name="Unknown" offset="0x30" visible="false" />
-	<tagblock name="Unknown" offset="0x34" visible="false" elementSize="0x10">
-		<tagRef name="Unknown" offset="0x0" visible="false" />
-	</tagblock>
-	<undefined name="Unknown" offset="0x40" visible="false" />
-	<undefined name="Unknown" offset="0x44" visible="false" />
-	<undefined name="Unknown" offset="0x48" visible="false" />
-	<undefined name="Unknown" offset="0x4C" visible="false" />
-	<undefined name="Unknown" offset="0x50" visible="false" />
-	<undefined name="Unknown" offset="0x54" visible="false" />
-	<int32 name="Unknown" offset="0x58" visible="false" />
-	<undefined name="Unknown" offset="0x5C" visible="false" />
-	<undefined name="Unknown" offset="0x60" visible="false" />
-	<undefined name="Unknown" offset="0x64" visible="false" />
-	<int32 name="Unknown" offset="0x68" visible="false" />
-	<tagblock name="Unknown" offset="0x6C" visible="false" elementSize="0x8">
-		<float32 name="Unknown" offset="0x0" visible="false" />
-		<int32 name="Unknown" offset="0x4" visible="false" />
-	</tagblock>
-	<tagblock name="Unknown" offset="0x78" visible="false" elementSize="0xC">
-		<int8 name="Unknown" offset="0x0" visible="false" />
+	<tagblock name="Sound Class Gains" offset="0x1C" visible="true" elementSize="0xC">
+		<enum8 name="Class" offset="0x0" visible="true">
+			<option name="projectile_impact" value="0x0" />
+			<option name="projectile_detonation" value="0x1" />
+			<option name="projectile_flyby" value="0x2" />
+			<option name="projectile_detonation_lod" value="0x3" />
+			<option name="weapon_fire" value="0x4" />
+			<option name="weapon_ready" value="0x5" />
+			<option name="weapon_reload" value="0x6" />
+			<option name="weapon_empty" value="0x7" />
+			<option name="weapon_charge" value="0x8" />
+			<option name="weapon_overheat" value="0x9" />
+			<option name="weapon_idle" value="0xA" />
+			<option name="weapon_melee" value="0xB" />
+			<option name="weapon_animation" value="0xC" />
+			<option name="object_impacts" value="0xD" />
+			<option name="particle_impacts" value="0xE" />
+			<option name="weapon_fire_lod" value="0xF" />
+			<option name="water_transitions" value="0x10" />
+			<option name="lowpass_effects" value="0x11" />
+			<option name="unit_footsteps" value="0x12" />
+			<option name="unit_dialog" value="0x13" />
+			<option name="unit_animation" value="0x14" />
+			<option name="unit_unused!" value="0x15" />
+			<option name="vehicle_collision" value="0x16" />
+			<option name="vehicle_engine" value="0x17" />
+			<option name="vehicle_animation" value="0x18" />
+			<option name="vehicle_engine_lod" value="0x19" />
+			<option name="device_door" value="0x1A" />
+			<option name="device_unused0!" value="0x1B" />
+			<option name="device_machinery" value="0x1C" />
+			<option name="device_stationary" value="0x1D" />
+			<option name="device_unused1!" value="0x1E" />
+			<option name="device_unused2!" value="0x1F" />
+			<option name="music" value="0x20" />
+			<option name="ambient_nature" value="0x21" />
+			<option name="ambient_machinery" value="0x22" />
+			<option name="ambient_stationary" value="0x23" />
+			<option name="huge_ass" value="0x24" />
+			<option name="object_looping" value="0x25" />
+			<option name="cinematic_music" value="0x26" />
+			<option name="unknown_unused0!" value="0x27" />
+			<option name="unknown_unused1!" value="0x28" />
+			<option name="ambient_flock" value="0x29" />
+			<option name="no_pad" value="0x2A" />
+			<option name="no_pad_stationary" value="0x2B" />
+			<option name="equipment_effect" value="0x2C" />
+			<option name="mission_dialog" value="0x2D" />
+			<option name="cinematic_dialog" value="0x2E" />
+			<option name="scripted_cinematic_foley" value="0x2F" />
+			<option name="game_event" value="0x30" />
+			<option name="ui" value="0x31" />
+			<option name="test" value="0x32" />
+			<option name="multiplayer_dialog" value="0x33" />
+			<option name="ambient_nature_details" value="0x34" />
+			<option name="ambient_machinery_details" value="0x35" />
+			<option name="inside_surround_tail" value="0x36" />
+			<option name="outside_surround_tail" value="0x37" />
+			<option name="vehicle_detonation" value="0x38" />
+			<option name="ambient_detonation" value="0x39" />
+			<option name="first_person_inside" value="0x3A" />
+			<option name="first_person_outside" value="0x3B" />
+			<option name="first_person_anywhere" value="0x3C" />
+			<option name="space_projectile_detonation" value="0x3D" />
+			<option name="space_projectile_flyby" value="0x3E" />
+			<option name="space_vehicle_engine" value="0x3F" />
+			<option name="space_weapon_fire" value="0x40" />
+			<option name="player_voice_team" value="0x41" />
+			<option name="player_voice_proxy" value="0x42" />
+			<option name="projectile_impact_postpone" value="0x43" />
+			<option name="unit_footsteps_postpone" value="0x44" />
+			<option name="weapon_ready_third_person" value="0x45" />
+			<option name="ui_music" value="0x46" />
+		</enum8>
 		<int8 name="Unknown" offset="0x1" visible="false" />
-		<int8 name="Unknown" offset="0x2" visible="false" />
-		<int8 name="Unknown" offset="0x3" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<float32 name="Gain" offset="0x4" visible="true" />
+		<int32 name="Time" offset="0x8" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x84" visible="false" />
-	<undefined name="Unknown" offset="0x88" visible="false" />
-	<undefined name="Unknown" offset="0x8C" visible="false" />
-	<undefined name="Unknown" offset="0x90" visible="false" />
-	<undefined name="Unknown" offset="0x94" visible="false" />
-	<undefined name="Unknown" offset="0x98" visible="false" />
-	<undefined name="Unknown" offset="0x9C" visible="false" />
-	<undefined name="Unknown" offset="0xA0" visible="false" />
-	<undefined name="Unknown" offset="0xA4" visible="false" />
-	<undefined name="Unknown" offset="0xA8" visible="false" />
-	<undefined name="Unknown" offset="0xAC" visible="false" />
-	<undefined name="Unknown" offset="0xB0" visible="false" />
-	<undefined name="Unknown" offset="0xB4" visible="false" />
-	<undefined name="Unknown" offset="0xB8" visible="false" />
-	<undefined name="Unknown" offset="0xBC" visible="false" />
-	<undefined name="Unknown" offset="0xC0" visible="false" />
-	<int32 name="Unknown" offset="0xC4" visible="false" />
-	<tagblock name="Unknown" offset="0xC8" visible="false" elementSize="0x8" align="0x8">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<int32 name="Unknown" offset="0x4" visible="false" />
+	<tagblock name="Stop Sounds" offset="0x28" visible="true" elementSize="0x10">
+		<tagRef name="Sound" offset="0x0" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0xD4" visible="false" />
-	<undefined name="Unknown" offset="0xD8" visible="false" />
-	<undefined name="Unknown" offset="0xDC" visible="false" />
-	<undefined name="Unknown" offset="0xE0" visible="false" />
-	<undefined name="Unknown" offset="0xE4" visible="false" />
-	<undefined name="Unknown" offset="0xE8" visible="false" />
-	<undefined name="Unknown" offset="0xEC" visible="false" />
-	<undefined name="Unknown" offset="0xF0" visible="false" />
-	<undefined name="Unknown" offset="0xF4" visible="false" />
-	<undefined name="Unknown" offset="0xF8" visible="false" />
-	<undefined name="Unknown" offset="0xFC" visible="false" />
-	<undefined name="Unknown" offset="0x100" visible="false" />
-	<undefined name="Unknown" offset="0x104" visible="false" />
-	<undefined name="Unknown" offset="0x108" visible="false" />
-	<undefined name="Unknown" offset="0x10C" visible="false" />
-	<undefined name="Unknown" offset="0x110" visible="false" />
-	<undefined name="Unknown" offset="0x114" visible="false" />
-	<undefined name="Unknown" offset="0x118" visible="false" />
-	<undefined name="Unknown" offset="0x11C" visible="false" />
-	<undefined name="Unknown" offset="0x120" visible="false" />
-	<tagblock name="Unknown" offset="0x124" visible="false" elementSize="0x8">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
+	<tagblock name="Start Sounds" offset="0x34" visible="true" elementSize="0x10">
+		<tagRef name="Sound" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0x130" visible="false" elementSize="0xC">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
+	<tagblock name="Resume Looping Sounds" offset="0x40" visible="true" elementSize="0x10">
+		<tagRef name="Looping Sound" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0x13C" visible="false" elementSize="0x10">
-		<tagRef name="Unknown" offset="0x0" visible="false" />
+	<tagblock name="Looping Sound States" offset="0x4C" visible="true" elementSize="0x18">
+		<tagRef name="Looping Sound" offset="0x0" visible="true" />
+		<float32 name="Scale" offset="0x10" visible="true" />
+		<flags16 name="Alternate" offset="0x14" visible="true">
+			<bit name="Alternate" index="0" />
+		</flags16>
+		<flags16 name="Layers" offset="0x16" visible="true">
+			<bit name="None" index="0" />
+			<bit name="Layer 1" index="1" />
+			<bit name="Layer 2" index="2" />
+			<bit name="Layer 3" index="3" />
+			<bit name="Layer 4" index="4" />
+		</flags16>
 	</tagblock>
-	<undefined name="Unknown" offset="0x148" visible="false" />
-	<undefined name="Unknown" offset="0x14C" visible="false" />
-	<undefined name="Unknown" offset="0x150" visible="false" />
-	<tagblock name="Unknown" offset="0x154" visible="false" elementSize="0x10">
-		<tagRef name="Unknown" offset="0x0" visible="false" />
+	<int32 name="Sleep Time" offset="0x58" visible="true" />
+	<comment title="Fade In To Cinematic" />
+	<colorf name="Fade Color" offset="0x5C" alpha="false" visible="true" />
+	<int32 name="Fade Time" offset="0x68" visible="true" />
+	<tagblock name="Sound Global Gain" offset="0x6C" visible="true" elementSize="0x8">
+		<float32 name="Gain" offset="0x0" visible="true" />
+		<int32 name="Time" offset="0x4" visible="true" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0x160" visible="false" elementSize="0x18" align="0x8">
-		<tagRef name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
+	<tagblock name="Sound Class Gains" offset="0x78" visible="true" elementSize="0xC">
+		<enum8 name="Class" offset="0x0" visible="true">
+			<option name="projectile_impact" value="0x0" />
+			<option name="projectile_detonation" value="0x1" />
+			<option name="projectile_flyby" value="0x2" />
+			<option name="projectile_detonation_lod" value="0x3" />
+			<option name="weapon_fire" value="0x4" />
+			<option name="weapon_ready" value="0x5" />
+			<option name="weapon_reload" value="0x6" />
+			<option name="weapon_empty" value="0x7" />
+			<option name="weapon_charge" value="0x8" />
+			<option name="weapon_overheat" value="0x9" />
+			<option name="weapon_idle" value="0xA" />
+			<option name="weapon_melee" value="0xB" />
+			<option name="weapon_animation" value="0xC" />
+			<option name="object_impacts" value="0xD" />
+			<option name="particle_impacts" value="0xE" />
+			<option name="weapon_fire_lod" value="0xF" />
+			<option name="water_transitions" value="0x10" />
+			<option name="lowpass_effects" value="0x11" />
+			<option name="unit_footsteps" value="0x12" />
+			<option name="unit_dialog" value="0x13" />
+			<option name="unit_animation" value="0x14" />
+			<option name="unit_unused!" value="0x15" />
+			<option name="vehicle_collision" value="0x16" />
+			<option name="vehicle_engine" value="0x17" />
+			<option name="vehicle_animation" value="0x18" />
+			<option name="vehicle_engine_lod" value="0x19" />
+			<option name="device_door" value="0x1A" />
+			<option name="device_unused0!" value="0x1B" />
+			<option name="device_machinery" value="0x1C" />
+			<option name="device_stationary" value="0x1D" />
+			<option name="device_unused1!" value="0x1E" />
+			<option name="device_unused2!" value="0x1F" />
+			<option name="music" value="0x20" />
+			<option name="ambient_nature" value="0x21" />
+			<option name="ambient_machinery" value="0x22" />
+			<option name="ambient_stationary" value="0x23" />
+			<option name="huge_ass" value="0x24" />
+			<option name="object_looping" value="0x25" />
+			<option name="cinematic_music" value="0x26" />
+			<option name="unknown_unused0!" value="0x27" />
+			<option name="unknown_unused1!" value="0x28" />
+			<option name="ambient_flock" value="0x29" />
+			<option name="no_pad" value="0x2A" />
+			<option name="no_pad_stationary" value="0x2B" />
+			<option name="equipment_effect" value="0x2C" />
+			<option name="mission_dialog" value="0x2D" />
+			<option name="cinematic_dialog" value="0x2E" />
+			<option name="scripted_cinematic_foley" value="0x2F" />
+			<option name="game_event" value="0x30" />
+			<option name="ui" value="0x31" />
+			<option name="test" value="0x32" />
+			<option name="multiplayer_dialog" value="0x33" />
+			<option name="ambient_nature_details" value="0x34" />
+			<option name="ambient_machinery_details" value="0x35" />
+			<option name="inside_surround_tail" value="0x36" />
+			<option name="outside_surround_tail" value="0x37" />
+			<option name="vehicle_detonation" value="0x38" />
+			<option name="ambient_detonation" value="0x39" />
+			<option name="first_person_inside" value="0x3A" />
+			<option name="first_person_outside" value="0x3B" />
+			<option name="first_person_anywhere" value="0x3C" />
+			<option name="space_projectile_detonation" value="0x3D" />
+			<option name="space_projectile_flyby" value="0x3E" />
+			<option name="space_vehicle_engine" value="0x3F" />
+			<option name="space_weapon_fire" value="0x40" />
+			<option name="player_voice_team" value="0x41" />
+			<option name="player_voice_proxy" value="0x42" />
+			<option name="projectile_impact_postpone" value="0x43" />
+			<option name="unit_footsteps_postpone" value="0x44" />
+			<option name="weapon_ready_third_person" value="0x45" />
+			<option name="ui_music" value="0x46" />
+		</enum8>
+		<int8 name="Unknown" offset="0x1" visible="false" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<float32 name="Gain" offset="0x4" visible="true" />
+		<int32 name="Time" offset="0x8" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x16C" visible="false" />
-	<undefined name="Unknown" offset="0x170" visible="false" />
-	<undefined name="Unknown" offset="0x174" visible="false" />
-	<undefined name="Unknown" offset="0x178" visible="false" />
-	<int32 name="Unknown" offset="0x17C" visible="false" />
-	<tagblock name="Unknown" offset="0x180" visible="false" elementSize="0x8">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<int32 name="Unknown" offset="0x4" visible="false" />
+	<tagblock name="Stop Sounds" offset="0x84" visible="true" elementSize="0x10">
+		<tagRef name="Sound" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0x18C" visible="false" elementSize="0xC">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
+	<tagblock name="Start Sounds" offset="0x90" visible="true" elementSize="0x10">
+		<tagRef name="Sound" offset="0x0" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x198" visible="false" />
-	<undefined name="Unknown" offset="0x19C" visible="false" />
-	<undefined name="Unknown" offset="0x1A0" visible="false" />
-	<undefined name="Unknown" offset="0x1A4" visible="false" />
-	<undefined name="Unknown" offset="0x1A8" visible="false" />
-	<undefined name="Unknown" offset="0x1AC" visible="false" />
-	<undefined name="Unknown" offset="0x1B0" visible="false" />
-	<undefined name="Unknown" offset="0x1B4" visible="false" />
-	<undefined name="Unknown" offset="0x1B8" visible="false" />
-	<undefined name="Unknown" offset="0x1BC" visible="false" />
-	<undefined name="Unknown" offset="0x1C0" visible="false" />
-	<undefined name="Unknown" offset="0x1C4" visible="false" />
-	<undefined name="Unknown" offset="0x1C8" visible="false" />
+	<tagblock name="Resume Looping Sounds" offset="0x9C" visible="true" elementSize="0x10">
+		<tagRef name="Looping Sound" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Looping Sound States" offset="0xA8" visible="true" elementSize="0x18">
+		<tagRef name="Looping Sound" offset="0x0" visible="true" />
+		<float32 name="Scale" offset="0x10" visible="true" />
+		<flags16 name="Alternate" offset="0x14" visible="true">
+			<bit name="Alternate" index="0" />
+		</flags16>
+		<flags16 name="Layers" offset="0x16" visible="true">
+			<bit name="None" index="0" />
+			<bit name="Layer 1" index="1" />
+			<bit name="Layer 2" index="2" />
+			<bit name="Layer 3" index="3" />
+			<bit name="Layer 4" index="4" />
+		</flags16>
+	</tagblock>
+	<int32 name="Sleep Time" offset="0xB4" visible="true" />
+	<comment title="Fade Out From Cinematic" />
+	<colorf name="Fade Color" offset="0xB8" alpha="false" visible="true" />
+	<int32 name="Fade Time" offset="0xC4" visible="true" />
+	<tagblock name="Sound Global Gain" offset="0xC8" visible="true" elementSize="0x8">
+		<float32 name="Gain" offset="0x0" visible="true" />
+		<int32 name="Time" offset="0x4" visible="true" />
+	</tagblock>
+	<tagblock name="Sound Class Gains" offset="0xD4" visible="true" elementSize="0xC">
+		<enum8 name="Class" offset="0x0" visible="true">
+			<option name="projectile_impact" value="0x0" />
+			<option name="projectile_detonation" value="0x1" />
+			<option name="projectile_flyby" value="0x2" />
+			<option name="projectile_detonation_lod" value="0x3" />
+			<option name="weapon_fire" value="0x4" />
+			<option name="weapon_ready" value="0x5" />
+			<option name="weapon_reload" value="0x6" />
+			<option name="weapon_empty" value="0x7" />
+			<option name="weapon_charge" value="0x8" />
+			<option name="weapon_overheat" value="0x9" />
+			<option name="weapon_idle" value="0xA" />
+			<option name="weapon_melee" value="0xB" />
+			<option name="weapon_animation" value="0xC" />
+			<option name="object_impacts" value="0xD" />
+			<option name="particle_impacts" value="0xE" />
+			<option name="weapon_fire_lod" value="0xF" />
+			<option name="water_transitions" value="0x10" />
+			<option name="lowpass_effects" value="0x11" />
+			<option name="unit_footsteps" value="0x12" />
+			<option name="unit_dialog" value="0x13" />
+			<option name="unit_animation" value="0x14" />
+			<option name="unit_unused!" value="0x15" />
+			<option name="vehicle_collision" value="0x16" />
+			<option name="vehicle_engine" value="0x17" />
+			<option name="vehicle_animation" value="0x18" />
+			<option name="vehicle_engine_lod" value="0x19" />
+			<option name="device_door" value="0x1A" />
+			<option name="device_unused0!" value="0x1B" />
+			<option name="device_machinery" value="0x1C" />
+			<option name="device_stationary" value="0x1D" />
+			<option name="device_unused1!" value="0x1E" />
+			<option name="device_unused2!" value="0x1F" />
+			<option name="music" value="0x20" />
+			<option name="ambient_nature" value="0x21" />
+			<option name="ambient_machinery" value="0x22" />
+			<option name="ambient_stationary" value="0x23" />
+			<option name="huge_ass" value="0x24" />
+			<option name="object_looping" value="0x25" />
+			<option name="cinematic_music" value="0x26" />
+			<option name="unknown_unused0!" value="0x27" />
+			<option name="unknown_unused1!" value="0x28" />
+			<option name="ambient_flock" value="0x29" />
+			<option name="no_pad" value="0x2A" />
+			<option name="no_pad_stationary" value="0x2B" />
+			<option name="equipment_effect" value="0x2C" />
+			<option name="mission_dialog" value="0x2D" />
+			<option name="cinematic_dialog" value="0x2E" />
+			<option name="scripted_cinematic_foley" value="0x2F" />
+			<option name="game_event" value="0x30" />
+			<option name="ui" value="0x31" />
+			<option name="test" value="0x32" />
+			<option name="multiplayer_dialog" value="0x33" />
+			<option name="ambient_nature_details" value="0x34" />
+			<option name="ambient_machinery_details" value="0x35" />
+			<option name="inside_surround_tail" value="0x36" />
+			<option name="outside_surround_tail" value="0x37" />
+			<option name="vehicle_detonation" value="0x38" />
+			<option name="ambient_detonation" value="0x39" />
+			<option name="first_person_inside" value="0x3A" />
+			<option name="first_person_outside" value="0x3B" />
+			<option name="first_person_anywhere" value="0x3C" />
+			<option name="space_projectile_detonation" value="0x3D" />
+			<option name="space_projectile_flyby" value="0x3E" />
+			<option name="space_vehicle_engine" value="0x3F" />
+			<option name="space_weapon_fire" value="0x40" />
+			<option name="player_voice_team" value="0x41" />
+			<option name="player_voice_proxy" value="0x42" />
+			<option name="projectile_impact_postpone" value="0x43" />
+			<option name="unit_footsteps_postpone" value="0x44" />
+			<option name="weapon_ready_third_person" value="0x45" />
+			<option name="ui_music" value="0x46" />
+		</enum8>
+		<int8 name="Unknown" offset="0x1" visible="false" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<float32 name="Gain" offset="0x4" visible="true" />
+		<int32 name="Time" offset="0x8" visible="true" />
+	</tagblock>
+	<tagblock name="Stop Sounds" offset="0xE0" visible="true" elementSize="0x10">
+		<tagRef name="Sound" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Start Sounds" offset="0xEC" visible="true" elementSize="0x10">
+		<tagRef name="Sound" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Resume Looping Sounds" offset="0xF8" visible="true" elementSize="0x10">
+		<tagRef name="Looping Sound" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Looping Sound States" offset="0x104" visible="true" elementSize="0x18">
+		<tagRef name="Looping Sound" offset="0x0" visible="true" />
+		<float32 name="Scale" offset="0x10" visible="true" />
+		<flags16 name="Alternate" offset="0x14" visible="true">
+			<bit name="Alternate" index="0" />
+		</flags16>
+		<flags16 name="Layers" offset="0x16" visible="true">
+			<bit name="None" index="0" />
+			<bit name="Layer 1" index="1" />
+			<bit name="Layer 2" index="2" />
+			<bit name="Layer 3" index="3" />
+			<bit name="Layer 4" index="4" />
+		</flags16>
+	</tagblock>
+	<int32 name="Sleep Time" offset="0x110" visible="true" />
+	<comment title="Fade Post Core Load" />
+	<colorf name="Fade Color" offset="0x114" alpha="false" visible="true" />
+	<int32 name="Fade Time" offset="0x120" visible="true" />
+	<tagblock name="Sound Global Gain" offset="0x124" visible="true" elementSize="0x8">
+		<float32 name="Gain" offset="0x0" visible="true" />
+		<int32 name="Time" offset="0x4" visible="true" />
+	</tagblock>
+	<tagblock name="Sound Class Gains" offset="0x130" visible="true" elementSize="0xC">
+		<enum8 name="Class" offset="0x0" visible="true">
+			<option name="projectile_impact" value="0x0" />
+			<option name="projectile_detonation" value="0x1" />
+			<option name="projectile_flyby" value="0x2" />
+			<option name="projectile_detonation_lod" value="0x3" />
+			<option name="weapon_fire" value="0x4" />
+			<option name="weapon_ready" value="0x5" />
+			<option name="weapon_reload" value="0x6" />
+			<option name="weapon_empty" value="0x7" />
+			<option name="weapon_charge" value="0x8" />
+			<option name="weapon_overheat" value="0x9" />
+			<option name="weapon_idle" value="0xA" />
+			<option name="weapon_melee" value="0xB" />
+			<option name="weapon_animation" value="0xC" />
+			<option name="object_impacts" value="0xD" />
+			<option name="particle_impacts" value="0xE" />
+			<option name="weapon_fire_lod" value="0xF" />
+			<option name="water_transitions" value="0x10" />
+			<option name="lowpass_effects" value="0x11" />
+			<option name="unit_footsteps" value="0x12" />
+			<option name="unit_dialog" value="0x13" />
+			<option name="unit_animation" value="0x14" />
+			<option name="unit_unused!" value="0x15" />
+			<option name="vehicle_collision" value="0x16" />
+			<option name="vehicle_engine" value="0x17" />
+			<option name="vehicle_animation" value="0x18" />
+			<option name="vehicle_engine_lod" value="0x19" />
+			<option name="device_door" value="0x1A" />
+			<option name="device_unused0!" value="0x1B" />
+			<option name="device_machinery" value="0x1C" />
+			<option name="device_stationary" value="0x1D" />
+			<option name="device_unused1!" value="0x1E" />
+			<option name="device_unused2!" value="0x1F" />
+			<option name="music" value="0x20" />
+			<option name="ambient_nature" value="0x21" />
+			<option name="ambient_machinery" value="0x22" />
+			<option name="ambient_stationary" value="0x23" />
+			<option name="huge_ass" value="0x24" />
+			<option name="object_looping" value="0x25" />
+			<option name="cinematic_music" value="0x26" />
+			<option name="unknown_unused0!" value="0x27" />
+			<option name="unknown_unused1!" value="0x28" />
+			<option name="ambient_flock" value="0x29" />
+			<option name="no_pad" value="0x2A" />
+			<option name="no_pad_stationary" value="0x2B" />
+			<option name="equipment_effect" value="0x2C" />
+			<option name="mission_dialog" value="0x2D" />
+			<option name="cinematic_dialog" value="0x2E" />
+			<option name="scripted_cinematic_foley" value="0x2F" />
+			<option name="game_event" value="0x30" />
+			<option name="ui" value="0x31" />
+			<option name="test" value="0x32" />
+			<option name="multiplayer_dialog" value="0x33" />
+			<option name="ambient_nature_details" value="0x34" />
+			<option name="ambient_machinery_details" value="0x35" />
+			<option name="inside_surround_tail" value="0x36" />
+			<option name="outside_surround_tail" value="0x37" />
+			<option name="vehicle_detonation" value="0x38" />
+			<option name="ambient_detonation" value="0x39" />
+			<option name="first_person_inside" value="0x3A" />
+			<option name="first_person_outside" value="0x3B" />
+			<option name="first_person_anywhere" value="0x3C" />
+			<option name="space_projectile_detonation" value="0x3D" />
+			<option name="space_projectile_flyby" value="0x3E" />
+			<option name="space_vehicle_engine" value="0x3F" />
+			<option name="space_weapon_fire" value="0x40" />
+			<option name="player_voice_team" value="0x41" />
+			<option name="player_voice_proxy" value="0x42" />
+			<option name="projectile_impact_postpone" value="0x43" />
+			<option name="unit_footsteps_postpone" value="0x44" />
+			<option name="weapon_ready_third_person" value="0x45" />
+			<option name="ui_music" value="0x46" />
+		</enum8>
+		<int8 name="Unknown" offset="0x1" visible="false" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<float32 name="Gain" offset="0x4" visible="true" />
+		<int32 name="Time" offset="0x8" visible="true" />
+	</tagblock>
+	<tagblock name="Stop Sounds" offset="0x13C" visible="true" elementSize="0x10">
+		<tagRef name="Sound" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Start Sounds" offset="0x148" visible="true" elementSize="0x10">
+		<tagRef name="Sound" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Resume Looping Sounds" offset="0x154" visible="true" elementSize="0x10">
+		<tagRef name="Looping Sound" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Looping Sound States" offset="0x160" visible="true" elementSize="0x18">
+		<tagRef name="Looping Sound" offset="0x0" visible="true" />
+		<float32 name="Scale" offset="0x10" visible="true" />
+		<flags16 name="Alternate" offset="0x14" visible="true">
+			<bit name="Alternate" index="0" />
+		</flags16>
+		<flags16 name="Layers" offset="0x16" visible="true">
+			<bit name="None" index="0" />
+			<bit name="Layer 1" index="1" />
+			<bit name="Layer 2" index="2" />
+			<bit name="Layer 3" index="3" />
+			<bit name="Layer 4" index="4" />
+		</flags16>
+	</tagblock>
+	<int32 name="Sleep Time" offset="0x16C" visible="true" />
+	<comment title="Fade In To Game" />
+	<colorf name="Fade Color" offset="0x170" alpha="false" visible="true" />
+	<int32 name="Fade Time" offset="0x17C" visible="true" />
+	<tagblock name="Sound Global Gain" offset="0x180" visible="true" elementSize="0x8">
+		<float32 name="Gain" offset="0x0" visible="true" />
+		<int32 name="Time" offset="0x4" visible="true" />
+	</tagblock>
+	<tagblock name="Sound Class Gains" offset="0x18C" visible="true" elementSize="0xC">
+		<enum8 name="Class" offset="0x0" visible="true">
+			<option name="projectile_impact" value="0x0" />
+			<option name="projectile_detonation" value="0x1" />
+			<option name="projectile_flyby" value="0x2" />
+			<option name="projectile_detonation_lod" value="0x3" />
+			<option name="weapon_fire" value="0x4" />
+			<option name="weapon_ready" value="0x5" />
+			<option name="weapon_reload" value="0x6" />
+			<option name="weapon_empty" value="0x7" />
+			<option name="weapon_charge" value="0x8" />
+			<option name="weapon_overheat" value="0x9" />
+			<option name="weapon_idle" value="0xA" />
+			<option name="weapon_melee" value="0xB" />
+			<option name="weapon_animation" value="0xC" />
+			<option name="object_impacts" value="0xD" />
+			<option name="particle_impacts" value="0xE" />
+			<option name="weapon_fire_lod" value="0xF" />
+			<option name="water_transitions" value="0x10" />
+			<option name="lowpass_effects" value="0x11" />
+			<option name="unit_footsteps" value="0x12" />
+			<option name="unit_dialog" value="0x13" />
+			<option name="unit_animation" value="0x14" />
+			<option name="unit_unused!" value="0x15" />
+			<option name="vehicle_collision" value="0x16" />
+			<option name="vehicle_engine" value="0x17" />
+			<option name="vehicle_animation" value="0x18" />
+			<option name="vehicle_engine_lod" value="0x19" />
+			<option name="device_door" value="0x1A" />
+			<option name="device_unused0!" value="0x1B" />
+			<option name="device_machinery" value="0x1C" />
+			<option name="device_stationary" value="0x1D" />
+			<option name="device_unused1!" value="0x1E" />
+			<option name="device_unused2!" value="0x1F" />
+			<option name="music" value="0x20" />
+			<option name="ambient_nature" value="0x21" />
+			<option name="ambient_machinery" value="0x22" />
+			<option name="ambient_stationary" value="0x23" />
+			<option name="huge_ass" value="0x24" />
+			<option name="object_looping" value="0x25" />
+			<option name="cinematic_music" value="0x26" />
+			<option name="unknown_unused0!" value="0x27" />
+			<option name="unknown_unused1!" value="0x28" />
+			<option name="ambient_flock" value="0x29" />
+			<option name="no_pad" value="0x2A" />
+			<option name="no_pad_stationary" value="0x2B" />
+			<option name="equipment_effect" value="0x2C" />
+			<option name="mission_dialog" value="0x2D" />
+			<option name="cinematic_dialog" value="0x2E" />
+			<option name="scripted_cinematic_foley" value="0x2F" />
+			<option name="game_event" value="0x30" />
+			<option name="ui" value="0x31" />
+			<option name="test" value="0x32" />
+			<option name="multiplayer_dialog" value="0x33" />
+			<option name="ambient_nature_details" value="0x34" />
+			<option name="ambient_machinery_details" value="0x35" />
+			<option name="inside_surround_tail" value="0x36" />
+			<option name="outside_surround_tail" value="0x37" />
+			<option name="vehicle_detonation" value="0x38" />
+			<option name="ambient_detonation" value="0x39" />
+			<option name="first_person_inside" value="0x3A" />
+			<option name="first_person_outside" value="0x3B" />
+			<option name="first_person_anywhere" value="0x3C" />
+			<option name="space_projectile_detonation" value="0x3D" />
+			<option name="space_projectile_flyby" value="0x3E" />
+			<option name="space_vehicle_engine" value="0x3F" />
+			<option name="space_weapon_fire" value="0x40" />
+			<option name="player_voice_team" value="0x41" />
+			<option name="player_voice_proxy" value="0x42" />
+			<option name="projectile_impact_postpone" value="0x43" />
+			<option name="unit_footsteps_postpone" value="0x44" />
+			<option name="weapon_ready_third_person" value="0x45" />
+			<option name="ui_music" value="0x46" />
+		</enum8>
+		<int8 name="Unknown" offset="0x1" visible="false" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<float32 name="Gain" offset="0x4" visible="true" />
+		<int32 name="Time" offset="0x8" visible="true" />
+	</tagblock>
+	<tagblock name="Stop Sounds" offset="0x198" visible="true" elementSize="0x10">
+		<tagRef name="Sound" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Start Sounds" offset="0x1A4" visible="true" elementSize="0x10">
+		<tagRef name="Sound" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Resume Looping Sounds" offset="0x1B0" visible="true" elementSize="0x10">
+		<tagRef name="Looping Sound" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Looping Sound States" offset="0x1BC" visible="true" elementSize="0x18">
+		<tagRef name="Looping Sound" offset="0x0" visible="true" />
+		<float32 name="Scale" offset="0x10" visible="true" />
+		<flags16 name="Alternate" offset="0x14" visible="true">
+			<bit name="Alternate" index="0" />
+		</flags16>
+		<flags16 name="Layers" offset="0x16" visible="true">
+			<bit name="None" index="0" />
+			<bit name="Layer 1" index="1" />
+			<bit name="Layer 2" index="2" />
+			<bit name="Layer 3" index="3" />
+			<bit name="Layer 4" index="4" />
+		</flags16>
+	</tagblock>
+	<int32 name="Sleep Time" offset="0x1C8" visible="true" />
 </plugin>

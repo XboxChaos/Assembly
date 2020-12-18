@@ -4,126 +4,246 @@
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
 		<revision author="Lord Zedd" version="2">Standardizing</revision>
 	</revisions>
-	<flags32 name="Flags" offset="0x0" visible="true">
-		<bit name="Bit 0" index="0" />
-		<bit name="No Shadow" index="1" />
-		<bit name="Only Render In First Person" index="2" />
-		<bit name="Only Render In Third Person" index="3" />
-		<bit name="Bit 4" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Bit 6" index="6" />
-		<bit name="Bit 7" index="7" />
-		<bit name="Bit 8" index="8" />
-		<bit name="Bit 9" index="9" />
-		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
-		<bit name="Bit 16" index="16" />
-		<bit name="Bit 17" index="17" />
-		<bit name="Bit 18" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Bit 20" index="20" />
-		<bit name="Bit 21" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Bit 25" index="25" />
-		<bit name="Bit 26" index="26" />
-		<bit name="Bit 27" index="27" />
-		<bit name="Bit 28" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Bit 31" index="31" />
-	</flags32>
-	<stringid name="Unknown" offset="0x4" visible="true" />
-	<int16 name="Unknown" offset="0x8" visible="true" />
-	<enum16 name="Type" offset="0xA" visible="true">
-		<option name="Sphere" value="0x0" />
-		<option name="Projective" value="0x1" />
+	<comment title="Midnight Light Parameters" />
+	<int32 name="Version" offset="0x0" visible="true" />
+	<comment title="Dynamic/Static Shared Light Parameters" />
+	<stringid name="Halo Light Node" offset="0x4" visible="true" tooltip="Light node name in DCC." />
+	<enum32 name="Light Type" offset="0x8" visible="true" tooltip="Geometry shape of light.">
+		<option name="Point" value="0x0" />
+		<option name="Spot" value="0x1" />
+		<option name="Directional" value="0x2" />
+		<option name="Area" value="0x3" />
+		<option name="Sun" value="0x4" />
+	</enum32>
+	<colorf name="Light Color" offset="0xC" alpha="false" visible="true" />
+	<comment title="Intensity" />
+	<stringid name="Input Variable" offset="0x18" visible="true" />
+	<stringid name="Range Variable" offset="0x1C" visible="true" />
+	<enum16 name="Output Modifier" offset="0x20" visible="true">
+		<option name="" value="0x0" />
+		<option name="Plus" value="0x1" />
+		<option name="Times" value="0x2" />
 	</enum16>
-	<colorf name="Color" offset="0xC" visible="true" alpha="false" />
-	<undefined name="Unknown" offset="0x18" visible="true" />
-	<undefined name="Unknown" offset="0x1C" visible="true" />
-	<undefined name="Unknown" offset="0x20" visible="true" />
-	<undefined name="Unknown" offset="0x24" visible="true" />
-	<dataref name="brightnessy?" offset="0x28" visible="true" />
-	<int8 name="Unknown" offset="0x3C" visible="true" />
-	<int8 name="Unknown" offset="0x3D" visible="true" />
-	<int8 name="Unknown" offset="0x3E" visible="true" />
-	<int8 name="Unknown" offset="0x3F" visible="true" />
-	<float32 name="Max Intensity Range?" offset="0x40" visible="true" />
-	<undefined name="Unknown" offset="0x44" visible="true" />
-	<undefined name="Unknown" offset="0x48" visible="true" />
-	<undefined name="Unknown" offset="0x4C" visible="true" />
-	<undefined name="Unknown" offset="0x50" visible="true" />
-	<dataref name="sizey?" offset="0x54" visible="true" />
-	<undefined name="Unknown" offset="0x68" visible="true" />
-	<undefined name="Unknown" offset="0x6C" visible="true" />
-	<undefined name="Unknown" offset="0x70" visible="true" />
-	<undefined name="Unknown" offset="0x74" visible="true" />
-	<float32 name="Cone Hardness" offset="0x78" visible="true" />
-	<undefined name="Unknown" offset="0x7C" visible="true" />
-	<undefined name="Unknown" offset="0x80" visible="true" />
-	<undefined name="Unknown" offset="0x84" visible="true" />
-	<undefined name="Unknown" offset="0x88" visible="true" />
-	<dataref name="sizey2" offset="0x8C" visible="true" />
-	<undefined name="Unknown" offset="0xA0" visible="true" />
-	<undefined name="Unknown" offset="0xA4" visible="true" />
-	<undefined name="Unknown" offset="0xA8" visible="true" />
-	<undefined name="Unknown" offset="0xAC" visible="true" />
-	<undefined name="Unknown" offset="0xB0" visible="true" />
-	<undefined name="Unknown" offset="0xB4" visible="true" />
-	<undefined name="Unknown" offset="0xB8" visible="true" />
-	<int16 name="Unknown" offset="0xBC" visible="true" />
-	<int16 name="Unknown" offset="0xBE" visible="true" />
-	<int8 name="Unknown" offset="0xC0" visible="true" />
-	<int8 name="Unknown" offset="0xC1" visible="true" />
-	<int8 name="Unknown" offset="0xC2" visible="true" />
-	<int8 name="Unknown" offset="0xC3" visible="true" />
-	<int8 name="Unknown" offset="0xC4" visible="true" />
-	<int8 name="Unknown" offset="0xC5" visible="true" />
-	<enum8 name="Is Feathered" offset="0xC6" visible="true">
-		<option name="False" value="0x0" />
-		<option name="True" value="0x1" />
+	<int16 name="Unknown" offset="0x22" visible="false" />
+	<stringid name="Output Modifier Input" offset="0x24" visible="true" />
+	<dataref name="Function" offset="0x28" visible="true" />
+	<enum32 name="Lighting Mode" offset="0x3C" visible="true" tooltip="Attenuation overrides.">
+		<option name="Physically Correct" value="0x0" />
+		<option name="Artistic" value="0x1" />
+	</enum32>
+	<float32 name="Distance Attenuation Start" offset="0x40" visible="true" tooltip="Inner penumbra start." />
+	<comment title="Distance Attenuation End" />
+	<stringid name="Input Variable" offset="0x44" visible="true" />
+	<stringid name="Range Variable" offset="0x48" visible="true" />
+	<enum16 name="Output Modifier" offset="0x4C" visible="true">
+		<option name="" value="0x0" />
+		<option name="Plus" value="0x1" />
+		<option name="Times" value="0x2" />
+	</enum16>
+	<int16 name="Unknown" offset="0x4E" visible="false" />
+	<stringid name="Output Modifier Input" offset="0x50" visible="true" />
+	<dataref name="Function" offset="0x54" visible="true" />
+	<float32 name="Camera Distance Fade Start" offset="0x68" visible="true" tooltip="Distance at which we start to fade out this light" />
+	<float32 name="Camera Distance Fade End" offset="0x6C" visible="true" tooltip="Distance at which the light should be completely faded out and not seen" />
+	<float32 name="Specular Power" offset="0x70" visible="true" tooltip="For screen-space dynamic lights" />
+	<float32 name="Specular Intensity" offset="0x74" visible="true" tooltip="For screen-space dynamic lights" />
+	<comment title="Shared Spot Parameters" />
+	<float32 name="Inner Cone Angle" offset="0x78" visible="true" tooltip="Inner hotspot attenuation end." />
+	<comment title="Outer Cone End" />
+	<stringid name="Input Variable" offset="0x7C" visible="true" />
+	<stringid name="Range Variable" offset="0x80" visible="true" />
+	<enum16 name="Output Modifier" offset="0x84" visible="true">
+		<option name="" value="0x0" />
+		<option name="Plus" value="0x1" />
+		<option name="Times" value="0x2" />
+	</enum16>
+	<int16 name="Unknown" offset="0x86" visible="false" />
+	<stringid name="Output Modifier Input" offset="0x88" visible="true" />
+	<dataref name="Function" offset="0x8C" visible="true" />
+	<enum32 name="Cone Projection Shape" offset="0xA0" visible="true" tooltip="Use cone in all cases unless you have a gobo you need to project, frustum uses the full clip area of the light">
+		<option name="Cone" value="0x0" />
+		<option name="Frustum" value="0x1" />
+	</enum32>
+	<comment title="Dynamic Only Parameters" />
+	<float32 name="Shadow Near Clip Plane" offset="0xA4" visible="true" />
+	<float32 name="Shadow Far Clip Plane" offset="0xA8" visible="true" />
+	<float32 name="Shadow Bias Offset" offset="0xAC" visible="true" />
+	<colorf name="Shadow Color" offset="0xB0" alpha="false" visible="true" tooltip="Shadow tint." />
+	<enum16 name="Dynamic Shadow Quality" offset="0xBC" visible="true">
+		<option name="Normal" value="0x0" />
+		<option name="Expensive (Cinematics Only)" value="0x1" />
+	</enum16>
+	<enum16 name="Shadows" offset="0xBE" visible="true">
+		<option name="Off" value="0x0" />
+		<option name="On" value="0x1" />
+	</enum16>
+	<enum8 name="Screenspace Light" offset="0xC0" visible="true">
+		<option name="Off" value="0x0" />
+		<option name="On" value="0x1" />
 	</enum8>
-	<enum8 name="Does Reflect" offset="0xC7" visible="true">
-		<option name="False" value="0x0" />
-		<option name="True" value="0x1" />
+	<enum8 name="Ignore Dynamic Objects" offset="0xC1" visible="true">
+		<option name="Off" value="0x0" />
+		<option name="On" value="0x1" />
 	</enum8>
-	<tagref name="Unknown" offset="0xC8" visible="true" />
-	<undefined name="Unknown" offset="0xD8" visible="true" />
-	<undefined name="Unknown" offset="0xDC" visible="true" />
-	<undefined name="Unknown" offset="0xE0" visible="true" />
-	<undefined name="Unknown" offset="0xE4" visible="true" />
-	<dataref name="Unknown" offset="0xE8" visible="true" />
-	<undefined name="Unknown" offset="0xFC" visible="true" />
-	<undefined name="Unknown" offset="0x100" visible="true" />
-	<undefined name="Unknown" offset="0x104" visible="true" />
-	<undefined name="Unknown" offset="0x108" visible="true" />
-	<undefined name="Unknown" offset="0x10C" visible="true" />
-	<undefined name="Unknown" offset="0x110" visible="true" />
-	<undefined name="Unknown" offset="0x114" visible="true" />
-	<undefined name="Unknown" offset="0x118" visible="true" />
-	<dataref name="Unknown" offset="0x11C" visible="true" />
-	<undefined name="Unknown" offset="0x130" visible="true" />
-	<undefined name="Unknown" offset="0x134" visible="true" />
-	<undefined name="Unknown" offset="0x138" visible="true" />
-	<undefined name="Unknown" offset="0x13C" visible="true" />
-	<dataref name="Unknown" offset="0x140" visible="true" />
-	<undefined name="Unknown" offset="0x154" visible="true" />
-	<undefined name="Unknown" offset="0x158" visible="true" />
-	<undefined name="Unknown" offset="0x15C" visible="true" />
-	<undefined name="Unknown" offset="0x160" visible="true" />
-	<dataRef name="Unknown" offset="0x164" visible="false" />
-	<undefined name="Unknown" offset="0x178" visible="false" />
-	<undefined name="Unknown" offset="0x17C" visible="false" />
-	<undefined name="Unknown" offset="0x180" visible="false" />
-	<undefined name="Unknown" offset="0x184" visible="false" />
-	<undefined name="Unknown" offset="0x188" visible="false" />
-	<undefined name="Unknown" offset="0x18C" visible="false" />
-	<undefined name="Unknown" offset="0x190" visible="false" />
-	<tagRef name="Unknown" offset="0x194" visible="false" />
+	<enum8 name="Cinema Objects Only" offset="0xC2" visible="true" tooltip="This should only be turned on if you have light linking data correctly setup">
+		<option name="Off" value="0x0" />
+		<option name="On" value="0x1" />
+	</enum8>
+	<enum8 name="Cinema Only" offset="0xC3" visible="true">
+		<option name="Off" value="0x0" />
+		<option name="On" value="0x1" />
+	</enum8>
+	<enum8 name="Cinema Exclude" offset="0xC4" visible="true">
+		<option name="Off" value="0x0" />
+		<option name="On" value="0x1" />
+	</enum8>
+	<int8 name="Unknown" offset="0xC5" visible="false" />
+	<enum8 name="Specular Contribution" offset="0xC6" visible="true">
+		<option name="Off" value="0x0" />
+		<option name="On" value="0x1" />
+	</enum8>
+	<enum8 name="Diffuse Contribution" offset="0xC7" visible="true">
+		<option name="Off" value="0x0" />
+		<option name="On" value="0x1" />
+	</enum8>
+	<comment title="Dynamic Gobo" />
+	<tagRef name="Gobo Tag" offset="0xC8" visible="true" tooltip="Bitmap file for spotlight. Cube map for point light. Gobo bitmap must be synced to xbox." />
+	<comment title="Gobo Rotation" />
+	<stringid name="Input Variable" offset="0xD8" visible="true" />
+	<stringid name="Range Variable" offset="0xDC" visible="true" />
+	<enum16 name="Output Modifier" offset="0xE0" visible="true">
+		<option name="" value="0x0" />
+		<option name="Plus" value="0x1" />
+		<option name="Times" value="0x2" />
+	</enum16>
+	<int16 name="Unknown" offset="0xE2" visible="false" />
+	<stringid name="Output Modifier Input" offset="0xE4" visible="true" />
+	<dataref name="Function" offset="0xE8" visible="true" />
+	<float32 name="Aspect Ratio" offset="0xFC" visible="true" tooltip="Shape length and width of Gobo." />
+	<enum32 name="Tile Behavior" offset="0x100" visible="true" tooltip="Gobo texture lookup behavior when tiled.">
+		<option name="Clamp" value="0x0" />
+		<option name="Repeat" value="0x1" />
+		<option name="Mirror" value="0x2" />
+	</enum32>
+	<point2 name="Repeat" offset="0x104" visible="true" tooltip="Tile Gobo." />
+	<comment title="Offset X" />
+	<stringid name="Input Variable" offset="0x10C" visible="true" />
+	<stringid name="Range Variable" offset="0x110" visible="true" />
+	<enum16 name="Output Modifier" offset="0x114" visible="true">
+		<option name="" value="0x0" />
+		<option name="Plus" value="0x1" />
+		<option name="Times" value="0x2" />
+	</enum16>
+	<int16 name="Unknown" offset="0x116" visible="false" />
+	<stringid name="Output Modifier Input" offset="0x118" visible="true" />
+	<dataref name="Function" offset="0x11C" visible="true" />
+	<comment title="Offset Y" />
+	<stringid name="Input Variable" offset="0x130" visible="true" />
+	<stringid name="Range Variable" offset="0x134" visible="true" />
+	<enum16 name="Output Modifier" offset="0x138" visible="true">
+		<option name="" value="0x0" />
+		<option name="Plus" value="0x1" />
+		<option name="Times" value="0x2" />
+	</enum16>
+	<int16 name="Unknown" offset="0x13A" visible="false" />
+	<stringid name="Output Modifier Input" offset="0x13C" visible="true" />
+	<dataref name="Function" offset="0x140" visible="true" />
+	<comment title="Color Change" />
+	<stringid name="Input Variable" offset="0x154" visible="true" />
+	<stringid name="Range Variable" offset="0x158" visible="true" />
+	<enum16 name="Output Modifier" offset="0x15C" visible="true">
+		<option name="" value="0x0" />
+		<option name="Plus" value="0x1" />
+		<option name="Times" value="0x2" />
+	</enum16>
+	<int16 name="Unknown" offset="0x15E" visible="false" />
+	<stringid name="Output Modifier Input" offset="0x160" visible="true" />
+	<dataref name="Function" offset="0x164" visible="true" />
+	<colorf name="Target Color" offset="0x178" alpha="false" visible="true" />
+	<comment title="Channels" />
+	<flags32 name="Light Channels" offset="0x184" visible="true">
+		<bit name="0" index="0" />
+		<bit name="1" index="1" />
+		<bit name="2" index="2" />
+		<bit name="3" index="3" />
+		<bit name="4" index="4" />
+		<bit name="5" index="5" />
+		<bit name="6" index="6" />
+		<bit name="7" index="7" />
+		<bit name="8" index="8" />
+		<bit name="9" index="9" />
+		<bit name="10" index="10" />
+		<bit name="11" index="11" />
+		<bit name="12" index="12" />
+		<bit name="13" index="13" />
+		<bit name="14" index="14" />
+		<bit name="15" index="15" />
+		<bit name="16" index="16" />
+		<bit name="17" index="17" />
+		<bit name="18" index="18" />
+		<bit name="19" index="19" />
+		<bit name="20" index="20" />
+		<bit name="21" index="21" />
+		<bit name="22" index="22" />
+		<bit name="23" index="23" />
+		<bit name="24" index="24" />
+		<bit name="25" index="25" />
+		<bit name="26" index="26" />
+		<bit name="27" index="27" />
+		<bit name="28" index="28" />
+		<bit name="29" index="29" />
+		<bit name="30" index="30" />
+		<bit name="31" index="31" />
+	</flags32>
+	<flags32 name="Shadow Channels" offset="0x188" visible="true">
+		<bit name="0" index="0" />
+		<bit name="1" index="1" />
+		<bit name="2" index="2" />
+		<bit name="3" index="3" />
+		<bit name="4" index="4" />
+		<bit name="5" index="5" />
+		<bit name="6" index="6" />
+		<bit name="7" index="7" />
+		<bit name="8" index="8" />
+		<bit name="9" index="9" />
+		<bit name="10" index="10" />
+		<bit name="11" index="11" />
+		<bit name="12" index="12" />
+		<bit name="13" index="13" />
+		<bit name="14" index="14" />
+		<bit name="15" index="15" />
+		<bit name="16" index="16" />
+		<bit name="17" index="17" />
+		<bit name="18" index="18" />
+		<bit name="19" index="19" />
+		<bit name="20" index="20" />
+		<bit name="21" index="21" />
+		<bit name="22" index="22" />
+		<bit name="23" index="23" />
+		<bit name="24" index="24" />
+		<bit name="25" index="25" />
+		<bit name="26" index="26" />
+		<bit name="27" index="27" />
+		<bit name="28" index="28" />
+		<bit name="29" index="29" />
+		<bit name="30" index="30" />
+		<bit name="31" index="31" />
+	</flags32>
+	<comment title="Bungie Parameters" />
+	<flags32 name="Flags" offset="0x18C" visible="true">
+		<bit name="Allow Shadows And Gels" index="0" />
+		<bit name="Shadow Casting" index="1" tooltip="turns on shadow casting" />
+		<bit name="Render First Person Only" index="2" tooltip="only render when camera is 1st person" />
+		<bit name="Render Third Person Only" index="3" tooltip="don't render when camera is 3rd person" />
+		<bit name="Dont Render Splitscreen" index="4" tooltip="no rendering this light in splitscreen mode" />
+		<bit name="Render While Active Camo" index="5" tooltip="keep rendering this light when the attached player goes camo" />
+		<bit name="Render In Multiplayer Override" index="6" tooltip="overrides game settings that disable dynamic lights" />
+		<bit name="Move To Camera In First Person" index="7" tooltip="moves the light to match the camera" />
+		<bit name="Never Priority Cull" index="8" tooltip="never cull this light because of low priority" />
+		<bit name="Affected By Game Can Use Flashlights" index="9" />
+		<bit name="Screenspace Specular Lighting" index="10" tooltip="uses expensive specular lighting on screenspace lights" />
+		<bit name="Always On For Weapon" index="11" tooltip="even it is dropped" />
+	</flags32>
+	<float32 name="Destroy Light After" offset="0x190" visible="true" tooltip="automatically destroys the light after it has existed this long (0 to disable)" />
+	<tagRef name="Lens Flare" offset="0x194" visible="true" />
 </plugin>

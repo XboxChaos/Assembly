@@ -3,28 +3,33 @@
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+		<revision author="Krevil" version="2">Edited plugin based on H4 tag dump</revision>
 	</revisions>
-	<undefined name="Unknown" offset="0x0" visible="true" />
-	<undefined name="Unknown" offset="0x4" visible="true" />
-	<undefined name="Unknown" offset="0x8" visible="true" />
-	<undefined name="Unknown" offset="0xC" visible="true" />
-	<undefined name="Unknown" offset="0x10" visible="true" />
-	<undefined name="Unknown" offset="0x14" visible="true" />
-	<undefined name="Unknown" offset="0x18" visible="true" />
-	<undefined name="Unknown" offset="0x1C" visible="true" />
-	<undefined name="Unknown" offset="0x20" visible="true" />
-	<undefined name="Unknown" offset="0x24" visible="true" />
-	<undefined name="Unknown" offset="0x28" visible="true" />
-	<undefined name="Unknown" offset="0x2C" visible="true" />
-	<undefined name="Unknown" offset="0x30" visible="true" />
-	<undefined name="Unknown" offset="0x34" visible="true" />
-	<undefined name="Unknown" offset="0x38" visible="true" />
-	<undefined name="Unknown" offset="0x3C" visible="true" />
-	<degree name="Perception Angle" offset="0x40" visible="true" />
-	<undefined name="Unknown" offset="0x44" visible="true" />
-	<undefined name="Unknown" offset="0x48" visible="true" />
-	<undefined name="Unknown" offset="0x4C" visible="true" />
-	<undefined name="Unknown" offset="0x50" visible="true" />
-	<undefined name="Unknown" offset="0x54" visible="true" />
-	<undefined name="Unknown" offset="0x58" visible="true" />
+	<comment title="Simple Flocking" />
+	<float32 name="Forward Scale" offset="0x0" visible="true" tooltip="weight given to boid's desire to fly straight ahead" />
+	<float32 name="Leveling Force Scale" offset="0x4" visible="true" tooltip="weight given to boids desire to fly level" />
+	<float32 name="Sink Scale" offset="0x8" visible="true" tooltip="weight given to boid's desire to fly towards its sinks" />
+	<float32 name="Average Throttle" offset="0xC" visible="true" tooltip="throttle at which boids will naturally fly" />
+	<float32 name="Maximum Throttle" offset="0x10" visible="true" tooltip="maximum throttle applicable" />
+	<float32 name="Movement Weight Threshold" offset="0x14" visible="true" tooltip="The threshold of accumulated weight over which movement occurs" />
+	<float32 name="Danger Radius" offset="0x18" visible="true" tooltip="distance within which boids will avoid a dangerous object (e.g. the player)" />
+	<float32 name="Danger Scale" offset="0x1C" visible="true" tooltip="weight given to boid's desire to avoid danger" />
+	<float32 name="Target Scale" offset="0x20" visible="true" tooltip="weight given to boid's desire to attack fly after their target, if they have one" />
+	<float32 name="Target Distance" offset="0x24" visible="true" tooltip="distance within which we aggressively pursue a target" />
+	<float32 name="Target Delay Time" offset="0x28" visible="true" tooltip="amount of time we need to be locked onto a target before we might start killing it" />
+	<float32 name="Target Kill Chance" offset="0x2C" visible="true" tooltip="probability of killing your target in one second" />
+	<comment title="Perlin Noise Parameters">Recommended initial values: 
+	random offset scale= 0.2 
+	offset period bounds= 1, 3</comment>
+	<float32 name="Random Offset Scale" offset="0x30" visible="true" tooltip="weight given to boid's random heading offset" />
+	<rangef name="Random Offset Period" offset="0x34" visible="true" />
+	<comment title="Complex Flocking">WARNING: In flocks with a neighborhood radius of 0, creatures are not influenced by the other creatures around them. THESE ARE MUCH CHEAPER.</comment>
+	<float32 name="Neighborhood Radius" offset="0x3C" visible="true" tooltip="distance within which one boid is affected by another" />
+	<degree name="Perception Angle" offset="0x40" visible="true" tooltip="angle-from-forward within which one boid can perceive and react to another" />
+	<float32 name="Avoidance Scale" offset="0x44" visible="true" tooltip="weight given to boid's desire to avoid collisions with other boids, when within the avoidance radius" />
+	<float32 name="Avoidance Radius" offset="0x48" visible="true" tooltip="distance that a boid tries to maintain from another" />
+	<float32 name="Alignment Scale" offset="0x4C" visible="true" tooltip="weight given to boid's desire to align itself with neighboring boids" />
+	<float32 name="Position Scale" offset="0x50" visible="true" tooltip="weight given to boid's desire to be near flock center" />
+	<float32 name="Position Minimum Radius" offset="0x54" visible="true" tooltip="distance to flock center beyond which an attracting force is applied" />
+	<float32 name="Position Maximum Radius" offset="0x58" visible="true" tooltip="distance to flock center at which the maximum attracting force is applied" />
 </plugin>

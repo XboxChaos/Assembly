@@ -2316,7 +2316,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			if (!_buildInfo.Layouts.HasLayout(bspLayoutName) || !_buildInfo.Layouts.HasLayout(bspInstancedLayoutName))
 			{
-				MetroMessageBox.Show("Free StringIDs", "This current engine does not contain the required &quot;" + bspLayoutName + "&quot; and &quot;" + bspInstancedLayoutName + "&quot; layouts in the Formats folder. Can not continue.");
+				MetroMessageBox.Show("Free StringIDs", "This current engine does not contain the required \"" + bspLayoutName + "\" and \"" + bspInstancedLayoutName + "\" layouts in the Formats folder. Can not continue.");
 				return;
 			}
 
@@ -2325,12 +2325,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			if (!sbspLayout.HasField(bspLayoutBlockCountName) || !sbspLayout.HasField(bspLayoutBlockAddrName))
 			{
-				MetroMessageBox.Show("Free StringIDs", "This current engine does not contain the required &quot;" + bspLayoutBlockCountName + "&quot; and &quot;" + bspLayoutBlockAddrName + "&quot; fields for the &quot;" + bspLayoutName + "&quot; layout in the Formats folder. Can not continue.");
+				MetroMessageBox.Show("Free StringIDs", "This current engine does not contain the required \"" + bspLayoutBlockCountName + "\" and \"" + bspLayoutBlockAddrName + "\" fields for the \"" + bspLayoutName + "\" layout in the Formats folder. Can not continue.");
 				return;
 			}
 			else if (!sbspLayout.HasField(bspLayoutBlockCountName))
 			{
-				MetroMessageBox.Show("Free StringIDs", "This current engine does not contain the required &quot;" + bspInstancedLayoutStringIDName + "&quot; field for the &quot;" + sbspInstancedLayout + "&quot; layout in the Formats folder. Can not continue.");
+				MetroMessageBox.Show("Free StringIDs", "This current engine does not contain the required \"" + bspInstancedLayoutStringIDName + "\" field for the \"" + sbspInstancedLayout + "\" layout in the Formats folder. Can not continue.");
 				return;
 			}
 
