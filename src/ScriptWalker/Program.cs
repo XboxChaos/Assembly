@@ -26,7 +26,7 @@ namespace ScriptWalker
 
             if (args.Length != 2 && args.Length != 3)
             {
-                Console.WriteLine("Usage: ScriptWalker <unmodified map> <modified map> <[OPTIONAL] output dir>");
+                Console.WriteLine("Usage: ScriptWalker <unmodified map directory> <modified map directory> <[OPTIONAL] output directory>");
                 return;
             }
 

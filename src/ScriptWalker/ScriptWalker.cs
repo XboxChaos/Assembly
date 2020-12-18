@@ -60,7 +60,7 @@ namespace ScriptWalker
                 if (!CompareGlobals(orig_Glo, mod_Glo))
                 {
                     WriteScriptObject();
-                    _output.WriteLine($"Index: {i} - Information Mismatch");
+                    _output.WriteLine($"Global Index: {i} - Information Mismatch");
                     continue;
                 }
 
@@ -92,7 +92,7 @@ namespace ScriptWalker
                 if (!CompareScripts(origScript, modScript))
                 {
                     WriteScriptObject();
-                    _output.WriteLine($"Index: {i} - Information Mismatch");
+                    _output.WriteLine($"Script Index: {i} - Information Mismatch");
                     continue;
                 }
 
@@ -382,15 +382,19 @@ namespace ScriptWalker
             sb.Append($" Salt: \"{exp.Index.Salt.ToString("X4")}\"");
             sb.Append($" OP: \"{exp.Opcode.ToString("X4")}\"");
             sb.Append($" ReturnType: \"{exp.ReturnType.ToString("X4")}\"");
-            sb.Append($" ExpType: \"{exp.Type.ToString()}\"");
+            sb.Append($" ExpType: \"{exp.Type}\"");
             sb.Append($" NextSalt: \"{exp.Next.Salt.ToString("X4")}\"");
             sb.Append($" NextIndex: \"{exp.Next.Index.ToString("X4")}\"");
             sb.Append($" Value: \"{exp.Value.ToString()}\"");
-            sb.Append($" Line: \"{exp.LineNumber.ToString()}\"");
+            sb.Append($" Line: \"{exp.LineNumber}\"");
 
             if (exp.Type == ScriptExpressionType.Group)
             {
                 sb.Append($" Name: \"{_op.GetFunctionInfo(exp.Opcode).Name}\"");
+            }
+            else if (exp.Type == ScriptExpressionType.GlobalsReference || exp.Type == ScriptExpressionType.ParameterReference)
+            {
+                sb.Append($" Name: \"{exp.StringValue}\"");
             }
             else if(exp.Type == ScriptExpressionType.Expression)
             {
