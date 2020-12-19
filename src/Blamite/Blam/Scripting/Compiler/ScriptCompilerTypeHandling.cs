@@ -112,13 +112,20 @@ namespace Blamite.Blam.Scripting.Compiler
                         expression = GetNumberExpression(context);
                         if (expression is null)
                         {
-                            if(TryCreateObjectExpression(context))
-                            {
-                                return true;
-                            }
+                            expression = GetBooleanExpression(context);
 
-                            throw new CompilerException($"Failed to process \"{context.GetTextSanitized()}\" because it didn't know which value type to expect. Try using a different function with clearly defined parameters.", context);
+                            if(expression is null)
+                            {
+                                if (TryCreateObjectExpression(context))
+                                {
+                                    return true;
+                                }
+
+                                throw new CompilerException($"Failed to process \"{context.GetTextSanitized()}\" because it didn't know which value type to expect." +
+                                    $" Try using a different function with clearly defined parameters.", context);
+                            }
                         }
+
                         break;
 
                     case "NUMBER":
