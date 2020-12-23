@@ -16,17 +16,21 @@
 		<option name="Single Player Shared" value="0x4" />
 	</enum16>
 	<flags16 name="Flags" offset="0x12" visible="true">
-		<bit name="Cortana Hack" index="0" />
-		<bit name="Always Draw Sky" index="1" />
-		<bit name="Don't Strip Pathfinding" index="2" />
+		<bit name="Cortana Hack" index="0" tooltip="Sorts Cortana in front of other transparent geometry." />
+		<bit name="Always Draw Sky" index="1" tooltip="Always draws sky 0, even if no +sky polygons are visible." />
+		<bit name="Don't Strip Pathfinding" index="2" tooltip="Always leaves pathfinding in, even for multiplayer scenario." />
 		<bit name="Symmetric Multiplayer Map" index="3" />
 		<bit name="Quick-Loading (Cinematic-Only) Scenario" index="4" />
 		<bit name="Characters Use Previous Mission Weapons" index="5" />
-		<bit name="Lightmaps Smooth Palettes with Neighbors" index="6" />
-		<bit name="Snap to White at Start" index="7" />
+		<bit name="Lightmaps Smooth Palettes With Neighbors" index="6" />
+		<bit name="Snap To White At Start" index="7" />
 	</flags16>
-	<tagblock name="@Child Scenarios" offset="0x14" visible="true" elementSize="0x8">
-		<tagref name="Child Scenario" offset="0x0" visible="true" />
+	<tagblock name="@Child Scenarios" offset="0x14" visible="true" elementSize="0x18">
+		<tagRef name="Child Scenario" offset="0x0" visible="true" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
 	</tagblock>
 	<degree name="Local North" offset="0x1C" visible="true" />
 	<tagblock name="Predicted Resource" offset="0x20" visible="true" elementSize="0x8">
@@ -1217,16 +1221,12 @@
 		<undefined name="Unknown" offset="0x30" visible="false" />
 	</tagblock>
 	<tagblock name="Kill Trigger Volumes" offset="0x108" visible="true" elementSize="0x44">
-		<stringId name="Name" offset="0x0" visible="true" />
-		<int16 name="Object Name" offset="0x4" visible="true" />
-		<int16 name="Unknown" offset="0x6" visible="false" />
-		<stringId name="Node Name" offset="0x8" visible="true" />
-		<float32 name="Unknown" offset="0xC" visible="true" />
-		<float32 name="Unknown" offset="0x10" visible="true" />
-		<float32 name="Unknown" offset="0x14" visible="true" />
-		<float32 name="Unknown" offset="0x18" visible="true" />
-		<float32 name="Unknown" offset="0x1C" visible="true" />
-		<float32 name="Unknown" offset="0x20" visible="true" />
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int16 name="Object Name Index" offset="0x4" visible="true" />
+		<int16 name="Node Index" offset="0x6" visible="true" />
+		<stringid name="Node Name" offset="0x8" visible="true" />
+		<vector3 name="Forward" offset="0xC" visible="true" />
+		<vector3 name="Up" offset="0x18" visible="true" />
 		<point3 name="Position" offset="0x24" visible="true" />
 		<point3 name="Extents" offset="0x30" visible="true" />
 		<float32 name="Unknown" offset="0x3C" visible="true" />
@@ -1497,9 +1497,9 @@
 		<undefined name="Unknown" offset="0x98" visible="false" />
 	</tagblock>
 	<tagblock name="BSP Switch Trigger Volumes" offset="0x130" visible="true" elementSize="0xE">
-		<int16 name="Trigger Volume" offset="0x0" visible="true" />
-		<int16 name="Source BSP" offset="0x2" visible="true" />
-		<int16 name="Destination BSP" offset="0x4" visible="true" />
+		<int16 name="Trigger Volume Index" offset="0x0" visible="true" />
+		<int16 name="Source BSP Index" offset="0x2" visible="true" />
+		<int16 name="Destination BSP Index" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
 		<int16 name="Unknown" offset="0x8" visible="false" />
 		<int16 name="Unknown" offset="0xA" visible="false" />
@@ -1521,9 +1521,9 @@
 		<tagRef name="Style" offset="0x0" visible="true" />
 	</tagblock>
 	<tagblock name="Squad Groups" offset="0x158" visible="true" elementSize="0x24">
-		<ascii name="Squad Type" offset="0x0" visible="true" length="0x20" />
-		<int16 name="Parent" offset="0x20" visible="true" />
-		<int16 name="Initial Order" offset="0x22" visible="true" />
+		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+		<int16 name="Parent Index" offset="0x20" visible="true" />
+		<int16 name="Initial Order Index" offset="0x22" visible="true" />
 	</tagblock>
 	<tagblock name="Squads" offset="0x160" visible="true" elementSize="0x74">
 		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
@@ -1561,10 +1561,10 @@
 			<option name="Unused14" value="0xE" />
 			<option name="Unused15" value="0xF" />
 		</enum16>
-		<int16 name="Parent Squad Group" offset="0x26" visible="true" />
+		<int16 name="Parent Squad Group Index" offset="0x26" visible="true" />
 		<float32 name="Squad Delay Time" offset="0x28" visible="true" />
-		<int16 name="Normal Difficulty Count" offset="0x2C" visible="true" />
-		<int16 name="Legendary Difficulty Count" offset="0x2E" visible="true" />
+		<int16 name="Normal Difficulty Count" offset="0x2C" visible="true" tooltip="initial number of actors on normal difficulty" />
+		<int16 name="Insane Difficulty Count" offset="0x2E" visible="true" tooltip="initial number of actors on insane difficulty (hard difficulty is midway between normal and insane)" />
 		<enum16 name="Major Upgrade" offset="0x30" visible="true">
 			<option name="Normal" value="0x0" />
 			<option name="Few" value="0x1" />
@@ -1573,18 +1573,19 @@
 			<option name="All" value="0x4" />
 		</enum16>
 		<int16 name="Unknown" offset="0x32" visible="false" />
-		<int16 name="Vehicle Index" offset="0x34" visible="true" />
-		<int16 name="Character Index" offset="0x36" visible="true" />
-		<int16 name="Initial Zone" offset="0x38" visible="true" />
+		<comment title="Actor Defaults">The following default values are used for spawned actors</comment>
+		<int16 name="Vehicle Type Index" offset="0x34" visible="true" />
+		<int16 name="Character Type Index" offset="0x36" visible="true" />
+		<int16 name="Initial Zone Index" offset="0x38" visible="true" />
 		<int16 name="Unknown" offset="0x3A" visible="false" />
-		<int16 name="Primary Weapon Index" offset="0x3C" visible="true" />
-		<int16 name="Secondary Weapon Index" offset="0x3E" visible="true" />
+		<int16 name="Initial Weapon Index" offset="0x3C" visible="true" />
+		<int16 name="Initial Secondary Weapon Index" offset="0x3E" visible="true" />
 		<enum16 name="Grenade Type" offset="0x40" visible="true">
 			<option name="None" value="0x0" />
-			<option name="Human Fragmentation" value="0x1" />
+			<option name="Human Grenade" value="0x1" />
 			<option name="Covenant Plasma" value="0x2" />
 		</enum16>
-		<int16 name="Initial Order" offset="0x42" visible="true" />
+		<int16 name="Initial Order Index" offset="0x42" visible="true" />
 		<stringid name="Vehicle Variant" offset="0x44" visible="true" />
 		<tagblock name="Starting Loctations" offset="0x48" visible="true" elementSize="0x64">
 			<stringId name="Name" offset="0x0" visible="true" />
@@ -1599,30 +1600,30 @@
 				<bit name="Always Place" index="3" />
 				<bit name="Initially Hidden" index="4" />
 			</flags32>
-			<int16 name="Character Index" offset="0x20" visible="true" />
-			<int16 name="Primary Weapon Index" offset="0x22" visible="true" />
-			<int16 name="Secondary Weapon Index" offset="0x24" visible="true" />
+			<int16 name="Character Type Index" offset="0x20" visible="true" />
+			<int16 name="Initial Weapon Index" offset="0x22" visible="true" />
+			<int16 name="Initial Secondary Weapon Index" offset="0x24" visible="true" />
 			<int16 name="Unknown" offset="0x26" visible="false" />
-			<int16 name="Vehicle Index" offset="0x28" visible="true" />
+			<int16 name="Vehicle Type Index" offset="0x28" visible="true" />
 			<enum16 name="Seat Type" offset="0x2A" visible="true">
-				<option name="Default" value="0x0" />
+				<option name="DEFAULT" value="0x0" />
 				<option name="Passenger" value="0x1" />
 				<option name="Gunner" value="0x2" />
 				<option name="Driver" value="0x3" />
 				<option name="Small Cargo" value="0x4" />
 				<option name="Large Cargo" value="0x5" />
-				<option name="No Driver" value="0x6" />
-				<option name="No Vehicle" value="0x7" />
+				<option name="NO Driver" value="0x6" />
+				<option name="NO Vehicle" value="0x7" />
 			</enum16>
 			<enum16 name="Grenade Type" offset="0x2C" visible="true">
-				<option name="None" value="0x0" />
-				<option name="Human Fragmentation" value="0x1" />
+				<option name="NONE" value="0x0" />
+				<option name="Human Grenade" value="0x1" />
 				<option name="Covenant Plasma" value="0x2" />
 			</enum16>
-			<int16 name="Swarm Count" offset="0x2E" visible="true" />
-			<stringId name="Actor Variant" offset="0x30" visible="true" />
-			<stringId name="Vehicle Variant" offset="0x34" visible="true" />
-			<float32 name="Initial Movement Distance" offset="0x38" visible="true" />
+			<int16 name="Swarm Count" offset="0x2E" visible="true" tooltip="number of cretures in swarm if a swarm is spawned at this location" />
+			<stringId name="Actor Variant Name" offset="0x30" visible="true" />
+			<stringId name="Vehicle Variant Name" offset="0x34" visible="true" />
+			<float32 name="Initial Movement Distance" offset="0x38" visible="true" tooltip="before doing anything else, the actor will travel the given distance in its forward direction" />
 			<int16 name="Emitter Vehicle Index" offset="0x3C" visible="true" />
 			<enum16 name="Initial Movement Mode" offset="0x3E" visible="true">
 				<option name="Default" value="0x0" />
@@ -1630,11 +1631,11 @@
 				<option name="Flying" value="0x2" />
 			</enum16>
 			<ascii name="Placement Script" offset="0x40" visible="true" length="0x20" />
-			<int16 name="Script Index" offset="0x60" visible="true" />
+			<int16 name="Placement Script Index" offset="0x60" visible="true" />
 			<int16 name="Unknown" offset="0x62" visible="false" />
 		</tagblock>
 		<ascii name="Placement Script" offset="0x50" visible="true" length="0x20" />
-		<int16 name="Script Index" offset="0x70" visible="true" />
+		<int16 name="Placement Script Index" offset="0x70" visible="true" />
 		<int16 name="Unknown" offset="0x72" visible="false" />
 	</tagblock>
 	<tagblock name="Zones" offset="0x168" visible="true" elementSize="0x38">
