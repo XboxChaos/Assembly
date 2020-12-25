@@ -13,7 +13,7 @@ namespace Blamite.RTE.SecondGen
 		private readonly EngineDescription _buildInfo;
 
 		/// <summary>
-		///     Constructs a new H2VistaRTEProvider.
+		///     Constructs a new SecondGenRTEProvider.
 		/// </summary>
 		/// <param name="exeName">The name of the executable to connect to.</param>
 		public SecondGenRTEProvider(EngineDescription engine)

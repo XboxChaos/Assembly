@@ -15,9 +15,10 @@ namespace XBDMCommunicator
 		///     Constructs a new XBDMRTEProvider based off of an Xbdm object.
 		/// </summary>
 		/// <param name="xbdm">The Xbdm object to use to connect to the console.</param>
-		public XBDMRTEProvider(Xbdm xbdm)
+		public XBDMRTEProvider(Xbdm xbdm, long base_offset = 0)
 		{
 			_xbdm = xbdm;
+			_xbdm.MemoryStream.Position = base_offset; // thanks
 		}
 
 		/// <summary>
