@@ -269,11 +269,13 @@ namespace Blamite.Blam.FirstGen
 
 			while (reader.Position < reader.Length)
 			{
-				int actualSize = Math.Min(blockSize, (int)(reader.Length - reader.Position));
-				byte[] block = reader.ReadBlock(actualSize);
-				for (int i = 0; i < block.Length; i+=4)
-					checksum ^= BitConverter.ToUInt32(block, i);
-			}
+                int actualSize = Math.Min(blockSize, (int)(reader.Length - reader.Position));
+                int adjustedSize = (actualSize + 3) & ~0x3;
+                byte[] block = new byte[adjustedSize];
+                reader.ReadBlock(block, 0, actualSize);
+                for (int i = 0; i < block.Length; i += 4)
+                    checksum ^= BitConverter.ToUInt32(block, i);
+            }
 
 			_header.Checksum = checksum;
 		}
