@@ -173,7 +173,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						{
 							StatusUpdater.Update("Not a supported target engine");
 							MetroMessageBox.Show("Unable to open cache file",
-								ex.Message + ".\r\nWhy not add support in the 'Formats' folder?");
+								ex.Message + ".\r\nMake sure your Assembly is up to date, otherwise try adding support in the 'Formats' folder.");
 						}
 						else
 						{
