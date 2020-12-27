@@ -67,7 +67,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private TagBlockFlattener _flattener;
 		private FieldChangeSet _memoryChanges;
 		private string _pluginPath;
-		private string _fallbackPluginPath;
 		private ThirdGenPluginVisitor _pluginVisitor;
 		private ObservableCollection<SearchResult> _searchResults;
 		private TagEntry _tag;
@@ -92,8 +91,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 				_buildInfo.Settings.GetSetting<string>("plugins"), groupName);
 
-			if (_buildInfo.Settings.PathExists("fallbackPlugins"))
-				_fallbackPluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+			if (!File.Exists(_pluginPath) && _buildInfo.Settings.PathExists("fallbackPlugins"))
+				_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 					_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), groupName);
 
 			// Set Option boxes
@@ -121,12 +120,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		public void RefreshEditor(MetaReader.LoadType type)
 		{
-			string pluginpath = _pluginPath;
-
-			if (!File.Exists(pluginpath))
-				pluginpath = _fallbackPluginPath;
-
-			if (pluginpath == null || !File.Exists(pluginpath))
+			if (_pluginPath == null || !File.Exists(_pluginPath))
 			{
 				UpdateMetaButtons(false);
 				StatusUpdater.Update("Plugin doesn't exist. It can't be loaded for this tag.");
@@ -166,7 +160,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			}
 
 			// Load Plugin File
-			using (XmlReader xml = XmlReader.Create(pluginpath))
+			using (XmlReader xml = XmlReader.Create(_pluginPath))
 			{
 				_pluginVisitor = new ThirdGenPluginVisitor(_tags, _stringIdTrie, _cache.MetaArea,
 					App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles);
@@ -328,8 +322,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 				_buildInfo.Settings.GetSetting<string>("plugins"), groupName);
 
-			if (_buildInfo.Settings.PathExists("fallbackPlugins"))
-				_fallbackPluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+			if (!File.Exists(_pluginPath) && _buildInfo.Settings.PathExists("fallbackPlugins"))
+				_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 					_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), groupName);
 
 			// Set Option boxes
