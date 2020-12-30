@@ -301,7 +301,7 @@
 		<function opcode="0x01F" name="debug_scripting" returnType="void" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x020" name="" returnType="void" argc="1">
+		<function opcode="0x020" name="debug_scripting_globals" returnType="void" argc="1">
 			<arg type="boolean" />
 		</function>
 		<function opcode="0x021" name="breakpoint" returnType="void" null="true" argc="1">
@@ -591,7 +591,7 @@
 			<arg type="real" />
 			<arg type="real" />
 		</function>
-		<function opcode="0x073" name="" returnType="void" argc="6">
+		<function opcode="0x073" name="cinematic_light_object_blend" returnType="void" argc="6">
 			<arg type="object" />
 			<arg type="cinematic_lightprobe" />
 			<arg type="cinematic_lightprobe" />
@@ -599,12 +599,12 @@
 			<arg type="real" />
 			<arg type="real" />
 		</function>
-		<function opcode="0x074" name="" returnType="void" argc="3">
+		<function opcode="0x074" name="cinematic_light_object_dynamic" returnType="void" argc="3">
 			<arg type="object" />
 			<arg type="real" />
 			<arg type="real" />
 		</function>
-		<function opcode="0x075" name="" returnType="void" argc="1">
+		<function opcode="0x075" name="cinematic_light_object_off" returnType="void" argc="1">
 			<arg type="object" />
 		</function>
 		<function opcode="0x076" name="cinematic_lighting_initialize" returnType="void" />
@@ -718,8 +718,8 @@
 		</function>
 		<function opcode="0x098" name="havok_dump_world_close_movie" returnType="void" null="true" />
 		<function opcode="0x099" name="havok_profile_start" returnType="void" null="true" />
-		<function opcode="0x09A" name="havok_profile_stop" returnType="void" null="true" />
-		<function opcode="0x09B" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x09A" name="havok_profile_end" returnType="void" null="true" />
+		<function opcode="0x09B" name="havok_reset_allocated_state" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
 		<function opcode="0x09C" name="breakable_surfaces_enable" returnType="void" argc="1">
@@ -781,7 +781,7 @@
 		<function opcode="0x0AC" name="texture_camera_render_mode" returnType="void" argc="1">
 			<arg type="long" />
 		</function>
-		<function opcode="0x0AD" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x0AD" name="render_debug_texture_camera" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
 		<function opcode="0x0AE" name="debug_structure_cluster" returnType="void" null="true" argc="2">
@@ -840,8 +840,8 @@
 			<arg type="long" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x0BD" name="" returnType="void" null="true" />
-		<function opcode="0x0BE" name="" returnType="void" null="true" />
+		<function opcode="0x0BD" name="render_debug_query_all_object_resources" returnType="void" null="true" />
+		<function opcode="0x0BE" name="render_debug_query_d3d_resources" returnType="void" null="true" />
 		<function opcode="0x0BF" name="render_postprocess_color_tweaking_reset" returnType="void" />
 		<function opcode="0x0C0" name="scenery_animation_start" returnType="void" argc="3">
 			<arg type="scenery" />
@@ -956,7 +956,7 @@
 			<arg type="boolean" />
 			<arg type="short" />
 		</function>
-		<function opcode="0x0D8" name="" returnType="boolean" argc="6">
+		<function opcode="0x0D8" name="unit_custom_animation_relative_at_frame" returnType="boolean" argc="6">
 			<arg type="unit" />
 			<arg type="animation_graph" />
 			<arg type="string_id" />
@@ -1431,12 +1431,12 @@
 			<arg type="object" />
 			<arg type="real" />
 		</function>
-		<function opcode="0x15A" name="ai_migrate" returnType="short" argc="3">
+		<function opcode="0x15A" name="ai_migrate_form" returnType="short" argc="3">
 			<arg type="ai" />
 			<arg type="ai" />
 			<arg type="short" />
 		</function>
-		<function opcode="0x15B" name="" returnType="boolean" argc="2">
+		<function opcode="0x15B" name="ai_morph" returnType="boolean" argc="2">
 			<arg type="ai" />
 			<arg type="short" />
 		</function>
@@ -1519,7 +1519,7 @@
 			<arg type="string" />
 			<arg type="ai" />
 		</function>
-		<function opcode="0x174" name="" returnType="boolean" null="true" argc="4">
+		<function opcode="0x174" name="ai_rotate_scenario" returnType="boolean" null="true" argc="4">
 			<arg type="real" />
 			<arg type="real" />
 			<arg type="real" />
@@ -1823,15 +1823,15 @@
 			<arg type="ai" />
 			<arg type="ai_command_script" />
 		</function>
-		<function opcode="0x1BF" name="cs_command_script_attached" returnType="boolean" argc="2">
+		<function opcode="0x1BF" name="cs_command_script_queued" returnType="boolean" argc="2">
 			<arg type="ai" />
 			<arg type="ai_command_script" />
 		</function>
 		<function opcode="0x1C0" name="cs_number_queued" returnType="short" argc="1">
 			<arg type="ai" />
 		</function>
-		<function opcode="0x1C1" name="" returnType="boolean" />
-		<function opcode="0x1C2" name="" returnType="boolean" argc="1">
+		<function opcode="0x1C1" name="cs_moving" returnType="boolean" />
+		<function opcode="0x1C2" name="cs_moving" returnType="boolean" argc="1">
 			<arg type="ai" />
 		</function>
 		<function opcode="0x1C3" name="vs_running_atom" returnType="boolean" argc="1">
@@ -1840,7 +1840,7 @@
 		<function opcode="0x1C4" name="vs_running_atom_movement" returnType="boolean" argc="1">
 			<arg type="ai" />
 		</function>
-		<function opcode="0x1C5" name="vs_running_atom_?" returnType="boolean" argc="1">
+		<function opcode="0x1C5" name="vs_running_atom_action" returnType="boolean" argc="1">
 			<arg type="ai" />
 		</function>
 		<function opcode="0x1C6" name="vs_running_atom_dialogue" returnType="boolean" argc="1">
@@ -2042,18 +2042,18 @@
 			<arg type="real" />
 			<arg type="real" />
 		</function>
-		<function opcode="0x1EF" name="cs_vocalize" returnType="void" flags="1" argc="1">
+		<function opcode="0x1EF" name="cs_action" returnType="void" flags="1" argc="1">
 			<arg type="short" />
 		</function>
-		<function opcode="0x1F0" name="vs_vocalize" returnType="void" argc="3">
+		<function opcode="0x1F0" name="vs_action" returnType="void" argc="3">
 			<arg type="ai" />
 			<arg type="boolean" />
 			<arg type="short" />
 		</function>
-		<function opcode="0x1F1" name="" returnType="void" flags="1" argc="1">
+		<function opcode="0x1F1" name="cs_vocalize" returnType="void" flags="1" argc="1">
 			<arg type="short" />
 		</function>
-		<function opcode="0x1F2" name="" returnType="void" argc="3">
+		<function opcode="0x1F2" name="vs_vocalize" returnType="void" argc="3">
 			<arg type="ai" />
 			<arg type="boolean" />
 			<arg type="short" />
@@ -2248,10 +2248,10 @@
 			<arg type="ai" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x21B" name="cs_suppress_activity_termination" returnType="void" argc="1">
+		<function opcode="0x21B" name="cs_suppress_dialogue_global" returnType="void" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x21C" name="vs_suppress_activity_termination" returnType="void" argc="2">
+		<function opcode="0x21C" name="vs_suppress_dialogue_global" returnType="void" argc="2">
 			<arg type="ai" />
 			<arg type="boolean" />
 		</function>
@@ -2673,7 +2673,7 @@
 			<arg type="long" />
 		</function>
 		<function opcode="0x2A4" name="map_reset" returnType="void" />
-		<function opcode="0x2A5" name="" returnType="void" null="true" />
+		<function opcode="0x2A5" name="map_reset_random" returnType="void" null="true" />
 		<function opcode="0x2A6" name="switch_zone_set" returnType="void" argc="1">
 			<arg type="long" />
 		</function>
@@ -2719,18 +2719,18 @@
 			<arg type="short" />
 			<arg type="string" />
 		</function>
-		<function opcode="0x2B3" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x2B3" name="screenshot_simple" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
-		<function opcode="0x2B4" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x2B4" name="screenshot_cubemap" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
-		<function opcode="0x2B5" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x2B5" name="screenshot_webmap" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
-		<function opcode="0x2B6" name="main_menu" returnType="void" null="true" />
-		<function opcode="0x2B7" name="main_halt" returnType="void" null="true" />
-		<function opcode="0x2B8" name="" returnType="void" null="true" />
+		<function opcode="0x2B6" name="cubemap_dynamic_generate" returnType="void" null="true" />
+		<function opcode="0x2B7" name="main_menu" returnType="void" null="true" />
+		<function opcode="0x2B8" name="main_halt" returnType="void" null="true" />
 		<function opcode="0x2B9" name="map_name" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
@@ -2775,21 +2775,21 @@
 		<function opcode="0x2CC" name="debug_memory_for_file" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
-		<function opcode="0x2CD" name="" returnType="void" null="true" />
-		<function opcode="0x2CE" name="" returnType="void" null="true" />
-		<function opcode="0x2CF" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x2CD" name="debug_tags" returnType="void" null="true" />
+		<function opcode="0x2CE" name="tags_verify_all" returnType="void" null="true" />
+		<function opcode="0x2CF" name="profiler_enable" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x2D0" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x2D0" name="profiler_set_thread" returnType="void" null="true" argc="1">
 			<arg type="long" />
 		</function>
-		<function opcode="0x2D1" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x2D1" name="profiler_set_sort_method" returnType="void" null="true" argc="1">
 			<arg type="long" />
 		</function>
-		<function opcode="0x2D2" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x2D2" name="profiler_set_range" returnType="void" null="true" argc="1">
 			<arg type="long" />
 		</function>
-		<function opcode="0x2D3" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x2D3" name="profiler_set_attribute" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
 		<function opcode="0x2D4" name="trace_next_frame" returnType="void" null="true" argc="1">
@@ -2812,7 +2812,7 @@
 			<arg type="string" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x2DA" name="" returnType="void" null="true" />
+		<function opcode="0x2DA" name="ai_lines" returnType="void" null="true" />
 		<function opcode="0x2DB" name="ai_dialogue_break_on_vocalization" returnType="void" null="true" argc="1">
 			<arg type="string_id" />
 		</function>
@@ -2864,19 +2864,19 @@
 			<arg type="boolean" />
 		</function>
 		<function opcode="0x2EC" name="cinematic_get_early_exit" returnType="boolean" />
-		<function opcode="0x2ED" name="" returnType="void" argc="1">
+		<function opcode="0x2ED" name="cinematic_set_active_camera" returnType="void" argc="1">
 			<arg type="string_id" />
 		</function>
-		<function opcode="0x2EE" name="" returnType="void" argc="1">
+		<function opcode="0x2EE" name="cinematic_object_create" returnType="void" argc="1">
 			<arg type="string_id" />
 		</function>
-		<function opcode="0x2EF" name="" returnType="void" argc="1">
+		<function opcode="0x2EF" name="cinematic_object_create_cinematic_anchor" returnType="void" argc="1">
 			<arg type="string_id" />
 		</function>
-		<function opcode="0x2F0" name="" returnType="void" argc="1">
+		<function opcode="0x2F0" name="cinematic_object_destroy" returnType="void" argc="1">
 			<arg type="string_id" />
 		</function>
-		<function opcode="0x2F1" name="cinematic_lighting_rebuild_all" returnType="void" />
+		<function opcode="0x2F1" name="cinematic_destroy" returnType="void" />
 		<function opcode="0x2F2" name="cinematic_object_get" returnType="object" argc="1">
 			<arg type="string_id" />
 		</function>
@@ -2886,7 +2886,7 @@
 		<function opcode="0x2F4" name="cinematic_object_get_scenery" returnType="scenery" argc="1">
 			<arg type="string_id" />
 		</function>
-		<function opcode="0x2F5" name="" returnType="void" null="true" />
+		<function opcode="0x2F5" name="cinematic_reset" returnType="void" null="true" />
 		<function opcode="0x2F6" name="camera_set_briefing" returnType="void" argc="1">
 			<arg type="boolean" />
 		</function>
@@ -2931,13 +2931,13 @@
 		</function>
 		<function opcode="0x304" name="game_save_and_quit" returnType="void" null="true" />
 		<function opcode="0x305" name="game_save_unsafe" returnType="void" null="true" />
-		<function opcode="0x306" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x306" name="saved_games_enumerate" returnType="void" null="true" argc="1">
 			<arg type="controller" />
 		</function>
-		<function opcode="0x307" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x307" name="saved_games_delete_campaign_save" returnType="void" null="true" argc="1">
 			<arg type="controller" />
 		</function>
-		<function opcode="0x308" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x308" name="saved_games_save_last_film" returnType="void" null="true" argc="1">
 			<arg type="controller" />
 		</function>
 		<function opcode="0x309" name="saved_games_autosave_free_up_space" returnType="void" null="true" />
@@ -2949,40 +2949,40 @@
 			<arg type="controller" />
 			<arg type="string_id" />
 		</function>
-		<function opcode="0x30C" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x30C" name="debug_spawning_influencers" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x30D" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x30D" name="debug_spawning_respawn_zones" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x30E" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x30E" name="debug_spawning_proximity_forbid" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x30F" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x30F" name="debug_spawning_moving_vehicle" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x310" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x310" name="debug_spawning_weapon_influences" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x311" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x311" name="debug_spawning_dangerous_projectiles" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x312" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x312" name="debug_spawning_deployed_equipment" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x313" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x313" name="debug_spawning_proximity_enemy" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x314" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x314" name="debug_spawning_teammates" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x315" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x315" name="debug_spawning_random_influence" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x316" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x316" name="debug_spawning_nominal_weight" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x317" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x317" name="debug_spawning_natural_weight" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
 		<function opcode="0x318" name="debug_spawning_target" returnType="void" null="true" argc="1">
@@ -3018,10 +3018,10 @@
 		<function opcode="0x324" name="core_set_upload_option" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
-		<function opcode="0x325" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x325" name="force_debugger_not_present" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x326" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x326" name="force_debugger_always_present" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
 		<function opcode="0x327" name="game_safe_to_save" returnType="boolean" />
@@ -3331,27 +3331,27 @@
 		<function opcode="0x387" name="user_interface_controller_get_last_level_played" returnType="long" argc="1">
 			<arg type="short" />
 		</function>
-		<function opcode="0x388" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x388" name="controller_set_look_inverted" returnType="void" null="true" argc="2">
 			<arg type="controller" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x389" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x389" name="controller_set_vibration_enabled" returnType="void" null="true" argc="2">
 			<arg type="controller" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x38A" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x38A" name="controller_set_flight_stick_aircraft_controls" returnType="void" null="true" argc="2">
 			<arg type="controller" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x38B" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x38B" name="controller_set_auto_center_look" returnType="void" null="true" argc="2">
 			<arg type="controller" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x38C" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x38C" name="controller_set_crouch_lock" returnType="void" null="true" argc="2">
 			<arg type="controller" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x38D" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x38D" name="controller_set_button_preset" returnType="void" null="true" argc="2">
 			<arg type="controller" />
 			<arg type="button_preset" />
 		</function>
@@ -3421,7 +3421,7 @@
 			<arg type="controller" />
 			<arg type="subtitle_setting" />
 		</function>
-		<function opcode="0x39E" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x39E" name="controller_set_unsignedin_user" returnType="void" null="true" argc="2">
 			<arg type="controller" />
 			<arg type="boolean" />
 		</function>
@@ -3477,115 +3477,115 @@
 		</function>
 		<function opcode="0x3B1" name="" returnType="void" null="true" />
 		<function opcode="0x3B2" name="" returnType="void" null="true" />
-		<function opcode="0x3B3" name="" returnType="void" null="true" argc="3">
+		<function opcode="0x3B3" name="gui_debug_screen_name" returnType="void" null="true" argc="3">
 			<arg type="string_id" />
 			<arg type="boolean" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3B4" name="" returnType="void" null="true" argc="3">
+		<function opcode="0x3B4" name="gui_debug_screen_animation" returnType="void" null="true" argc="3">
 			<arg type="string_id" />
 			<arg type="boolean" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3B5" name="" returnType="void" null="true" argc="3">
+		<function opcode="0x3B5" name="gui_debug_screen_bounds" returnType="void" null="true" argc="3">
 			<arg type="string_id" />
 			<arg type="boolean" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3B6" name="" returnType="void" null="true" argc="3">
+		<function opcode="0x3B6" name="gui_debug_screen_rotation" returnType="void" null="true" argc="3">
 			<arg type="string_id" />
 			<arg type="boolean" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3B7" name="" returnType="void" null="true" argc="3">
+		<function opcode="0x3B7" name="gui_debug_group_name" returnType="void" null="true" argc="3">
 			<arg type="string_id" />
 			<arg type="boolean" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3B8" name="" returnType="void" null="true" argc="3">
+		<function opcode="0x3B8" name="gui_debug_group_animation" returnType="void" null="true" argc="3">
 			<arg type="string_id" />
 			<arg type="boolean" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3B9" name="" returnType="void" null="true" argc="3">
+		<function opcode="0x3B9" name="gui_debug_group_bounds" returnType="void" null="true" argc="3">
 			<arg type="string_id" />
 			<arg type="boolean" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3BA" name="" returnType="void" null="true" argc="3">
+		<function opcode="0x3BA" name="gui_debug_group_rotation" returnType="void" null="true" argc="3">
 			<arg type="string_id" />
 			<arg type="boolean" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3BB" name="" returnType="void" null="true" argc="3">
+		<function opcode="0x3BB" name="gui_debug_list_name" returnType="void" null="true" argc="3">
 			<arg type="string_id" />
 			<arg type="boolean" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3BC" name="" returnType="void" null="true" argc="3">
+		<function opcode="0x3BC" name="gui_debug_list_animation" returnType="void" null="true" argc="3">
 			<arg type="string_id" />
 			<arg type="boolean" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3BD" name="" returnType="void" null="true" argc="3">
+		<function opcode="0x3BD" name="gui_debug_list_bounds" returnType="void" null="true" argc="3">
 			<arg type="string_id" />
 			<arg type="boolean" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3BE" name="" returnType="void" null="true" argc="3">
+		<function opcode="0x3BE" name="gui_debug_list_rotation" returnType="void" null="true" argc="3">
 			<arg type="string_id" />
 			<arg type="boolean" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3BF" name="" returnType="void" null="true" argc="3">
+		<function opcode="0x3BF" name="gui_debug_list_item_name" returnType="void" null="true" argc="3">
 			<arg type="string_id" />
 			<arg type="boolean" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3C0" name="" returnType="void" null="true" argc="3">
+		<function opcode="0x3C0" name="gui_debug_list_item_animation" returnType="void" null="true" argc="3">
 			<arg type="string_id" />
 			<arg type="boolean" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3C1" name="" returnType="void" null="true" argc="3">
+		<function opcode="0x3C1" name="gui_debug_list_item_bounds" returnType="void" null="true" argc="3">
 			<arg type="string_id" />
 			<arg type="boolean" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3C2" name="" returnType="void" null="true" argc="3">
+		<function opcode="0x3C2" name="gui_debug_list_item_rotation" returnType="void" null="true" argc="3">
 			<arg type="string_id" />
 			<arg type="boolean" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3C3" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x3C3" name="gui_debug_text_name" returnType="void" null="true" argc="2">
 			<arg type="string_id" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3C4" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x3C4" name="gui_debug_text_animation" returnType="void" null="true" argc="2">
 			<arg type="string_id" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3C5" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x3C5" name="gui_debug_text_bounds" returnType="void" null="true" argc="2">
 			<arg type="string_id" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3C6" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x3C6" name="gui_debug_text_rotation" returnType="void" null="true" argc="2">
 			<arg type="string_id" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3C7" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x3C7" name="gui_debug_bitmap_name" returnType="void" null="true" argc="2">
 			<arg type="string_id" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3C8" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x3C8" name="gui_debug_bitmap_animation" returnType="void" null="true" argc="2">
 			<arg type="string_id" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3C9" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x3C9" name="gui_debug_bitmap_bounds" returnType="void" null="true" argc="2">
 			<arg type="string_id" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3CA" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x3CA" name="gui_debug_bitmap_rotation" returnType="void" null="true" argc="2">
 			<arg type="string_id" />
 			<arg type="boolean" />
 		</function>
@@ -3656,7 +3656,7 @@
 			<arg type="boolean" />
 			<arg type="short" />
 		</function>
-		<function opcode="0x3E3" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x3E3" name="net_quality_set_estimated_bandwidth" returnType="void" null="true" argc="2">
 			<arg type="boolean" />
 			<arg type="long" />
 		</function>
@@ -3709,42 +3709,42 @@
 		<function opcode="0x3F8" name="net_set_machine_name" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
-		<function opcode="0x3F9" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x3F9" name="events_enabled" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3FA" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x3FA" name="events_disable_suppression" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x3FB" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x3FB" name="event_global_display_category" returnType="void" null="true" argc="1">
 			<arg type="event" />
 		</function>
-		<function opcode="0x3FC" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x3FC" name="event_global_log_category" returnType="void" null="true" argc="1">
 			<arg type="event" />
 		</function>
-		<function opcode="0x3FD" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x3FD" name="event_global_remote_log_category" returnType="void" null="true" argc="1">
 			<arg type="event" />
 		</function>
-		<function opcode="0x3FE" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x3FE" name="event_display_category" returnType="void" null="true" argc="2">
 			<arg type="string" />
 			<arg type="event" />
 		</function>
-		<function opcode="0x3FF" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x3FF" name="event_log_category" returnType="void" null="true" argc="2">
 			<arg type="string" />
 			<arg type="event" />
 		</function>
-		<function opcode="0x400" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x400" name="event_remote_log_category" returnType="void" null="true" argc="2">
 			<arg type="string" />
 			<arg type="event" />
 		</function>
-		<function opcode="0x401" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x401" name="event_debugger_break_category" returnType="void" null="true" argc="2">
 			<arg type="string" />
 			<arg type="event" />
 		</function>
-		<function opcode="0x402" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x402" name="event_halt_category" returnType="void" null="true" argc="2">
 			<arg type="string" />
 			<arg type="event" />
 		</function>
-		<function opcode="0x403" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x403" name="event_list_categories" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
 		<function opcode="0x404" name="play_bink_movie" returnType="void" argc="1">
@@ -3811,54 +3811,54 @@
 			<arg type="string" />
 		</function>
 		<function opcode="0x41A" name="test_get_squad_session_id" returnType="void" null="true" />
-		<function opcode="0x41B" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x41B" name="test_auto_get_screens" returnType="void" null="true" argc="1">
 			<arg type="long" />
 		</function>
-		<function opcode="0x41C" name="" returnType="void" null="true" argc="2">
-			<arg type="long" />
-			<arg type="long" />
-		</function>
-		<function opcode="0x41D" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x41C" name="test_auto_get_screen_widgets" returnType="void" null="true" argc="2">
 			<arg type="long" />
 			<arg type="long" />
 		</function>
-		<function opcode="0x41E" name="" returnType="void" null="true" argc="3">
+		<function opcode="0x41D" name="test_auto_screen_get_datasources" returnType="void" null="true" argc="2">
+			<arg type="long" />
+			<arg type="long" />
+		</function>
+		<function opcode="0x41E" name="test_auto_screen_get_data_columns" returnType="void" null="true" argc="3">
 			<arg type="long" />
 			<arg type="long" />
 			<arg type="string_id" />
 		</function>
-		<function opcode="0x41F" name="" returnType="void" null="true" argc="4">
+		<function opcode="0x41F" name="test_auto_screen_get_data" returnType="void" null="true" argc="4">
 			<arg type="long" />
 			<arg type="long" />
 			<arg type="string_id" />
 			<arg type="string_id" />
 		</function>
-		<function opcode="0x420" name="" returnType="void" null="true" argc="5">
+		<function opcode="0x420" name="test_auto_screen_invoke_list_item_by_name" returnType="void" null="true" argc="5">
 			<arg type="long" />
 			<arg type="long" />
 			<arg type="string_id" />
 			<arg type="string_id" />
 			<arg type="string_id" />
 		</function>
-		<function opcode="0x421" name="" returnType="void" null="true" argc="5">
+		<function opcode="0x421" name="test_auto_screen_invoke_list_item_by_text" returnType="void" null="true" argc="5">
 			<arg type="long" />
 			<arg type="long" />
 			<arg type="string_id" />
 			<arg type="string_id" />
 			<arg type="string" />
 		</function>
-		<function opcode="0x422" name="" returnType="void" null="true" argc="4">
+		<function opcode="0x422" name="test_auto_screen_invoke_list_item_by_handle" returnType="void" null="true" argc="4">
 			<arg type="long" />
 			<arg type="long" />
 			<arg type="string_id" />
 			<arg type="long" />
 		</function>
-		<function opcode="0x423" name="" returnType="void" null="true" argc="3">
+		<function opcode="0x423" name="test_auto_screen_send_button_press" returnType="void" null="true" argc="3">
 			<arg type="long" />
 			<arg type="long" />
 			<arg type="string" />
 		</function>
-		<function opcode="0x424" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x424" name="test_download_storage_file" returnType="void" null="true" argc="2">
 			<arg type="string" />
 			<arg type="string" />
 		</function>
@@ -3944,17 +3944,17 @@
 			<arg type="long" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x440" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x440" name="net_leaderboard_clear_hopper" returnType="void" null="true" argc="1">
 			<arg type="long" />
 		</function>
-		<function opcode="0x441" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x441" name="net_leaderboard_clear_global_arbitrated" returnType="void" null="true" argc="1">
 			<arg type="long" />
 		</function>
-		<function opcode="0x442" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x442" name="net_leaderboard_clear_global_unarbitrated" returnType="void" null="true" argc="1">
 			<arg type="long" />
 		</function>
-		<function opcode="0x443" name="" returnType="void" null="true" />
-		<function opcode="0x444" name="" returnType="void" null="true" />
+		<function opcode="0x443" name="net_leaderboard_refresh" returnType="void" null="true" />
+		<function opcode="0x444" name="dump_loaded_tags" returnType="void" null="true" />
 		<function opcode="0x445" name="interpolator_start" returnType="long" argc="3">
 			<arg type="string_id" />
 			<arg type="real" />
@@ -4129,7 +4129,7 @@
 			<arg type="real" />
 			<arg type="real" />
 		</function>
-		<function opcode="0x47B" name="" returnType="void" argc="1">
+		<function opcode="0x47B" name="render_dof_focus_depth" returnType="void" argc="1">
 			<arg type="real" />
 		</function>
 		<function opcode="0x47C" name="render_dof_blur_animate" returnType="void" argc="2">
@@ -4163,28 +4163,28 @@
 			<arg type="mp_team" />
 			<arg type="mp_team" />
 		</function>
-		<function opcode="0x487" name="" returnType="boolean" />
+		<function opcode="0x487" name="mp_round_started" returnType="boolean" />
 		<function opcode="0x488" name="" returnType="void" argc="1">
 			<arg type="short" />
 		</function>
-		<function opcode="0x489" name="" returnType="void" />
-		<function opcode="0x48A" name="" returnType="void" argc="1">
+		<function opcode="0x489" name="mp_scripts_reset" returnType="void" />
+		<function opcode="0x48A" name="mp_ai_place" returnType="void" argc="1">
 			<arg type="ai" />
 		</function>
-		<function opcode="0x48B" name="" returnType="void" argc="2">
+		<function opcode="0x48B" name="mp_ai_place" returnType="void" argc="2">
 			<arg type="ai" />
 			<arg type="short" />
 		</function>
-		<function opcode="0x48C" name="" returnType="void" argc="1">
+		<function opcode="0x48C" name="mp_ai_kill" returnType="void" argc="1">
 			<arg type="ai" />
 		</function>
-		<function opcode="0x48D" name="" returnType="void" argc="1">
+		<function opcode="0x48D" name="mp_ai_kill_silent" returnType="void" argc="1">
 			<arg type="ai" />
 		</function>
-		<function opcode="0x48E" name="" returnType="void" argc="1">
+		<function opcode="0x48E" name="mp_object_create" returnType="void" argc="1">
 			<arg type="object_name" />
 		</function>
-		<function opcode="0x48F" name="" returnType="void" argc="1">
+		<function opcode="0x48F" name="mp_object_create_clone" returnType="void" argc="1">
 			<arg type="object_name" />
 		</function>
 		<function opcode="0x490" name="mp_object_create_anew" returnType="void" argc="1">
@@ -4193,35 +4193,35 @@
 		<function opcode="0x491" name="mp_object_destroy" returnType="void" argc="1">
 			<arg type="object" />
 		</function>
-		<function opcode="0x492" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x492" name="tag_file_set_backend" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
-		<function opcode="0x493" name="" returnType="void" argc="2">
+		<function opcode="0x493" name="mp_object_belongs_to_team" returnType="void" argc="2">
 			<arg type="object" />
 			<arg type="mp_team" />
 		</function>
-		<function opcode="0x494" name="" returnType="void" argc="2">
+		<function opcode="0x494" name="mp_weapon_belongs_to_team" returnType="void" argc="2">
 			<arg type="object" />
 			<arg type="mp_team" />
 		</function>
-		<function opcode="0x495" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x495" name="mp_debug_goal_object_boundary_geometry" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x496" name="" returnType="void" null="true" />
-		<function opcode="0x497" name="" returnType="void" argc="2">
+		<function opcode="0x496" name="mp_dump_candy_monitor_state" returnType="void" null="true" />
+		<function opcode="0x497" name="set_camera_third_person" returnType="void" argc="2">
 			<arg type="long" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x498" name="" returnType="boolean" argc="1">
+		<function opcode="0x498" name="get_camera_third_person" returnType="boolean" argc="1">
 			<arg type="long" />
 		</function>
-		<function opcode="0x499" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x499" name="determinism_debug_manager_enable_logging" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x49A" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x49A" name="determinism_debug_manager_enable_game_state_checksum" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x49B" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x49B" name="determinism_debug_manager_enable_trace" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
 		<function opcode="0x49C" name="determinism_debug_manager_set_consumer_sample_level" returnType="void" null="true" argc="2">
@@ -4233,7 +4233,7 @@
 			<arg type="string" />
 		</function>
 		<function opcode="0x49E" name="saved_film_play_last" returnType="void" />
-		<function opcode="0x49F" name="" returnType="void" argc="1">
+		<function opcode="0x49F" name="saved_film_disable_version_checking" returnType="void" argc="1">
 			<arg type="boolean" />
 		</function>
 		<function opcode="0x4A0" name="" returnType="void" null="true" argc="1">
@@ -4252,17 +4252,17 @@
 			<arg type="object" />
 			<arg type="short" />
 		</function>
-		<function opcode="0x4A5" name="" returnType="void" null="true" argc="2">
+		<function opcode="0x4A5" name="determinism_log_compare_log_files" returnType="void" null="true" argc="2">
 			<arg type="string" />
 			<arg type="string" />
 		</function>
-		<function opcode="0x4A6" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x4A6" name="floating_point_exceptions_enable" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x4A7" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x4A7" name="determinism_debug_manager_enable_log_file_comparision_on_oos" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x4A8" name="" returnType="void" null="true" />
+		<function opcode="0x4A8" name="event_logs_snapshot" returnType="void" null="true" />
 		<function opcode="0x4A9" name="tag_reload_force" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
@@ -4303,10 +4303,10 @@
 		<function opcode="0x4B6" name="tag_resources_set_per_frame_publish" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x4B7" name="" returnType="void" null="true" />
-		<function opcode="0x4B8" name="" returnType="void" null="true" />
-		<function opcode="0x4B9" name="" returnType="void" null="true" />
-		<function opcode="0x4BA" name="" returnType="void" null="true" />
+		<function opcode="0x4B7" name="object_recycling_clear_history" returnType="void" null="true" />
+		<function opcode="0x4B8" name="dump_cinematics_script" returnType="void" null="true" />
+		<function opcode="0x4B9" name="cinematics_dump_errors" returnType="void" null="true" />
+		<function opcode="0x4BA" name="global_preferences_clear" returnType="void" null="true" />
 		<function opcode="0x4BB" name="network_storage_set_storage_subdirectory" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
@@ -4326,10 +4326,10 @@
 			<arg type="string" />
 		</function>
 		<function opcode="0x4C3" name="on_target_platform" returnType="boolean" />
-		<function opcode="0x4C4" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x4C4" name="profile_activate" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
-		<function opcode="0x4C5" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x4C5" name="profile_deactivate" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
 		<function opcode="0x4C6" name="net_game_set_player_standing" returnType="void" null="true" argc="2">
@@ -4339,7 +4339,7 @@
 		<function opcode="0x4C7" name="net_get_game_id" returnType="void" null="true" />
 		<function opcode="0x4C8" name="generate_rsa_2048_key_pair" returnType="void" null="true" />
 		<function opcode="0x4C9" name="create_secure_test_file" returnType="void" null="true" />
-		<function opcode="0x4CA" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x4CA" name="damaged_media_inhibit_ui" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
 		<function opcode="0x4CB" name="net_test_matchmaking_hopper_list" returnType="void" null="true" />
@@ -4370,16 +4370,16 @@
 		<function opcode="0x4D5" name="saved_film_seek_to_film_tick" returnType="void" null="true" argc="1">
 			<arg type="long" />
 		</function>
-		<function opcode="0x4D6" name="" returnType="void" null="true" />
-		<function opcode="0x4D7" name="" returnType="void" null="true" />
-		<function opcode="0x4D8" name="" returnType="void" null="true" />
-		<function opcode="0x4D9" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x4D6" name="saved_film_snippet_start_recording" returnType="void" null="true" />
+		<function opcode="0x4D7" name="saved_film_snippet_stop_recording" returnType="void" null="true" />
+		<function opcode="0x4D8" name="saved_film_snippet_preview" returnType="void" null="true" />
+		<function opcode="0x4D9" name="saved_film_snippet_commit" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
-		<function opcode="0x4DA" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x4DA" name="saved_film_seek" returnType="void" null="true" argc="1">
 			<arg type="real" />
 		</function>
-		<function opcode="0x4DB" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x4DB" name="saved_film_rewind" returnType="void" null="true" argc="1">
 			<arg type="real" />
 		</function>
 		<function opcode="0x4DC" name="tag_is_active" returnType="boolean" argc="1">
@@ -4412,26 +4412,26 @@
 			<arg type="string" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x4E8" name="" returnType="void" null="true" />
-		<function opcode="0x4E9" name="" returnType="void" null="true" />
+		<function opcode="0x4E8" name="net_test_life_cycle_display_states" returnType="void" null="true" />
+		<function opcode="0x4E9" name="overlapped_display_task_descriptions" returnType="void" null="true" />
 		<function opcode="0x4EA" name="overlapped_task_inject_error" returnType="void" null="true" argc="2">
 			<arg type="string" />
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x4EB" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x4EB" name="net_leaderboard_clear_hopper_all_users" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
-		<function opcode="0x4EC" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x4EC" name="net_leaderboard_clear_global_arbitrated_all_users" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
-		<function opcode="0x4ED" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x4ED" name="net_leaderboard_clear_global_unarbitrated_all_users" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
 		<function opcode="0x4EE" name="test_sapien_crash" returnType="void" null="true" />
-		<function opcode="0x4EF" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x4EF" name="bandwidth_profiler_enable" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x4F0" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x4F0" name="bandwidth_profiler_set_context" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
 		<function opcode="0x4F1" name="overlapped_task_pause" returnType="void" null="true" argc="2">
@@ -4466,13 +4466,13 @@
 			<arg type="long" />
 			<arg type="long" />
 		</function>
-		<function opcode="0x4F8" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x4F8" name="net_build_map_variant" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
-		<function opcode="0x4F9" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x4F9" name="net_verify_map_variant" returnType="void" null="true" argc="1">
 			<arg type="string" />
 		</function>
-		<function opcode="0x4FA" name="" returnType="void" null="true" argc="1">
+		<function opcode="0x4FA" name="async_set_work_delay_milliseconds" returnType="void" null="true" argc="1">
 			<arg type="long" />
 		</function>
 		<function opcode="0x4FB" name="tag_resources_set_demand_throttle_to_io" returnType="void" null="true" argc="1">
@@ -4507,12 +4507,12 @@
 		<global opcode="0x00E" name="" null="true" type="boolean" />
 		<global opcode="0x00F" name="" null="true" type="boolean" />
 		<global opcode="0x010" name="" type="boolean" />
-		<global opcode="0x011" name="" type="boolean" />
+		<global opcode="0x011" name="debug_controller_latency" type="boolean" />
 		<global opcode="0x012" name="" null="true" type="boolean" />
 		<global opcode="0x013" name="" null="true" type="boolean" />
 		<global opcode="0x014" name="" null="true" type="boolean" />
 		<global opcode="0x015" name="" null="true" type="boolean" />
-		<global opcode="0x016" name="camera_fov" type="real" />
+		<global opcode="0x016" name="camera_fov_scale" type="real" />
 		<global opcode="0x017" name="" null="true" type="real" />
 		<global opcode="0x018" name="" null="true" type="real" />
 		<global opcode="0x019" name="" null="true" type="real" />
@@ -4594,7 +4594,7 @@
 		<global opcode="0x065" name="" null="true" type="boolean" />
 		<global opcode="0x066" name="" null="true" type="boolean" />
 		<global opcode="0x067" name="" null="true" type="boolean" />
-		<global opcode="0x068" name="" type="boolean" />
+		<global opcode="0x068" name="debug_sound_listeners" type="boolean" />
 		<global opcode="0x069" name="" null="true" type="boolean" />
 		<global opcode="0x06A" name="" null="true" type="boolean" />
 		<global opcode="0x06B" name="" null="true" type="boolean" />
@@ -4602,7 +4602,7 @@
 		<global opcode="0x06D" name="" null="true" type="boolean" />
 		<global opcode="0x06E" name="" null="true" type="boolean" />
 		<global opcode="0x06F" name="" null="true" type="boolean" />
-		<global opcode="0x070" name="" type="boolean" />
+		<global opcode="0x070" name="use_dynamic_object_obstruction" type="boolean" />
 		<global opcode="0x071" name="" null="true" type="boolean" />
 		<global opcode="0x072" name="" null="true" type="boolean" />
 		<global opcode="0x073" name="" null="true" type="boolean" />
@@ -4676,7 +4676,7 @@
 		<global opcode="0x0B7" name="" null="true" type="long" />
 		<global opcode="0x0B8" name="" null="true" type="boolean" />
 		<global opcode="0x0B9" name="render_screen_flashes" type="boolean" />
-		<global opcode="0x0BA" name="" type="real" />
+		<global opcode="0x0BA" name="texture_camera_near_plane" type="real" />
 		<global opcode="0x0BB" name="render_near_clip_distance" type="real" />
 		<global opcode="0x0BC" name="render_far_clip_distance" type="real" />
 		<global opcode="0x0BD" name="" null="true" type="real" />
@@ -4685,10 +4685,10 @@
 		<global opcode="0x0C0" name="render_surface_LDR_mode" type="long" />
 		<global opcode="0x0C1" name="render_surface_HDR_mode" type="long" />
 		<global opcode="0x0C2" name="render_first_person_fov_scale" type="real" />
-		<global opcode="0x0C3" name="" type="long" />
-		<global opcode="0x0C4" name="" type="long" />
-		<global opcode="0x0C5" name="" type="long" />
-		<global opcode="0x0C6" name="" type="boolean" />
+		<global opcode="0x0C3" name="rasterizer_triliner_threshold" type="long" />
+		<global opcode="0x0C4" name="render_tiling_configuration" type="long" />
+		<global opcode="0x0C5" name="render_screen_res" type="long" />
+		<global opcode="0x0C6" name="render_true_gamma" type="boolean" />
 		<global opcode="0x0C7" name="" null="true" type="boolean" />
 		<global opcode="0x0C8" name="" null="true" type="boolean" />
 		<global opcode="0x0C9" name="" null="true" type="boolean" />
@@ -4717,8 +4717,8 @@
 		<global opcode="0x0E0" name="render_postprocess_blue_filter" type="real" />
 		<global opcode="0x0E1" name="" null="true" type="real" />
 		<global opcode="0x0E2" name="" null="true" type="real" />
-		<global opcode="0x0E3" name="" type="real" />
-		<global opcode="0x0E4" name="" type="boolean" />
+		<global opcode="0x0E3" name="render_bounce_light_intensity" type="real" />
+		<global opcode="0x0E4" name="render_bounce_light_only" type="boolean" />
 		<global opcode="0x0E5" name="" null="true" type="boolean" />
 		<global opcode="0x0E6" name="" null="true" type="real" />
 		<global opcode="0x0E7" name="" null="true" type="long" />
@@ -4753,7 +4753,7 @@
 		<global opcode="0x104" name="" null="true" type="boolean" />
 		<global opcode="0x105" name="" null="true" type="boolean" />
 		<global opcode="0x106" name="" null="true" type="boolean" />
-		<global opcode="0x107" name="" type="boolean" />
+		<global opcode="0x107" name="render_enable_particle_emitter_cull" type="boolean" />
 		<global opcode="0x108" name="" null="true" type="boolean" />
 		<global opcode="0x109" name="" null="true" type="boolean" />
 		<global opcode="0x10A" name="" null="true" type="boolean" />
@@ -5256,23 +5256,23 @@
 		<global opcode="0x2FB" name="" type="short" />
 		<global opcode="0x2FC" name="" type="short" />
 		<global opcode="0x2FD" name="" type="short" />
-		<global opcode="0x2FE" name="" type="boolean" />
-		<global opcode="0x2FF" name="" type="real" />
-		<global opcode="0x300" name="" type="real" />
-		<global opcode="0x301" name="" type="real" />
-		<global opcode="0x302" name="" type="real" />
-		<global opcode="0x303" name="" type="real" />
-		<global opcode="0x304" name="" type="real" />
-		<global opcode="0x305" name="" type="short" />
-		<global opcode="0x306" name="" type="short" />
-		<global opcode="0x307" name="" type="short" />
+		<global opcode="0x2FE" name="morph_disallowed" type="boolean" />
+		<global opcode="0x2FF" name="morph_time_ranged_tank" type="real" />
+		<global opcode="0x300" name="morph_time_ranged_stealth" type="real" />
+		<global opcode="0x301" name="morph_time_tank_ranged" type="real" />
+		<global opcode="0x302" name="morph_time_tank_stealth" type="real" />
+		<global opcode="0x303" name="morph_time_stealth_ranged" type="real" />
+		<global opcode="0x304" name="morph_time_stealth_tank" type="real" />
+		<global opcode="0x305" name="morph_form_ranged" type="short" />
+		<global opcode="0x306" name="morph_form_tank" type="short" />
+		<global opcode="0x307" name="morph_form_stealth" type="short" />
 		<global opcode="0x308" name="ai_movement_patrol" type="short" />
-		<global opcode="0x309" name="" type="short" />
+		<global opcode="0x309" name="ai_movement_asleep" type="short" />
 		<global opcode="0x30A" name="ai_movement_combat" type="short" />
 		<global opcode="0x30B" name="ai_movement_flee" type="short" />
-		<global opcode="0x30C" name="" type="short" />
-		<global opcode="0x30D" name="" type="short" />
-		<global opcode="0x30E" name="" type="short" />
+		<global opcode="0x30C" name="ai_movement_flaming" type="short" />
+		<global opcode="0x30D" name="ai_movement_stunned" type="short" />
+		<global opcode="0x30E" name="ai_movement_berserk" type="short" />
 		<global opcode="0x30F" name="" null="true" type="boolean" />
 		<global opcode="0x310" name="" null="true" type="boolean" />
 		<global opcode="0x311" name="" null="true" type="boolean" />
@@ -5519,7 +5519,7 @@
 		<global opcode="0x402" name="" null="true" type="boolean" />
 		<global opcode="0x403" name="" null="true" type="boolean" />
 		<global opcode="0x404" name="" null="true" type="boolean" />
-		<global opcode="0x405" name="" type="boolean" />
+		<global opcode="0x405" name="use_temp_directory_for_files" type="boolean" />
 		<global opcode="0x406" name="" null="true" type="boolean" />
 		<global opcode="0x407" name="" null="true" type="boolean" />
 		<global opcode="0x408" name="" null="true" type="boolean" />
@@ -5540,9 +5540,9 @@
 		<global opcode="0x417" name="" null="true" type="boolean" />
 		<global opcode="0x418" name="" null="true" type="boolean" />
 		<global opcode="0x419" name="" null="true" type="boolean" />
-		<global opcode="0x41A" name="" type="boolean" />
+		<global opcode="0x41A" name="scenario_use_non_bsp_zones" type="boolean" />
 		<global opcode="0x41B" name="" null="true" type="boolean" />
-		<global opcode="0x41C" name="" type="boolean" />
+		<global opcode="0x41C" name="ui_use_new_campaign_flow" type="boolean" />
 		<global opcode="0x41D" name="" null="true" type="boolean" />
 		<global opcode="0x41E" name="" null="true" type="boolean" />
 		<global opcode="0x41F" name="" null="true" type="real" />
@@ -5582,8 +5582,8 @@
 		<global opcode="0x441" name="" null="true" type="boolean" />
 		<global opcode="0x442" name="" null="true" type="boolean" />
 		<global opcode="0x443" name="" null="true" type="boolean" />
-		<global opcode="0x444" name="" type="long" />
-		<global opcode="0x445" name="" type="long" />
+		<global opcode="0x444" name="instance_default_fade_start_pixels" type="long" />
+		<global opcode="0x445" name="instance_default_fade_end_pixels" type="long" />
 		<global opcode="0x446" name="" null="true" type="boolean" />
 		<global opcode="0x447" name="" null="true" type="boolean" />
 		<global opcode="0x448" name="" null="true" type="boolean" />
