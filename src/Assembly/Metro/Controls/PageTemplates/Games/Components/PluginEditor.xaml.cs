@@ -23,6 +23,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private readonly XMLCodeCompleter _completer = new XMLCodeCompleter();
 		private readonly MetaContainer _parent;
 		private readonly string _pluginPath;
+		private readonly string _fallbackPluginPath;
 		private readonly MetaEditor _sibling;
 		private CompletionWindow _completionWindow;
 
@@ -45,8 +46,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 					buildInfo.Settings.GetSetting<string>("plugins"), groupName.Trim());
 
-			if (!File.Exists(_pluginPath) && buildInfo.Settings.PathExists("fallbackPlugins"))
-				_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+			if (buildInfo.Settings.PathExists("fallbackPlugins"))
+				_fallbackPluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 					buildInfo.Settings.GetSetting<string>("fallbackPlugins"), groupName.Trim());
 			LoadPlugin();
 		}
@@ -141,10 +142,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void LoadPlugin()
 		{
-			if (_pluginPath == null || !File.Exists(_pluginPath))
-				return;
+			string bestPluginPath;
 
-			txtPlugin.Text = File.ReadAllText(_pluginPath);
+			if (string.IsNullOrEmpty(_pluginPath) || !File.Exists(_pluginPath))
+			{
+				if (string.IsNullOrEmpty(_fallbackPluginPath) || !File.Exists(_fallbackPluginPath))
+					return;
+
+				bestPluginPath = _fallbackPluginPath;
+			}
+			else
+				bestPluginPath = _pluginPath;
+
+			txtPlugin.Text = File.ReadAllText(bestPluginPath);
 		}
 
 		private void LoadCodeCompletion()
