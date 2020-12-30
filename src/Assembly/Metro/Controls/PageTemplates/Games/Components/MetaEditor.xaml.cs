@@ -813,7 +813,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void ReallocateBlockCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (_cache.Engine < EngineType.SecondGeneration)
+			if (_cache.Engine < EngineType.SecondGeneration || (_cache.Engine == EngineType.ThirdGeneration && _cache.HeaderSize == 0x800))
 			{
 				MetroMessageBox.Show("Tag Block Reallocator", "Only second and third generation cache files are currently supported by the block reallocator.");
 				return;
@@ -917,7 +917,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void IsolateBlockCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (_cache.Engine < EngineType.SecondGeneration)
+			if (_cache.Engine < EngineType.SecondGeneration || (_cache.Engine == EngineType.ThirdGeneration && _cache.HeaderSize == 0x800))
 			{
 				MetroMessageBox.Show("Tag Block Isolation", "Only second and third generation cache files are currently supported.");
 				return;
@@ -978,7 +978,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void AllocateDataRefCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (_cache.Engine < EngineType.SecondGeneration)
+			if (_cache.Engine < EngineType.SecondGeneration || (_cache.Engine == EngineType.ThirdGeneration && _cache.HeaderSize == 0x800))
 			{
 				MetroMessageBox.Show("Data Reference Allocator", "Only second and third generation cache files are currently supported by the data reference allocator.");
 				return;
@@ -1027,7 +1027,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		
 		private void IsolateDataRefCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (_cache.Engine < EngineType.SecondGeneration)
+			if (_cache.Engine < EngineType.SecondGeneration || (_cache.Engine == EngineType.ThirdGeneration && _cache.HeaderSize == 0x800))
 			{
 				MetroMessageBox.Show("Data Reference Isolation", "Only second and third generation cache files are currently supported.");
 				return;

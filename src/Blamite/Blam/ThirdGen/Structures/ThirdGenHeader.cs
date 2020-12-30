@@ -11,6 +11,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 	public class ThirdGenHeader
 	{
 		private FileSegment _eofSegment;
+		public int cacheSegmentAlignment;
 		private IPointerExpander _expander;
 
 		public ThirdGenHeader(StructureValueCollection values, EngineDescription info, string buildString,
@@ -18,6 +19,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 		{
 			BuildString = buildString;
 			HeaderSize = info.HeaderSize;
+			cacheSegmentAlignment = info.SegmentAlignment;
 			_expander = expander;
 			Load(values, segmenter);
 		}
@@ -216,6 +218,9 @@ namespace Blamite.Blam.ThirdGen.Structures
 			// TODO: This could possibly be made into a for loop and cleaned up if the pointer converters are stored in an array.
 			// I just want to get this working for now.
 			//rsrcSection.VirtualAddress = 0; // This is (not) always zero
+
+			if (cacheSegmentAlignment == 0x800)
+				rsrcSection.VirtualAddress = 0x800; // hax for h3b saving, sections aren't in the same order as final
 			rsrcSection.Size = (ResourcePointerConverter != null) ? (uint) RawTable.Size : 0;
 			localeSection.VirtualAddress = (LocalePointerConverter != null) ? rsrcSection.VirtualAddress + rsrcSection.Size : 0;
 			localeSection.Size = (LocalePointerConverter != null) ? (uint) localeArea.Size : 0;
@@ -292,18 +297,38 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		private void LoadInteropData(StructureValueCollection headerValues)
 		{
-			// TODO: fix this shit for the h3beta
-			SectionOffsetMasks = headerValues.GetArray("offset masks").Select(v => (uint)v.GetInteger("mask")).ToArray();
-			Sections = headerValues.GetArray("sections").Select(v => new ThirdGenInteropSection(v)).ToArray();
-
-			// H3 MCC currently doesn't store section data for campaign/shared, so it must be hacked together
-			if (_expander.IsValid && (Type == CacheFileType.Shared || Type == CacheFileType.SinglePlayerShared))
+			// TODO: fix this shit for the h3beta better
+			if (headerValues.HasArray("offset masks") && headerValues.HasArray("sections"))
 			{
-				if (Sections[(int)ThirdGenInteropSectionType.Resource].Size == 0)
+				SectionOffsetMasks = headerValues.GetArray("offset masks").Select(v => (uint)v.GetInteger("mask")).ToArray();
+				Sections = headerValues.GetArray("sections").Select(v => new ThirdGenInteropSection(v)).ToArray();
+				
+				// H3 MCC currently doesn't store section data for campaign/shared, so it must be hacked together
+				if (_expander.IsValid && (Type == CacheFileType.Shared || Type == CacheFileType.SinglePlayerShared))
 				{
-					Sections[(int)ThirdGenInteropSectionType.Resource].VirtualAddress = (uint)HeaderSize;
-					Sections[(int)ThirdGenInteropSectionType.Resource].Size = (uint)FileSize - (uint)HeaderSize;
+					if (Sections[(int)ThirdGenInteropSectionType.Resource].Size == 0)
+					{
+						Sections[(int)ThirdGenInteropSectionType.Resource].VirtualAddress = (uint)HeaderSize;
+						Sections[(int)ThirdGenInteropSectionType.Resource].Size = (uint)FileSize - (uint)HeaderSize;
+					}
 				}
+			}
+			else //else hack up our own sections
+			{
+				SectionOffsetMasks = new uint[] { 0, 0, 0, 0 };
+
+				ThirdGenInteropSection debugSection = new ThirdGenInteropSection(
+					(uint)headerValues.GetInteger("string index table offset"),
+					(uint)(headerValues.GetInteger("file size") - headerValues.GetInteger("string index table offset")));
+				ThirdGenInteropSection resourceSection = new ThirdGenInteropSection(0, 0); // this is between locales and tag, so if we had a locale size, this section could be calculated. Using 0's for now seems to work at least
+				ThirdGenInteropSection tagSection = new ThirdGenInteropSection(
+					(uint)headerValues.GetInteger("tag buffer offset"),
+					(uint)headerValues.GetInteger("virtual size"));
+				ThirdGenInteropSection localeSection = new ThirdGenInteropSection(
+					(uint)HeaderSize,
+					(uint)headerValues.GetInteger("tag buffer offset")); //bs the size for now
+
+				Sections = new ThirdGenInteropSection[] { debugSection, resourceSection, tagSection, localeSection };
 			}
 
 			DebugPointerConverter = MakePointerConverter(ThirdGenInteropSectionType.Debug);
@@ -328,7 +353,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			{
 				int rawTableOffset = ResourcePointerConverter.PointerToOffset(ResourcePointerConverter.BasePointer);
 				var rawTableSize = (int) Sections[(int) ThirdGenInteropSectionType.Resource].Size;
-				return segmenter.WrapSegment(rawTableOffset, rawTableSize, 0x1000, SegmentResizeOrigin.End);
+				return segmenter.WrapSegment(rawTableOffset, rawTableSize, cacheSegmentAlignment, SegmentResizeOrigin.End);
 			}
 			return null;
 		}

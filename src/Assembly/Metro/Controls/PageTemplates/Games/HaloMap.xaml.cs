@@ -380,7 +380,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				Dispatcher.Invoke(new Action(() => btnImport.IsEnabled = false));
 
 			// Hide import button if the cache file isn't thirdgen
-			if (_cacheFile.Engine != EngineType.ThirdGeneration)
+			if (_cacheFile.Engine != EngineType.ThirdGeneration || (_cacheFile.Engine == EngineType.ThirdGeneration && _cacheFile.HeaderSize == 0x800))
 				Dispatcher.Invoke(new Action(() => btnImport.Visibility = Visibility.Collapsed));
 
 			// Hide save name button if the cache file isn't secondgen or thirdgen
@@ -1443,7 +1443,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						tagMenuItem.Name == "itemExtract" ||
 						tagMenuItem.Name == "itemForce" ||
 						tagMenuItem.Name == "itemTagBatch")
-						&& _cacheFile.Engine != EngineType.ThirdGeneration)
+						&& (_cacheFile.Engine != EngineType.ThirdGeneration || (_cacheFile.Engine == EngineType.ThirdGeneration && _cacheFile.HeaderSize == 0x800)))
 						tagMenuItem.Visibility = Visibility.Collapsed;
 				}
 				if (tagItem is Separator)
@@ -1469,7 +1469,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					MenuItem tagMenuItem = tagItem as MenuItem;
 
 					// Check if we need to hide stuff because the cache isn't thirdgen
-					if (_cacheFile.Engine != EngineType.ThirdGeneration)
+					if (_cacheFile.Engine != EngineType.ThirdGeneration || (_cacheFile.Engine == EngineType.ThirdGeneration && _cacheFile.HeaderSize == 0x800))
 					{
 						
 						if (tagMenuItem.Name == "itemGroupBatch")
