@@ -4,6 +4,7 @@ using Blamite.Blam.Util;
 using Blamite.Serialization;
 using System.CodeDom.Compiler;
 using System.Text;
+using System;
 
 namespace ScriptWalker
 {
@@ -140,11 +141,21 @@ namespace ScriptWalker
             {
                 case "void":
                 case "boolean":
-                case "real":
-                case "short":
                 case "long":
+                case "short":
                     // ignore random strings.
                     areEqual = areEqual && valComparer.Equals(origExp.Value, modExp.Value);
+                    break;
+
+                case "real":
+                    byte[] b1 = BitConverter.GetBytes(origExp.Value.UintValue);
+                    byte[] b2 = BitConverter.GetBytes(modExp.Value.UintValue);
+                    float fl1 = BitConverter.ToSingle(b1, 0);
+                    float fl2 = BitConverter.ToSingle(b2, 0);
+                    if ((fl1 != 0.0 || fl2 != -0.0) && (fl1 != -0.0 || fl2 != 0.0))
+                    {
+                        areEqual = areEqual && valComparer.Equals(origExp.Value, modExp.Value);
+                    }
                     break;
 
                 case "string":
