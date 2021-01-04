@@ -230,8 +230,16 @@ namespace Blamite.Blam.Scripting.Context
                 };
             }
 
-            // Identify and create seat mapping groups.
-            var mappings = CreateUnitSeatMappings(information);
+            // Identify and create seat mappings. Mappings will be grouped in this step.
+            IEnumerable<UnitSeatMapping> mappings;
+            if(buildInfo.Name.Contains("Halo 3"))
+            {
+                mappings = CreateUnitSeatMappings(information, PostProcessing.Halo3);
+            }
+            else
+            {
+                mappings = CreateUnitSeatMappings(information, PostProcessing.HaloReach);
+            }
 
             // Add the final unit seat mapping objects to the result.
             foreach(var mapping in mappings)
@@ -246,7 +254,7 @@ namespace Blamite.Blam.Scripting.Context
         /// </summary>
         /// <param name="information">The information</param>
         /// <returns>A <see cref="IEnumerable"/> containing the finalized seat mappings.</returns>
-        private static IEnumerable<UnitSeatMapping> CreateUnitSeatMappings(MappingInformation[] information)
+        private static IEnumerable<UnitSeatMapping> CreateUnitSeatMappings(MappingInformation[] information, PostProcessing postProcessing)
         {
             var queue = new Queue<MappingInformation>(information);
             var result = new List<UnitSeatMapping>();
@@ -277,28 +285,36 @@ namespace Blamite.Blam.Scripting.Context
                     }
                 }
 
-                // Handle groups.
+                // Handle mapping groups.
                 if(members.Count > 1)
                 {
-                    // Some groups are not being detected correctly and need to be postprocessed. 
-                    // If subsequent group member share the same name, they belong to a separate group. In this case the original group needs to be split.
-                    List<MappingInformation> currentGroup = new List<MappingInformation> { members.First() };
-                    foreach(var i in members.Skip(1))
+                    if(postProcessing == PostProcessing.HaloReach)
                     {
-                        if(currentGroup.Count > 1 && currentGroup.Last().Name != i.Name && currentGroup.All(i => i.Name == currentGroup[0].Name))
+                        // Some groups are not being detected correctly and need to be postprocessed. 
+                        // If subsequent group member share the same name, they belong to a separate group. In this case the original group needs to be split.
+                        List<MappingInformation> currentGroup = new List<MappingInformation> { members.First() };
+                        foreach (var i in members.Skip(1))
                         {
-                            var group = new UnitSeatMapping(currentGroup.First().Index, (short)currentGroup.Count, currentGroup.First().Name);
-                            result.Add(group);
-                            currentGroup.Clear();
+                            if (currentGroup.Count > 1 && currentGroup.Last().Name != i.Name && currentGroup.All(i => i.Name == currentGroup[0].Name))
+                            {
+                                var group = new UnitSeatMapping(currentGroup.First().Index, (short)currentGroup.Count, currentGroup.First().Name);
+                                result.Add(group);
+                                currentGroup.Clear();
+                            }
+
+                            currentGroup.Add(i);
                         }
 
-                        currentGroup.Add(i);
+                        // Add the last group.
+                        var mapping = new UnitSeatMapping(currentGroup.First().Index, (short)currentGroup.Count, GetMappingGroupName(currentGroup));
+                        result.Add(mapping);
+                        currentGroup.Clear();
                     }
-
-                    // Add the last group.
-                    var mapping = new UnitSeatMapping(currentGroup.First().Index, (short)currentGroup.Count, GetMappingGroupName(currentGroup));
-                    result.Add(mapping);
-                    currentGroup.Clear();
+                    else if(postProcessing == PostProcessing.Halo3)
+                    {
+                        // Halo 3 doesn't require any postprocessing.
+                        result.Add(new UnitSeatMapping(members[0].Index, (short)members.Count, GetMappingGroupName(members)));
+                    }
                 }
                 // Handle single mappings.
                 else
@@ -306,7 +322,6 @@ namespace Blamite.Blam.Scripting.Context
                     result.Add(new UnitSeatMapping(members[0].Index, 1, members[0].Name));
                 }
             }
-
             return result;
         }
 
@@ -403,5 +418,10 @@ namespace Blamite.Blam.Scripting.Context
             public IEnumerable<int> SeatIndices { get; set; }
         }
 
+        private enum PostProcessing
+        {
+            Halo3,
+            HaloReach
+        }
     }
 }
