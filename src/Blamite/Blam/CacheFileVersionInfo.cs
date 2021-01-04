@@ -7,6 +7,12 @@ namespace Blamite.Blam
 	/// </summary>
 	public class CacheFileVersionInfo
 	{
+		// first gen has a few different versions kicking around
+		private const int FirstGenXboxVersion = 5;
+		private const int FirstGenPCVersion = 7;// also CEA
+		private const int FirstGenCustomEditionVersion = 609;
+		private const int FirstGenInvaderVersion = 343;// invader tool uses version 343
+
 		private const int SecondGenVersion = 8;
 		private const int ThirdGenVersion = 9;
 		private const int SecondGenMCCVersion = 10;
@@ -16,7 +22,43 @@ namespace Blamite.Blam
 			reader.SeekTo(0x4);
 			Version = reader.ReadInt32();
 
-			if (Version == SecondGenVersion)
+			if (Version == FirstGenPCVersion)
+			{
+				// first gen is all similar enough
+				Engine = EngineType.FirstGeneration;
+
+				// Read first-generation build string
+				reader.SeekTo(0x40);
+				BuildString = reader.ReadAscii();
+			}
+			else if (Version == FirstGenCustomEditionVersion)
+			{
+				// first gen is all similar enough
+				Engine = EngineType.FirstGeneration;
+
+				// Read first-generation build string
+				reader.SeekTo(0x40);
+				BuildString = reader.ReadAscii();
+			}
+			else if (Version == FirstGenInvaderVersion)
+			{
+				// first gen is all similar enough
+				Engine = EngineType.FirstGeneration;
+
+				// Read first-generation build string
+				reader.SeekTo(0x40);
+				BuildString = reader.ReadAscii();
+			}
+			else if (Version == FirstGenXboxVersion)
+			{
+				// first gen is all similar enough
+				Engine = EngineType.FirstGeneration;
+
+				// Read first-generation build string
+				reader.SeekTo(0x40);
+				BuildString = reader.ReadAscii();
+			}
+			else if (Version == SecondGenVersion)
 			{
 				Engine = EngineType.SecondGeneration;
 
@@ -45,6 +87,7 @@ namespace Blamite.Blam
 				BuildString = reader.ReadAscii();
 			}
 
+			/* TODO (Dragon): can probably just remove this block
 			if (BuildString == null)
 			{
 				// Assume it's a first-generation build
@@ -55,6 +98,7 @@ namespace Blamite.Blam
 				reader.SeekTo(0x40);
 				BuildString = reader.ReadAscii();
 			}
+			*/
 		}
 
 		/// <summary>

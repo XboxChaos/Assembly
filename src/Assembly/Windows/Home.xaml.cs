@@ -161,7 +161,7 @@ namespace Assembly.Windows
 			AddTabModule(TabGenre.VoxelConverter);
 		}
 
-		private void menuMCCCompress_Click(object sender, RoutedEventArgs e)
+		private void menuCompress_Click(object sender, RoutedEventArgs e)
 		{
 			AddTabModule(TabGenre.MapCompressor, true);
 		}

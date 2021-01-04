@@ -105,6 +105,15 @@
     <Compile Include="Blam\CacheFileLoader.cs" />
     <Compile Include="Blam\EngineType.cs" />
     <Compile Include="Blam\EffectInterop.cs" />
+    <Compile Include="Blam\FirstGenIndexedStringTable.cs" />
+    <Compile Include="Blam\FirstGen\FirstGenCacheFile.cs" />
+    <Compile Include="Blam\FirstGen\FirstGenPointerExpander.cs" />
+    <Compile Include="Blam\FirstGen\FirstGenResourceMetaLoader.cs" />
+    <Compile Include="Blam\FirstGen\MetaOffsetConverter.cs" />
+    <Compile Include="Blam\FirstGen\Structures\FirstGenHeader.cs" />
+    <Compile Include="Blam\FirstGen\Structures\FirstGenTag.cs" />
+    <Compile Include="Blam\FirstGen\Structures\FirstGenTagGroup.cs" />
+    <Compile Include="Blam\FirstGen\Structures\FirstGenTagTable.cs" />
     <Compile Include="Blam\ITagInterop.cs" />
     <Compile Include="Blam\Localization\CachedLanguagePackLoader.cs" />
     <Compile Include="Blam\Resources\ResourcePageInjector.cs" />
@@ -244,6 +253,9 @@
     <Compile Include="Injection\ExtractedSound.cs" />
     <Compile Include="IO\IPointerExpander.cs" />
     <Compile Include="Native\ProcessModuleMemoryStream.cs" />
+    <Compile Include="RTE\FirstGen\FirstGenRTEProvider.cs" />
+    <Compile Include="RTE\FirstGen\FirstGenMCCRTEProvider.cs" />
+    <Compile Include="RTE\FirstGen\FirstGenMapPointerReader.cs" />
     <Compile Include="RTE\MapPointerReader.cs" />
     <Compile Include="RTE\MCCRTEProvider.cs" />
     <Compile Include="RTE\SecondGen\SecondGenMapPointerReader.cs" />
@@ -382,6 +394,7 @@
     <Compile Include="Native\ProcessMemoryStream.cs" />
     <Compile Include="RTE\IRTEProvider.cs" />
     <Compile Include="RTE\RTEStreamManager.cs" />
+    <Compile Include="Util\Adler32.cs" />
     <Compile Include="Util\AES.cs" />
     <Compile Include="Util\CharConstant.cs" />
     <Compile Include="Util\FIFOStack.cs" />
@@ -414,6 +427,24 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Formats\Engines.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo1Xbox\Layouts\H1X_Layouts_Core.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo1\H1AMCC_Poking.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo1\H1CE_Poking.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo1\H1_GroupNames.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo1\H1_Poking.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo1\Layouts\H1_Layouts_Core.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\Halo2AMCC\H2AMCC_LocaleSymbols.xml">
@@ -477,13 +508,28 @@
     <Content Include="Formats\Halo2Vista\H2V_Poking.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Formats\Halo3Beta\H3BMarch8_StringIDs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Formats\Halo3Beta\H3B_LocaleSymbols.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo3Beta\H3BMarch_Scripting.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\Halo3Beta\H3B_Scripting.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Formats\Halo3Beta\H3BMarch7_StringIDs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Formats\Halo3Beta\H3B_StringIDs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo3Beta\LayoutsMarch\H3BMarch_Layouts_Core.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo3Beta\LayoutsMarch\H3BMarch_Layouts_Scenario.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\Halo3Beta\Layouts\H3B_Layouts_Core.xml">
@@ -549,6 +595,27 @@
     <Content Include="Formats\Halo3\Layouts\H3_Layouts_Sounds.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Formats\Halo3\Layouts\H3_Layouts_Mission_Dialogue.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo4E3\H4Keynote_StringIDs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo4E3\H4WarGames_StringIDs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo4E3\Layouts\H4E3_Layouts_Core.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo4E3\Layouts\H4E3_Layouts_Resources.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo4E3\Layouts\H4E3_Layouts_Scenario.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo4E3\Layouts\H4E3_Layouts_Shaders.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Formats\Halo4MCC\H4MCC_LocaleSymbols.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -589,6 +656,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\Halo4NetTest\Layouts\H4Net_Layouts_Shaders.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo4\H4Pre_StringIDs.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\Halo4\H4_LocaleSymbols.xml">

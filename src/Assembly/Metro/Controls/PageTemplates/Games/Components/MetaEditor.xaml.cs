@@ -67,7 +67,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private TagBlockFlattener _flattener;
 		private FieldChangeSet _memoryChanges;
 		private string _pluginPath;
-		private string _fallbackPluginPath;
 		private ThirdGenPluginVisitor _pluginVisitor;
 		private ObservableCollection<SearchResult> _searchResults;
 		private TagEntry _tag;
@@ -78,7 +77,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			InitializeComponent();
 
 			_parentMetaContainer = parentContainer;
-			_tag = tag;
 			_tags = tags;
 			_buildInfo = buildInfo;
 			_cache = cache;
@@ -87,33 +85,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_searchTimer = new Timer(SearchTimer);
 			_stringIdTrie = stringIDTrie;
 
-			// Load Plugin Path
-			string groupName = VariousFunctions.SterilizeTagGroupName(CharConstant.ToString(tag.RawTag.Group.Magic)).Trim();
-			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-				_buildInfo.Settings.GetSetting<string>("plugins"), groupName);
-
-			if (_buildInfo.Settings.PathExists("fallbackPlugins"))
-				_fallbackPluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-					_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), groupName);
-
-			// Set Option boxes
-			cbShowInvisibles.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles;
-			cbShowComments.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowComments;
-			cbShowInformation.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInformation;
-
-			cbEnumPrefix.SelectedIndex = (int)App.AssemblyStorage.AssemblySettings.PluginsEnumPrefix;
-
-			// Load Meta
-			RefreshEditor(MetaReader.LoadType.File);
-
-			// Load Info
-			lblTagName.Text = tag.TagFileName != null
-				? tag.TagFileName + "." + tag.GroupName
-				: "0x" + tag.RawTag.Index.Value.ToString("X");
-
-			lblDatum.Text = string.Format("{0}", tag.RawTag.Index);
-			lblAddress.Text = string.Format("0x{0:X8}", tag.RawTag.MetaLocation.AsPointer());
-			lblOffset.Text = string.Format("0x{0:X}", tag.RawTag.MetaLocation.AsOffset());
+			LoadNewTagEntry(tag);
 
 			// Set init finished
 			hasInitFinished = true;
@@ -121,12 +93,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		public void RefreshEditor(MetaReader.LoadType type)
 		{
-			string pluginpath = _pluginPath;
+			// Load Plugin Path
+			string groupName = VariousFunctions.SterilizeTagGroupName(CharConstant.ToString(_tag.RawTag.Group.Magic)).Trim();
+			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+				_buildInfo.Settings.GetSetting<string>("plugins"), groupName);
 
-			if (!File.Exists(pluginpath))
-				pluginpath = _fallbackPluginPath;
+			if (!File.Exists(_pluginPath) && _buildInfo.Settings.PathExists("fallbackPlugins"))
+				_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+					_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), groupName);
 
-			if (pluginpath == null || !File.Exists(pluginpath))
+			if (_pluginPath == null || !File.Exists(_pluginPath))
 			{
 				UpdateMetaButtons(false);
 				StatusUpdater.Update("Plugin doesn't exist. It can't be loaded for this tag.");
@@ -166,7 +142,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			}
 
 			// Load Plugin File
-			using (XmlReader xml = XmlReader.Create(pluginpath))
+			using (XmlReader xml = XmlReader.Create(_pluginPath))
 			{
 				_pluginVisitor = new ThirdGenPluginVisitor(_tags, _stringIdTrie, _cache.MetaArea,
 					App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles);
@@ -323,15 +299,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			_tag = tag;
 
-			// Load Plugin Path
-			string groupName = VariousFunctions.SterilizeTagGroupName(CharConstant.ToString(_tag.RawTag.Group.Magic)).Trim();
-			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-				_buildInfo.Settings.GetSetting<string>("plugins"), groupName);
-
-			if (_buildInfo.Settings.PathExists("fallbackPlugins"))
-				_fallbackPluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-					_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), groupName);
-
 			// Set Option boxes
 			cbShowInvisibles.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles;
 			cbShowComments.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowComments;
@@ -341,6 +308,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			// Load Meta
 			RefreshEditor(MetaReader.LoadType.File);
+
+			// Load Info
+			lblTagName.Text = tag.TagFileName != null
+				? tag.TagFileName + "." + tag.GroupName
+				: "0x" + tag.RawTag.Index.Value.ToString("X");
+
+			lblDatum.Text = string.Format("{0}", tag.RawTag.Index);
+			lblAddress.Text = string.Format("0x{0:X8}", tag.RawTag.MetaLocation.AsPointer());
+			lblOffset.Text = string.Format("0x{0:X}", tag.RawTag.MetaLocation.AsOffset());
 		}
 
 		private void btnPluginRefresh_Click(object sender, RoutedEventArgs e)
@@ -837,7 +813,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void ReallocateBlockCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (_cache.Engine < EngineType.SecondGeneration)
+			if (_cache.Engine < EngineType.SecondGeneration || (_cache.Engine == EngineType.ThirdGeneration && _cache.HeaderSize == 0x800))
 			{
 				MetroMessageBox.Show("Tag Block Reallocator", "Only second and third generation cache files are currently supported by the block reallocator.");
 				return;
@@ -941,7 +917,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void IsolateBlockCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (_cache.Engine < EngineType.SecondGeneration)
+			if (_cache.Engine < EngineType.SecondGeneration || (_cache.Engine == EngineType.ThirdGeneration && _cache.HeaderSize == 0x800))
 			{
 				MetroMessageBox.Show("Tag Block Isolation", "Only second and third generation cache files are currently supported.");
 				return;
@@ -1002,7 +978,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void AllocateDataRefCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (_cache.Engine < EngineType.SecondGeneration)
+			if (_cache.Engine < EngineType.SecondGeneration || (_cache.Engine == EngineType.ThirdGeneration && _cache.HeaderSize == 0x800))
 			{
 				MetroMessageBox.Show("Data Reference Allocator", "Only second and third generation cache files are currently supported by the data reference allocator.");
 				return;
@@ -1051,7 +1027,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		
 		private void IsolateDataRefCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (_cache.Engine < EngineType.SecondGeneration)
+			if (_cache.Engine < EngineType.SecondGeneration || (_cache.Engine == EngineType.ThirdGeneration && _cache.HeaderSize == 0x800))
 			{
 				MetroMessageBox.Show("Data Reference Isolation", "Only second and third generation cache files are currently supported.");
 				return;

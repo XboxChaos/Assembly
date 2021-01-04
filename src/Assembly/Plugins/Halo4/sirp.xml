@@ -4,15 +4,31 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
-	<tagblock name="Unknown" offset="0x0" visible="false" elementSize="0x34">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<stringid name="Unknown" offset="0x4" visible="false" />
-		<dataRef name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
+	<tagblock name="Interpolators" offset="0x0" visible="true" elementSize="0x34">
+		<flags16 name="Flags" offset="0x0" visible="true">
+			<bit name="Loops" index="0" tooltip="will continue to play until stopped. if checked, no wrap should also be checked" />
+			<bit name="Always Active" index="1" tooltip="will be started when the map loads. good for looping interpolators" />
+		</flags16>
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<stringid name="Name" offset="0x4" visible="true" />
+		<dataref name="Function" offset="0x8" visible="true" />
+		<float32 name="Duration" offset="0x1C" visible="true" />
+		<enum32 name="Map Reset Type" offset="0x20" visible="true">
+			<option name="Initial" value="0x0" />
+			<option name="Ending" value="0x1" />
+			<option name="Custom" value="0x2" />
+		</enum32>
+		<float32 name="Custom Map Reset Value" offset="0x24" visible="true" />
+		<enum32 name="Start Type" offset="0x28" visible="true">
+			<option name="Initial" value="0x0" />
+			<option name="Unchanged" value="0x1" />
+		</enum32>
+		<enum32 name="Stop Type" offset="0x2C" visible="true">
+			<option name="Initial" value="0x0" />
+			<option name="Hold" value="0x1" />
+			<option name="Ending" value="0x2" />
+			<option name="Custom" value="0x3" />
+		</enum32>
+		<float32 name="Custom Stop Value" offset="0x30" visible="true" />
 	</tagblock>
 </plugin>

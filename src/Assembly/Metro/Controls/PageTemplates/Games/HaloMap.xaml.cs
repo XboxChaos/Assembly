@@ -36,6 +36,7 @@ using Blamite.Blam.ThirdGen;
 using Blamite.RTE.ThirdGen;
 using Blamite.Blam.Resources.Sounds;
 using System.Reflection;
+using Blamite.RTE.FirstGen;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -172,7 +173,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						{
 							StatusUpdater.Update("Not a supported target engine");
 							MetroMessageBox.Show("Unable to open cache file",
-								ex.Message + ".\r\nWhy not add support in the 'Formats' folder?");
+								ex.Message + ".\r\nMake sure your Assembly is up to date, otherwise try adding support in the 'Formats' folder.");
 						}
 						else
 						{
@@ -202,6 +203,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				// Set up RTE
 				switch (_cacheFile.Engine)
 				{
+					case EngineType.FirstGeneration:
+						if (_cacheFile.Endianness == Endian.BigEndian) // CEA 360
+							_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm, 0xC226CC54);
+						else if (!string.IsNullOrEmpty(_buildInfo.GameModule)) // CEA MCC
+							_rteProvider = new FirstGenMCCRTEProvider(_buildInfo);
+						else // PC or Custom
+							_rteProvider = new FirstGenRTEProvider(_buildInfo);
+						break;
+
 					case EngineType.SecondGeneration:
 						if (!string.IsNullOrEmpty(_buildInfo.GameModule))
 							_rteProvider = new SecondGenMCCRTEProvider(_buildInfo);
@@ -370,7 +380,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				Dispatcher.Invoke(new Action(() => btnImport.IsEnabled = false));
 
 			// Hide import button if the cache file isn't thirdgen
-			if (_cacheFile.Engine != EngineType.ThirdGeneration)
+			if (_cacheFile.Engine != EngineType.ThirdGeneration || (_cacheFile.Engine == EngineType.ThirdGeneration && _cacheFile.HeaderSize == 0x800))
 				Dispatcher.Invoke(new Action(() => btnImport.Visibility = Visibility.Collapsed));
 
 			// Hide save name button if the cache file isn't secondgen or thirdgen
@@ -808,17 +818,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					var pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 						_buildInfo.Settings.GetSetting<string>("plugins"), groupName);
 
-					string fallbackPluginPath = null;
-					if (_buildInfo.Settings.PathExists("fallbackPlugins"))
-						fallbackPluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+					if (!File.Exists(pluginPath) && _buildInfo.Settings.PathExists("fallbackPlugins"))
+						pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 							_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), groupName);
 
-					string realpluginpath = pluginPath;
-
-					if (!File.Exists(realpluginpath))
-						realpluginpath = fallbackPluginPath;
-
-					if (realpluginpath == null || !File.Exists(realpluginpath))
+					if (pluginPath == null || !File.Exists(pluginPath))
 					{
 						StatusUpdater.Update("Plugin doesn't exist for an extracted tag. Cannot extract.");
 						return null;
@@ -826,7 +830,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 					// Extract dem data blocks
 					var blockBuilder = new DataBlockBuilder(reader, currentTag, _cacheFile, _buildInfo);
-					using (var pluginReader = XmlReader.Create(realpluginpath))
+					using (var pluginReader = XmlReader.Create(pluginPath))
 						AssemblyPluginLoader.LoadPlugin(pluginReader, blockBuilder);
 
 					foreach (var block in blockBuilder.DataBlocks)
@@ -1439,7 +1443,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						tagMenuItem.Name == "itemExtract" ||
 						tagMenuItem.Name == "itemForce" ||
 						tagMenuItem.Name == "itemTagBatch")
-						&& _cacheFile.Engine != EngineType.ThirdGeneration)
+						&& (_cacheFile.Engine != EngineType.ThirdGeneration || (_cacheFile.Engine == EngineType.ThirdGeneration && _cacheFile.HeaderSize == 0x800)))
 						tagMenuItem.Visibility = Visibility.Collapsed;
 				}
 				if (tagItem is Separator)
@@ -1465,7 +1469,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					MenuItem tagMenuItem = tagItem as MenuItem;
 
 					// Check if we need to hide stuff because the cache isn't thirdgen
-					if (_cacheFile.Engine != EngineType.ThirdGeneration)
+					if (_cacheFile.Engine != EngineType.ThirdGeneration || (_cacheFile.Engine == EngineType.ThirdGeneration && _cacheFile.HeaderSize == 0x800))
 					{
 						
 						if (tagMenuItem.Name == "itemGroupBatch")
@@ -1526,7 +1530,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						Content = tabName,
 						ContextMenu = BaseContextMenu
 					},
-					Content = new AddressTools(_cacheFile)
+					Content = new AddressTools(_cacheFile, _buildInfo)
 				};
 
 				contentTabs.Items.Add(tab);
