@@ -179,7 +179,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
         private async void CompileClick(object sender, RoutedEventArgs e)
         {
-            if (_buildInfo.Name.Contains("Reach") || _buildInfo.Name.Contains("Halo 3"))
+            if (_buildInfo.Name.Contains("Reach") || (_buildInfo.Name.Contains("Halo 3") && !_buildInfo.Name.Contains("ODST")))
             {
                 // Logger Setup
                 string folder = "Compiler";
