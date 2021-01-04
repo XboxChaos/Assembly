@@ -100,10 +100,12 @@ namespace Blamite.Blam.Scripting.Compiler
         private bool HandleValueType(BS_ReachParser.LiteralContext context, string expectedValueType)
         {
             ScriptExpression expression;
+            // Enum expressions.
             if(_opcodes.GetTypeInfo(expectedValueType)?.IsEnum == true)
             {
                 expression = GetEnumExpression(context, expectedValueType);
             }
+            // Other expressions.
             else
             {
                 switch (expectedValueType)
@@ -187,14 +189,6 @@ namespace Blamite.Blam.Scripting.Compiler
                         expression = GetPointReferenceExpression(context);
                         break;
 
-                    //case "object_list":
-                    //    expression = GetObjectNameExpression(context, "object_name", expectedValueType);
-                    //    if (expression is null)
-                    //    {
-                    //        expression = GetEnum32Expression(context, "player", expectedValueType);
-                    //    }
-                    //    break;
-
                     case "sound":
                     case "effect":
                     case "damage":
@@ -231,31 +225,6 @@ namespace Blamite.Blam.Scripting.Compiler
                             expression = GetAIExpressionH3(context, expectedValueType);
                         }
                         break;
-
-                    //case "player":
-                    //case "game_difficulty":
-                    //case "team":
-                    //case "mp_team":
-                    //case "controller":
-                    //case "actor_type":
-                    //case "model_state":
-                    //case "event":
-                    //case "character_physics":
-                    //case "skull":
-                    //case "firing_point_evaluator":
-                    //case "damage_region":
-                    //    expression = GetEnum32Expression(context, expectedValueType, expectedValueType);
-                    //    break;
-
-                    //case "button_preset":
-                    //case "joystick_preset":
-                    //case "player_color":
-                    //case "player_model_choice":
-                    //case "voice_output_setting":
-                    //case "voice_mask":
-                    //case "subtitle_setting":
-                    //    expression = GetEnumExpression(context, expectedValueType);
-                    //    break;
 
                     case "object_name":
                     case "unit_name":
@@ -350,12 +319,12 @@ namespace Blamite.Blam.Scripting.Compiler
             if(info.Size == 4)
             {
                 return new ScriptExpression(_currentIndex, info.Opcode, info.Opcode, ScriptExpressionType.Expression,
-                    _strings.Cache(text), (short)context.Start.Line, (uint)val);
+                    _strings.Cache(text.Replace('_', ' ')), (short)context.Start.Line, (uint)val);
             }
             else if(info.Size == 2)
             {
                 return new ScriptExpression(_currentIndex, info.Opcode, info.Opcode, ScriptExpressionType.Expression,
-                    _strings.Cache(text), (short)context.Start.Line, (ushort)val);
+                    _strings.Cache(text.Replace('_', ' ')), (short)context.Start.Line, (ushort)val);
             }
             else
             {
