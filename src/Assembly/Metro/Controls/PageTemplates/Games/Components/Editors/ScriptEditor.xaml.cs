@@ -102,6 +102,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
             itemShowInformation.IsChecked = App.AssemblyStorage.AssemblySettings.ShowScriptInfo;
             itemDebugData.IsChecked = App.AssemblyStorage.AssemblySettings.OutputCompilerDebugData;
+
+            // Enable compilation only for supported games.
+            if(_buildInfo.Name.Contains("Reach") || _buildInfo.Name.Contains("Halo 3") && _buildInfo.HeaderSize != 0x800 && !_buildInfo.Name.Contains("ODST"))
+            {
+                compileButton.Visibility = Visibility.Visible;
+                progressReporter.Visibility = Visibility.Visible;
+            }
         }
 
 
@@ -179,83 +186,76 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
         private async void CompileClick(object sender, RoutedEventArgs e)
         {
-            if (_buildInfo.Name.Contains("Reach") || _buildInfo.Name.Contains("Halo 3"))
+            // Logger Setup
+            string folder = "Compiler";
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+            string logPath = Path.Combine(folder, "ScriptCompiler.log");
+
+            using (var logStream = File.Create(logPath))
             {
-                // Logger Setup
-                string folder = "Compiler";
-                if (!Directory.Exists(folder))
-                    Directory.CreateDirectory(folder);
-                string logPath = Path.Combine(folder, "ScriptCompiler.log");
-
-                using (var logStream = File.Create(logPath))
+                // Create the logger and the exception collector. They are used for debugging.
+                var traceListener = new TextWriterTraceListener(logStream);
+                var logger = new ScriptCompilerLogger(traceListener);
+                var exceptionCollector = new ParsingExceptionCollector();
+                logger.Information($"Attempting to compile: {_scriptFile.Name}, Time: {DateTime.Now}");
+                try
                 {
-                    // Create the logger and the exception collector. They are used for debugging.
-                    var traceListener = new TextWriterTraceListener(logStream);
-                    var logger = new ScriptCompilerLogger(traceListener);
-                    var exceptionCollector = new ParsingExceptionCollector();
-                    logger.Information($"Attempting to compile: {_scriptFile.Name}, Time: {DateTime.Now}");
-                    try
+                    // Get the script file.
+                    string hsc = txtScript.Text;
+
+                    // Measure the time it took to compile the scripts.
+                    var stopWatch = Stopwatch.StartNew();
+
+                    // Compile the scripts.
+                    ScriptData compileData = await Task.Run(() => CompileScripts(hsc, _progress, logger, exceptionCollector));
+                    stopWatch.Stop();
+                    var timeSpan = stopWatch.Elapsed;
+                    string compilationMessage = $"The scripts were successfully compiled in {Math.Round(timeSpan.TotalSeconds, 3)} seconds.";
+                    logger.Information(compilationMessage);
+
+                    // Show the message box.
+                    var saveResult = MetroMessageBox.Show("Scripts Compiled", compilationMessage
+                            + "\nWARNING: This compiler is not 100% accurate and could corrupt the map in rare cases. Making a backup before proceeding is advisable."
+                            + "\n\nDo you want to save the changes to the file?", MetroMessageBox.MessageBoxButtons.YesNo);
+                    if(saveResult == MetroMessageBox.MessageBoxResult.Yes)
                     {
-                        // Get the script file.
-                        string hsc = txtScript.Text;
-
-                        // Measure the time it took to compile the scripts.
-                        var stopWatch = Stopwatch.StartNew();
-
-                        // Compile the scripts.
-                        ScriptData compileData = await Task.Run(() => CompileScripts(hsc, _progress, logger, exceptionCollector));
-                        stopWatch.Stop();
-                        var timeSpan = stopWatch.Elapsed;
-                        string compilationMessage = $"The scripts were successfully compiled in {Math.Round(timeSpan.TotalSeconds, 3)} seconds.";
-                        logger.Information(compilationMessage);
-
-                        // Show the message box.
-                        var saveResult = MetroMessageBox.Show("Scripts Compiled", compilationMessage
-                                + "\nWARNING: This compiler is not 100% accurate and could corrupt the map in rare cases. Making a backup before proceeding is advisable."
-                                + "\n\nDo you want to save the changes to the file?", MetroMessageBox.MessageBoxButtons.YesNo);
-                        if(saveResult == MetroMessageBox.MessageBoxResult.Yes)
+                        //TODO: Move this to its own function.
+                        await Task.Run(() =>
                         {
-                            //TODO: Move this to its own function.
-                            await Task.Run(() =>
+                            using (IStream stream = _streamManager.OpenReadWrite())
                             {
-                                using (IStream stream = _streamManager.OpenReadWrite())
-                                {
-                                    _scriptFile.SaveScripts(compileData, stream, _progress);
-                                    _cashefile.SaveChanges(stream);
-                                }
-                            });
-                            RefreshMeta();
-                            StatusUpdater.Update("Scripts saved");
-                        }
-                    }
-                    // Handle Parsing Errors.
-                    catch(OperationCanceledException opEx)
-                    {
-                        if (exceptionCollector.ContainsExceptions)
-                        {
-                            HandleParsingErrors(opEx, exceptionCollector, logger);
-                        }
-                        else
-                        {
-                            MetroMessageBox.Show("Operation Canceled", opEx.Message);
-                        }
-
-                    }
-                    // Handle Compiler Errors.
-                    catch(CompilerException compEx)
-                    {
-                        HandleCompilerErrors(compEx, logger);
-                    }
-                    finally
-                    {
-                        logger.Flush();
-                        ResetProgressBar();
+                                _scriptFile.SaveScripts(compileData, stream, _progress);
+                                _cashefile.SaveChanges(stream);
+                            }
+                        });
+                        RefreshMeta();
+                        StatusUpdater.Update("Scripts saved");
                     }
                 }
-            }
-            else
-            {
-                MetroMessageBox.Show("Game Not Supported", $"Script compilation for {_buildInfo.Name} is not supported yet.");
+                // Handle Parsing Errors.
+                catch(OperationCanceledException opEx)
+                {
+                    if (exceptionCollector.ContainsExceptions)
+                    {
+                        HandleParsingErrors(opEx, exceptionCollector, logger);
+                    }
+                    else
+                    {
+                        MetroMessageBox.Show("Operation Canceled", opEx.Message);
+                    }
+
+                }
+                // Handle Compiler Errors.
+                catch(CompilerException compEx)
+                {
+                    HandleCompilerErrors(compEx, logger);
+                }
+                finally
+                {
+                    logger.Flush();
+                    ResetProgressBar();
+                }
             }
         }
 
