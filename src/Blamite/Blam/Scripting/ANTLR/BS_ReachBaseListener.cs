@@ -32,6 +32,7 @@ using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 /// of the available methods.
 /// </summary>
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.8")]
+[System.CLSCompliant(false)]
 public partial class BS_ReachBaseListener : IBS_ReachListener {
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="BS_ReachParser.hsc"/>.

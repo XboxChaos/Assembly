@@ -34,7 +34,8 @@ namespace Blamite.Blam.Scripting.Compiler
                 for (ushort i = 0; i < parameters.Length; i++)
                 {
                     string name = parameters[i].ID().GetTextSanitized();
-                    string valueType = parameters[i].VALUETYPE().GetTextSanitized();
+                    var valueTypeNode = parameters[i].VALUETYPE();
+                    string valueType = valueTypeNode is null ? "script" : valueTypeNode.GetTextSanitized();                     
                     var param = new ParameterInfo(name, valueType, i);
                     Parameters.Add(param);
                 }
