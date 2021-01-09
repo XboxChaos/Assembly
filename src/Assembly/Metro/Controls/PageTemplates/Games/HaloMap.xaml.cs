@@ -682,6 +682,36 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			MetroMessageBox.Show("Dump Successful", "Tag list dumped successfully.");
 		}
 
+		private void DumpFullTagList(object sender, RoutedEventArgs e)
+		{
+			var sfd = new SaveFileDialog
+			{
+				Title = "Save Tag List",
+				Filter = "Text Files|*.txt|Tag Lists|*.taglist|All Files|*.*"
+			};
+			bool? result = sfd.ShowDialog();
+			if (!result.Value)
+				return;
+
+			using (var writer = new StreamWriter(sfd.FileName))
+			{
+				foreach (ITag tag in _cacheFile.Tags)
+				{
+					if (tag == null || tag.Group == null) continue;
+
+					var groupArray = BitConverter.GetBytes(tag.Group.Magic);
+					Array.Reverse(groupArray);
+					var groupString = System.Text.Encoding.ASCII.GetString(groupArray);
+
+					string name = _cacheFile.FileNames.GetTagName(tag);
+					if (name != null)
+						writer.WriteLine("{0},{1},{2}", groupString, tag.Index, name);
+				}
+			}
+
+			MetroMessageBox.Show("Dump Successful", "Tag list dumped successfully.");
+		}
+
 		private void NotifyPropertyChanged(String info)
 		{
 			if (PropertyChanged != null)
