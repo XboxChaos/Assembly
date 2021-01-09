@@ -193,10 +193,13 @@ namespace ScriptWalker
                     }
                     break;
 
-
                 default:
-                    areEqual = areEqual && (origExp.StringValue == modExp.StringValue);
                     areEqual = areEqual && valComparer.Equals(origExp.Value, modExp.Value);
+                    // Ignore enum values, where a space char was replaced with an underscore.
+                    if (origExp.StringValue != modExp.StringValue && (!_op.GetTypeInfo(valueType).IsEnum || origExp.StringValue.Replace(' ', '_') != modExp.StringValue))
+                    {
+                        areEqual = false;
+                    }
                     break;
             }
 
