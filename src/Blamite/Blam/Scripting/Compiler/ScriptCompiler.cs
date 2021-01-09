@@ -14,7 +14,7 @@ using System.Text.RegularExpressions;
 
 namespace Blamite.Blam.Scripting.Compiler
 {
-    public partial class ScriptCompiler : BS_ReachBaseListener
+    public partial class ScriptCompiler : HS_Gen1BaseListener
     {
         // debug
         private readonly ScriptCompilerLogger _logger;
@@ -25,8 +25,6 @@ namespace Blamite.Blam.Scripting.Compiler
         private readonly EngineDescription _buildInfo;
         private readonly OpcodeLookup _opcodes;
         private readonly ScriptingContextCollection _scriptingContext;
-
-        // TODO: Change the script lookup from dictionary to lookup.
         private Dictionary<string, List<ScriptInfo>> _scriptLookup = new Dictionary<string, List<ScriptInfo>>();
         private Dictionary<string, GlobalInfo> _mapGlobalsLookup = new Dictionary<string, GlobalInfo>();
         private readonly Dictionary<string, ParameterInfo> _parameterLookup = new Dictionary<string, ParameterInfo>();
@@ -46,6 +44,7 @@ namespace Blamite.Blam.Scripting.Compiler
         private readonly TypeStack _expectedTypes;
 
         // branching
+        private ushort _nextGenBranchIndex = 0;
         private ushort _branchBoolIndex = 0;
         private readonly List<Branch> _generatedBranches = new List<Branch>();
 
@@ -92,7 +91,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// Generate script and global lookups.
         /// </summary>
         /// <param name="context"></param>
-        public override void EnterHsc(BS_ReachParser.HscContext context)
+        public override void EnterHsc(HS_Gen1Parser.HscContext context)
         {
             // Generate the globals lookup.
             if (context.globalDeclaration() != null)
@@ -101,10 +100,11 @@ namespace Blamite.Blam.Scripting.Compiler
 
             }
 
-            // Generate the script lookup.
+            // Generate the script lookup and determine the index, which the next generated branch script will have.
             var declarations = context.scriptDeclaration();
             if (declarations != null)
             {
+                _nextGenBranchIndex = (ushort)declarations.Length;
                 _scriptLookup = new Dictionary<string, List<ScriptInfo>>();
 
                 for(ushort i = 0; i < context.scriptDeclaration().Length; i++)
@@ -132,7 +132,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// Output Debug Info
         /// </summary>
         /// <param name="context"></param>
-        public override void ExitHsc(BS_ReachParser.HscContext context)
+        public override void ExitHsc(HS_Gen1Parser.HscContext context)
         {
             GenerateBranches();
             if(_debug)
@@ -150,7 +150,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// Generates the variable lookup. Pushes return types.
         /// </summary>
         /// <param name="context"></param>
-        public override void EnterScriptDeclaration(BS_ReachParser.ScriptDeclarationContext context)
+        public override void EnterScriptDeclaration(HS_Gen1Parser.ScriptDeclarationContext context)
         {
             if(_debug)
             {
@@ -187,7 +187,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// Closes a datum.
         /// </summary>
         /// <param name="context"></param>
-        public override void ExitScriptDeclaration(BS_ReachParser.ScriptDeclarationContext context)
+        public override void ExitScriptDeclaration(HS_Gen1Parser.ScriptDeclarationContext context)
         {
             if (_debug)
             {
@@ -203,7 +203,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// Processes global declarations. Opens a datum. Creates the global node. Pushes the value type.
         /// </summary>
         /// <param name="context"></param>
-        public override void EnterGlobalDeclaration(BS_ReachParser.GlobalDeclarationContext context)
+        public override void EnterGlobalDeclaration(HS_Gen1Parser.GlobalDeclarationContext context)
         {
             if (_debug)
             {
@@ -233,7 +233,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// Closes a datum.
         /// </summary>
         /// <param name="context"></param>
-        public override void ExitGlobalDeclaration(BS_ReachParser.GlobalDeclarationContext context)
+        public override void ExitGlobalDeclaration(HS_Gen1Parser.GlobalDeclarationContext context)
         {
             if (_debug)
             {
@@ -249,7 +249,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// Pops a value type. Pushes parameter types.
         /// </summary>
         /// <param name="context"></param>
-        public override void EnterCall(BS_ReachParser.CallContext context)
+        public override void EnterCall(HS_Gen1Parser.CallContext context)
         {
             if (_debug)
             {
@@ -300,7 +300,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// Closes a datum.
         /// </summary>
         /// <param name="context"></param>
-        public override void ExitCall(BS_ReachParser.CallContext context)
+        public override void ExitCall(HS_Gen1Parser.CallContext context)
         {
             if (_debug)
             {
@@ -310,7 +310,7 @@ namespace Blamite.Blam.Scripting.Compiler
             CloseDatum();
         }
 
-        public override void EnterBranch(BS_ReachParser.BranchContext context)
+        public override void EnterBranch(HS_Gen1Parser.BranchContext context)
         {
             if (_debug)
             {
@@ -333,7 +333,7 @@ namespace Blamite.Blam.Scripting.Compiler
             _branchBoolIndex = _currentIndex.Index;
         }
 
-        public override void ExitBranch(BS_ReachParser.BranchContext context)
+        public override void ExitBranch(HS_Gen1Parser.BranchContext context)
         {
             if (_debug)
             {
@@ -341,7 +341,7 @@ namespace Blamite.Blam.Scripting.Compiler
             }
 
             // Generate the script name.
-            var scriptContext = GetParentContext(context, BS_ReachParser.RULE_scriptDeclaration) as BS_ReachParser.ScriptDeclarationContext;
+            var scriptContext = GetParentContext(context, HS_Gen1Parser.RULE_scriptDeclaration) as HS_Gen1Parser.ScriptDeclarationContext;
             if(scriptContext is null)
             {
                 throw new CompilerException("The compiler failed to retrieve the name of a script, from which \"branch\" was called.", context);
@@ -360,11 +360,12 @@ namespace Blamite.Blam.Scripting.Compiler
             var scriptReference = _expressions[condition.Next.Index].Clone();
 
             // Modify the original script reference. The opcode points to the generated script.
-            _expressions[condition.Next.Index].Opcode = (ushort)_scriptLookup.Count;
+            _expressions[condition.Next.Index].Opcode = _nextGenBranchIndex;
 
             // Add the generated script to the lookup.
-            ScriptInfo info = new ScriptInfo(generatedName, "static", "void", (ushort)_scriptLookup.Count);
+            ScriptInfo info = new ScriptInfo(generatedName, "static", "void", _nextGenBranchIndex);
             AddScriptToLookup(info);
+            _nextGenBranchIndex++;
             _generatedBranches.Add(new Branch(generatedName, context.GetCorrectTextPosition(_missingCarriageReturnPositions), condition, scriptReference));
 
             CloseDatum();
@@ -372,7 +373,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
        
 
-        public override void EnterCond(BS_ReachParser.CondContext context)
+        public override void EnterCond(HS_Gen1Parser.CondContext context)
         {
             if (_debug)
             {
@@ -386,7 +387,7 @@ namespace Blamite.Blam.Scripting.Compiler
             _condIndeces.Push(_expressions.Count);
         }
 
-        public override void ExitCond(BS_ReachParser.CondContext context)
+        public override void ExitCond(HS_Gen1Parser.CondContext context)
         {
             if (_debug)
             {
@@ -416,7 +417,7 @@ namespace Blamite.Blam.Scripting.Compiler
             OpenDatum(firstGroupIndex);
         }
 
-        public override void EnterCondGroup(BS_ReachParser.CondGroupContext context)
+        public override void EnterCondGroup(HS_Gen1Parser.CondGroupContext context)
         {
             if (_debug)
             {
@@ -430,7 +431,7 @@ namespace Blamite.Blam.Scripting.Compiler
             _expectedTypes.PushTypes(_condReturnType, context.expression().Count() - 1);
             _expectedTypes.PushType("boolean");
 
-            var parentCond = context.Parent as BS_ReachParser.CondContext;
+            var parentCond = context.Parent as HS_Gen1Parser.CondContext;
             var ifInfo = _opcodes.GetFunctionInfo("if")[0];
             var compilerIf = new ScriptExpression
             {
@@ -464,7 +465,7 @@ namespace Blamite.Blam.Scripting.Compiler
             _condIndeces.Push(_expressions.Count);
         }
 
-        public override void ExitCondGroup(BS_ReachParser.CondGroupContext context)
+        public override void ExitCondGroup(HS_Gen1Parser.CondGroupContext context)
         {
             if (_debug)
             {
@@ -513,7 +514,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// Processes regular expressions, script variables and global references. Links to a datum. Opens a datum.
         /// </summary>
         /// <param name="context"></param>
-        public override void EnterLiteral(BS_ReachParser.LiteralContext context)
+        public override void EnterLiteral(HS_Gen1Parser.LiteralContext context)
         {
             if (_debug)
             {
@@ -609,11 +610,11 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private ushort GetGlobalOpCode(ushort globalOpcode, RuleContext context)
         {
-            RuleContext grandparent = GetParentContext(context, BS_ReachParser.RULE_call);
+            RuleContext grandparent = GetParentContext(context, HS_Gen1Parser.RULE_call);
             ushort opcode = globalOpcode;
 
             // "set" and (in)equality functions are special.
-            if (grandparent is BS_ReachParser.CallContext call)
+            if (grandparent is HS_Gen1Parser.CallContext call)
             {
                 string funcName = call.callID().GetTextSanitized();
                 List<FunctionInfo> funcInfo = _opcodes.GetFunctionInfo(funcName);
@@ -649,10 +650,11 @@ namespace Blamite.Blam.Scripting.Compiler
             // Find the last generated equality function name.
             for(int i = _expressions.Count -1; i >= 0; i--)
             {
-                var currentExpression = _expressions[i];
-                if(currentExpression.Type == ScriptExpressionType.Expression && currentExpression.ReturnType == _opcodes.GetTypeInfo("function_name").Opcode)
+                if(_expressions[i].Type == ScriptExpressionType.Expression 
+                    && _expressions[i].ReturnType == _opcodes.GetTypeInfo("function_name").Opcode
+                    && _expressions[i - 1].Type == ScriptExpressionType.Group)
                 {
-                    var funcInfo = _opcodes.GetFunctionInfo(currentExpression.Opcode);
+                    var funcInfo = _opcodes.GetFunctionInfo(_expressions[i].Opcode);
                     if (funcInfo.Group == "Equality" || funcInfo.Group == "Inequality")
                     {
                         if(i == _expressions.Count - 1)
@@ -694,7 +696,7 @@ namespace Blamite.Blam.Scripting.Compiler
             return calculatedType;
         }
 
-        private bool IsScriptReference(string expectedReturnType, int expectedParameterCount, BS_ReachParser.CallContext context)
+        private bool IsScriptReference(string expectedReturnType, int expectedParameterCount, HS_Gen1Parser.CallContext context)
         {
             string key = context.callID().GetTextSanitized();
 
@@ -769,7 +771,7 @@ namespace Blamite.Blam.Scripting.Compiler
             ushort opcode = returnTypeOpcode;
 
             // (In)Equality functions are special
-            if(context.Parent.Parent is BS_ReachParser.CallContext grandparent)
+            if(context.Parent.Parent is HS_Gen1Parser.CallContext grandparent)
             {
                 string funcName = grandparent.callID().GetTextSanitized();
                 var funcInfo = _opcodes.GetFunctionInfo(funcName);
@@ -805,7 +807,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="info">The function's ScriptFunctionInfo</param>
         /// <param name="context">The call contect</param>
         /// <param name="actualParameterCount">The number of parameters which was extracted from the context</param>
-        private void PushCallParameters(FunctionInfo info, int contextParameterCount, string expectedReturnType, BS_ReachParser.CallContext context)
+        private void PushCallParameters(FunctionInfo info, int contextParameterCount, string expectedReturnType, HS_Gen1Parser.CallContext context)
         {
             int expectedParamCount = info.ParameterTypes.Count();
 

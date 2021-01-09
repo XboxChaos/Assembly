@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from d:\Dev\Antlr\BS_Reach.g4 by ANTLR 4.8
+// Generated from d:\Dev\Antlr\HS_Gen1.g4 by ANTLR 4.8
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -31,14 +31,13 @@ using Antlr4.Runtime.Tree;
 using DFA = Antlr4.Runtime.Dfa.DFA;
 
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.8")]
-[System.CLSCompliant(false)]
-public partial class BS_ReachParser : Parser {
+public partial class HS_Gen1Parser : Parser {
 	protected static DFA[] decisionToDFA;
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
-		T__0=1, T__1=2, T__2=3, T__3=4, BOOLEAN=5, NONE=6, DAMAGEREGION=7, MODELSTATE=8, 
-		SCRIPT=9, VALUETYPE=10, SCRIPTTYPE=11, STRING=12, FLOAT=13, INT=14, LP=15, 
-		RP=16, ID=17, WS=18, BLOCKCOMMENT=19, COMMENT=20;
+		T__0=1, T__1=2, T__2=3, T__3=4, BOOLEAN=5, NONE=6, SCRIPT=7, VALUETYPE=8, 
+		SCRIPTTYPE=9, STRING=10, FLOAT=11, INT=12, LP=13, RP=14, ID=15, WS=16, 
+		BLOCKCOMMENT=17, COMMENT=18;
 	public const int
 		RULE_hsc = 0, RULE_globalDeclaration = 1, RULE_scriptDeclaration = 2, 
 		RULE_scriptParameters = 3, RULE_cond = 4, RULE_branch = 5, RULE_call = 6, 
@@ -51,13 +50,13 @@ public partial class BS_ReachParser : Parser {
 	};
 
 	private static readonly string[] _LiteralNames = {
-		null, "'global'", "','", "'cond'", "'branch'", null, null, null, null, 
-		"'script'", null, null, null, null, null, "'('", "')'"
+		null, "'global'", "','", "'cond'", "'branch'", null, null, "'script'", 
+		null, null, null, null, null, "'('", "')'"
 	};
 	private static readonly string[] _SymbolicNames = {
-		null, null, null, null, null, "BOOLEAN", "NONE", "DAMAGEREGION", "MODELSTATE", 
-		"SCRIPT", "VALUETYPE", "SCRIPTTYPE", "STRING", "FLOAT", "INT", "LP", "RP", 
-		"ID", "WS", "BLOCKCOMMENT", "COMMENT"
+		null, null, null, null, null, "BOOLEAN", "NONE", "SCRIPT", "VALUETYPE", 
+		"SCRIPTTYPE", "STRING", "FLOAT", "INT", "LP", "RP", "ID", "WS", "BLOCKCOMMENT", 
+		"COMMENT"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -70,22 +69,22 @@ public partial class BS_ReachParser : Parser {
 		}
 	}
 
-	public override string GrammarFileName { get { return "BS_Reach.g4"; } }
+	public override string GrammarFileName { get { return "HS_Gen1.g4"; } }
 
 	public override string[] RuleNames { get { return ruleNames; } }
 
 	public override string SerializedAtn { get { return new string(_serializedATN); } }
 
-	static BS_ReachParser() {
+	static HS_Gen1Parser() {
 		decisionToDFA = new DFA[_ATN.NumberOfDecisions];
 		for (int i = 0; i < _ATN.NumberOfDecisions; i++) {
 			decisionToDFA[i] = new DFA(_ATN.GetDecisionState(i), i);
 		}
 	}
 
-		public BS_ReachParser(ITokenStream input) : this(input, Console.Out, Console.Error) { }
+		public HS_Gen1Parser(ITokenStream input) : this(input, Console.Out, Console.Error) { }
 
-		public BS_ReachParser(ITokenStream input, TextWriter output, TextWriter errorOutput)
+		public HS_Gen1Parser(ITokenStream input, TextWriter output, TextWriter errorOutput)
 		: base(input, output, errorOutput)
 	{
 		Interpreter = new ParserATNSimulator(this, _ATN, decisionToDFA, sharedContextCache);
@@ -110,11 +109,11 @@ public partial class BS_ReachParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_hsc; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.EnterHsc(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.ExitHsc(this);
 		}
 	}
@@ -165,24 +164,24 @@ public partial class BS_ReachParser : Parser {
 	}
 
 	public partial class GlobalDeclarationContext : ParserRuleContext {
-		public ITerminalNode LP() { return GetToken(BS_ReachParser.LP, 0); }
-		public ITerminalNode VALUETYPE() { return GetToken(BS_ReachParser.VALUETYPE, 0); }
-		public ITerminalNode ID() { return GetToken(BS_ReachParser.ID, 0); }
+		public ITerminalNode LP() { return GetToken(HS_Gen1Parser.LP, 0); }
+		public ITerminalNode VALUETYPE() { return GetToken(HS_Gen1Parser.VALUETYPE, 0); }
+		public ITerminalNode ID() { return GetToken(HS_Gen1Parser.ID, 0); }
 		public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
-		public ITerminalNode RP() { return GetToken(BS_ReachParser.RP, 0); }
+		public ITerminalNode RP() { return GetToken(HS_Gen1Parser.RP, 0); }
 		public GlobalDeclarationContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_globalDeclaration; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.EnterGlobalDeclaration(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.ExitGlobalDeclaration(this);
 		}
 	}
@@ -214,14 +213,14 @@ public partial class BS_ReachParser : Parser {
 	}
 
 	public partial class ScriptDeclarationContext : ParserRuleContext {
-		public ITerminalNode LP() { return GetToken(BS_ReachParser.LP, 0); }
-		public ITerminalNode SCRIPT() { return GetToken(BS_ReachParser.SCRIPT, 0); }
-		public ITerminalNode SCRIPTTYPE() { return GetToken(BS_ReachParser.SCRIPTTYPE, 0); }
-		public ITerminalNode VALUETYPE() { return GetToken(BS_ReachParser.VALUETYPE, 0); }
+		public ITerminalNode LP() { return GetToken(HS_Gen1Parser.LP, 0); }
+		public ITerminalNode SCRIPT() { return GetToken(HS_Gen1Parser.SCRIPT, 0); }
+		public ITerminalNode SCRIPTTYPE() { return GetToken(HS_Gen1Parser.SCRIPTTYPE, 0); }
+		public ITerminalNode VALUETYPE() { return GetToken(HS_Gen1Parser.VALUETYPE, 0); }
 		public ScriptIDContext scriptID() {
 			return GetRuleContext<ScriptIDContext>(0);
 		}
-		public ITerminalNode RP() { return GetToken(BS_ReachParser.RP, 0); }
+		public ITerminalNode RP() { return GetToken(HS_Gen1Parser.RP, 0); }
 		public ScriptParametersContext scriptParameters() {
 			return GetRuleContext<ScriptParametersContext>(0);
 		}
@@ -237,11 +236,11 @@ public partial class BS_ReachParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_scriptDeclaration; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.EnterScriptDeclaration(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.ExitScriptDeclaration(this);
 		}
 	}
@@ -280,7 +279,7 @@ public partial class BS_ReachParser : Parser {
 				State = 51;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << BOOLEAN) | (1L << NONE) | (1L << DAMAGEREGION) | (1L << MODELSTATE) | (1L << VALUETYPE) | (1L << STRING) | (1L << FLOAT) | (1L << INT) | (1L << LP) | (1L << ID))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << BOOLEAN) | (1L << NONE) | (1L << VALUETYPE) | (1L << STRING) | (1L << FLOAT) | (1L << INT) | (1L << LP) | (1L << ID))) != 0) );
 			State = 53; Match(RP);
 			}
 		}
@@ -296,25 +295,25 @@ public partial class BS_ReachParser : Parser {
 	}
 
 	public partial class ScriptParametersContext : ParserRuleContext {
-		public ITerminalNode LP() { return GetToken(BS_ReachParser.LP, 0); }
+		public ITerminalNode LP() { return GetToken(HS_Gen1Parser.LP, 0); }
 		public ParameterContext[] parameter() {
 			return GetRuleContexts<ParameterContext>();
 		}
 		public ParameterContext parameter(int i) {
 			return GetRuleContext<ParameterContext>(i);
 		}
-		public ITerminalNode RP() { return GetToken(BS_ReachParser.RP, 0); }
+		public ITerminalNode RP() { return GetToken(HS_Gen1Parser.RP, 0); }
 		public ScriptParametersContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_scriptParameters; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.EnterScriptParameters(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.ExitScriptParameters(this);
 		}
 	}
@@ -358,8 +357,8 @@ public partial class BS_ReachParser : Parser {
 	}
 
 	public partial class CondContext : ParserRuleContext {
-		public ITerminalNode LP() { return GetToken(BS_ReachParser.LP, 0); }
-		public ITerminalNode RP() { return GetToken(BS_ReachParser.RP, 0); }
+		public ITerminalNode LP() { return GetToken(HS_Gen1Parser.LP, 0); }
+		public ITerminalNode RP() { return GetToken(HS_Gen1Parser.RP, 0); }
 		public CondGroupContext[] condGroup() {
 			return GetRuleContexts<CondGroupContext>();
 		}
@@ -372,11 +371,11 @@ public partial class BS_ReachParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_cond; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.EnterCond(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.ExitCond(this);
 		}
 	}
@@ -419,8 +418,8 @@ public partial class BS_ReachParser : Parser {
 	}
 
 	public partial class BranchContext : ParserRuleContext {
-		public ITerminalNode LP() { return GetToken(BS_ReachParser.LP, 0); }
-		public ITerminalNode RP() { return GetToken(BS_ReachParser.RP, 0); }
+		public ITerminalNode LP() { return GetToken(HS_Gen1Parser.LP, 0); }
+		public ITerminalNode RP() { return GetToken(HS_Gen1Parser.RP, 0); }
 		public ExpressionContext[] expression() {
 			return GetRuleContexts<ExpressionContext>();
 		}
@@ -433,11 +432,11 @@ public partial class BS_ReachParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_branch; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.EnterBranch(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.ExitBranch(this);
 		}
 	}
@@ -455,7 +454,7 @@ public partial class BS_ReachParser : Parser {
 			State = 80;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << BOOLEAN) | (1L << NONE) | (1L << DAMAGEREGION) | (1L << MODELSTATE) | (1L << VALUETYPE) | (1L << STRING) | (1L << FLOAT) | (1L << INT) | (1L << LP) | (1L << ID))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << BOOLEAN) | (1L << NONE) | (1L << VALUETYPE) | (1L << STRING) | (1L << FLOAT) | (1L << INT) | (1L << LP) | (1L << ID))) != 0)) {
 				{
 				{
 				State = 77; expression();
@@ -480,11 +479,11 @@ public partial class BS_ReachParser : Parser {
 	}
 
 	public partial class CallContext : ParserRuleContext {
-		public ITerminalNode LP() { return GetToken(BS_ReachParser.LP, 0); }
+		public ITerminalNode LP() { return GetToken(HS_Gen1Parser.LP, 0); }
 		public CallIDContext callID() {
 			return GetRuleContext<CallIDContext>(0);
 		}
-		public ITerminalNode RP() { return GetToken(BS_ReachParser.RP, 0); }
+		public ITerminalNode RP() { return GetToken(HS_Gen1Parser.RP, 0); }
 		public ExpressionContext[] expression() {
 			return GetRuleContexts<ExpressionContext>();
 		}
@@ -497,11 +496,11 @@ public partial class BS_ReachParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_call; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.EnterCall(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.ExitCall(this);
 		}
 	}
@@ -519,7 +518,7 @@ public partial class BS_ReachParser : Parser {
 			State = 90;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << BOOLEAN) | (1L << NONE) | (1L << DAMAGEREGION) | (1L << MODELSTATE) | (1L << VALUETYPE) | (1L << STRING) | (1L << FLOAT) | (1L << INT) | (1L << LP) | (1L << ID))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << BOOLEAN) | (1L << NONE) | (1L << VALUETYPE) | (1L << STRING) | (1L << FLOAT) | (1L << INT) | (1L << LP) | (1L << ID))) != 0)) {
 				{
 				{
 				State = 87; expression();
@@ -544,25 +543,25 @@ public partial class BS_ReachParser : Parser {
 	}
 
 	public partial class CondGroupContext : ParserRuleContext {
-		public ITerminalNode LP() { return GetToken(BS_ReachParser.LP, 0); }
+		public ITerminalNode LP() { return GetToken(HS_Gen1Parser.LP, 0); }
 		public ExpressionContext[] expression() {
 			return GetRuleContexts<ExpressionContext>();
 		}
 		public ExpressionContext expression(int i) {
 			return GetRuleContext<ExpressionContext>(i);
 		}
-		public ITerminalNode RP() { return GetToken(BS_ReachParser.RP, 0); }
+		public ITerminalNode RP() { return GetToken(HS_Gen1Parser.RP, 0); }
 		public CondGroupContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_condGroup; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.EnterCondGroup(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.ExitCondGroup(this);
 		}
 	}
@@ -589,7 +588,7 @@ public partial class BS_ReachParser : Parser {
 				State = 100;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << BOOLEAN) | (1L << NONE) | (1L << DAMAGEREGION) | (1L << MODELSTATE) | (1L << VALUETYPE) | (1L << STRING) | (1L << FLOAT) | (1L << INT) | (1L << LP) | (1L << ID))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << BOOLEAN) | (1L << NONE) | (1L << VALUETYPE) | (1L << STRING) | (1L << FLOAT) | (1L << INT) | (1L << LP) | (1L << ID))) != 0) );
 			State = 102; Match(RP);
 			}
 		}
@@ -605,20 +604,20 @@ public partial class BS_ReachParser : Parser {
 	}
 
 	public partial class ParameterContext : ParserRuleContext {
-		public ITerminalNode ID() { return GetToken(BS_ReachParser.ID, 0); }
-		public ITerminalNode SCRIPT() { return GetToken(BS_ReachParser.SCRIPT, 0); }
-		public ITerminalNode VALUETYPE() { return GetToken(BS_ReachParser.VALUETYPE, 0); }
+		public ITerminalNode ID() { return GetToken(HS_Gen1Parser.ID, 0); }
+		public ITerminalNode SCRIPT() { return GetToken(HS_Gen1Parser.SCRIPT, 0); }
+		public ITerminalNode VALUETYPE() { return GetToken(HS_Gen1Parser.VALUETYPE, 0); }
 		public ParameterContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_parameter; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.EnterParameter(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.ExitParameter(this);
 		}
 	}
@@ -655,19 +654,19 @@ public partial class BS_ReachParser : Parser {
 	}
 
 	public partial class ScriptIDContext : ParserRuleContext {
-		public ITerminalNode ID() { return GetToken(BS_ReachParser.ID, 0); }
-		public ITerminalNode INT() { return GetToken(BS_ReachParser.INT, 0); }
+		public ITerminalNode ID() { return GetToken(HS_Gen1Parser.ID, 0); }
+		public ITerminalNode INT() { return GetToken(HS_Gen1Parser.INT, 0); }
 		public ScriptIDContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_scriptID; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.EnterScriptID(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.ExitScriptID(this);
 		}
 	}
@@ -706,18 +705,18 @@ public partial class BS_ReachParser : Parser {
 		public ScriptIDContext scriptID() {
 			return GetRuleContext<ScriptIDContext>(0);
 		}
-		public ITerminalNode VALUETYPE() { return GetToken(BS_ReachParser.VALUETYPE, 0); }
+		public ITerminalNode VALUETYPE() { return GetToken(HS_Gen1Parser.VALUETYPE, 0); }
 		public CallIDContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_callID; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.EnterCallID(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.ExitCallID(this);
 		}
 	}
@@ -777,11 +776,11 @@ public partial class BS_ReachParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_expression; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.EnterExpression(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.ExitExpression(this);
 		}
 	}
@@ -832,26 +831,24 @@ public partial class BS_ReachParser : Parser {
 	}
 
 	public partial class LiteralContext : ParserRuleContext {
-		public ITerminalNode INT() { return GetToken(BS_ReachParser.INT, 0); }
-		public ITerminalNode FLOAT() { return GetToken(BS_ReachParser.FLOAT, 0); }
-		public ITerminalNode STRING() { return GetToken(BS_ReachParser.STRING, 0); }
-		public ITerminalNode DAMAGEREGION() { return GetToken(BS_ReachParser.DAMAGEREGION, 0); }
-		public ITerminalNode MODELSTATE() { return GetToken(BS_ReachParser.MODELSTATE, 0); }
-		public ITerminalNode BOOLEAN() { return GetToken(BS_ReachParser.BOOLEAN, 0); }
-		public ITerminalNode ID() { return GetToken(BS_ReachParser.ID, 0); }
-		public ITerminalNode NONE() { return GetToken(BS_ReachParser.NONE, 0); }
-		public ITerminalNode VALUETYPE() { return GetToken(BS_ReachParser.VALUETYPE, 0); }
+		public ITerminalNode INT() { return GetToken(HS_Gen1Parser.INT, 0); }
+		public ITerminalNode FLOAT() { return GetToken(HS_Gen1Parser.FLOAT, 0); }
+		public ITerminalNode STRING() { return GetToken(HS_Gen1Parser.STRING, 0); }
+		public ITerminalNode BOOLEAN() { return GetToken(HS_Gen1Parser.BOOLEAN, 0); }
+		public ITerminalNode ID() { return GetToken(HS_Gen1Parser.ID, 0); }
+		public ITerminalNode NONE() { return GetToken(HS_Gen1Parser.NONE, 0); }
+		public ITerminalNode VALUETYPE() { return GetToken(HS_Gen1Parser.VALUETYPE, 0); }
 		public LiteralContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_literal; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.EnterLiteral(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IBS_ReachListener typedListener = listener as IBS_ReachListener;
+			IHS_Gen1Listener typedListener = listener as IHS_Gen1Listener;
 			if (typedListener != null) typedListener.ExitLiteral(this);
 		}
 	}
@@ -866,7 +863,7 @@ public partial class BS_ReachParser : Parser {
 			{
 			State = 119;
 			_la = TokenStream.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << BOOLEAN) | (1L << NONE) | (1L << DAMAGEREGION) | (1L << MODELSTATE) | (1L << VALUETYPE) | (1L << STRING) | (1L << FLOAT) | (1L << INT) | (1L << ID))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << BOOLEAN) | (1L << NONE) | (1L << VALUETYPE) | (1L << STRING) | (1L << FLOAT) | (1L << INT) | (1L << ID))) != 0)) ) {
 			ErrorHandler.RecoverInline(this);
 			}
 			else {
@@ -888,7 +885,7 @@ public partial class BS_ReachParser : Parser {
 
 	private static char[] _serializedATN = {
 		'\x3', '\x608B', '\xA72A', '\x8133', '\xB9ED', '\x417C', '\x3BE7', '\x7786', 
-		'\x5964', '\x3', '\x16', '|', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
+		'\x5964', '\x3', '\x14', '|', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
 		'\t', '\x3', '\x4', '\x4', '\t', '\x4', '\x4', '\x5', '\t', '\x5', '\x4', 
 		'\x6', '\t', '\x6', '\x4', '\a', '\t', '\a', '\x4', '\b', '\t', '\b', 
 		'\x4', '\t', '\t', '\t', '\x4', '\n', '\t', '\n', '\x4', '\v', '\t', '\v', 
@@ -914,76 +911,76 @@ public partial class BS_ReachParser : Parser {
 		'\x3', '\r', '\x3', '\r', '\x5', '\r', 'x', '\n', '\r', '\x3', '\xE', 
 		'\x3', '\xE', '\x3', '\xE', '\x2', '\x2', '\xF', '\x2', '\x4', '\x6', 
 		'\b', '\n', '\f', '\xE', '\x10', '\x12', '\x14', '\x16', '\x18', '\x1A', 
-		'\x2', '\x5', '\x3', '\x2', '\v', '\f', '\x4', '\x2', '\x10', '\x10', 
-		'\x13', '\x13', '\x6', '\x2', '\a', '\n', '\f', '\f', '\xE', '\x10', '\x13', 
-		'\x13', '\x2', '{', '\x2', ' ', '\x3', '\x2', '\x2', '\x2', '\x4', '#', 
-		'\x3', '\x2', '\x2', '\x2', '\x6', '*', '\x3', '\x2', '\x2', '\x2', '\b', 
-		'\x39', '\x3', '\x2', '\x2', '\x2', '\n', '\x44', '\x3', '\x2', '\x2', 
-		'\x2', '\f', 'M', '\x3', '\x2', '\x2', '\x2', '\xE', 'W', '\x3', '\x2', 
-		'\x2', '\x2', '\x10', '\x61', '\x3', '\x2', '\x2', '\x2', '\x12', 'j', 
-		'\x3', '\x2', '\x2', '\x2', '\x14', 'm', '\x3', '\x2', '\x2', '\x2', '\x16', 
+		'\x2', '\x5', '\x3', '\x2', '\t', '\n', '\x4', '\x2', '\xE', '\xE', '\x11', 
+		'\x11', '\x6', '\x2', '\a', '\b', '\n', '\n', '\f', '\xE', '\x11', '\x11', 
+		'\x2', '{', '\x2', ' ', '\x3', '\x2', '\x2', '\x2', '\x4', '#', '\x3', 
+		'\x2', '\x2', '\x2', '\x6', '*', '\x3', '\x2', '\x2', '\x2', '\b', '\x39', 
+		'\x3', '\x2', '\x2', '\x2', '\n', '\x44', '\x3', '\x2', '\x2', '\x2', 
+		'\f', 'M', '\x3', '\x2', '\x2', '\x2', '\xE', 'W', '\x3', '\x2', '\x2', 
+		'\x2', '\x10', '\x61', '\x3', '\x2', '\x2', '\x2', '\x12', 'j', '\x3', 
+		'\x2', '\x2', '\x2', '\x14', 'm', '\x3', '\x2', '\x2', '\x2', '\x16', 
 		'q', '\x3', '\x2', '\x2', '\x2', '\x18', 'w', '\x3', '\x2', '\x2', '\x2', 
 		'\x1A', 'y', '\x3', '\x2', '\x2', '\x2', '\x1C', '\x1F', '\x5', '\x4', 
 		'\x3', '\x2', '\x1D', '\x1F', '\x5', '\x6', '\x4', '\x2', '\x1E', '\x1C', 
 		'\x3', '\x2', '\x2', '\x2', '\x1E', '\x1D', '\x3', '\x2', '\x2', '\x2', 
 		'\x1F', '\"', '\x3', '\x2', '\x2', '\x2', ' ', '\x1E', '\x3', '\x2', '\x2', 
 		'\x2', ' ', '!', '\x3', '\x2', '\x2', '\x2', '!', '\x3', '\x3', '\x2', 
-		'\x2', '\x2', '\"', ' ', '\x3', '\x2', '\x2', '\x2', '#', '$', '\a', '\x11', 
-		'\x2', '\x2', '$', '%', '\a', '\x3', '\x2', '\x2', '%', '&', '\a', '\f', 
-		'\x2', '\x2', '&', '\'', '\a', '\x13', '\x2', '\x2', '\'', '(', '\x5', 
-		'\x18', '\r', '\x2', '(', ')', '\a', '\x12', '\x2', '\x2', ')', '\x5', 
-		'\x3', '\x2', '\x2', '\x2', '*', '+', '\a', '\x11', '\x2', '\x2', '+', 
-		',', '\a', '\v', '\x2', '\x2', ',', '-', '\a', '\r', '\x2', '\x2', '-', 
-		'.', '\a', '\f', '\x2', '\x2', '.', '\x30', '\x5', '\x14', '\v', '\x2', 
+		'\x2', '\x2', '\"', ' ', '\x3', '\x2', '\x2', '\x2', '#', '$', '\a', '\xF', 
+		'\x2', '\x2', '$', '%', '\a', '\x3', '\x2', '\x2', '%', '&', '\a', '\n', 
+		'\x2', '\x2', '&', '\'', '\a', '\x11', '\x2', '\x2', '\'', '(', '\x5', 
+		'\x18', '\r', '\x2', '(', ')', '\a', '\x10', '\x2', '\x2', ')', '\x5', 
+		'\x3', '\x2', '\x2', '\x2', '*', '+', '\a', '\xF', '\x2', '\x2', '+', 
+		',', '\a', '\t', '\x2', '\x2', ',', '-', '\a', '\v', '\x2', '\x2', '-', 
+		'.', '\a', '\n', '\x2', '\x2', '.', '\x30', '\x5', '\x14', '\v', '\x2', 
 		'/', '\x31', '\x5', '\b', '\x5', '\x2', '\x30', '/', '\x3', '\x2', '\x2', 
 		'\x2', '\x30', '\x31', '\x3', '\x2', '\x2', '\x2', '\x31', '\x33', '\x3', 
 		'\x2', '\x2', '\x2', '\x32', '\x34', '\x5', '\x18', '\r', '\x2', '\x33', 
 		'\x32', '\x3', '\x2', '\x2', '\x2', '\x34', '\x35', '\x3', '\x2', '\x2', 
 		'\x2', '\x35', '\x33', '\x3', '\x2', '\x2', '\x2', '\x35', '\x36', '\x3', 
 		'\x2', '\x2', '\x2', '\x36', '\x37', '\x3', '\x2', '\x2', '\x2', '\x37', 
-		'\x38', '\a', '\x12', '\x2', '\x2', '\x38', '\a', '\x3', '\x2', '\x2', 
-		'\x2', '\x39', ':', '\a', '\x11', '\x2', '\x2', ':', '?', '\x5', '\x12', 
+		'\x38', '\a', '\x10', '\x2', '\x2', '\x38', '\a', '\x3', '\x2', '\x2', 
+		'\x2', '\x39', ':', '\a', '\xF', '\x2', '\x2', ':', '?', '\x5', '\x12', 
 		'\n', '\x2', ';', '<', '\a', '\x4', '\x2', '\x2', '<', '>', '\x5', '\x12', 
 		'\n', '\x2', '=', ';', '\x3', '\x2', '\x2', '\x2', '>', '\x41', '\x3', 
 		'\x2', '\x2', '\x2', '?', '=', '\x3', '\x2', '\x2', '\x2', '?', '@', '\x3', 
 		'\x2', '\x2', '\x2', '@', '\x42', '\x3', '\x2', '\x2', '\x2', '\x41', 
-		'?', '\x3', '\x2', '\x2', '\x2', '\x42', '\x43', '\a', '\x12', '\x2', 
+		'?', '\x3', '\x2', '\x2', '\x2', '\x42', '\x43', '\a', '\x10', '\x2', 
 		'\x2', '\x43', '\t', '\x3', '\x2', '\x2', '\x2', '\x44', '\x45', '\a', 
-		'\x11', '\x2', '\x2', '\x45', 'G', '\a', '\x5', '\x2', '\x2', '\x46', 
-		'H', '\x5', '\x10', '\t', '\x2', 'G', '\x46', '\x3', '\x2', '\x2', '\x2', 
-		'H', 'I', '\x3', '\x2', '\x2', '\x2', 'I', 'G', '\x3', '\x2', '\x2', '\x2', 
+		'\xF', '\x2', '\x2', '\x45', 'G', '\a', '\x5', '\x2', '\x2', '\x46', 'H', 
+		'\x5', '\x10', '\t', '\x2', 'G', '\x46', '\x3', '\x2', '\x2', '\x2', 'H', 
+		'I', '\x3', '\x2', '\x2', '\x2', 'I', 'G', '\x3', '\x2', '\x2', '\x2', 
 		'I', 'J', '\x3', '\x2', '\x2', '\x2', 'J', 'K', '\x3', '\x2', '\x2', '\x2', 
-		'K', 'L', '\a', '\x12', '\x2', '\x2', 'L', '\v', '\x3', '\x2', '\x2', 
-		'\x2', 'M', 'N', '\a', '\x11', '\x2', '\x2', 'N', 'R', '\a', '\x6', '\x2', 
+		'K', 'L', '\a', '\x10', '\x2', '\x2', 'L', '\v', '\x3', '\x2', '\x2', 
+		'\x2', 'M', 'N', '\a', '\xF', '\x2', '\x2', 'N', 'R', '\a', '\x6', '\x2', 
 		'\x2', 'O', 'Q', '\x5', '\x18', '\r', '\x2', 'P', 'O', '\x3', '\x2', '\x2', 
 		'\x2', 'Q', 'T', '\x3', '\x2', '\x2', '\x2', 'R', 'P', '\x3', '\x2', '\x2', 
 		'\x2', 'R', 'S', '\x3', '\x2', '\x2', '\x2', 'S', 'U', '\x3', '\x2', '\x2', 
-		'\x2', 'T', 'R', '\x3', '\x2', '\x2', '\x2', 'U', 'V', '\a', '\x12', '\x2', 
-		'\x2', 'V', '\r', '\x3', '\x2', '\x2', '\x2', 'W', 'X', '\a', '\x11', 
-		'\x2', '\x2', 'X', '\\', '\x5', '\x16', '\f', '\x2', 'Y', '[', '\x5', 
-		'\x18', '\r', '\x2', 'Z', 'Y', '\x3', '\x2', '\x2', '\x2', '[', '^', '\x3', 
-		'\x2', '\x2', '\x2', '\\', 'Z', '\x3', '\x2', '\x2', '\x2', '\\', ']', 
-		'\x3', '\x2', '\x2', '\x2', ']', '_', '\x3', '\x2', '\x2', '\x2', '^', 
-		'\\', '\x3', '\x2', '\x2', '\x2', '_', '`', '\a', '\x12', '\x2', '\x2', 
-		'`', '\xF', '\x3', '\x2', '\x2', '\x2', '\x61', '\x62', '\a', '\x11', 
-		'\x2', '\x2', '\x62', '\x64', '\x5', '\x18', '\r', '\x2', '\x63', '\x65', 
-		'\x5', '\x18', '\r', '\x2', '\x64', '\x63', '\x3', '\x2', '\x2', '\x2', 
-		'\x65', '\x66', '\x3', '\x2', '\x2', '\x2', '\x66', '\x64', '\x3', '\x2', 
-		'\x2', '\x2', '\x66', 'g', '\x3', '\x2', '\x2', '\x2', 'g', 'h', '\x3', 
-		'\x2', '\x2', '\x2', 'h', 'i', '\a', '\x12', '\x2', '\x2', 'i', '\x11', 
-		'\x3', '\x2', '\x2', '\x2', 'j', 'k', '\t', '\x2', '\x2', '\x2', 'k', 
-		'l', '\a', '\x13', '\x2', '\x2', 'l', '\x13', '\x3', '\x2', '\x2', '\x2', 
-		'm', 'n', '\t', '\x3', '\x2', '\x2', 'n', '\x15', '\x3', '\x2', '\x2', 
-		'\x2', 'o', 'r', '\x5', '\x14', '\v', '\x2', 'p', 'r', '\a', '\f', '\x2', 
-		'\x2', 'q', 'o', '\x3', '\x2', '\x2', '\x2', 'q', 'p', '\x3', '\x2', '\x2', 
-		'\x2', 'r', '\x17', '\x3', '\x2', '\x2', '\x2', 's', 'x', '\x5', '\x1A', 
-		'\xE', '\x2', 't', 'x', '\x5', '\xE', '\b', '\x2', 'u', 'x', '\x5', '\f', 
-		'\a', '\x2', 'v', 'x', '\x5', '\n', '\x6', '\x2', 'w', 's', '\x3', '\x2', 
-		'\x2', '\x2', 'w', 't', '\x3', '\x2', '\x2', '\x2', 'w', 'u', '\x3', '\x2', 
-		'\x2', '\x2', 'w', 'v', '\x3', '\x2', '\x2', '\x2', 'x', '\x19', '\x3', 
-		'\x2', '\x2', '\x2', 'y', 'z', '\t', '\x4', '\x2', '\x2', 'z', '\x1B', 
-		'\x3', '\x2', '\x2', '\x2', '\r', '\x1E', ' ', '\x30', '\x35', '?', 'I', 
-		'R', '\\', '\x66', 'q', 'w',
+		'\x2', 'T', 'R', '\x3', '\x2', '\x2', '\x2', 'U', 'V', '\a', '\x10', '\x2', 
+		'\x2', 'V', '\r', '\x3', '\x2', '\x2', '\x2', 'W', 'X', '\a', '\xF', '\x2', 
+		'\x2', 'X', '\\', '\x5', '\x16', '\f', '\x2', 'Y', '[', '\x5', '\x18', 
+		'\r', '\x2', 'Z', 'Y', '\x3', '\x2', '\x2', '\x2', '[', '^', '\x3', '\x2', 
+		'\x2', '\x2', '\\', 'Z', '\x3', '\x2', '\x2', '\x2', '\\', ']', '\x3', 
+		'\x2', '\x2', '\x2', ']', '_', '\x3', '\x2', '\x2', '\x2', '^', '\\', 
+		'\x3', '\x2', '\x2', '\x2', '_', '`', '\a', '\x10', '\x2', '\x2', '`', 
+		'\xF', '\x3', '\x2', '\x2', '\x2', '\x61', '\x62', '\a', '\xF', '\x2', 
+		'\x2', '\x62', '\x64', '\x5', '\x18', '\r', '\x2', '\x63', '\x65', '\x5', 
+		'\x18', '\r', '\x2', '\x64', '\x63', '\x3', '\x2', '\x2', '\x2', '\x65', 
+		'\x66', '\x3', '\x2', '\x2', '\x2', '\x66', '\x64', '\x3', '\x2', '\x2', 
+		'\x2', '\x66', 'g', '\x3', '\x2', '\x2', '\x2', 'g', 'h', '\x3', '\x2', 
+		'\x2', '\x2', 'h', 'i', '\a', '\x10', '\x2', '\x2', 'i', '\x11', '\x3', 
+		'\x2', '\x2', '\x2', 'j', 'k', '\t', '\x2', '\x2', '\x2', 'k', 'l', '\a', 
+		'\x11', '\x2', '\x2', 'l', '\x13', '\x3', '\x2', '\x2', '\x2', 'm', 'n', 
+		'\t', '\x3', '\x2', '\x2', 'n', '\x15', '\x3', '\x2', '\x2', '\x2', 'o', 
+		'r', '\x5', '\x14', '\v', '\x2', 'p', 'r', '\a', '\n', '\x2', '\x2', 'q', 
+		'o', '\x3', '\x2', '\x2', '\x2', 'q', 'p', '\x3', '\x2', '\x2', '\x2', 
+		'r', '\x17', '\x3', '\x2', '\x2', '\x2', 's', 'x', '\x5', '\x1A', '\xE', 
+		'\x2', 't', 'x', '\x5', '\xE', '\b', '\x2', 'u', 'x', '\x5', '\f', '\a', 
+		'\x2', 'v', 'x', '\x5', '\n', '\x6', '\x2', 'w', 's', '\x3', '\x2', '\x2', 
+		'\x2', 'w', 't', '\x3', '\x2', '\x2', '\x2', 'w', 'u', '\x3', '\x2', '\x2', 
+		'\x2', 'w', 'v', '\x3', '\x2', '\x2', '\x2', 'x', '\x19', '\x3', '\x2', 
+		'\x2', '\x2', 'y', 'z', '\t', '\x4', '\x2', '\x2', 'z', '\x1B', '\x3', 
+		'\x2', '\x2', '\x2', '\r', '\x1E', ' ', '\x30', '\x35', '?', 'I', 'R', 
+		'\\', '\x66', 'q', 'w',
 	};
 
 	public static readonly ATN _ATN =

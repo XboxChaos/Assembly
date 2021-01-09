@@ -410,13 +410,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                 // Set up the lexer.
                 logger.Information("Running the lexer...");
                 ICharStream stream = CharStreams.fromstring(code);
-                BS_ReachLexer lexer = new BS_ReachLexer(stream);
+                HS_Gen1Lexer lexer = new HS_Gen1Lexer(stream);
                 lexer.AddErrorListener(collector);
                 ITokenStream tokens = new CommonTokenStream(lexer);
 
                 // Set up the parser.
                 logger.Information("Running the parser...");
-                BS_ReachParser parser = new BS_ReachParser(tokens);
+                HS_Gen1Parser parser = new HS_Gen1Parser(tokens);
                 parser.AddErrorListener(collector);
 
                 // Parse the scripts.

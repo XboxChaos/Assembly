@@ -18,7 +18,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <value>The opcode of the function.</value>
         public ushort Opcode { get; private set; }
 
-        public ScriptInfo(BS_ReachParser.ScriptDeclarationContext context, ushort index)
+        public ScriptInfo(HS_Gen1Parser.ScriptDeclarationContext context, ushort index)
         {
             Name = context.scriptID().GetTextSanitized();
             ScriptType = context.SCRIPTTYPE().GetTextSanitized();

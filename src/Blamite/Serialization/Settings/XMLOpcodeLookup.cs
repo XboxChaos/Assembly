@@ -71,7 +71,6 @@ namespace Blamite.Serialization.Settings
 				if (name == "")
 				{
 					continue;
-
 				}
 
 				var opcode = (ushort) XMLUtil.GetNumericAttribute(element, "opcode");
@@ -105,17 +104,6 @@ namespace Blamite.Serialization.Settings
             }
         }
 
-        //private void RegisterTypeCasts2(XContainer root, OpcodeLookup lookup)
-        //{
-        //    foreach (XElement element in root.Element("typecasting").Elements("to"))
-        //    {
-        //        string to = XMLUtil.GetStringAttribute(element, "name");
-        //        bool castOnly = XMLUtil.GetBoolAttribute(element, "castOnly", false);
-        //        List<string> from = element.Elements("from").Select(e => e.Value).ToList();
-        //        CastInfo info = new CastInfo(to, castOnly, from);
-        //        lookup.RegisterTypeCast(to, info);
-        //    }
-        //}
 
 		private void RegisterTypeCasts(XContainer root, OpcodeLookup lookup)
         {

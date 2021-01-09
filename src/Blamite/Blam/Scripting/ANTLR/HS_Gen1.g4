@@ -1,4 +1,4 @@
-grammar BS_Reach;
+grammar HS_Gen1;
 
 hsc : (globalDeclaration|scriptDeclaration)* ;
 
@@ -39,8 +39,6 @@ literal
         :       INT
         |       FLOAT
         |       STRING
-        |       DAMAGEREGION
-        |       MODELSTATE
         |       BOOLEAN
         |       ID
         |       NONE
@@ -61,28 +59,6 @@ BOOLEAN
 
 NONE: 'none' | 'None' | 'NONE';
 		
-DAMAGEREGION
-        :       'gut'
-        |       'chest'
-        |       'head'
-        |       'left shoulder'
-        |       'left arm'
-        |       'left leg'
-        |       'left foot'
-        |       'right shoulder'
-        |       'right arm'
-        |       'right leg'
-        |       'right foot'
-        ;
-		
-MODELSTATE
-        :       'standard'
-        |       'minor damage'
-        |       'medium damage'
-        |       'major damage'
-        |       'destroyed'
-        ;   
-
 SCRIPT: 'script' ;
 
 VALUETYPE

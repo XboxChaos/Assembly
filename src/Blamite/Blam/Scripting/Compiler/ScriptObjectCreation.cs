@@ -8,7 +8,7 @@ namespace Blamite.Blam.Scripting.Compiler
 {
     public static class ScriptObjectCreation
     {
-        public static Script GetScriptFromContext(BS_ReachParser.ScriptDeclarationContext context, DatumIndex rootExpressionIndex, OpcodeLookup opcodes)
+        public static Script GetScriptFromContext(HS_Gen1Parser.ScriptDeclarationContext context, DatumIndex rootExpressionIndex, OpcodeLookup opcodes)
         {
             // Create a new Script.
             Script script = new Script

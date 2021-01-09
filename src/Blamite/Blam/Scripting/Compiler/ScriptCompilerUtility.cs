@@ -12,29 +12,8 @@ using System.Runtime.CompilerServices;
 
 namespace Blamite.Blam.Scripting.Compiler
 {
-    public partial class ScriptCompiler : BS_ReachBaseListener
+    public partial class ScriptCompiler : HS_Gen1BaseListener
     {
-        //private FunctionInfo RetrieveFunctionInfo(string function, int parameterCount)
-        //{
-        //    List<FunctionInfo> infos = _opcodes.GetFunctionInfo(function);
-        //    if (infos == null || infos.Count == 0)
-        //    {
-        //        return null;
-        //    }
-
-        //    // Overloaded functions exist. Select the right one based on its parameter count and whether the function is implemented or not.
-        //    if (infos.Count > 1)
-        //    {
-        //        return infos.Find(i => i.Implemented && i.ParameterTypes.Count() == parameterCount);
-
-        //    }
-        //    else
-        //    {
-        //        return infos[0];
-
-        //    }
-        //}
-
         private RuleContext GetParentContext(RuleContext context, int ruleIndex)
         {
             RuleContext parent = context.Parent;
@@ -42,7 +21,7 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 return parent;
             }
-            while (parent.RuleIndex != BS_ReachParser.RULE_hsc)
+            while (parent.RuleIndex != HS_Gen1Parser.RULE_hsc)
             {
                 parent = parent.Parent;
                 if (parent.RuleIndex == ruleIndex)
@@ -320,7 +299,7 @@ namespace Blamite.Blam.Scripting.Compiler
             }
         }
 
-        private bool CheckParameterSanity(BS_ReachParser.CallContext context, FunctionInfo function)
+        private bool CheckParameterSanity(HS_Gen1Parser.CallContext context, FunctionInfo function)
         {
             var expressionContexts = context.expression();
 
@@ -340,7 +319,7 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 if(TypeHelper.IsNumType(function.ParameterTypes[i]))
                 {
-                    BS_ReachParser.LiteralContext literal = expressionContexts[i].literal();
+                    HS_Gen1Parser.LiteralContext literal = expressionContexts[i].literal();
                     if (literal?.BOOLEAN() != null || literal?.STRING() != null)
                     {
                         return false;

@@ -28,7 +28,7 @@ namespace Blamite.Blam.Scripting
         /// </summary>
         /// <param name="context">The parser rule context of the global.</param>
         /// <param name="index">The index of the map global.</param>
-        public GlobalInfo(BS_ReachParser.GlobalDeclarationContext context, ushort index)
+        public GlobalInfo(HS_Gen1Parser.GlobalDeclarationContext context, ushort index)
         {
             Name = context.ID().GetTextSanitized();
             ReturnType = context.VALUETYPE().GetTextSanitized();
