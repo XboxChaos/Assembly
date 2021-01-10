@@ -149,33 +149,30 @@ namespace ScriptTool
 
         public static void FilteredExpressionsToXml(Dictionary<string, ScriptExpression[]> expressions, string filePath)
         {
-            if (expressions.Count > 0)
+            var settings = new XmlWriterSettings
             {
-                var settings = new XmlWriterSettings
-                {
-                    Indent = true
-                };
+                Indent = true
+            };
 
-                using (var writer = XmlWriter.Create(filePath, settings))
+            using (var writer = XmlWriter.Create(filePath, settings))
+            {
+                writer.WriteStartDocument();
+                writer.WriteStartElement("Maps");
+                foreach(var map in expressions)
                 {
-                    writer.WriteStartDocument();
-                    writer.WriteStartElement("Maps");
-                    foreach(var map in expressions)
+                    // Write map name.
+                    writer.WriteStartElement("Map_" + map.Key);
+
+                    // Write the expressions.
+                    foreach(var expr in map.Value)
                     {
-                        // Write map name.
-                        writer.WriteStartElement("Map_" + map.Key);
-
-                        // Write the expressions.
-                        foreach(var expr in map.Value)
-                        {
-                            WriteExpression(writer, expr);
-                        }
-                        writer.WriteEndElement();
+                        WriteExpression(writer, expr);
                     }
                     writer.WriteEndElement();
-                    writer.WriteEndDocument();
-                    writer.Close();
                 }
+                writer.WriteEndElement();
+                writer.WriteEndDocument();
+                writer.Close();
             }
         }
 
@@ -229,7 +226,7 @@ namespace ScriptTool
             writer.WriteAttributeString("NextIndex", expression.Next.Index.ToString("X4"));
             writer.WriteAttributeString("StringOff", expression.StringOffset.ToString("X"));
             writer.WriteAttributeString("String", expression.StringValue);
-            writer.WriteAttributeString("Value", expression.Value.UintValue.ToString("X8"));
+            writer.WriteAttributeString("Value", expression.Value.ToString());
             writer.WriteAttributeString("LineNum", expression.LineNumber.ToString("X4"));
             writer.WriteEndElement();
         }
@@ -268,6 +265,36 @@ namespace ScriptTool
                     writer.WriteEndDocument();
                     writer.Close();
                 }
+            }
+        }
+
+        public static void TypeCastsToXml(Dictionary<string, List<string>> casts, string filePath)
+        {
+            var settings = new XmlWriterSettings
+            {
+                Indent = true
+            };
+
+            using (var writer = XmlWriter.Create(filePath, settings))
+            {
+                writer.WriteStartDocument();
+                writer.WriteStartElement("typecasting");
+                foreach (KeyValuePair<string, List<string>> to in casts)
+                {
+                    writer.WriteStartElement("to");
+                    writer.WriteAttributeString("name", to.Key);
+
+                    foreach (string from in to.Value)
+                    {
+                        writer.WriteStartElement("from");
+                        writer.WriteString(from);
+                        writer.WriteEndElement();
+                    }
+                    writer.WriteEndElement();
+                }
+                writer.WriteEndElement();
+                writer.WriteEndDocument();
+                writer.Close();
             }
         }
     }

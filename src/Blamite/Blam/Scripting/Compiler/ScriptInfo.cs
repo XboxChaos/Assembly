@@ -18,7 +18,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <value>The opcode of the function.</value>
         public ushort Opcode { get; private set; }
 
-        public ScriptInfo(BS_ReachParser.ScriptDeclarationContext context, ushort index)
+        public ScriptInfo(HS_Gen1Parser.ScriptDeclarationContext context, ushort index)
         {
             Name = context.scriptID().GetTextSanitized();
             ScriptType = context.SCRIPTTYPE().GetTextSanitized();
@@ -34,7 +34,8 @@ namespace Blamite.Blam.Scripting.Compiler
                 for (ushort i = 0; i < parameters.Length; i++)
                 {
                     string name = parameters[i].ID().GetTextSanitized();
-                    string valueType = parameters[i].VALUETYPE().GetTextSanitized();
+                    var valueTypeNode = parameters[i].VALUETYPE();
+                    string valueType = valueTypeNode is null ? "script" : valueTypeNode.GetTextSanitized();                     
                     var param = new ParameterInfo(name, valueType, i);
                     Parameters.Add(param);
                 }

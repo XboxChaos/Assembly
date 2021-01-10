@@ -8,7 +8,7 @@ namespace Blamite.Blam.Scripting.Compiler
 {
     public static class ScriptObjectCreation
     {
-        public static Script GetScriptFromContext(BS_ReachParser.ScriptDeclarationContext context, DatumIndex rootExpressionIndex, OpcodeLookup opcodes)
+        public static Script GetScriptFromContext(HS_Gen1Parser.ScriptDeclarationContext context, DatumIndex rootExpressionIndex, OpcodeLookup opcodes)
         {
             // Create a new Script.
             Script script = new Script
@@ -26,7 +26,8 @@ namespace Blamite.Blam.Scripting.Compiler
                 for (ushort i = 0; i < parameters.Length; i++)
                 {
                     string name = parameters[i].ID().GetTextSanitized();
-                    string valueType = parameters[i].VALUETYPE().GetTextSanitized();
+                    var valueTypeNode = parameters[i].VALUETYPE();
+                    string valueType = valueTypeNode is null ? "script" : valueTypeNode.GetTextSanitized();
 
                     // Add the parameter to the script object.
                     ScriptParameter parameter = new ScriptParameter

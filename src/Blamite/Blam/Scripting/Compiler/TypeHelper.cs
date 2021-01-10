@@ -15,51 +15,69 @@ namespace Blamite.Blam.Scripting.Compiler
         private const string _numberID = "NUMBER";
         private static readonly IReadOnlyList<string> _numTypes = new ReadOnlyCollection<string>(new List<string>() { "long", "short", "real" });
 
+        //public static bool CanBeCasted(string from, string to, OpcodeLookup op)
+        //{
+        //    if ((IsNumType(from) && IsNumType(to)) || (op.GetTypeInfo(from).IsObject && op.GetTypeInfo(to).IsObject))
+        //    {
+        //        return true;
+        //    }
+
+        //    // Check if this type supports casting
+        //    CastInfo info = op.GetTypeCast(to);
+        //    if (info != null)
+        //    {
+        //        List<string> casts = new List<string>();
+        //        List<string> processedTypes = new List<string>();
+        //        int addedTypes = info.From.Count;
+        //        casts.AddRange(info.From);
+
+        //        // Generate a list of all possible casts.
+        //        while (addedTypes > 0)
+        //        {
+        //            int added = 0;
+        //            string[] difference = casts.Except(processedTypes).ToArray();
+        //            foreach (string cast in difference)
+        //            {
+        //                info = op.GetTypeCast(cast);
+        //                if (info != null)
+        //                {
+        //                    foreach (var type in info.From)
+        //                    {
+        //                        if (!casts.Contains(type))
+        //                        {
+        //                            casts.Add(type);
+        //                            added++;
+        //                        }
+        //                    }
+        //                }
+        //                processedTypes.Add(cast);
+        //            }
+        //            addedTypes = added;
+        //        }
+        //        // Check if this generated list contains this cast.
+        //        return casts.Contains(from);
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
+
         public static bool CanBeCasted(string from, string to, OpcodeLookup op)
         {
-            if ((IsNumType(from) && IsNumType(to)) || (op.GetTypeInfo(from).Object && op.GetTypeInfo(to).Object))
+            if ((IsNumType(from) && IsNumType(to)) || (op.GetTypeInfo(from).IsObject && op.GetTypeInfo(to).IsObject))
             {
                 return true;
             }
 
-            // Check if this type supports casting
             CastInfo info = op.GetTypeCast(to);
-            if (info != null)
+            if(info is null)
             {
-                List<string> casts = new List<string>();
-                List<string> processedTypes = new List<string>();
-                int addedTypes = info.From.Count;
-                casts.AddRange(info.From);
-
-                // Generate a list of all possible casts.
-                while (addedTypes > 0)
-                {
-                    int added = 0;
-                    string[] difference = casts.Except(processedTypes).ToArray();
-                    foreach (string cast in difference)
-                    {
-                        info = op.GetTypeCast(cast);
-                        if (info != null)
-                        {
-                            foreach (var type in info.From)
-                            {
-                                if (!casts.Contains(type))
-                                {
-                                    casts.Add(type);
-                                    added++;
-                                }
-                            }
-                        }
-                        processedTypes.Add(cast);
-                    }
-                    addedTypes = added;
-                }
-                // Check if this generated list contains this cast.
-                return casts.Contains(from);
+                return false;
             }
             else
             {
-                return false;
+                return info.From.Contains(from);
             }
         }
 
@@ -79,6 +97,19 @@ namespace Blamite.Blam.Scripting.Compiler
         public static bool IsNumType(string type)
         {
             return _numTypes.Contains(type);
+        }
+
+        public static bool IsObject(string type, OpcodeLookup op)
+        {
+            CastInfo info = op.GetTypeCast("object");
+            if(info is null)
+            {
+                return false;
+            }
+            else
+            {
+                return info.From.Contains(type);
+            }
         }
     }
 }

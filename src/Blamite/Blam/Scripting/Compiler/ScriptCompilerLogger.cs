@@ -170,13 +170,13 @@ namespace Blamite.Blam.Scripting.Compiler
 
         #region Contexts
 
-        public void Script(BS_ReachParser.ScriptDeclarationContext context, CompilerContextAction action)
+        public void Script(HS_Gen1Parser.ScriptDeclarationContext context, CompilerContextAction action)
         {
             string name = context.scriptID().GetTextSanitized();
             WriteContextIndent("SCRIPT", context, action, name);
         }
 
-        public void Global(BS_ReachParser.GlobalDeclarationContext context, CompilerContextAction action)
+        public void Global(HS_Gen1Parser.GlobalDeclarationContext context, CompilerContextAction action)
         {
             string name = context.ID().GetTextSanitized();
             WriteContextIndent("GLOBAL", context, action, name);
@@ -207,7 +207,7 @@ namespace Blamite.Blam.Scripting.Compiler
             WriteContext("LITERAL", context, action);
         }
 
-        public void Call(BS_ReachParser.CallContext context, CompilerContextAction action)
+        public void Call(HS_Gen1Parser.CallContext context, CompilerContextAction action)
         {
             string name = context.callID().GetTextSanitized();
             WriteContextIndent("CALL", context, action, name);

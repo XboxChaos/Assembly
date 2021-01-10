@@ -31,13 +31,13 @@ namespace Blamite.Blam.Scripting.Compiler
             Text = GetOriginalText(context);
         }
 
-        public CompilerException(string message, BS_ReachParser.CallContext context) : base(message)
+        public CompilerException(string message, HS_Gen1Parser.CallContext context) : base(message)
         {
             SetCommonProperties(context);
             Text = context.callID().GetTextSanitized();
         }
 
-        public CompilerException(string message, BS_ReachParser.BranchContext context) : base(message)
+        public CompilerException(string message, HS_Gen1Parser.BranchContext context) : base(message)
         {
             SetCommonProperties(context);
             Text = "branch";

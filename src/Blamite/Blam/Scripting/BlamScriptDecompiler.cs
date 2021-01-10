@@ -594,13 +594,13 @@ namespace Blamite.Blam.Scripting
 				if (actualType.Quoted)
 				{
 					// Don't quote the keyword none.
-					if(expression.Value.IsNull || expression.StringValue == "none")
+					if (expression.Value.IsNull || expression.StringValue == "none")
                     {
 						output.Write("none");
 					}
                     else
                     {
-						output.Write("\"{0}\"", expression.StringValue);
+						output.Write("\"{0}\"", ScriptStringHelpers.Escape(expression.StringValue));
 					}
 					return false;
 				}
@@ -622,14 +622,7 @@ namespace Blamite.Blam.Scripting
 					text = _scripts.Scripts[index].Name;
 					break;
 				case "boolean":
-					if (BitConverter.ToBoolean(val, 0))
-					{
-						text = "true";
-					}
-					else
-					{
-						text = "false";
-					}
+					text = BitConverter.ToBoolean(val, 0) ? "true" : "false";
 					break;
 				case "short":
 					text = BitConverter.ToInt16(val, 0).ToString();
@@ -644,17 +637,10 @@ namespace Blamite.Blam.Scripting
 					text = fl.ToString("0.0#######", CultureInfo.InvariantCulture);
 					break;
 				case "ai_line":
-					text = expression.StringValue;
+					text = expression.StringValue == "" ? "\"\"" : expression.StringValue;
 					break;
 				case "unit_seat_mapping":
-					if (!expression.Value.IsNull)
-					{
-						text = expression.StringValue;
-					}
-					else
-					{
-						text = "none";
-					}
+					text = expression.Value.IsNull ? "none" : expression.StringValue;
 					break;
 
 				default:
@@ -707,8 +693,8 @@ namespace Blamite.Blam.Scripting
 				uint result = type.Size switch
 				{
 					4 => expression.Value.UintValue,
-					2 => (uint)BitConverter.ToUInt16(bytes, 0),
-					1 => (uint)bytes[0],
+					2 => BitConverter.ToUInt16(bytes, 0),
+					1 => bytes[0],
 					0 => 0,
 					_ => throw new ArgumentException($"Script value types can only have a size of 0, 1, 2 or 4 bytes. The size {type.Size} is invalid.")
 				};

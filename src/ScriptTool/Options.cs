@@ -23,10 +23,13 @@ namespace ScriptTool
 
         //[Option("strings", Group = "ScriptObject", Default = (bool)false, HelpText = "Dump script strings.")]
         //public bool DumpStrings { get; set; }
+        [Option("casts", Group = "ScriptObject", Default = (bool)false, HelpText = "Dump Type Casts.")]
+        public bool DumpTypeCasts { get; set; }
+
         [Option("stringids", Group = "ScriptObject", Default = (bool)false, HelpText = "Dump StringIDs.")]
         public bool DumpStringIDs { get; set; }
 
-        [Option("unitseatmappings", Group = "ScriptObject", Default = (bool)false, HelpText = "Dump StringIDs.")]
+        [Option("unitseatmappings", Group = "ScriptObject", Default = (bool)false, HelpText = "Dump Unit Seat Mappings.")]
         public bool DumpUnitSeatMappings { get; set; }
 
         [Option('o', "output", HelpText = "Path to a folder where the data will be dumped to.")]
