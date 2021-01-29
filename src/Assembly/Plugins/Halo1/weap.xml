@@ -3,7 +3,20 @@
 	<revisions>
 		<revision author="Lord Zedd" version="1">ayy lmao</revision>
 	</revisions>
-	<int16 name="Unknown" offset="0x0" visible="false" />
+	<enum16 name="Object Type" offset="0x0" visible="true" tooltip="changing this would not be wise">
+		<option name="Biped" value="0x0" />
+		<option name="Vehicle" value="0x1" />
+		<option name="Weapon" value="0x2" />
+		<option name="Equipment" value="0x3" />
+		<option name="Garbage" value="0x4" />
+		<option name="Projectile" value="0x5" />
+		<option name="Scenery" value="0x6" />
+		<option name="Machine" value="0x7" />
+		<option name="Control" value="0x8" />
+		<option name="Light Fixture" value="0x9" />
+		<option name="Placeholder" value="0xA" />
+		<option name="Sound Scenery" value="0xB" />
+	</enum16>
 	<flags16 name="Flags" offset="0x2" visible="true">
 		<bit name="Does Not Cast Shadow" index="0" />
 		<bit name="Transparent Self-Occlusion" index="1" />
@@ -14,7 +27,7 @@
 	<point3 name="Bounding Offset" offset="0x8" visible="true" />
 	<point3 name="Origin Offset" offset="0x14" visible="true" />
 	<float32 name="Acceleration Scale" offset="0x20" visible="true" tooltip="marine 1.0, grunt 1.4, elite 0.9, hunter 0.5, etc." />
-	<undefined name="Unknown" offset="0x24" visible="false" />
+	<int32 name="Unknown" offset="0x24" visible="true" />
 	<tagRef name="Model" offset="0x28" visible="true" />
 	<tagRef name="Animation Graph" offset="0x38" visible="true" />
 	<undefined name="Unknown" offset="0x48" visible="false" />
@@ -153,7 +166,7 @@
 	<undefined name="Unknown" offset="0x130" visible="false" />
 	<undefined name="Unknown" offset="0x134" visible="false" />
 	<undefined name="Unknown" offset="0x138" visible="false" />
-	<int16 name="Hud Text Message Index" offset="0x13C" visible="true" />
+	<int16 name="HUD Text Message Index" offset="0x13C" visible="true" />
 	<int16 name="Forced Shader Permuation Index" offset="0x13E" visible="true" />
 	<tagblock name="Attachments" offset="0x140" visible="true" elementSize="0x48">
 		<tagRef name="Type" offset="0x0" visible="true" />
@@ -292,7 +305,7 @@
 		<rangef name="Bounds" offset="0x28" visible="true" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<int16 name="Unknown" offset="0x34" visible="false" />
-		<int16 name="Turn Off With index" offset="0x36" visible="true" tooltip="if the specified function is off, so is this function" />
+		<int16 name="Turn Off With Index" offset="0x36" visible="true" tooltip="if the specified function is off, so is this function" />
 		<float32 name="Scale By" offset="0x38" visible="true" tooltip="applied before clip, ignored if zero" />
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<undefined name="Unknown" offset="0x40" visible="false" />
@@ -357,10 +370,10 @@
 		<undefined name="Unknown" offset="0x12C" visible="false" />
 		<undefined name="Unknown" offset="0x130" visible="false" />
 		<undefined name="Unknown" offset="0x134" visible="false" />
-		<undefined name="Unknown" offset="0x138" visible="false" />
+		<float32 name="Unknown" offset="0x138" visible="false" />
 		<undefined name="Unknown" offset="0x13C" visible="false" />
 		<undefined name="Unknown" offset="0x140" visible="false" />
-		<undefined name="Unknown" offset="0x144" visible="false" />
+		<float32 name="Unknown" offset="0x144" visible="false" />
 		<ascii name="Usage" offset="0x148" length="0x20" visible="true" />
 	</tagblock>
 	<tagblock name="Change Colors" offset="0x164" visible="true" elementSize="0x2C">
@@ -404,9 +417,9 @@
 			<option name="Sound" value="0x1" />
 		</enum16>
 		<int16 name="Resource Index" offset="0x2" visible="true" />
-		<int32 name="Tag Index" offset="0x4" visible="true" />
+		<tagref name="Tag Index" offset="0x4" withGroup="false" visible="true" />
 	</tagblock>
-	<comment title="$$$ ITEM $$$" />
+	<comment title="ITEM" />
 	<flags32 name="Flags" offset="0x17C" visible="true">
 		<bit name="Always Maintains Z Up" index="0" />
 		<bit name="Destroyed By Explosions" index="1" />
@@ -416,7 +429,7 @@
 	<int16 name="Message Index" offset="0x180" visible="true" />
 	<int16 name="Sort Order" offset="0x182" visible="true" />
 	<float32 name="Scale" offset="0x184" visible="true" />
-	<int16 name="Hud Message Value Scale" offset="0x188" visible="true" />
+	<int16 name="HUD Message Value Scale" offset="0x188" visible="true" />
 	<int16 name="Unknown" offset="0x18A" visible="false" />
 	<undefined name="Unknown" offset="0x18C" visible="false" />
 	<undefined name="Unknown" offset="0x190" visible="false" />
@@ -510,7 +523,7 @@
 	<rangef name="Detonation Delay" offset="0x2E0" visible="true" />
 	<tagRef name="Detonating Effect" offset="0x2E8" visible="true" />
 	<tagRef name="Detonation Effect" offset="0x2F8" visible="true" />
-	<comment title="$$$ WEAPON $$$">All weapons should have 'primary trigger' and 'secondary trigger' markers as appropriate.
+	<comment title="WEAPON">All weapons should have 'primary trigger' and 'secondary trigger' markers as appropriate.
 Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
 	<flags32 name="Flags" offset="0x308" visible="true">
 		<bit name="Vertical Heat Display" index="0" />
@@ -690,7 +703,7 @@ Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
 	<tagRef name="First Person Model" offset="0x45C" visible="true" />
 	<tagRef name="First Person Animations" offset="0x46C" visible="true" />
 	<undefined name="Unknown" offset="0x47C" visible="false" />
-	<tagRef name="Hud Interface" offset="0x480" visible="true" />
+	<tagRef name="HUD Interface" offset="0x480" visible="true" />
 	<tagRef name="Pickup Sound" offset="0x490" visible="true" />
 	<tagRef name="Zoom-In Sound" offset="0x4A0" visible="true" />
 	<tagRef name="Zoom-Out Sound" offset="0x4B0" visible="true" />
@@ -717,7 +730,7 @@ Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
 			<option name="Sound" value="0x1" />
 		</enum16>
 		<int16 name="Resource Index" offset="0x2" visible="true" />
-		<int32 name="Tag Index" offset="0x4" visible="true" />
+		<tagref name="Tag Index" offset="0x4" withGroup="false" visible="true" />
 	</tagblock>
 	<tagblock name="Magazines" offset="0x4F0" visible="true" elementSize="0x70">
 		<flags32 name="Flags" offset="0x0" visible="true">
@@ -777,7 +790,7 @@ Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
 		<float32 name="Blurred Rate Of Fire" offset="0x14" visible="true" tooltip="a percentage between 0 and 1 which controls how soon in its firing animation the weapon blurs" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<int16 name="Magazine index" offset="0x20" visible="true" tooltip="the magazine from which this trigger draws its ammunition" />
+		<int16 name="Magazine Index" offset="0x20" visible="true" tooltip="the magazine from which this trigger draws its ammunition" />
 		<int16 name="Rounds Per Shot" offset="0x22" visible="true" tooltip="the number of rounds expended to create a single firing effect" />
 		<int16 name="Minimum Rounds Loaded" offset="0x24" visible="true" tooltip="the minimum number of rounds necessary to fire the weapon" />
 		<int16 name="Rounds Between Tracers" offset="0x26" visible="true" tooltip="the number of non-tracer rounds fired between tracers" />
@@ -841,12 +854,12 @@ Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
 		<undefined name="Unknown" offset="0xE4" visible="false" />
 		<undefined name="Unknown" offset="0xE8" visible="false" />
 		<undefined name="Unknown" offset="0xEC" visible="false" />
-		<undefined name="Unknown" offset="0xF0" visible="false" />
-		<undefined name="Unknown" offset="0xF4" visible="false" />
-		<undefined name="Unknown" offset="0xF8" visible="false" />
-		<undefined name="Unknown" offset="0xFC" visible="false" />
-		<undefined name="Unknown" offset="0x100" visible="false" />
-		<undefined name="Unknown" offset="0x104" visible="false" />
+		<float32 name="Unknown" offset="0xF0" visible="false" />
+		<float32 name="Unknown" offset="0xF4" visible="false" />
+		<float32 name="Unknown" offset="0xF8" visible="false" />
+		<float32 name="Unknown" offset="0xFC" visible="false" />
+		<float32 name="Unknown" offset="0x100" visible="false" />
+		<float32 name="Unknown" offset="0x104" visible="false" />
 		<tagblock name="Firing Effects" offset="0x108" visible="true" elementSize="0x84" tooltip="firing effects determine what happens when this trigger is fired">
 			<int16 name="Shot Count Lower Bound" offset="0x0" visible="true" tooltip="the minimum number of times this firing effect will be used, once it has been chosen" />
 			<int16 name="Shot Count Upper Bound" offset="0x2" visible="true" tooltip="the maximum number of times this firing effect will be used, once it has been chosen" />

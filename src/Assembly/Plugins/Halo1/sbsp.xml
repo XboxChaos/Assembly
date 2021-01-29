@@ -28,8 +28,8 @@
 		<tagRef name="Shader" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 	</tagblock>
-	<tagblock name="Collision Bsp" offset="0xB0" visible="true" elementSize="0x60">
-		<tagblock name="Bsp3d Nodes" offset="0x0" visible="true" elementSize="0xC">
+	<tagblock name="Collision BSP" offset="0xB0" visible="true" elementSize="0x60">
+		<tagblock name="BSP3D Nodes" offset="0x0" visible="true" elementSize="0xC">
 			<int32 name="Plane" offset="0x0" visible="true" />
 			<int32 name="Back Child" offset="0x4" visible="true" />
 			<int32 name="Front Child" offset="0x8" visible="true" />
@@ -41,14 +41,14 @@
 			<flags16 name="Flags" offset="0x0" visible="true">
 				<bit name="Contains Double-Sided Surfaces" index="0" />
 			</flags16>
-			<int16 name="Bsp2d Reference Count" offset="0x2" visible="true" />
-			<int32 name="First Bsp2d Reference" offset="0x4" visible="true" />
+			<int16 name="BSP2D Reference Count" offset="0x2" visible="true" />
+			<int32 name="First BSP2D Reference" offset="0x4" visible="true" />
 		</tagblock>
-		<tagblock name="Bsp2d References" offset="0x24" visible="true" elementSize="0x8">
+		<tagblock name="BSP2D References" offset="0x24" visible="true" elementSize="0x8">
 			<int32 name="Plane" offset="0x0" visible="true" />
-			<int32 name="Bsp2d Node" offset="0x4" visible="true" />
+			<int32 name="BSP2D Node" offset="0x4" visible="true" />
 		</tagblock>
-		<tagblock name="Bsp2d Nodes" offset="0x30" visible="true" elementSize="0x14">
+		<tagblock name="BSP2D Nodes" offset="0x30" visible="true" elementSize="0x14">
 			<plane2 name="Plane" offset="0x0" visible="true" />
 			<int32 name="Left Child" offset="0xC" visible="true" />
 			<int32 name="Right Child" offset="0x10" visible="true" />
@@ -91,17 +91,16 @@
 		<int16 name="Unknown" offset="0x6" visible="false" />
 		<int16 name="Cluster" offset="0x8" visible="true" />
 		<int16 name="Surface Reference Count" offset="0xA" visible="true" />
-		<int32 name="Surface References index" offset="0xC" visible="true" />
+		<int32 name="Surface References Index" offset="0xC" visible="true" />
 	</tagblock>
 	<tagblock name="Leaf Surfaces" offset="0xEC" visible="true" elementSize="0x8">
-		<int32 name="Surface index" offset="0x0" visible="true" />
-		<int32 name="Node index" offset="0x4" visible="true" />
+		<int32 name="Surface Index" offset="0x0" visible="true" />
+		<int32 name="Node Index" offset="0x4" visible="true" />
 	</tagblock>
 	<tagblock name="Surfaces" offset="0xF8" visible="true" elementSize="0x6">
-		<comment title="ARRAY Vertices" />
-		<int16 name="A" offset="0x0" visible="true" />
-		<int16 name="A" offset="0x2" visible="true" />
-		<int16 name="A" offset="0x4" visible="true" />
+		<int16 name="Vertex A" offset="0x0" visible="true" />
+		<int16 name="Vertex B" offset="0x2" visible="true" />
+		<int16 name="Vertex C" offset="0x4" visible="true" />
 	</tagblock>
 	<tagblock name="Lightmaps" offset="0x104" visible="true" elementSize="0x20">
 		<int16 name="Bitmap" offset="0x0" visible="true" />
@@ -117,7 +116,7 @@
 				<bit name="Coplanar" index="0" />
 				<bit name="Fog Plane" index="1" />
 			</flags16>
-			<int32 name="Surfaces index" offset="0x14" visible="true" />
+			<int32 name="Surfaces Index" offset="0x14" visible="true" />
 			<int32 name="Surface Count" offset="0x18" visible="true" />
 			<point3 name="Centroid" offset="0x1C" visible="true" />
 			<colorf name="Ambient Color" offset="0x28" alpha="false" visible="true" />
@@ -136,12 +135,13 @@
 			<plane3 name="Plane" offset="0x9C" visible="true" />
 			<int16 name="Breakable Surface" offset="0xAC" visible="true" />
 			<int16 name="Unknown" offset="0xAE" visible="false" />
-			<comment title="ARRAY Vertex Buffers" />
+			<comment title="Vertex Buffer 1" />
 			<undefined name="Unknown" offset="0xB0" visible="false" />
 			<int32 name="Count" offset="0xB4" visible="true" />
 			<int32 name="Offset" offset="0xB8" visible="true" />
 			<undefined name="Unknown" offset="0xBC" visible="false" />
 			<undefined name="Unknown" offset="0xC0" visible="false" />
+			<comment title="Vertex Buffer 2" />
 			<undefined name="Unknown" offset="0xC4" visible="false" />
 			<int32 name="Count" offset="0xC8" visible="true" />
 			<int32 name="Offset" offset="0xCC" visible="true" />
@@ -167,10 +167,10 @@
 	<tagblock name="Clusters" offset="0x134" visible="true" elementSize="0x68">
 		<int16 name="Sky" offset="0x0" visible="true" />
 		<int16 name="Fog" offset="0x2" visible="true" />
-		<int16 name="Background Sound index" offset="0x4" visible="true" />
-		<int16 name="Sound Environment index" offset="0x6" visible="true" />
-		<int16 name="Weather index" offset="0x8" visible="true" />
-		<int16 name="Transition Structure Bsp" offset="0xA" visible="true" />
+		<int16 name="Background Sound Index" offset="0x4" visible="true" />
+		<int16 name="Sound Environment Index" offset="0x6" visible="true" />
+		<int16 name="Weather Index" offset="0x8" visible="true" />
+		<int16 name="Transition Structure BSP" offset="0xA" visible="true" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -184,7 +184,7 @@
 				<option name="Sound" value="0x1" />
 			</enum16>
 			<int16 name="Resource Index" offset="0x2" visible="true" />
-			<int32 name="Tag Index" offset="0x4" visible="true" />
+			<tagref name="Tag Index" offset="0x4" withGroup="false" visible="true" />
 		</tagblock>
 		<tagblock name="Subclusters" offset="0x34" visible="true" elementSize="0x24">
 			<rangef name="World Bounds X" offset="0x0" visible="true" />
@@ -251,7 +251,7 @@
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Fog Planes" offset="0x178" visible="true" elementSize="0x20">
-		<int16 name="Front Region index" offset="0x0" visible="true" />
+		<int16 name="Front Region Index" offset="0x0" visible="true" />
 		<int16 name="Unknown" offset="0x2" visible="false" />
 		<plane3 name="Plane" offset="0x4" visible="true" />
 		<tagblock name="Vertices" offset="0x14" visible="true" elementSize="0xC">
@@ -268,8 +268,8 @@
 		<undefined name="Unknown" offset="0x18" visible="false" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
-		<int16 name="Fog Palette index" offset="0x24" visible="true" />
-		<int16 name="Weather Palette index" offset="0x26" visible="true" />
+		<int16 name="Fog Palette Index" offset="0x24" visible="true" />
+		<int16 name="Weather Palette Index" offset="0x26" visible="true" />
 	</tagblock>
 	<tagblock name="Fog Palette" offset="0x190" visible="true" elementSize="0x88">
 		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
@@ -389,32 +389,32 @@
 	</tagblock>
 	<tagblock name="Detail Objects" offset="0x24C" visible="true" elementSize="0x40">
 		<tagblock name="Cells" offset="0x0" visible="true" elementSize="0x20">
-			<int16 name="" offset="0x0" visible="true" />
-			<int16 name="" offset="0x2" visible="true" />
-			<int16 name="" offset="0x4" visible="true" />
-			<int16 name="" offset="0x6" visible="true" />
-			<int32 name="" offset="0x8" visible="true" />
-			<int32 name="" offset="0xC" visible="true" />
-			<int32 name="" offset="0x10" visible="true" />
+			<int16 name="Unknown" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="true" />
+			<int16 name="Unknown" offset="0x4" visible="true" />
+			<int16 name="Unknown" offset="0x6" visible="true" />
+			<int32 name="Unknown" offset="0x8" visible="true" />
+			<int32 name="Unknown" offset="0xC" visible="true" />
+			<int32 name="Unknown" offset="0x10" visible="true" />
 			<undefined name="Unknown" offset="0x14" visible="false" />
 			<undefined name="Unknown" offset="0x18" visible="false" />
 			<undefined name="Unknown" offset="0x1C" visible="false" />
 		</tagblock>
 		<tagblock name="Instances" offset="0xC" visible="true" elementSize="0x6">
-			<int8 name="" offset="0x0" visible="true" />
-			<int8 name="" offset="0x1" visible="true" />
-			<int8 name="" offset="0x2" visible="true" />
-			<int8 name="" offset="0x3" visible="true" />
-			<int16 name="" offset="0x4" visible="true" />
+			<int8 name="Unknown" offset="0x0" visible="true" />
+			<int8 name="Unknown" offset="0x1" visible="true" />
+			<int8 name="Unknown" offset="0x2" visible="true" />
+			<int8 name="Unknown" offset="0x3" visible="true" />
+			<int16 name="Unknown" offset="0x4" visible="true" />
 		</tagblock>
 		<tagblock name="Counts" offset="0x18" visible="true" elementSize="0x2">
-			<int16 name="" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x0" visible="true" />
 		</tagblock>
 		<tagblock name="Z Reference Vectors" offset="0x24" visible="true" elementSize="0x10">
-			<float32 name="" offset="0x0" visible="true" />
-			<float32 name="" offset="0x4" visible="true" />
-			<float32 name="" offset="0x8" visible="true" />
-			<float32 name="" offset="0xC" visible="true" />
+			<float32 name="Unknown" offset="0x0" visible="true" />
+			<float32 name="Unknown" offset="0x4" visible="true" />
+			<float32 name="Unknown" offset="0x8" visible="true" />
+			<float32 name="Unknown" offset="0xC" visible="true" />
 		</tagblock>
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<undefined name="Unknown" offset="0x34" visible="false" />

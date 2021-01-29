@@ -3,7 +3,20 @@
 	<revisions>
 		<revision author="Lord Zedd" version="1">ayy lmao</revision>
 	</revisions>
-	<int16 name="Unknown" offset="0x0" visible="false" />
+	<enum16 name="Object Type" offset="0x0" visible="true" tooltip="changing this would not be wise">
+		<option name="Biped" value="0x0" />
+		<option name="Vehicle" value="0x1" />
+		<option name="Weapon" value="0x2" />
+		<option name="Equipment" value="0x3" />
+		<option name="Garbage" value="0x4" />
+		<option name="Projectile" value="0x5" />
+		<option name="Scenery" value="0x6" />
+		<option name="Machine" value="0x7" />
+		<option name="Control" value="0x8" />
+		<option name="Light Fixture" value="0x9" />
+		<option name="Placeholder" value="0xA" />
+		<option name="Sound Scenery" value="0xB" />
+	</enum16>
 	<flags16 name="Flags" offset="0x2" visible="true">
 		<bit name="Does Not Cast Shadow" index="0" />
 		<bit name="Transparent Self-Occlusion" index="1" />
@@ -14,7 +27,7 @@
 	<point3 name="Bounding Offset" offset="0x8" visible="true" />
 	<point3 name="Origin Offset" offset="0x14" visible="true" />
 	<float32 name="Acceleration Scale" offset="0x20" visible="true" tooltip="marine 1.0, grunt 1.4, elite 0.9, hunter 0.5, etc." />
-	<undefined name="Unknown" offset="0x24" visible="false" />
+	<int32 name="Unknown" offset="0x24" visible="true" />
 	<tagRef name="Model" offset="0x28" visible="true" />
 	<tagRef name="Animation Graph" offset="0x38" visible="true" />
 	<undefined name="Unknown" offset="0x48" visible="false" />
@@ -153,7 +166,7 @@
 	<undefined name="Unknown" offset="0x130" visible="false" />
 	<undefined name="Unknown" offset="0x134" visible="false" />
 	<undefined name="Unknown" offset="0x138" visible="false" />
-	<int16 name="Hud Text Message Index" offset="0x13C" visible="true" />
+	<int16 name="HUD Text Message Index" offset="0x13C" visible="true" />
 	<int16 name="Forced Shader Permuation Index" offset="0x13E" visible="true" />
 	<tagblock name="Attachments" offset="0x140" visible="true" elementSize="0x48">
 		<tagRef name="Type" offset="0x0" visible="true" />
@@ -292,7 +305,7 @@
 		<rangef name="Bounds" offset="0x28" visible="true" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<int16 name="Unknown" offset="0x34" visible="false" />
-		<int16 name="Turn Off With index" offset="0x36" visible="true" tooltip="if the specified function is off, so is this function" />
+		<int16 name="Turn Off With Index" offset="0x36" visible="true" tooltip="if the specified function is off, so is this function" />
 		<float32 name="Scale By" offset="0x38" visible="true" tooltip="applied before clip, ignored if zero" />
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<undefined name="Unknown" offset="0x40" visible="false" />
@@ -357,10 +370,10 @@
 		<undefined name="Unknown" offset="0x12C" visible="false" />
 		<undefined name="Unknown" offset="0x130" visible="false" />
 		<undefined name="Unknown" offset="0x134" visible="false" />
-		<undefined name="Unknown" offset="0x138" visible="false" />
+		<float32 name="Unknown" offset="0x138" visible="false" />
 		<undefined name="Unknown" offset="0x13C" visible="false" />
 		<undefined name="Unknown" offset="0x140" visible="false" />
-		<undefined name="Unknown" offset="0x144" visible="false" />
+		<float32 name="Unknown" offset="0x144" visible="false" />
 		<ascii name="Usage" offset="0x148" length="0x20" visible="true" />
 	</tagblock>
 	<tagblock name="Change Colors" offset="0x164" visible="true" elementSize="0x2C">
@@ -404,9 +417,9 @@
 			<option name="Sound" value="0x1" />
 		</enum16>
 		<int16 name="Resource Index" offset="0x2" visible="true" />
-		<int32 name="Tag Index" offset="0x4" visible="true" />
+		<tagref name="Tag Index" offset="0x4" withGroup="false" visible="true" />
 	</tagblock>
-	<comment title="$$$ UNIT $$$" />
+	<comment title="UNIT" />
 	<flags32 name="Flags" offset="0x17C" visible="true">
 		<bit name="Circular Aiming" index="0" />
 		<bit name="Destroyed After Dying" index="1" />
@@ -591,8 +604,8 @@
 	<int16 name="Unknown" offset="0x29E" visible="false" />
 	<undefined name="Unknown" offset="0x2A0" visible="false" />
 	<undefined name="Unknown" offset="0x2A4" visible="false" />
-	<tagblock name="NEW HUD INTERFACES" offset="0x2A8" visible="true" elementSize="0x30">
-		<tagRef name="Unit Hud Interface" offset="0x0" visible="true" />
+	<tagblock name="New HUD Interfaces" offset="0x2A8" visible="true" elementSize="0x30">
+		<tagRef name="Unit HUD Interface" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
@@ -614,7 +627,8 @@
 		<option name="Covenant Plasma" value="0x1" />
 	</enum16>
 	<int16 name="Grenade Count" offset="0x2C6" visible="true" />
-	<undefined name="Unknown" offset="0x2C8" visible="false" />
+	<int16 name="Unknown" offset="0x2C8" visible="false" />
+	<int16 name="Unknown" offset="0x2CA" visible="false" />
 	<tagblock name="Powered Seats" offset="0x2CC" visible="true" elementSize="0x44">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<float32 name="Driver Powerup Time" offset="0x4" visible="true" />
@@ -682,8 +696,8 @@
 			<undefined name="Unknown" offset="0x14" visible="false" />
 			<undefined name="Unknown" offset="0x18" visible="false" />
 		</tagblock>
-		<tagblock name="Unit Hud Interface" offset="0xDC" visible="true" elementSize="0x30">
-			<tagRef name="Unit Hud Interface" offset="0x0" visible="true" />
+		<tagblock name="Unit HUD Interface" offset="0xDC" visible="true" elementSize="0x30">
+			<tagRef name="Unit HUD Interface" offset="0x0" visible="true" />
 			<undefined name="Unknown" offset="0x10" visible="false" />
 			<undefined name="Unknown" offset="0x14" visible="false" />
 			<undefined name="Unknown" offset="0x18" visible="false" />
@@ -694,7 +708,7 @@
 			<undefined name="Unknown" offset="0x2C" visible="false" />
 		</tagblock>
 		<undefined name="Unknown" offset="0xE8" visible="false" />
-		<int16 name="Hud Text Message Index" offset="0xEC" visible="true" />
+		<int16 name="HUD Text Message Index" offset="0xEC" visible="true" />
 		<int16 name="Unknown" offset="0xEE" visible="false" />
 		<degree name="Yaw Minimum" offset="0xF0" visible="true" />
 		<degree name="Yaw Maximum" offset="0xF4" visible="true" />
@@ -705,7 +719,7 @@
 		<undefined name="Unknown" offset="0x114" visible="false" />
 		<undefined name="Unknown" offset="0x118" visible="false" />
 	</tagblock>
-	<comment title="$$$ BIPED $$$" />
+	<comment title="BIPED" />
 	<degree name="Moving Turning Speed" offset="0x2F0" visible="true" />
 	<flags32 name="Flags" offset="0x2F4" visible="true">
 		<bit name="Turns Without Animating" index="0" />
@@ -850,14 +864,15 @@
 	<undefined name="Unknown" offset="0x4BC" visible="false" />
 	<undefined name="Unknown" offset="0x4C0" visible="false" />
 	<undefined name="Unknown" offset="0x4C4" visible="false" />
-	<undefined name="Unknown" offset="0x4C8" visible="false" />
-	<undefined name="Unknown" offset="0x4CC" visible="false" />
-	<undefined name="Unknown" offset="0x4D0" visible="false" />
-	<undefined name="Unknown" offset="0x4D4" visible="false" />
-	<undefined name="Unknown" offset="0x4D8" visible="false" />
-	<undefined name="Unknown" offset="0x4DC" visible="false" />
-	<undefined name="Unknown" offset="0x4E0" visible="false" />
-	<undefined name="Unknown" offset="0x4E4" visible="false" />
+	<uint32 name="Unknown" offset="0x4C8" visible="false" />
+	<float32 name="Unknown" offset="0x4CC" visible="false" />
+	<float32 name="Unknown" offset="0x4D0" visible="false" />
+	<float32 name="Unknown" offset="0x4D4" visible="false" />
+	<float32 name="Unknown" offset="0x4D8" visible="false" />
+	<float32 name="Unknown" offset="0x4DC" visible="false" />
+	<float32 name="Unknown" offset="0x4E0" visible="false" />
+	<int16 name="Unknown" offset="0x4E4" visible="false" />
+	<int16 name="Unknown" offset="0x4E6" visible="false" />
 	<tagblock name="Contact Points" offset="0x4E8" visible="true" elementSize="0x40" tooltip="these are the points where the biped touches the ground">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
