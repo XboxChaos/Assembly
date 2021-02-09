@@ -53,15 +53,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			}
 
 			var rteStream = realtime.GetMetaStream(_cache);
-			if (rteStream == null && (cbInputType.SelectedIndex == 3 || cbOutputType.SelectedIndex == 3))
+			long rteMagic = 0;
+			if (cbInputType.SelectedIndex == 3 || cbOutputType.SelectedIndex == 3)
 			{
-				MetroMessageBox.Show("Cannot convert using a runtime address. Possibly because:\r\n\r\n" +
-					"-The game is not running.\r\n" +
-					"-The game is not running the same map as the one you have open.\r\n" +
-					"-Or this engine doesn't use/support poking/runtime addresses.");
-				return;
+				if (rteStream == null)
+				{
+					MetroMessageBox.Show("Cannot convert using a runtime address. Possibly because:\r\n\r\n" +
+										"-The game is not running.\r\n" +
+										"-The game is not running the same map as the one you have open.\r\n" +
+										"-Or this engine doesn't use/support poking/runtime addresses.");
+					return;
+				}
+
+				rteMagic = ((OffsetStream)rteStream.BaseStream).Offset;
 			}
-			var rteMagic = ((OffsetStream)rteStream.BaseStream).Offset;
 
 			switch(cbInputType.SelectedIndex)
 			{
