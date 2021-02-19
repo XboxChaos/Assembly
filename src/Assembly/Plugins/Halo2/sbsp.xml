@@ -243,20 +243,13 @@
 			<bit name="Bit 15" index="15" />
 		</flags16>
 		<tagblock name="Compression Info" offset="0x18" visible="true" elementSize="0x38">
-			<float32 name="Position Bounds X min" offset="0x0" visible="true" />
-			<float32 name="Position Bounds X max" offset="0x4" visible="true" />
-			<float32 name="Position Bounds Y min" offset="0x8" visible="true" />
-			<float32 name="Position Bounds Y max" offset="0xC" visible="true" />
-			<float32 name="Position Bounds Z min" offset="0x10" visible="true" />
-			<float32 name="Position Bounds Z max" offset="0x14" visible="true" />
-			<float32 name="Texcoord Bounds X min" offset="0x18" visible="true" />
-			<float32 name="Texcoord Bounds X max" offset="0x1C" visible="true" />
-			<float32 name="Texcoord Bounds Y min" offset="0x20" visible="true" />
-			<float32 name="Texcoord Bounds Y max" offset="0x24" visible="true" />
-			<float32 name="Secondary Texcoord Bounds X min" offset="0x28" visible="true" />
-			<float32 name="Secondary Texcoord Bounds X max" offset="0x2C" visible="true" />
-			<float32 name="Secondary Texcoord Bounds Y min" offset="0x30" visible="true" />
-			<float32 name="Secondary Texcoord Bounds Y max" offset="0x34" visible="true" />
+			<rangef name="Position Bounds x" offset="0x0" visible="true" />
+			<rangef name="Position Bounds y" offset="0x8" visible="true" />
+			<rangef name="Position Bounds z" offset="0x10" visible="true" />
+			<rangef name="Texcoord Bounds x" offset="0x18" visible="true" />
+			<rangef name="Texcoord Bounds y" offset="0x20" visible="true" />
+			<rangef name="Secondary Texcoord Bounds x" offset="0x28" visible="true" />
+			<rangef name="Secondary Texcoord Bounds y" offset="0x30" visible="true" />
 		</tagblock>
 		<uint8 name="Hardware Node Count" offset="0x20" visible="true" />
 		<uint8 name="Node Map Size" offset="0x21" visible="true" />
@@ -515,7 +508,7 @@
 				<option name="Lightmap Half Life" value="0x2" />
 				<option name="Lightmap Diffuse Scale" value="0x3" />
 			</enum16>
-			<int16 name="Int Value" offset="0x2" visible="true" />
+			<int16 name="Integer Value" offset="0x2" visible="true" />
 			<float32 name="Real Value" offset="0x4" visible="true" />
 		</tagblock>
 		<undefined name="Unknown" offset="0x18" visible="false" />
@@ -946,20 +939,13 @@
 			<bit name="Bit 15" index="15" />
 		</flags16>
 		<tagblock name="Compression Info" offset="0x18" visible="true" elementSize="0x38">
-			<float32 name="Position Bounds X min" offset="0x0" visible="true" />
-			<float32 name="Position Bounds X max" offset="0x4" visible="true" />
-			<float32 name="Position Bounds Y min" offset="0x8" visible="true" />
-			<float32 name="Position Bounds Y max" offset="0xC" visible="true" />
-			<float32 name="Position Bounds Z min" offset="0x10" visible="true" />
-			<float32 name="Position Bounds Z max" offset="0x14" visible="true" />
-			<float32 name="Texcoord Bounds X min" offset="0x18" visible="true" />
-			<float32 name="Texcoord Bounds X max" offset="0x1C" visible="true" />
-			<float32 name="Texcoord Bounds Y min" offset="0x20" visible="true" />
-			<float32 name="Texcoord Bounds Y max" offset="0x24" visible="true" />
-			<float32 name="Secondary Texcoord Bounds X min" offset="0x28" visible="true" />
-			<float32 name="Secondary Texcoord Bounds X max" offset="0x2C" visible="true" />
-			<float32 name="Secondary Texcoord Bounds Y min" offset="0x30" visible="true" />
-			<float32 name="Secondary Texcoord Bounds Y max" offset="0x34" visible="true" />
+			<rangef name="Position Bounds x" offset="0x0" visible="true" />
+			<rangef name="Position Bounds y" offset="0x8" visible="true" />
+			<rangef name="Position Bounds z" offset="0x10" visible="true" />
+			<rangef name="Texcoord Bounds x" offset="0x18" visible="true" />
+			<rangef name="Texcoord Bounds y" offset="0x20" visible="true" />
+			<rangef name="Secondary Texcoord Bounds x" offset="0x28" visible="true" />
+			<rangef name="Secondary Texcoord Bounds y" offset="0x30" visible="true" />
 		</tagblock>
 		<uint8 name="Hardware Node Count" offset="0x20" visible="true" />
 		<uint8 name="Node Map Size" offset="0x21" visible="true" />
@@ -1249,19 +1235,11 @@
 	</tagblock>
 	<tagblock name="Instanced Geometry Instances" offset="0x140" visible="true" elementSize="0x58">
 		<float32 name="Scale" offset="0x0" visible="true" />
-		<float32 name="Forward i" offset="0x4" visible="true" />
-		<float32 name="Forward j" offset="0x8" visible="true" />
-		<float32 name="Forward k" offset="0xC" visible="true" />
-		<float32 name="Left i" offset="0x10" visible="true" />
-		<float32 name="Left j" offset="0x14" visible="true" />
-		<float32 name="Left k" offset="0x18" visible="true" />
-		<float32 name="Up i" offset="0x1C" visible="true" />
-		<float32 name="Up j" offset="0x20" visible="true" />
-		<float32 name="Up k" offset="0x24" visible="true" />
-		<float32 name="Position X" offset="0x28" visible="true" />
-		<float32 name="Position Y" offset="0x2C" visible="true" />
-		<float32 name="Position Z" offset="0x30" visible="true" />
-		<int16 name="Instance Definition Index" offset="0x34" visible="true" />
+		<vector3 name="Forward" offset="0x4" visible="true" />
+		<vector3 name="Left" offset="0x10" visible="true" />
+		<vector3 name="Up" offset="0x1C" visible="true" />
+		<point3 name="Position" offset="0x28" visible="true" />
+		<int16 name="Instance Definition index" offset="0x34" visible="true" />
 		<flags16 name="Flags" offset="0x36" visible="true">
 			<bit name="Not In Lightprobes" index="0" />
 		</flags16>
