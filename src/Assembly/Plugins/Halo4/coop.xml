@@ -4,18 +4,61 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
-	<undefined name="Unknown" offset="0x0" visible="false" />
-	<undefined name="Unknown" offset="0x4" visible="false" />
-	<undefined name="Unknown" offset="0x8" visible="false" />
-	<undefined name="Unknown" offset="0xC" visible="false" />
-	<undefined name="Unknown" offset="0x10" visible="false" />
-	<undefined name="Unknown" offset="0x14" visible="false" />
-	<undefined name="Unknown" offset="0x18" visible="false" />
-	<undefined name="Unknown" offset="0x1C" visible="false" />
-	<undefined name="Unknown" offset="0x20" visible="false" />
-	<undefined name="Unknown" offset="0x24" visible="false" />
-	<undefined name="Unknown" offset="0x28" visible="false" />
-	<undefined name="Unknown" offset="0x2C" visible="false" />
-	<undefined name="Unknown" offset="0x30" visible="false" />
-	<undefined name="Unknown" offset="0x34" visible="false" />
+	<int16 name="Player Cooldown Timer" offset="0x0" visible="true" tooltip="seconds" />
+	<int16 name="Backfield Cooldown Timer" offset="0x2" visible="true" tooltip="seconds" />
+	<int16 name="Unsafe Spawn Timer" offset="0x4" visible="true" />
+	<int16 name="Teammate Damage Timer" offset="0x6" visible="true" />
+	<int16 name="Dead Body Switch Time" offset="0x8" visible="true" />
+	<flags16 name="Flags" offset="0xA" visible="true">
+		<bit name="Push To Spawn Enabled" index="0" tooltip="allow loadout menu to delay spawn" />
+		<bit name="Show Marker On Respawn Player" index="1" />
+		<bit name="Extermination Syncs Timers" index="2" />
+		<bit name="Extermination Syncs Location" index="3" />
+		<bit name="Rotation Allowed On Player" index="4" />
+		<bit name="Rotation Allowed On Object" index="5" />
+		<bit name="Display Loadouts If Changed" index="6" />
+		<bit name="Always Display Loadouts On Death" index="7" />
+		<bit name="Disable Spartan Respawn On Player" index="8" />
+		<bit name="Disable Spartan Respawn On Backfield" index="9" />
+		<bit name="Disable Elite Respawn On Player" index="10" />
+		<bit name="Disable Elite Respawn On Backfield" index="11" />
+	</flags16>
+	<int16 name="Loadout Menu Spawn Suppression Time" offset="0xC" visible="true" tooltip="maximal time that the loadout menu can prevent respawn while up" />
+	<int16 name="Loadout Menu Cooldown Time" offset="0xE" visible="true" tooltip="cooldown time after loadout menu is dismissed before player spawns in" />
+	<int16 name="Loadout Menu Initial Choice Time" offset="0x10" visible="true" tooltip="time before players initially spawn in for choosing starting loadout" />
+	<int16 name="Maximum Spawn Suppression Time" offset="0x12" visible="true" tooltip="maximal time that a player can continue to delay his spawn by switching targets" />
+	<float32 name="Nearby Enemy Cylinder Height" offset="0x14" visible="true" />
+	<float32 name="Nearby Enemy Cylinder Radius" offset="0x18" visible="true" />
+	<comment title="Safety Statuses" />
+	<enum32 name="Ready" offset="0x1C" visible="true" tooltip="safe and ready to spawn - this value currently ignored">
+		<option name="Has No Effect" value="0x0" />
+		<option name="Displays Warning" value="0x1" />
+		<option name="Prevents Spawn" value="0x2" />
+	</enum32>
+	<enum32 name="Waiting" offset="0x20" visible="true" tooltip="safe but waiting to spawn - this value currently ignored">
+		<option name="Has No Effect" value="0x0" />
+		<option name="Displays Warning" value="0x1" />
+		<option name="Prevents Spawn" value="0x2" />
+	</enum32>
+	<enum32 name="Enemy Territory" offset="0x24" visible="true" tooltip="spawn target is inside enemy territory volumes">
+		<option name="Has No Effect" value="0x0" />
+		<option name="Displays Warning" value="0x1" />
+		<option name="Prevents Spawn" value="0x2" />
+	</enum32>
+	<enum32 name="Teammate Damaged" offset="0x28" visible="true" tooltip="spawn target has recently taken damage">
+		<option name="Has No Effect" value="0x0" />
+		<option name="Displays Warning" value="0x1" />
+		<option name="Prevents Spawn" value="0x2" />
+	</enum32>
+	<enum32 name="Enemy Nearby" offset="0x2C" visible="true" tooltip="There is an enemy within the cylinder around the spawn target">
+		<option name="Has No Effect" value="0x0" />
+		<option name="Displays Warning" value="0x1" />
+		<option name="Prevents Spawn" value="0x2" />
+	</enum32>
+	<enum32 name="Projectiles" offset="0x30" visible="true" tooltip="There are dangerous projectiles in the area">
+		<option name="Has No Effect" value="0x0" />
+		<option name="Displays Warning" value="0x1" />
+		<option name="Prevents Spawn" value="0x2" />
+	</enum32>
+	<float32 name="Failover To Influence Spawning Time" offset="0x34" visible="true" tooltip="number of seconds before influence spawning will be used (&lt;= 0 is disabled)" />
 </plugin>
