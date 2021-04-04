@@ -170,7 +170,6 @@ namespace Blamite.Blam.Scripting
 				output.WriteLine();
 
 				output.Indent = 0;
-				counter++;
 			}
 
 			return true;
