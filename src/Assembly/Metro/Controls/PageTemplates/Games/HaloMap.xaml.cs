@@ -946,6 +946,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					if (soundCodecsProcessed.Contains(index))
 						continue;
 
+					if (index >= soundResources.Codecs.Count)
+						throw new IndexOutOfRangeException("Cannot extract sound codec index " + index + " because it is out of range.");
+
 					container.AddSoundCodec(new ExtractedSoundCodec(index, soundResources.Codecs[index]));
 				}
 
@@ -954,6 +957,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					var index = soundPitchRangesToProcess.Dequeue();
 					if (soundPitchRangesProcessed.Contains(index))
 						continue;
+
+					if (index >= soundResources.PitchRanges.Count)
+						throw new IndexOutOfRangeException("Cannot extract sound pitch range index " + index + " because it is out of range.");
 
 					var pRange = soundResources.PitchRanges[index];
 
@@ -1030,6 +1036,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 						exLI.LanguageIndex = lang.LanguageIndex;
 
+						if (index >= soundResources.PitchRanges.Count)
+							throw new IndexOutOfRangeException("Cannot extract sound pitch range index " + index + " because it is out of range.");
+
 						var pRange = lang.PitchRanges[index];
 
 						exLI.Durations = new List<int>();
@@ -1047,6 +1056,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					if (soundPlaybacksProcessed.Contains(index))
 						continue;
 
+					if (index >= soundResources.Playbacks.Count)
+						throw new IndexOutOfRangeException("Cannot extract sound playback index " + index + " because it is out of range.");
+
 					container.AddSoundPlayback(new ExtractedSoundPlayback(index, soundResources.Playbacks[index]));
 				}
 
@@ -1055,6 +1067,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					var index = soundScalesToProcess.Dequeue();
 					if (soundScalesProcessed.Contains(index))
 						continue;
+
+					if (index >= soundResources.Scales.Count)
+						throw new IndexOutOfRangeException("Cannot extract sound scale index " + index + " because it is out of range.");
 
 					container.AddSoundScale(new ExtractedSoundScale(index, soundResources.Scales[index]));
 				}
@@ -1065,6 +1080,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					if (soundPromotionsProcessed.Contains(index))
 						continue;
 
+					if (index >= soundResources.Promotions.Count)
+						throw new IndexOutOfRangeException("Cannot extract sound promotion index " + index + " because it is out of range.");
+
 					container.AddSoundPromotion(new ExtractedSoundPromotion(index, soundResources.Promotions[index]));
 				}
 
@@ -1074,6 +1092,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					if (soundCustomPlaybacksProcessed.Contains(index))
 						continue;
 
+					if (index >= soundResources.CustomPlaybacks.Count)
+						throw new IndexOutOfRangeException("Cannot extract sound custom playback index " + index + " because it is out of range.");
+
 					container.AddSoundCustomPlayback(new ExtractedSoundCustomPlayback(index, soundResources.CustomPlaybacks[index]));
 				}
 
@@ -1082,6 +1103,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					var index = soundExtraInfoToProcess.Dequeue();
 					if (soundExtraInfoProcessed.Contains(index))
 						continue;
+
+					if (index >= soundResources.ExtraInfos.Count)
+						throw new IndexOutOfRangeException("Cannot extract sound extra info index " + index + " because it is out of range.");
 
 					container.AddSoundExtraInfo(new ExtractedSoundExtraInfo(index, soundResources.ExtraInfos[index]));
 
@@ -1103,6 +1127,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						var index = resourcesToProcess.Dequeue();
 						if (resourcesProcessed.Contains(index))
 							continue;
+
+						if (index.Index >= resources.Resources.Count)
+							throw new IndexOutOfRangeException("Cannot extract resource index " + index + " because it is out of range.");
 
 						// Add the resource
 						var resource = resources.Resources[index.Index];
