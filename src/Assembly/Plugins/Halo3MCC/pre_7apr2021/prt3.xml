@@ -1,14 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<plugin game="Halo3MCC" baseSize="0x40">
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo3MCC" baseSize="0x194">
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Lord Zedd" version="1">k</revision>
 	</revisions>
-	<tagRef name="Definition" offset="0x0" visible="true" />
-	<tagblock name="Template Identifier" offset="0x10" visible="true" elementSize="0x2">
+	<undefined name="Unknown" offset="0x0" visible="false" />
+	<tagblock name="Unknown" offset="0x4" visible="false" elementSize="0x14">
+		<tagRef name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+	</tagblock>
+	<undefined name="Unknown" offset="0x10" visible="false" />
+	<undefined name="Unknown" offset="0x14" visible="false" />
+	<undefined name="Unknown" offset="0x18" visible="false" />
+	<undefined name="Unknown" offset="0x1C" visible="false" />
+	<undefined name="Unknown" offset="0x20" visible="false" />
+	<undefined name="Unknown" offset="0x24" visible="false" />
+	<undefined name="Unknown" offset="0x28" visible="false" />
+	<undefined name="Unknown" offset="0x2C" visible="false" />
+	<undefined name="Unknown" offset="0x30" visible="false" />
+	<undefined name="Unknown" offset="0x34" visible="false" />
+	<undefined name="Unknown" offset="0x38" visible="false" />
+	<comment title="Render Method" />
+	<tagRef name="Definition" offset="0x3C" visible="true" />
+	<tagblock name="Template Identifier" offset="0x4C" visible="true" elementSize="0x2">
 		<int16 name="Value" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Parameters" offset="0x1C" visible="false" elementSize="0x3C">
+	<tagblock name="Parameters" offset="0x58" visible="false" elementSize="0x3C">
 		<stringId name="Parameter Name" offset="0x0" visible="true" />
 		<int32 name="Unknown" offset="0x4" visible="false" />
 		<tagRef name="Bitmap" offset="0x8" visible="true" />
@@ -29,20 +46,16 @@
 			<dataRef name="Function" offset="0x10" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Postprocess" offset="0x28" visible="true" elementSize="0x8C">
+	<tagblock name="Postprocess" offset="0x64" visible="true" elementSize="0x8C">
 		<tagRef name="Shader Template" offset="0x0" visible="true" />
-		<tagblock name="Textures" offset="0x10" visible="true" elementSize="0x1C">
+		<tagblock name="Textures" offset="0x10" visible="true" elementSize="0x18">
 			<tagRef name="Bitmap Reference" offset="0x0" visible="true" />
 			<int16 name="Bitmap Index" offset="0x10" visible="true" />
 			<uint8 name="Address Mode" offset="0x12" visible="true" />
 			<uint8 name="Filter Mode" offset="0x13" visible="true" />
-			<int8 name="Unknown" offset="0x14" visible="false" />
-			<int8 name="Unknown" offset="0x15" visible="false" />
-			<int8 name="Texture Transform Constant Index" offset="0x16" visible="true" />
-			<int8 name="Unknown" offset="0x17" visible="false" />
-			<uint16 name="Block Index Data" offset="0x18" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
-			<int8 name="Unknown" offset="0x1A" visible="false" />
-			<int8 name="Unknown" offset="0x1B" visible="false" />
+			<uint8 name="External Texture Mode" offset="0x14" visible="true" />
+			<int8 name="Texture Transform Constant Index" offset="0x15" visible="true" />
+			<uint16 name="Block Index Data" offset="0x16" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
 		</tagblock>
 		<tagblock name="Float Constants" offset="0x1C" visible="true" elementSize="0x10">
 			<comment title="Usage">The application of values depend on the parameter as defined in the template tag.
@@ -166,21 +179,115 @@ For tints a = Red, b = Green, c = Blue</comment>
 		<datum name="[zone] Asset Datum" offset="0x84" visible="true" />
 		<int32 name="Useless Padding" offset="0x88" visible="false" />
 	</tagblock>
-	<flags16 name="Shader Flags" offset="0x34" visible="true">
+	<flags16 name="Shader Flags" offset="0x70" visible="true">
 		<bit name="Don't Fog Me" index="0" />
 		<bit name="Use Custom Setting" index="1" />
 		<bit name="Calculate z Camera" index="2" />
 		<bit name="Never Render For Shields" index="3" />
 		<bit name="Only Render For Shields" index="4" />
 	</flags16>
-	<enum8 name="Sort Layer" offset="0x36" visible="true">
+	<enum8 name="Sort Layer" offset="0x72" visible="true">
 		<option name="Invalid" value="0x0" />
 		<option name="Pre-Pass" value="0x1" />
 		<option name="Normal" value="0x2" />
 		<option name="Post-Pass" value="0x3" />
 	</enum8>
-	<int8 name="Version" offset="0x37" visible="true" />
-	<int32 name="Custom Fog Setting Index" offset="0x38" visible="true" />
-	<int32 name="Prediction B Index" offset="0x3C" visible="true" />
-	<comment title="Water Shader">Nothing!</comment>
+	<int8 name="Version" offset="0x73" visible="true" />
+	<int32 name="Custom Fog Setting Index" offset="0x74" visible="true" />
+	<int32 name="Prediction B Index" offset="0x78" visible="true" />
+	<comment title="Particle Shader" />
+	<int8 name="Input" offset="0x7C" visible="true" />
+	<int8 name="Input Range" offset="0x7D" visible="true" />
+	<enum8 name="Output Kind" offset="0x7E" visible="true">
+		<option name="None" value="0x0" />
+		<option name="Plus" value="0x1" />
+		<option name="Times" value="0x2" />
+	</enum8>
+	<int8 name="Output" offset="0x7F" visible="true" />
+	<dataRef name="Unknown" offset="0x80" visible="true" />
+	<undefined name="Unknown" offset="0x94" visible="false" />
+	<undefined name="Unknown" offset="0x98" visible="false" />
+	<int8 name="Input" offset="0x9C" visible="true" />
+	<int8 name="Input Range" offset="0x9D" visible="true" />
+	<enum8 name="Output Kind" offset="0x9E" visible="true">
+		<option name="None" value="0x0" />
+		<option name="Plus" value="0x1" />
+		<option name="Times" value="0x2" />
+	</enum8>
+	<int8 name="Output" offset="0x9F" visible="true" />
+	<dataRef name="Unknown" offset="0xA0" visible="true" />
+	<undefined name="Unknown" offset="0xB4" visible="false" />
+	<undefined name="Unknown" offset="0xB8" visible="false" />
+	<int8 name="Input" offset="0xBC" visible="true" />
+	<int8 name="Input Range" offset="0xBD" visible="true" />
+	<enum8 name="Output Kind" offset="0xBE" visible="true">
+		<option name="None" value="0x0" />
+		<option name="Plus" value="0x1" />
+		<option name="Times" value="0x2" />
+	</enum8>
+	<int8 name="Output" offset="0xBF" visible="true" />
+	<dataRef name="Unknown" offset="0xC0" visible="true" />
+	<undefined name="Unknown" offset="0xD4" visible="false" />
+	<undefined name="Unknown" offset="0xD8" visible="false" />
+	<int8 name="Input" offset="0xDC" visible="true" />
+	<int8 name="Input Range" offset="0xDD" visible="true" />
+	<enum8 name="Output Kind" offset="0xDE" visible="true">
+		<option name="None" value="0x0" />
+		<option name="Plus" value="0x1" />
+		<option name="Times" value="0x2" />
+	</enum8>
+	<int8 name="Output" offset="0xDF" visible="true" />
+	<dataRef name="Unknown" offset="0xE0" visible="true" />
+	<undefined name="Unknown" offset="0xF4" visible="false" />
+	<undefined name="Unknown" offset="0xF8" visible="false" />
+	<undefined name="Unknown" offset="0xFC" visible="false" />
+	<int8 name="Input" offset="0x100" visible="true" />
+	<int8 name="Input Range" offset="0x101" visible="true" />
+	<enum8 name="Output Kind" offset="0x102" visible="true">
+		<option name="None" value="0x0" />
+		<option name="Plus" value="0x1" />
+		<option name="Times" value="0x2" />
+	</enum8>
+	<int8 name="Output" offset="0x103" visible="true" />
+	<dataRef name="Unknown" offset="0x104" visible="true" />
+	<undefined name="Unknown" offset="0x118" visible="false" />
+	<undefined name="Unknown" offset="0x11C" visible="false" />
+	<int8 name="Input" offset="0x120" visible="true" />
+	<int8 name="Input Range" offset="0x121" visible="true" />
+	<enum8 name="Output Kind" offset="0x122" visible="true">
+		<option name="None" value="0x0" />
+		<option name="Plus" value="0x1" />
+		<option name="Times" value="0x2" />
+	</enum8>
+	<int8 name="Output" offset="0x123" visible="true" />
+	<dataRef name="Unknown" offset="0x124" visible="true" />
+	<undefined name="Unknown" offset="0x138" visible="false" />
+	<undefined name="Unknown" offset="0x13C" visible="false" />
+	<int8 name="Input" offset="0x140" visible="true" />
+	<int8 name="Input Range" offset="0x141" visible="true" />
+	<enum8 name="Output Kind" offset="0x142" visible="true">
+		<option name="None" value="0x0" />
+		<option name="Plus" value="0x1" />
+		<option name="Times" value="0x2" />
+	</enum8>
+	<int8 name="Output" offset="0x143" visible="true" />
+	<dataRef name="Unknown" offset="0x144" visible="true" />
+	<undefined name="Unknown" offset="0x158" visible="false" />
+	<undefined name="Unknown" offset="0x15C" visible="false" />
+	<tagRef name="Particle Model" offset="0x160" visible="true" />
+	<undefined name="Unknown" offset="0x170" visible="false" />
+	<undefined name="Unknown" offset="0x174" visible="false" />
+	<undefined name="Unknown" offset="0x178" visible="false" />
+	<tagblock name="Unknown" offset="0x17C" visible="false" elementSize="0x10" align="0x10">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+	</tagblock>
+	<tagblock name="Unknown" offset="0x188" visible="false" elementSize="0x10" align="0x10">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+	</tagblock>
 </plugin>
