@@ -4,40 +4,96 @@
 	<revisions>
 		<revision author="Lord Zedd" version="1">k</revision>
 	</revisions>
-	<tagblock name="Unknown" offset="0x0" visible="false" elementSize="0xC">
-		<tagblock name="Unknown" offset="0x0" visible="false" elementSize="0x10">
-			<tagblock name="Unknown" offset="0x0" visible="false" elementSize="0x10">
-				<uint32 name="Unknown" offset="0x0" visible="false" />
-				<tagblock name="Unknown" offset="0x4" visible="false" elementSize="0x4">
-					<uint32 name="Unknown" offset="0x0" visible="false" />
+	<tagblock name="Vertex Types" offset="0x0" visible="true" elementSize="0xC">
+		<tagblock name="Entry Point Dependency" offset="0x0" visible="true" elementSize="0x10">
+			<tagblock name="Category Dependency" offset="0x0" visible="true" elementSize="0x10">
+				<int32 name="Definition Category Index" offset="0x0" visible="true" />
+				<tagblock name="Option Dependency" offset="0x4" visible="true" elementSize="0x4">
+					<int32 name="Compiled Shader Index" offset="0x0" visible="true" />
 				</tagblock>
 			</tagblock>
-			<undefined name="Unknown" offset="0xC" visible="false" />
+			<int32 name="Default Compiled Shader Index" offset="0xC" visible="true" />
 		</tagblock>
 	</tagblock>
-	<undefined name="Unknown" offset="0xC" visible="false" />
-	<tagblock name="Vertex Shaders" offset="0x10" visible="true" elementSize="0x80">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<dataref name="Unknown" offset="0x4" visible="false" />
-		<dataRef name="Unknown" offset="0x18" visible="false" />
-		<dataRef name="Unknown" offset="0x2C" visible="false" />
-		<tagblock name="Unknown" offset="0x40" visible="false" elementSize="0x8">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
+	<uint32 name="Version" offset="0xC" visible="true" />
+	<tagblock name="Compiled Vertex Shaders" offset="0x10" visible="true" elementSize="0x80">
+		<flags32 name="Shader Flags" offset="0x0" visible="true">
+			<bit name="Requires Constant Table" index="0" />
+		</flags32>
+		<dataref name="Xenon Compiled Shader" offset="0x4" visible="true" />
+		<dataRef name="DX9 Compiled Shader" offset="0x18" visible="true" />
+		<dataRef name="Durango Compiled Shader" offset="0x2C" visible="true" />
+		<comment title="Xenon Constant Table" />
+		<tagblock name="Constants" offset="0x40" visible="true" elementSize="0x8">
+			<stringid name="Constant Name" offset="0x0" visible="true" />
+			<uint16 name="Register Start" offset="0x4" visible="true" />
+			<uint8 name="Register Count" offset="0x6" visible="true" />
+			<enum8 name="Register Set" offset="0x7" visible="true">
+				<option name="Boolean" value="0x0" />
+				<option name="Integer" value="0x1" />
+				<option name="Float" value="0x2" />
+				<option name="Sampler" value="0x3" />
+				<option name="Vertex Boolean" value="0x4" />
+				<option name="Vertex Integer" value="0x5" />
+				<option name="Vertex Float" value="0x6" />
+				<option name="Vertex Sampler" value="0x7" />
+			</enum8>
 		</tagblock>
-		<int32 name="Unknown" offset="0x4C" visible="false" />
-		<tagblock name="Unknown" offset="0x50" visible="false" elementSize="0x8">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
+		<enum8 name="Type" offset="0x4C" visible="true">
+			<option name="Vertex" value="0x0" />
+			<option name="Pixel" value="0x1" />
+			<option name="Compute" value="0x1" />
+		</enum8>
+		<int8 name="Unknown" offset="0x4D" visible="false" />
+		<int16 name="Unknown" offset="0x4E" visible="false" />
+		<comment title="DX9 Constant Table" />
+		<tagblock name="Constants" offset="0x50" visible="true" elementSize="0x8">
+			<stringid name="Constant Name" offset="0x0" visible="true" />
+			<uint16 name="Register Start" offset="0x4" visible="true" />
+			<uint8 name="Register Count" offset="0x6" visible="true" />
+			<enum8 name="Register Set" offset="0x7" visible="true">
+				<option name="Boolean" value="0x0" />
+				<option name="Integer" value="0x1" />
+				<option name="Float" value="0x2" />
+				<option name="Sampler" value="0x3" />
+				<option name="Vertex Boolean" value="0x4" />
+				<option name="Vertex Integer" value="0x5" />
+				<option name="Vertex Float" value="0x6" />
+				<option name="Vertex Sampler" value="0x7" />
+			</enum8>
 		</tagblock>
-		<int32 name="Unknown" offset="0x5C" visible="false" />
-		<tagblock name="Unknown" offset="0x60" visible="false" elementSize="0x8">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
+		<enum8 name="Type" offset="0x5C" visible="true">
+			<option name="Vertex" value="0x0" />
+			<option name="Pixel" value="0x1" />
+			<option name="Compute" value="0x1" />
+		</enum8>
+		<int8 name="Unknown" offset="0x5D" visible="false" />
+		<int16 name="Unknown" offset="0x5E" visible="false" />
+		<comment title="Durango Constant Table" />
+		<tagblock name="Constants" offset="0x60" visible="true" elementSize="0x8">
+			<stringid name="Constant Name" offset="0x0" visible="true" />
+			<uint16 name="Register Start" offset="0x4" visible="true" />
+			<uint8 name="Register Count" offset="0x6" visible="true" />
+			<enum8 name="Register Set" offset="0x7" visible="true">
+				<option name="Boolean" value="0x0" />
+				<option name="Integer" value="0x1" />
+				<option name="Float" value="0x2" />
+				<option name="Sampler" value="0x3" />
+				<option name="Vertex Boolean" value="0x4" />
+				<option name="Vertex Integer" value="0x5" />
+				<option name="Vertex Float" value="0x6" />
+				<option name="Vertex Sampler" value="0x7" />
+			</enum8>
 		</tagblock>
-		<int32 name="Unknown" offset="0x6C" visible="false" />
-		<int32 name="Unknown" offset="0x70" visible="false" />
-		<undefined name="Unknown" offset="0x74" visible="false" />
+		<enum8 name="Type" offset="0x6C" visible="true">
+			<option name="Vertex" value="0x0" />
+			<option name="Pixel" value="0x1" />
+			<option name="Compute" value="0x1" />
+		</enum8>
+		<int8 name="Unknown" offset="0x6D" visible="false" />
+		<int16 name="Unknown" offset="0x6E" visible="false" />
+		<uint32 name="General Purpose Registers" offset="0x70" visible="true" />
+		<int32 name="Cache Shader Index" offset="0x74" visible="true" />
 		<undefined name="Unknown" offset="0x78" visible="false" />
 		<undefined name="Unknown" offset="0x7C" visible="false" />
 	</tagblock>
