@@ -1,0 +1,772 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo3Beta" baseSize="0xFC">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+	</revisions>
+	<tagblock name="Resource Types" offset="0x0" visible="true" elementSize="0x18">
+		<raw name="GUID" offset="0x0" size="0x10" visible="true" />
+		<int16 name="Unknown" offset="0x10" visible="true" />
+		<int16 name="Unknown" offset="0x12" visible="true" />
+		<stringid name="Unknown" offset="0x14" visible="false" />
+	</tagblock>
+	<tagblock name="Resource Structure Types" offset="0xC" visible="true" elementSize="0x14">
+		<raw name="GUID" offset="0x0" size="0x10" visible="true" />
+		<stringid name="Unknown" offset="0x10" visible="false" />
+	</tagblock>
+	<tagblock name="Shared Caches" offset="0x18" visible="true" elementSize="0x100">
+		<ascii name="Map Path" offset="0x0" visible="true" length="0x100" />
+	</tagblock>
+	<tagblock name="Tag Resources" offset="0x24" visible="true" elementSize="0x60">
+		<comment title="Standard Zone Stuff" />
+		<tagRef name="Tag Item" offset="0x0" visible="true" />
+		<int16 name="Resource Type Index" offset="0x10" visible="true" />
+		<uint16 name="Salt" offset="0x12" visible="true" />
+		<int32 name="Flags" offset="0x14" visible="true" />
+		<uint32 name="Fixup Location Offset" offset="0x18" visible="true" />
+		<uint32 name="Fixup Location Size" offset="0x1C" visible="true" />
+		<int32 name="Secondary Fixup Location Offset" offset="0x20" visible="true" />
+		<comment title="With Some Play Mixed In" />
+		<comment title="Blocks">Block Offset is an exact cache file offset with no compression.</comment>
+		<int32 name="Shared Cache Index" offset="0x24" visible="true" />
+		<uint32 name="Block Offset" offset="0x28" visible="true" />
+		<uint32 name="Block Size" offset="0x2C" visible="true" />
+		<uint32 name="Unknown" offset="0x30" visible="true" />
+		<comment title="With Some Secondary Play Mixed In" />
+		<int32 name="Secondary Shared Cache Index" offset="0x34" visible="true" />
+		<int32 name="Secondary Block Offset" offset="0x38" visible="true" />
+		<uint32 name="Secondary Block Size" offset="0x3C" visible="true" />
+		<uint32 name="Unknown" offset="0x40" visible="true" />
+		<comment title="Back To Standard Zone" />
+		<flags8 name="Root Definition Address Location/High Bits" offset="0x44" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Fixup" index="5" />
+			<bit name="Raw Page" index="6" />
+			<bit name="Bit 7" index="7" />
+		</flags8>
+		<uint8 name="Root Definition Address Upper Bits" offset="0x45" visible="true" />
+		<uint16 name="Root Definition Address" offset="0x46" visible="true" />
+		<tagblock name="Resource Fixups" offset="0x48" visible="true" elementSize="0x8">
+			<comment title="Members">Block Offset: [offset in tag data sub-buffer].
+Address: fix-up address (either in the data sub-buffer, or a cache-resource offset.</comment>
+			<int32 name="Block Offset" offset="0x0" visible="true" />
+			<flags8 name="Address Location/High Bits" offset="0x4" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Fixup" index="5" />
+				<bit name="Raw Page" index="6" />
+				<bit name="Bit 7" index="7" />
+			</flags8>
+			<uint8 name="Address Upper Bits" offset="0x5" visible="true" />
+			<uint16 name="Address" offset="0x6" visible="true" />
+		</tagblock>
+		<tagblock name="Resource Definition Fixups" offset="0x54" visible="true" elementSize="0x8">
+			<flags8 name="Offset Location/High Bits" offset="0x0" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Fixup" index="5" />
+				<bit name="Raw Page" index="6" />
+				<bit name="Bit 7" index="7" />
+			</flags8>
+			<uint8 name="Offset Upper Bits" offset="0x1" visible="true" />
+			<uint16 name="Offset" offset="0x2" visible="true" />
+			<int32 name="Resource Structure Type Index" offset="0x4" visible="true" />
+		</tagblock>
+	</tagblock>
+	<comment title="Active Pool Members">Pools are divided up into 32-bit groups per chunk.
+Each bit corresponds to either a chunk in "Tag Resources" above (Raw Pools), or a tag in the overall tag listing (Tag Pools).
+If a bit is enabled then that member will be loaded.</comment>
+	<tagblock name="Scenario Zonesets" offset="0x30" visible="true" elementSize="0x5C">
+		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
+			<flags32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
+			<flags32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
+			<flags32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<stringid name="Set Name" offset="0x40" visible="true" />
+		<tagblock name="Resource Types" offset="0x44" visible="false" elementSize="0x14">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
+		</tagblock>
+		<tagblock name="Required Tag Pool" offset="0x50" visible="true" elementSize="0x4">
+			<flags32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+	</tagblock>
+	<tagblock name="Designer Zonesets" offset="0x3C" visible="true" elementSize="0x5C">
+		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
+			<flags32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
+			<flags32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
+			<flags32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<stringid name="Set Name" offset="0x40" visible="true" />
+		<tagblock name="Resource Types" offset="0x44" visible="false" elementSize="0x14">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
+		</tagblock>
+		<tagblock name="Required Tag Pool" offset="0x50" visible="true" elementSize="0x4">
+			<flags32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+	</tagblock>
+	<tagblock name="Global Zoneset" offset="0x48" visible="true" elementSize="0x5C">
+		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
+			<flags32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
+			<flags32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
+			<flags32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<stringid name="Set Name" offset="0x40" visible="true" />
+		<tagblock name="Resource Types" offset="0x44" visible="false" elementSize="0x14">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
+		</tagblock>
+		<tagblock name="Required Tag Pool" offset="0x50" visible="true" elementSize="0x4">
+			<flags32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+	</tagblock>
+	<undefined name="Unknown" offset="0x54" visible="false" />
+	<undefined name="Unknown" offset="0x58" visible="false" />
+	<undefined name="Unknown" offset="0x5C" visible="false" />
+	<tagblock name="Unattached Zoneset" offset="0x60" visible="true" elementSize="0x5C">
+		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
+			<flags32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
+			<flags32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
+			<flags32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<stringid name="Set Name" offset="0x40" visible="true" />
+		<tagblock name="Resource Types" offset="0x44" visible="false" elementSize="0x14">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
+		</tagblock>
+		<tagblock name="Required Tag Pool" offset="0x50" visible="true" elementSize="0x4">
+			<flags32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+	</tagblock>
+	<undefined name="Unknown" offset="0x6C" visible="false" />
+	<undefined name="Unknown" offset="0x70" visible="false" />
+	<undefined name="Unknown" offset="0x74" visible="false" />
+	<undefined name="Unknown" offset="0x78" visible="false" />
+	<undefined name="Unknown" offset="0x7C" visible="false" />
+	<undefined name="Unknown" offset="0x80" visible="false" />
+	<dataRef name="Fixup Information" offset="0x84" visible="true" align="0x10" />
+	<undefined name="Unknown" offset="0x98" visible="false" />
+	<undefined name="Unknown" offset="0x9C" visible="false" />
+	<undefined name="Unknown" offset="0xA0" visible="false" />
+	<undefined name="Unknown" offset="0xA4" visible="false" />
+	<tagblock name="Unknown" offset="0xA8" visible="false" elementSize="0x14">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+	</tagblock>
+	<undefined name="Unknown" offset="0xB4" visible="false" />
+	<undefined name="Unknown" offset="0xB8" visible="false" />
+	<undefined name="Unknown" offset="0xBC" visible="false" />
+	<undefined name="Unknown" offset="0xC0" visible="false" />
+	<undefined name="Unknown" offset="0xC4" visible="false" />
+	<undefined name="Unknown" offset="0xC8" visible="false" />
+	<undefined name="Unknown" offset="0xCC" visible="false" />
+	<undefined name="Unknown" offset="0xD0" visible="false" />
+	<undefined name="Unknown" offset="0xD4" visible="false" />
+	<undefined name="Unknown" offset="0xD8" visible="false" />
+	<undefined name="Unknown" offset="0xDC" visible="false" />
+	<undefined name="Unknown" offset="0xE0" visible="false" />
+	<undefined name="Unknown" offset="0xE4" visible="false" />
+	<undefined name="Unknown" offset="0xE8" visible="false" />
+	<undefined name="Unknown" offset="0xEC" visible="false" />
+	<undefined name="Unknown" offset="0xF0" visible="false" />
+	<undefined name="Unknown" offset="0xF4" visible="false" />
+	<undefined name="Unknown" offset="0xF8" visible="false" />
+</plugin>
