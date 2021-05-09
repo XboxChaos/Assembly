@@ -711,45 +711,36 @@
 		<bit name="Bit 30" index="30" />
 		<bit name="Bit 31" index="31" />
 	</flags32>
-	<tagblock name="Tank Engine Motion Properties" offset="0x310" visible="true" elementSize="0x58">
-		<degree name="Steering Overdampen Cusp Angle" offset="0x0" visible="true" />
-		<float32 name="Steering Overdamen Exponent" offset="0x4" visible="true" />
-		<float32 name="Unknown" offset="0x8" visible="true" />
-		<float32 name="Speed Left" offset="0xC" visible="true" />
-		<float32 name="Speed Right" offset="0x10" visible="true" />
-		<float32 name="Turning Speed Left" offset="0x14" visible="true" />
-		<float32 name="Turning Speed Right" offset="0x18" visible="true" />
-		<float32 name="Speed Left 2" offset="0x1C" visible="true" />
-		<float32 name="Speed Right 2" offset="0x20" visible="true" />
-		<float32 name="Turning Speed Left 2" offset="0x24" visible="true" />
-		<float32 name="Turning Speed Right 2" offset="0x28" visible="true" />
-		<float32 name="Engine Momentum" offset="0x2C" visible="true" />
-		<float32 name="Engine Maximum Angular Velocity" offset="0x30" visible="true" />
-		<tagblock name="Gears" offset="0x34" visible="true" elementSize="0x44">
-			<comment title="Loaded Torque" />
-			<float32 name="Min Torque" offset="0x0" visible="true" />
-			<float32 name="Max Torque" offset="0x4" visible="true" />
-			<float32 name="Peak Torque Scale" offset="0x8" visible="true" />
-			<float32 name="Past Peak Torque Exponent" offset="0xC" visible="true" />
-			<float32 name="Torque at Max Angular Velocity" offset="0x10" visible="true" />
-			<float32 name="Torque at 2x Max Angular Velocity" offset="0x14" visible="true" />
-			<comment title="Cruising Torque" />
-			<float32 name="Min Torque" offset="0x18" visible="true" />
-			<float32 name="Max Torque" offset="0x1C" visible="true" />
-			<float32 name="Peak Torque Scale" offset="0x20" visible="true" />
-			<float32 name="Past Peak Torque Exponent" offset="0x24" visible="true" />
-			<float32 name="Torque at Max Angular Velocity" offset="0x28" visible="true" />
-			<float32 name="Torque at 2x Max Angular Velocity" offset="0x2C" visible="true" />
-			<comment title="Gearing" />
-			<float32 name="Min Time to Up-Shift" offset="0x30" visible="true" />
-			<float32 name="Engine Up-Shift Scale" offset="0x34" visible="true" />
-			<float32 name="Gear Ratio" offset="0x38" visible="true" />
-			<float32 name="Min Time to Down-Shift" offset="0x3C" visible="true" />
-			<float32 name="Engine Down-Shift Scale" offset="0x40" visible="true" />
+	<tagblock name="Tank Engine Motion Properties" offset="0x310" visible="true" elementSize="0x40">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<tagblock name="Unknown" offset="0x1C" visible="false" elementSize="0x44">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
+			<undefined name="Unknown" offset="0x14" visible="false" />
+			<undefined name="Unknown" offset="0x18" visible="false" />
+			<undefined name="Unknown" offset="0x1C" visible="false" />
+			<undefined name="Unknown" offset="0x20" visible="false" />
+			<undefined name="Unknown" offset="0x24" visible="false" />
+			<undefined name="Unknown" offset="0x28" visible="false" />
+			<undefined name="Unknown" offset="0x2C" visible="false" />
+			<undefined name="Unknown" offset="0x30" visible="false" />
+			<undefined name="Unknown" offset="0x34" visible="false" />
+			<undefined name="Unknown" offset="0x38" visible="false" />
+			<undefined name="Unknown" offset="0x3C" visible="false" />
+			<undefined name="Unknown" offset="0x40" visible="false" />
 		</tagblock>
-		<tagRef name="Change Gear Sound" offset="0x40" visible="true" />
-		<float32 name="Unknown" offset="0x50" visible="true" />
-		<float32 name="Unknown" offset="0x54" visible="true" />
+		<tagRef name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
 	</tagblock>
 	<tagblock name="Engine Motion Properties" offset="0x31C" visible="true" elementSize="0x40">
 		<degree name="Steering Overdampen Cusp Angle" offset="0x0" visible="true" />
@@ -857,9 +848,99 @@
 	<tagblock name="Turret Properties" offset="0x34C" visible="true" elementSize="0x4">
 		<undefined name="Unknown" offset="0x0" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x358" visible="false" />
-	<undefined name="Unknown" offset="0x35C" visible="false" />
-	<undefined name="Unknown" offset="0x360" visible="false" />
+	<tagblock name="Mantis Type" offset="0x358" visible="true" elementSize="0xAC">
+		<comment title="Steering Overdampening">when the steering is off by more than the cusp angle the steering will overcompensate more and more. when it is less, it overcompensates less and less. the exponent should be something in the neighborhood of 2.0</comment>
+		<degree name="Overdampen Cusp Angle" offset="0x0" visible="true" />
+		<float32 name="Overdampen Exponent" offset="0x4" visible="true" />
+		<degree name="Maximum Left Turn" offset="0x8" visible="true" />
+		<degree name="Maximum Right Turn (negative)" offset="0xC" visible="true" />
+		<degree name="Turn Rate" offset="0x10" visible="true" />
+		<float32 name="Maximum Forward Speed" offset="0x14" visible="true" />
+		<float32 name="Maximum Reverse Speed" offset="0x18" visible="true" />
+		<float32 name="Speed Acceleration" offset="0x1C" visible="true" />
+		<float32 name="Speed Deceleration" offset="0x20" visible="true" />
+		<float32 name="Maximum Left Slide" offset="0x24" visible="true" />
+		<float32 name="Maximum Right Slide" offset="0x28" visible="true" />
+		<float32 name="Slide Acceleration" offset="0x2C" visible="true" />
+		<float32 name="Slide Deceleration" offset="0x30" visible="true" />
+		<comment title="Walker Physics" />
+		<vector3 name="Maximum Leg Motion" offset="0x34" visible="true" tooltip="in WU, how far can we displace the legs in x,y,z each step" />
+		<float32 name="Maximum Turn" offset="0x40" visible="true" tooltip="in degrees, how much can this walker turn in one step" />
+		<tagblock name="Legs" offset="0x44" visible="true" elementSize="0xA0">
+			<enum8 name="Leg Group" offset="0x0" visible="true">
+				<option name="Primary" value="0x0" />
+				<option name="Secondary" value="0x1" />
+			</enum8>
+			<enum8 name="Leg Side" offset="0x1" visible="true">
+				<option name="Left" value="0x0" />
+				<option name="Right" value="0x1" />
+			</enum8>
+			<int8 name="Leg Side Order" offset="0x2" visible="true" tooltip="for each side order the legs from 0-n where 0 is the most forward leg" />
+			<int8 name="Valid" offset="0x3" visible="true" />
+			<stringid name="Hip Node a Name" offset="0x4" visible="true" />
+			<stringid name="Hip Node b Name" offset="0x8" visible="true" />
+			<stringid name="Knee Node a Name" offset="0xC" visible="true" />
+			<stringid name="Knee Node b Name" offset="0x10" visible="true" />
+			<stringid name="Foot Marker Name" offset="0x14" visible="true" />
+			<undefined name="Unknown" offset="0x18" visible="false" />
+			<undefined name="Unknown" offset="0x1C" visible="false" />
+			<undefined name="Unknown" offset="0x20" visible="false" />
+			<undefined name="Unknown" offset="0x24" visible="false" />
+			<undefined name="Unknown" offset="0x28" visible="false" />
+			<undefined name="Unknown" offset="0x2C" visible="false" />
+			<undefined name="Unknown" offset="0x30" visible="false" />
+			<undefined name="Unknown" offset="0x34" visible="false" />
+			<undefined name="Unknown" offset="0x38" visible="false" />
+			<undefined name="Unknown" offset="0x3C" visible="false" />
+			<undefined name="Unknown" offset="0x40" visible="false" />
+			<undefined name="Unknown" offset="0x44" visible="false" />
+			<undefined name="Unknown" offset="0x48" visible="false" />
+			<undefined name="Unknown" offset="0x4C" visible="false" />
+			<undefined name="Unknown" offset="0x50" visible="false" />
+			<flags32 name="Flags" offset="0x54" visible="true">
+				<bit name="Constrained Plant" index="0" />
+			</flags32>
+			<vector3 name="Runtime Initial Origin To Hip Offset" offset="0x58" visible="true" />
+			<vector3 name="Runtime Pivot Center To Hip Offset" offset="0x64" visible="true" />
+			<float32 name="Runtime Upper Leg Length" offset="0x70" visible="true" />
+			<float32 name="Runtime Lower Leg Length" offset="0x74" visible="true" />
+			<int16 name="Runtime Hip Node a Index" offset="0x78" visible="true" />
+			<int16 name="Runtime Hip Node b Index" offset="0x7A" visible="true" />
+			<int16 name="Runtime Knee Node a Index" offset="0x7C" visible="true" />
+			<int16 name="Runtime Knee Node b Index" offset="0x7E" visible="true" />
+			<int16 name="Runtime Foot Marker Group Index" offset="0x80" visible="true" />
+			<int16 name="Runtime Foot Node Index" offset="0x82" visible="true" />
+			<int16 name="Runtime Hip Node Index" offset="0x84" visible="true" />
+			<int16 name="Runtime Knee Node Index" offset="0x86" visible="true" />
+			<vector3 name="Plant Constraint Position" offset="0x88" visible="true" />
+			<undefined name="Unknown" offset="0x94" visible="false" />
+			<undefined name="Unknown" offset="0x98" visible="false" />
+			<undefined name="Unknown" offset="0x9C" visible="false" />
+		</tagblock>
+		<float32 name="Leg Apex Fraction" offset="0x50" visible="true" tooltip="0-1 fraction. where the leg tansitions from lift to drop" />
+		<float32 name="Lift Exponent" offset="0x54" visible="true" tooltip=" x(0-1) power exponent" />
+		<float32 name="Drop Exponent" offset="0x58" visible="true" tooltip=" x(0-1) power exponent" />
+		<vector3 name="Object Space Pivot Position" offset="0x5C" visible="true" />
+		<float32 name="Walk Cycle Pause" offset="0x68" visible="true" tooltip="fraction of walkcycle at end for pause" />
+		<int16 name="Stable Planted Legs" offset="0x6C" visible="true" tooltip="number of legs mantis needs planted to be considered stable." />
+		<int16 name="Unknown" offset="0x6E" visible="false" />
+		<float32 name="Time Without Plant Buffer" offset="0x70" visible="true" tooltip="seconds" />
+		<float32 name="Not Along Up Gravity Scale" offset="0x74" visible="true" tooltip="0-1" />
+		<float32 name="Speed Acceleration Limit" offset="0x78" visible="true" />
+		<float32 name="Speed Acceleration Match Scale" offset="0x7C" visible="true" />
+		<float32 name="Slide Acceleration Limit" offset="0x80" visible="true" />
+		<float32 name="Slide Acceleration Match Scale" offset="0x84" visible="true" />
+		<float32 name="Turn Acceleration Limit" offset="0x88" visible="true" />
+		<float32 name="Turn Acceleration Match Scale" offset="0x8C" visible="true" />
+		<comment title="Jumping" />
+		<float32 name="Jump Set Time" offset="0x90" visible="true" tooltip="seconds" />
+		<float32 name="Jump Set Interpolation Fraction" offset="0x94" visible="true" tooltip="0-1, portion of set time spent interpolating into neutral stance" />
+		<float32 name="Jump Leap Time" offset="0x98" visible="true" tooltip="seconds" />
+		<float32 name="Jump Recovery Time" offset="0x9C" visible="true" tooltip="seconds" />
+		<float32 name="Jump Recovery Fraction" offset="0xA0" visible="true" tooltip="0-1, portion of recovery time spent interpolating into neutral stance" />
+		<float32 name="Jump Leg Set Distance" offset="0xA4" visible="true" tooltip="WU, amount foot moves up to get ready to jump" />
+		<float32 name="Jump Leg Distance" offset="0xA8" visible="true" tooltip="WU, amount foot moves down when jumping" />
+	</tagblock>
 	<tagblock name="Helicopter Motion Properties" offset="0x364" visible="true" elementSize="0x74">
 		<degree name="Maximum Left Turn" offset="0x0" visible="true" />
 		<degree name="Maximum Right Turn (negative)" offset="0x4" visible="true" />
