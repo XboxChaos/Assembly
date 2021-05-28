@@ -707,8 +707,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 				// Open the destination map
 				using (var stream = new EndianStream(File.Open(outputPath, FileMode.Open, FileAccess.ReadWrite), Endian.BigEndian))
 				{
-					EngineDatabase engineDb = XMLEngineDatabaseLoader.LoadDatabase("Formats/Engines.xml");
-					ICacheFile cacheFile = CacheFileLoader.LoadCacheFile(stream, outputPath, engineDb);
+					ICacheFile cacheFile = CacheFileLoader.LoadCacheFile(stream, outputPath, App.AssemblyStorage.AssemblySettings.DefaultDatabase);
 					if (currentPatch.MapInternalName != null && cacheFile.InternalName != currentPatch.MapInternalName)
 					{
 						MetroMessageBox.Show("Unable to apply patch",
@@ -719,10 +718,22 @@ namespace Assembly.Metro.Controls.PageTemplates
 					if (!string.IsNullOrEmpty(currentPatch.BuildString) && cacheFile.BuildString != currentPatch.BuildString)
 					{
 						MetroMessageBox.Show("Unable to apply patch",
-							"Hold on there! That patch is for a map with a build version of" + currentPatch.BuildString +
+							"Hold on there! That patch is for a map with a build version of " + currentPatch.BuildString +
 							", and the unmodified map file you selected doesn't seem to match that. Find the correct file and try again.");
 						return;
 					}
+
+					if (string.IsNullOrEmpty(currentPatch.BuildString))
+						if (MetroMessageBox.Show("Warning",
+								"This patch does not have an associated build string, possibly because it predates that info being stored.\r\n" +
+								"Please double check with the source of the patch before continuing as your map may become corrupted if the map doesn't match.\r\n\r\n" +
+								"(For reference, the unmodified map you have chosen is \"" + cacheFile.BuildString + "\")\r\n\r\n" +
+								"Are you sure you want to continue?",
+								MetroMessageBox.MessageBoxButtons.OkCancel) != MetroMessageBox.MessageBoxResult.OK)
+						{
+							Close();
+							return;
+						}
 
 					// Apply the patch!
 					if (currentPatch.MapInternalName == null)
