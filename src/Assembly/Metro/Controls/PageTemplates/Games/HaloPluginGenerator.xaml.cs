@@ -27,6 +27,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		public ObservableCollection<MapEntry> GeneratorMaps = new ObservableCollection<MapEntry>();
 		private bool _isWorking;
 
+		private string[] MapFilter = new string[] //maps that arent proper cache files.
+			{
+				"bitmaps.map",
+				"loc.map",
+				"sounds.map",
+			};
+
 		public HaloPluginGenerator()
 		{
 			InitializeComponent();
@@ -57,9 +64,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			foreach (
 				FileInfo fi in
 					fis.Where(
-						fi =>
-							!fi.Name.ToLower().StartsWith("campaign") && !fi.Name.ToLower().StartsWith("shared") &&
-							!fi.Name.ToLower().StartsWith("english") && !fi.Name.ToLower().StartsWith("single_player_shared")))
+						fi => !MapFilter.Contains(fi.Name.ToLower())))
 			{
 				GeneratorMaps.Add(new MapEntry
 				{
@@ -162,6 +167,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				IReader reader;
 				KeyValuePair<ICacheFile, EngineDescription> cacheData = LoadMap(generatorMaps[i].LocalMapPath, out reader);
 				ICacheFile cacheFile = cacheData.Key;
+
+				if (cacheFile.MetaArea == null || cacheFile.Tags.Count == 0)
+					continue;
+
 				var analyzer = new MetaAnalyzer(cacheFile);
 				if (gameIdentifier == "")
 					gameIdentifier = cacheData.Value.Settings.GetSetting<string>("shortName");
