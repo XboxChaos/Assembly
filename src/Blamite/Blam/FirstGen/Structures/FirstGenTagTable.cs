@@ -56,7 +56,7 @@ namespace Blamite.Blam.FirstGen.Structures
 
             // TODO (Dragon): idk if this is acceptable
             uint tagTableOffset;
-            if (buildInfo.Version == "02.01.07.4998" || buildInfo.Version == "02.06.28.07902")
+            if (buildInfo.BuildVersion == "02.01.07.4998" || buildInfo.BuildVersion == "02.06.28.07902")
             {
                 //tagTableOffset = (uint)(metaArea.Offset + (uint)headerValues.GetInteger("tag table offset") - metaArea.BasePointer);
                 tagTableOffset = (uint)(metaArea.Offset + (uint)headerValues.GetInteger("tag table offset") - (uint)headerValues.GetInteger("meta header mask"));
@@ -124,7 +124,7 @@ namespace Blamite.Blam.FirstGen.Structures
                 
                 // TODO (Dragon): SERIOUSLY
                 // JUST FUCKING FIX THE FILE SEGMENTS OH MY GOD
-                if (buildInfo.Version == "02.01.07.4998" || buildInfo.Version == "02.06.28.07902")
+                if (buildInfo.BuildVersion == "02.01.07.4998" || buildInfo.BuildVersion == "02.06.28.07902")
                 {
                     ulong omg = values.GetInteger("name offset");
                     //omg += ((ulong)metaArea.BasePointer - metafuck) - (ulong)metaArea.BasePointer + (ulong)metaArea.Offset;

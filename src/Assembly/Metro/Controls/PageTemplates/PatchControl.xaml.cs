@@ -84,11 +84,11 @@ namespace Assembly.Metro.Controls.PageTemplates
 			byte[] headerMagic = new byte[4];
 			fileStream.Read(headerMagic, 0, 4);
 
-			var endian = CacheFileLoader.DetermineCacheFileEndianness(headerMagic);
+			var cacheStream = new EndianStream(fileStream, Endian.BigEndian);
 
-			var cacheStream = new EndianStream(fileStream, endian);
-			var versionInfo = new CacheFileVersionInfo(cacheStream);
-			_buildInfo = App.AssemblyStorage.AssemblySettings.DefaultDatabase.FindEngineByVersion(versionInfo.BuildString);
+			_buildInfo = CacheFileLoader.FindEngineDescription(cacheStream,
+				App.AssemblyStorage.AssemblySettings.DefaultDatabase);
+
 			if (_buildInfo != null && _buildInfo.Name != null)
 			{
 				switch (_buildInfo.Name)
@@ -456,7 +456,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 					Screenshot = String.IsNullOrEmpty(previewImage)
 						? null
 						: File.ReadAllBytes(previewImage),
-					BuildString = _buildInfo.Version,
+					BuildString = _buildInfo.BuildVersion,
 					PC = String.IsNullOrEmpty(_buildInfo.GameExecutable)
 						? false
 						: true
@@ -903,7 +903,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 				if (string.IsNullOrEmpty(currentPatchToPoke.BuildString))
 					return;
 
-				var pokeInfo = App.AssemblyStorage.AssemblySettings.DefaultDatabase.FindEngineByVersion(currentPatchToPoke.BuildString);
+				var pokeInfo = App.AssemblyStorage.AssemblySettings.DefaultDatabase.FindEngineByBuild(currentPatchToPoke.BuildString);
 				if (pokeInfo == null)
 				{
 					MetroMessageBox.Show("Unsupported Build",

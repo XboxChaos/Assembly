@@ -29,7 +29,7 @@ namespace Blamite.Blam.FirstGen
         private EffectInterop _effects;
 
 
-        public FirstGenCacheFile(IReader reader, EngineDescription buildInfo, string buildString)
+        public FirstGenCacheFile(IReader reader, EngineDescription buildInfo)
         {
             _endianness = reader.Endianness;
             _buildInfo = buildInfo;
@@ -39,7 +39,7 @@ namespace Blamite.Blam.FirstGen
             // TODO (Dragon): not sure if this is right for first gen
             Allocator = new MetaAllocator(this, 0x10000);
 
-            Load(reader, buildInfo, buildString);
+            Load(reader);
         }
 
 
@@ -202,60 +202,60 @@ namespace Blamite.Blam.FirstGen
             throw new NotImplementedException();
         }
 
-        private void Load(IReader reader, EngineDescription buildInfo, string buildString)
+        private void Load(IReader reader)
         {
-            _header = LoadHeader(reader, buildInfo, buildString);
-            _tags = LoadTagTable(reader, buildInfo);
-            _fileNames = LoadFileNames(reader, buildInfo);
+            _header = LoadHeader(reader);
+            _tags = LoadTagTable(reader);
+            _fileNames = LoadFileNames(reader);
             
             // firstgen has no StringIDs
-            _stringIDs = LoadStringIDs(reader, buildInfo);
+            _stringIDs = LoadStringIDs(reader);
 
             // hack to get scenario name
             reader.SeekTo(MetaArea.Offset);
-            StructureValueCollection values = StructureReader.ReadStructure(reader, buildInfo.Layouts.GetLayout("meta header"));
+            StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("meta header"));
             
             // TODO (Dragon): idk if we should mask this like this
             var scenarioIndex = (int)values.GetInteger("scenario datum index") & 0xFFFF;
             _header.ScenarioName = _fileNames.GetTagName(scenarioIndex);
         }
 
-        private FirstGenHeader LoadHeader(IReader reader, EngineDescription buildInfo, string buildString)
+        private FirstGenHeader LoadHeader(IReader reader)
         {
             reader.SeekTo(0);
-            StructureValueCollection values = StructureReader.ReadStructure(reader, buildInfo.Layouts.GetLayout("header"));
+            StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("header"));
 
 
             // hack to pack meta header size for metaOffsetMask calculation
             var oldReadPos = reader.Position;
             reader.SeekTo((long)values.GetInteger("meta offset"));
             var tagTableOffset = reader.ReadUInt32();
-            values.SetInteger("meta header size", (ulong)buildInfo.Layouts.GetLayout("meta header").Size);
+            values.SetInteger("meta header size", (ulong)_buildInfo.Layouts.GetLayout("meta header").Size);
             values.SetInteger("tag table offset", (ulong)tagTableOffset);
             reader.SeekTo(oldReadPos);
 
-            return new FirstGenHeader(values, buildInfo, buildString, _segmenter);
+            return new FirstGenHeader(values, _buildInfo, _segmenter);
         }
 
-        private FirstGenTagTable LoadTagTable(IReader reader, EngineDescription buildInfo)
+        private FirstGenTagTable LoadTagTable(IReader reader)
         {
             reader.SeekTo(MetaArea.Offset);
-            StructureValueCollection values = StructureReader.ReadStructure(reader, buildInfo.Layouts.GetLayout("meta header"));
-            return new FirstGenTagTable(reader, values, MetaArea, buildInfo);
+            StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("meta header"));
+            return new FirstGenTagTable(reader, values, MetaArea, _buildInfo);
         }
 
-        private IndexedFileNameSource LoadFileNames(IReader reader, EngineDescription buildInfo)
+        private IndexedFileNameSource LoadFileNames(IReader reader)
         {
             //var strings = new IndexedStringTable(reader, _header.FileNameCount, _header.FileNameIndexTable, _header.FileNameData,
-            //    buildInfo.TagNameKey);
+            //    _buildInfo.TagNameKey);
             var strings = new FirstGenIndexedStringTable(reader, _tags);
             return new IndexedFileNameSource(strings);
         }
 
-        private IndexedStringIDSource LoadStringIDs(IReader reader, EngineDescription buildInfo)
+        private IndexedStringIDSource LoadStringIDs(IReader reader)
         {
             var strings = new IndexedStringTable(reader, _header.StringIDCount, _header.StringIDIndexTable, _header.StringIDData,
-                buildInfo.StringIDKey);
+                _buildInfo.StringIDKey);
             return new IndexedStringIDSource(strings, new LengthBasedStringIDResolver(strings));
         }
 

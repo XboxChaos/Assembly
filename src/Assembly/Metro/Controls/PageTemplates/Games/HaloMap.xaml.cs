@@ -204,7 +204,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				switch (_cacheFile.Engine)
 				{
 					case EngineType.FirstGeneration:
-						if (_cacheFile.Endianness == Endian.BigEndian) // CEA 360
+						if (_buildInfo.Endian == Endian.BigEndian) // CEA 360
 							_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm, 0xC226CC54);
 						else if (!string.IsNullOrEmpty(_buildInfo.GameModule)) // CEA MCC
 							_rteProvider = new FirstGenMCCRTEProvider(_buildInfo);
@@ -220,10 +220,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						break;
 
 					case EngineType.ThirdGeneration:
-						if (_cacheFile.Endianness == Endian.BigEndian)
-							_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm);
-						else
+						if (!string.IsNullOrEmpty(_buildInfo.GameModule))
 							_rteProvider = new ThirdGenMCCRTEProvider(_buildInfo);
+						else
+							_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm);
 						break;
 				}
 
@@ -1174,8 +1174,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 										}
 
 										resourceStream = File.OpenRead(resourceCachePath);
-										resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, _cacheFile.Endianness), _buildInfo, Path.GetFileName(_cacheLocation),
-											_cacheFile.BuildString);
+										resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, _cacheFile.Endianness), _buildInfo, Path.GetFileName(_cacheLocation));
 									}
 
 									var extractor = new ResourcePageExtractor(resourceFile);

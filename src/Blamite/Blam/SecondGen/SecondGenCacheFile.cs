@@ -30,7 +30,7 @@ namespace Blamite.Blam.SecondGen
 		private SoundResourceManager _soundGestalt;
 		private SecondGenSimulationDefinitionTable _simulationDefinitions;
 
-		public SecondGenCacheFile(IReader reader, EngineDescription buildInfo, string fileName, string buildString)
+		public SecondGenCacheFile(IReader reader, EngineDescription buildInfo, string fileName)
 		{
 			FileName = fileName;
 			_endianness = reader.Endianness;
@@ -38,7 +38,7 @@ namespace Blamite.Blam.SecondGen
 			_segmenter = new FileSegmenter(buildInfo.SegmentAlignment);
 			_expander = new SecondGenPointerExpander();
 			Allocator = new MetaAllocator(this, 0x1000);
-			Load(reader, buildInfo, buildString);
+			Load(reader);
 		}
 
 		public void SaveChanges(IStream stream)
@@ -232,41 +232,41 @@ namespace Blamite.Blam.SecondGen
 			get { return _soundGestalt; }
 		}
 
-		private void Load(IReader reader, EngineDescription buildInfo, string buildString)
+		private void Load(IReader reader)
 		{
-			_header = LoadHeader(reader, buildInfo, buildString);
-			_tags = LoadTagTable(reader, buildInfo);
-			_fileNames = LoadFileNames(reader, buildInfo);
-			_stringIDs = LoadStringIDs(reader, buildInfo);
+			_header = LoadHeader(reader);
+			_tags = LoadTagTable(reader);
+			_fileNames = LoadFileNames(reader);
+			_stringIDs = LoadStringIDs(reader);
 
 			LoadLanguageGlobals(reader);
 			LoadScriptFiles();
 			LoadSimulationDefinitions(reader);
 		}
 
-		private SecondGenHeader LoadHeader(IReader reader, EngineDescription buildInfo, string buildString)
+		private SecondGenHeader LoadHeader(IReader reader)
 		{
 			reader.SeekTo(0);
-			StructureValueCollection values = StructureReader.ReadStructure(reader, buildInfo.Layouts.GetLayout("header"));
-			return new SecondGenHeader(values, buildInfo, buildString, _segmenter);
+			StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("header"));
+			return new SecondGenHeader(values, _buildInfo, _segmenter);
 		}
 
-		private SecondGenTagTable LoadTagTable(IReader reader, EngineDescription buildInfo)
+		private SecondGenTagTable LoadTagTable(IReader reader)
 		{
-			return new SecondGenTagTable(reader, MetaArea, Allocator, buildInfo);
+			return new SecondGenTagTable(reader, MetaArea, Allocator, _buildInfo);
 		}
 
-		private IndexedFileNameSource LoadFileNames(IReader reader, EngineDescription buildInfo)
+		private IndexedFileNameSource LoadFileNames(IReader reader)
 		{
 			var strings = new IndexedStringTable(reader, _header.FileNameCount, _header.FileNameIndexTable, _header.FileNameData,
-				buildInfo.TagNameKey);
+				_buildInfo.TagNameKey);
 			return new IndexedFileNameSource(strings);
 		}
 
-		private IndexedStringIDSource LoadStringIDs(IReader reader, EngineDescription buildInfo)
+		private IndexedStringIDSource LoadStringIDs(IReader reader)
 		{
 			var strings = new IndexedStringTable(reader, _header.StringIDCount, _header.StringIDIndexTable, _header.StringIDData,
-				buildInfo.StringIDKey);
+				_buildInfo.StringIDKey);
 			return new IndexedStringIDSource(strings, new LengthBasedStringIDResolver(strings));
 		}
 

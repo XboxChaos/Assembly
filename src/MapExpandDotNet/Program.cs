@@ -35,16 +35,17 @@ namespace MapExpandDotNet
 			Console.WriteLine("Reading...");
 
 			var stream = new EndianStream(File.Open(args[0], FileMode.Open, FileAccess.ReadWrite), Endian.BigEndian);
-			var version = new CacheFileVersionInfo(stream);
-			if (version.Engine != EngineType.ThirdGeneration)
+
+			var database = XMLEngineDatabaseLoader.LoadDatabase("Formats/Engines.xml");
+			var buildInfo = CacheFileLoader.FindEngineDescription(stream, database);
+
+			if (buildInfo.Engine != EngineType.ThirdGeneration)
 			{
 				Console.WriteLine("Only third-generation map files are supported.");
 				return;
 			}
 
-			var database = XMLEngineDatabaseLoader.LoadDatabase("Formats/Engines.xml");
-			var buildInfo = database.FindEngineByVersion(version.BuildString);
-			var cacheFile = new ThirdGenCacheFile(stream, buildInfo, Path.GetFileName(args[0]), version.BuildString);
+			var cacheFile = new ThirdGenCacheFile(stream, buildInfo, Path.GetFileName(args[0]));
 
 			FileSegmentGroup area;
 			FileSegment section;
@@ -86,7 +87,7 @@ namespace MapExpandDotNet
 					return;
 			}
 
-			Console.WriteLine("- Engine version: {0}", version.BuildString);
+			Console.WriteLine("- Engine version: {0}", buildInfo.BuildVersion);
 			Console.WriteLine("- Internal name: {0}", cacheFile.InternalName);
 			Console.WriteLine("- Scenario name: {0}", cacheFile.ScenarioName);
 			Console.WriteLine();

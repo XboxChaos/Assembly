@@ -14,10 +14,10 @@ namespace Blamite.Blam.ThirdGen.Structures
 		public int cacheSegmentAlignment;
 		private IPointerExpander _expander;
 
-		public ThirdGenHeader(StructureValueCollection values, EngineDescription info, string buildString,
-			FileSegmenter segmenter, IPointerExpander expander)
+		public ThirdGenHeader(StructureValueCollection values, EngineDescription info, FileSegmenter segmenter,
+			IPointerExpander expander)
 		{
-			BuildString = buildString;
+			BuildString = info.BuildVersion;
 			HeaderSize = info.HeaderSize;
 			cacheSegmentAlignment = info.SegmentAlignment;
 			_expander = expander;
