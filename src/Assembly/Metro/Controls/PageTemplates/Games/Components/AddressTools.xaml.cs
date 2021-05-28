@@ -5,6 +5,7 @@ using Blamite.Blam;
 using Blamite.RTE;
 using Blamite.RTE.ThirdGen;
 using Blamite.RTE.SecondGen;
+using Blamite.RTE.FirstGen;
 using Blamite.Serialization;
 using Assembly.Metro.Dialogs;
 using Blamite.IO;
@@ -27,7 +28,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			switch (_cache.Engine)
 			{
-				case EngineType.ThirdGeneration when _cache.Endianness == Endian.LittleEndian:
+				case EngineType.ThirdGeneration when !string.IsNullOrEmpty(buildInfo.GameModule):
 					realtime = new ThirdGenMCCRTEProvider(buildInfo);
 					break;
 				case EngineType.SecondGeneration when !string.IsNullOrEmpty(buildInfo.GameModule):
@@ -35,6 +36,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					break;
 				case EngineType.SecondGeneration:
 					realtime = new SecondGenRTEProvider(buildInfo);
+					break;
+				case EngineType.FirstGeneration when !string.IsNullOrEmpty(buildInfo.GameModule):
+					realtime = new FirstGenMCCRTEProvider(buildInfo);
+					break;
+				case EngineType.FirstGeneration:
+					realtime = new FirstGenRTEProvider(buildInfo);
 					break;
 			}
 		}
