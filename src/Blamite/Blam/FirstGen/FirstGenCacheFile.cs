@@ -165,9 +165,7 @@ namespace Blamite.Blam.FirstGen
 
         public MetaAllocator Allocator { get; private set; }
 
-        public IScriptFile[] ScriptFiles {
-            get { return new IScriptFile[0]; }
-        }
+        public IScriptFile[] ScriptFiles { get; private set; }
 
         public IShaderStreamer ShaderStreamer {
             get { return null; }
@@ -218,6 +216,8 @@ namespace Blamite.Blam.FirstGen
             // TODO (Dragon): idk if we should mask this like this
             var scenarioIndex = (int)values.GetInteger("scenario datum index") & 0xFFFF;
             _header.ScenarioName = _fileNames.GetTagName(scenarioIndex);
+
+            LoadScriptFiles();
         }
 
         private FirstGenHeader LoadHeader(IReader reader)
@@ -257,6 +257,30 @@ namespace Blamite.Blam.FirstGen
             var strings = new IndexedStringTable(reader, _header.StringIDCount, _header.StringIDIndexTable, _header.StringIDData,
                 _buildInfo.StringIDKey);
             return new IndexedStringIDSource(strings, new LengthBasedStringIDResolver(strings));
+        }
+
+        private void LoadScriptFiles()
+        {
+            ScriptFiles = new IScriptFile[0];
+
+            if (_tags != null)
+            {
+                List<IScriptFile> l_scriptfiles = new List<IScriptFile>();
+
+                if (_buildInfo.Layouts.HasLayout("scnr"))
+                {
+                    foreach (ITag hs in _tags.FindTagsByGroup("scnr"))
+                    {
+                        l_scriptfiles.Add(new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, _buildInfo, StringIDs, _expander, Allocator));
+                    }
+                }
+                else
+                {
+                    return;
+                }
+
+                ScriptFiles = l_scriptfiles.ToArray();
+            }
         }
 
         private void CalculateChecksum(IReader reader)

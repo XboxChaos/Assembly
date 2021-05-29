@@ -1577,20 +1577,30 @@
 		</function>
 		<function opcode="0x1F8" name="rcon" returnType="void" />
 		<function opcode="0x1F9" name="sv_rcon_password" returnType="void" />
-		<function opcode="0x200" name="sv_players" returnType="void" />
-		<function opcode="0x201" name="sv_kick" returnType="void" argc="1">
+		<function opcode="0x1FA" name="sv_say" returnType="void" argc="1">
 			<arg type="string" />
 		</function>
-		<function opcode="0x202" name="sv_ban" returnType="void" />
-		<function opcode="0x203" name="sv_banlist" returnType="void" />
-		<function opcode="0x204" name="sv_unban" returnType="void" argc="1">
+		<function opcode="0x1FB" name="sv_players" returnType="void" />
+		<function opcode="0x1FC" name="sv_kick" returnType="void" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x1FD" name="sv_ban" returnType="void" />
+		<function opcode="0x1FE" name="sv_banlist" returnType="void" />
+		<function opcode="0x1FF" name="sv_unban" returnType="void" argc="1">
 			<arg type="long" />
 		</function>
-		<function opcode="0x205" name="sv_parameters_reload" returnType="void" />
-		<function opcode="0x206" name="sv_parameters_dump" returnType="void" />
-		<function opcode="0x207" name="sv_status" returnType="void" />
-		<function opcode="0x208" name="sv_name" returnType="void" />
-		<function opcode="0x209" name="sv_password" returnType="void" />
+		<function opcode="0x200" name="sv_parameters_reload" returnType="void" />
+		<function opcode="0x201" name="sv_parameters_dump" returnType="void" />
+		<function opcode="0x202" name="sv_status" returnType="void" />
+		<function opcode="0x203" name="sv_name" returnType="void" />
+		<function opcode="0x204" name="sv_password" returnType="void" />
+		<function opcode="0x205" name="sv_log_note" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x206" name="sv_log_file" returnType="void" />
+		<function opcode="0x207" name="sv_log_enabled" returnType="void" />
+		<function opcode="0x208" name="sv_log_rotation_threshold" returnType="void" />
+		<function opcode="0x209" name="sv_log_echo_chat" returnType="void" />
 		<function opcode="0x20A" name="profile_load" returnType="void" argc="1">
 			<arg type="string" />
 		</function>
@@ -1620,6 +1630,10 @@
 		<function opcode="0x218" name="sv_banlist_file" returnType="void" />
 		<function opcode="0x219" name="sv_maxplayers" returnType="void" />
 		<function opcode="0x21A" name="sv_single_flag_force_reset" returnType="void" />
+		<function opcode="0x21B" name="sv_motd" returnType="void" />
+		<function opcode="0x21C" name="oid_watch" returnType="void" null="true" />
+		<function opcode="0x21D" name="oid_dump" returnType="void" null="true" />
+		<function opcode="0x21E" name="oid_status" returnType="void" null="true" />
 	</functions>
 
 	<globals>
@@ -1717,406 +1731,407 @@
 		<global opcode="0x05B" name="rasterizer_transparent_pixel_counter" null="true" type="boolean" />
 		<global opcode="0x05C" name="rasterizer_effects_level" type="short" />
 		<global opcode="0x05D" name="rasterizer_fps" type="boolean" />
-		<global opcode="0x05E" name="rasterizer_d3dlight_theta" null="true" type="real" />
-		<global opcode="0x05F" name="rasterizer_d3dlight_phi" null="true" type="real" />
-		<global opcode="0x060" name="rasterizer_d3dlight_falloff" null="true" type="real" />
-		<global opcode="0x061" name="rasterizer_d3dlight_attenuation0" null="true" type="real" />
-		<global opcode="0x062" name="rasterizer_d3dlight_attenuation1" null="true" type="real" />
-		<global opcode="0x063" name="rasterizer_d3dlight_attenuation2" null="true" type="real" />
-		<global opcode="0x064" name="debug_no_frustum_clip" type="boolean" />
-		<global opcode="0x065" name="debug_frustum" type="boolean" />
-		<global opcode="0x066" name="debug_bink" null="true" type="boolean" />
-		<global opcode="0x067" name="screenshot_size" null="true" type="short" />
-		<global opcode="0x068" name="screenshot_count" null="true" type="short" />
-		<global opcode="0x069" name="terminal_render" null="true" type="boolean" />
-		<global opcode="0x06A" name="console_dump_to_file" null="true" type="boolean" />
-		<global opcode="0x06B" name="player_spawn_count" type="short" />
-		<global opcode="0x06C" name="debug_object_garbage_collection" null="true" type="boolean" />
-		<global opcode="0x06D" name="debug_render_freeze" null="true" type="boolean" />
-		<global opcode="0x06E" name="debug_no_drawing" null="true" type="boolean" />
-		<global opcode="0x06F" name="debug_input_target" null="true" type="short" />
-		<global opcode="0x070" name="temporary_hud" null="true" type="boolean" />
-		<global opcode="0x071" name="debug_leaf_index" null="true" type="long" />
-		<global opcode="0x072" name="debug_leaf_portal_index" null="true" type="long" />
-		<global opcode="0x073" name="debug_leaf_portals" null="true" type="boolean" />
-		<global opcode="0x074" name="debug_unit_all_animations" null="true" type="boolean" />
-		<global opcode="0x075" name="debug_unit_animations" null="true" type="boolean" />
-		<global opcode="0x076" name="debug_unit_illumination" null="true" type="boolean" />
-		<global opcode="0x077" name="debug_damage_taken" null="true" type="boolean" />
-		<global opcode="0x078" name="cheat_deathless_player" type="boolean" />
-		<global opcode="0x079" name="cheat_jetpack" type="boolean" />
-		<global opcode="0x07A" name="cheat_infinite_ammo" type="boolean" />
-		<global opcode="0x07B" name="cheat_bottomless_clip" type="boolean" />
-		<global opcode="0x07C" name="cheat_bump_possession" type="boolean" />
-		<global opcode="0x07D" name="cheat_super_jump" type="boolean" />
-		<global opcode="0x07E" name="cheat_reflexive_damage_effects" type="boolean" />
-		<global opcode="0x07F" name="cheat_medusa" type="boolean" />
-		<global opcode="0x080" name="cheat_omnipotent" type="boolean" />
-		<global opcode="0x081" name="cheat_controller" type="boolean" />
-		<global opcode="0x082" name="effects_corpse_nonviolent" type="boolean" />
-		<global opcode="0x083" name="debug_effects_nonviolent" null="true" type="boolean" />
-		<global opcode="0x084" name="debug_sound_cache" type="boolean" />
-		<global opcode="0x085" name="debug_sound_cache_graph" type="boolean" />
-		<global opcode="0x086" name="sound_obstruction_ratio" type="real" />
-		<global opcode="0x087" name="debug_sound" type="boolean" />
-		<global opcode="0x088" name="debug_looping_sound" type="boolean" />
-		<global opcode="0x089" name="debug_sound_channels" type="boolean" />
-		<global opcode="0x08A" name="debug_sound_channels_detail" type="boolean" />
-		<global opcode="0x08B" name="debug_sound_hardware" type="boolean" />
-		<global opcode="0x08C" name="loud_dialog_hack" type="boolean" />
-		<global opcode="0x08D" name="sound_gain_under_dialog" type="real" />
-		<global opcode="0x08E" name="debug_sound_environment" null="true" type="boolean" />
-		<global opcode="0x08F" name="object_light_ambient_base" type="real" />
-		<global opcode="0x090" name="object_light_ambient_scale" type="real" />
-		<global opcode="0x091" name="object_light_secondary_scale" type="real" />
-		<global opcode="0x092" name="object_light_interpolate" type="boolean" />
-		<global opcode="0x093" name="model_animation_compression" type="boolean" />
-		<global opcode="0x094" name="model_animation_data_compressed_size" null="true" type="long" />
-		<global opcode="0x095" name="model_animation_data_uncompressed_size" null="true" type="long" />
-		<global opcode="0x096" name="model_animation_data_compression_savings_in_bytes" null="true" type="long" />
-		<global opcode="0x097" name="model_animation_data_compression_savings_in_bytes_at_import" null="true" type="long" />
-		<global opcode="0x098" name="model_animation_data_compression_savings_in_percent" null="true" type="real" />
-		<global opcode="0x099" name="model_animation_bullshit0" null="true" type="long" />
-		<global opcode="0x09A" name="model_animation_bullshit1" null="true" type="long" />
-		<global opcode="0x09B" name="model_animation_bullshit2" null="true" type="long" />
-		<global opcode="0x09C" name="model_animation_bullshit3" null="true" type="long" />
-		<global opcode="0x09D" name="rider_ejection" type="boolean" />
-		<global opcode="0x09E" name="stun_enable" type="boolean" />
-		<global opcode="0x09F" name="debug_sprites" null="true" type="boolean" />
-		<global opcode="0x0A0" name="debug_portals" null="true" type="boolean" />
-		<global opcode="0x0A1" name="debug_inactive_objects" null="true" type="boolean" />
-		<global opcode="0x0A2" name="render_contrails" null="true" type="boolean" />
-		<global opcode="0x0A3" name="render_particles" null="true" type="boolean" />
-		<global opcode="0x0A4" name="render_psystems" null="true" type="boolean" />
-		<global opcode="0x0A5" name="render_wsystems" null="true" type="boolean" />
-		<global opcode="0x0A6" name="debug_objects" null="true" type="boolean" />
-		<global opcode="0x0A7" name="debug_objects_position_velocity" null="true" type="boolean" />
-		<global opcode="0x0A8" name="debug_objects_root_node" null="true" type="boolean" />
-		<global opcode="0x0A9" name="debug_objects_bounding_spheres" null="true" type="boolean" />
-		<global opcode="0x0AA" name="debug_objects_collision_models" null="true" type="boolean" />
-		<global opcode="0x0AB" name="debug_objects_physics" null="true" type="boolean" />
-		<global opcode="0x0AC" name="debug_objects_names" null="true" type="boolean" />
-		<global opcode="0x0AD" name="debug_objects_pathfinding_spheres" null="true" type="boolean" />
-		<global opcode="0x0AE" name="debug_objects_unit_vectors" null="true" type="boolean" />
-		<global opcode="0x0AF" name="debug_objects_unit_seats" null="true" type="boolean" />
-		<global opcode="0x0B0" name="debug_objects_unit_mouth_apeture" null="true" type="boolean" />
-		<global opcode="0x0B1" name="debug_objects_biped_physics_pills" null="true" type="boolean" />
-		<global opcode="0x0B2" name="debug_objects_biped_autoaim_pills" null="true" type="boolean" />
-		<global opcode="0x0B3" name="debug_objects_vehicle_powered_mass_points" null="true" type="boolean" />
-		<global opcode="0x0B4" name="debug_objects_devices" null="true" type="boolean" />
-		<global opcode="0x0B5" name="debug_objects_biped_messages" null="true" type="boolean" />
-		<global opcode="0x0B6" name="debug_objects_vehicle_messages" null="true" type="boolean" />
-		<global opcode="0x0B7" name="debug_objects_weapon_messages" null="true" type="boolean" />
-		<global opcode="0x0B8" name="debug_objects_projectile_messages" null="true" type="boolean" />
-		<global opcode="0x0B9" name="debug_objects_equipment_messages" null="true" type="boolean" />
-		<global opcode="0x0BA" name="render_model_nodes" null="true" type="boolean" />
-		<global opcode="0x0BB" name="render_model_vertex_counts" null="true" type="boolean" />
-		<global opcode="0x0BC" name="render_model_index_counts" null="true" type="boolean" />
-		<global opcode="0x0BD" name="render_model_markers" null="true" type="boolean" />
-		<global opcode="0x0BE" name="render_model_no_geometry" null="true" type="boolean" />
-		<global opcode="0x0BF" name="render_shadows" null="true" type="boolean" />
-		<global opcode="0x0C0" name="debug_damage" null="true" type="boolean" />
-		<global opcode="0x0C1" name="debug_scripting" null="true" type="boolean" />
-		<global opcode="0x0C2" name="debug_trigger_volumes" null="true" type="boolean" />
-		<global opcode="0x0C3" name="debug_point_physics" null="true" type="boolean" />
-		<global opcode="0x0C4" name="debug_physics_disable_penetration_freeze" null="true" type="boolean" />
-		<global opcode="0x0C5" name="debug_motion_sensor_draw_all_units" type="boolean" />
-		<global opcode="0x0C6" name="collision_debug" null="true" type="boolean" />
-		<global opcode="0x0C7" name="collision_debug_spray" null="true" type="boolean" />
-		<global opcode="0x0C8" name="collision_debug_features" null="true" type="boolean" />
-		<global opcode="0x0C9" name="collision_debug_repeat" null="true" type="boolean" />
-		<global opcode="0x0CA" name="collision_debug_flag_front_facing_surfaces" null="true" type="boolean" />
-		<global opcode="0x0CB" name="collision_debug_flag_back_facing_surfaces" null="true" type="boolean" />
-		<global opcode="0x0CC" name="collision_debug_flag_ignore_two_sided_surfaces" null="true" type="boolean" />
-		<global opcode="0x0CD" name="collision_debug_flag_ignore_invisible_surfaces" null="true" type="boolean" />
-		<global opcode="0x0CE" name="collision_debug_flag_ignore_breakable_surfaces" null="true" type="boolean" />
-		<global opcode="0x0CF" name="collision_debug_flag_structure" null="true" type="boolean" />
-		<global opcode="0x0D0" name="collision_debug_flag_media" null="true" type="boolean" />
-		<global opcode="0x0D1" name="collision_debug_flag_objects" null="true" type="boolean" />
-		<global opcode="0x0D2" name="collision_debug_flag_objects_bipeds" null="true" type="boolean" />
-		<global opcode="0x0D3" name="collision_debug_flag_objects_vehicles" null="true" type="boolean" />
-		<global opcode="0x0D4" name="collision_debug_flag_objects_weapons" null="true" type="boolean" />
-		<global opcode="0x0D5" name="collision_debug_flag_objects_equipment" null="true" type="boolean" />
-		<global opcode="0x0D6" name="collision_debug_flag_objects_projectiles" null="true" type="boolean" />
-		<global opcode="0x0D7" name="collision_debug_flag_objects_scenery" null="true" type="boolean" />
-		<global opcode="0x0D8" name="collision_debug_flag_objects_machines" null="true" type="boolean" />
-		<global opcode="0x0D9" name="collision_debug_flag_objects_controls" null="true" type="boolean" />
-		<global opcode="0x0DA" name="collision_debug_flag_objects_light_fixtures" null="true" type="boolean" />
-		<global opcode="0x0DB" name="collision_debug_flag_objects_placeholders" null="true" type="boolean" />
-		<global opcode="0x0DC" name="collision_debug_flag_try_to_keep_location_valid" null="true" type="boolean" />
-		<global opcode="0x0DD" name="collision_debug_flag_skip_passthrough_bipeds" null="true" type="boolean" />
-		<global opcode="0x0DE" name="collision_debug_flag_use_vehicle_physics" null="true" type="boolean" />
-		<global opcode="0x0DF" name="collision_debug_point_x" null="true" type="real" />
-		<global opcode="0x0E0" name="collision_debug_point_y" null="true" type="real" />
-		<global opcode="0x0E1" name="collision_debug_point_z" null="true" type="real" />
-		<global opcode="0x0E2" name="collision_debug_vector_i" null="true" type="real" />
-		<global opcode="0x0E3" name="collision_debug_vector_j" null="true" type="real" />
-		<global opcode="0x0E4" name="collision_debug_vector_k" null="true" type="real" />
-		<global opcode="0x0E5" name="collision_debug_length" null="true" type="real" />
-		<global opcode="0x0E6" name="collision_debug_width" null="true" type="real" />
-		<global opcode="0x0E7" name="collision_debug_height" null="true" type="real" />
-		<global opcode="0x0E8" name="collision_debug_phantom_bsp" null="true" type="boolean" />
-		<global opcode="0x0E9" name="collision_log_render" null="true" type="boolean" />
-		<global opcode="0x0EA" name="collision_log_detailed" null="true" type="boolean" />
-		<global opcode="0x0EB" name="collision_log_extended" null="true" type="boolean" />
-		<global opcode="0x0EC" name="collision_log_totals_only" null="true" type="boolean" />
-		<global opcode="0x0ED" name="collision_log_time" null="true" type="boolean" />
-		<global opcode="0x0EE" name="debug_obstacle_path" null="true" type="boolean" />
-		<global opcode="0x0EF" name="debug_obstacle_path_on_failure" null="true" type="boolean" />
-		<global opcode="0x0F0" name="debug_obstacle_path_start_point_x" null="true" type="real" />
-		<global opcode="0x0F1" name="debug_obstacle_path_start_point_y" null="true" type="real" />
-		<global opcode="0x0F2" name="debug_obstacle_path_start_surface_index" null="true" type="long" />
-		<global opcode="0x0F3" name="debug_obstacle_path_goal_point_x" null="true" type="real" />
-		<global opcode="0x0F4" name="debug_obstacle_path_goal_point_y" null="true" type="real" />
-		<global opcode="0x0F5" name="debug_obstacle_path_goal_surface_index" null="true" type="long" />
-		<global opcode="0x0F6" name="debug_camera" null="true" type="boolean" />
-		<global opcode="0x0F7" name="debug_player" null="true" type="boolean" />
-		<global opcode="0x0F8" name="debug_structure" null="true" type="boolean" />
-		<global opcode="0x0F9" name="debug_bsp" null="true" type="boolean" />
-		<global opcode="0x0FA" name="debug_input" null="true" type="boolean" />
-		<global opcode="0x0FB" name="debug_permanent_decals" null="true" type="boolean" />
-		<global opcode="0x0FC" name="debug_fog_planes" null="true" type="boolean" />
-		<global opcode="0x0FD" name="decals" type="boolean" />
-		<global opcode="0x0FE" name="debug_decals" null="true" type="boolean" />
-		<global opcode="0x0FF" name="debug_object_lights" null="true" type="boolean" />
-		<global opcode="0x100" name="debug_lights" null="true" type="boolean" />
-		<global opcode="0x101" name="debug_biped_physics" null="true" type="boolean" />
-		<global opcode="0x102" name="debug_biped_skip_update" null="true" type="boolean" />
-		<global opcode="0x103" name="debug_biped_skip_collision" null="true" type="boolean" />
-		<global opcode="0x104" name="debug_biped_limp_body_disable" null="true" type="boolean" />
-		<global opcode="0x105" name="debug_collision_skip_objects" null="true" type="boolean" />
-		<global opcode="0x106" name="debug_collision_skip_vectors" null="true" type="boolean" />
-		<global opcode="0x107" name="debug_material_effects" null="true" type="boolean" />
-		<global opcode="0x108" name="weather" type="boolean" />
-		<global opcode="0x109" name="breakable_surfaces" type="boolean" />
-		<global opcode="0x10A" name="decals" type="boolean" />
-		<global opcode="0x10B" name="profile_graph" null="true" type="boolean" />
-		<global opcode="0x10C" name="profile_display" null="true" type="boolean" />
-		<global opcode="0x10D" name="profile_timebase_ticks" null="true" type="boolean" />
-		<global opcode="0x10E" name="profile_dump_frames" null="true" type="boolean" />
-		<global opcode="0x10F" name="profile_dump_lost_frames" null="true" type="boolean" />
-		<global opcode="0x110" name="recover_saved_games_hack" type="boolean" />
-		<global opcode="0x111" name="radiosity_quality" type="short" />
-		<global opcode="0x112" name="radiosity_step_count" type="short" />
-		<global opcode="0x113" name="radiosity_lines" type="boolean" />
-		<global opcode="0x114" name="radiosity_normals" type="boolean" />
-		<global opcode="0x115" name="structures_use_pvs_for_vs" type="boolean" />
-		<global opcode="0x116" name="debug_texture_cache" null="true" type="boolean" />
-		<global opcode="0x117" name="debug_detail_objects" null="true" type="boolean" />
-		<global opcode="0x118" name="ai_render" null="true" type="boolean" />
-		<global opcode="0x119" name="ai_render_all_actors" null="true" type="boolean" />
-		<global opcode="0x11A" name="ai_render_inactive_actors" null="true" type="boolean" />
-		<global opcode="0x11B" name="ai_render_lineoffire_crouching" null="true" type="boolean" />
-		<global opcode="0x11C" name="ai_render_lineoffire" null="true" type="boolean" />
-		<global opcode="0x11D" name="ai_render_lineofsight" null="true" type="boolean" />
-		<global opcode="0x11E" name="ai_render_ballistic_lineoffire" null="true" type="boolean" />
-		<global opcode="0x11F" name="ai_render_encounter_activeregion" null="true" type="boolean" />
-		<global opcode="0x120" name="ai_render_vision_cones" null="true" type="boolean" />
-		<global opcode="0x121" name="ai_render_current_state" null="true" type="boolean" />
-		<global opcode="0x122" name="ai_render_detailed_state" null="true" type="boolean" />
-		<global opcode="0x123" name="ai_render_props" null="true" type="boolean" />
-		<global opcode="0x124" name="ai_render_props_web" null="true" type="boolean" />
-		<global opcode="0x125" name="ai_render_props_no_friends" null="true" type="boolean" />
-		<global opcode="0x126" name="ai_render_props_target_weight" null="true" type="boolean" />
-		<global opcode="0x127" name="ai_render_props_unreachable" null="true" type="boolean" />
-		<global opcode="0x128" name="ai_render_props_unopposable" null="true" type="boolean" />
-		<global opcode="0x129" name="ai_render_idle_look" null="true" type="boolean" />
-		<global opcode="0x12A" name="ai_render_support_surfaces" null="true" type="boolean" />
-		<global opcode="0x12B" name="ai_render_recent_damage" null="true" type="boolean" />
-		<global opcode="0x12C" name="ai_render_threats" null="true" type="boolean" />
-		<global opcode="0x12D" name="ai_render_emotions" null="true" type="boolean" />
-		<global opcode="0x12E" name="ai_render_audibility" null="true" type="boolean" />
-		<global opcode="0x12F" name="ai_render_aiming_vectors" null="true" type="boolean" />
-		<global opcode="0x130" name="ai_render_secondary_looking" null="true" type="boolean" />
-		<global opcode="0x131" name="ai_render_targets" null="true" type="boolean" />
-		<global opcode="0x132" name="ai_render_targets_last_visible" null="true" type="boolean" />
-		<global opcode="0x133" name="ai_render_states" null="true" type="boolean" />
-		<global opcode="0x134" name="ai_render_vitality" null="true" type="boolean" />
-		<global opcode="0x135" name="ai_render_active_cover_seeking" null="true" type="boolean" />
-		<global opcode="0x136" name="ai_render_evaluations" null="true" type="boolean" />
-		<global opcode="0x137" name="ai_render_pursuit" null="true" type="boolean" />
-		<global opcode="0x138" name="ai_render_shooting" null="true" type="boolean" />
-		<global opcode="0x139" name="ai_render_trigger" null="true" type="boolean" />
-		<global opcode="0x13A" name="ai_render_projectile_aiming" null="true" type="boolean" />
-		<global opcode="0x13B" name="ai_render_aiming_validity" null="true" type="boolean" />
-		<global opcode="0x13C" name="ai_render_speech" null="true" type="boolean" />
-		<global opcode="0x13D" name="ai_render_teams" null="true" type="boolean" />
-		<global opcode="0x13E" name="ai_render_player_ratings" null="true" type="boolean" />
-		<global opcode="0x13F" name="ai_render_spatial_effects" null="true" type="boolean" />
-		<global opcode="0x140" name="ai_render_firing_positions" null="true" type="boolean" />
-		<global opcode="0x141" name="ai_render_gun_positions" null="true" type="boolean" />
-		<global opcode="0x142" name="ai_render_burst_geometry" null="true" type="boolean" />
-		<global opcode="0x143" name="ai_render_vehicle_avoidance" null="true" type="boolean" />
-		<global opcode="0x144" name="ai_render_vehicles_enterable" null="true" type="boolean" />
-		<global opcode="0x145" name="ai_render_melee_check" null="true" type="boolean" />
-		<global opcode="0x146" name="ai_render_dialogue_variants" null="true" type="boolean" />
-		<global opcode="0x147" name="ai_render_grenade_decisions" null="true" type="boolean" />
-		<global opcode="0x148" name="ai_render_danger_zones" null="true" type="boolean" />
-		<global opcode="0x149" name="ai_render_charge_decisions" null="true" type="boolean" />
-		<global opcode="0x14A" name="ai_render_control" null="true" type="boolean" />
-		<global opcode="0x14B" name="ai_render_activation" null="true" type="boolean" />
-		<global opcode="0x14C" name="ai_render_paths" null="true" type="boolean" />
-		<global opcode="0x14D" name="ai_render_paths_selected_only" null="true" type="boolean" />
-		<global opcode="0x14E" name="ai_render_paths_destination" null="true" type="boolean" />
-		<global opcode="0x14F" name="ai_render_paths_current" null="true" type="boolean" />
-		<global opcode="0x150" name="ai_render_paths_failed" null="true" type="boolean" />
-		<global opcode="0x151" name="ai_render_paths_raw" null="true" type="boolean" />
-		<global opcode="0x152" name="ai_render_paths_smoothed" null="true" type="boolean" />
-		<global opcode="0x153" name="ai_render_paths_avoided" null="true" type="boolean" />
-		<global opcode="0x154" name="ai_render_paths_avoidance_segment" null="true" type="short" />
-		<global opcode="0x155" name="ai_render_paths_avoidance_obstacles" null="true" type="boolean" />
-		<global opcode="0x156" name="ai_render_paths_avoidance_search" null="true" type="boolean" />
-		<global opcode="0x157" name="ai_render_paths_nodes" null="true" type="boolean" />
-		<global opcode="0x158" name="ai_render_paths_nodes_all" null="true" type="boolean" />
-		<global opcode="0x159" name="ai_render_paths_nodes_polygons" null="true" type="boolean" />
-		<global opcode="0x15A" name="ai_render_paths_nodes_costs" null="true" type="boolean" />
-		<global opcode="0x15B" name="ai_render_paths_nodes_closest" null="true" type="boolean" />
-		<global opcode="0x15C" name="ai_render_player_aiming_blocked" null="true" type="boolean" />
-		<global opcode="0x15D" name="ai_render_vector_avoidance" null="true" type="boolean" />
-		<global opcode="0x15E" name="ai_render_vector_avoidance_rays" null="true" type="boolean" />
-		<global opcode="0x15F" name="ai_render_vector_avoidance_sense_t" null="true" type="boolean" />
-		<global opcode="0x160" name="ai_render_vector_avoidance_avoid_t" null="true" type="boolean" />
-		<global opcode="0x161" name="ai_render_vector_avoidance_clear_time" null="true" type="boolean" />
-		<global opcode="0x162" name="ai_render_vector_avoidance_weights" null="true" type="boolean" />
-		<global opcode="0x163" name="ai_render_vector_avoidance_objects" null="true" type="boolean" />
-		<global opcode="0x164" name="ai_render_vector_avoidance_intermediate" null="true" type="boolean" />
-		<global opcode="0x165" name="ai_render_postcombat" null="true" type="boolean" />
-		<global opcode="0x166" name="ai_print_pursuit_checks" null="true" type="boolean" />
-		<global opcode="0x167" name="ai_print_rules" null="true" type="boolean" />
-		<global opcode="0x168" name="ai_print_rule_values" null="true" type="boolean" />
-		<global opcode="0x169" name="ai_print_major_upgrade" null="true" type="boolean" />
-		<global opcode="0x16A" name="ai_print_respawn" null="true" type="boolean" />
-		<global opcode="0x16B" name="ai_print_evaluation_statistics" null="true" type="boolean" />
-		<global opcode="0x16C" name="ai_print_communication" null="true" type="boolean" />
-		<global opcode="0x16D" name="ai_print_communication_player" null="true" type="boolean" />
-		<global opcode="0x16E" name="ai_print_vocalizations" null="true" type="boolean" />
-		<global opcode="0x16F" name="ai_print_placement" null="true" type="boolean" />
-		<global opcode="0x170" name="ai_print_speech" null="true" type="boolean" />
-		<global opcode="0x171" name="ai_print_speech_timers" null="true" type="boolean" />
-		<global opcode="0x172" name="ai_print_allegiance" null="true" type="boolean" />
-		<global opcode="0x173" name="ai_print_lost_speech" null="true" type="boolean" />
-		<global opcode="0x174" name="ai_print_migration" null="true" type="boolean" />
-		<global opcode="0x175" name="ai_print_automatic_migration" null="true" type="boolean" />
-		<global opcode="0x176" name="ai_print_scripting" null="true" type="boolean" />
-		<global opcode="0x177" name="ai_print_surprise" null="true" type="boolean" />
-		<global opcode="0x178" name="ai_print_command_lists" null="true" type="boolean" />
-		<global opcode="0x179" name="ai_print_damage_modifiers" null="true" type="boolean" />
-		<global opcode="0x17A" name="ai_print_secondary_looking" null="true" type="boolean" />
-		<global opcode="0x17B" name="ai_print_oversteer" null="true" type="boolean" />
-		<global opcode="0x17C" name="ai_print_conversations" null="true" type="boolean" />
-		<global opcode="0x17D" name="ai_print_killing_sprees" null="true" type="boolean" />
-		<global opcode="0x17E" name="ai_print_acknowledgement" null="true" type="boolean" />
-		<global opcode="0x17F" name="ai_print_unfinished_paths" null="true" type="boolean" />
-		<global opcode="0x180" name="ai_print_bsp_transition" null="true" type="boolean" />
-		<global opcode="0x181" name="ai_print_uncovering" null="true" type="boolean" />
-		<global opcode="0x182" name="ai_profile_disable" null="true" type="boolean" />
-		<global opcode="0x183" name="ai_profile_random" null="true" type="boolean" />
-		<global opcode="0x184" name="ai_show" null="true" type="boolean" />
-		<global opcode="0x185" name="ai_show_stats" null="true" type="boolean" />
-		<global opcode="0x186" name="ai_show_actors" null="true" type="boolean" />
-		<global opcode="0x187" name="ai_show_swarms" null="true" type="boolean" />
-		<global opcode="0x188" name="ai_show_paths" null="true" type="boolean" />
-		<global opcode="0x189" name="ai_show_line_of_sight" null="true" type="boolean" />
-		<global opcode="0x18A" name="ai_show_prop_types" null="true" type="boolean" />
-		<global opcode="0x18B" name="ai_show_sound_distance" null="true" type="boolean" />
-		<global opcode="0x18C" name="ai_debug_fast_los" null="true" type="boolean" />
-		<global opcode="0x18D" name="ai_debug_oversteer_disable" null="true" type="boolean" />
-		<global opcode="0x18E" name="ai_debug_evaluate_all_positions" null="true" type="boolean" />
-		<global opcode="0x18F" name="ai_debug_path" null="true" type="boolean" />
-		<global opcode="0x190" name="ai_debug_path_start_freeze" null="true" type="boolean" />
-		<global opcode="0x191" name="ai_debug_path_end_freeze" null="true" type="boolean" />
-		<global opcode="0x192" name="ai_debug_path_flood" null="true" type="boolean" />
-		<global opcode="0x193" name="ai_debug_path_maximum_radius" null="true" type="real" />
-		<global opcode="0x194" name="ai_debug_path_attractor" null="true" type="boolean" />
-		<global opcode="0x195" name="ai_debug_path_attractor_radius" null="true" type="real" />
-		<global opcode="0x196" name="ai_debug_path_attractor_weight" null="true" type="real" />
-		<global opcode="0x197" name="ai_debug_path_accept_radius" null="true" type="real" />
-		<global opcode="0x198" name="ai_debug_ballistic_lineoffire_freeze" null="true" type="boolean" />
-		<global opcode="0x199" name="ai_debug_communication_random_disabled" null="true" type="boolean" />
-		<global opcode="0x19A" name="ai_debug_communication_timeout_disabled" null="true" type="boolean" />
-		<global opcode="0x19B" name="ai_debug_communication_unit_repeat_disabled" null="true" type="boolean" />
-		<global opcode="0x19C" name="ai_debug_communication_focus_enable" null="true" type="boolean" />
-		<global opcode="0x19D" name="ai_debug_blind" null="true" type="boolean" />
-		<global opcode="0x19E" name="ai_debug_deaf" null="true" type="boolean" />
-		<global opcode="0x19F" name="ai_debug_invisible_player" null="true" type="boolean" />
-		<global opcode="0x1A0" name="ai_debug_ignore_player" null="true" type="boolean" />
-		<global opcode="0x1A1" name="ai_debug_flee_always" null="true" type="boolean" />
-		<global opcode="0x1A2" name="ai_debug_force_all_active" null="true" type="boolean" />
-		<global opcode="0x1A3" name="ai_debug_disable_wounded_sounds" null="true" type="boolean" />
-		<global opcode="0x1A4" name="ai_debug_force_vocalizations" null="true" type="boolean" />
-		<global opcode="0x1A5" name="ai_debug_force_crouch" null="true" type="boolean" />
-		<global opcode="0x1A6" name="ai_debug_path_disable_smoothing" null="true" type="boolean" />
-		<global opcode="0x1A7" name="ai_debug_path_disable_obstacle_avoidance" null="true" type="boolean" />
-		<global opcode="0x1A8" name="ai_fix_defending_guard_firing_positions" null="true" type="boolean" />
-		<global opcode="0x1A9" name="ai_fix_actor_variants" null="true" type="boolean" />
-		<global opcode="0x1AA" name="controls_enable_crouch" type="boolean" />
-		<global opcode="0x1AB" name="controls_swapped" type="boolean" />
-		<global opcode="0x1AC" name="controls_enable_doubled_spin" type="boolean" />
-		<global opcode="0x1AD" name="controls_swap_doubled_spin_state" type="boolean" />
-		<global opcode="0x1AE" name="player_autoaim" type="boolean" />
-		<global opcode="0x1AF" name="player_magnetism" type="boolean" />
-		<global opcode="0x1B0" name="debug_player_teleport" null="true" type="boolean" />
-		<global opcode="0x1B1" name="texture_cache_graph" null="true" type="boolean" />
-		<global opcode="0x1B2" name="texture_cache_list" null="true" type="boolean" />
-		<global opcode="0x1B3" name="director_camera_switch_fast" type="boolean" />
-		<global opcode="0x1B4" name="director_camera_switching" type="boolean" />
-		<global opcode="0x1B5" name="debug_recording" null="true" type="boolean" />
-		<global opcode="0x1B6" name="debug_recording_newlines" null="true" type="short" />
-		<global opcode="0x1B7" name="debug_player_color" null="true" type="short" />
-		<global opcode="0x1B8" name="debug_framerate" type="boolean" />
-		<global opcode="0x1B9" name="display_framerate" type="boolean" />
-		<global opcode="0x1BA" name="framerate_throttle" type="boolean" />
-		<global opcode="0x1BB" name="framerate_lock" type="boolean" />
-		<global opcode="0x1BC" name="display_precache_progress" type="boolean" />
-		<global opcode="0x1BD" name="debug_game_save" null="true" type="boolean" />
-		<global opcode="0x1BE" name="allow_out_of_sync" null="true" type="boolean" />
-		<global opcode="0x1BF" name="global_connection_dont_timeout" null="true" type="boolean" />
-		<global opcode="0x1C0" name="slow_server_startup_safety_zone_in_seconds" null="true" type="long" />
-		<global opcode="0x1C1" name="find_all_fucked_up_shit" null="true" type="boolean" />
-		<global opcode="0x1C2" name="error_suppress_all" type="boolean" />
-		<global opcode="0x1C3" name="run_game_scripts" type="boolean" />
-		<global opcode="0x1C4" name="leaf_to_leaf_latency" type="boolean" />
-		<global opcode="0x1C5" name="net_bandwidth" type="long" />
-		<global opcode="0x1C6" name="network_connect_timeout" type="long" />
-		<global opcode="0x1C7" name="net_graph_enabled" type="boolean" />
-		<global opcode="0x1C8" name="net_graph_period" type="long" />
-		<global opcode="0x1C9" name="allow_client_side_weapon_projectiles" type="boolean" />
-		<global opcode="0x1CA" name="weapon_incremental_rate" type="long" />
-		<global opcode="0x1CB" name="equipment_incremental_rate" type="long" />
-		<global opcode="0x1CC" name="biped_incremental_rate" type="long" />
-		<global opcode="0x1CD" name="vehicle_incremental_rate" type="long" />
-		<global opcode="0x1CE" name="projectile_incremental_rate" type="long" />
-		<global opcode="0x1CF" name="oddball_baseline_rate" type="long" />
-		<global opcode="0x1D0" name="local_player_update_rate" type="long" />
-		<global opcode="0x1D1" name="local_player_vehicle_update_rate" type="long" />
-		<global opcode="0x1D2" name="remote_player_action_update_rate" type="long" />
-		<global opcode="0x1D3" name="remote_player_action_baseline_update_rate" type="long" />
-		<global opcode="0x1D4" name="remote_player_position_update_rate" type="long" />
-		<global opcode="0x1D5" name="remote_player_position_baseline_update_rate" type="long" />
-		<global opcode="0x1D6" name="remote_player_vehicle_update_rate" type="long" />
-		<global opcode="0x1D7" name="remote_player_vehicle_baseline_update_rate" type="long" />
-		<global opcode="0x1D8" name="use_super_remote_players_action_update" type="boolean" />
-		<global opcode="0x1D9" name="use_new_vehicle_update_scheme" type="boolean" />
-		<global opcode="0x1DA" name="log_server_player_update_history" type="boolean" />
-		<global opcode="0x1DB" name="client_log_destination" type="long" />
-		<global opcode="0x1DC" name="local_player_log_level" type="long" />
-		<global opcode="0x1DD" name="remote_player_log_level" type="long" />
-		<global opcode="0x1DE" name="debug_score" type="long" />
-		<global opcode="0x1DF" name="speed_hack_detection" type="boolean" />
-		<global opcode="0x1E0" name="speed_hack_log_level" type="long" />
-		<global opcode="0x1E1" name="should_play_multiplayer_hit_sound" type="boolean" />
-		<global opcode="0x1E2" name="sv_client_action_queue_limit" type="long" />
-		<global opcode="0x1E3" name="sv_client_action_queue_tick_limit" type="long" />
-		<global opcode="0x1E4" name="cl_remote_player_action_queue_limit" type="long" />
-		<global opcode="0x1E5" name="cl_remote_player_action_queue_tick_limit" type="long" />
-		<global opcode="0x1E6" name="object_prediction" type="boolean" />
-		<global opcode="0x1E7" name="transport_dumping" type="boolean" />
-		<global opcode="0x1E8" name="hud_filter" type="boolean" />
-		<global opcode="0x1E9" name="sv_mapcycle_timeout" type="long" />
-		<global opcode="0x1EA" name="sv_public" type="boolean" />
-		<global opcode="0x1EB" name="developer_mode" type="short" />
-		<global opcode="0x1EC" name="mouse_acceleration" type="real" />
-		<global opcode="0x1ED" name="sv_tk_ban" type="short" />
-		<global opcode="0x1EE" name="rasterizer_frame_drop_ms" type="short" />
+		<global opcode="0x05E" name="multiplayer_draw_teammates_names" type="boolean" />
+		<global opcode="0x05F" name="rasterizer_d3dlight_theta" null="true" type="real" />
+		<global opcode="0x060" name="rasterizer_d3dlight_phi" null="true" type="real" />
+		<global opcode="0x061" name="rasterizer_d3dlight_falloff" null="true" type="real" />
+		<global opcode="0x062" name="rasterizer_d3dlight_attenuation0" null="true" type="real" />
+		<global opcode="0x063" name="rasterizer_d3dlight_attenuation1" null="true" type="real" />
+		<global opcode="0x064" name="rasterizer_d3dlight_attenuation2" null="true" type="real" />
+		<global opcode="0x065" name="debug_no_frustum_clip" type="boolean" />
+		<global opcode="0x066" name="debug_frustum" type="boolean" />
+		<global opcode="0x067" name="debug_bink" null="true" type="boolean" />
+		<global opcode="0x068" name="screenshot_size" null="true" type="short" />
+		<global opcode="0x069" name="screenshot_count" null="true" type="short" />
+		<global opcode="0x06A" name="terminal_render" null="true" type="boolean" />
+		<global opcode="0x06B" name="console_dump_to_file" null="true" type="boolean" />
+		<global opcode="0x06C" name="player_spawn_count" type="short" />
+		<global opcode="0x06D" name="debug_object_garbage_collection" null="true" type="boolean" />
+		<global opcode="0x06E" name="debug_render_freeze" null="true" type="boolean" />
+		<global opcode="0x06F" name="debug_no_drawing" null="true" type="boolean" />
+		<global opcode="0x070" name="debug_input_target" null="true" type="short" />
+		<global opcode="0x071" name="temporary_hud" null="true" type="boolean" />
+		<global opcode="0x072" name="debug_leaf_index" null="true" type="long" />
+		<global opcode="0x073" name="debug_leaf_portal_index" null="true" type="long" />
+		<global opcode="0x074" name="debug_leaf_portals" null="true" type="boolean" />
+		<global opcode="0x075" name="debug_unit_all_animations" null="true" type="boolean" />
+		<global opcode="0x076" name="debug_unit_animations" null="true" type="boolean" />
+		<global opcode="0x077" name="debug_unit_illumination" null="true" type="boolean" />
+		<global opcode="0x078" name="debug_damage_taken" null="true" type="boolean" />
+		<global opcode="0x079" name="cheat_deathless_player" type="boolean" />
+		<global opcode="0x07A" name="cheat_jetpack" type="boolean" />
+		<global opcode="0x07B" name="cheat_infinite_ammo" type="boolean" />
+		<global opcode="0x07C" name="cheat_bottomless_clip" type="boolean" />
+		<global opcode="0x07D" name="cheat_bump_possession" type="boolean" />
+		<global opcode="0x07E" name="cheat_super_jump" type="boolean" />
+		<global opcode="0x07F" name="cheat_reflexive_damage_effects" type="boolean" />
+		<global opcode="0x080" name="cheat_medusa" type="boolean" />
+		<global opcode="0x081" name="cheat_omnipotent" type="boolean" />
+		<global opcode="0x082" name="cheat_controller" type="boolean" />
+		<global opcode="0x083" name="effects_corpse_nonviolent" type="boolean" />
+		<global opcode="0x084" name="debug_effects_nonviolent" null="true" type="boolean" />
+		<global opcode="0x085" name="debug_sound_cache" type="boolean" />
+		<global opcode="0x086" name="debug_sound_cache_graph" type="boolean" />
+		<global opcode="0x087" name="sound_obstruction_ratio" type="real" />
+		<global opcode="0x088" name="debug_sound" type="boolean" />
+		<global opcode="0x089" name="debug_looping_sound" type="boolean" />
+		<global opcode="0x08A" name="debug_sound_channels" type="boolean" />
+		<global opcode="0x08B" name="debug_sound_channels_detail" type="boolean" />
+		<global opcode="0x08C" name="debug_sound_hardware" type="boolean" />
+		<global opcode="0x08D" name="loud_dialog_hack" type="boolean" />
+		<global opcode="0x08E" name="sound_gain_under_dialog" type="real" />
+		<global opcode="0x08F" name="debug_sound_environment" null="true" type="boolean" />
+		<global opcode="0x090" name="object_light_ambient_base" type="real" />
+		<global opcode="0x091" name="object_light_ambient_scale" type="real" />
+		<global opcode="0x092" name="object_light_secondary_scale" type="real" />
+		<global opcode="0x093" name="object_light_interpolate" type="boolean" />
+		<global opcode="0x094" name="model_animation_compression" type="boolean" />
+		<global opcode="0x095" name="model_animation_data_compressed_size" null="true" type="long" />
+		<global opcode="0x096" name="model_animation_data_uncompressed_size" null="true" type="long" />
+		<global opcode="0x097" name="model_animation_data_compression_savings_in_bytes" null="true" type="long" />
+		<global opcode="0x098" name="model_animation_data_compression_savings_in_bytes_at_import" null="true" type="long" />
+		<global opcode="0x099" name="model_animation_data_compression_savings_in_percent" null="true" type="real" />
+		<global opcode="0x09A" name="model_animation_bullshit0" null="true" type="long" />
+		<global opcode="0x09B" name="model_animation_bullshit1" null="true" type="long" />
+		<global opcode="0x09C" name="model_animation_bullshit2" null="true" type="long" />
+		<global opcode="0x09D" name="model_animation_bullshit3" null="true" type="long" />
+		<global opcode="0x09E" name="rider_ejection" type="boolean" />
+		<global opcode="0x09F" name="stun_enable" type="boolean" />
+		<global opcode="0x0A0" name="debug_sprites" null="true" type="boolean" />
+		<global opcode="0x0A1" name="debug_portals" null="true" type="boolean" />
+		<global opcode="0x0A2" name="debug_inactive_objects" null="true" type="boolean" />
+		<global opcode="0x0A3" name="render_contrails" null="true" type="boolean" />
+		<global opcode="0x0A4" name="render_particles" null="true" type="boolean" />
+		<global opcode="0x0A5" name="render_psystems" null="true" type="boolean" />
+		<global opcode="0x0A6" name="render_wsystems" null="true" type="boolean" />
+		<global opcode="0x0A7" name="debug_objects" null="true" type="boolean" />
+		<global opcode="0x0A8" name="debug_objects_position_velocity" null="true" type="boolean" />
+		<global opcode="0x0A9" name="debug_objects_root_node" null="true" type="boolean" />
+		<global opcode="0x0AA" name="debug_objects_bounding_spheres" null="true" type="boolean" />
+		<global opcode="0x0AB" name="debug_objects_collision_models" null="true" type="boolean" />
+		<global opcode="0x0AC" name="debug_objects_physics" null="true" type="boolean" />
+		<global opcode="0x0AD" name="debug_objects_names" null="true" type="boolean" />
+		<global opcode="0x0AE" name="debug_objects_pathfinding_spheres" null="true" type="boolean" />
+		<global opcode="0x0AF" name="debug_objects_unit_vectors" null="true" type="boolean" />
+		<global opcode="0x0B0" name="debug_objects_unit_seats" null="true" type="boolean" />
+		<global opcode="0x0B1" name="debug_objects_unit_mouth_apeture" null="true" type="boolean" />
+		<global opcode="0x0B2" name="debug_objects_biped_physics_pills" null="true" type="boolean" />
+		<global opcode="0x0B3" name="debug_objects_biped_autoaim_pills" null="true" type="boolean" />
+		<global opcode="0x0B4" name="debug_objects_vehicle_powered_mass_points" null="true" type="boolean" />
+		<global opcode="0x0B5" name="debug_objects_devices" null="true" type="boolean" />
+		<global opcode="0x0B6" name="debug_objects_biped_messages" null="true" type="boolean" />
+		<global opcode="0x0B7" name="debug_objects_vehicle_messages" null="true" type="boolean" />
+		<global opcode="0x0B8" name="debug_objects_weapon_messages" null="true" type="boolean" />
+		<global opcode="0x0B9" name="debug_objects_projectile_messages" null="true" type="boolean" />
+		<global opcode="0x0BA" name="debug_objects_equipment_messages" null="true" type="boolean" />
+		<global opcode="0x0BB" name="render_model_nodes" null="true" type="boolean" />
+		<global opcode="0x0BC" name="render_model_vertex_counts" null="true" type="boolean" />
+		<global opcode="0x0BD" name="render_model_index_counts" null="true" type="boolean" />
+		<global opcode="0x0BE" name="render_model_markers" null="true" type="boolean" />
+		<global opcode="0x0BF" name="render_model_no_geometry" null="true" type="boolean" />
+		<global opcode="0x0C0" name="render_shadows" null="true" type="boolean" />
+		<global opcode="0x0C1" name="debug_damage" null="true" type="boolean" />
+		<global opcode="0x0C2" name="debug_scripting" null="true" type="boolean" />
+		<global opcode="0x0C3" name="debug_trigger_volumes" null="true" type="boolean" />
+		<global opcode="0x0C4" name="debug_point_physics" null="true" type="boolean" />
+		<global opcode="0x0C5" name="debug_physics_disable_penetration_freeze" null="true" type="boolean" />
+		<global opcode="0x0C6" name="debug_motion_sensor_draw_all_units" type="boolean" />
+		<global opcode="0x0C7" name="collision_debug" null="true" type="boolean" />
+		<global opcode="0x0C8" name="collision_debug_spray" null="true" type="boolean" />
+		<global opcode="0x0C9" name="collision_debug_features" null="true" type="boolean" />
+		<global opcode="0x0CA" name="collision_debug_repeat" null="true" type="boolean" />
+		<global opcode="0x0CB" name="collision_debug_flag_front_facing_surfaces" null="true" type="boolean" />
+		<global opcode="0x0CC" name="collision_debug_flag_back_facing_surfaces" null="true" type="boolean" />
+		<global opcode="0x0CD" name="collision_debug_flag_ignore_two_sided_surfaces" null="true" type="boolean" />
+		<global opcode="0x0CE" name="collision_debug_flag_ignore_invisible_surfaces" null="true" type="boolean" />
+		<global opcode="0x0CF" name="collision_debug_flag_ignore_breakable_surfaces" null="true" type="boolean" />
+		<global opcode="0x0D0" name="collision_debug_flag_structure" null="true" type="boolean" />
+		<global opcode="0x0D1" name="collision_debug_flag_media" null="true" type="boolean" />
+		<global opcode="0x0D2" name="collision_debug_flag_objects" null="true" type="boolean" />
+		<global opcode="0x0D3" name="collision_debug_flag_objects_bipeds" null="true" type="boolean" />
+		<global opcode="0x0D4" name="collision_debug_flag_objects_vehicles" null="true" type="boolean" />
+		<global opcode="0x0D5" name="collision_debug_flag_objects_weapons" null="true" type="boolean" />
+		<global opcode="0x0D6" name="collision_debug_flag_objects_equipment" null="true" type="boolean" />
+		<global opcode="0x0D7" name="collision_debug_flag_objects_projectiles" null="true" type="boolean" />
+		<global opcode="0x0D8" name="collision_debug_flag_objects_scenery" null="true" type="boolean" />
+		<global opcode="0x0D9" name="collision_debug_flag_objects_machines" null="true" type="boolean" />
+		<global opcode="0x0DA" name="collision_debug_flag_objects_controls" null="true" type="boolean" />
+		<global opcode="0x0DB" name="collision_debug_flag_objects_light_fixtures" null="true" type="boolean" />
+		<global opcode="0x0DC" name="collision_debug_flag_objects_placeholders" null="true" type="boolean" />
+		<global opcode="0x0DD" name="collision_debug_flag_try_to_keep_location_valid" null="true" type="boolean" />
+		<global opcode="0x0DE" name="collision_debug_flag_skip_passthrough_bipeds" null="true" type="boolean" />
+		<global opcode="0x0DF" name="collision_debug_flag_use_vehicle_physics" null="true" type="boolean" />
+		<global opcode="0x0E0" name="collision_debug_point_x" null="true" type="real" />
+		<global opcode="0x0E1" name="collision_debug_point_y" null="true" type="real" />
+		<global opcode="0x0E2" name="collision_debug_point_z" null="true" type="real" />
+		<global opcode="0x0E3" name="collision_debug_vector_i" null="true" type="real" />
+		<global opcode="0x0E4" name="collision_debug_vector_j" null="true" type="real" />
+		<global opcode="0x0E5" name="collision_debug_vector_k" null="true" type="real" />
+		<global opcode="0x0E6" name="collision_debug_length" null="true" type="real" />
+		<global opcode="0x0E7" name="collision_debug_width" null="true" type="real" />
+		<global opcode="0x0E8" name="collision_debug_height" null="true" type="real" />
+		<global opcode="0x0E9" name="collision_debug_phantom_bsp" null="true" type="boolean" />
+		<global opcode="0x0EA" name="collision_log_render" null="true" type="boolean" />
+		<global opcode="0x0EB" name="collision_log_detailed" null="true" type="boolean" />
+		<global opcode="0x0EC" name="collision_log_extended" null="true" type="boolean" />
+		<global opcode="0x0ED" name="collision_log_totals_only" null="true" type="boolean" />
+		<global opcode="0x0EE" name="collision_log_time" null="true" type="boolean" />
+		<global opcode="0x0EF" name="debug_obstacle_path" null="true" type="boolean" />
+		<global opcode="0x0F0" name="debug_obstacle_path_on_failure" null="true" type="boolean" />
+		<global opcode="0x0F1" name="debug_obstacle_path_start_point_x" null="true" type="real" />
+		<global opcode="0x0F2" name="debug_obstacle_path_start_point_y" null="true" type="real" />
+		<global opcode="0x0F3" name="debug_obstacle_path_start_surface_index" null="true" type="long" />
+		<global opcode="0x0F4" name="debug_obstacle_path_goal_point_x" null="true" type="real" />
+		<global opcode="0x0F5" name="debug_obstacle_path_goal_point_y" null="true" type="real" />
+		<global opcode="0x0F6" name="debug_obstacle_path_goal_surface_index" null="true" type="long" />
+		<global opcode="0x0F7" name="debug_camera" null="true" type="boolean" />
+		<global opcode="0x0F8" name="debug_player" null="true" type="boolean" />
+		<global opcode="0x0F9" name="debug_structure" null="true" type="boolean" />
+		<global opcode="0x0FA" name="debug_bsp" null="true" type="boolean" />
+		<global opcode="0x0FB" name="debug_input" null="true" type="boolean" />
+		<global opcode="0x0FC" name="debug_permanent_decals" null="true" type="boolean" />
+		<global opcode="0x0FD" name="debug_fog_planes" null="true" type="boolean" />
+		<global opcode="0x0FE" name="decals" type="boolean" />
+		<global opcode="0x0FF" name="debug_decals" null="true" type="boolean" />
+		<global opcode="0x100" name="debug_object_lights" null="true" type="boolean" />
+		<global opcode="0x101" name="debug_lights" null="true" type="boolean" />
+		<global opcode="0x102" name="debug_biped_physics" null="true" type="boolean" />
+		<global opcode="0x103" name="debug_biped_skip_update" null="true" type="boolean" />
+		<global opcode="0x104" name="debug_biped_skip_collision" null="true" type="boolean" />
+		<global opcode="0x105" name="debug_biped_limp_body_disable" null="true" type="boolean" />
+		<global opcode="0x106" name="debug_collision_skip_objects" null="true" type="boolean" />
+		<global opcode="0x107" name="debug_collision_skip_vectors" null="true" type="boolean" />
+		<global opcode="0x108" name="debug_material_effects" null="true" type="boolean" />
+		<global opcode="0x109" name="weather" type="boolean" />
+		<global opcode="0x10A" name="breakable_surfaces" type="boolean" />
+		<global opcode="0x10B" name="decals" type="boolean" />
+		<global opcode="0x10C" name="profile_graph" null="true" type="boolean" />
+		<global opcode="0x10D" name="profile_display" null="true" type="boolean" />
+		<global opcode="0x10E" name="profile_timebase_ticks" null="true" type="boolean" />
+		<global opcode="0x10F" name="profile_dump_frames" null="true" type="boolean" />
+		<global opcode="0x110" name="profile_dump_lost_frames" null="true" type="boolean" />
+		<global opcode="0x111" name="recover_saved_games_hack" type="boolean" />
+		<global opcode="0x112" name="radiosity_quality" type="short" />
+		<global opcode="0x113" name="radiosity_step_count" type="short" />
+		<global opcode="0x114" name="radiosity_lines" type="boolean" />
+		<global opcode="0x115" name="radiosity_normals" type="boolean" />
+		<global opcode="0x116" name="structures_use_pvs_for_vs" type="boolean" />
+		<global opcode="0x117" name="debug_texture_cache" null="true" type="boolean" />
+		<global opcode="0x118" name="debug_detail_objects" null="true" type="boolean" />
+		<global opcode="0x119" name="ai_render" null="true" type="boolean" />
+		<global opcode="0x11A" name="ai_render_all_actors" null="true" type="boolean" />
+		<global opcode="0x11B" name="ai_render_inactive_actors" null="true" type="boolean" />
+		<global opcode="0x11C" name="ai_render_lineoffire_crouching" null="true" type="boolean" />
+		<global opcode="0x11D" name="ai_render_lineoffire" null="true" type="boolean" />
+		<global opcode="0x11E" name="ai_render_lineofsight" null="true" type="boolean" />
+		<global opcode="0x11F" name="ai_render_ballistic_lineoffire" null="true" type="boolean" />
+		<global opcode="0x120" name="ai_render_encounter_activeregion" null="true" type="boolean" />
+		<global opcode="0x121" name="ai_render_vision_cones" null="true" type="boolean" />
+		<global opcode="0x122" name="ai_render_current_state" null="true" type="boolean" />
+		<global opcode="0x123" name="ai_render_detailed_state" null="true" type="boolean" />
+		<global opcode="0x124" name="ai_render_props" null="true" type="boolean" />
+		<global opcode="0x125" name="ai_render_props_web" null="true" type="boolean" />
+		<global opcode="0x126" name="ai_render_props_no_friends" null="true" type="boolean" />
+		<global opcode="0x127" name="ai_render_props_target_weight" null="true" type="boolean" />
+		<global opcode="0x128" name="ai_render_props_unreachable" null="true" type="boolean" />
+		<global opcode="0x129" name="ai_render_props_unopposable" null="true" type="boolean" />
+		<global opcode="0x12A" name="ai_render_idle_look" null="true" type="boolean" />
+		<global opcode="0x12B" name="ai_render_support_surfaces" null="true" type="boolean" />
+		<global opcode="0x12C" name="ai_render_recent_damage" null="true" type="boolean" />
+		<global opcode="0x12D" name="ai_render_threats" null="true" type="boolean" />
+		<global opcode="0x12E" name="ai_render_emotions" null="true" type="boolean" />
+		<global opcode="0x12F" name="ai_render_audibility" null="true" type="boolean" />
+		<global opcode="0x130" name="ai_render_aiming_vectors" null="true" type="boolean" />
+		<global opcode="0x131" name="ai_render_secondary_looking" null="true" type="boolean" />
+		<global opcode="0x132" name="ai_render_targets" null="true" type="boolean" />
+		<global opcode="0x133" name="ai_render_targets_last_visible" null="true" type="boolean" />
+		<global opcode="0x134" name="ai_render_states" null="true" type="boolean" />
+		<global opcode="0x135" name="ai_render_vitality" null="true" type="boolean" />
+		<global opcode="0x136" name="ai_render_active_cover_seeking" null="true" type="boolean" />
+		<global opcode="0x137" name="ai_render_evaluations" null="true" type="boolean" />
+		<global opcode="0x138" name="ai_render_pursuit" null="true" type="boolean" />
+		<global opcode="0x139" name="ai_render_shooting" null="true" type="boolean" />
+		<global opcode="0x13A" name="ai_render_trigger" null="true" type="boolean" />
+		<global opcode="0x13B" name="ai_render_projectile_aiming" null="true" type="boolean" />
+		<global opcode="0x13C" name="ai_render_aiming_validity" null="true" type="boolean" />
+		<global opcode="0x13D" name="ai_render_speech" null="true" type="boolean" />
+		<global opcode="0x13E" name="ai_render_teams" null="true" type="boolean" />
+		<global opcode="0x13F" name="ai_render_player_ratings" null="true" type="boolean" />
+		<global opcode="0x140" name="ai_render_spatial_effects" null="true" type="boolean" />
+		<global opcode="0x141" name="ai_render_firing_positions" null="true" type="boolean" />
+		<global opcode="0x142" name="ai_render_gun_positions" null="true" type="boolean" />
+		<global opcode="0x143" name="ai_render_burst_geometry" null="true" type="boolean" />
+		<global opcode="0x144" name="ai_render_vehicle_avoidance" null="true" type="boolean" />
+		<global opcode="0x145" name="ai_render_vehicles_enterable" null="true" type="boolean" />
+		<global opcode="0x146" name="ai_render_melee_check" null="true" type="boolean" />
+		<global opcode="0x147" name="ai_render_dialogue_variants" null="true" type="boolean" />
+		<global opcode="0x148" name="ai_render_grenade_decisions" null="true" type="boolean" />
+		<global opcode="0x149" name="ai_render_danger_zones" null="true" type="boolean" />
+		<global opcode="0x14A" name="ai_render_charge_decisions" null="true" type="boolean" />
+		<global opcode="0x14B" name="ai_render_control" null="true" type="boolean" />
+		<global opcode="0x14C" name="ai_render_activation" null="true" type="boolean" />
+		<global opcode="0x14D" name="ai_render_paths" null="true" type="boolean" />
+		<global opcode="0x14E" name="ai_render_paths_selected_only" null="true" type="boolean" />
+		<global opcode="0x14F" name="ai_render_paths_destination" null="true" type="boolean" />
+		<global opcode="0x150" name="ai_render_paths_current" null="true" type="boolean" />
+		<global opcode="0x151" name="ai_render_paths_failed" null="true" type="boolean" />
+		<global opcode="0x152" name="ai_render_paths_raw" null="true" type="boolean" />
+		<global opcode="0x153" name="ai_render_paths_smoothed" null="true" type="boolean" />
+		<global opcode="0x154" name="ai_render_paths_avoided" null="true" type="boolean" />
+		<global opcode="0x155" name="ai_render_paths_avoidance_segment" null="true" type="short" />
+		<global opcode="0x156" name="ai_render_paths_avoidance_obstacles" null="true" type="boolean" />
+		<global opcode="0x157" name="ai_render_paths_avoidance_search" null="true" type="boolean" />
+		<global opcode="0x158" name="ai_render_paths_nodes" null="true" type="boolean" />
+		<global opcode="0x159" name="ai_render_paths_nodes_all" null="true" type="boolean" />
+		<global opcode="0x15A" name="ai_render_paths_nodes_polygons" null="true" type="boolean" />
+		<global opcode="0x15B" name="ai_render_paths_nodes_costs" null="true" type="boolean" />
+		<global opcode="0x15C" name="ai_render_paths_nodes_closest" null="true" type="boolean" />
+		<global opcode="0x15D" name="ai_render_player_aiming_blocked" null="true" type="boolean" />
+		<global opcode="0x15E" name="ai_render_vector_avoidance" null="true" type="boolean" />
+		<global opcode="0x15F" name="ai_render_vector_avoidance_rays" null="true" type="boolean" />
+		<global opcode="0x160" name="ai_render_vector_avoidance_sense_t" null="true" type="boolean" />
+		<global opcode="0x161" name="ai_render_vector_avoidance_avoid_t" null="true" type="boolean" />
+		<global opcode="0x162" name="ai_render_vector_avoidance_clear_time" null="true" type="boolean" />
+		<global opcode="0x163" name="ai_render_vector_avoidance_weights" null="true" type="boolean" />
+		<global opcode="0x164" name="ai_render_vector_avoidance_objects" null="true" type="boolean" />
+		<global opcode="0x165" name="ai_render_vector_avoidance_intermediate" null="true" type="boolean" />
+		<global opcode="0x166" name="ai_render_postcombat" null="true" type="boolean" />
+		<global opcode="0x167" name="ai_print_pursuit_checks" null="true" type="boolean" />
+		<global opcode="0x168" name="ai_print_rules" null="true" type="boolean" />
+		<global opcode="0x169" name="ai_print_rule_values" null="true" type="boolean" />
+		<global opcode="0x16A" name="ai_print_major_upgrade" null="true" type="boolean" />
+		<global opcode="0x16B" name="ai_print_respawn" null="true" type="boolean" />
+		<global opcode="0x16C" name="ai_print_evaluation_statistics" null="true" type="boolean" />
+		<global opcode="0x16D" name="ai_print_communication" null="true" type="boolean" />
+		<global opcode="0x16E" name="ai_print_communication_player" null="true" type="boolean" />
+		<global opcode="0x16F" name="ai_print_vocalizations" null="true" type="boolean" />
+		<global opcode="0x170" name="ai_print_placement" null="true" type="boolean" />
+		<global opcode="0x171" name="ai_print_speech" null="true" type="boolean" />
+		<global opcode="0x172" name="ai_print_speech_timers" null="true" type="boolean" />
+		<global opcode="0x173" name="ai_print_allegiance" null="true" type="boolean" />
+		<global opcode="0x174" name="ai_print_lost_speech" null="true" type="boolean" />
+		<global opcode="0x175" name="ai_print_migration" null="true" type="boolean" />
+		<global opcode="0x176" name="ai_print_automatic_migration" null="true" type="boolean" />
+		<global opcode="0x177" name="ai_print_scripting" null="true" type="boolean" />
+		<global opcode="0x178" name="ai_print_surprise" null="true" type="boolean" />
+		<global opcode="0x179" name="ai_print_command_lists" null="true" type="boolean" />
+		<global opcode="0x17A" name="ai_print_damage_modifiers" null="true" type="boolean" />
+		<global opcode="0x17B" name="ai_print_secondary_looking" null="true" type="boolean" />
+		<global opcode="0x17C" name="ai_print_oversteer" null="true" type="boolean" />
+		<global opcode="0x17D" name="ai_print_conversations" null="true" type="boolean" />
+		<global opcode="0x17E" name="ai_print_killing_sprees" null="true" type="boolean" />
+		<global opcode="0x17F" name="ai_print_acknowledgement" null="true" type="boolean" />
+		<global opcode="0x180" name="ai_print_unfinished_paths" null="true" type="boolean" />
+		<global opcode="0x181" name="ai_print_bsp_transition" null="true" type="boolean" />
+		<global opcode="0x182" name="ai_print_uncovering" null="true" type="boolean" />
+		<global opcode="0x183" name="ai_profile_disable" null="true" type="boolean" />
+		<global opcode="0x184" name="ai_profile_random" null="true" type="boolean" />
+		<global opcode="0x185" name="ai_show" null="true" type="boolean" />
+		<global opcode="0x186" name="ai_show_stats" null="true" type="boolean" />
+		<global opcode="0x187" name="ai_show_actors" null="true" type="boolean" />
+		<global opcode="0x188" name="ai_show_swarms" null="true" type="boolean" />
+		<global opcode="0x189" name="ai_show_paths" null="true" type="boolean" />
+		<global opcode="0x18A" name="ai_show_line_of_sight" null="true" type="boolean" />
+		<global opcode="0x18B" name="ai_show_prop_types" null="true" type="boolean" />
+		<global opcode="0x18C" name="ai_show_sound_distance" null="true" type="boolean" />
+		<global opcode="0x18D" name="ai_debug_fast_los" null="true" type="boolean" />
+		<global opcode="0x18E" name="ai_debug_oversteer_disable" null="true" type="boolean" />
+		<global opcode="0x18F" name="ai_debug_evaluate_all_positions" null="true" type="boolean" />
+		<global opcode="0x190" name="ai_debug_path" null="true" type="boolean" />
+		<global opcode="0x191" name="ai_debug_path_start_freeze" null="true" type="boolean" />
+		<global opcode="0x192" name="ai_debug_path_end_freeze" null="true" type="boolean" />
+		<global opcode="0x193" name="ai_debug_path_flood" null="true" type="boolean" />
+		<global opcode="0x194" name="ai_debug_path_maximum_radius" null="true" type="real" />
+		<global opcode="0x195" name="ai_debug_path_attractor" null="true" type="boolean" />
+		<global opcode="0x196" name="ai_debug_path_attractor_radius" null="true" type="real" />
+		<global opcode="0x197" name="ai_debug_path_attractor_weight" null="true" type="real" />
+		<global opcode="0x198" name="ai_debug_path_accept_radius" null="true" type="real" />
+		<global opcode="0x199" name="ai_debug_ballistic_lineoffire_freeze" null="true" type="boolean" />
+		<global opcode="0x19A" name="ai_debug_communication_random_disabled" null="true" type="boolean" />
+		<global opcode="0x19B" name="ai_debug_communication_timeout_disabled" null="true" type="boolean" />
+		<global opcode="0x19C" name="ai_debug_communication_unit_repeat_disabled" null="true" type="boolean" />
+		<global opcode="0x19D" name="ai_debug_communication_focus_enable" null="true" type="boolean" />
+		<global opcode="0x19E" name="ai_debug_blind" null="true" type="boolean" />
+		<global opcode="0x19F" name="ai_debug_deaf" null="true" type="boolean" />
+		<global opcode="0x1A0" name="ai_debug_invisible_player" null="true" type="boolean" />
+		<global opcode="0x1A1" name="ai_debug_ignore_player" null="true" type="boolean" />
+		<global opcode="0x1A2" name="ai_debug_flee_always" null="true" type="boolean" />
+		<global opcode="0x1A3" name="ai_debug_force_all_active" null="true" type="boolean" />
+		<global opcode="0x1A4" name="ai_debug_disable_wounded_sounds" null="true" type="boolean" />
+		<global opcode="0x1A5" name="ai_debug_force_vocalizations" null="true" type="boolean" />
+		<global opcode="0x1A6" name="ai_debug_force_crouch" null="true" type="boolean" />
+		<global opcode="0x1A7" name="ai_debug_path_disable_smoothing" null="true" type="boolean" />
+		<global opcode="0x1A8" name="ai_debug_path_disable_obstacle_avoidance" null="true" type="boolean" />
+		<global opcode="0x1A9" name="ai_fix_defending_guard_firing_positions" null="true" type="boolean" />
+		<global opcode="0x1AA" name="ai_fix_actor_variants" null="true" type="boolean" />
+		<global opcode="0x1AB" name="controls_enable_crouch" type="boolean" />
+		<global opcode="0x1AC" name="controls_swapped" type="boolean" />
+		<global opcode="0x1AD" name="controls_enable_doubled_spin" type="boolean" />
+		<global opcode="0x1AE" name="controls_swap_doubled_spin_state" type="boolean" />
+		<global opcode="0x1AF" name="player_autoaim" type="boolean" />
+		<global opcode="0x1B0" name="player_magnetism" type="boolean" />
+		<global opcode="0x1B1" name="debug_player_teleport" null="true" type="boolean" />
+		<global opcode="0x1B2" name="texture_cache_graph" null="true" type="boolean" />
+		<global opcode="0x1B3" name="texture_cache_list" null="true" type="boolean" />
+		<global opcode="0x1B4" name="director_camera_switch_fast" type="boolean" />
+		<global opcode="0x1B5" name="director_camera_switching" type="boolean" />
+		<global opcode="0x1B6" name="debug_recording" null="true" type="boolean" />
+		<global opcode="0x1B7" name="debug_recording_newlines" null="true" type="short" />
+		<global opcode="0x1B8" name="debug_player_color" null="true" type="short" />
+		<global opcode="0x1B9" name="debug_framerate" type="boolean" />
+		<global opcode="0x1BA" name="display_framerate" type="boolean" />
+		<global opcode="0x1BB" name="framerate_throttle" type="boolean" />
+		<global opcode="0x1BC" name="framerate_lock" type="boolean" />
+		<global opcode="0x1BD" name="display_precache_progress" type="boolean" />
+		<global opcode="0x1BE" name="debug_game_save" null="true" type="boolean" />
+		<global opcode="0x1BF" name="allow_out_of_sync" null="true" type="boolean" />
+		<global opcode="0x1C0" name="global_connection_dont_timeout" null="true" type="boolean" />
+		<global opcode="0x1C1" name="slow_server_startup_safety_zone_in_seconds" null="true" type="long" />
+		<global opcode="0x1C2" name="find_all_fucked_up_shit" null="true" type="boolean" />
+		<global opcode="0x1C3" name="error_suppress_all" type="boolean" />
+		<global opcode="0x1C4" name="run_game_scripts" type="boolean" />
+		<global opcode="0x1C5" name="leaf_to_leaf_latency" type="boolean" />
+		<global opcode="0x1C6" name="net_bandwidth" type="long" />
+		<global opcode="0x1C7" name="network_connect_timeout" type="long" />
+		<global opcode="0x1C8" name="net_graph_enabled" type="boolean" />
+		<global opcode="0x1C9" name="net_graph_period" type="long" />
+		<global opcode="0x1CA" name="allow_client_side_weapon_projectiles" type="boolean" />
+		<global opcode="0x1CB" name="weapon_incremental_rate" type="long" />
+		<global opcode="0x1CC" name="equipment_incremental_rate" type="long" />
+		<global opcode="0x1CD" name="biped_incremental_rate" type="long" />
+		<global opcode="0x1CE" name="vehicle_incremental_rate" type="long" />
+		<global opcode="0x1CF" name="projectile_incremental_rate" type="long" />
+		<global opcode="0x1D0" name="oddball_baseline_rate" type="long" />
+		<global opcode="0x1D1" name="local_player_update_rate" type="long" />
+		<global opcode="0x1D2" name="local_player_vehicle_update_rate" type="long" />
+		<global opcode="0x1D3" name="remote_player_action_update_rate" type="long" />
+		<global opcode="0x1D4" name="remote_player_action_baseline_update_rate" type="long" />
+		<global opcode="0x1D5" name="remote_player_position_update_rate" type="long" />
+		<global opcode="0x1D6" name="remote_player_position_baseline_update_rate" type="long" />
+		<global opcode="0x1D7" name="remote_player_vehicle_update_rate" type="long" />
+		<global opcode="0x1D8" name="remote_player_vehicle_baseline_update_rate" type="long" />
+		<global opcode="0x1D9" name="use_super_remote_players_action_update" type="boolean" />
+		<global opcode="0x1DA" name="use_new_vehicle_update_scheme" type="boolean" />
+		<global opcode="0x1DB" name="log_server_player_update_history" type="boolean" />
+		<global opcode="0x1DC" name="client_log_destination" type="long" />
+		<global opcode="0x1DD" name="local_player_log_level" type="long" />
+		<global opcode="0x1DE" name="remote_player_log_level" type="long" />
+		<global opcode="0x1DF" name="debug_score" type="long" />
+		<global opcode="0x1E0" name="speed_hack_detection" type="boolean" />
+		<global opcode="0x1E1" name="speed_hack_log_level" type="long" />
+		<global opcode="0x1E2" name="multiplayer_hit_sound_volume" type="real" />
+		<global opcode="0x1E3" name="sv_client_action_queue_limit" type="long" />
+		<global opcode="0x1E4" name="sv_client_action_queue_tick_limit" type="long" />
+		<global opcode="0x1E5" name="cl_remote_player_action_queue_limit" type="long" />
+		<global opcode="0x1E6" name="cl_remote_player_action_queue_tick_limit" type="long" />
+		<global opcode="0x1E7" name="object_prediction" type="boolean" />
+		<global opcode="0x1E8" name="transport_dumping" type="boolean" />
+		<global opcode="0x1E9" name="hud_filter" type="boolean" />
+		<global opcode="0x1EA" name="sv_mapcycle_timeout" type="long" />
+		<global opcode="0x1EB" name="sv_public" type="boolean" />
+		<global opcode="0x1EC" name="developer_mode" type="short" />
+		<global opcode="0x1ED" name="mouse_acceleration" type="real" />
+		<global opcode="0x1EE" name="sv_tk_ban" type="short" />
+		<global opcode="0x1EF" name="rasterizer_frame_drop_ms" type="short" />
 	</globals>
 </BlamScript>

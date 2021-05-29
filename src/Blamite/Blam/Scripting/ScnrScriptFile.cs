@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Blamite.Blam.Scripting;
 using Blamite.Blam.Scripting.Compiler;
 using Blamite.Blam.Util;
 using Blamite.Serialization;
@@ -9,7 +8,7 @@ using Blamite.IO;
 using Blamite.Util;
 using Blamite.Blam.Scripting.Context;
 
-namespace Blamite.Blam.ThirdGen.Structures
+namespace Blamite.Blam.Scripting
 {
 	public class ScnrScriptFile : IScriptFile
 	{
@@ -54,9 +53,13 @@ namespace Blamite.Blam.ThirdGen.Structures
 				
 			result.Scripts = LoadScripts(reader, values);
 			result.Globals = LoadGlobals(reader, values);
-			result.Expressions = LoadExpressions(reader, values, stringReader);
 
-			CachedStringTable strings = LoadStrings(reader, values, stringReader);
+            if (values.HasInteger("script syntax table size"))
+                result.Expressions = LoadSyntax(reader, values, stringReader);
+            else
+                result.Expressions = LoadExpressions(reader, values, stringReader);
+
+            CachedStringTable strings = LoadStrings(reader, values, stringReader);
 			foreach (ScriptExpression expr in result.Expressions.Where(e => (e != null)))
             {
                 expr.ResolveStrings(strings);
@@ -144,7 +147,33 @@ namespace Blamite.Blam.ThirdGen.Structures
 			return result;
 		}
 
-		private CachedStringTable LoadStrings(IReader reader, StructureValueCollection values, StringTableReader stringReader)
+        private ScriptExpressionTable LoadSyntax(IReader reader, StructureValueCollection values,
+            StringTableReader stringReader)
+        {
+            var stringsSize = (int)values.GetInteger("script string table size");
+
+            var tableSize = (int)values.GetInteger("script syntax table size");
+            uint tableAddress = (uint)values.GetInteger("script syntax table address");
+            long expand = _expander.Expand(tableAddress);
+
+            StructureLayout headerLayout = _buildInfo.Layouts.GetLayout("script syntax table header");
+            StructureValueCollection[] headerEntry = TagBlockReader.ReadTagBlock(reader, 1, expand, headerLayout, _metaArea);
+
+            int count = (int)headerEntry[0].GetInteger("element count");
+
+            StructureLayout layout = _buildInfo.Layouts.GetLayout("script syntax table element");
+            StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, expand + headerLayout.Size, layout, _metaArea);
+
+            var result = new ScriptExpressionTable();
+            result.AddExpressions(entries.Select((e, i) => new ScriptExpression(e, (ushort)i, stringReader, stringsSize)));
+
+            foreach (ScriptExpression expr in result.Where(expr => expr != null))
+                expr.ResolveReferences(result);
+
+            return result;
+        }
+
+        private CachedStringTable LoadStrings(IReader reader, StructureValueCollection values, StringTableReader stringReader)
 		{
 			var stringsSize = (int) values.GetInteger("script string table size");
 			if (stringsSize == 0)
