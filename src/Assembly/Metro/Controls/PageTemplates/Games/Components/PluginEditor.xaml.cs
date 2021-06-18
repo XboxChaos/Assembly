@@ -56,9 +56,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			UpdateLayout();
 
-			DocumentLine selectedLineDetails = txtPlugin.Document.GetLineByNumber(line);
-			txtPlugin.ScrollToLine(line);
-			txtPlugin.Select(selectedLineDetails.Offset, selectedLineDetails.Length);
+			if (line < txtPlugin.Document.LineCount)
+			{
+				DocumentLine selectedLineDetails = txtPlugin.Document.GetLineByNumber(line);
+				txtPlugin.ScrollToLine(line);
+				txtPlugin.Select(selectedLineDetails.Offset, selectedLineDetails.Length);
+			}
+			else
+				txtPlugin.ScrollToEnd();
 		}
 
 		private void Settings_SettingsChanged(object sender, EventArgs e)
