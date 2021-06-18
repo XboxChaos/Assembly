@@ -7,8 +7,8 @@
 	<flags16 name="Flags" offset="0x8" visible="true">
 		<bit name="Fit To ADPCM Blocksize" index="0" />
 		<bit name="Split Long Sound Into Permutations" index="1" />
-		<bit name="Always Spatialize" index="2" />
-		<bit name="Never Obstruct" index="3" />
+		<bit name="Always Spatialize" index="2" tooltip="always play as 3d sound, even in first person" />
+		<bit name="Never Obstruct" index="3" tooltip="disable occlusion/obstruction for this sound" />
 		<bit name="Internal Don't Touch" index="4" />
 		<bit name="Use Huge Sound Transmission" index="5" />
 		<bit name="Link Count To Owner Unit" index="6" />
@@ -78,9 +78,25 @@
 		<option name="test" value="0x34" />
 		<option name="multilingual_test" value="0x35" />
 	</enum8>
-	<int8 name="Rate?" offset="0xB" visible="false" />
-	<int8 name="Encoding?" offset="0xC" visible="false" />
-	<int8 name="Compression?" offset="0xD" visible="false" />
+	<enum8 name="Sample Rate" offset="0xB" visible="true">
+		<option name="22kHz" value="0x0" />
+		<option name="44kHz" value="0x1" />
+		<option name="32kHz" value="0x2" />
+		<option name="Unknown" value="0x3" />
+	</enum8>
+	<enum8 name="Encoding" offset="0xC" visible="true">
+		<option name="Mono" value="0x0" />
+		<option name="Stereo" value="0x1" />
+		<option name="Codec" value="0x2" />
+	</enum8>
+	<enum8 name="Compression" offset="0xD" visible="true">
+		<option name="None (Big Endian)" value="0x0" />
+		<option name="Xbox ADPCM" value="0x1" />
+		<option name="IMA ADPCM" value="0x2" />
+		<option name="None (Little Endian)" value="0x3" />
+		<option name="WMA" value="0x4" />
+		<option name="Unknown" value="0x5" />
+	</enum8>
 	<int16 name="[ugh!] Playback Parameter Index" offset="0xE" visible="false" />
 	<int16 name="[ugh!] Pitch Range Index" offset="0x10" visible="false" />
 	<int8 name="Unknown" offset="0x12" visible="false" />

@@ -4,13 +4,19 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
-	<tagblock name="Unknown" offset="0x0" visible="false" elementSize="0x4C">
-		<stringid name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<dataRef name="Unknown" offset="0x10" visible="false" />
-		<dataRef name="Unknown" offset="0x24" visible="false" />
-		<dataRef name="Unknown" offset="0x38" visible="false" />
+	<tagblock name="States" offset="0x0" visible="true" elementSize="0x4C">
+		<comment title="Self-Illumination State">An animated self-illumination controller state.</comment>
+		<stringid name="Name" offset="0x0" visible="true" />
+		<flags32 name="Flags" offset="0x4" visible="true">
+			<bit name="Looping" index="0" />
+			<bit name="Triggered By AI State" index="1" />
+			<bit name="Triggered By Animation State" index="2" />
+			<bit name="Triggered By Dialog" index="3" />
+		</flags32>
+		<float32 name="Length" offset="0x8" visible="true" tooltip="Length of illumination animation in seconds." />
+		<stringid name="Next State" offset="0xC" visible="true" tooltip="Used to automatically transition to another state when finished." />
+		<dataref name="Intensity Function" offset="0x10" visible="true" />
+		<dataref name="Color Function" offset="0x24" visible="true" />
+		<dataref name="Activation Function" offset="0x38" visible="true" />
 	</tagblock>
 </plugin>

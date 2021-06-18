@@ -485,23 +485,23 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<bit name="Allow Aim While Opening Or Closing" index="30" />
 		<bit name="Compute Acceleration From Aiming" index="31" />
 	</flags32>
-	<flags32 name="More Flags" offset="0x208" visible="true">
+	<flags32 name="Flags 2" offset="0x208" visible="true">
 		<bit name="Override All Pings" index="0" />
 		<bit name="Unit Supports Bailout" index="1" />
 		<bit name="Flying Or Vehicle Hard Pings Allowed" index="2" />
-		<bit name="Attempt To Fire From Weapon Matching Camera" index="3" />
-		<bit name="Treat As Vehicle" index="4" />
+		<bit name="Attempt To Fire From Weapon Matching Camera" index="3" tooltip="if this unit &quot;fires from camera&quot;, this flag attempts to match the result, but have the projectile actually come out of the gun" />
+		<bit name="Treat As Vehicle" index="4" tooltip="Treats a non-vehicle unit as a vehicle for gameplay purposes. Mantis (biped) hack." />
 		<bit name="Dropped Weapons Can Dissolve" index="5" />
 		<bit name="Hard Pings Not Allowed For Driver-Less Vehicle" index="6" />
-		<bit name="No Friendly Bump Damage" index="7" />
-		<bit name="Ignores Attachment Feedback Forced Hard Pings" index="8" />
-		<bit name="Unit Appears On Radar As Dot Not Sprite" index="9" />
+		<bit name="No Friendly Bump Damage" index="7" tooltip="Unit does not inflict collision damage to friendly units" />
+		<bit name="Ignores Attachment Feedback Forced Hard Pings" index="8" tooltip="ignores hard pings forced by attachment of sticky grenade" />
+		<bit name="Unit Appears On Radar As Dot Not Sprite" index="9" tooltip="do not try to find a sprite for this unit. Just draw a dot." />
 		<bit name="Suppress Radar Blip" index="10" />
-		<bit name="Do Not Ignore Parents For Line Of Sight Tests" index="11" />
-		<bit name="Do Not Pass Attached AOE Damage To Children" index="12" />
-		<bit name="Do Not Generate AI Line Of Fire Pill For Unit" index="13" />
+		<bit name="Do Not Ignore Parents For Line Of Sight Tests" index="11" tooltip="ai that are operating this unit will not ignore the unit's parents when doing line of sight tests (Mammoth turret hack)" />
+		<bit name="Do Not Pass Attached AOE Damage To Children" index="12" tooltip="projectiles attached to this object do not do attached damage to the object's children (regular aoe damage is still done to top level aoe children)" />
+		<bit name="Do Not Generate AI Line Of Fire Pill For Unit" index="13" tooltip="even if this vehicle is being driven by a friendly character, don't generate a pill for it during ai line of fire checks (for very large vehicles i.e. the lich)" />
 	</flags32>
-	<enum16 name="Team" offset="0x20C" visible="true">
+	<enum16 name="Default Team" offset="0x20C" visible="true">
 		<option name="Default" value="0x0" />
 		<option name="Player" value="0x1" />
 		<option name="Human" value="0x2" />
@@ -513,18 +513,18 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<option name="Forerunner" value="0x8" />
 	</enum16>
 	<enum16 name="Constant Sound Volume" offset="0x20E" visible="true">
-		<option name="Silent" value="0x0" />
+		<option name="Silent" value="0x0" tooltip="ai will not respond to this sound" />
 		<option name="Quiet" value="0x1" />
 		<option name="Medium" value="0x2" />
 		<option name="Shout" value="0x3" />
-		<option name="Loud" value="0x4" />
+		<option name="Loud" value="0x4" tooltip="ai can hear this sound at any range" />
 	</enum16>
 	<tagref name="Hologram Unit" offset="0x210" visible="true" />
 	<tagblock name="Campaign Metagame Bucket" offset="0x220" visible="true" elementSize="0x8">
 		<flags8 name="Flags" offset="0x0" visible="true">
 			<bit name="Only Counts With Riders" index="0" />
 		</flags8>
-		<enum8 name="Unit" offset="0x1" visible="true">
+		<enum8 name="Type" offset="0x1" visible="true">
 			<option name="Brute" value="0x0" />
 			<option name="Grunt" value="0x1" />
 			<option name="Jackal" value="0x2" />
@@ -587,19 +587,18 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<tagblock name="Screen Effects" offset="0x22C" visible="true" elementSize="0x10">
 		<tagRef name="Screen Effect" offset="0x0" visible="true" />
 	</tagblock>
-	<int32 name="Camera Stiffness" offset="0x238" visible="true" />
+	<float32 name="Camera Stiffness" offset="0x238" visible="true" />
 	<comment title="Unit Camera" />
 	<flags16 name="Flags" offset="0x23C" visible="true">
 		<bit name="Pitch Bounds Absolute Space" index="0" />
 		<bit name="Only Collides With Environment" index="1" />
-		<bit name="Hides Player-Unit From Camera" index="2" />
-		<bit name="Use Aiming Vector Instead Of Marker Forward" index="3" />
+		<bit name="Hides Player-Unit From Camera" index="2" tooltip="the player controlling this camera will not see their unit. All other cameras will see this unit" />
+		<bit name="Use Aiming Vector Instead Of Marker Forward" index="3" tooltip="for cameras without tracks that use a marker position, specifies that we use the unit's aiming vector instead of the marker's forward vector. This results in more accurate aiming and smoother movement when frames are dropped" />
 	</flags16>
 	<int16 name="Unknown" offset="0x23E" visible="false" />
-	<stringid name="Camera Marker" offset="0x240" visible="true" />
+	<stringid name="Camera Marker Name" offset="0x240" visible="true" />
 	<degree name="Pitch Auto-Level" offset="0x244" visible="true" />
-	<degree name="Pitch Range min" offset="0x248" visible="true" />
-	<degree name="Pitch Range max" offset="0x24C" visible="true" />
+	<ranged name="Pitch Range" offset="0x248" visible="true" />
 	<tagblock name="Camera Tracks" offset="0x250" visible="true" elementSize="0x20">
 		<tagRef name="Track" offset="0x0" visible="true" />
 		<tagRef name="Screen Effect" offset="0x10" visible="true" />
@@ -607,18 +606,20 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<degree name="Pitch Minimum Spring" offset="0x25C" visible="true" />
 	<degree name="Pitch Maximum Spring" offset="0x260" visible="true" />
 	<degree name="Spring Velocity" offset="0x264" visible="true" />
-	<degree name="Look Acceleration" offset="0x268" visible="true" />
-	<degree name="Look Deceleration" offset="0x26C" visible="true" />
-	<float32 name="Look Acceleration Smoothing Fraction" offset="0x270" visible="true" />
-	<degree name="Override FOV" offset="0x274" visible="true" />
-	<float32 name="Cylinder Fraction" offset="0x278" visible="true" />
-	<degree name="Obstruction Test Angle" offset="0x27C" visible="true" />
-	<float32 name="Obstruction Maximum Inward Acceleration" offset="0x280" visible="true" />
-	<float32 name="Obstruction Maximum Outward Acceleration" offset="0x284" visible="true" />
-	<float32 name="Obstruction Maximum Velocity" offset="0x288" visible="true" />
-	<float32 name="Obstruction Return Delay" offset="0x28C" visible="true" />
+	<degree name="Look Acceleration" offset="0x268" visible="true" tooltip="if non-zero, limits the change in look velocity per second while the user is pushing the look stick in the current direction of looking" />
+	<degree name="Look Deceleration" offset="0x26C" visible="true" tooltip="if non-zero, limits the change in look velocity per second while the user is not pushing the look stick or changing directions" />
+	<float32 name="Look Acceleration Smoothing Fraction" offset="0x270" visible="true" tooltip="if non-zero, when the desired velocity change is less than this fraction of the acceleration, starts interpolating the maximum acceleration towards zero. You can think of this as a time in seconds where if the velocity would reach its target in this amount of time or less, it will start taking longer." />
+	<degree name="Override Field Of View" offset="0x274" visible="true" tooltip="if non-zero, overrides the FOV set in the unit or globals" />
+	<comment title="Camera Obstruction" />
+	<float32 name="Cylinder Fraction" offset="0x278" visible="true" tooltip="controls how far from the focus point the outer raycasts start. 0 == cone, 1 == cylinder" />
+	<degree name="Obstruction Test Angle" offset="0x27C" visible="true" tooltip="how wide of a cone to test" />
+	<float32 name="Obstruction Maximum Inward Acceleration" offset="0x280" visible="true" tooltip="how quickly the camera moves inward when it anticipates a collision" />
+	<float32 name="Obstruction Maximum Outward Acceleration" offset="0x284" visible="true" tooltip="how quickly the camera returns to a normal position when its anticipated distance is further than its current" />
+	<float32 name="Obstruction Maximum Velocity" offset="0x288" visible="true" tooltip="maximum speed the camera can move" />
+	<float32 name="Obstruction Return Delay" offset="0x28C" visible="true" tooltip="when the camera wants to start moving back out, wait this long before doing so" />
 	<tagblock name="Camera Acceleration" offset="0x290" visible="true" elementSize="0x70">
-		<float32 name="Maximum Camera Velocity" offset="0x0" visible="true" />
+		<float32 name="Maximum Camera Velocity" offset="0x0" visible="true" tooltip="how quickly the camera can move to a new displacement (if the velocity suddenly changes). During this time the aim vector for the unit will be inaccurate, so don't set this too low. 0 defaults to infinite." />
+		<comment title="Forward/Back" />
 		<enum8 name="Input Variable" offset="0x4" visible="true">
 			<option name="Linear Velocity" value="0x0" />
 			<option name="Linear Acceleration" value="0x1" />
@@ -629,9 +630,10 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<int8 name="Unknown" offset="0x5" visible="false" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
 		<dataref name="Function" offset="0x8" visible="true" />
-		<float32 name="Maximum Value" offset="0x1C" visible="true" />
-		<float32 name="Camera Scale (Axial)" offset="0x20" visible="true" />
-		<float32 name="Camera Scale (Perpendicular)" offset="0x24" visible="true" />
+		<float32 name="Maximum Value" offset="0x1C" visible="true" tooltip="for linear velocity; this is wu/s. for linear acceleration; this is the fraction of the seat acceleration. for angular velocity; this is deg/s" />
+		<float32 name="Camera Scale (Axial)" offset="0x20" visible="true" tooltip="scale factor used when this acceleration component is along the axis of the forward vector of the camera" />
+		<float32 name="Camera Scale (Perpendicular)" offset="0x24" visible="true" tooltip="scale factor used when this acceleration component is perpendicular to the camera" />
+		<comment title="Left/Right" />
 		<enum8 name="Input Variable" offset="0x28" visible="true">
 			<option name="Linear Velocity" value="0x0" />
 			<option name="Linear Acceleration" value="0x1" />
@@ -642,9 +644,10 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<int8 name="Unknown" offset="0x29" visible="false" />
 		<int16 name="Unknown" offset="0x2A" visible="false" />
 		<dataref name="Function" offset="0x2C" visible="true" />
-		<float32 name="Maximum Value" offset="0x40" visible="true" />
-		<float32 name="Camera Scale (Axial)" offset="0x44" visible="true" />
-		<float32 name="Camera Scale (Perpendicular)" offset="0x48" visible="true" />
+		<float32 name="Maximum Value" offset="0x40" visible="true" tooltip="for linear velocity; this is wu/s. for linear acceleration; this is the fraction of the seat acceleration. for angular velocity; this is deg/s" />
+		<float32 name="Camera Scale (Axial)" offset="0x44" visible="true" tooltip="scale factor used when this acceleration component is along the axis of the forward vector of the camera" />
+		<float32 name="Camera Scale (Perpendicular)" offset="0x48" visible="true" tooltip="scale factor used when this acceleration component is perpendicular to the camera" />
+		<comment title="Up/Down" />
 		<enum8 name="Input Variable" offset="0x4C" visible="true">
 			<option name="Linear Velocity" value="0x0" />
 			<option name="Linear Acceleration" value="0x1" />
@@ -655,9 +658,9 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<int8 name="Unknown" offset="0x4D" visible="false" />
 		<int16 name="Unknown" offset="0x4E" visible="false" />
 		<dataref name="Function" offset="0x50" visible="true" />
-		<float32 name="Maximum Value" offset="0x64" visible="true" />
-		<float32 name="Camera Scale (Axial)" offset="0x68" visible="true" />
-		<float32 name="Camera Scale (Perpendicular)" offset="0x6C" visible="true" />
+		<float32 name="Maximum Value" offset="0x64" visible="true" tooltip="for linear velocity; this is wu/s. for linear acceleration; this is the fraction of the seat acceleration. for angular velocity; this is deg/s" />
+		<float32 name="Camera Scale (Axial)" offset="0x68" visible="true" tooltip="scale factor used when this acceleration component is along the axis of the forward vector of the camera" />
+		<float32 name="Camera Scale (Perpendicular)" offset="0x6C" visible="true" tooltip="scale factor used when this acceleration component is perpendicular to the camera" />
 	</tagblock>
 	<tagblock name="Move Stick Overrides" offset="0x29C" visible="true" elementSize="0x28">
 		<enum8 name="Input Shape" offset="0x0" visible="true">
@@ -667,12 +670,10 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		</enum8>
 		<int8 name="Unknown" offset="0x1" visible="false" />
 		<int16 name="Unknown" offset="0x2" visible="false" />
-		<float32 name="Peg Threshold" offset="0x4" visible="true" />
-		<float32 name="Pegged Time x" offset="0x8" visible="true" />
-		<float32 name="Pegged Time y" offset="0xC" visible="true" />
-		<float32 name="Pegged Scale x" offset="0x10" visible="true" />
-		<float32 name="Pegged Scale y" offset="0x14" visible="true" />
-		<degree name="Peg Max Angular Velocity" offset="0x18" visible="true" />
+		<float32 name="Peg Threshold" offset="0x4" visible="true" tooltip="[0,1] magnitude of analog input for pegged acceleration to kick in" />
+		<point2 name="Pegged Time" offset="0x8" visible="true" tooltip="time for a pegged look to reach maximum effect" />
+		<point2 name="Pegged Scale" offset="0x10" visible="true" tooltip="the maximum effect achieved over the duration of the pegged time." />
+		<degree name="Peg Maximum Angular Velocity" offset="0x18" visible="true" tooltip="the maximum turning speed during peg" />
 		<tagblock name="Input Mapping Function" offset="0x1C" visible="true" elementSize="0x14">
 			<dataref name="Function" offset="0x0" visible="true" />
 		</tagblock>
@@ -685,12 +686,10 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		</enum8>
 		<int8 name="Unknown" offset="0x1" visible="false" />
 		<int16 name="Unknown" offset="0x2" visible="false" />
-		<float32 name="Peg Threshold" offset="0x4" visible="true" />
-		<float32 name="Pegged Time x" offset="0x8" visible="true" />
-		<float32 name="Pegged Time y" offset="0xC" visible="true" />
-		<float32 name="Pegged Scale x" offset="0x10" visible="true" />
-		<float32 name="Pegged Scale y" offset="0x14" visible="true" />
-		<degree name="Peg Max Angular Velocity" offset="0x18" visible="true" />
+		<float32 name="Peg Threshold" offset="0x4" visible="true" tooltip="[0,1] magnitude of analog input for pegged acceleration to kick in" />
+		<point2 name="Pegged Time" offset="0x8" visible="true" tooltip="time for a pegged look to reach maximum effect" />
+		<point2 name="Pegged Scale" offset="0x10" visible="true" tooltip="the maximum effect achieved over the duration of the pegged time." />
+		<degree name="Peg Maximum Angular Velocity" offset="0x18" visible="true" tooltip="the maximum turning speed during peg" />
 		<tagblock name="Input Mapping Function" offset="0x1C" visible="true" elementSize="0x14">
 			<dataref name="Function" offset="0x0" visible="true" />
 		</tagblock>
@@ -699,14 +698,13 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<flags16 name="Flags" offset="0x2B4" visible="true">
 		<bit name="Pitch Bounds Absolute Space" index="0" />
 		<bit name="Only Collides With Environment" index="1" />
-		<bit name="Hides Player-Unit From Camera" index="2" />
-		<bit name="Use Aiming Vector Instead Of Marker Forward" index="3" />
+		<bit name="Hides Player-Unit From Camera" index="2" tooltip="the player controlling this camera will not see their unit. All other cameras will see this unit" />
+		<bit name="Use Aiming Vector Instead Of Marker Forward" index="3" tooltip="for cameras without tracks that use a marker position, specifies that we use the unit's aiming vector instead of the marker's forward vector. This results in more accurate aiming and smoother movement when frames are dropped" />
 	</flags16>
 	<int16 name="Unknown" offset="0x2B6" visible="false" />
-	<stringid name="Camera Marker" offset="0x2B8" visible="true" />
+	<stringid name="Camera Marker Name" offset="0x2B8" visible="true" />
 	<degree name="Pitch Auto-Level" offset="0x2BC" visible="true" />
-	<degree name="Pitch Range min" offset="0x2C0" visible="true" />
-	<degree name="Pitch Range max" offset="0x2C4" visible="true" />
+	<ranged name="Pitch Range" offset="0x2C0" visible="true" />
 	<tagblock name="Camera Tracks" offset="0x2C8" visible="true" elementSize="0x20">
 		<tagRef name="Track" offset="0x0" visible="true" />
 		<tagRef name="Screen Effect" offset="0x10" visible="true" />
@@ -714,18 +712,20 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<degree name="Pitch Minimum Spring" offset="0x2D4" visible="true" />
 	<degree name="Pitch Maximum Spring" offset="0x2D8" visible="true" />
 	<degree name="Spring Velocity" offset="0x2DC" visible="true" />
-	<degree name="Look Acceleration" offset="0x2E0" visible="true" />
-	<degree name="Look Deceleration" offset="0x2E4" visible="true" />
-	<float32 name="Look Acceleration Smoothing Fraction" offset="0x2E8" visible="true" />
-	<degree name="Override FOV" offset="0x2EC" visible="true" />
-	<float32 name="Cylinder Fraction" offset="0x2F0" visible="true" />
-	<degree name="Obstruction Test Angle" offset="0x2F4" visible="true" />
-	<float32 name="Obstruction Max Inward Acceleration" offset="0x2F8" visible="true" />
-	<float32 name="Obstruction Max Outward Acceleration" offset="0x2FC" visible="true" />
-	<float32 name="Obstruction Max Velocity" offset="0x300" visible="true" />
-	<float32 name="Obstruction Return Delay" offset="0x304" visible="true" />
+	<degree name="Look Acceleration" offset="0x2E0" visible="true" tooltip="if non-zero, limits the change in look velocity per second while the user is pushing the look stick in the current direction of looking" />
+	<degree name="Look Deceleration" offset="0x2E4" visible="true" tooltip="if non-zero, limits the change in look velocity per second while the user is not pushing the look stick or changing directions" />
+	<float32 name="Look Acceleration Smoothing Fraction" offset="0x2E8" visible="true" tooltip="if non-zero, when the desired velocity change is less than this fraction of the acceleration, starts interpolating the maximum acceleration towards zero. You can think of this as a time in seconds where if the velocity would reach its target in this amount of time or less, it will start taking longer." />
+	<degree name="Override Field Of View" offset="0x2EC" visible="true" tooltip="if non-zero, overrides the FOV set in the unit or globals" />
+	<comment title="Camera Obstruction" />
+	<float32 name="Cylinder Fraction" offset="0x2F0" visible="true" tooltip="controls how far from the focus point the outer raycasts start. 0 == cone, 1 == cylinder" />
+	<degree name="Obstruction Test Angle" offset="0x2F4" visible="true" tooltip="how wide of a cone to test" />
+	<float32 name="Obstruction Maximum Inward Acceleration" offset="0x2F8" visible="true" tooltip="how quickly the camera moves inward when it anticipates a collision" />
+	<float32 name="Obstruction Maximum Outward Acceleration" offset="0x2FC" visible="true" tooltip="how quickly the camera returns to a normal position when its anticipated distance is further than its current" />
+	<float32 name="Obstruction Maximum Velocity" offset="0x300" visible="true" tooltip="maximum speed the camera can move" />
+	<float32 name="Obstruction Return Delay" offset="0x304" visible="true" tooltip="when the camera wants to start moving back out, wait this long before doing so" />
 	<tagblock name="Camera Acceleration" offset="0x308" visible="true" elementSize="0x70">
-		<float32 name="Maximum Camera Velocity" offset="0x0" visible="true" />
+		<float32 name="Maximum Camera Velocity" offset="0x0" visible="true" tooltip="how quickly the camera can move to a new displacement (if the velocity suddenly changes). During this time the aim vector for the unit will be inaccurate, so don't set this too low. 0 defaults to infinite." />
+		<comment title="Forward/Back" />
 		<enum8 name="Input Variable" offset="0x4" visible="true">
 			<option name="Linear Velocity" value="0x0" />
 			<option name="Linear Acceleration" value="0x1" />
@@ -736,9 +736,10 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<int8 name="Unknown" offset="0x5" visible="false" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
 		<dataref name="Function" offset="0x8" visible="true" />
-		<float32 name="Maximum Value" offset="0x1C" visible="true" />
-		<float32 name="Camera Scale (Axial)" offset="0x20" visible="true" />
-		<float32 name="Camera Scale (Perpendicular)" offset="0x24" visible="true" />
+		<float32 name="Maximum Value" offset="0x1C" visible="true" tooltip="for linear velocity; this is wu/s. for linear acceleration; this is the fraction of the seat acceleration. for angular velocity; this is deg/s" />
+		<float32 name="Camera Scale (Axial)" offset="0x20" visible="true" tooltip="scale factor used when this acceleration component is along the axis of the forward vector of the camera" />
+		<float32 name="Camera Scale (Perpendicular)" offset="0x24" visible="true" tooltip="scale factor used when this acceleration component is perpendicular to the camera" />
+		<comment title="Left/Right" />
 		<enum8 name="Input Variable" offset="0x28" visible="true">
 			<option name="Linear Velocity" value="0x0" />
 			<option name="Linear Acceleration" value="0x1" />
@@ -749,9 +750,10 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<int8 name="Unknown" offset="0x29" visible="false" />
 		<int16 name="Unknown" offset="0x2A" visible="false" />
 		<dataref name="Function" offset="0x2C" visible="true" />
-		<float32 name="Maximum Value" offset="0x40" visible="true" />
-		<float32 name="Camera Scale (Axial)" offset="0x44" visible="true" />
-		<float32 name="Camera Scale (Perpendicular)" offset="0x48" visible="true" />
+		<float32 name="Maximum Value" offset="0x40" visible="true" tooltip="for linear velocity; this is wu/s. for linear acceleration; this is the fraction of the seat acceleration. for angular velocity; this is deg/s" />
+		<float32 name="Camera Scale (Axial)" offset="0x44" visible="true" tooltip="scale factor used when this acceleration component is along the axis of the forward vector of the camera" />
+		<float32 name="Camera Scale (Perpendicular)" offset="0x48" visible="true" tooltip="scale factor used when this acceleration component is perpendicular to the camera" />
+		<comment title="Up/Down" />
 		<enum8 name="Input Variable" offset="0x4C" visible="true">
 			<option name="Linear Velocity" value="0x0" />
 			<option name="Linear Acceleration" value="0x1" />
@@ -762,9 +764,9 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<int8 name="Unknown" offset="0x4D" visible="false" />
 		<int16 name="Unknown" offset="0x4E" visible="false" />
 		<dataref name="Function" offset="0x50" visible="true" />
-		<float32 name="Maximum Value" offset="0x64" visible="true" />
-		<float32 name="Camera Scale (Axial)" offset="0x68" visible="true" />
-		<float32 name="Camera Scale (Perpendicular)" offset="0x6C" visible="true" />
+		<float32 name="Maximum Value" offset="0x64" visible="true" tooltip="for linear velocity; this is wu/s. for linear acceleration; this is the fraction of the seat acceleration. for angular velocity; this is deg/s" />
+		<float32 name="Camera Scale (Axial)" offset="0x68" visible="true" tooltip="scale factor used when this acceleration component is along the axis of the forward vector of the camera" />
+		<float32 name="Camera Scale (Perpendicular)" offset="0x6C" visible="true" tooltip="scale factor used when this acceleration component is perpendicular to the camera" />
 	</tagblock>
 	<tagblock name="Move Stick Overrides" offset="0x314" visible="true" elementSize="0x28">
 		<enum8 name="Input Shape" offset="0x0" visible="true">
@@ -774,12 +776,10 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		</enum8>
 		<int8 name="Unknown" offset="0x1" visible="false" />
 		<int16 name="Unknown" offset="0x2" visible="false" />
-		<float32 name="Peg Threshold" offset="0x4" visible="true" />
-		<float32 name="Pegged Time x" offset="0x8" visible="true" />
-		<float32 name="Pegged Time y" offset="0xC" visible="true" />
-		<float32 name="Pegged Scale x" offset="0x10" visible="true" />
-		<float32 name="Pegged Scale y" offset="0x14" visible="true" />
-		<degree name="Peg Max Angular Velocity" offset="0x18" visible="true" />
+		<float32 name="Peg Threshold" offset="0x4" visible="true" tooltip="[0,1] magnitude of analog input for pegged acceleration to kick in" />
+		<point2 name="Pegged Time" offset="0x8" visible="true" tooltip="time for a pegged look to reach maximum effect" />
+		<point2 name="Pegged Scale" offset="0x10" visible="true" tooltip="the maximum effect achieved over the duration of the pegged time." />
+		<degree name="Peg Maximum Angular Velocity" offset="0x18" visible="true" tooltip="the maximum turning speed during peg" />
 		<tagblock name="Input Mapping Function" offset="0x1C" visible="true" elementSize="0x14">
 			<dataref name="Function" offset="0x0" visible="true" />
 		</tagblock>
@@ -792,63 +792,60 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		</enum8>
 		<int8 name="Unknown" offset="0x1" visible="false" />
 		<int16 name="Unknown" offset="0x2" visible="false" />
-		<float32 name="Peg Threshold" offset="0x4" visible="true" />
-		<float32 name="Pegged Time x" offset="0x8" visible="true" />
-		<float32 name="Pegged Time y" offset="0xC" visible="true" />
-		<float32 name="Pegged Scale x" offset="0x10" visible="true" />
-		<float32 name="Pegged Scale y" offset="0x14" visible="true" />
-		<degree name="Peg Max Angular Velocity" offset="0x18" visible="true" />
+		<float32 name="Peg Threshold" offset="0x4" visible="true" tooltip="[0,1] magnitude of analog input for pegged acceleration to kick in" />
+		<point2 name="Pegged Time" offset="0x8" visible="true" tooltip="time for a pegged look to reach maximum effect" />
+		<point2 name="Pegged Scale" offset="0x10" visible="true" tooltip="the maximum effect achieved over the duration of the pegged time." />
+		<degree name="Peg Maximum Angular Velocity" offset="0x18" visible="true" tooltip="the maximum turning speed during peg" />
 		<tagblock name="Input Mapping Function" offset="0x1C" visible="true" elementSize="0x14">
 			<dataref name="Function" offset="0x0" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagref name="Assassination Start Response" offset="0x32C" visible="true" />
+	<tagref name="Assassination Start Damage Response" offset="0x32C" visible="true" />
 	<tagref name="Assassination Weapon" offset="0x33C" visible="true" />
-	<stringid name="Assassination Weapon Stow Marker" offset="0x34C" visible="true" />
-	<stringid name="Assassination Weapon Out Marker" offset="0x350" visible="true" />
-	<stringid name="Assassination Weapon Anchor Marker" offset="0x354" visible="true" />
+	<stringid name="Assassination Weapon Stow Marker" offset="0x34C" visible="true" tooltip="the anchor we attach the knife to when we stow it" />
+	<stringid name="Assassination Weapon Out Marker" offset="0x350" visible="true" tooltip="the anchor we attach the knife to when we pull it out" />
+	<stringid name="Assassination Weapon Anchor Marker" offset="0x354" visible="true" tooltip="the marker on the knife that we anchor to the biped" />
 	<tagref name="Seat Acceleration" offset="0x358" visible="true" />
 	<comment title="Pings" />
 	<float32 name="Soft Ping Threshold" offset="0x368" visible="true" />
 	<float32 name="Soft Ping Interrupt Time" offset="0x36C" visible="true" />
 	<float32 name="Hard Ping Threshold" offset="0x370" visible="true" />
 	<float32 name="Hard Ping Interrupt Time" offset="0x374" visible="true" />
-	<float32 name="Soft Death Direction Speed Threshold" offset="0x378" visible="true" />
+	<float32 name="Soft Death Direction Speed Threshold" offset="0x378" visible="true" tooltip="moving faster than this means you will soft death in the movement direction. zero defaults to damage direction." />
 	<float32 name="Hard Death Threshold" offset="0x37C" visible="true" />
 	<float32 name="Feign Death Threshold" offset="0x380" visible="true" />
 	<float32 name="Feign Death Time" offset="0x384" visible="true" />
-	<float32 name="Pain Screen Duration" offset="0x388" visible="true" />
-	<float32 name="Pain Screen Region Fade Out Duration" offset="0x38C" visible="true" />
-	<float32 name="Pain Screen Region Fade Out Weight Threshold" offset="0x390" visible="true" />
-	<degree name="Pain Screen Angle Tolerance" offset="0x394" visible="true" />
-	<degree name="Pain Screen Angle Randomness" offset="0x398" visible="true" />
-	<float32 name="Defensive Screen Duration" offset="0x39C" visible="true" />
-	<float32 name="Defensive Screen Scrub Fallback Fraction" offset="0x3A0" visible="true" />
-	<float32 name="Distance Of Dive Animation" offset="0x3A4" visible="true" />
-	<float32 name="Terminal Velocity Fall Ratio" offset="0x3A8" visible="true" />
+	<float32 name="Pain Screen Duration" offset="0x388" visible="true" tooltip="The duration of the pain function, 0 defaults to 0.5" />
+	<float32 name="Pain Screen Region Fade Out Duration" offset="0x38C" visible="true" tooltip="The time it takes to fade out a damage region that is no longer the most recent damage region to be hit" />
+	<float32 name="Pain Screen Region Fade Out Weight Threshold" offset="0x390" visible="true" tooltip="The threshold weight below which the focus channel must fall before we can cross fade to another region." />
+	<degree name="Pain Screen Angle Tolerance" offset="0x394" visible="true" tooltip="The tolerance angle between next and previous damage directions, below which we randomly vary the ping direction." />
+	<degree name="Pain Screen Angle Randomness" offset="0x398" visible="true" tooltip="The maximum random angle to vary the incoming ping direction by if it's too close to the previous ping." />
+	<float32 name="Defensive Screen Duration" offset="0x39C" visible="true" tooltip="The duration of the defensive function, 0 defaults to 2.0" />
+	<float32 name="Defensive Screen Scrub Fallback Fraction" offset="0x3A0" visible="true" tooltip="When receiving multiple pings, this is the min percentage of the defensive screen scrub value will fallback to." />
+	<float32 name="Distance Of Dive Animation" offset="0x3A4" visible="true" tooltip="this must be set to tell the AI how far it should expect our dive animation to move us" />
+	<float32 name="Terminal Velocity Fall Ratio" offset="0x3A8" visible="true" tooltip="ratio of airborne_arc animation to switch off falling overlay" />
 	<comment title="Stun" />
-	<float32 name="Stun Movement Penalty" offset="0x3AC" visible="true" />
-	<float32 name="Stun Turning Penalty" offset="0x3B0" visible="true" />
-	<float32 name="Stun Jumping Penalty" offset="0x3B4" visible="true" />
-	<float32 name="Minimum Stun Time" offset="0x3B8" visible="true" />
-	<float32 name="Maximum Stun Time" offset="0x3BC" visible="true" />
+	<float32 name="Stun Movement Penalty" offset="0x3AC" visible="true" tooltip="1.0 prevents moving while stunned" />
+	<float32 name="Stun Turning Penalty" offset="0x3B0" visible="true" tooltip="1.0 prevents turning while stunned" />
+	<float32 name="Stun Jumping Penalty" offset="0x3B4" visible="true" tooltip="1.0 prevents jumping while stunned" />
+	<float32 name="Minimum Stun Time" offset="0x3B8" visible="true" tooltip="all stunning damage will last for at least this long" />
+	<float32 name="Maximum Stun Time" offset="0x3BC" visible="true" tooltip="no stunning damage will last for longer than this" />
 	<float32 name="Feign Death Chance" offset="0x3C0" visible="true" />
 	<float32 name="Feign Repeat Chance" offset="0x3C4" visible="true" />
-	<tagRef name="Spawned Turret Character" offset="0x3C8" visible="true" />
-	<uint16 name="Spawned Actor Count min" offset="0x3D8" visible="true" />
-	<uint16 name="Spawned Actor Count max" offset="0x3DA" visible="true" />
-	<float32 name="Spawned Velocity" offset="0x3DC" visible="true" />
+	<tagRef name="Spawned Turret Character" offset="0x3C8" visible="true" tooltip="automatically created character when this unit is driven" />
+	<range16 name="Spawned Actor Count" offset="0x3D8" visible="true" tooltip="number of actors which we spawn" />
+	<float32 name="Spawned Velocity" offset="0x3DC" visible="true" tooltip="velocity at which we throw spawned actors" />
 	<comment title="Aiming/Looking" />
-	<stringid name="Target Aiming Pivot Marker Name" offset="0x3E0" visible="true" />
+	<stringid name="Target Aiming Pivot Marker Name" offset="0x3E0" visible="true" tooltip="set this to have your weapon barrel point at its calcualed target instead of matching the aiming of the unit controlling it. This marker should be along the barrel at point that doesn't move when the barrel pitches up and down." />
 	<degree name="Aiming Velocity Maximum" offset="0x3E4" visible="true" />
 	<degree name="Aiming Acceleration Maximum" offset="0x3E8" visible="true" />
 	<float32 name="Casual Aiming Modifier" offset="0x3EC" visible="true" />
 	<degree name="Looking Velocity Maximum" offset="0x3F0" visible="true" />
 	<degree name="Looking Acceleration Maximum" offset="0x3F4" visible="true" />
-	<float32 name="Object Velocity Maximum" offset="0x3F8" visible="true" />
-	<stringid name="Right Hand Node" offset="0x3FC" visible="true" />
-	<stringid name="Left Hand Node" offset="0x400" visible="true" />
-	<stringid name="Preferred Gun Node" offset="0x404" visible="true" />
+	<float32 name="Object Velocity Maximum" offset="0x3F8" visible="true" tooltip="Debug value for object velocity that corresponds to a blend screen weight of 1, 0 defaults to 5.0" />
+	<stringid name="Right Hand Node" offset="0x3FC" visible="true" tooltip="where the primary weapon is attached" />
+	<stringid name="Left Hand Node" offset="0x400" visible="true" tooltip="where the seconday weapon is attached (for dual-pistol modes)" />
+	<stringid name="Preferred Gun Node" offset="0x404" visible="true" tooltip="if found, use this gun marker" />
 	<stringid name="Preferred Dual Gun Node" offset="0x408" visible="true" tooltip="if found, use this gun marker for dual-pistol modes" /> />
 	<stringid name="Preferred Grenade Marker" offset="0x40C" visible="true" tooltip="if found, use this marker to attach live grenades to" />
 	<comment title="Weapon Specific Markers">These will override the righthand/lefthand nodes when the weapon matches the one used by the unit</comment>
@@ -873,7 +870,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<tagref name="Eviction Melee Response" offset="0x470" visible="true" />
 	<tagref name="Landing Melee Damage" offset="0x480" visible="true" />
 	<tagref name="Flurry Melee Damage" offset="0x490" visible="true" />
-	<tagref name="Obstacle Smash Melee Damage" offset="0x4A0" visible="true" />
+	<tagref name="Obstacle Smash Damage" offset="0x4A0" visible="true" />
 	<tagref name="Assassination Primary Damage" offset="0x4B0" visible="true" />
 	<tagref name="Assassination Ragdoll Damage" offset="0x4C0" visible="true" />
 	<enum16 name="Motion Sensor Blip Size" offset="0x4D0" visible="true">
@@ -1016,7 +1013,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<tagRef name="Player Entered Alert Range Sound" offset="0x34" visible="true" tooltip="1st person sound to play when targeted player enters sentry's alert range" />
 			<tagRef name="Player Exited Alert Range Sound" offset="0x44" visible="true" tooltip="1st person sound to play when targeted player leaves sentry's alert range" />
 		</tagblock>
-		<float32 name="Target Camouflage Threshold" offset="0xA4" visible="true" tooltip=" 0 - 1" />
+		<float32 name="Target Camouflage Threshold" offset="0xA4" visible="true" tooltip="0 - 1" />
 	</tagblock>
 	<tagblock name="Target Tracking" offset="0x54C" visible="true" elementSize="0x38">
 		<tagblock name="Tracking Types" offset="0x0" visible="true" elementSize="0x4" tooltip="specify the kinds of targets this tracking system can lock on">
@@ -1627,8 +1624,8 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 			<undefined name="Unknown" offset="0x9C" visible="false" />
 		</tagblock>
 		<float32 name="Leg Apex Fraction" offset="0x50" visible="true" tooltip="0-1 fraction. where the leg tansitions from lift to drop" />
-		<float32 name="Lift Exponent" offset="0x54" visible="true" tooltip=" x(0-1) power exponent" />
-		<float32 name="Drop Exponent" offset="0x58" visible="true" tooltip=" x(0-1) power exponent" />
+		<float32 name="Lift Exponent" offset="0x54" visible="true" tooltip="x(0-1) power exponent" />
+		<float32 name="Drop Exponent" offset="0x58" visible="true" tooltip="x(0-1) power exponent" />
 		<vector3 name="Object Space Pivot Position" offset="0x5C" visible="true" />
 		<float32 name="Walk Cycle Pause" offset="0x68" visible="true" tooltip="fraction of walkcycle at end for pause" />
 		<int16 name="Stable Planted Legs" offset="0x6C" visible="true" tooltip="number of legs mantis needs planted to be considered stable." />
@@ -2231,7 +2228,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<option name="Every 7th Frame" value="0x7" />
 		<option name="Every 8th Frame" value="0x8" />
 	</enum16>
-	<int32 name="Iteration Count" offset="0x6FC" visible="true" tooltip=" 0 defaults to 1. Number of iterations per frame of physics" />
+	<int32 name="Iteration Count" offset="0x6FC" visible="true" tooltip="0 defaults to 1. Number of iterations per frame of physics" />
 	<int32 name="Suspension Count" offset="0x700" visible="true" />
 	<tagblock name="Anti Gravity Points" offset="0x704" visible="true" elementSize="0x48">
 		<stringid name="Marker Name" offset="0x0" visible="true" />
@@ -2279,11 +2276,11 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<float32 name="Fraction Of Total Mass" offset="0x8" visible="true" tooltip="(0.0-1.0) fraction of total vehicle mass" />
 		<float32 name="Radius" offset="0xC" visible="true" />
 		<float32 name="Damaged Radius" offset="0x10" visible="true" tooltip="radius when the tire is blown off." />
-		<float32 name="Ground Friction Scale" offset="0x14" visible="true" tooltip=" scale the non sliding friction on this friction point" />
-		<float32 name="AI Ground Friction Scale Override" offset="0x18" visible="true" tooltip=" use this value when an AI is driving" />
+		<float32 name="Ground Friction Scale" offset="0x14" visible="true" tooltip="scale the non sliding friction on this friction point" />
+		<float32 name="AI Ground Friction Scale Override" offset="0x18" visible="true" tooltip="use this value when an AI is driving" />
 		<float32 name="Moving Friction Velocity Differential" offset="0x1C" visible="true" />
-		<float32 name="Moving Friction Scale" offset="0x20" visible="true" tooltip=" scale the sliding friction on this friction point, active when velocity is greater than moving friction velocity diff" />
-		<float32 name="AI Moving Friction Scale Override" offset="0x24" visible="true" tooltip=" use this value when an AI is driving" />
+		<float32 name="Moving Friction Scale" offset="0x20" visible="true" tooltip="scale the sliding friction on this friction point, active when velocity is greater than moving friction velocity diff" />
+		<float32 name="AI Moving Friction Scale Override" offset="0x24" visible="true" tooltip="use this value when an AI is driving" />
 		<float32 name="E-Brake Moving Friction" offset="0x28" visible="true" />
 		<float32 name="E-Brake Friction" offset="0x2C" visible="true" />
 		<float32 name="E-Brake Moving Friction Velocity Differential" offset="0x30" visible="true" />

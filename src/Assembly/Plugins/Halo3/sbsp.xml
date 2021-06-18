@@ -18,9 +18,7 @@
 		</tagblock>
 		<tagblock name="Seam Clusters" offset="0x1C" visible="true" elementSize="0x10">
 			<int32 name="Cluster Index" offset="0x0" visible="true" />
-			<float32 name="Centroid X" offset="0x4" visible="true" />
-			<float32 name="Centroid Y" offset="0x8" visible="true" />
-			<float32 name="Centroid Z" offset="0xC" visible="true" />
+			<point3 name="Centroid" offset="0x4" visible="true" />
 		</tagblock>
 	</tagblock>
 	<tagblock name="Unknown Raw 7th" offset="0x18" visible="false" elementSize="0x4">
@@ -37,12 +35,9 @@
 	<tagblock name="Unknown Raw 3rd" offset="0x30" visible="false" elementSize="0x1">
 		<int8 name="Unknown" offset="0x0" visible="false" />
 	</tagblock>
-	<float32 name="World Bounds X min" offset="0x3C" visible="true" />
-	<float32 name="World Bounds X max" offset="0x40" visible="true" />
-	<float32 name="World Bounds Y min" offset="0x44" visible="true" />
-	<float32 name="World Bounds Y max" offset="0x48" visible="true" />
-	<float32 name="World Bounds Z min" offset="0x4C" visible="true" />
-	<float32 name="World Bounds Z max" offset="0x50" visible="true" />
+	<rangef name="World Bounds x" offset="0x3C" visible="true" />
+	<rangef name="World Bounds y" offset="0x44" visible="true" />
+	<rangef name="World Bounds z" offset="0x4C" visible="true" />
 	<tagblock name="Unknown Raw 6th" offset="0x54" visible="false" elementSize="0x4">
 		<int16 name="Unknown 1 Start Index" offset="0x0" visible="false" />
 		<int16 name="Unknown 1 Entry Count" offset="0x2" visible="false" />
@@ -55,9 +50,7 @@
 		<int16 name="Back Cluster" offset="0x0" visible="true" />
 		<int16 name="Front Cluster" offset="0x2" visible="true" />
 		<int32 name="Plane Index" offset="0x4" visible="true" />
-		<float32 name="Centroid X" offset="0x8" visible="true" />
-		<float32 name="Centroid Y" offset="0xC" visible="true" />
-		<float32 name="Centroid Z" offset="0x10" visible="true" />
+		<point3 name="Centroid" offset="0x8" visible="true" />
 		<float32 name="Bounding Radius" offset="0x14" visible="true" />
 		<flags32 name="Flags" offset="0x18" visible="true">
 			<bit name="Bit 0" index="0" />
@@ -94,9 +87,7 @@
 			<bit name="Bit 31" index="31" />
 		</flags32>
 		<tagblock name="Vertices" offset="0x1C" visible="true" elementSize="0xC">
-			<float32 name="X" offset="0x0" visible="true" />
-			<float32 name="Y" offset="0x4" visible="true" />
-			<float32 name="Z" offset="0x8" visible="true" />
+			<point3 name="Position" offset="0x0" visible="true" />
 		</tagblock>
 	</tagblock>
 	<tagblock name="Unknown" offset="0x78" visible="false" elementSize="0x78">
@@ -175,12 +166,9 @@
 		<undefined name="Unknown" offset="0x30" visible="false" />
 	</tagblock>
 	<tagblock name="Clusters" offset="0xB4" visible="true" elementSize="0xDC">
-		<float32 name="Bounds X min" offset="0x0" visible="true" />
-		<float32 name="Bounds X max" offset="0x4" visible="true" />
-		<float32 name="Bounds Y min" offset="0x8" visible="true" />
-		<float32 name="Bounds Y max" offset="0xC" visible="true" />
-		<float32 name="Bounds Z min" offset="0x10" visible="true" />
-		<float32 name="Bounds Z max" offset="0x14" visible="true" />
+		<rangef name="Bounds x" offset="0x0" visible="true" />
+		<rangef name="Bounds y" offset="0x8" visible="true" />
+		<rangef name="Bounds z" offset="0x10" visible="true" />
 		<int8 name="Unknown" offset="0x18" visible="false" />
 		<int8 name="Scenario Sky Index" offset="0x19" visible="true" />
 		<int8 name="Camera Effect Index" offset="0x1A" visible="true" />
@@ -246,16 +234,10 @@
 			<int8 name="Decorator Index" offset="0x2" visible="true" />
 			<int8 name="Decorator Instance Index" offset="0x3" visible="true" />
 			<int32 name="Decorator Geometry Offset" offset="0x4" visible="true" />
-			<float32 name="Position X" offset="0x8" visible="true" />
-			<float32 name="Position Y" offset="0xC" visible="true" />
-			<float32 name="Position Z" offset="0x10" visible="true" />
+			<point3 name="Position" offset="0x8" visible="true" />
 			<float32 name="Radius" offset="0x14" visible="true" />
-			<float32 name="Grid Size X" offset="0x18" visible="true" />
-			<float32 name="Grid Size Y" offset="0x1C" visible="true" />
-			<float32 name="Grid Size Z" offset="0x20" visible="true" />
-			<float32 name="Bounding Sphere X" offset="0x24" visible="true" />
-			<float32 name="Bounding Sphere Y" offset="0x28" visible="true" />
-			<float32 name="Bounding Sphere Z" offset="0x2C" visible="true" />
+			<point3 name="Grid Size" offset="0x18" visible="true" />
+			<point3 name="Bounding Sphere" offset="0x24" visible="true" />
 		</tagblock>
 		<undefined name="Unknown" offset="0xB8" visible="false" />
 		<undefined name="Unknown" offset="0xBC" visible="false" />
@@ -276,7 +258,7 @@
 		<tagRef name="Shader" offset="0x0" visible="true" />
 		<tagblock name="Properties" offset="0x10" visible="true" elementSize="0xC">
 			<int16 name="Type" offset="0x0" visible="true" />
-			<int16 name="Int Value" offset="0x2" visible="true" />
+			<int16 name="Integer Value" offset="0x2" visible="true" />
 			<int8 name="Unknown" offset="0x4" visible="false" />
 			<int8 name="Unknown" offset="0x5" visible="false" />
 			<int8 name="Unknown" offset="0x6" visible="false" />
@@ -293,12 +275,8 @@
 		<int16 name="Cluster Owner" offset="0x0" visible="true" />
 	</tagblock>
 	<tagblock name="Conveyor Surfaces" offset="0xD8" visible="true" elementSize="0x18" align="0x10">
-		<float32 name="u i" offset="0x0" visible="true" />
-		<float32 name="u j" offset="0x4" visible="true" />
-		<float32 name="u k" offset="0x8" visible="true" />
-		<float32 name="v i" offset="0xC" visible="true" />
-		<float32 name="v j" offset="0x10" visible="true" />
-		<float32 name="v k" offset="0x14" visible="true" />
+		<vector3 name="u" offset="0x0" visible="true" />
+		<vector3 name="v" offset="0xC" visible="true" />
 	</tagblock>
 	<tagblock name="Breakable Surfaces" offset="0xE4" visible="false" elementSize="0x20">
 		<undefined name="Unknown" offset="0x0" visible="false" />
@@ -363,17 +341,13 @@
 		<tagblock name="Refs" offset="0x18" visible="true" elementSize="0x4">
 			<int32 name="Node or Sector Ref" offset="0x0" visible="true" />
 		</tagblock>
-		<tagblock name="BSP 2D Nodes" offset="0x24" visible="true" elementSize="0x14"><!--required-->
-			<float32 name="Plane i" offset="0x0" visible="true" />
-			<float32 name="Plane j" offset="0x4" visible="true" />
-			<float32 name="Plane d" offset="0x8" visible="true" />
+		<tagblock name="BSP2D Nodes" offset="0x24" visible="true" elementSize="0x14"><!--required-->
+			<plane2 name="Plane" offset="0x0" visible="true" />
 			<int32 name="Left Child" offset="0xC" visible="true" />
 			<int32 name="Right Child" offset="0x10" visible="true" />
 		</tagblock>
 		<tagblock name="Vertices" offset="0x30" visible="true" elementSize="0xC">
-			<float32 name="x" offset="0x0" visible="true" />
-			<float32 name="y" offset="0x4" visible="true" />
-			<float32 name="z" offset="0x8" visible="true" />
+			<point3 name="Position" offset="0x0" visible="true" />
 		</tagblock>
 		<tagblock name="Object Refs" offset="0x3C" visible="false" elementSize="0x18"><!--required-->
 			<undefined name="Unknown" offset="0x0" visible="false" />
@@ -494,13 +468,8 @@
 	<undefined name="Unknown" offset="0x13C" visible="false" />
 	<tagblock name="Markers" offset="0x140" visible="true" elementSize="0x3C">
 		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
-		<float32 name="Rotation i" offset="0x20" visible="true" />
-		<float32 name="Rotation j" offset="0x24" visible="true" />
-		<float32 name="Rotation k" offset="0x28" visible="true" />
-		<float32 name="Rotation w" offset="0x2C" visible="true" />
-		<float32 name="Position x" offset="0x30" visible="true" />
-		<float32 name="Position y" offset="0x34" visible="true" />
-		<float32 name="Position z" offset="0x38" visible="true" />
+		<vector4 name="Rotation" offset="0x20" visible="true" />
+		<point3 name="Position" offset="0x30" visible="true" />
 	</tagblock>
 	<tagblock name="Lights" offset="0x14C" visible="true" elementSize="0x10">
 		<tagRef name="Light" offset="0x0" visible="true" />
@@ -512,13 +481,8 @@
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int8 name="Yaw" offset="0x2" visible="true" />
 		<int8 name="Pitch" offset="0x3" visible="true" />
-		<float32 name="i" offset="0x4" visible="true" />
-		<float32 name="j" offset="0x8" visible="true" />
-		<float32 name="k" offset="0xC" visible="true" />
-		<float32 name="w" offset="0x10" visible="true" />
-		<float32 name="X" offset="0x14" visible="true" />
-		<float32 name="Y" offset="0x18" visible="true" />
-		<float32 name="Z" offset="0x1C" visible="true" />
+		<vector4 name="Rotation" offset="0x4" visible="true" />
+		<point3 name="Position" offset="0x14" visible="true" />
 		<float32 name="Scale" offset="0x20" visible="true" />
 	</tagblock>
 	<tagblock name="Environment Object Palette" offset="0x170" visible="true" elementSize="0x24">
@@ -561,13 +525,8 @@
 	</tagblock>
 	<tagblock name="Environment Objects" offset="0x17C" visible="true" elementSize="0x6C">
 		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
-		<float32 name="Rotation i" offset="0x20" visible="true" />
-		<float32 name="Rotation j" offset="0x24" visible="true" />
-		<float32 name="Rotation k" offset="0x28" visible="true" />
-		<float32 name="Rotation w" offset="0x2C" visible="true" />
-		<float32 name="Position x" offset="0x30" visible="true" />
-		<float32 name="Position y" offset="0x34" visible="true" />
-		<float32 name="Position z" offset="0x38" visible="true" />
+		<vector4 name="Rotation" offset="0x20" visible="true" />
+		<point3 name="Position" offset="0x30" visible="true" />
 		<float32 name="Scale" offset="0x3C" visible="true" />
 		<int16 name="Palette Index" offset="0x40" visible="true" />
 		<int16 name="Unknown" offset="0x42" visible="false" />
@@ -816,10 +775,10 @@
 	<undefined name="Unknown" offset="0x1FC" visible="false" />
 	<undefined name="Unknown" offset="0x200" visible="false" />
 	<undefined name="Unknown" offset="0x204" visible="false" />
-	<tagblock name="Unknown Meshes" offset="0x208" visible="false" elementSize="0x20">
-		<dataRef name="Unknown" offset="0x0" visible="false" align="0x10" />
-		<tagblock name="Unknown" offset="0x14" visible="false" elementSize="0x2">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+	<tagblock name="Unknown Meshes" offset="0x208" visible="true" elementSize="0x20">
+		<dataRef name="Unknown" offset="0x0" visible="true" align="0x10" />
+		<tagblock name="Unknown" offset="0x14" visible="true" elementSize="0x2">
+			<int16 name="Unknown" offset="0x0" visible="true" />
 		</tagblock>
 	</tagblock>
 	<tagblock name="Per-Mesh Node Map" offset="0x214" visible="true" elementSize="0xC">
@@ -886,10 +845,7 @@
 	<tagblock name="Transparent Planes" offset="0x270" visible="true" elementSize="0x14">
 		<int16 name="Mesh Index" offset="0x0" visible="true" />
 		<int16 name="Part Index" offset="0x2" visible="true" />
-		<float32 name="Plane i" offset="0x4" visible="true" />
-		<float32 name="Plane j" offset="0x8" visible="true" />
-		<float32 name="Plane k" offset="0xC" visible="true" />
-		<float32 name="Plane d" offset="0x10" visible="true" />
+		<plane3 name="Plane" offset="0x4" visible="true" />
 	</tagblock>
 	<undefined name="Unknown" offset="0x27C" visible="false" />
 	<undefined name="Unknown" offset="0x280" visible="false" />
@@ -912,12 +868,8 @@
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 	</tagblock>
 	<undefined name="Unknown" offset="0x294" visible="false" />
-	<float32 name="Collision World Bounds X Min" offset="0x298" visible="true" />
-	<float32 name="Collision World Bounds Y Min" offset="0x29C" visible="true" />
-	<float32 name="Collision World Bounds Z Min" offset="0x2A0" visible="true" />
-	<float32 name="Collision World Bounds X Max" offset="0x2A4" visible="true" />
-	<float32 name="Collision World Bounds Y Max" offset="0x2A8" visible="true" />
-	<float32 name="Collision World Bounds Z Max" offset="0x2AC" visible="true" />
+	<point3 name="MOPP Bounds Minimum" offset="0x298" visible="true" />
+	<point3 name="MOPP Bounds Maximum" offset="0x2A4" visible="true" />
 	<tagblock name="Breakable Surface MOPP Codes" offset="0x2B0" visible="true" elementSize="0x40" align="0x10">
 		<uint32 name="Runtime Code Pointer" offset="0x0" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x4" visible="true" />

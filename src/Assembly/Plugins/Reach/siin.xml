@@ -4,65 +4,89 @@
 	<revisions>
 		<revision author="DarkShallFall" version="1">Mapped plugin structure a new.</revision>
 	</revisions>
-	<undefined name="Unknown" offset="0x0" visible="true" />
-	<undefined name="Unknown" offset="0x4" visible="true" />
-	<undefined name="Unknown" offset="0x8" visible="true" />
-	<undefined name="Unknown" offset="0xC" visible="true" />
-	<undefined name="Unknown" offset="0x10" visible="true" />
-	<undefined name="Unknown" offset="0x14" visible="true" />
-	<undefined name="Unknown" offset="0x18" visible="true" />
-	<undefined name="Unknown" offset="0x1C" visible="true" />
-	<undefined name="Unknown" offset="0x20" visible="true" />
-	<undefined name="Unknown" offset="0x24" visible="true" />
-	<undefined name="Unknown" offset="0x28" visible="true" />
-	<undefined name="Unknown" offset="0x2C" visible="true" />
-	<undefined name="Unknown" offset="0x30" visible="true" />
-	<undefined name="Unknown" offset="0x34" visible="true" />
-	<undefined name="Unknown" offset="0x38" visible="true" />
-	<undefined name="Unknown" offset="0x3C" visible="true" />
-	<undefined name="Unknown" offset="0x40" visible="true" />
-	<undefined name="Unknown" offset="0x44" visible="true" />
-	<undefined name="Unknown" offset="0x48" visible="true" />
-	<undefined name="Unknown" offset="0x4C" visible="true" />
-	<undefined name="Unknown" offset="0x50" visible="true" />
-	<undefined name="Unknown" offset="0x54" visible="true" />
-	<undefined name="Unknown" offset="0x58" visible="true" />
-	<undefined name="Unknown" offset="0x5C" visible="true" />
-	<undefined name="Unknown" offset="0x60" visible="true" />
-	<undefined name="Unknown" offset="0x64" visible="true" />
-	<undefined name="Unknown" offset="0x68" visible="true" />
-	<undefined name="Unknown" offset="0x6C" visible="true" />
-	<undefined name="Unknown" offset="0x70" visible="true" />
-	<undefined name="Unknown" offset="0x74" visible="true" />
-	<undefined name="Unknown" offset="0x78" visible="true" />
-	<undefined name="Unknown" offset="0x7C" visible="true" />
-	<undefined name="Unknown" offset="0x80" visible="true" />
-	<undefined name="Unknown" offset="0x84" visible="true" />
-	<undefined name="Unknown" offset="0x88" visible="true" />
-	<undefined name="Unknown" offset="0x8C" visible="true" />
-	<undefined name="Unknown" offset="0x90" visible="true" />
-	<undefined name="Unknown" offset="0x94" visible="true" />
-	<undefined name="Unknown" offset="0x98" visible="true" />
-	<undefined name="Unknown" offset="0x9C" visible="true" />
-	<undefined name="Unknown" offset="0xA0" visible="true" />
-	<undefined name="Unknown" offset="0xA4" visible="true" />
-	<undefined name="Unknown" offset="0xA8" visible="true" />
-	<undefined name="Unknown" offset="0xAC" visible="true" />
-	<undefined name="Unknown" offset="0xB0" visible="true" />
-	<undefined name="Unknown" offset="0xB4" visible="true" />
-	<undefined name="Unknown" offset="0xB8" visible="true" />
-	<undefined name="Unknown" offset="0xBC" visible="true" />
-	<undefined name="Unknown" offset="0xC0" visible="true" />
-	<undefined name="Unknown" offset="0xC4" visible="true" />
-	<undefined name="Unknown" offset="0xC8" visible="true" />
-	<undefined name="Unknown" offset="0xCC" visible="true" />
-	<undefined name="Unknown" offset="0xD0" visible="true" />
-	<undefined name="Unknown" offset="0xD4" visible="true" />
-	<undefined name="Unknown" offset="0xD8" visible="true" />
-	<undefined name="Unknown" offset="0xDC" visible="true" />
-	<undefined name="Unknown" offset="0xE0" visible="true" />
-	<undefined name="Unknown" offset="0xE4" visible="true" />
-	<undefined name="Unknown" offset="0xE8" visible="true" />
-	<undefined name="Unknown" offset="0xEC" visible="true" />
-	<undefined name="Unknown" offset="0xF0" visible="true" />
+	<comment title="SIMULATION INTERPOLATION">This tag defines interpolation that will be used to smooth the motion of objects in distributed multiplayer games. In bandwidth-constrained multiplayer games (i.e. most games), we will receive only one or two updates per second for faraway objects. Even near objects may frequently be dropped to &lt;5 updates per second, especially crates, garbage bits, and similar less important elements of the simulation. Between updates, each peer predicts the motion of each object. These predictions are often wrong (by anything from an inch to dozens of feet). The simulation interpolation system is responsible for correcting these mispredictions in as aesthetically pleasing a way as possible, without harming the integrity of the game. The details of the technical implementation are beyond the scope of this explanation, but various configuration parameters are exposed here. 
+
+The tooltips for each configuration parameter should be helpful.</comment>
+	<comment title="SINGLE DOMAIN INTERPOLATION">Note that if either the position or rotation discrepancy thresholds above which we use blending are exceeded, we will blend in both domains (because blending is more accurate and once we blend in either domain, we are forced to warp the physics representation of the object, which is the main downside of blending. Therefore, the second domain is essentially "free" after we pay for the first w/ a physics warp.
+
+Note also that this discrepancy threshold is either WU or degrees, depending on context. Check your context!</comment>
+	<comment title="High Level Settings" />
+	<float32 name="Position Client Ignore Tolerance" offset="0x0" visible="true" tooltip="How much rope clients have WRT their controlled object of this type. They are free to ignore host updates within this tolerance." />
+	<float32 name="Angular Speed Threshold For Temporarily Ignoring Rotation Updates" offset="0x4" visible="true" tooltip="If angular speed exceeds this threshold, we will ignore rotational updates (because it's spinning so fast that we can't possibly do a good job w/ any kind of interpolation - instead, just wait for it to settle down a bit). Note that if a warp threshold is exceeded, rotation will be warped regardless of the value of this parameter." />
+	<comment title="Warp Thresholds">If any of the warp thresholds (position or rotation, global or xy) are exceeded, a warp in all domains (position and rotation) is executed.</comment>
+	<float32 name="Position Warp Threshold" offset="0x8" visible="true" tooltip="Threshold of position error beyond which we will warp instead of interpolating." />
+	<float32 name="Position Warp Threshold Xy" offset="0xC" visible="true" tooltip="Separated for bipeds, for whom z discrepancies are more permissible because of jumping. If you don't want a special lower XY threshold, just set this to a very high number." />
+	<float32 name="Rotation Warp Threshold" offset="0x10" visible="true" tooltip="Threshold of rotation error beyond which we will warp instead of interpolating. Set this to 180.0 if you don't want to warp based on rotational deviation (may be important for objects that often spin very fast, e.g. grenades or garbage bits)." />
+	<comment title="Position While Controlled" />
+	<float32 name="Discrepancy Threshold Above Which We Use Blending" offset="0x14" visible="true" tooltip="Below this threshold we use velocity bumps." />
+	<float32 name="Coming To Rest Speed" offset="0x18" visible="true" tooltip="When our velocity is below this threshold, we will consider using a blend to minimize at-rest error." />
+	<float32 name="Coming To Rest Maximum Ignorable Error" offset="0x1C" visible="true" tooltip="We will use a blend when our speed is below the coming_to_rest_speed and our error is greater than this." />
+	<comment title="Velocity Bumps">Velocity bumps are used for small mis-predictions because they are more visually pleasing than straight blending. However, they are less accurate, less consistent, and harder to tune.</comment>
+	<float32 name="Velocity Scale" offset="0x20" visible="true" tooltip="Fraction of delta that becomes the velocity bump" />
+	<float32 name="Velocity Minimum" offset="0x24" visible="true" tooltip="Minimum size of any given velocity bump" />
+	<float32 name="Velocity Maximum" offset="0x28" visible="true" tooltip="Maximum size of any given velocity bump" />
+	<comment title="Velocity Bump Suppression">We suppress velocity bumps when the object is "close enough" to encourage objects to come to rest. Both of the below conditions must be satisfied to suppress velocity bumps.</comment>
+	<float32 name="Velocity Difference Ignore Threshold" offset="0x2C" visible="true" tooltip="The new velocity must differ from the old velocity by less than this to allow suppression." />
+	<float32 name="Velocity Difference Absolute Ignore Threshold" offset="0x30" visible="true" tooltip="The new position/rotation must differ from the old position/rotation by less than this to allow suppression." />
+	<comment title="Blending" />
+	<float32 name="Minimum Object Speed" offset="0x34" visible="true" tooltip="Approximate minimum speed for this object (either controlled or uncontrolled)." />
+	<float32 name="Maximum Object Speed" offset="0x38" visible="true" tooltip="Approximate maximum speed for this object (either controlled or uncontrolled)." />
+	<float32 name="Fraction At Minimum Object Speed" offset="0x3C" visible="true" tooltip="Fraction of misprediction error consumed each tick if object is traveling at or below min_object_speed. Linterp is executed at intermediate object speeds." />
+	<float32 name="Fraction At Maximum Object Speed" offset="0x40" visible="true" tooltip="Fraction of misprediction error consumed each tick if object is traveling at or above max_object_speed. Linterp is executed at intermediate object speeds." />
+	<float32 name="Minimum Speed At Minimum Object Speed" offset="0x44" visible="true" tooltip="Minimum misprediction error consumption speed if object is at or below min_object_speed. Linterp is executed at intermediate object speeds." />
+	<float32 name="Minimum Speed At Maximum Object Speed" offset="0x48" visible="true" tooltip="Minimum misprediction error consumption speed if object is at or above max_object_speed. Linterp is executed at intermediate object speeds." />
+	<comment title="Rotation While Controlled" />
+	<float32 name="Discrepancy Threshold Above Which We Use Blending" offset="0x4C" visible="true" tooltip="Below this threshold we use velocity bumps." />
+	<float32 name="Coming To Rest Speed" offset="0x50" visible="true" tooltip="When our velocity is below this threshold, we will consider using a blend to minimize at-rest error." />
+	<float32 name="Coming To Rest Maximum Ignorable Error" offset="0x54" visible="true" tooltip="We will use a blend when our speed is below the coming_to_rest_speed and our error is greater than this." />
+	<comment title="Velocity Bumps">Velocity bumps are used for small mis-predictions because they are more visually pleasing than straight blending. However, they are less accurate, less consistent, and harder to tune.</comment>
+	<float32 name="Velocity Scale" offset="0x58" visible="true" tooltip="Fraction of delta that becomes the velocity bump" />
+	<float32 name="Velocity Minimum" offset="0x5C" visible="true" tooltip="Minimum size of any given velocity bump" />
+	<float32 name="Velocity Maximum" offset="0x60" visible="true" tooltip="Maximum size of any given velocity bump" />
+	<comment title="Velocity Bump Suppression">We suppress velocity bumps when the object is "close enough" to encourage objects to come to rest. Both of the below conditions must be satisfied to suppress velocity bumps.</comment>
+	<float32 name="Velocity Difference Ignore Threshold" offset="0x64" visible="true" tooltip="The new velocity must differ from the old velocity by less than this to allow suppression." />
+	<float32 name="Velocity Difference Absolute Ignore Threshold" offset="0x68" visible="true" tooltip="The new position/rotation must differ from the old position/rotation by less than this to allow suppression." />
+	<comment title="Blending">Whether these speeds are linear or angular depends on the context - check context before modifying.</comment>
+	<float32 name="Minimum Object Speed" offset="0x6C" visible="true" tooltip="Approximate minimum speed for this object (either controlled or uncontrolled)." />
+	<float32 name="Maximum Object Speed" offset="0x70" visible="true" tooltip="Approximate maximum speed for this object (either controlled or uncontrolled)." />
+	<float32 name="Fraction At Minimum Object Speed" offset="0x74" visible="true" tooltip="Fraction of misprediction error consumed each tick if object is traveling at or below min_object_speed. Linterp is executed at intermediate object speeds." />
+	<float32 name="Fraction At Maximum Object Speed" offset="0x78" visible="true" tooltip="Fraction of misprediction error consumed each tick if object is traveling at or above max_object_speed. Linterp is executed at intermediate object speeds." />
+	<float32 name="Minimum Speed At Minimum Object Speed" offset="0x7C" visible="true" tooltip="Minimum misprediction error consumption speed if object is at or below min_object_speed. Linterp is executed at intermediate object speeds." />
+	<float32 name="Minimum Speed At Maximum Object Speed" offset="0x80" visible="true" tooltip="Minimum misprediction error consumption speed if object is at or above max_object_speed. Linterp is executed at intermediate object speeds." />
+	<comment title="Position While Not Controlled" />
+	<float32 name="Discrepancy Threshold Above Which We Use Blending" offset="0x84" visible="true" tooltip="Below this threshold we use velocity bumps." />
+	<float32 name="Coming To Rest Speed" offset="0x88" visible="true" tooltip="When our velocity is below this threshold, we will consider using a blend to minimize at-rest error." />
+	<float32 name="Coming To Rest Maximum Ignorable Error" offset="0x8C" visible="true" tooltip="We will use a blend when our speed is below the coming_to_rest_speed and our error is greater than this." />
+	<comment title="Velocity Bumps">Velocity bumps are used for small mis-predictions because they are more visually pleasing than straight blending. However, they are less accurate, less consistent, and harder to tune.</comment>
+	<float32 name="Velocity Scale" offset="0x90" visible="true" tooltip="Fraction of delta that becomes the velocity bump" />
+	<float32 name="Velocity Minimum" offset="0x94" visible="true" tooltip="Minimum size of any given velocity bump" />
+	<float32 name="Velocity Maximum" offset="0x98" visible="true" tooltip="Maximum size of any given velocity bump" />
+	<comment title="Velocity Bump Suppression">We suppress velocity bumps when the object is "close enough" to encourage objects to come to rest. Both of the below conditions must be satisfied to suppress velocity bumps.</comment>
+	<float32 name="Velocity Difference Ignore Threshold" offset="0x9C" visible="true" tooltip="The new velocity must differ from the old velocity by less than this to allow suppression." />
+	<float32 name="Velocity Difference Absolute Ignore Threshold" offset="0xA0" visible="true" tooltip="The new position/rotation must differ from the old position/rotation by less than this to allow suppression." />
+	<comment title="Blending">Whether these speeds are linear or angular depends on the context - check context before modifying.</comment>
+	<float32 name="Minimum Object Speed" offset="0xA4" visible="true" tooltip="Approximate minimum speed for this object (either controlled or uncontrolled)." />
+	<float32 name="Maximum Object Speed" offset="0xA8" visible="true" tooltip="Approximate maximum speed for this object (either controlled or uncontrolled)." />
+	<float32 name="Fraction At Minimum Object Speed" offset="0xAC" visible="true" tooltip="Fraction of misprediction error consumed each tick if object is traveling at or below min_object_speed. Linterp is executed at intermediate object speeds." />
+	<float32 name="Fraction At Maximum Object Speed" offset="0xB0" visible="true" tooltip="Fraction of misprediction error consumed each tick if object is traveling at or above max_object_speed. Linterp is executed at intermediate object speeds." />
+	<float32 name="Minimum Speed At Minimum Object Speed" offset="0xB4" visible="true" tooltip="Minimum misprediction error consumption speed if object is at or below min_object_speed. Linterp is executed at intermediate object speeds." />
+	<float32 name="Minimum Speed At Maximum Object Speed" offset="0xB8" visible="true" tooltip="Minimum misprediction error consumption speed if object is at or above max_object_speed. Linterp is executed at intermediate object speeds." />
+	<comment title="Rotation While Not Controlled" />
+	<float32 name="Discrepancy Threshold Above Which We Use Blending" offset="0xBC" visible="true" tooltip="Below this threshold we use velocity bumps." />
+	<float32 name="Coming To Rest Speed" offset="0xC0" visible="true" tooltip="When our velocity is below this threshold, we will consider using a blend to minimize at-rest error." />
+	<float32 name="Coming To Rest Maximum Ignorable Error" offset="0xC4" visible="true" tooltip="We will use a blend when our speed is below the coming_to_rest_speed and our error is greater than this." />
+	<comment title="Velocity Bumps">Velocity bumps are used for small mis-predictions because they are more visually pleasing than straight blending. However, they are less accurate, less consistent, and harder to tune.</comment>
+	<float32 name="Velocity Scale" offset="0xC8" visible="true" tooltip="Fraction of delta that becomes the velocity bump" />
+	<float32 name="Velocity Minimum" offset="0xCC" visible="true" tooltip="Minimum size of any given velocity bump" />
+	<float32 name="Velocity Maximum" offset="0xD0" visible="true" tooltip="Maximum size of any given velocity bump" />
+	<comment title="Velocity Bump Suppression">We suppress velocity bumps when the object is "close enough" to encourage objects to come to rest. Both of the below conditions must be satisfied to suppress velocity bumps.</comment>
+	<float32 name="Velocity Difference Ignore Threshold" offset="0xD4" visible="true" tooltip="The new velocity must differ from the old velocity by less than this to allow suppression." />
+	<float32 name="Velocity Difference Absolute Ignore Threshold" offset="0xD8" visible="true" tooltip="The new position/rotation must differ from the old position/rotation by less than this to allow suppression." />
+	<comment title="Blending">Whether these speeds are linear or angular depends on the context - check context before modifying.</comment>
+	<float32 name="Minimum Object Speed" offset="0xDC" visible="true" tooltip="Approximate minimum speed for this object (either controlled or uncontrolled)." />
+	<float32 name="Maximum Object Speed" offset="0xE0" visible="true" tooltip="Approximate maximum speed for this object (either controlled or uncontrolled)." />
+	<float32 name="Fraction At Minimum Object Speed" offset="0xE4" visible="true" tooltip="Fraction of misprediction error consumed each tick if object is traveling at or below min_object_speed. Linterp is executed at intermediate object speeds." />
+	<float32 name="Fraction At Maximum Object Speed" offset="0xE8" visible="true" tooltip="Fraction of misprediction error consumed each tick if object is traveling at or above max_object_speed. Linterp is executed at intermediate object speeds." />
+	<float32 name="Minimum Speed At Minimum Object Speed" offset="0xEC" visible="true" tooltip="Minimum misprediction error consumption speed if object is at or below min_object_speed. Linterp is executed at intermediate object speeds." />
+	<float32 name="Minimum Speed At Maximum Object Speed" offset="0xF0" visible="true" tooltip="Minimum misprediction error consumption speed if object is at or above max_object_speed. Linterp is executed at intermediate object speeds." />
 </plugin>

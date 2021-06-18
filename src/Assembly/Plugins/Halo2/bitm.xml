@@ -64,10 +64,8 @@
 	<int16 name="Sprite Budget Count" offset="0x16" visible="true" />
 	<int16 name="Color Plate Width" offset="0x18" visible="true" />
 	<int16 name="Color Plate Height" offset="0x1A" visible="true" />
-	<int32 name="Compressed Color Plate Data" offset="0x1C" visible="true" />
-	<undefined name="Unknown" offset="0x20" visible="false" />
-	<int32 name="Processed Pixel Data" offset="0x24" visible="true" />
-	<undefined name="Unknown" offset="0x28" visible="false" />
+	<dataref name="Compressed Color Plate Data" offset="0x1C" visible="true" />
+	<dataref name="Processed Pixel Data" offset="0x24" visible="true" />
 	<float32 name="Blur Filter Size" offset="0x2C" visible="true" />
 	<float32 name="Alpha Bias" offset="0x30" visible="true" />
 	<int16 name="Mipmap Count" offset="0x34" visible="true" />
@@ -109,18 +107,18 @@
 		<ascii name="Signature" offset="0x0" length="0x4" visible="true" />
 		<int16 name="Width" offset="0x4" visible="true" />
 		<int16 name="Height" offset="0x6" visible="true" />
-		<int8 name="Depth" offset="0x8" visible="true" />
+		<int8 name="Depth" offset="0x8" visible="true" tooltip="Depth is 1 for 2D textures and cube maps." />
 		<flags8 name="More Flags" offset="0x9" visible="true">
 			<bit name="Delete From Cache File" index="0" />
 			<bit name="Bitmap Create Attempted" index="1" />
 			<bit name="Bit 2" index="2" />
 		</flags8>
-		<enum16 name="Type" offset="0xA" visible="true">
+		<enum16 name="Type" offset="0xA" visible="true" tooltip="Determines bitmap &quot;geometry.&quot;">
 			<option name="2D Texture" value="0x0" />
 			<option name="3D Texture" value="0x1" />
 			<option name="Cube Map" value="0x2" />
 		</enum16>
-		<enum16 name="Format" offset="0xC" visible="true">
+		<enum16 name="Format" offset="0xC" visible="true" tooltip="Determines how pixels are represented internally.">
 			<option name="A8" value="0x0" />
 			<option name="Y8" value="0x1" />
 			<option name="AY8" value="0x2" />

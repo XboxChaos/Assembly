@@ -7,61 +7,41 @@
 		<revision author="Turk645" version="3">named a few unknowns</revision>
 		<revision author="neodos" version="4">Found arrow bitmaps coords, buttons effects, transition values, font types, placement coords, bitmaps settings,buttons settings...</revision>
 	</revisions>
-	<float32 name="Unknown" offset="0x0" visible="false" />
-	<tagRef name="bitm" offset="0x4" visible="true" />
-	<int16 name="Coord X Top arrow" offset="0xC" visible="true" />
-	<int16 name="Coord Y Top arrow" offset="0xE" visible="true" />
-	<int16 name="Coord X Bottom arrow" offset="0x10" visible="true" />
-	<int16 name="Coord Y Bottom arrow" offset="0x12" visible="true" />
-	<tagblock name="Button effects" offset="0x14" visible="true" elementSize="0x10">
-		<float32 name="Unknown" offset="0x0" visible="false" />
-		<int16 name="Brightness" offset="0x4" visible="true" />
-		<int16 name="Brightness only once" offset="0x6" visible="true" />
-		<tagblock name="Button switching effects" offset="0x8" visible="true" elementSize="0x14">
-			<float32 name="Unknown" offset="0x0" visible="false" />
-			<float32 name="Bitmap Flashing speed" offset="0x4" visible="true" />
-			<float32 name="Button shifting space" offset="0x8" visible="true" />
-			<float32 name="Unknown" offset="0xC" visible="true" />
-			<float32 name="Unknown" offset="0x10" visible="true" />
+	<flags32 name="List Flags" offset="0x0" visible="true">
+		<bit name="Bit 0" index="0" />
+	</flags32>
+	<tagRef name="Arrows Bitmap" offset="0x4" visible="true" />
+	<point16 name="Up-Arrows Offset" offset="0xC" visible="true" />
+	<point16 name="Down-Arrows Offset" offset="0x10" visible="true" />
+	<comment title="Item Animations">Animations ordered as follows:
+0) list item focused
+1) list item unfocused
+2) list item ambient
+3) list item hovered
+4) list item unhovered
+5) list item clicked (hovered-&gt;focused)
+6) list item unfocused back to hovered state (focused-&gt;hovered)</comment>
+	<tagblock name="Item Animations" offset="0x14" visible="true" elementSize="0x10">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="Bit 0" index="0" />
+		</flags32>
+		<int32 name="Animation Period" offset="0x4" visible="true" />
+		<tagblock name="Keyframes" offset="0x8" visible="true" elementSize="0x14">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<float32 name="Alpha" offset="0x4" visible="true" />
+			<point3 name="Position" offset="0x8" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Buttons Text strings" offset="0x1C" visible="true" elementSize="0x2C">
-		<flags32 name="Text options" offset="0x0" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Pulsing" index="2" />
-			<bit name="Really tiny text" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
+	<tagblock name="Text Blocks" offset="0x1C" visible="true" elementSize="0x2C">
+		<flags32 name="Text Flags" offset="0x0" visible="true">
+			<bit name="Left Justify Text" index="0" />
+			<bit name="Right Justify Text" index="1" />
+			<bit name="Pulsating Text" index="2" />
+			<bit name="Callout Text" index="3" />
+			<bit name="Small (31 Char) Buffer" index="4" />
 		</flags32>
 		<enum16 name="Animation Index" offset="0x4" visible="true">
-			<option name="NONE" value="0x0" />
+			<option name="None" value="0x0" />
 			<option name="00" value="0x1" />
 			<option name="01" value="0x2" />
 			<option name="02" value="0x3" />
@@ -129,20 +109,35 @@
 		</enum16>
 		<int16 name="Intro Animation Delay Milliseconds" offset="0x6" visible="true" />
 		<int16 name="Unknown" offset="0x8" visible="false" />
-		<int16 name="Font Type" offset="0xA" visible="true" />
-		<float32 name="Alpha" offset="0xC" visible="true" />
-		<float32 name="Color Red" offset="0x10" visible="true" />
-		<float32 name="Color Green" offset="0x14" visible="true" />
-		<float32 name="Color Blue" offset="0x18" visible="true" />
-		<rect16 name="Text Placement" offset="0x1C" visible="true" />
-		<stringId name="String name" offset="0x24" visible="true" />
-		<uint32 name="Unknown" offset="0x28" visible="true" />
+		<enum16 name="Custom Font" offset="0xA" visible="true">
+			<option name="Terminal" value="0x0" />
+			<option name="Body Text" value="0x1" />
+			<option name="Title" value="0x2" />
+			<option name="Super Large Font" value="0x3" />
+			<option name="Large Body Text" value="0x4" />
+			<option name="Split Screen HUD Message" value="0x5" />
+			<option name="Full Screen HUD Message" value="0x6" />
+			<option name="English Body Text" value="0x7" />
+			<option name="HUD Number Text" value="0x8" />
+			<option name="Subtitle Font" value="0x9" />
+			<option name="Main Menu Font" value="0xA" />
+			<option name="Text Chat Font" value="0xB" />
+		</enum16>
+		<colorf name="Text Color" offset="0xC" alpha="true" visible="true" />
+		<rect16 name="Text Bounds" offset="0x1C" visible="true" />
+		<stringid name="String ID" offset="0x24" visible="true" />
+		<int16 name="Render Depth Bias" offset="0x28" visible="true" />
+		<int16 name="Unknown" offset="0x2A" visible="false" />
 	</tagblock>
-	<tagblock name="Button bitmaps" offset="0x24" visible="true" elementSize="0x38">
-		<int16 name="Unknown" offset="0x0" visible="true" />
-		<int16 name="Unknown" offset="0x2" visible="false" />
+	<comment title="NOTE">the bitmap block top-left is actually bottom-left here in list skin land!</comment>
+	<tagblock name="Bitmap Blocks" offset="0x24" visible="true" elementSize="0x38">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="Ignore For List Skin Size Calculation" index="0" />
+			<bit name="Swap On Relative List Position" index="1" />
+			<bit name="Render As Progress Bar" index="2" />
+		</flags32>
 		<enum16 name="Animation Index" offset="0x4" visible="true">
-			<option name="NONE" value="0x0" />
+			<option name="None" value="0x0" />
 			<option name="00" value="0x1" />
 			<option name="01" value="0x2" />
 			<option name="02" value="0x3" />
@@ -209,32 +204,30 @@
 			<option name="63" value="0x40" />
 		</enum16>
 		<int16 name="Intro Animation Delay Milliseconds" offset="0x6" visible="true" />
-		<enum16 name="Alpha transparency" offset="0x8" visible="true">
-			<option name="Normal" value="0x0" />
-			<option name="Inverted" value="0x1" />
+		<enum16 name="Bitmap Blend Method" offset="0x8" visible="true">
+			<option name="Standard" value="0x0" />
+			<option name="Multiply" value="0x1" />
+			<option name="Unused" value="0x2" />
 		</enum16>
-		<int16 name="Xbox live bitmap setting" offset="0xA" visible="true" />
-		<int16 name="Bitmap Placement coord X" offset="0xC" visible="true" />
-		<int16 name="Bitmap Placement coord Y" offset="0xE" visible="true" />
-		<float32 name="Horizontal bitmap scrolling speed" offset="0x10" visible="true" />
-		<float32 name="Unknown" offset="0x14" visible="false" />
-		<tagRef name="bitm" offset="0x18" visible="true" />
-		<int16 name="Bitmap Layer Level" offset="0x20" visible="true" />
+		<int16 name="Initial Sprite Frame" offset="0xA" visible="true" />
+		<point16 name="Top-Left" offset="0xC" visible="true" />
+		<float32 name="Horizontal Texture Wraps/Second" offset="0x10" visible="true" />
+		<float32 name="Vertical Texture Wraps/Second" offset="0x14" visible="true" />
+		<tagRef name="Bitmap Tag" offset="0x18" visible="true" />
+		<int16 name="Render Depth Bias" offset="0x20" visible="true" />
 		<int16 name="Unknown" offset="0x22" visible="false" />
-		<float32 name="Unknown" offset="0x24" visible="false" />
-		<int16 name="Unknown" offset="0x28" visible="false" />
-		<int16 name="Unknown" offset="0x2A" visible="false" />
-		<stringId name="Bitmap color variation fuction" offset="0x2C" visible="true" />
-		<float32 name="Unknown" offset="0x30" visible="false" />
-		<float32 name="Unknown" offset="0x34" visible="false" />
+		<float32 name="Sprite Animation Speed Fps" offset="0x24" visible="true" />
+		<point16 name="Progress Bottom-Left" offset="0x28" visible="true" />
+		<stringid name="String Identifier" offset="0x2C" visible="true" />
+		<vector2 name="Progress Scale" offset="0x30" visible="true" />
 	</tagblock>
-	<tagblock name="Emblem" offset="0x2C" visible="true" elementSize="0x24">
+	<tagblock name="HUD Blocks" offset="0x2C" visible="true" elementSize="0x24">
 		<flags32 name="Flags" offset="0x0" visible="true">
 			<bit name="Ignore For List Skin Size" index="0" />
 			<bit name="Needs Valid Rank" index="1" />
 		</flags32>
 		<enum16 name="Animation Index" offset="0x4" visible="true">
-			<option name="NONE" value="0x0" />
+			<option name="None" value="0x0" />
 			<option name="00" value="0x1" />
 			<option name="01" value="0x2" />
 			<option name="02" value="0x3" />
@@ -301,25 +294,24 @@
 			<option name="63" value="0x40" />
 		</enum16>
 		<int16 name="Intro Animation Delay Milliseconds" offset="0x6" visible="true" />
-		<int16 name="Xbox live bitmap setting" offset="0x8" visible="true" />
-		<int16 name="Unknown" offset="0xA" visible="false" />
-		<tagRef name="bitm" offset="0xC" visible="true" />
-		<tagRef name="shad" offset="0x14" visible="true" />
-		<int16 name="Coord X" offset="0x1C" visible="true" />
-		<int16 name="Coord Y" offset="0x1E" visible="true" />
-		<int16 name="Coord X" offset="0x20" visible="true" />
-		<int16 name="Coord Y" offset="0x22" visible="true" />
+		<int16 name="Render Depth Bias" offset="0x8" visible="true" />
+		<int16 name="Starting Bitmap Sequence Index" offset="0xA" visible="true" />
+		<tagRef name="Bitmap" offset="0xC" visible="true" />
+		<tagRef name="Shader" offset="0x14" visible="true" />
+		<rect16 name="Bounds" offset="0x1C" visible="true" />
 	</tagblock>
-	<tagblock name="Buttons Holder" offset="0x34" visible="true" elementSize="0x18">
-		<float32 name="Unknown" offset="0x0" visible="false" />
+	<tagblock name="Player Blocks" offset="0x34" visible="true" elementSize="0x18">
+		<undefined name="Unknown" offset="0x0" visible="false" />
 		<tagRef name="Skin" offset="0x4" visible="true" />
-		<int16 name="Coord X" offset="0xC" visible="true" />
-		<int16 name="Coord Y" offset="0xE" visible="true" />
-		<uint8 name="unknown" offset="0x10" visible="true" />
-		<uint8 name="Max Visible Buttons" offset="0x11" visible="true" />
-		<uint8 name="Unknown" offset="0x12" visible="true" />
-		<uint8 name="Unknown" offset="0x13" visible="true" />
-		<int16 name="Coord X" offset="0x14" visible="true" />
-		<int16 name="Coord Y" offset="0x16" visible="true" />
+		<point16 name="Bottom-Left" offset="0xC" visible="true" />
+		<enum8 name="Table Order" offset="0x10" visible="true">
+			<option name="Row Major" value="0x0" />
+			<option name="Column Major" value="0x1" />
+		</enum8>
+		<int8 name="Maximum Player Count" offset="0x11" visible="true" />
+		<int8 name="Row Count" offset="0x12" visible="true" />
+		<int8 name="Column Count" offset="0x13" visible="true" />
+		<int16 name="Row Height" offset="0x14" visible="true" />
+		<int16 name="Column Width" offset="0x16" visible="true" />
 	</tagblock>
 </plugin>

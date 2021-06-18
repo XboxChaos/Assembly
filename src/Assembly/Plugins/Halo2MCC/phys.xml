@@ -5,19 +5,17 @@
 		<revision author="Iron_Forge" version="1">Added basic layout of plugin...</revision>
 		<revision author="Shalted" version="2">Completed Layout</revision>
 	</revisions>
-	<float32 name="Radius" offset="0x0" visible="true" />
+	<float32 name="Radius" offset="0x0" visible="true" tooltip="positive uses old inferior physics, negative uses new improved physics" />
 	<float32 name="Moment Scale" offset="0x4" visible="true" />
 	<float32 name="Mass" offset="0x8" visible="true" />
-	<float32 name="Center of mass x" offset="0xC" visible="true" />
-	<float32 name="Center of mass y" offset="0x10" visible="true" />
-	<float32 name="Center of mass z" offset="0x14" visible="true" />
+	<point3 name="Center Of Mass" offset="0xC" visible="true" />
 	<float32 name="Density" offset="0x18" visible="true" />
-	<float32 name="Gravity scale" offset="0x1C" visible="true" />
-	<float32 name="Ground friction" offset="0x20" visible="true" />
+	<float32 name="Gravity Scale" offset="0x1C" visible="true" />
+	<float32 name="Ground Friction" offset="0x20" visible="true" />
 	<float32 name="Ground Depth" offset="0x24" visible="true" />
-	<float32 name="Ground damp function" offset="0x28" visible="true" />
-	<float32 name="Normal K1" offset="0x2C" visible="true" />
-	<float32 name="Normal K0" offset="0x30" visible="true" />
+	<float32 name="Ground Damp Fraction" offset="0x28" visible="true" />
+	<float32 name="Ground Normal k1" offset="0x2C" visible="true" />
+	<float32 name="Ground Normal k0" offset="0x30" visible="true" />
 	<undefined name="Unknown" offset="0x34" visible="false" />
 	<undefined name="Unknown" offset="0x38" visible="false" />
 	<undefined name="Unknown" offset="0x3C" visible="false" />
@@ -25,66 +23,73 @@
 	<float32 name="Water Depth" offset="0x44" visible="true" />
 	<float32 name="Water Density" offset="0x48" visible="true" />
 	<undefined name="Unknown" offset="0x4C" visible="false" />
-	<float32 name="Air friction" offset="0x50" visible="true" />
+	<float32 name="Air Friction" offset="0x50" visible="true" />
 	<undefined name="Unknown" offset="0x54" visible="false" />
-	<float32 name="xx movement" offset="0x58" visible="true" />
-	<float32 name="yy movement" offset="0x5C" visible="true" />
-	<float32 name="zz movement" offset="0x60" visible="true" />
-	<tagblock name="Internal Matrix" offset="0x64" visible="true" elementSize="0x24">
-		<float32 name="yy+zz" offset="0x0" visible="true" />
-		<float32 name="-xy" offset="0x4" visible="true" />
-		<float32 name="-zx" offset="0x8" visible="true" />
-		<float32 name="-xy" offset="0xC" visible="true" />
-		<float32 name="zz+xx" offset="0x10" visible="true" />
-		<float32 name="-yz" offset="0x14" visible="true" />
-		<float32 name="-zx" offset="0x18" visible="true" />
-		<float32 name="-yz" offset="0x1C" visible="true" />
-		<float32 name="xx+yy" offset="0x20" visible="true" />
+	<float32 name="xx Moment" offset="0x58" visible="true" />
+	<float32 name="yy Moment" offset="0x5C" visible="true" />
+	<float32 name="zz Moment" offset="0x60" visible="true" />
+	<tagblock name="Inertial Matrix And Inverse" offset="0x64" visible="true" elementSize="0x24">
+		<vector3 name="Yy+Zz    -Xy     -Zx" offset="0x0" visible="true" />
+		<vector3 name="-Xy    Zz+Xx    -Yz" offset="0xC" visible="true" />
+		<vector3 name="-Zx     -Yz    Xx+Yy" offset="0x18" visible="true" />
 	</tagblock>
-	<tagblock name="Mass Points" offset="0x6C" visible="true" elementSize="0x3C">
-		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
-		<flags32 name="flags" offset="0x20" visible="true">
-			<bit name="ground friction" index="0" />
-			<bit name="water friction" index="1" />
-			<bit name="air friction" index="2" />
-			<bit name="water lift" index="3" />
-			<bit name="air lift" index="4" />
-			<bit name="thrust" index="5" />
-			<bit name="antigrav" index="6" />
+	<tagblock name="Powered Mass Points" offset="0x6C" visible="true" elementSize="0x80">
+		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<flags32 name="Flags" offset="0x20" visible="true">
+			<bit name="Ground Friction" index="0" />
+			<bit name="Water Friction" index="1" />
+			<bit name="Air Friction" index="2" />
+			<bit name="Water Lift" index="3" />
+			<bit name="Air Lift" index="4" />
+			<bit name="Thrust" index="5" />
+			<bit name="Antigrav" index="6" />
+			<bit name="Gets Damage From Region" index="7" />
 		</flags32>
-		<float32 name="strength" offset="0x24" visible="true" />
-		<float32 name="offset real" offset="0x28" visible="true" />
-		<float32 name="height real" offset="0x2C" visible="true" />
-		<float32 name="damp fraction" offset="0x30" visible="true" />
-		<float32 name="normal k1" offset="0x34" visible="true" />
-		<float32 name="normal k0" offset="0x38" visible="true" />
+		<float32 name="Antigrav Strength" offset="0x24" visible="true" />
+		<float32 name="Antigrav Offset" offset="0x28" visible="true" />
+		<float32 name="Antigrav Height" offset="0x2C" visible="true" />
+		<float32 name="Antigrav Damp Fraction" offset="0x30" visible="true" />
+		<float32 name="Antigrav Normal k1" offset="0x34" visible="true" />
+		<float32 name="Antigrav Normal k0" offset="0x38" visible="true" />
+		<stringid name="Damage Source Region Name" offset="0x3C" visible="true" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
+		<undefined name="Unknown" offset="0x5C" visible="false" />
+		<undefined name="Unknown" offset="0x60" visible="false" />
+		<undefined name="Unknown" offset="0x64" visible="false" />
+		<undefined name="Unknown" offset="0x68" visible="false" />
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+		<undefined name="Unknown" offset="0x78" visible="false" />
+		<undefined name="Unknown" offset="0x7C" visible="false" />
 	</tagblock>
 	<tagblock name="Mass Points" offset="0x74" visible="true" elementSize="0x80">
-		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
-		<int16 name="Model Node" offset="0x20" visible="true" />
-		<int16 name="Powered Mass Point" offset="0x22" visible="true" />
-		<flags32 name="flags" offset="0x24" visible="true">
+		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<int16 name="Powered Mass Point Index" offset="0x20" visible="true" />
+		<int16 name="Model Node" offset="0x22" visible="true" />
+		<flags32 name="Flags" offset="0x24" visible="true">
 			<bit name="Metallic" index="0" />
 		</flags32>
 		<float32 name="Relative Mass" offset="0x28" visible="true" />
 		<float32 name="Mass" offset="0x2C" visible="true" />
 		<float32 name="Relative Density" offset="0x30" visible="true" />
 		<float32 name="Density" offset="0x34" visible="true" />
-		<float32 name="Pos X" offset="0x38" visible="true" />
-		<float32 name="Pos Y" offset="0x3C" visible="true" />
-		<float32 name="Pos Z" offset="0x40" visible="true" />
-		<degree name="Forward i" offset="0x44" visible="true" />
-		<degree name="Forward j" offset="0x48" visible="true" />
-		<degree name="Forward k" offset="0x4C" visible="true" />
-		<degree name="Up i" offset="0x50" visible="true" />
-		<degree name="Up j" offset="0x54" visible="true" />
-		<degree name="Up k" offset="0x58" visible="true" />
-		<enum32 name="friction type" offset="0x5C" visible="true">
-			<option name="point" value="0x0" />
-			<option name="forward" value="0x1" />
-			<option name="left" value="0x2" />
-			<option name="up" value="0x3" />
-		</enum32>
+		<point3 name="Position" offset="0x38" visible="true" />
+		<vector3 name="Forward" offset="0x44" visible="true" />
+		<vector3 name="Up" offset="0x50" visible="true" />
+		<enum16 name="Friction Type" offset="0x5C" visible="true">
+			<option name="Point" value="0x0" />
+			<option name="Forward" value="0x1" />
+			<option name="Left" value="0x2" />
+			<option name="Up" value="0x3" />
+		</enum16>
+		<int16 name="Unknown" offset="0x5E" visible="false" />
 		<float32 name="Friction Parallel Scale" offset="0x60" visible="true" />
 		<float32 name="Friction Perpendicular Scale" offset="0x64" visible="true" />
 		<float32 name="Radius" offset="0x68" visible="true" />

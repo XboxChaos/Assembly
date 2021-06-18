@@ -6,27 +6,24 @@
 		<revision author="Lord Zedd" version="2">port h2</revision>
 		<revision author="Lord Zedd" version="3">thanks h5</revision>
 	</revisions>
-	<stringid name="Attachment Marker Name" offset="0x0" visible="true" />
+	<stringid name="Attachment Marker Name" offset="0x0" visible="true" tooltip="the marker name where the antenna should be attached" />
 	<tagRef name="Bitmaps" offset="0x4" visible="true" />
 	<tagRef name="Physics" offset="0x14" visible="true" />
-	<float32 name="Spring Strength Coefficient" offset="0x24" visible="true" />
+	<float32 name="Spring Strength Coefficient" offset="0x24" visible="true" tooltip="strength of the spring (larger values make the spring stronger)" />
 	<float32 name="Falloff Pixels" offset="0x28" visible="true" />
 	<float32 name="Cutoff Pixels" offset="0x2C" visible="true" />
-	<float32 name="Point Of Bend" offset="0x30" visible="true" />
-	<float32 name="Starting Bend" offset="0x34" visible="true" />
-	<float32 name="Ending Bend" offset="0x38" visible="true" />
+	<float32 name="Point Of Bend" offset="0x30" visible="true" tooltip="[0,1]" />
+	<float32 name="Starting Bend" offset="0x34" visible="true" tooltip="[0,1]" />
+	<float32 name="Ending Bend" offset="0x38" visible="true" tooltip="[0,1]" />
 	<float32 name="Runtime Total Length" offset="0x3C" visible="true" />
 	<tagblock name="Vertices" offset="0x40" visible="true" elementSize="0x40">
-		<degree name="Angle y" offset="0x0" visible="true" />
-		<degree name="Angle p" offset="0x4" visible="true" />
-		<float32 name="Length" offset="0x8" visible="true" />
-		<int16 name="Sequence Index" offset="0xC" visible="true" />
+		<degree2 name="Angles" offset="0x0" visible="true" tooltip="direction toward next vertex" />
+		<float32 name="Length" offset="0x8" visible="true" tooltip="distance between this vertex and the next" />
+		<int16 name="Sequence Index" offset="0xC" visible="true" tooltip="bitmap group sequence index for this vertex's texture" />
 		<int16 name="Unknown" offset="0xE" visible="false" />
-		<colorf name="Color" offset="0x10" visible="true" alpha="true" />
-		<colorf name="LOD Color" offset="0x20" visible="true" alpha="true" />
-		<float32 name="Width" offset="0x30" visible="true" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<colorf name="Color" offset="0x10" alpha="true" visible="true" tooltip="color at this vertex" />
+		<colorf name="LOD Color" offset="0x20" alpha="true" visible="true" tooltip="color at this vertex for the low-LOD line primitives" />
+		<float32 name="Hermite T" offset="0x30" visible="true" />
+		<vector3 name="Vector To Next" offset="0x34" visible="true" />
 	</tagblock>
 </plugin>

@@ -6,21 +6,29 @@
 	</revisions>
 	<tagblock name="Sound Effects" offset="0x0" visible="true" elementSize="0x60">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<tagRef name="Radio Settings" offset="0x8" visible="true" />
-		<tagRef name="Unknown" offset="0x18" visible="true" />
-		<tagRef name="Unknown" offset="0x28" visible="true" />
-		<tagRef name="Unknown" offset="0x38" visible="true" />
-		<tagblock name="Unknown" offset="0x48" visible="false" elementSize="0x10">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
+		<flags32 name="Flags" offset="0x4" visible="true">
+			<bit name="Turn Off In Splitscreen" index="0" />
+			<bit name="Only Turn On In First Person" index="1" />
+		</flags32>
+		<tagRef name="Radio Effect" offset="0x8" visible="true" />
+		<tagRef name="Start Event" offset="0x18" visible="true" />
+		<tagRef name="End Event" offset="0x28" visible="true" />
+		<tagRef name="Immediate Stop Event" offset="0x38" visible="true" tooltip="Must clear the effect without any transition - used for exiting levels, etc" />
+		<tagblock name="Lowpass Effect" offset="0x48" visible="true" elementSize="0x10">
+			<float32 name="Attack" offset="0x0" visible="true" />
+			<float32 name="Release" offset="0x4" visible="true" />
+			<float32 name="Cutoff Frequency" offset="0x8" visible="true" />
+			<float32 name="Output Gain" offset="0xC" visible="true" />
 		</tagblock>
-		<tagblock name="Components" offset="0x54" visible="true" elementSize="0x18">
+		<tagblock name="Sound Components" offset="0x54" visible="true" elementSize="0x18">
 			<tagRef name="Sound" offset="0x0" visible="true" />
-			<float32 name="Gain" offset="0x10" visible="true" />
-			<int32 name="Flags" offset="0x14" visible="true" />
+			<float32 name="Gain" offset="0x10" visible="true" tooltip="additional attenuation to sound" />
+			<flags32 name="Flags" offset="0x14" visible="true">
+				<bit name="Don't Play At Start" index="0" />
+				<bit name="Play On Stop" index="1" />
+				<bit name="Play Alternate" index="2" />
+				<bit name="Sync With Origin Looping Sound" index="3" />
+			</flags32>
 		</tagblock>
 	</tagblock>
 </plugin>

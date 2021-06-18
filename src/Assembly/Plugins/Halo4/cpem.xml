@@ -3,58 +3,54 @@
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
 	</revisions>
-	<undefined name="Unknown" offset="0x0" visible="true" />
-	<undefined name="Unknown" offset="0x4" visible="true" />
-	<undefined name="Unknown" offset="0x8" visible="true" />
-	<undefined name="Unknown" offset="0xC" visible="true" />
-	<dataref name="Unknown" offset="0x10" visible="true" />
-	<undefined name="Unknown" offset="0x24" visible="true" />
-	<undefined name="Unknown" offset="0x28" visible="true" />
-	<stringid name="Unknown" offset="0x2C" visible="true" />
-	<undefined name="Unknown" offset="0x30" visible="true" />
-	<stringid name="Unknown" offset="0x34" visible="true" />
-	<undefined name="Unknown" offset="0x38" visible="true" />
-	<stringid name="Unknown" offset="0x3C" visible="true" />
-	<undefined name="Unknown" offset="0x40" visible="true" />
-	<stringid name="Unknown" offset="0x44" visible="true" />
-	<undefined name="Unknown" offset="0x48" visible="true" />
-	<undefined name="Unknown" offset="0x4C" visible="true" />
-	<undefined name="Unknown" offset="0x50" visible="true" />
-	<tagref name="Unknown" offset="0x54" visible="true" />
-	<undefined name="Unknown" offset="0x64" visible="true" />
-	<undefined name="Unknown" offset="0x68" visible="true" />
-	<tagref name="Unknown" offset="0x6C" visible="true" />
-	<undefined name="Unknown" offset="0x7C" visible="true" />
-	<undefined name="Unknown" offset="0x80" visible="true" />
-	<undefined name="Unknown" offset="0x84" visible="true" />
-	<undefined name="Unknown" offset="0x88" visible="true" />
-	<undefined name="Unknown" offset="0x8C" visible="true" />
-	<undefined name="Unknown" offset="0x90" visible="true" />
-	<undefined name="Unknown" offset="0x94" visible="true" />
-	<undefined name="Unknown" offset="0x98" visible="true" />
-	<undefined name="Unknown" offset="0x9C" visible="true" />
-	<undefined name="Unknown" offset="0xA0" visible="true" />
-	<undefined name="Unknown" offset="0xA4" visible="true" />
-	<undefined name="Unknown" offset="0xA8" visible="true" />
-	<undefined name="Unknown" offset="0xAC" visible="true" />
-	<undefined name="Unknown" offset="0xB0" visible="true" />
-	<undefined name="Unknown" offset="0xB4" visible="true" />
-	<undefined name="Unknown" offset="0xB8" visible="true" />
-	<undefined name="Unknown" offset="0xBC" visible="true" />
-	<undefined name="Unknown" offset="0xC0" visible="true" />
-	<undefined name="Unknown" offset="0xC4" visible="true" />
-	<undefined name="Unknown" offset="0xC8" visible="true" />
-	<undefined name="Unknown" offset="0xCC" visible="true" />
-	<undefined name="Unknown" offset="0xD0" visible="true" />
-	<undefined name="Unknown" offset="0xD4" visible="true" />
-	<undefined name="Unknown" offset="0xD8" visible="true" />
-	<undefined name="Unknown" offset="0xDC" visible="true" />
-	<undefined name="Unknown" offset="0xE0" visible="true" />
-	<undefined name="Unknown" offset="0xE4" visible="true" />
-	<undefined name="Unknown" offset="0xE8" visible="true" />
-	<undefined name="Unknown" offset="0xEC" visible="true" />
-	<undefined name="Unknown" offset="0xF0" visible="true" />
-	<undefined name="Unknown" offset="0xF4" visible="true" />
-	<undefined name="Unknown" offset="0xF8" visible="true" />
-	<tagref name="Unknown" offset="0xFC" visible="true" />
+	<flags16 name="Flags" offset="0x0" visible="true">
+		<bit name="Correlate Position And Velocity" index="0" />
+		<bit name="Position Texture In Local Space" index="1" />
+		<bit name="Velocity Texture In Local Space" index="2" />
+		<bit name="Normalize Velocity Before Scaling" index="3" />
+		<bit name="Randomly Rotate Emitter About Up Vector" index="4" />
+	</flags16>
+	<uint16 name="Version" offset="0x2" visible="true" />
+	<float32 name="SPAWN RATE" offset="0x4" visible="true" />
+	<comment title="Spawn Rate">how many particles to spawn per second</comment>
+	<stringid name="Input Variable" offset="0x8" visible="true" />
+	<stringid name="Range Variable" offset="0xC" visible="true" />
+	<dataref name="Function" offset="0x10" visible="true" />
+	<comment title="LOD">reduces the number of particles at distance</comment>
+	<float32 name="Distance Fade Start" offset="0x24" visible="true" tooltip="the distance where the number of spawned particles starts to be reduced" />
+	<float32 name="Distance Fade End" offset="0x28" visible="true" tooltip="the distance where the number of spawned particles is zero" />
+	<comment title="TYPES">types of particles to spawn, from the global particle type library</comment>
+	<stringid name="Type 0" offset="0x2C" visible="true" />
+	<float32 name="Weight 0" offset="0x30" visible="true" />
+	<stringid name="Type 1" offset="0x34" visible="true" />
+	<float32 name="Weight 1" offset="0x38" visible="true" />
+	<stringid name="Type 2" offset="0x3C" visible="true" />
+	<float32 name="Weight 2" offset="0x40" visible="true" />
+	<stringid name="Type 3" offset="0x44" visible="true" />
+	<float32 name="Weight 3" offset="0x48" visible="true" />
+	<comment title="LIFETIME">how long the spawned particles will last</comment>
+	<rangef name="Lifetime" offset="0x4C" visible="true" />
+	<comment title="EMITTER PARAMETERS">controls where a particle spawns, and its initial velocity</comment>
+	<tagRef name="Position Texture" offset="0x54" visible="true" />
+	<float32 name="Position Scale" offset="0x64" visible="true" />
+	<float32 name="Position Flatten" offset="0x68" visible="true" />
+	<tagRef name="Velocity Texture" offset="0x6C" visible="true" />
+	<rangef name="Directionality" offset="0x7C" visible="true" tooltip="Blends between a random direction and the forward direction" />
+	<rangef name="Speed Scale" offset="0x84" visible="true" tooltip="scales the initial speed of the particle" />
+	<rangef name="Subframe Offset" offset="0x8C" visible="true" tooltip="spawns particle at subframe time" />
+	<comment title="PARTICLE PARAMETERS">controls randomized rotation and size</comment>
+	<float32 name="Rotation Randomness" offset="0x94" visible="true" tooltip="how much the particle is randomly rotated" />
+	<float32 name="Particle Scale Modifier" offset="0x98" visible="true" tooltip="modifies the inherent scale of the particles" />
+	<comment title="LIGHTING PARAMETERS">controls the effects of lighting on this particle
+NOTE: only monochrome lighting is supported in neuticles</comment>
+	<float32 name="Lighting Contrast" offset="0x9C" visible="true" tooltip="increase or decrease contrast between bright and dark areas" />
+	<float32 name="Lighting Offset" offset="0xA0" visible="true" tooltip="adjust overall brightness in all areas" />
+	<float32 name="Lighting Minimum" offset="0xA4" visible="true" tooltip="clamps darkest particles to this exposure" />
+	<float32 name="Lighting Maximum" offset="0xA8" visible="true" tooltip="clamps brightest particles to this exposure" />
+	<vector4 name="Spawn Params 0" offset="0xAC" visible="true" />
+	<vector4 name="Spawn Params 1" offset="0xBC" visible="true" />
+	<vector4 name="Spawn Params 2" offset="0xCC" visible="true" />
+	<vector4 name="Spawn Params 3" offset="0xDC" visible="true" />
+	<vector4 name="Spawn Params 4" offset="0xEC" visible="true" />
+	<tagRef name="Global Type Library" offset="0xFC" visible="true" />
 </plugin>

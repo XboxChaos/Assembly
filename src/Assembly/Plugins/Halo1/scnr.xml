@@ -230,18 +230,18 @@
 		<int16 name="Placement Index" offset="0x22" visible="true" />
 	</tagblock>
 	<tagblock name="Scenery" offset="0x210" visible="true" elementSize="0x48">
-		<int16 name="Type Index" offset="0x0" visible="true" />
+		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
-		<flags16 name="Not Placed" offset="0x4" visible="true">
-			<bit name="Automatically" index="0" />
-			<bit name="On Easy" index="1" />
-			<bit name="On Normal" index="2" />
-			<bit name="On Hard" index="3" />
+		<flags16 name="Placement Flags" offset="0x4" visible="true">
+			<bit name="Not Automatically" index="0" />
+			<bit name="Not On Easy" index="1" />
+			<bit name="Not On Normal" index="2" />
+			<bit name="Not On Hard" index="3" />
 		</flags16>
 		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
-		<int16 name="Unknown" offset="0x20" visible="false" />
+		<int16 name="Unknown" offset="0x20" visible="true" />
 		<int16 name="Unknown" offset="0x22" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
@@ -265,13 +265,13 @@
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Bipeds" offset="0x228" visible="true" elementSize="0x78">
-		<int16 name="Type Index" offset="0x0" visible="true" />
+		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
-		<flags16 name="Not Placed" offset="0x4" visible="true">
-			<bit name="Automatically" index="0" />
-			<bit name="On Easy" index="1" />
-			<bit name="On Normal" index="2" />
-			<bit name="On Hard" index="3" />
+		<flags16 name="Placement Flags" offset="0x4" visible="true">
+			<bit name="Not Automatically" index="0" />
+			<bit name="Not On Easy" index="1" />
+			<bit name="Not On Normal" index="2" />
+			<bit name="Not On Hard" index="3" />
 		</flags16>
 		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
 		<point3 name="Position" offset="0x8" visible="true" />
@@ -286,7 +286,7 @@
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<undefined name="Unknown" offset="0x40" visible="false" />
 		<undefined name="Unknown" offset="0x44" visible="false" />
-		<float32 name="Body Vitality" offset="0x48" visible="true" />
+		<float32 name="Body Vitality Percentage" offset="0x48" visible="true" />
 		<flags32 name="Flags" offset="0x4C" visible="true">
 			<bit name="Dead" index="0" />
 		</flags32>
@@ -313,13 +313,13 @@
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Vehicles" offset="0x240" visible="true" elementSize="0x78">
-		<int16 name="Type Index" offset="0x0" visible="true" />
+		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
-		<flags16 name="Not Placed" offset="0x4" visible="true">
-			<bit name="Automatically" index="0" />
-			<bit name="On Easy" index="1" />
-			<bit name="On Normal" index="2" />
-			<bit name="On Hard" index="3" />
+		<flags16 name="Placement Flags" offset="0x4" visible="true">
+			<bit name="Not Automatically" index="0" />
+			<bit name="Not On Easy" index="1" />
+			<bit name="Not On Normal" index="2" />
+			<bit name="Not On Hard" index="3" />
 		</flags16>
 		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
 		<point3 name="Position" offset="0x8" visible="true" />
@@ -334,7 +334,7 @@
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<undefined name="Unknown" offset="0x40" visible="false" />
 		<undefined name="Unknown" offset="0x44" visible="false" />
-		<float32 name="Body Vitality" offset="0x48" visible="true" />
+		<float32 name="Body Vitality Percentage" offset="0x48" visible="true" />
 		<flags32 name="Flags" offset="0x4C" visible="true">
 			<bit name="Dead" index="0" />
 		</flags32>
@@ -344,21 +344,21 @@
 		<int8 name="Unknown" offset="0x59" visible="false" />
 		<flags16 name="Multiplayer Spawn Flags" offset="0x5A" visible="true">
 			<bit name="Slayer Default" index="0" tooltip="vehicle will spawn when default vehicle set is used in a slayer game" />
-			<bit name="Ctf Default" index="1" tooltip="vehicle will spawn when default vehicle set is used in a ctf game" />
+			<bit name="CTF Default" index="1" tooltip="vehicle will spawn when default vehicle set is used in a ctf game" />
 			<bit name="King Default" index="2" tooltip="vehicle will spawn when default vehicle set is used in a king game" />
 			<bit name="Oddball Default" index="3" tooltip="vehicle will spawn when default vehicle set is used in a oddball game" />
-			<bit name="Unused" index="4" tooltip="unused" />
-			<bit name="Unused" index="5" tooltip="unused" />
-			<bit name="Unused" index="6" tooltip="unused" />
-			<bit name="Unused" index="7" tooltip="unused" />
+			<bit name="Bit 4" index="4" tooltip="unused" />
+			<bit name="Bit 5" index="5" tooltip="unused" />
+			<bit name="Bit 6" index="6" tooltip="unused" />
+			<bit name="Bit 7" index="7" tooltip="unused" />
 			<bit name="Slayer Allowed" index="8" tooltip="vehicle can spawn in a slayer game" />
-			<bit name="Ctf Allowed" index="9" tooltip="vehicle can spawn in a ctf game" />
+			<bit name="CTF Allowed" index="9" tooltip="vehicle can spawn in a ctf game" />
 			<bit name="King Allowed" index="10" tooltip="vehicle can spawn in a king game" />
 			<bit name="Oddball Allowed" index="11" tooltip="vehicle can spawn in a oddball game" />
-			<bit name="Unused" index="12" tooltip="unused" />
-			<bit name="Unused" index="13" tooltip="unused" />
-			<bit name="Unused" index="14" tooltip="unused" />
-			<bit name="Unused" index="15" tooltip="unused" />
+			<bit name="Bit 12" index="12" tooltip="unused" />
+			<bit name="Bit 13" index="13" tooltip="unused" />
+			<bit name="Bit 14" index="14" tooltip="unused" />
+			<bit name="Bit 15" index="15" tooltip="unused" />
 		</flags16>
 		<undefined name="Unknown" offset="0x5C" visible="false" />
 		<undefined name="Unknown" offset="0x60" visible="false" />
@@ -380,13 +380,13 @@
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Equipment" offset="0x258" visible="true" elementSize="0x28">
-		<int16 name="Type Index" offset="0x0" visible="true" />
+		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
-		<flags16 name="Not Placed" offset="0x4" visible="true">
-			<bit name="Automatically" index="0" />
-			<bit name="On Easy" index="1" />
-			<bit name="On Normal" index="2" />
-			<bit name="On Hard" index="3" />
+		<flags16 name="Placement Flags" offset="0x4" visible="true">
+			<bit name="Not Automatically" index="0" />
+			<bit name="Not On Easy" index="1" />
+			<bit name="Not On Normal" index="2" />
+			<bit name="Not On Hard" index="3" />
 		</flags16>
 		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
 		<point3 name="Position" offset="0x8" visible="true" />
@@ -394,7 +394,7 @@
 		<int16 name="Unknown" offset="0x20" visible="false" />
 		<flags16 name="Misc Flags" offset="0x22" visible="true">
 			<bit name="Initially At Rest (Doesn't Fall)" index="0" />
-			<bit name="Obsolete" index="1" />
+			<bit name="Bit 1" index="1" />
 			<bit name="Does Accelerate (Moves Due To Explosions)" index="2" />
 		</flags16>
 		<undefined name="Unknown" offset="0x24" visible="false" />
@@ -411,13 +411,13 @@
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Weapons" offset="0x270" visible="true" elementSize="0x5C">
-		<int16 name="Type Index" offset="0x0" visible="true" />
+		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
-		<flags16 name="Not Placed" offset="0x4" visible="true">
-			<bit name="Automatically" index="0" />
-			<bit name="On Easy" index="1" />
-			<bit name="On Normal" index="2" />
-			<bit name="On Hard" index="3" />
+		<flags16 name="Placement Flags" offset="0x4" visible="true">
+			<bit name="Not Automatically" index="0" />
+			<bit name="Not On Easy" index="1" />
+			<bit name="Not On Normal" index="2" />
+			<bit name="Not On Hard" index="3" />
 		</flags16>
 		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
 		<point3 name="Position" offset="0x8" visible="true" />
@@ -434,9 +434,9 @@
 		<undefined name="Unknown" offset="0x44" visible="false" />
 		<int16 name="Rounds Left" offset="0x48" visible="true" />
 		<int16 name="Rounds Loaded" offset="0x4A" visible="true" />
-		<flags16 name="Flags" offset="0x4C" visible="true">
+		<flags16 name="Weapon Flags" offset="0x4C" visible="true">
 			<bit name="Initially At Rest (Doesn't Fall)" index="0" />
-			<bit name="Obsolete" index="1" />
+			<bit name="Bit 1" index="1" />
 			<bit name="Does Accelerate (Moves Due To Explosions)" index="2" />
 		</flags16>
 		<int16 name="Unknown" offset="0x4E" visible="false" />
@@ -466,13 +466,13 @@
 		<undefined name="Unknown" offset="0x30" visible="false" />
 	</tagblock>
 	<tagblock name="Machines" offset="0x294" visible="true" elementSize="0x40">
-		<int16 name="Type Index" offset="0x0" visible="true" />
+		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
-		<flags16 name="Not Placed" offset="0x4" visible="true">
-			<bit name="Automatically" index="0" />
-			<bit name="On Easy" index="1" />
-			<bit name="On Normal" index="2" />
-			<bit name="On Hard" index="3" />
+		<flags16 name="Placement Flags" offset="0x4" visible="true">
+			<bit name="Not Automatically" index="0" />
+			<bit name="Not On Easy" index="1" />
+			<bit name="Not On Normal" index="2" />
+			<bit name="Not On Hard" index="3" />
 		</flags16>
 		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
 		<point3 name="Position" offset="0x8" visible="true" />
@@ -481,14 +481,14 @@
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<int16 name="Power Group Index" offset="0x28" visible="true" />
 		<int16 name="Position Group Index" offset="0x2A" visible="true" />
-		<flags32 name="Flags" offset="0x2C" visible="true">
+		<flags32 name="Device Flags" offset="0x2C" visible="true">
 			<bit name="Initially Open (1.0)" index="0" />
 			<bit name="Initially Off (0.0)" index="1" />
 			<bit name="Can Change Only Once" index="2" />
 			<bit name="Position Reversed" index="3" />
 			<bit name="Not Usable From Any Side" index="4" />
 		</flags32>
-		<flags32 name="Flags" offset="0x30" visible="true">
+		<flags32 name="Machine Flags" offset="0x30" visible="true">
 			<bit name="Does Not Operate Automatically" index="0" />
 			<bit name="One-Sided" index="1" />
 			<bit name="Never Appears Locked" index="2" />
@@ -510,13 +510,13 @@
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Controls" offset="0x2AC" visible="true" elementSize="0x40">
-		<int16 name="Type Index" offset="0x0" visible="true" />
+		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
-		<flags16 name="Not Placed" offset="0x4" visible="true">
-			<bit name="Automatically" index="0" />
-			<bit name="On Easy" index="1" />
-			<bit name="On Normal" index="2" />
-			<bit name="On Hard" index="3" />
+		<flags16 name="Placement Flags" offset="0x4" visible="true">
+			<bit name="Not Automatically" index="0" />
+			<bit name="Not On Easy" index="1" />
+			<bit name="Not On Normal" index="2" />
+			<bit name="Not On Hard" index="3" />
 		</flags16>
 		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
 		<point3 name="Position" offset="0x8" visible="true" />
@@ -525,14 +525,14 @@
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<int16 name="Power Group Index" offset="0x28" visible="true" />
 		<int16 name="Position Group Index" offset="0x2A" visible="true" />
-		<flags32 name="Flags" offset="0x2C" visible="true">
+		<flags32 name="Device Flags" offset="0x2C" visible="true">
 			<bit name="Initially Open (1.0)" index="0" />
 			<bit name="Initially Off (0.0)" index="1" />
 			<bit name="Can Change Only Once" index="2" />
 			<bit name="Position Reversed" index="3" />
 			<bit name="Not Usable From Any Side" index="4" />
 		</flags32>
-		<flags32 name="Flags" offset="0x30" visible="true">
+		<flags32 name="Control Flags" offset="0x30" visible="true">
 			<bit name="Usable From Both Sides" index="0" />
 		</flags32>
 		<int16 name="Unknown" offset="0x34" visible="true" />
@@ -552,13 +552,13 @@
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Light Fixtures" offset="0x2C4" visible="true" elementSize="0x58">
-		<int16 name="Type Index" offset="0x0" visible="true" />
+		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
-		<flags16 name="Not Placed" offset="0x4" visible="true">
-			<bit name="Automatically" index="0" />
-			<bit name="On Easy" index="1" />
-			<bit name="On Normal" index="2" />
-			<bit name="On Hard" index="3" />
+		<flags16 name="Placement Flags" offset="0x4" visible="true">
+			<bit name="Not Automatically" index="0" />
+			<bit name="Not On Easy" index="1" />
+			<bit name="Not On Normal" index="2" />
+			<bit name="Not On Hard" index="3" />
 		</flags16>
 		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
 		<point3 name="Position" offset="0x8" visible="true" />
@@ -567,7 +567,7 @@
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<int16 name="Power Group Index" offset="0x28" visible="true" />
 		<int16 name="Position Group Index" offset="0x2A" visible="true" />
-		<flags32 name="Flags" offset="0x2C" visible="true">
+		<flags32 name="Device Flags" offset="0x2C" visible="true">
 			<bit name="Initially Open (1.0)" index="0" />
 			<bit name="Initially Off (0.0)" index="1" />
 			<bit name="Can Change Only Once" index="2" />
@@ -595,13 +595,13 @@
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Sound Scenery" offset="0x2DC" visible="true" elementSize="0x28">
-		<int16 name="Type Index" offset="0x0" visible="true" />
+		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
-		<flags16 name="Not Placed" offset="0x4" visible="true">
-			<bit name="Automatically" index="0" />
-			<bit name="On Easy" index="1" />
-			<bit name="On Normal" index="2" />
-			<bit name="On Hard" index="3" />
+		<flags16 name="Placement Flags" offset="0x4" visible="true">
+			<bit name="Not Automatically" index="0" />
+			<bit name="Not On Easy" index="1" />
+			<bit name="Not On Normal" index="2" />
+			<bit name="Not On Hard" index="3" />
 		</flags16>
 		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
 		<point3 name="Position" offset="0x8" visible="true" />
@@ -646,15 +646,15 @@
 		<float32 name="Starting Health Modifier" offset="0x20" visible="true" />
 		<float32 name="Starting Shield Modifier" offset="0x24" visible="true" />
 		<tagRef name="Primary Weapon" offset="0x28" visible="true" />
-		<int16 name="Rounds Loaded" offset="0x38" visible="true" />
-		<int16 name="Rounds Total" offset="0x3A" visible="true" />
+		<int16 name="Primary Rounds Loaded" offset="0x38" visible="true" tooltip="-1 = weapon default" />
+		<int16 name="Primary Rounds Total" offset="0x3A" visible="true" tooltip="-1 = weapon default" />
 		<tagRef name="Secondary Weapon" offset="0x3C" visible="true" />
-		<int16 name="Rounds Loaded" offset="0x4C" visible="true" />
-		<int16 name="Rounds Total" offset="0x4E" visible="true" />
+		<int16 name="Secondary Rounds Loaded" offset="0x4C" visible="true" tooltip="-1 = weapon default" />
+		<int16 name="Secondary Rounds Total" offset="0x4E" visible="true" tooltip="-1 = weapon default" />
 		<int8 name="Starting Fragmentation Grenade Count" offset="0x50" visible="true" />
 		<int8 name="Starting Plasma Grenade Count" offset="0x51" visible="true" />
-		<int8 name="Starting Unknown Grenade Count" offset="0x52" visible="true" />
-		<int8 name="Starting Unknown Grenade Count" offset="0x53" visible="true" />
+		<int8 name="Starting Grenade 3 Count" offset="0x52" visible="true" />
+		<int8 name="Starting Grenade 4 Count" offset="0x53" visible="true" />
 		<undefined name="Unknown" offset="0x54" visible="false" />
 		<undefined name="Unknown" offset="0x58" visible="false" />
 		<undefined name="Unknown" offset="0x5C" visible="false" />
@@ -1751,7 +1751,7 @@
 		</flags16>
 		<int16 name="Unknown" offset="0x22" visible="false" />
 		<float32 name="Trigger Distance" offset="0x24" visible="true" tooltip="distance the player must enter before the conversation can trigger" />
-		<float32 name="Run-To-Player Dist" offset="0x28" visible="true" tooltip="if the 'involves player' flag is set, when triggered the conversation's participant(s) will run to within this distance of the player" />
+		<float32 name="Run-To-Player Distance" offset="0x28" visible="true" tooltip="if the 'involves player' flag is set, when triggered the conversation's participant(s) will run to within this distance of the player" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
@@ -1858,55 +1858,55 @@
 			<option name="Stub" value="0x4" />
 		</enum16>
 		<enum16 name="Return Type" offset="0x22" visible="true">
-			<option name="Unparsed" value="0x0" />
-			<option name="Special Form" value="0x1" />
-			<option name="Function Name" value="0x2" />
-			<option name="Passthrough" value="0x3" />
-			<option name="Void" value="0x4" />
-			<option name="Boolean" value="0x5" />
-			<option name="Real" value="0x6" />
-			<option name="Short" value="0x7" />
-			<option name="Long" value="0x8" />
-			<option name="String" value="0x9" />
-			<option name="Script" value="0xA" />
-			<option name="Trigger Volume" value="0xB" />
-			<option name="Cutscene Flag" value="0xC" />
-			<option name="Cutscene Camera Point" value="0xD" />
-			<option name="Cutscene Title" value="0xE" />
-			<option name="Cutscene Recording" value="0xF" />
-			<option name="Device Group" value="0x10" />
-			<option name="AI" value="0x11" />
-			<option name="AI Command List" value="0x12" />
-			<option name="Starting Profile" value="0x13" />
-			<option name="Conversation" value="0x14" />
-			<option name="Navpoint" value="0x15" />
-			<option name="HUD Message" value="0x16" />
-			<option name="Object List" value="0x17" />
-			<option name="Sound" value="0x18" />
-			<option name="Effect" value="0x19" />
-			<option name="Damage" value="0x1A" />
-			<option name="Looping Sound" value="0x1B" />
-			<option name="Animation Graph" value="0x1C" />
-			<option name="Actor Variant" value="0x1D" />
-			<option name="Damage Effect" value="0x1E" />
-			<option name="Object Definition" value="0x1F" />
-			<option name="Game Difficulty" value="0x20" />
-			<option name="Team" value="0x21" />
-			<option name="AI Default State" value="0x22" />
-			<option name="Actor Type" value="0x23" />
-			<option name="HUD Corner" value="0x24" />
-			<option name="Object" value="0x25" />
-			<option name="Unit" value="0x26" />
-			<option name="Vehicle" value="0x27" />
-			<option name="Weapon" value="0x28" />
-			<option name="Device" value="0x29" />
-			<option name="Scenery" value="0x2A" />
-			<option name="Object Name" value="0x2B" />
-			<option name="Unit Name" value="0x2C" />
-			<option name="Vehicle Name" value="0x2D" />
-			<option name="Weapon Name" value="0x2E" />
-			<option name="Device Name" value="0x2F" />
-			<option name="Scenery Name" value="0x30" />
+			<option name="unparsed" value="0x0" />
+			<option name="special_form" value="0x1" />
+			<option name="function_name" value="0x2" />
+			<option name="passthrough" value="0x3" />
+			<option name="void" value="0x4" />
+			<option name="boolean" value="0x5" />
+			<option name="real" value="0x6" />
+			<option name="short" value="0x7" />
+			<option name="long" value="0x8" />
+			<option name="string" value="0x9" />
+			<option name="script" value="0xA" />
+			<option name="trigger_volume" value="0xB" />
+			<option name="cutscene_flag" value="0xC" />
+			<option name="cutscene_camera_point" value="0xD" />
+			<option name="cutscene_title" value="0xE" />
+			<option name="cutscene_recording" value="0xF" />
+			<option name="device_group" value="0x10" />
+			<option name="ai" value="0x11" />
+			<option name="ai_command_list" value="0x12" />
+			<option name="starting_profile" value="0x13" />
+			<option name="conversation" value="0x14" />
+			<option name="navpoint" value="0x15" />
+			<option name="hud_message" value="0x16" />
+			<option name="object_list" value="0x17" />
+			<option name="sound" value="0x18" />
+			<option name="effect" value="0x19" />
+			<option name="damage" value="0x1A" />
+			<option name="looping_sound" value="0x1B" />
+			<option name="animation_graph" value="0x1C" />
+			<option name="actor_variant" value="0x1D" />
+			<option name="damage_effect" value="0x1E" />
+			<option name="object_definition" value="0x1F" />
+			<option name="game_difficulty" value="0x20" />
+			<option name="team" value="0x21" />
+			<option name="ai_default_state" value="0x22" />
+			<option name="actor_type" value="0x23" />
+			<option name="hud_corner" value="0x24" />
+			<option name="object" value="0x25" />
+			<option name="unit" value="0x26" />
+			<option name="vehicle" value="0x27" />
+			<option name="weapon" value="0x28" />
+			<option name="device" value="0x29" />
+			<option name="scenery" value="0x2A" />
+			<option name="object_name" value="0x2B" />
+			<option name="unit_name" value="0x2C" />
+			<option name="vehicle_name" value="0x2D" />
+			<option name="weapon_name" value="0x2E" />
+			<option name="device_name" value="0x2F" />
+			<option name="scenery_name" value="0x30" />
 		</enum16>
 		<datum name="Root Expression Index" offset="0x24" visible="true" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
@@ -1926,55 +1926,55 @@
 	<tagblock name="Globals" offset="0x4A8" visible="true" elementSize="0x5C">
 		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
 		<enum16 name="Type" offset="0x20" visible="true">
-			<option name="Unparsed" value="0x0" />
-			<option name="Special Form" value="0x1" />
-			<option name="Function Name" value="0x2" />
-			<option name="Passthrough" value="0x3" />
-			<option name="Void" value="0x4" />
-			<option name="Boolean" value="0x5" />
-			<option name="Real" value="0x6" />
-			<option name="Short" value="0x7" />
-			<option name="Long" value="0x8" />
-			<option name="String" value="0x9" />
-			<option name="Script" value="0xA" />
-			<option name="Trigger Volume" value="0xB" />
-			<option name="Cutscene Flag" value="0xC" />
-			<option name="Cutscene Camera Point" value="0xD" />
-			<option name="Cutscene Title" value="0xE" />
-			<option name="Cutscene Recording" value="0xF" />
-			<option name="Device Group" value="0x10" />
-			<option name="AI" value="0x11" />
-			<option name="AI Command List" value="0x12" />
-			<option name="Starting Profile" value="0x13" />
-			<option name="Conversation" value="0x14" />
-			<option name="Navpoint" value="0x15" />
-			<option name="HUD Message" value="0x16" />
-			<option name="Object List" value="0x17" />
-			<option name="Sound" value="0x18" />
-			<option name="Effect" value="0x19" />
-			<option name="Damage" value="0x1A" />
-			<option name="Looping Sound" value="0x1B" />
-			<option name="Animation Graph" value="0x1C" />
-			<option name="Actor Variant" value="0x1D" />
-			<option name="Damage Effect" value="0x1E" />
-			<option name="Object Definition" value="0x1F" />
-			<option name="Game Difficulty" value="0x20" />
-			<option name="Team" value="0x21" />
-			<option name="AI Default State" value="0x22" />
-			<option name="Actor Type" value="0x23" />
-			<option name="HUD Corner" value="0x24" />
-			<option name="Object" value="0x25" />
-			<option name="Unit" value="0x26" />
-			<option name="Vehicle" value="0x27" />
-			<option name="Weapon" value="0x28" />
-			<option name="Device" value="0x29" />
-			<option name="Scenery" value="0x2A" />
-			<option name="Object Name" value="0x2B" />
-			<option name="Unit Name" value="0x2C" />
-			<option name="Vehicle Name" value="0x2D" />
-			<option name="Weapon Name" value="0x2E" />
-			<option name="Device Name" value="0x2F" />
-			<option name="Scenery Name" value="0x30" />
+			<option name="unparsed" value="0x0" />
+			<option name="special_form" value="0x1" />
+			<option name="function_name" value="0x2" />
+			<option name="passthrough" value="0x3" />
+			<option name="void" value="0x4" />
+			<option name="boolean" value="0x5" />
+			<option name="real" value="0x6" />
+			<option name="short" value="0x7" />
+			<option name="long" value="0x8" />
+			<option name="string" value="0x9" />
+			<option name="script" value="0xA" />
+			<option name="trigger_volume" value="0xB" />
+			<option name="cutscene_flag" value="0xC" />
+			<option name="cutscene_camera_point" value="0xD" />
+			<option name="cutscene_title" value="0xE" />
+			<option name="cutscene_recording" value="0xF" />
+			<option name="device_group" value="0x10" />
+			<option name="ai" value="0x11" />
+			<option name="ai_command_list" value="0x12" />
+			<option name="starting_profile" value="0x13" />
+			<option name="conversation" value="0x14" />
+			<option name="navpoint" value="0x15" />
+			<option name="hud_message" value="0x16" />
+			<option name="object_list" value="0x17" />
+			<option name="sound" value="0x18" />
+			<option name="effect" value="0x19" />
+			<option name="damage" value="0x1A" />
+			<option name="looping_sound" value="0x1B" />
+			<option name="animation_graph" value="0x1C" />
+			<option name="actor_variant" value="0x1D" />
+			<option name="damage_effect" value="0x1E" />
+			<option name="object_definition" value="0x1F" />
+			<option name="game_difficulty" value="0x20" />
+			<option name="team" value="0x21" />
+			<option name="ai_default_state" value="0x22" />
+			<option name="actor_type" value="0x23" />
+			<option name="hud_corner" value="0x24" />
+			<option name="object" value="0x25" />
+			<option name="unit" value="0x26" />
+			<option name="vehicle" value="0x27" />
+			<option name="weapon" value="0x28" />
+			<option name="device" value="0x29" />
+			<option name="scenery" value="0x2A" />
+			<option name="object_name" value="0x2B" />
+			<option name="unit_name" value="0x2C" />
+			<option name="vehicle_name" value="0x2D" />
+			<option name="weapon_name" value="0x2E" />
+			<option name="device_name" value="0x2F" />
+			<option name="scenery_name" value="0x30" />
 		</enum16>
 		<int16 name="Unknown" offset="0x22" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />

@@ -9,8 +9,7 @@
 		<revision author="Lord Zedd" version="5">thanks h5</revision>
 	</revisions>
 	<comment title="Global Timing" />
-	<float32 name="Strike Delay Bounds min" offset="0x0" visible="true" />
-	<float32 name="Strike Delay Bounds max" offset="0x4" visible="true" />
+	<rangef name="Strike Delay Bounds" offset="0x0" visible="true" />
 	<float32 name="Remind Delay" offset="0x8" visible="true" />
 	<float32 name="Cover Curse Chance" offset="0xC" visible="true" />
 	<tagblock name="Vocalizations" offset="0x10" visible="true" elementSize="0x5C">
@@ -18,22 +17,21 @@
 		<int16 name="Parent Index" offset="0x4" visible="true" />
 		<enum16 name="Priority" offset="0x6" visible="true">
 			<option name="None" value="0x0" />
-			<option name="Autonomic" value="0x1" />
-			<option name="Recall" value="0x2" />
-			<option name="Idle" value="0x3" />
-			<option name="Comment" value="0x4" />
-			<option name="Idle Response" value="0x5" />
-			<option name="Postcombat" value="0x6" />
-			<option name="Combat" value="0x7" />
-			<option name="Status" value="0x8" />
-			<option name="Respond" value="0x9" />
-			<option name="Warn" value="0xA" />
-			<option name="Act" value="0xB" />
-			<option name="React" value="0xC" />
-			<option name="Involuntary" value="0xD" />
-			<option name="Scream" value="0xE" />
-			<option name="Scripted" value="0xF" />
-			<option name="Death" value="0x10" />
+			<option name="Recall" value="0x1" />
+			<option name="Idle" value="0x2" />
+			<option name="Comment" value="0x3" />
+			<option name="Idle Response" value="0x4" />
+			<option name="Postcombat" value="0x5" />
+			<option name="Combat" value="0x6" />
+			<option name="Status" value="0x7" />
+			<option name="Respond" value="0x8" />
+			<option name="Warn" value="0x9" />
+			<option name="Act" value="0xA" />
+			<option name="React" value="0xB" />
+			<option name="Involuntary" value="0xC" />
+			<option name="Scream" value="0xD" />
+			<option name="Scripted" value="0xE" />
+			<option name="Death" value="0xF" />
 		</enum16>
 		<flags32 name="Flags" offset="0x8" visible="true">
 			<bit name="Immediate" index="0" />
@@ -41,7 +39,7 @@
 			<bit name="Cancel Low Priority" index="2" />
 			<bit name="Disable Dialogue Effect" index="3" />
 			<bit name="Predict Facial Animations" index="4" />
-			<bit name="No Distance Check Exceptions" index="5" />
+			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
 			<bit name="Bit 8" index="8" />
@@ -69,14 +67,30 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</flags32>
-		<int16 name="Glance Behavior" offset="0xC" visible="true" />
-		<int16 name="Glance Recipient" offset="0xE" visible="true" />
+		<enum16 name="Glance Behavior" offset="0xC" visible="true" tooltip="how does the speaker of this vocalization direct his gaze?">
+			<option name="None" value="0x0" />
+			<option name="Glance Subject Short" value="0x1" />
+			<option name="Glance Subject Long" value="0x2" />
+			<option name="Glance Cause Short" value="0x3" />
+			<option name="Glance Cause Long" value="0x4" />
+			<option name="Glance Friend Short" value="0x5" />
+			<option name="Glance Friend Long" value="0x6" />
+		</enum16>
+		<enum16 name="Glance Recipient Behavior" offset="0xE" visible="true" tooltip="how does someone who hears me behave?">
+			<option name="None" value="0x0" />
+			<option name="Glance Subject Short" value="0x1" />
+			<option name="Glance Subject Long" value="0x2" />
+			<option name="Glance Cause Short" value="0x3" />
+			<option name="Glance Cause Long" value="0x4" />
+			<option name="Glance Friend Short" value="0x5" />
+			<option name="Glance Friend Long" value="0x6" />
+		</enum16>
 		<enum16 name="Perception Type" offset="0x10" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Speaker" value="0x1" />
 			<option name="Listener" value="0x2" />
 		</enum16>
-		<enum16 name="Max Combat Status" offset="0x12" visible="true">
+		<enum16 name="Maximum Combat Status" offset="0x12" visible="true">
 			<option name="Asleep" value="0x0" />
 			<option name="Idle" value="0x1" />
 			<option name="Alert" value="0x2" />
@@ -102,16 +116,16 @@
 			<option name="Advance" value="0xA" />
 			<option name="Fallback" value="0xB" />
 		</enum16>
-		<int16 name="Overlap Priority" offset="0x16" visible="true" />
-		<float32 name="Sound Repetition Delay" offset="0x18" visible="true" />
-		<float32 name="Allowable Queue Delay" offset="0x1C" visible="true" />
-		<float32 name="Pre Vocalization Delay" offset="0x20" visible="true" />
-		<float32 name="Notification Delay" offset="0x24" visible="true" />
-		<float32 name="Post Vocalization Delay" offset="0x28" visible="true" />
-		<float32 name="Repeat Delay" offset="0x2C" visible="true" />
-		<float32 name="Weight" offset="0x30" visible="true" />
-		<float32 name="Speaker Freeze Time" offset="0x34" visible="true" />
-		<float32 name="Listener Freeze Time" offset="0x38" visible="true" />
+		<int16 name="Proxy Dialogue Index" offset="0x16" visible="true" />
+		<float32 name="Sound Repetition Delay" offset="0x18" visible="true" tooltip="Minimum delay time between playing the same permutation" />
+		<float32 name="Allowable Queue Delay" offset="0x1C" visible="true" tooltip="How long to wait to actually start the vocalization" />
+		<float32 name="Pre Vocalization Delay" offset="0x20" visible="true" tooltip="How long to wait to actually start the vocalization" />
+		<float32 name="Notification Delay" offset="0x24" visible="true" tooltip="How long into the vocalization the AI should be notified" />
+		<float32 name="Post Vocalization Delay" offset="0x28" visible="true" tooltip="How long speech is suppressed in the speaking unit after vocalizing" />
+		<float32 name="Repeat Delay" offset="0x2C" visible="true" tooltip="How long before the same vocalization can be repeated" />
+		<float32 name="Weight" offset="0x30" visible="true" tooltip="Inherent weight of this vocalization" />
+		<float32 name="Speaker Freeze Time" offset="0x34" visible="true" tooltip="speaker won't move for the given amount of time" />
+		<float32 name="Listener Freeze Time" offset="0x38" visible="true" tooltip="listener won't move for the given amount of time (from start of vocalization)" />
 		<enum16 name="Speaker Emotion" offset="0x3C" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Happy" value="0x1" />
@@ -154,12 +168,12 @@
 				<option name="Leader" value="0x5" />
 				<option name="Friend Infantry" value="0x6" />
 			</enum16>
-			<int16 name="Dialogue Index (Import)" offset="0xA" visible="true" />
+			<int16 name="Dialogue Index" offset="0xA" visible="true" />
 		</tagblock>
 	</tagblock>
 	<tagblock name="Patterns" offset="0x1C" visible="true" elementSize="0x34">
-		<int16 name="Dialog Type" offset="0x0" visible="true" />
-		<int16 name="Vocalizations Index" offset="0x2" visible="true" />
+		<int16 name="Dialogue Type" offset="0x0" visible="true" />
+		<int16 name="Vocalization Index" offset="0x2" visible="true" />
 		<stringid name="Vocalization Name" offset="0x4" visible="true" />
 		<enum16 name="Speaker Type" offset="0x8" visible="true">
 			<option name="Subject" value="0x0" />
@@ -176,7 +190,7 @@
 			<option name="Peer" value="0xB" />
 			<option name="None" value="0xC" />
 		</enum16>
-		<enum16 name="Listener/Target" offset="0xA" visible="true">
+		<enum16 name="Listener/Target" offset="0xA" visible="true" tooltip="who/what am I speaking to/of?">
 			<option name="Subject" value="0x0" />
 			<option name="Cause" value="0x1" />
 			<option name="Friend" value="0x2" />
@@ -191,8 +205,8 @@
 			<option name="Peer" value="0xB" />
 			<option name="None" value="0xC" />
 		</enum16>
-		<enum16 name="Hostility" offset="0xC" visible="true">
-			<option name="NONE" value="0x0" />
+		<enum16 name="Hostility" offset="0xC" visible="true" tooltip="The relationship between the subject and the cause">
+			<option name="None" value="0x0" />
 			<option name="Self" value="0x1" />
 			<option name="Neutral" value="0x2" />
 			<option name="Friend" value="0x3" />
@@ -210,7 +224,7 @@
 			<bit name="Cause Is Infantry" index="7" />
 			<bit name="Subject Is Infantry" index="8" />
 			<bit name="Speaker Is Infantry" index="9" />
-			<bit name="Bit 10" index="10" />
+			<bit name="Speaker In Space" index="10" />
 			<bit name="Speaker Has Low Health" index="11" />
 			<bit name="Cause Is Targeting Player" index="12" />
 			<bit name="Bit 13" index="13" />
@@ -263,8 +277,8 @@
 			<option name="Fought Brutes" value="0xA" />
 			<option name="Fought Flood" value="0xB" />
 		</enum16>
-		<enum16 name="Danger Level" offset="0x20" visible="true">
-			<option name="NONE" value="0x0" />
+		<enum16 name="Danger Level" offset="0x20" visible="true" tooltip="Speaker must have danger level of at least this much">
+			<option name="None" value="0x0" />
 			<option name="Broadly Facing" value="0x1" />
 			<option name="Shooting Near" value="0x2" />
 			<option name="Shooting At" value="0x3" />
@@ -292,9 +306,9 @@
 			<bit name="Vehicle Passenger" index="12" />
 		</flags32>
 		<comment title="Matching" />
-		<int16 name="Spacial Relation" offset="0x28" visible="true" />
+		<int16 name="Spacial Relation" offset="0x28" visible="true" tooltip="with respect to the subject, the cause is ..." />
 		<enum16 name="Damage Type" offset="0x2A" visible="true">
-			<option name="NONE" value="0x0" />
+			<option name="None" value="0x0" />
 			<option name="Falling" value="0x1" />
 			<option name="Bullet" value="0x2" />
 			<option name="Grenade" value="0x3" />
@@ -342,7 +356,7 @@
 	<undefined name="Unknown" offset="0x28" visible="false" />
 	<undefined name="Unknown" offset="0x2C" visible="false" />
 	<undefined name="Unknown" offset="0x30" visible="false" />
-	<tagblock name="Dialog Data" offset="0x34" visible="true" elementSize="0x4">
+	<tagblock name="Dialogue Data" offset="0x34" visible="true" elementSize="0x4">
 		<int16 name="Start Index" offset="0x0" visible="true" />
 		<int16 name="Length" offset="0x2" visible="true" />
 	</tagblock>

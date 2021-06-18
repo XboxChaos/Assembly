@@ -6,14 +6,22 @@
 		<revision author="?" version="2">Most</revision>
 		<revision author="Lord Zedd" version="3">And done.</revision>
 	</revisions>
-	<tagRef name="Bitmap" offset="0x0" visible="true" />
-	<float32 name="Bitmap X" offset="0x10" visible="true" />
-	<float32 name="Bitmap Y" offset="0x14" visible="true" />
-	<float32 name="Bitmap Z" offset="0x18" visible="true" />
-	<float32 name="Black Opacity" offset="0x1C" visible="true" />
-	<float32 name="White Opacity" offset="0x20" visible="true" />
-	<tagblock name="Colors" offset="0x24" visible="true" elementSize="0x14">
-		<stringId name="Name" offset="0x0" visible="true" />
-		<colorf name="Color" offset="0x4" visible="true" alpha="true" />
+	<tagRef name="Fog Bitmap" offset="0x0" visible="true" tooltip="Noise texture to use on the screen-aligned sheets of fog" />
+	<float32 name="Texture Repeat Rate" offset="0x10" visible="true" tooltip="Scaling factor to apply to fog UV coordinates" />
+	<float32 name="Distance Between Sheets" offset="0x14" visible="true" tooltip="Separating distance between sheets of fog" />
+	<float32 name="Depth Fade Factor" offset="0x18" visible="true" tooltip="Lower values (approaching 0) cause a smoother fade at scene boundaries. Larger values (1 or more) make for a sharp transition" />
+	<float32 name="Transparent Sort Distance" offset="0x1C" visible="true" tooltip="Distance from the camera where we sort the patchy fog effect (default: 100)" />
+	<enum8 name="Transparent Sort Layer" offset="0x20" visible="true">
+		<option name="Invalid" value="0x0" />
+		<option name="Pre-Pass" value="0x1" />
+		<option name="Normal" value="0x2" />
+		<option name="Post-Pass" value="0x3" />
+	</enum8>
+	<int8 name="Unknown" offset="0x21" visible="false" />
+	<int16 name="Unknown" offset="0x22" visible="false" />
+	<tagblock name="Underwater Settings" offset="0x24" visible="true" elementSize="0x14">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<float32 name="Murkiness" offset="0x4" visible="true" />
+		<colorf name="Fog Color" offset="0x8" alpha="false" visible="true" />
 	</tagblock>
 </plugin>

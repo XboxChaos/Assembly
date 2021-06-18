@@ -4,45 +4,45 @@
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
 	</revisions>
 	<tagref name="Render Model" offset="0x0" visible="true" />
-	<tagref name="Model Animation" offset="0x10" visible="true" />
-	<int32 name="Unknown" offset="0x20" visible="true" />
-	<int32 name="Unknown" offset="0x24" visible="true" />
-	<int32 name="Checksum?" offset="0x28" visible="true" />
-	<uint32 name="block here" offset="0x2C" visible="true" />
-	<uint32 name="block here" offset="0x30" visible="true" />
-	<uint32 name="block here" offset="0x34" visible="true" />
-	<tagblock name="Principal Component Analysis" offset="0x38" visible="true" elementSize="0x64">
-		<int32 name="Unknown" offset="0x0" visible="true" />
-		<int32 name="Unknown" offset="0x4" visible="true" />
-		<int32 name="Unknown" offset="0x8" visible="true" />
-		<float32 name="Unknown" offset="0xC" visible="true" />
-		<float32 name="Unknown" offset="0x10" visible="true" />
-		<float32 name="Unknown" offset="0x14" visible="true" />
-		<float32 name="Unknown" offset="0x18" visible="true" />
-		<float32 name="Unknown" offset="0x1C" visible="true" />
-		<float32 name="Unknown" offset="0x20" visible="true" />
-		<float32 name="Unknown" offset="0x24" visible="true" />
-		<float32 name="Unknown" offset="0x28" visible="true" />
-		<float32 name="Unknown" offset="0x2C" visible="true" />
-		<float32 name="Unknown" offset="0x30" visible="true" />
-		<float32 name="Unknown" offset="0x34" visible="true" />
-		<float32 name="Unknown" offset="0x38" visible="true" />
-		<float32 name="Unknown" offset="0x3C" visible="true" />
-		<float32 name="Unknown" offset="0x40" visible="true" />
-		<float32 name="Unknown" offset="0x44" visible="true" />
-		<float32 name="Unknown" offset="0x48" visible="true" />
-		<tagblock name="Unknown" offset="0x4C" visible="true" elementSize="0x1C">
-			<stringid name="Animation Name" offset="0x0" visible="true" />
-			<int32 name="Unknown" offset="0x4" visible="true" />
-			<int32 name="Unknown" offset="0x8" visible="true" />
-			<int32 name="Unknown" offset="0xC" visible="true" />
-			<int32 name="Unknown" offset="0x10" visible="true" />
+	<tagref name="Animation Graph" offset="0x10" visible="true" />
+	<flags32 name="PCA Flags" offset="0x20" visible="true">
+		<bit name="Lookup Table Ready" index="0" />
+		<bit name="Resources Generated" index="1" />
+		<bit name="Resources Committed" index="2" />
+	</flags32>
+	<int32 name="PCA Animation Count" offset="0x24" visible="true" />
+	<int32 name="PCA Checksum" offset="0x28" visible="true" />
+	<tagblock name="Frame Data" offset="0x2C" visible="true" elementSize="0x14">
+		<dataref name="Coefficients" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Mesh Data" offset="0x38" visible="true" elementSize="0x64">
+		<int32 name="Render Mesh Index" offset="0x0" visible="true" />
+		<int32 name="Vertices Per Shape" offset="0x4" visible="true" />
+		<int32 name="Vertex Buffer Index" offset="0x8" visible="true" />
+		<vector3 name="Position Scale" offset="0xC" visible="true" />
+		<float32 name="Tension Scale" offset="0x18" visible="true" />
+		<vector3 name="Position Offset" offset="0x1C" visible="true" />
+		<float32 name="Tension Offset" offset="0x28" visible="true" />
+		<vector3 name="Normal Scale" offset="0x2C" visible="true" />
+		<float32 name="Stretch Scale" offset="0x38" visible="true" />
+		<vector3 name="Normal Offset" offset="0x3C" visible="true" />
+		<float32 name="Stretch Offset" offset="0x48" visible="true" />
+		<comment title="Animations">all imported animations for this mesh</comment>
+		<tagblock name="Animations" offset="0x4C" visible="true" elementSize="0x1C">
+			<stringid name="Name" offset="0x0" visible="true" />
+			<int32 name="Offset" offset="0x4" visible="true" />
+			<int32 name="Count" offset="0x8" visible="true" />
+			<int32 name="PCA Shape Offset" offset="0xC" visible="true" />
+			<int32 name="PCA Coefficient Count" offset="0x10" visible="true" />
 			<datum name="[zone] Asset Datum" offset="0x14" visible="true" />
 			<int32 name="Useless Padding" offset="0x18" visible="false" />
 		</tagblock>
-		<uint32 name="block here" offset="0x58" visible="true" />
-		<uint32 name="block here" offset="0x5C" visible="true" />
-		<uint32 name="block here" offset="0x60" visible="true" />
+		<comment title="Vertices">all imported blend shape vertices for this mesh</comment>
+		<tagblock name="Raw Blendshape Verts" offset="0x58" visible="true" elementSize="0x28">
+			<vector3 name="Position" offset="0x0" visible="true" />
+			<vector3 name="Normal" offset="0xC" visible="true" />
+			<colorf name="Tension And Ambient Occlusion" offset="0x18" alpha="true" visible="true" />
+		</tagblock>
 	</tagblock>
 	<datum name="[zone] Asset Datum" offset="0x44" visible="true" />
 	<int32 name="Useless Padding" offset="0x48" visible="false" />

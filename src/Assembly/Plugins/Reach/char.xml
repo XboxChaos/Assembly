@@ -16,7 +16,7 @@
 	<tagRef name="Style" offset="0x34" visible="true" />
 	<tagRef name="Major Character" offset="0x44" visible="true" />
 	<tagblock name="Variants" offset="0x54" visible="true" elementSize="0x18">
-		<stringid name="Variant" offset="0x0" visible="true" />
+		<stringid name="Variant Name" offset="0x0" visible="true" />
 		<int16 name="Variant Index" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
 		<tagblock name="Voices" offset="0x8" visible="true" elementSize="0x24">
@@ -47,7 +47,7 @@
 		<stringid name="Default Dialogue Effect ID" offset="0xC" visible="true" tooltip="gets applied if the vocalization has no dialogue effect id." />
 	</tagblock>
 	<tagblock name="General Properties" offset="0x6C" visible="true" elementSize="0x2C">
-		<flags32 name="Flags" offset="0x0" visible="true">
+		<flags32 name="General Flags" offset="0x0" visible="true">
 			<bit name="Swarm" index="0" />
 			<bit name="Flying" index="1" />
 			<bit name="Dual Wields" index="2" />
@@ -64,7 +64,7 @@
 			<bit name="Do Not Allow Crouch" index="13" />
 			<bit name="Critical Betrayal" index="14" />
 		</flags32>
-		<enum16 name="Actor Type" offset="0x4" visible="true">
+		<enum16 name="Type" offset="0x4" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Player" value="0x1" />
 			<option name="Marine" value="0x2" />
@@ -95,7 +95,7 @@
 		<float32 name="Maximum Player Dialogue Distance" offset="0x14" visible="true" tooltip="never play dialogue if all players are outside of this range (if 0 then defaults to 20wu)" />
 		<float32 name="Scariness" offset="0x18" visible="true" tooltip="the inherent scariness of the character" />
 		<enum16 name="Default Grenade Type" offset="0x1C" visible="true">
-			<option name="NONE" value="0x0" />
+			<option name="None" value="0x0" />
 			<option name="Human Grenade" value="0x1" />
 			<option name="Covenant Plasma" value="0x2" />
 			<option name="Brute Claymore" value="0x3" />
@@ -189,7 +189,7 @@
 			<option name="Vehicle Alert" value="0x6" />
 			<option name="Vehicle Combat" value="0x7" />
 		</enum16>
-		<flags16 name="Flags" offset="0x2" visible="true">
+		<flags16 name="Perception Flags" offset="0x2" visible="true">
 			<bit name="Character Can See In Darkness" index="0" />
 			<bit name="Ignore Tracking Projectiles" index="1" />
 			<bit name="Ignore Minor Tracking Projectiles" index="2" />
@@ -208,7 +208,7 @@
 		<float32 name="Notice Projectile Chance" offset="0x30" visible="true" tooltip="random chance of noticing a dangerous enemy projectile (e.g. grenade)" />
 		<float32 name="Notice Vehicle Chance" offset="0x34" visible="true" tooltip="random chance of noticing a dangerous vehicle" />
 		<float32 name="Perception Time" offset="0x38" visible="true" tooltip="time required to acknowledge a visible enemy at optimal range" />
-		<float32 name="Awareness Glance Level[0,1]" offset="0x3C" visible="true" tooltip="How aware of you while acknowledging an AI must be to glance at you" />
+		<float32 name="Awareness Glance Level" offset="0x3C" visible="true" tooltip="[0,1] How aware of you while acknowledging an AI must be to glance at you" />
 		<float32 name="Awareness Glance Delta" offset="0x40" visible="true" tooltip="While acknowledging, the awareness delta at which an AI will glance at you" />
 		<float32 name="Identify Hologram Chance" offset="0x44" visible="true" tooltip="The chance that an AI identifies a unit is actually a hologram" />
 		<rangef name="Hologram Ignore Timer" offset="0x48" visible="true" tooltip="The time after which we will ignore the hologram once seen" />
@@ -252,11 +252,11 @@
 		<flags32 name="Movement Flags" offset="0x0" visible="true">
 			<bit name="Danger Crouch Allow Movement" index="0" />
 			<bit name="No Side-Step" index="1" />
-			<bit name="Prefer To Combar Near Friends" index="2" />
-			<bit name="Hop (To Cover Path Segment)" index="0x3" />
-			<bit name="Allow Jump to Firing Position" index="0x4" />
-			<bit name="Allow Boosted Jump" index="0x5" />
-			<bit name="Perch" index="0x6" />
+			<bit name="Prefer To Combat Near Friends" index="2" />
+			<bit name="Hop (To Cover Path Segments)" index="3" />
+			<bit name="Allow Jump to Firing Position" index="4" />
+			<bit name="Allow Boosted Jump" index="5" />
+			<bit name="Perch" index="6" />
 			<bit name="Climb" index="7" />
 			<bit name="Prefer Wall Movement" index="8" />
 			<bit name="Has Flying Mode" index="9" />
@@ -293,7 +293,7 @@
 		<float32 name="Armor Lock Cooldown" offset="0x1C" visible="true" tooltip="We won't go into armor lock again for this many seconds (default 0 seconds)" />
 		<float32 name="Dive Grenade Chance" offset="0x20" visible="true" />
 		<float32 name="Brace Grenade Chance" offset="0x24" visible="true" />
-		<enum16 name="Obstace Leap Minimum Size" offset="0x28" visible="true">
+		<enum16 name="Obstacle Leap Minimum Size" offset="0x28" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Tiny" value="0x1" />
 			<option name="Small" value="0x2" />
@@ -302,7 +302,7 @@
 			<option name="Huge" value="0x5" />
 			<option name="Immobile" value="0x6" />
 		</enum16>
-		<enum16 name="Obstace Leap Maximum Size" offset="0x2A" visible="true">
+		<enum16 name="Obstacle Leap Maximum Size" offset="0x2A" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Tiny" value="0x1" />
 			<option name="Small" value="0x2" />
@@ -311,7 +311,7 @@
 			<option name="Huge" value="0x5" />
 			<option name="Immobile" value="0x6" />
 		</enum16>
-		<enum16 name="Obstace Ignore Size" offset="0x2C" visible="true">
+		<enum16 name="Obstacle Ignore Size" offset="0x2C" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Tiny" value="0x1" />
 			<option name="Small" value="0x2" />
@@ -320,7 +320,7 @@
 			<option name="Huge" value="0x5" />
 			<option name="Immobile" value="0x6" />
 		</enum16>
-		<enum16 name="Obstace Smashable Size" offset="0x2E" visible="true">
+		<enum16 name="Obstacle Smashable Size" offset="0x2E" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Tiny" value="0x1" />
 			<option name="Small" value="0x2" />
@@ -331,7 +331,7 @@
 		</enum16>
 		<int16 name="Unknown" offset="0x30" visible="false" />
 		<enum16 name="Jump Height" offset="0x32" visible="true">
-			<option name="NONE" value="0x0" />
+			<option name="None" value="0x0" />
 			<option name="Down" value="0x1" />
 			<option name="Step" value="0x2" />
 			<option name="Crouch" value="0x3" />
@@ -343,7 +343,7 @@
 		<float32 name="Maximum Leap Height" offset="0x34" visible="true" tooltip=".How high can a crate be for this unit to leap it." />
 		<float32 name="Leap Proximity Fraction" offset="0x38" visible="true" tooltip="How close to the obstacle should the actor be before leaping 1- too close, 0- as soon as he becomes aware of it" />
 		<float32 name="Avoidance Volume Turn Penalty Distance" offset="0x3C" visible="true" tooltip="The maximum distance penalty applied to an avoidance volume search path if we're facing away from the path. 1000 wu good for space, 5 wu good for ground." />
-		<flags32 name="Movement Hint Flags" offset="0x40" visible="true">
+		<flags32 name="Movement Hints" offset="0x40" visible="true">
 			<bit name="Vault Step" index="0" />
 			<bit name="Vault Crouch" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -610,7 +610,7 @@
 		<float32 name="Friendly Killed Maximum Berserk Distance" offset="0x50" visible="true" tooltip="The max range at which we will go berserk if we see a friendly AI of the same type (brute, etc) get killed" />
 		<float32 name="Peer Killed Berserk Chance" offset="0x54" visible="true" tooltip="Chance that we will go berserk if we see a friendly AI of the same type (brute, etc) with the same or lower standing get killed" />
 		<float32 name="Leader Killed Berserk Chance" offset="0x58" visible="true" tooltip="Chance that we will go berserk if we see a friendly AI of the same type (brute, etc) with higher standing get killed" />
-		<tagRef name="Berserk Weapon" offset="0x5C" visible="true" />
+		<tagRef name="Berserk Weapon" offset="0x5C" visible="true" tooltip="when I berserk, I pull out a ..." />
 		<float32 name="Beserk Cooldown" offset="0x6C" visible="true" tooltip="Time that I will stay in beserk after losing my target, and then revert back to normal" />
 		<float32 name="Proximity Berserk Range" offset="0x70" visible="true" tooltip="If our target is closer than this distance, and not (in a vehicle/larger size than us/using a melee weapon), we will berserk. If our target is further than this distance, we will stop berserking. Set to 0 to disable proximity berserking." />
 		<float32 name="Proximity Berserk Outside FP Range" offset="0x74" visible="true" tooltip="We will never go more than this far outside our firing point areas when proximity-berserking. 0= no limit." />
@@ -828,7 +828,7 @@ As always, 0 means speak normally, 1 means skip everything (don't say shit)</com
 		<float32 name="Bombardment Range" offset="0x24" visible="true" tooltip="we offset our burst targets randomly by this range when firing at non-visible enemies (zero = never)" />
 		<float32 name="Maximum Special Target Distance" offset="0x28" visible="true" tooltip="Specific target regions on a vehicle or unit will be fired upon only under the given distance" />
 		<comment title="Ballistic Firing" />
-		<float32 name="Super-Ballistic Range" offset="0x2C" visible="true" />
+		<float32 name="Super-Ballistic Range" offset="0x2C" visible="true" tooltip="we try to aim our shots super-ballistically if target is outside this range (zero = never)" />
 		<rangef name="Ballistic Firing Bounds" offset="0x30" visible="true" tooltip="At the min range, the min ballistic fraction is used, at the max, the max ballistic fraction is used" />
 		<rangef name="Ballistic Fraction Bounds" offset="0x38" visible="true" tooltip="Controls speed and degree of arc. 0 = high, slow, 1 = low, fast" />
 		<comment title="Behavior" />
@@ -859,9 +859,7 @@ As always, 0 means speak normally, 1 means skip everything (don't say shit)</com
 		<rangef name="Drop Weapon Loaded" offset="0x84" visible="true" tooltip="amount of ammo loaded into the weapon that we drop (in fractions of a clip, e.g. 0.3 to 0.5)" />
 		<range16 name="Drop Weapon Ammo" offset="0x8C" visible="true" tooltip="total number of rounds in the weapon that we drop (ignored for energy weapons)" />
 		<comment title="Accuracy">Parameters control how accuracy changes over the duration of a series of bursts
-Accuracy is an analog value between 0 and 1. At zero, the parameters of the first
-firing-pattern block is used. At 1, the parameters in the second block is used. In
-between, all the values are linearly interpolated</comment>
+Accuracy is an analog value between 0 and 1. At zero, the parameters of the first firing-pattern block is used. At 1, the parameters in the second block is used. In between, all the values are linearly interpolated</comment>
 		<rangef name="Normal Accuracy Bounds" offset="0x90" visible="true" tooltip="Indicates starting and ending accuracies at normal difficulty" />
 		<float32 name="Normal Accuracy Time" offset="0x98" visible="true" tooltip="The amount of time it takes the accuracy to go from starting to ending" />
 		<rangef name="Heroic Accuracy Bounds" offset="0x9C" visible="true" tooltip="Indicates starting and ending accuracies at heroic difficulty" />
@@ -894,7 +892,7 @@ for example if the burst origin angle and the burst return angle were both zero,
 			<degree name="Maximum Error Angle" offset="0x3C" visible="true" tooltip="cap on the maximum angle by which we will miss target (restriction on burst origin radius" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Grenade Properties" offset="0x204" visible="true" elementSize="0x3C">
+	<tagblock name="Grenades Properties" offset="0x204" visible="true" elementSize="0x3C">
 		<flags32 name="Grenades Flags" offset="0x0" visible="true">
 			<bit name="Do Not Throw While Bunkering" index="0" />
 			<bit name="Allow While Berserking" index="1" />
@@ -927,7 +925,7 @@ for example if the burst origin angle and the burst return angle were both zero,
 		<float32 name="Anti-Vehicle Grenade Chance" offset="0x30" visible="true" tooltip="how likely we are to throw a grenade against a vehicle" />
 		<comment title="Grenade Drop When Killed" />
 		<range16 name="Grenade Count" offset="0x34" visible="true" tooltip="number of grenades that we start with" />
-		<float32 name="Dont Drop Grenades Chance" offset="0x38" visible="true" tooltip="how likely we are not to drop any grenades when we die, even if we still have some" />
+		<float32 name="Don't Drop Grenades Chance" offset="0x38" visible="true" tooltip="how likely we are not to drop any grenades when we die, even if we still have some" />
 	</tagblock>
 	<tagblock name="Vehicle Properties" offset="0x210" visible="true" elementSize="0x138">
 		<tagRef name="Unit" offset="0x0" visible="true" />
@@ -972,8 +970,8 @@ for example if the burst origin angle and the burst return angle were both zero,
 		<float32 name="AI Deceleration Distance" offset="0x80" visible="true" tooltip="Distance from goal at which AI starts to decelerate" />
 		<comment title="Turning" />
 		<float32 name="AI Turning Radius" offset="0x84" visible="true" tooltip="Idealized average turning radius (should reflect actual vehicle physics)" />
-		<float32 name="AI Inner Turning Radius" offset="0x88" visible="true" tooltip="Idealized minimum turning radius (should reflect actual vehicle physics)" />
-		<float32 name="AI Ideal Turning Radius" offset="0x8C" visible="true" tooltip="Ideal turning radius for rounding turns (barring obstacles, etc.)" />
+		<float32 name="AI Inner Turning Radius" offset="0x88" visible="true" tooltip="(&lt; turn radius) Idealized minimum turning radius (should reflect actual vehicle physics)" />
+		<float32 name="AI Ideal Turning Radius" offset="0x8C" visible="true" tooltip="(&gt; turn radius) Ideal turning radius for rounding turns (barring obstacles, etc.)" />
 		<comment title="Steering" />
 		<degree name="AI Banshee Steering Maximum" offset="0x90" visible="true" />
 		<float32 name="AI Maximum Steering Angle" offset="0x94" visible="true" tooltip="Maximum steering angle from forward (ultimately controls turning speed)" />
@@ -988,10 +986,10 @@ for example if the burst origin angle and the burst return angle were both zero,
 		<comment title="Throttle" />
 		<float32 name="AI Throttle Maximum" offset="0xBC" visible="true" />
 		<float32 name="AI Reverse Throttle Maximum" offset="0xC0" visible="true" tooltip="If zero, default to ai throttle maximum" />
-		<float32 name="AI Goal Min Throttle Scale" offset="0xC4" visible="true" tooltip="scale on throttle when within 'ai deceleration distance' of goal (0...1)" />
-		<float32 name="AI Turn Min Throttle Scale" offset="0xC8" visible="true" tooltip="Scale on throttle due to nearness to a turn (0...1)" />
-		<float32 name="AI Direction Min Throttle Scale" offset="0xCC" visible="true" tooltip="Scale on throttle due to facing away from intended direction (0...1)" />
-		<float32 name="AI Skid Min Throttle Scale" offset="0xD0" visible="true" tooltip="Scale on throttle due to skidding (0...1)" />
+		<float32 name="AI Goal Minimum Throttle Scale" offset="0xC4" visible="true" tooltip="scale on throttle when within 'ai deceleration distance' of goal (0...1)" />
+		<float32 name="AI Turn Minimum Throttle Scale" offset="0xC8" visible="true" tooltip="Scale on throttle due to nearness to a turn (0...1)" />
+		<float32 name="AI Direction Minimum Throttle Scale" offset="0xCC" visible="true" tooltip="Scale on throttle due to facing away from intended direction (0...1)" />
+		<float32 name="AI Skid Minimum Throttle Scale" offset="0xD0" visible="true" tooltip="Scale on throttle due to skidding (0...1)" />
 		<degree name="Skid Attentuation Maximum Angle" offset="0xD4" visible="true" tooltip="Maximise min throttle at this deviation of angles from current movement" />
 		<float32 name="AI Acceleration Scale" offset="0xD8" visible="true" tooltip="The maximum allowable change in throttle between ticks" />
 		<float32 name="AI Throttle Blend" offset="0xDC" visible="true" tooltip="The degree of throttle blending between one tick and the next (0 = no blending)" />
@@ -1007,24 +1005,24 @@ for example if the burst origin angle and the burst return angle were both zero,
 		<float32 name="AI Charge Consider Distance" offset="0xFC" visible="true" tooltip="Consider charging the target when it is within this range (0 = infinite distance)" />
 		<float32 name="AI Charge Abort Distance" offset="0x100" visible="true" tooltip="Abort the charge when the target get more than this far away (0 = never abort)" />
 		<float32 name="AI Charge Armor Locked Target Chance" offset="0x104" visible="true" tooltip="Probability that we decide to charge a target even if they are armor locked" />
-		<float32 name="Vehicle Ram Timeout" offset="0x108" visible="true" />
-		<float32 name="Ram Paralysis Time" offset="0x10C" visible="true" />
+		<float32 name="Vehicle Ram Timeout" offset="0x108" visible="true" tooltip="The ram behavior stops after a maximum of the given number of seconds" />
+		<float32 name="Ram Paralysis Time" offset="0x10C" visible="true" tooltip="The ram behavior freezes the vehicle for a given number of seconds after performing the ram" />
 		<float32 name="AI Cover Damage Threshold" offset="0x110" visible="true" tooltip="Trigger a cover when recent damage is above given threshold (damage_vehicle_cover impulse)" />
 		<float32 name="AI Cover Shield Damage Threshold" offset="0x114" visible="true" tooltip="Trigger a cover when recent shied damage is above given threshold (flying_cover behavior)" />
-		<float32 name="AI Cover Min Distance" offset="0x118" visible="true" tooltip="When executing vehicle-cover, minimum distance from the target to flee to" />
+		<float32 name="AI Cover Minimum Distance" offset="0x118" visible="true" tooltip="When executing vehicle-cover, minimum distance from the target to flee to" />
 		<float32 name="AI Cover Time" offset="0x11C" visible="true" tooltip="How long to stay away from the target" />
-		<float32 name="AI Cover Min Boost Distance" offset="0x120" visible="true" tooltip="Boosting allowed when distance to cover destination is greater then this." />
+		<float32 name="AI Cover Minimum Boost Distance" offset="0x120" visible="true" tooltip="Boosting allowed when distance to cover destination is greater then this." />
 		<float32 name="Turtling Recent Damage Threshold" offset="0x124" visible="true" tooltip="If vehicle turtling behavior is enabled, turtling is initiated if 'recent damage' surpasses the given threshold" />
-		<float32 name="Turtling Min Time" offset="0x128" visible="true" tooltip="If the vehicle turtling behavior is enabled, turtling occurs for at least the given time" />
+		<float32 name="Turtling Minimum Time" offset="0x128" visible="true" tooltip="If the vehicle turtling behavior is enabled, turtling occurs for at least the given time" />
 		<float32 name="Turtling Timeout" offset="0x12C" visible="true" tooltip="The turtled state times out after the given number of seconds" />
 		<enum16 name="Obstacle Ignore Size" offset="0x130" visible="true">
-			<option name="None" value="0" />
-			<option name="Tiny" value="1" />
-			<option name="Small" value="2" />
-			<option name="Medium" value="3" />
-			<option name="Large" value="4" />
-			<option name="Huge" value="5" />
-			<option name="Immobile" value="6" />
+			<option name="None" value="0x0" />
+			<option name="Tiny" value="0x1" />
+			<option name="Small" value="0x2" />
+			<option name="Medium" value="0x3" />
+			<option name="Large" value="0x4" />
+			<option name="Huge" value="0x5" />
+			<option name="Immobile" value="0x6" />
 		</enum16>
 		<int16 name="Unknown" offset="0x132" visible="false" />
 		<int16 name="Maximum Vehicle Charge" offset="0x134" visible="true" tooltip="max number of this type of vehicle in a task who can vehicle charge at once" />
@@ -1110,7 +1108,7 @@ for example if the burst origin angle and the burst return angle were both zero,
 		<float32 name="Stealth Morph Distance Threshold" offset="0xB0" visible="true" tooltip="Morphing inside this range causes a tank guy, outside this range causes a ranged fella" />
 		<float32 name="Stealth Morph Damage Threshold" offset="0xB4" visible="true" tooltip="Percentage of body health he has to be taken down in order to cause a morph" />
 		<rangef name="Stalk Range" offset="0xB8" visible="true" tooltip="We want to stalk our target within this range" />
-		<float32 name="Stalk Range Hard Max" offset="0xC0" visible="true" tooltip="We will never be able to pick a firing position more than this far from our target" />
+		<float32 name="Stalk Range Hard Maximum" offset="0xC0" visible="true" tooltip="We will never be able to pick a firing position more than this far from our target" />
 		<float32 name="Stalk Charge Chance" offset="0xC4" visible="true" tooltip="While stalking, charge randomly with this probability per second (also will charge when on periphery, this is just some spice)" />
 		<comment title="Ranged Bloke" />
 		<float32 name="Ranged Proximity Distance" offset="0xC8" visible="true" tooltip="Morph to tank/stalker when someone gets this close to me as a ranged form" />

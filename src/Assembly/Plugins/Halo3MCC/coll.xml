@@ -6,10 +6,10 @@
 		<revision author="DarkShallFall" version="2">Mapped out and named tagblocks and values</revision>
 		<revision author="Lord Zedd" version="3">Updates.</revision>
 	</revisions>
-	<int32 name="Collision Model Checksum" offset="0x0" visible="true" />
-	<undefined name="Unknown" offset="0x4" visible="false" />
-	<undefined name="Unknown" offset="0x8" visible="false" />
-	<undefined name="Unknown" offset="0xC" visible="false" />
+	<int32 name="Import Info Checksum" offset="0x0" visible="true" />
+	<uint32 name="Errors Block" offset="0x4" visible="false" />
+	<uint32 name="Errors Block" offset="0x8" visible="false" />
+	<uint32 name="Errors Block" offset="0xC" visible="false" />
 	<flags32 name="Flags" offset="0x10" visible="true">
 		<bit name="Contains Open Edges" index="0" />
 		<bit name="Bit 1" index="1" />
@@ -54,7 +54,7 @@
 			<tagblock name="BSPs" offset="0x4" visible="true" elementSize="0x64">
 				<int16 name="Node Index" offset="0x0" visible="true" />
 				<int16 name="Unknown" offset="0x2" visible="false" />
-				<tagblock name="BSP 3D Nodes" offset="0x4" visible="true" elementSize="0x8" align="0x8">
+				<tagblock name="BSP3D Nodes" offset="0x4" visible="true" elementSize="0x8" align="0x8">
 					<uint8 name="Back Child Upper" offset="0x0" visible="true" />
 					<uint8 name="Back Child Mid" offset="0x1" visible="true" />
 					<uint8 name="Back Child Lower" offset="0x2" visible="true" />
@@ -64,35 +64,42 @@
 					<int16 name="Plane" offset="0x6" visible="true" />
 				</tagblock>
 				<tagblock name="Planes" offset="0x10" visible="true" elementSize="0x10" align="0x10">
-					<float32 name="Plane i" offset="0x0" visible="true" />
-					<float32 name="Plane j" offset="0x4" visible="true" />
-					<float32 name="Plane k" offset="0x8" visible="true" />
-					<float32 name="Plane d" offset="0xC" visible="true" />
+					<plane3 name="Plane" offset="0x0" visible="true" />
 				</tagblock>
 				<tagblock name="Leaves" offset="0x1C" visible="true" elementSize="0x8">
-					<int16 name="Flags" offset="0x0" visible="true" />
-					<int16 name="BSP 2D Reference Count" offset="0x2" visible="true" />
-					<int16 name="Unknown" offset="0x4" visible="false" />
-					<int16 name="First BSP 2D Reference" offset="0x6" visible="true" />
+					<flags8 name="Flags" offset="0x0" visible="true">
+						<bit name="Contains Double-Sided Surfaces" index="0" />
+					</flags8>
+					<int8 name="Unknown" offset="0x1" visible="false" />
+					<uint16 name="BSP2D Reference Count" offset="0x2" visible="true" />
+					<uint32 name="First BSP2D Reference" offset="0x4" visible="true" />
 				</tagblock>
-				<tagblock name="BSP 2D References" offset="0x28" visible="true" elementSize="0x4">
+				<tagblock name="BSP2D References" offset="0x28" visible="true" elementSize="0x4">
 					<int16 name="Plane" offset="0x0" visible="true" />
-					<int16 name="BSP 2D Node" offset="0x2" visible="true" />
+					<int16 name="BSP2D Node" offset="0x2" visible="true" />
 				</tagblock>
-				<tagblock name="BSP 2D Nodes" offset="0x34" visible="true" elementSize="0x10" align="0x10">
-					<float32 name="Plane i" offset="0x0" visible="true" />
-					<float32 name="Plane j" offset="0x4" visible="true" />
-					<float32 name="Plane d" offset="0x8" visible="true" />
+				<tagblock name="BSP2D Nodes" offset="0x34" visible="true" elementSize="0x10" align="0x10">
+					<plane2 name="Plane" offset="0x0" visible="true" />
 					<int16 name="Left Child" offset="0xC" visible="true" />
 					<int16 name="Right Child" offset="0xE" visible="true" />
 				</tagblock>
 				<tagblock name="Surfaces" offset="0x40" visible="true" elementSize="0xC">
-					<int16 name="Plane" offset="0x0" visible="true" />
-					<int16 name="First Edge" offset="0x2" visible="true" />
+					<uint16 name="Plane Index" offset="0x0" visible="true" />
+					<uint16 name="First Edge" offset="0x2" visible="true" />
 					<int16 name="Material" offset="0x4" visible="true" />
-					<int16 name="Unknown" offset="0x6" visible="false" />
+					<int16 name="Breakable Surface Set" offset="0x6" visible="true" />
 					<int16 name="Breakable Surface" offset="0x8" visible="true" />
-					<int16 name="Unknown" offset="0xA" visible="false" />
+					<flags8 name="Flags" offset="0xA" visible="true">
+						<bit name="Two Sided" index="0" />
+						<bit name="Invisible" index="1" />
+						<bit name="Climbable" index="2" />
+						<bit name="Breakable" index="3" />
+						<bit name="Invalid" index="4" />
+						<bit name="Conveyor" index="5" />
+						<bit name="Slip" index="6" />
+						<bit name="Plane Negated" index="7" />
+					</flags8>
+					<uint8 name="Best Plane Calculation Vertex Index" offset="0xB" visible="true" />
 				</tagblock>
 				<tagblock name="Edges" offset="0x4C" visible="true" elementSize="0xC">
 					<int16 name="Start Vertex" offset="0x0" visible="true" />
@@ -103,11 +110,9 @@
 					<int16 name="Right Surface" offset="0xA" visible="true" />
 				</tagblock>
 				<tagblock name="Vertices" offset="0x58" visible="true" elementSize="0x10" align="0x10">
-					<float32 name="Point x" offset="0x0" visible="true" />
-					<float32 name="Point y" offset="0x4" visible="true" />
-					<float32 name="Point z" offset="0x8" visible="true" />
+					<point3 name="Point" offset="0x0" visible="true" />
 					<int16 name="First Edge" offset="0xC" visible="true" />
-					<int16 name="Unknown" offset="0xE" visible="false" />
+					<int16 name="Sink" offset="0xE" visible="true" />
 				</tagblock>
 			</tagblock>
 			<tagblock name="BSP Physics" offset="0x10" visible="true" elementSize="0xB0" align="0x10">
@@ -179,8 +184,8 @@
 				<uint64 name="Runtime MOPP Code Pointer" offset="0x20" visible="true" tooltip="becomes a pointer to the start of the MOPP code data in memory at runtime. don't poke me" />
 				<int32 name="Data Size" offset="0x28" visible="true" />
 				<uint32 name="Data Capacity" offset="0x2C" visible="true" />
-				<tagblock name="Data" offset="0x30" visible="true" elementSize="0x1">
-					<uint8 name="Data Byte" offset="0x0" visible="true" />
+				<tagblock name="MOPP Data" offset="0x30" visible="true" elementSize="0x1">
+					<uint8 name="Data" offset="0x0" visible="true" />
 				</tagblock>
 				<undefined name="Unknown" offset="0x3C" visible="false" />
 			</tagblock>
@@ -192,30 +197,15 @@
 			<bit name="Remains When Open" index="0" />
 			<bit name="Vehicle Only" index="1" />
 			<bit name="With Sectors" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
 		</flags16>
-		<float32 name="Center x" offset="0x4" visible="true" />
-		<float32 name="Center y" offset="0x8" visible="true" />
-		<float32 name="Center z" offset="0xC" visible="true" />
+		<point3 name="Center" offset="0x4" visible="true" />
 		<float32 name="Radius" offset="0x10" visible="true" />
 	</tagblock>
 	<tagblock name="Nodes" offset="0x38" visible="true" elementSize="0xC">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int16 name="Unknown" offset="0x4" visible="true" />
-		<int16 name="Parent Node" offset="0x6" visible="true" />
-		<int16 name="Next Sibling Node" offset="0x8" visible="true" />
-		<int16 name="First Child Node" offset="0xA" visible="true" />
+		<int16 name="Parent Node Index" offset="0x6" visible="true" />
+		<int16 name="Next Sibling Node Index" offset="0x8" visible="true" />
+		<int16 name="First Child Node Index" offset="0xA" visible="true" />
 	</tagblock>
 </plugin>

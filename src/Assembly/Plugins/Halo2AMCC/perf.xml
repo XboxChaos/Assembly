@@ -5,23 +5,31 @@
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="Lord Zedd" version="2">Oh the xex has names.</revision>
 	</revisions>
-	<tagblock name="Performance" offset="0x0" visible="true" elementSize="0x48">
+	<comment title="Performance Throttles">Split-screen throttle settings should be more aggresive than non-local co-op settings
+block index 0:	default non split screen
+block index 1: two way split screen
+block index 2: three way split screen
+block index 3: four way split screen
+block index 4: one additional non-local player
+block index 5: two additional non-local players
+block index 6: three additional non-local players</comment>
+	<tagblock name="Performance Throttles" offset="0x0" visible="true" elementSize="0x48">
 		<flags32 name="Flags" offset="0x0" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Disable Player Shadows" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
+			<bit name="Disable Object Attachment Lights" index="0" />
+			<bit name="Disable First Person Shadow" index="1" />
+			<bit name="Disable Cheap Particles" index="2" />
+			<bit name="Disable Blob Shadows" index="3" />
+			<bit name="Disable Patchy Fog" index="4" />
+			<bit name="Disable Screen Distortion" index="5" />
+			<bit name="Disable Light Shafts" index="6" />
+			<bit name="Disable First Person Depth Of Field" index="7" />
+			<bit name="Disable Motion Blur" index="8" />
+			<bit name="Disable Particles Continue Offscreen" index="9" />
+			<bit name="Disable Light Cones" index="10" />
+			<bit name="Disable Water Interraction" index="11" />
+			<bit name="Disable Water Refraction" index="12" />
 			<bit name="Disable Decorators" index="13" />
-			<bit name="Bit 14" index="14" />
+			<bit name="Disable Instance Occlusion Queries" index="14" tooltip="WARNING Will likely hurt perf on most maps" />
 			<bit name="Bit 15" index="15" />
 			<bit name="Bit 16" index="16" />
 			<bit name="Bit 17" index="17" />
@@ -40,22 +48,26 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</flags32>
-		<float32 name="Water" offset="0x4" visible="true" />
-		<float32 name="Decorators" offset="0x8" visible="true" />
-		<float32 name="Effects" offset="0xC" visible="true" />
-		<float32 name="Instanced Geometry" offset="0x10" visible="true" />
-		<float32 name="Object Fade" offset="0x14" visible="true" />
-		<float32 name="Decals" offset="0x18" visible="true" />
-		<float32 name="Object Lighting Time Limit" offset="0x1C" visible="true" />
-		<float32 name="Instanced Geometry LOD" offset="0x20" visible="true" />
-		<int32 name="GPU Light Count" offset="0x24" visible="true" />
-		<float32 name="GPU Light Quality" offset="0x28" visible="true" />
-		<int32 name="Unknown Count" offset="0x2C" visible="true" />
-		<float32 name="Unknown Quality" offset="0x30" visible="true" />
-		<int32 name="Unknown Count 2" offset="0x34" visible="true" />
-		<int32 name="Shadow Count" offset="0x38" visible="true" />
-		<float32 name="Shadow Quality" offset="0x3C" visible="true" />
-		<float32 name="Floating Shadow Quality" offset="0x40" visible="true" />
+		<float32 name="Water Tessellation Scale" offset="0x4" visible="true" />
+		<float32 name="Decorator Fade Distance Scale" offset="0x8" visible="true" />
+		<float32 name="Effect LOD Distance Scale" offset="0xC" visible="true" />
+		<comment title="Object Settings" />
+		<float32 name="Instance Fade Modifier" offset="0x10" visible="true" />
+		<float32 name="Object Fade Modifier" offset="0x14" visible="true" tooltip="scales down the distances at which objects first imposter and then fade out" />
+		<float32 name="Object Detail Fade Modifier" offset="0x18" visible="true" />
+		<float32 name="Object Lighting Time Limit" offset="0x1C" visible="true" tooltip="per frame time limit to spend sampling new lighting radiosity" />
+		<comment title="IO Settings" />
+		<float32 name="IO Fade Modifier" offset="0x20" visible="true" tooltip="scales down the distances at which IOs imposter" />
+		<comment title="Dynamic Light Settings" />
+		<int32 name="Maximum Forward Dynamic Lights" offset="0x24" visible="true" tooltip="will quickly fade gpu lights when we try to render more than this many" />
+		<float32 name="Forward Dynamic Light Fade Distance Scale{Gpu Light Fade Distance Scale}" offset="0x28" visible="true" tooltip="scales the size used for distance-fade (set smaller to make it fade earlier)" />
+		<int32 name="Maximum Screenspace Dynamic Lights" offset="0x2C" visible="true" tooltip="will quickly fade screenspace lights when we try to render more than this many" />
+		<float32 name="Screenspace Light Fade Distance Scale" offset="0x30" visible="true" tooltip="scales the size used for distance-fade (set smaller to make it fade earlier)" />
+		<int32 name="Maximum Effect Lights (Screenspace)" offset="0x34" visible="true" tooltip="limits the number of effect lights we allow to be active at a time (eg. needler needles lighting up objects)" />
+		<comment title="Shadow Settings" />
+		<int32 name="Maximum Shadow Casting Objects" offset="0x38" visible="true" />
+		<float32 name="Shadow Quality LOD" offset="0x3C" visible="true" tooltip="scales resolution of object shadows" />
+		<float32 name="Floating Shadow Quality LOD" offset="0x40" visible="true" tooltip="scales resolution of floating shadow" />
 		<float32 name="Anisotropy Level" offset="0x44" visible="true" />
 	</tagblock>
 </plugin>

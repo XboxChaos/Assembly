@@ -33,9 +33,7 @@
 		</tagblock>
 		<tagblock name="Seam Clusters" offset="0x1C" visible="true" elementSize="0x10">
 			<int32 name="Cluster Index" offset="0x0" visible="true" />
-			<float32 name="Centroid X" offset="0x4" visible="true" />
-			<float32 name="Centroid Y" offset="0x8" visible="true" />
-			<float32 name="Centroid Z" offset="0xC" visible="true" />
+			<point3 name="Centroid" offset="0x4" visible="true" />
 		</tagblock>
 	</tagblock>
 	<uint32 name="block here 2" offset="0x6C" visible="false" />
@@ -88,12 +86,9 @@
 	<uint32 name="block here 6" offset="0x100" visible="false" />
 	<uint32 name="block here 6" offset="0x104" visible="false" />
 	<uint32 name="block here 6" offset="0x108" visible="false" />
-	<float32 name="World Bounds X min" offset="0x10C" visible="true" />
-	<float32 name="World Bounds X max" offset="0x110" visible="true" />
-	<float32 name="World Bounds Y min" offset="0x114" visible="true" />
-	<float32 name="World Bounds Y max" offset="0x118" visible="true" />
-	<float32 name="World Bounds Z min" offset="0x11C" visible="true" />
-	<float32 name="World Bounds Z max" offset="0x120" visible="true" />
+	<rangef name="World Bounds x" offset="0x10C" visible="true" />
+	<rangef name="World Bounds y" offset="0x114" visible="true" />
+	<rangef name="World Bounds z" offset="0x11C" visible="true" />
 	<uint32 name="block here" offset="0x124" visible="false" />
 	<uint32 name="block here" offset="0x128" visible="false" />
 	<uint32 name="block here" offset="0x12C" visible="false" />
@@ -101,9 +96,7 @@
 	<uint32 name="block here 2" offset="0x134" visible="false" />
 	<uint32 name="block here 2" offset="0x138" visible="false" />
 	<tagblock name="Cluster Portals" offset="0x13C" visible="true" elementSize="0x50">
-		<float32 name="X" offset="0x0" visible="true" />
-		<float32 name="Y" offset="0x4" visible="true" />
-		<float32 name="Z" offset="0x8" visible="true" />
+		<point3 name="Position" offset="0x0" visible="true" />
 		<float32 name="Unknown" offset="0xC" visible="false" />
 		<float32 name="Unknown" offset="0x10" visible="false" />
 		<float32 name="Unknown" offset="0x14" visible="false" />
@@ -114,9 +107,7 @@
 		<int16 name="Back Cluster" offset="0x28" visible="true" />
 		<int16 name="Front Cluster" offset="0x2A" visible="true" />
 		<int32 name="Plane Index" offset="0x2C" visible="true" />
-		<float32 name="Centroid X" offset="0x30" visible="true" />
-		<float32 name="Centroid Y" offset="0x34" visible="true" />
-		<float32 name="Centroid Z" offset="0x38" visible="true" />
+		<point3 name="Centroid" offset="0x30" visible="true" />
 		<float32 name="Bounding Radius" offset="0x3C" visible="true" />
 		<flags32 name="Flags" offset="0x40" visible="true">
 			<bit name="Bit 0" index="0" />
@@ -153,9 +144,7 @@
 			<bit name="Bit 31" index="31" />
 		</flags32>
 		<tagblock name="Vertices" offset="0x44" visible="true" elementSize="0xC">
-			<float32 name="X" offset="0x0" visible="true" />
-			<float32 name="Y" offset="0x4" visible="true" />
-			<float32 name="Z" offset="0x8" visible="true" />
+			<point3 name="Position" offset="0x0" visible="true" />
 		</tagblock>
 	</tagblock>
 	<tagblock name="Detail Objects" offset="0x148" visible="false" elementSize="0x34">
@@ -174,12 +163,9 @@
 		<undefined name="Unknown" offset="0x30" visible="true" />
 	</tagblock>
 	<tagblock name="Clusters" offset="0x154" visible="true" elementSize="0x8C">
-		<float32 name="Bounds X min" offset="0x0" visible="true" />
-		<float32 name="Bounds X max" offset="0x4" visible="true" />
-		<float32 name="Bounds Y min" offset="0x8" visible="true" />
-		<float32 name="Bounds Y max" offset="0xC" visible="true" />
-		<float32 name="Bounds Z min" offset="0x10" visible="true" />
-		<float32 name="Bounds Z max" offset="0x14" visible="true" />
+		<rangef name="Bounds x" offset="0x0" visible="true" />
+		<rangef name="Bounds y" offset="0x8" visible="true" />
+		<rangef name="Bounds z" offset="0x10" visible="true" />
 		<int8 name="Unknown" offset="0x18" visible="false" />
 		<int8 name="Unknown" offset="0x19" visible="false" />
 		<int8 name="Unknown" offset="0x1A" visible="false" />
@@ -206,16 +192,10 @@
 			<int8 name="Decorator Index" offset="0x2" visible="true" />
 			<int8 name="Decorator Index - Scattering" offset="0x3" visible="true" />
 			<int32 name="Unknown" offset="0x4" visible="false" />
-			<float32 name="Position X" offset="0x8" visible="true" />
-			<float32 name="Position Y" offset="0xC" visible="true" />
-			<float32 name="Position Z" offset="0x10" visible="true" />
+			<point3 name="Position" offset="0x8" visible="true" />
 			<float32 name="Radius" offset="0x14" visible="true" />
-			<float32 name="Grid Size X" offset="0x18" visible="true" />
-			<float32 name="Grid Size Y" offset="0x1C" visible="true" />
-			<float32 name="Grid Size Z" offset="0x20" visible="true" />
-			<float32 name="Bounding Sphere X" offset="0x24" visible="true" />
-			<float32 name="Bounding Sphere Y" offset="0x28" visible="true" />
-			<float32 name="Bounding Sphere Z" offset="0x2C" visible="true" />
+			<point3 name="Grid Size" offset="0x18" visible="true" />
+			<point3 name="Bounding Sphere" offset="0x24" visible="true" />
 			<tagblock name="Unknown" offset="0x30" visible="false" elementSize="0x2">
 				<int16 name="Unknown" offset="0x0" visible="false" />
 			</tagblock>
@@ -234,20 +214,21 @@
 		<undefined name="Unknown" offset="0x88" visible="true" />
 	</tagblock>
 	<tagblock name="Materials" offset="0x160" visible="true" elementSize="0x2C">
-		<tagRef name="Shader" offset="0x0" visible="true" />
-		<int32 name="Unknown" offset="0x10" visible="false" />
-		<float32 name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<int8 name="Unknown" offset="0x1C" visible="false" />
-		<int8 name="Unknown" offset="0x1D" visible="false" />
-		<int8 name="Unknown" offset="0x1E" visible="false" />
-		<int8 name="Unknown" offset="0x1F" visible="false" />
-		<float32 name="Unknown" offset="0x20" visible="false" />
-		<float32 name="Unknown" offset="0x24" visible="false" />
-		<int8 name="Unknown" offset="0x28" visible="false" />
+		<tagRef name="Render Method" offset="0x0" visible="true" />
+		<int32 name="Imported Material Index" offset="0x10" visible="true" />
+		<float32 name="Lightmap Resolution Scale" offset="0x14" visible="true" />
+		<int32 name="Lightmap Additive Transparency Color" offset="0x18" visible="true" />
+		<int32 name="Lightmap Translucency Tint Color" offset="0x1C" visible="true" />
+		<float32 name="Lightmap Analytical Light Absorb" offset="0x20" visible="true" />
+		<float32 name="Lightmap Normal Light Absorb" offset="0x24" visible="true" />
+		<flags8 name="Lightmap Flags" offset="0x28" visible="true">
+			<bit name="Ignore Default Resolution Scale" index="0" />
+			<bit name="Transparency Override" index="1" />
+			<bit name="Lighting From Both Sides" index="2" />
+			<bit name="Version 1" index="3" />
+		</flags8>
 		<int8 name="Breakable Surface Index" offset="0x29" visible="true" />
-		<int8 name="Unknown" offset="0x2A" visible="false" />
-		<int8 name="Unknown" offset="0x2B" visible="false" />
+		<int16 name="Lightmap Chart Group Index" offset="0x2A" visible="true" />
 	</tagblock>
 	<tagblock name="Unknown" offset="0x16C" visible="false" elementSize="0x28">
 		<undefined name="Unknown" offset="0x0" visible="false" />
@@ -333,13 +314,8 @@
 		<int16 name="Unknown" offset="0x0" visible="false" />
 		<int16 name="Unknown" offset="0x2" visible="false" />
 		<ascii name="Name" offset="0x4" length="0x20" visible="true" />
-		<degree name="Rotation i" offset="0x24" visible="true" />
-		<degree name="Rotation j" offset="0x28" visible="true" />
-		<degree name="Rotation k" offset="0x2C" visible="true" />
-		<degree name="Rotation w" offset="0x30" visible="true" />
-		<float32 name="Position x" offset="0x34" visible="true" />
-		<float32 name="Position y" offset="0x38" visible="true" />
-		<float32 name="Position z" offset="0x3C" visible="true" />
+		<vector4 name="Rotation" offset="0x24" visible="true" />
+		<point3 name="Position" offset="0x34" visible="true" />
 	</tagblock>
 	<uint32 name="block here 2" offset="0x1E0" visible="true" />
 	<uint32 name="block here 2" offset="0x1E4" visible="true" />

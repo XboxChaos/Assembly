@@ -42,9 +42,7 @@
 	<int32 name="Milliseconds To Auto Close" offset="0x30" visible="true" tooltip="&lt;=0 to never auto-close" />
 	<int32 name="Milliseconds Auto Close Fade Time" offset="0x34" visible="true" tooltip="&lt;= 0 for immediate close" />
 	<tagRef name="Background Bitmap" offset="0x38" visible="true" />
-	<comment title="Game Data Input Fxns">These functions use current game data to modify the appearance of
-the widget. These functions are called every time the widget is
-rendered.</comment>
+	<comment title="Game Data Input Fxns">These functions use current game data to modify the appearance of the widget. These functions are called every time the widget is rendered.</comment>
 	<tagblock name="Game Data Inputs" offset="0x48" visible="true" elementSize="0x24">
 		<enum16 name="Function" offset="0x0" visible="true">
 			<option name="NULL" value="0x0" />
@@ -81,7 +79,7 @@ rendered.</comment>
 			<option name="Mp Set Textbox Score Limit Type" value="0x1F" />
 			<option name="Mp Set Bitmap For Map" value="0x20" />
 			<option name="Mp Set Bitmap For Ruleset" value="0x21" />
-			<option name="Mp Set Textbox" value="0x22" tooltip=" of players" />
+			<option name="Mp Set Textbox Number Of Players" value="0x22" />
 			<option name="Mp Edit Profile Set Rule Text" value="0x23" />
 			<option name="System Link Status Check" value="0x24" />
 			<option name="Mp Game Directions" value="0x25" />
@@ -367,11 +365,7 @@ By default, the 'back' and 'B' buttons will take you to the previous screen.</co
 		<tagRef name="Sound Effect" offset="0x18" visible="true" />
 		<ascii name="Script" offset="0x28" length="0x20" visible="true" />
 	</tagblock>
-	<comment title="Search-And-Replace">These are used to run a search-and-replace on the specified
-word in the text-box text, replacing all occurrences of the word
-with the output of the replace-function. These are invoked each
-time the text box is rendered (after any game data input functions
-have been run). The searching is case-sensitive.</comment>
+	<comment title="Search-And-Replace">These are used to run a search-and-replace on the specified word in the text-box text, replacing all occurrences of the word with the output of the replace-function. These are invoked each time the text box is rendered (after any game data input functions have been run). The searching is case-sensitive.</comment>
 	<tagblock name="Search And Replace Functions" offset="0x60" visible="true" elementSize="0x22">
 		<ascii name="Search String" offset="0x0" length="0x20" visible="true" />
 		<enum16 name="Replace Function" offset="0x20" visible="true">
@@ -434,8 +428,8 @@ NOTE: the string list tag can also be used for lists whose items come from a str
 	<undefined name="Unknown" offset="0x12A" visible="false" />
 	<comment title="More Text Box Parameters">blah blah blah</comment>
 	<int16 name="String List Index" offset="0x12E" visible="true" tooltip="default is 0" />
-	<int16 name="Horiz Offset" offset="0x130" visible="true" tooltip="offsets text position in its bounding area" />
-	<int16 name="Vert Offset" offset="0x132" visible="true" tooltip="offsets the text position in its bounding area" />
+	<int16 name="Horizontal Offset" offset="0x130" visible="true" tooltip="offsets text position in its bounding area" />
+	<int16 name="Vertical Offset" offset="0x132" visible="true" tooltip="offsets the text position in its bounding area" />
 	<undefined name="Unknown" offset="0x134" visible="false" />
 	<undefined name="Unknown" offset="0x138" visible="false" />
 	<undefined name="Unknown" offset="0x13C" visible="false" />
@@ -445,8 +439,7 @@ NOTE: the string list tag can also be used for lists whose items come from a str
 	<int16 name="Unknown" offset="0x14C" visible="false" />
 	<comment title="List Items">These options affect list items for both spinner and column lists
 * child widgets are used to define the visible list items
-* for lists with code-generated list items, the child widgets are used
-  as templated for visible list item placement
+* for lists with code-generated list items, the child widgets are used as templated for visible list item placement
 IMPORTANT: for list widgets, the ONLY thing you can have as child widgets are the list item widgets!</comment>
 	<int16 name="Unknown" offset="0x14E" visible="false" />
 	<flags32 name="Flags" offset="0x150" visible="true">
@@ -544,8 +537,7 @@ child widgets are the list items</comment>
 	<undefined name="Unknown" offset="0x2C8" visible="false" />
 	<undefined name="Unknown" offset="0x2CC" visible="false" />
 	<undefined name="Unknown" offset="0x2D0" visible="false" />
-	<comment title="Conditional Widgets">use this to attach widgets that are loaded only
-if some internal criteria is met while processing a widget event</comment>
+	<comment title="Conditional Widgets">use this to attach widgets that are loaded only if some internal criteria is met while processing a widget event</comment>
 	<tagblock name="Conditional Widgets" offset="0x2D4" visible="true" elementSize="0x50">
 		<tagRef name="Widget Tag" offset="0x0" visible="true" />
 		<ascii name="Name (Unused)" offset="0x10" length="0x20" visible="true" />
@@ -625,8 +617,7 @@ if some internal criteria is met while processing a widget event</comment>
 	<undefined name="Unknown" offset="0x3D4" visible="false" />
 	<undefined name="Unknown" offset="0x3D8" visible="false" />
 	<undefined name="Unknown" offset="0x3DC" visible="false" />
-	<comment title="Child Widgets">use this to attach widgets that are loaded as 'children'
-of this widget (children are always loaded as part of the parent widget)</comment>
+	<comment title="Child Widgets">use this to attach widgets that are loaded as 'children' of this widget (children are always loaded as part of the parent widget)</comment>
 	<tagblock name="Child Widgets" offset="0x3E0" visible="true" elementSize="0x50">
 		<tagRef name="Widget Tag" offset="0x0" visible="true" />
 		<ascii name="Name (Unused)" offset="0x10" length="0x20" visible="true" />

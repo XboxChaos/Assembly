@@ -607,10 +607,10 @@
 			<bit name="Not On Easy" index="1" />
 			<bit name="Not On Normal" index="2" />
 			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Env Object" index="4" />
-			<bit name="Lock Transform To Env Object" index="5" />
+			<bit name="Lock Type To Environment Object" index="4" />
+			<bit name="Lock Transform To Environment Object" index="5" />
 			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Env Object" index="7" />
+			<bit name="Lock Name to Environment Object" index="7" />
 			<bit name="Create At Rest" index="8" />
 			<bit name="Bit 9" index="9" />
 			<bit name="Bit 10" index="10" />
@@ -636,17 +636,13 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</flags32>
-		<float32 name="Position x" offset="0x8" visible="true" />
-		<float32 name="Position y" offset="0xC" visible="true" />
-		<float32 name="Position z" offset="0x10" visible="true" />
-		<degree name="Rotation i" offset="0x14" visible="true" />
-		<degree name="Rotation j" offset="0x18" visible="true" />
-		<degree name="Rotation k" offset="0x1C" visible="true" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
 		<float32 name="Scale" offset="0x20" visible="true" />
-		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+		<comment title="Node Orientations">This block allows you to "pose" this object's nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
 The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
 DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
-		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
+		<tagblock name="Node Orientations" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
@@ -662,7 +658,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
-				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
+				<int16 name="Rotation [i, j, k, w]" offset="0x0" visible="true" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
 				<flags8 name="Flags" offset="0x0" visible="true">
@@ -707,14 +703,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations [Readable]" offset="0x10" visible="true" elementSize="0x8">
-				<int16 name="Rotation x" offset="0x0" visible="true" />
-				<int16 name="Rotation y" offset="0x2" visible="true" />
-				<int16 name="Rotation z" offset="0x4" visible="true" />
-				<int16 name="Rotation w" offset="0x6" visible="true" />
+				<quat16 name="Rotation" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
-		<int16 name="Unknown" offset="0x30" visible="false" />
-		<flags16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+		<flags16 name="Transform Flags" offset="0x30" visible="true">
+			<bit name="Mirrored" index="0" />
+		</flags16>
+		<flags16 name="Zone Set Flags" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
 			<bit name="Set 1" index="1" />
 			<bit name="Set 2" index="2" />
@@ -732,7 +727,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Set 14" index="14" />
 			<bit name="Set 15" index="15" />
 		</flags16>
-		<stringid name="Unique Name" offset="0x34" visible="true" />
+		<stringid name="Light Airprobe Name" offset="0x34" visible="true" />
 		<datum name="Unique ID" offset="0x38" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x3C" visible="true" />
 		<enum8 name="Type" offset="0x3E" visible="true">
@@ -757,6 +752,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="Editor" value="0x1" />
 			<option name="Dynamic" value="0x2" />
 			<option name="Legacy" value="0x3" />
+			<option name="Sky" value="0x4" />
+			<option name="Parent" value="0x5" />
 		</enum8>
 		<enum8 name="BSP Policy" offset="0x40" visible="true">
 			<option name="Default" value="0x0" />
@@ -766,9 +763,9 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int8 name="Unknown" offset="0x41" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x42" visible="true" />
 		<int16 name="Unknown" offset="0x44" visible="false" />
-		<int16 name="Parent Name Index" offset="0x46" visible="true" />
-		<stringid name="Child Name" offset="0x48" visible="true" />
-		<stringid name="Unknown" offset="0x4C" visible="true" />
+		<int16 name="Parent Object Name Index" offset="0x46" visible="true" tooltip="if an object with this name exists, we attach to it as a child" />
+		<stringid name="Parent Marker" offset="0x48" visible="true" />
+		<stringid name="Connection Marker" offset="0x4C" visible="true" />
 		<flags16 name="Can Attach To BSP Flags" offset="0x50" visible="true">
 			<bit name="BSP 0" index="0" />
 			<bit name="BSP 1" index="1" />
@@ -817,15 +814,15 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<int16 name="BSP Index" offset="0x0" visible="true" />
 			<int16 name="Pathfinding Object Index" offset="0x2" visible="true" />
 		</tagblock>
-		<int16 name="Unknown" offset="0x7C" visible="true" />
-		<int16 name="Unknown" offset="0x7E" visible="true" />
+		<int16 name="Havok MOPP Index" offset="0x7C" visible="true" />
+		<int16 name="AI Spawning Squad Index" offset="0x7E" visible="true" />
 		<comment title="Multiplayer Data" />
-		<enum32 name="Symmetry" offset="0x80" visible="true">
-			<option name="Both" value="0x0" />
+		<enum32 name="Symmetric Placement" offset="0x80" visible="true">
+			<option name="Ignore" value="0x0" />
 			<option name="Symmetric" value="0x1" />
 			<option name="Asymmetric" value="0x2" />
 		</enum32>
-		<flags16 name="Engine Flags" offset="0x84" visible="true">
+		<flags16 name="Game Engine Flags" offset="0x84" visible="true">
 			<bit name="Capture The Flag" index="0" />
 			<bit name="Slayer" index="1" />
 			<bit name="Oddball" index="2" />
@@ -848,12 +845,12 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="Pink" value="0x7" />
 			<option name="Neutral" value="0x8" />
 		</enum16>
-		<int8 name="Spawn Sequence" offset="0x88" visible="true" />
-		<int8 name="Runtime Minimum" offset="0x89" visible="true" />
-		<int8 name="Runtime Maximum" offset="0x8A" visible="true" />
+		<int8 name="Spawn Order" offset="0x88" visible="true" />
+		<int8 name="Quota Minimum" offset="0x89" visible="true" />
+		<int8 name="Quota Maximum" offset="0x8A" visible="true" />
 		<flags8 name="Multiplayer Flags" offset="0x8B" visible="true">
-			<bit name="Is Unique Object" index="0" />
-			<bit name="Not Placed At Start" index="1" />
+			<bit name="Unique Spawn" index="0" />
+			<bit name="Not Initially Placed" index="1" />
 			<bit name="Bit 2" index="2" />
 			<bit name="Bit 3" index="3" />
 			<bit name="Bit 4" index="4" />
@@ -862,9 +859,9 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Bit 7" index="7" />
 		</flags8>
 		<int16 name="Spawn Time" offset="0x8C" visible="true" />
-		<int16 name="Abandon Time" offset="0x8E" visible="true" />
+		<int16 name="Abandonment Time" offset="0x8E" visible="true" />
 		<int8 name="Unknown" offset="0x90" visible="false" />
-		<enum8 name="Shape" offset="0x91" visible="true">
+		<enum8 name="Boundary Shape" offset="0x91" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Sphere" value="0x1" />
 			<option name="Cylinder" value="0x2" />
@@ -873,14 +870,14 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int8 name="Teleporter Channel" offset="0x92" visible="true" />
 		<int8 name="Unknown" offset="0x93" visible="false" />
 		<int16 name="Unknown" offset="0x94" visible="false" />
-		<int16 name="Attached Name Index" offset="0x96" visible="true" />
-		<undefined name="Unknown" offset="0x98" visible="false" />
-		<undefined name="Unknown" offset="0x9C" visible="false" />
-		<float32 name="Width/Radius" offset="0xA0" visible="true" />
-		<float32 name="Depth" offset="0xA4" visible="true" />
-		<float32 name="Top" offset="0xA8" visible="true" />
-		<float32 name="Bottom" offset="0xAC" visible="true" />
-		<undefined name="Unknown" offset="0xB0" visible="false" />
+		<int16 name="Parent Object Index" offset="0x96" visible="true" tooltip="if an object with this name exists, we attach to it as a child" />
+		<stringid name="Parent Marker" offset="0x98" visible="true" />
+		<stringid name="Connection Marker" offset="0x9C" visible="true" />
+		<float32 name="Boundary Shape Width/Radius" offset="0xA0" visible="true" />
+		<float32 name="Boundary Shape Box Length" offset="0xA4" visible="true" />
+		<float32 name="Boundary Shape +Height" offset="0xA8" visible="true" />
+		<float32 name="Boundary Shape -Height" offset="0xAC" visible="true" />
+		<float32 name="Respawn Weight" offset="0xB0" visible="true" />
 	</tagblock>
 	<tagblock name="Scenery Palette" offset="0xF0" visible="true" elementSize="0x30">
 		<tagRef name="Scenery" offset="0x0" visible="true" />
@@ -901,10 +898,10 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Not On Easy" index="1" />
 			<bit name="Not On Normal" index="2" />
 			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Env Object" index="4" />
-			<bit name="Lock Transform To Env Object" index="5" />
+			<bit name="Lock Type To Environment Object" index="4" />
+			<bit name="Lock Transform To Environment Object" index="5" />
 			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Env Object" index="7" />
+			<bit name="Lock Name to Environment Object" index="7" />
 			<bit name="Create At Rest" index="8" />
 			<bit name="Bit 9" index="9" />
 			<bit name="Bit 10" index="10" />
@@ -930,17 +927,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</flags32>
-		<float32 name="Position x" offset="0x8" visible="true" />
-		<float32 name="Position y" offset="0xC" visible="true" />
-		<float32 name="Position z" offset="0x10" visible="true" />
-		<degree name="Rotation i" offset="0x14" visible="true" />
-		<degree name="Rotation j" offset="0x18" visible="true" />
-		<degree name="Rotation k" offset="0x1C" visible="true" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
 		<float32 name="Scale" offset="0x20" visible="true" />
-		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+		<comment title="Node Orientations">This block allows you to "pose" this object's nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
 The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
 DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
-		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
+		<tagblock name="Node Orientations" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
@@ -956,7 +949,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
-				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
+				<int16 name="Rotation [i, j, k, w]" offset="0x0" visible="true" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
 				<flags8 name="Flags" offset="0x0" visible="true">
@@ -1001,14 +994,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations [Readable]" offset="0x10" visible="true" elementSize="0x8">
-				<int16 name="Rotation x" offset="0x0" visible="true" />
-				<int16 name="Rotation y" offset="0x2" visible="true" />
-				<int16 name="Rotation z" offset="0x4" visible="true" />
-				<int16 name="Rotation w" offset="0x6" visible="true" />
+				<quat16 name="Rotation" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
-		<int16 name="Unknown" offset="0x30" visible="false" />
-		<flags16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+		<flags16 name="Transform Flags" offset="0x30" visible="true">
+			<bit name="Mirrored" index="0" />
+		</flags16>
+		<flags16 name="Zone Set Flags" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
 			<bit name="Set 1" index="1" />
 			<bit name="Set 2" index="2" />
@@ -1026,7 +1018,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Set 14" index="14" />
 			<bit name="Set 15" index="15" />
 		</flags16>
-		<stringid name="Unique Name" offset="0x34" visible="true" />
+		<stringid name="Light Airprobe Name" offset="0x34" visible="true" />
 		<datum name="Unique ID" offset="0x38" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x3C" visible="true" />
 		<enum8 name="Type" offset="0x3E" visible="true">
@@ -1051,6 +1043,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="Editor" value="0x1" />
 			<option name="Dynamic" value="0x2" />
 			<option name="Legacy" value="0x3" />
+			<option name="Sky" value="0x4" />
+			<option name="Parent" value="0x5" />
 		</enum8>
 		<enum8 name="BSP Policy" offset="0x40" visible="true">
 			<option name="Default" value="0x0" />
@@ -1060,9 +1054,9 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int8 name="Unknown" offset="0x41" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x42" visible="true" />
 		<int16 name="Unknown" offset="0x44" visible="false" />
-		<int16 name="Parent Name Index" offset="0x46" visible="true" />
-		<stringid name="Child Name" offset="0x48" visible="true" />
-		<stringid name="Unknown" offset="0x4C" visible="true" />
+		<int16 name="Parent Object Name Index" offset="0x46" visible="true" tooltip="if an object with this name exists, we attach to it as a child" />
+		<stringid name="Parent Marker" offset="0x48" visible="true" />
+		<stringid name="Connection Marker" offset="0x4C" visible="true" />
 		<flags16 name="Can Attach To BSP Flags" offset="0x50" visible="true">
 			<bit name="BSP 0" index="0" />
 			<bit name="BSP 1" index="1" />
@@ -1096,39 +1090,10 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<color32 name="Quaternary Color" offset="0x68" alpha="true" visible="true" />
 		<comment title="Unit Data" />
 		<float32 name="Body Vitality Percentage" offset="0x6C" visible="true" />
-		<flags32 name="Flags" offset="0x70" visible="true">
+		<flags32 name="Unit Flags" offset="0x70" visible="true">
 			<bit name="Dead" index="0" />
 			<bit name="Closed" index="1" />
 			<bit name="Not Enterable by Player" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
 		</flags32>
 	</tagblock>
 	<tagblock name="Biped Palette" offset="0x108" visible="true" elementSize="0x30">
@@ -1150,10 +1115,10 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Not On Easy" index="1" />
 			<bit name="Not On Normal" index="2" />
 			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Env Object" index="4" />
-			<bit name="Lock Transform To Env Object" index="5" />
+			<bit name="Lock Type To Environment Object" index="4" />
+			<bit name="Lock Transform To Environment Object" index="5" />
 			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Env Object" index="7" />
+			<bit name="Lock Name to Environment Object" index="7" />
 			<bit name="Create At Rest" index="8" />
 			<bit name="Bit 9" index="9" />
 			<bit name="Bit 10" index="10" />
@@ -1179,17 +1144,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</flags32>
-		<float32 name="Position x" offset="0x8" visible="true" />
-		<float32 name="Position y" offset="0xC" visible="true" />
-		<float32 name="Position z" offset="0x10" visible="true" />
-		<degree name="Rotation i" offset="0x14" visible="true" />
-		<degree name="Rotation j" offset="0x18" visible="true" />
-		<degree name="Rotation k" offset="0x1C" visible="true" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
 		<float32 name="Scale" offset="0x20" visible="true" />
-		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+		<comment title="Node Orientations">This block allows you to "pose" this object's nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
 The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
 DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
-		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
+		<tagblock name="Node Orientations" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
@@ -1205,7 +1166,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
-				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
+				<int16 name="Rotation [i, j, k, w]" offset="0x0" visible="true" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
 				<flags8 name="Flags" offset="0x0" visible="true">
@@ -1250,14 +1211,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations [Readable]" offset="0x10" visible="true" elementSize="0x8">
-				<int16 name="Rotation x" offset="0x0" visible="true" />
-				<int16 name="Rotation y" offset="0x2" visible="true" />
-				<int16 name="Rotation z" offset="0x4" visible="true" />
-				<int16 name="Rotation w" offset="0x6" visible="true" />
+				<quat16 name="Rotation" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
-		<int16 name="Unknown" offset="0x30" visible="false" />
-		<flags16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+		<flags16 name="Transform Flags" offset="0x30" visible="true">
+			<bit name="Mirrored" index="0" />
+		</flags16>
+		<flags16 name="Zone Set Flags" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
 			<bit name="Set 1" index="1" />
 			<bit name="Set 2" index="2" />
@@ -1275,7 +1235,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Set 14" index="14" />
 			<bit name="Set 15" index="15" />
 		</flags16>
-		<stringid name="Unique Name" offset="0x34" visible="true" />
+		<stringid name="Light Airprobe Name" offset="0x34" visible="true" />
 		<datum name="Unique ID" offset="0x38" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x3C" visible="true" />
 		<enum8 name="Type" offset="0x3E" visible="true">
@@ -1300,6 +1260,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="Editor" value="0x1" />
 			<option name="Dynamic" value="0x2" />
 			<option name="Legacy" value="0x3" />
+			<option name="Sky" value="0x4" />
+			<option name="Parent" value="0x5" />
 		</enum8>
 		<enum8 name="BSP Policy" offset="0x40" visible="true">
 			<option name="Default" value="0x0" />
@@ -1309,9 +1271,9 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int8 name="Unknown" offset="0x41" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x42" visible="true" />
 		<int16 name="Unknown" offset="0x44" visible="false" />
-		<int16 name="Parent Name Index" offset="0x46" visible="true" />
-		<stringid name="Child Name" offset="0x48" visible="true" />
-		<stringid name="Unknown" offset="0x4C" visible="true" />
+		<int16 name="Parent Object Name Index" offset="0x46" visible="true" tooltip="if an object with this name exists, we attach to it as a child" />
+		<stringid name="Parent Marker" offset="0x48" visible="true" />
+		<stringid name="Connection Marker" offset="0x4C" visible="true" />
 		<flags16 name="Can Attach To BSP Flags" offset="0x50" visible="true">
 			<bit name="BSP 0" index="0" />
 			<bit name="BSP 1" index="1" />
@@ -1345,47 +1307,18 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<color32 name="Quaternary Color" offset="0x68" alpha="true" visible="true" />
 		<comment title="Unit Data" />
 		<float32 name="Body Vitality Percentage" offset="0x6C" visible="true" />
-		<flags32 name="Flags" offset="0x70" visible="true">
+		<flags32 name="Unit Flags" offset="0x70" visible="true">
 			<bit name="Dead" index="0" />
 			<bit name="Closed" index="1" />
 			<bit name="Not Enterable by Player" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
 		</flags32>
 		<comment title="Multiplayer Data" />
-		<enum32 name="Symmetry" offset="0x74" visible="true">
-			<option name="Both" value="0x0" />
+		<enum32 name="Symmetric Placement" offset="0x74" visible="true">
+			<option name="Ignore" value="0x0" />
 			<option name="Symmetric" value="0x1" />
 			<option name="Asymmetric" value="0x2" />
 		</enum32>
-		<flags16 name="Engine Flags" offset="0x78" visible="true">
+		<flags16 name="Game Engine Flags" offset="0x78" visible="true">
 			<bit name="Capture The Flag" index="0" />
 			<bit name="Slayer" index="1" />
 			<bit name="Oddball" index="2" />
@@ -1408,12 +1341,12 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="Pink" value="0x7" />
 			<option name="Neutral" value="0x8" />
 		</enum16>
-		<int8 name="Spawn Sequence" offset="0x7C" visible="true" />
-		<int8 name="Runtime Minimum" offset="0x7D" visible="true" />
-		<int8 name="Runtime Maximum" offset="0x7E" visible="true" />
+		<int8 name="Spawn Order" offset="0x7C" visible="true" />
+		<int8 name="Quota Minimum" offset="0x7D" visible="true" />
+		<int8 name="Quota Maximum" offset="0x7E" visible="true" />
 		<flags8 name="Multiplayer Flags" offset="0x7F" visible="true">
-			<bit name="Is Unique Object" index="0" />
-			<bit name="Not Placed At Start" index="1" />
+			<bit name="Unique Spawn" index="0" />
+			<bit name="Not Initially Placed" index="1" />
 			<bit name="Bit 2" index="2" />
 			<bit name="Bit 3" index="3" />
 			<bit name="Bit 4" index="4" />
@@ -1422,9 +1355,9 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Bit 7" index="7" />
 		</flags8>
 		<int16 name="Spawn Time" offset="0x80" visible="true" />
-		<int16 name="Abandon Time" offset="0x82" visible="true" />
+		<int16 name="Abandonment Time" offset="0x82" visible="true" />
 		<int8 name="Unknown" offset="0x84" visible="false" />
-		<enum8 name="Shape" offset="0x85" visible="true">
+		<enum8 name="Boundary Shape" offset="0x85" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Sphere" value="0x1" />
 			<option name="Cylinder" value="0x2" />
@@ -1433,14 +1366,14 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int8 name="Teleporter Channel" offset="0x86" visible="true" />
 		<int8 name="Unknown" offset="0x87" visible="false" />
 		<int16 name="Unknown" offset="0x88" visible="false" />
-		<int16 name="Attached Name Index" offset="0x8A" visible="true" />
-		<undefined name="Unknown" offset="0x8C" visible="false" />
-		<undefined name="Unknown" offset="0x90" visible="false" />
-		<float32 name="Width/Radius" offset="0x94" visible="true" />
-		<float32 name="Depth" offset="0x98" visible="true" />
-		<float32 name="Top" offset="0x9C" visible="true" />
-		<float32 name="Bottom" offset="0xA0" visible="true" />
-		<undefined name="Unknown" offset="0xA4" visible="false" />
+		<int16 name="Parent Object Index" offset="0x8A" visible="true" tooltip="if an object with this name exists, we attach to it as a child" />
+		<stringid name="Parent Marker" offset="0x8C" visible="true" />
+		<stringid name="Connection Marker" offset="0x90" visible="true" />
+		<float32 name="Boundary Shape Width/Radius" offset="0x94" visible="true" />
+		<float32 name="Boundary Shape Box Length" offset="0x98" visible="true" />
+		<float32 name="Boundary Shape +Height" offset="0x9C" visible="true" />
+		<float32 name="Boundary Shape -Height" offset="0xA0" visible="true" />
+		<float32 name="Respawn Weight" offset="0xA4" visible="true" />
 	</tagblock>
 	<tagblock name="Vehicle Palette" offset="0x120" visible="true" elementSize="0x30">
 		<tagRef name="Vehicle" offset="0x0" visible="true" />
@@ -1461,10 +1394,10 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Not On Easy" index="1" />
 			<bit name="Not On Normal" index="2" />
 			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Env Object" index="4" />
-			<bit name="Lock Transform To Env Object" index="5" />
+			<bit name="Lock Type To Environment Object" index="4" />
+			<bit name="Lock Transform To Environment Object" index="5" />
 			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Env Object" index="7" />
+			<bit name="Lock Name to Environment Object" index="7" />
 			<bit name="Create At Rest" index="8" />
 			<bit name="Bit 9" index="9" />
 			<bit name="Bit 10" index="10" />
@@ -1490,17 +1423,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</flags32>
-		<float32 name="Position x" offset="0x8" visible="true" />
-		<float32 name="Position y" offset="0xC" visible="true" />
-		<float32 name="Position z" offset="0x10" visible="true" />
-		<degree name="Rotation i" offset="0x14" visible="true" />
-		<degree name="Rotation j" offset="0x18" visible="true" />
-		<degree name="Rotation k" offset="0x1C" visible="true" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
 		<float32 name="Scale" offset="0x20" visible="true" />
-		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+		<comment title="Node Orientations">This block allows you to "pose" this object's nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
 The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
 DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
-		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
+		<tagblock name="Node Orientations" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
@@ -1516,7 +1445,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
-				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
+				<int16 name="Rotation [i, j, k, w]" offset="0x0" visible="true" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
 				<flags8 name="Flags" offset="0x0" visible="true">
@@ -1561,14 +1490,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations [Readable]" offset="0x10" visible="true" elementSize="0x8">
-				<int16 name="Rotation x" offset="0x0" visible="true" />
-				<int16 name="Rotation y" offset="0x2" visible="true" />
-				<int16 name="Rotation z" offset="0x4" visible="true" />
-				<int16 name="Rotation w" offset="0x6" visible="true" />
+				<quat16 name="Rotation" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
-		<int16 name="Unknown" offset="0x30" visible="false" />
-		<flags16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+		<flags16 name="Transform Flags" offset="0x30" visible="true">
+			<bit name="Mirrored" index="0" />
+		</flags16>
+		<flags16 name="Zone Set Flags" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
 			<bit name="Set 1" index="1" />
 			<bit name="Set 2" index="2" />
@@ -1586,7 +1514,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Set 14" index="14" />
 			<bit name="Set 15" index="15" />
 		</flags16>
-		<stringid name="Unique Name" offset="0x34" visible="true" />
+		<stringid name="Light Airprobe Name" offset="0x34" visible="true" />
 		<datum name="Unique ID" offset="0x38" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x3C" visible="true" />
 		<enum8 name="Type" offset="0x3E" visible="true">
@@ -1611,6 +1539,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="Editor" value="0x1" />
 			<option name="Dynamic" value="0x2" />
 			<option name="Legacy" value="0x3" />
+			<option name="Sky" value="0x4" />
+			<option name="Parent" value="0x5" />
 		</enum8>
 		<enum8 name="BSP Policy" offset="0x40" visible="true">
 			<option name="Default" value="0x0" />
@@ -1620,9 +1550,9 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int8 name="Unknown" offset="0x41" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x42" visible="true" />
 		<int16 name="Unknown" offset="0x44" visible="false" />
-		<int16 name="Parent Name Index" offset="0x46" visible="true" />
-		<stringid name="Child Name" offset="0x48" visible="true" />
-		<stringid name="Unknown" offset="0x4C" visible="true" />
+		<int16 name="Parent Object Name Index" offset="0x46" visible="true" tooltip="if an object with this name exists, we attach to it as a child" />
+		<stringid name="Parent Marker" offset="0x48" visible="true" />
+		<stringid name="Connection Marker" offset="0x4C" visible="true" />
 		<flags16 name="Can Attach To BSP Flags" offset="0x50" visible="true">
 			<bit name="BSP 0" index="0" />
 			<bit name="BSP 1" index="1" />
@@ -1647,43 +1577,14 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Initially At Rest (Does Not Fall)" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Does Accelerate (Moves Due to Explosions)" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
 		</flags32>
 		<comment title="Multiplayer Data" />
-		<enum32 name="Symmetry" offset="0x58" visible="true">
-			<option name="Both" value="0x0" />
+		<enum32 name="Symmetric Placement" offset="0x58" visible="true">
+			<option name="Ignore" value="0x0" />
 			<option name="Symmetric" value="0x1" />
 			<option name="Asymmetric" value="0x2" />
 		</enum32>
-		<flags16 name="Engine Flags" offset="0x5C" visible="true">
+		<flags16 name="Game Engine Flags" offset="0x5C" visible="true">
 			<bit name="Capture The Flag" index="0" />
 			<bit name="Slayer" index="1" />
 			<bit name="Oddball" index="2" />
@@ -1706,12 +1607,12 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="Pink" value="0x7" />
 			<option name="Neutral" value="0x8" />
 		</enum16>
-		<int8 name="Spawn Sequence" offset="0x60" visible="true" />
-		<int8 name="Runtime Minimum" offset="0x61" visible="true" />
-		<int8 name="Runtime Maximum" offset="0x62" visible="true" />
+		<int8 name="Spawn Order" offset="0x60" visible="true" />
+		<int8 name="Quota Minimum" offset="0x61" visible="true" />
+		<int8 name="Quota Maximum" offset="0x62" visible="true" />
 		<flags8 name="Multiplayer Flags" offset="0x63" visible="true">
-			<bit name="Is Unique Object" index="0" />
-			<bit name="Not Placed At Start" index="1" />
+			<bit name="Unique Spawn" index="0" />
+			<bit name="Not Initially Placed" index="1" />
 			<bit name="Bit 2" index="2" />
 			<bit name="Bit 3" index="3" />
 			<bit name="Bit 4" index="4" />
@@ -1720,9 +1621,9 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Bit 7" index="7" />
 		</flags8>
 		<int16 name="Spawn Time" offset="0x64" visible="true" />
-		<int16 name="Abandon Time" offset="0x66" visible="true" />
+		<int16 name="Abandonment Time" offset="0x66" visible="true" />
 		<int8 name="Unknown" offset="0x68" visible="false" />
-		<enum8 name="Shape" offset="0x69" visible="true">
+		<enum8 name="Boundary Shape" offset="0x69" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Sphere" value="0x1" />
 			<option name="Cylinder" value="0x2" />
@@ -1731,14 +1632,14 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int8 name="Teleporter Channel" offset="0x6A" visible="true" />
 		<int8 name="Unknown" offset="0x6B" visible="false" />
 		<int16 name="Unknown" offset="0x6C" visible="false" />
-		<int16 name="Attached Name Index" offset="0x6E" visible="true" />
-		<undefined name="Unknown" offset="0x70" visible="false" />
-		<undefined name="Unknown" offset="0x74" visible="false" />
-		<float32 name="Width/Radius" offset="0x78" visible="true" />
-		<float32 name="Depth" offset="0x7C" visible="true" />
-		<float32 name="Top" offset="0x80" visible="true" />
-		<float32 name="Bottom" offset="0x84" visible="true" />
-		<undefined name="Unknown" offset="0x88" visible="false" />
+		<int16 name="Parent Object Index" offset="0x6E" visible="true" tooltip="if an object with this name exists, we attach to it as a child" />
+		<stringid name="Parent Marker" offset="0x70" visible="true" />
+		<stringid name="Connection Marker" offset="0x74" visible="true" />
+		<float32 name="Boundary Shape Width/Radius" offset="0x78" visible="true" />
+		<float32 name="Boundary Shape Box Length" offset="0x7C" visible="true" />
+		<float32 name="Boundary Shape +Height" offset="0x80" visible="true" />
+		<float32 name="Boundary Shape -Height" offset="0x84" visible="true" />
+		<float32 name="Respawn Weight" offset="0x88" visible="true" />
 	</tagblock>
 	<tagblock name="Equipment Palette" offset="0x138" visible="true" elementSize="0x30">
 		<tagRef name="Equipment" offset="0x0" visible="true" />
@@ -1759,10 +1660,10 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Not On Easy" index="1" />
 			<bit name="Not On Normal" index="2" />
 			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Env Object" index="4" />
-			<bit name="Lock Transform To Env Object" index="5" />
+			<bit name="Lock Type To Environment Object" index="4" />
+			<bit name="Lock Transform To Environment Object" index="5" />
 			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Env Object" index="7" />
+			<bit name="Lock Name to Environment Object" index="7" />
 			<bit name="Create At Rest" index="8" />
 			<bit name="Bit 9" index="9" />
 			<bit name="Bit 10" index="10" />
@@ -1788,17 +1689,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</flags32>
-		<float32 name="Position x" offset="0x8" visible="true" />
-		<float32 name="Position y" offset="0xC" visible="true" />
-		<float32 name="Position z" offset="0x10" visible="true" />
-		<degree name="Rotation i" offset="0x14" visible="true" />
-		<degree name="Rotation j" offset="0x18" visible="true" />
-		<degree name="Rotation k" offset="0x1C" visible="true" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
 		<float32 name="Scale" offset="0x20" visible="true" />
-		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+		<comment title="Node Orientations">This block allows you to "pose" this object's nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
 The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
 DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
-		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
+		<tagblock name="Node Orientations" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
@@ -1814,7 +1711,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
-				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
+				<int16 name="Rotation [i, j, k, w]" offset="0x0" visible="true" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
 				<flags8 name="Flags" offset="0x0" visible="true">
@@ -1859,14 +1756,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations [Readable]" offset="0x10" visible="true" elementSize="0x8">
-				<int16 name="Rotation x" offset="0x0" visible="true" />
-				<int16 name="Rotation y" offset="0x2" visible="true" />
-				<int16 name="Rotation z" offset="0x4" visible="true" />
-				<int16 name="Rotation w" offset="0x6" visible="true" />
+				<quat16 name="Rotation" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
-		<int16 name="Unknown" offset="0x30" visible="false" />
-		<flags16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+		<flags16 name="Transform Flags" offset="0x30" visible="true">
+			<bit name="Mirrored" index="0" />
+		</flags16>
+		<flags16 name="Zone Set Flags" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
 			<bit name="Set 1" index="1" />
 			<bit name="Set 2" index="2" />
@@ -1884,7 +1780,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Set 14" index="14" />
 			<bit name="Set 15" index="15" />
 		</flags16>
-		<stringid name="Unique Name" offset="0x34" visible="true" />
+		<stringid name="Light Airprobe Name" offset="0x34" visible="true" />
 		<datum name="Unique ID" offset="0x38" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x3C" visible="true" />
 		<enum8 name="Type" offset="0x3E" visible="true">
@@ -1909,6 +1805,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="Editor" value="0x1" />
 			<option name="Dynamic" value="0x2" />
 			<option name="Legacy" value="0x3" />
+			<option name="Sky" value="0x4" />
+			<option name="Parent" value="0x5" />
 		</enum8>
 		<enum8 name="BSP Policy" offset="0x40" visible="true">
 			<option name="Default" value="0x0" />
@@ -1918,9 +1816,9 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int8 name="Unknown" offset="0x41" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x42" visible="true" />
 		<int16 name="Unknown" offset="0x44" visible="false" />
-		<int16 name="Parent Name Index" offset="0x46" visible="true" />
-		<stringid name="Child Name" offset="0x48" visible="true" />
-		<stringid name="Unknown" offset="0x4C" visible="true" />
+		<int16 name="Parent Object Name Index" offset="0x46" visible="true" tooltip="if an object with this name exists, we attach to it as a child" />
+		<stringid name="Parent Marker" offset="0x48" visible="true" />
+		<stringid name="Connection Marker" offset="0x4C" visible="true" />
 		<flags16 name="Can Attach To BSP Flags" offset="0x50" visible="true">
 			<bit name="BSP 0" index="0" />
 			<bit name="BSP 1" index="1" />
@@ -1959,43 +1857,14 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Initially At Rest (Does Not Fall)" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Does Accelerate (Moves Due to Explosions)" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
 		</flags32>
 		<comment title="Multiplayer Data" />
-		<enum32 name="Symmetry" offset="0x74" visible="true">
-			<option name="Both" value="0x0" />
+		<enum32 name="Symmetric Placement" offset="0x74" visible="true">
+			<option name="Ignore" value="0x0" />
 			<option name="Symmetric" value="0x1" />
 			<option name="Asymmetric" value="0x2" />
 		</enum32>
-		<flags16 name="Engine Flags" offset="0x78" visible="true">
+		<flags16 name="Game Engine Flags" offset="0x78" visible="true">
 			<bit name="Capture The Flag" index="0" />
 			<bit name="Slayer" index="1" />
 			<bit name="Oddball" index="2" />
@@ -2018,12 +1887,12 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="Pink" value="0x7" />
 			<option name="Neutral" value="0x8" />
 		</enum16>
-		<int8 name="Spawn Sequence" offset="0x7C" visible="true" />
-		<int8 name="Runtime Minimum" offset="0x7D" visible="true" />
-		<int8 name="Runtime Maximum" offset="0x7E" visible="true" />
+		<int8 name="Spawn Order" offset="0x7C" visible="true" />
+		<int8 name="Quota Minimum" offset="0x7D" visible="true" />
+		<int8 name="Quota Maximum" offset="0x7E" visible="true" />
 		<flags8 name="Multiplayer Flags" offset="0x7F" visible="true">
-			<bit name="Is Unique Object" index="0" />
-			<bit name="Not Placed At Start" index="1" />
+			<bit name="Unique Spawn" index="0" />
+			<bit name="Not Initially Placed" index="1" />
 			<bit name="Bit 2" index="2" />
 			<bit name="Bit 3" index="3" />
 			<bit name="Bit 4" index="4" />
@@ -2032,9 +1901,9 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Bit 7" index="7" />
 		</flags8>
 		<int16 name="Spawn Time" offset="0x80" visible="true" />
-		<int16 name="Abandon Time" offset="0x82" visible="true" />
+		<int16 name="Abandonment Time" offset="0x82" visible="true" />
 		<int8 name="Unknown" offset="0x84" visible="false" />
-		<enum8 name="Shape" offset="0x85" visible="true">
+		<enum8 name="Boundary Shape" offset="0x85" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Sphere" value="0x1" />
 			<option name="Cylinder" value="0x2" />
@@ -2043,14 +1912,14 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int8 name="Teleporter Channel" offset="0x86" visible="true" />
 		<int8 name="Unknown" offset="0x87" visible="false" />
 		<int16 name="Unknown" offset="0x88" visible="false" />
-		<int16 name="Attached Name Index" offset="0x8A" visible="true" />
-		<undefined name="Unknown" offset="0x8C" visible="false" />
-		<undefined name="Unknown" offset="0x90" visible="false" />
-		<float32 name="Width/Radius" offset="0x94" visible="true" />
-		<float32 name="Depth" offset="0x98" visible="true" />
-		<float32 name="Top" offset="0x9C" visible="true" />
-		<float32 name="Bottom" offset="0xA0" visible="true" />
-		<undefined name="Unknown" offset="0xA4" visible="false" />
+		<int16 name="Parent Object Index" offset="0x8A" visible="true" tooltip="if an object with this name exists, we attach to it as a child" />
+		<stringid name="Parent Marker" offset="0x8C" visible="true" />
+		<stringid name="Connection Marker" offset="0x90" visible="true" />
+		<float32 name="Boundary Shape Width/Radius" offset="0x94" visible="true" />
+		<float32 name="Boundary Shape Box Length" offset="0x98" visible="true" />
+		<float32 name="Boundary Shape +Height" offset="0x9C" visible="true" />
+		<float32 name="Boundary Shape -Height" offset="0xA0" visible="true" />
+		<float32 name="Respawn Weight" offset="0xA4" visible="true" />
 	</tagblock>
 	<tagblock name="Weapon Palette" offset="0x150" visible="true" elementSize="0x30">
 		<tagRef name="Weapon" offset="0x0" visible="true" />
@@ -2067,38 +1936,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
 		<float32 name="Initial Value" offset="0x20" visible="true" />
 		<flags32 name="Flags" offset="0x24" visible="true">
-			<bit name="Only Use Once" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
+			<bit name="Can Change Only Once" index="0" />
 		</flags32>
 		<int16 name="Editor Folder Index" offset="0x28" visible="true" />
 		<int16 name="Unknown" offset="0x2A" visible="false" />
@@ -2111,10 +1949,10 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Not On Easy" index="1" />
 			<bit name="Not On Normal" index="2" />
 			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Env Object" index="4" />
-			<bit name="Lock Transform To Env Object" index="5" />
+			<bit name="Lock Type To Environment Object" index="4" />
+			<bit name="Lock Transform To Environment Object" index="5" />
 			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Env Object" index="7" />
+			<bit name="Lock Name to Environment Object" index="7" />
 			<bit name="Create At Rest" index="8" />
 			<bit name="Bit 9" index="9" />
 			<bit name="Bit 10" index="10" />
@@ -2140,17 +1978,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</flags32>
-		<float32 name="Position x" offset="0x8" visible="true" />
-		<float32 name="Position y" offset="0xC" visible="true" />
-		<float32 name="Position z" offset="0x10" visible="true" />
-		<degree name="Rotation i" offset="0x14" visible="true" />
-		<degree name="Rotation j" offset="0x18" visible="true" />
-		<degree name="Rotation k" offset="0x1C" visible="true" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
 		<float32 name="Scale" offset="0x20" visible="true" />
-		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+		<comment title="Node Orientations">This block allows you to "pose" this object's nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
 The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
 DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
-		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
+		<tagblock name="Node Orientations" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
@@ -2166,7 +2000,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
-				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
+				<int16 name="Rotation [i, j, k, w]" offset="0x0" visible="true" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
 				<flags8 name="Flags" offset="0x0" visible="true">
@@ -2211,14 +2045,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations [Readable]" offset="0x10" visible="true" elementSize="0x8">
-				<int16 name="Rotation x" offset="0x0" visible="true" />
-				<int16 name="Rotation y" offset="0x2" visible="true" />
-				<int16 name="Rotation z" offset="0x4" visible="true" />
-				<int16 name="Rotation w" offset="0x6" visible="true" />
+				<quat16 name="Rotation" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
-		<int16 name="Unknown" offset="0x30" visible="false" />
-		<flags16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+		<flags16 name="Transform Flags" offset="0x30" visible="true">
+			<bit name="Mirrored" index="0" />
+		</flags16>
+		<flags16 name="Zone Set Flags" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
 			<bit name="Set 1" index="1" />
 			<bit name="Set 2" index="2" />
@@ -2236,7 +2069,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Set 14" index="14" />
 			<bit name="Set 15" index="15" />
 		</flags16>
-		<stringid name="Unique Name" offset="0x34" visible="true" />
+		<stringid name="Light Airprobe Name" offset="0x34" visible="true" />
 		<datum name="Unique ID" offset="0x38" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x3C" visible="true" />
 		<enum8 name="Type" offset="0x3E" visible="true">
@@ -2261,6 +2094,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="Editor" value="0x1" />
 			<option name="Dynamic" value="0x2" />
 			<option name="Legacy" value="0x3" />
+			<option name="Sky" value="0x4" />
+			<option name="Parent" value="0x5" />
 		</enum8>
 		<enum8 name="BSP Policy" offset="0x40" visible="true">
 			<option name="Default" value="0x0" />
@@ -2270,9 +2105,9 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int8 name="Unknown" offset="0x41" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x42" visible="true" />
 		<int16 name="Unknown" offset="0x44" visible="false" />
-		<int16 name="Parent Name Index" offset="0x46" visible="true" />
-		<stringid name="Child Name" offset="0x48" visible="true" />
-		<stringid name="Unknown" offset="0x4C" visible="true" />
+		<int16 name="Parent Object Name Index" offset="0x46" visible="true" tooltip="if an object with this name exists, we attach to it as a child" />
+		<stringid name="Parent Marker" offset="0x48" visible="true" />
+		<stringid name="Connection Marker" offset="0x4C" visible="true" />
 		<flags16 name="Can Attach To BSP Flags" offset="0x50" visible="true">
 			<bit name="BSP 0" index="0" />
 			<bit name="BSP 1" index="1" />
@@ -2308,11 +2143,11 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Power Group" offset="0x6C" visible="true" />
 		<int16 name="Position Group" offset="0x6E" visible="true" />
 		<flags32 name="Device Flags" offset="0x70" visible="true">
-			<bit name="Initially Open" index="0" />
-			<bit name="Initially Closed" index="1" />
+			<bit name="Initially Open (1.0)" index="0" />
+			<bit name="Initially Off (0.0)" index="1" />
 			<bit name="Can Only Change Once" index="2" />
 			<bit name="Position Reversed" index="3" />
-			<bit name="Usable from Both Sides" index="4" />
+			<bit name="Not Usable From Any Side" index="4" />
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
@@ -2347,7 +2182,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="One-Sided" index="1" />
 			<bit name="Never Appears Locked" index="2" />
 			<bit name="Opened by Melee Attack" index="3" />
-			<bit name="One Sided for Player" index="4" />
+			<bit name="One-Sided for Player" index="4" />
 			<bit name="Does Not Close Automatically" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
@@ -2381,10 +2216,10 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<int16 name="Pathfinding Object Index" offset="0x2" visible="true" />
 		</tagblock>
 		<enum16 name="Pathfinding Policy" offset="0x84" visible="true">
-			<option name="Tag Default" value="0x0" />
-			<option name="Cut-Out" value="0x1" />
+			<option name="Default" value="0x0" />
+			<option name="Discs" value="0x1" />
 			<option name="Sectors" value="0x2" />
-			<option name="Discs" value="0x3" />
+			<option name="Cut-Out" value="0x3" />
 			<option name="None" value="0x4" />
 		</enum16>
 		<int16 name="Unknown" offset="0x86" visible="true" />
@@ -2408,10 +2243,10 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Not On Easy" index="1" />
 			<bit name="Not On Normal" index="2" />
 			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Env Object" index="4" />
-			<bit name="Lock Transform To Env Object" index="5" />
+			<bit name="Lock Type To Environment Object" index="4" />
+			<bit name="Lock Transform To Environment Object" index="5" />
 			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Env Object" index="7" />
+			<bit name="Lock Name to Environment Object" index="7" />
 			<bit name="Create At Rest" index="8" />
 			<bit name="Bit 9" index="9" />
 			<bit name="Bit 10" index="10" />
@@ -2437,17 +2272,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</flags32>
-		<float32 name="Position x" offset="0x8" visible="true" />
-		<float32 name="Position y" offset="0xC" visible="true" />
-		<float32 name="Position z" offset="0x10" visible="true" />
-		<degree name="Rotation i" offset="0x14" visible="true" />
-		<degree name="Rotation j" offset="0x18" visible="true" />
-		<degree name="Rotation k" offset="0x1C" visible="true" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
 		<float32 name="Scale" offset="0x20" visible="true" />
-		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+		<comment title="Node Orientations">This block allows you to "pose" this object's nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
 The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
 DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
-		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
+		<tagblock name="Node Orientations" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
@@ -2463,7 +2294,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
-				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
+				<int16 name="Rotation [i, j, k, w]" offset="0x0" visible="true" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
 				<flags8 name="Flags" offset="0x0" visible="true">
@@ -2508,14 +2339,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations [Readable]" offset="0x10" visible="true" elementSize="0x8">
-				<int16 name="Rotation x" offset="0x0" visible="true" />
-				<int16 name="Rotation y" offset="0x2" visible="true" />
-				<int16 name="Rotation z" offset="0x4" visible="true" />
-				<int16 name="Rotation w" offset="0x6" visible="true" />
+				<quat16 name="Rotation" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
-		<int16 name="Unknown" offset="0x30" visible="false" />
-		<flags16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+		<flags16 name="Transform Flags" offset="0x30" visible="true">
+			<bit name="Mirrored" index="0" />
+		</flags16>
+		<flags16 name="Zone Set Flags" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
 			<bit name="Set 1" index="1" />
 			<bit name="Set 2" index="2" />
@@ -2533,7 +2363,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Set 14" index="14" />
 			<bit name="Set 15" index="15" />
 		</flags16>
-		<stringid name="Unique Name" offset="0x34" visible="true" />
+		<stringid name="Light Airprobe Name" offset="0x34" visible="true" />
 		<datum name="Unique ID" offset="0x38" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x3C" visible="true" />
 		<enum8 name="Type" offset="0x3E" visible="true">
@@ -2558,6 +2388,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="Editor" value="0x1" />
 			<option name="Dynamic" value="0x2" />
 			<option name="Legacy" value="0x3" />
+			<option name="Sky" value="0x4" />
+			<option name="Parent" value="0x5" />
 		</enum8>
 		<enum8 name="BSP Policy" offset="0x40" visible="true">
 			<option name="Default" value="0x0" />
@@ -2567,9 +2399,9 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int8 name="Unknown" offset="0x41" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x42" visible="true" />
 		<int16 name="Unknown" offset="0x44" visible="false" />
-		<int16 name="Parent Name Index" offset="0x46" visible="true" />
-		<stringid name="Child Name" offset="0x48" visible="true" />
-		<stringid name="Unknown" offset="0x4C" visible="true" />
+		<int16 name="Parent Object Name Index" offset="0x46" visible="true" tooltip="if an object with this name exists, we attach to it as a child" />
+		<stringid name="Parent Marker" offset="0x48" visible="true" />
+		<stringid name="Connection Marker" offset="0x4C" visible="true" />
 		<flags16 name="Can Attach To BSP Flags" offset="0x50" visible="true">
 			<bit name="BSP 0" index="0" />
 			<bit name="BSP 1" index="1" />
@@ -2605,11 +2437,11 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Power Group" offset="0x6C" visible="true" />
 		<int16 name="Position Group" offset="0x6E" visible="true" />
 		<flags32 name="Device Flags" offset="0x70" visible="true">
-			<bit name="Initially Open" index="0" />
-			<bit name="Initially Closed" index="1" />
+			<bit name="Initially Open (1.0)" index="0" />
+			<bit name="Initially Off (0.0)" index="1" />
 			<bit name="Can Only Change Once" index="2" />
 			<bit name="Position Reversed" index="3" />
-			<bit name="Usable from Both Sides" index="4" />
+			<bit name="Not Usable From Any Side" index="4" />
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
@@ -2660,10 +2492,10 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Not On Easy" index="1" />
 			<bit name="Not On Normal" index="2" />
 			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Env Object" index="4" />
-			<bit name="Lock Transform To Env Object" index="5" />
+			<bit name="Lock Type To Environment Object" index="4" />
+			<bit name="Lock Transform To Environment Object" index="5" />
 			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Env Object" index="7" />
+			<bit name="Lock Name to Environment Object" index="7" />
 			<bit name="Create At Rest" index="8" />
 			<bit name="Bit 9" index="9" />
 			<bit name="Bit 10" index="10" />
@@ -2689,17 +2521,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</flags32>
-		<float32 name="Position x" offset="0x8" visible="true" />
-		<float32 name="Position y" offset="0xC" visible="true" />
-		<float32 name="Position z" offset="0x10" visible="true" />
-		<degree name="Rotation i" offset="0x14" visible="true" />
-		<degree name="Rotation j" offset="0x18" visible="true" />
-		<degree name="Rotation k" offset="0x1C" visible="true" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
 		<float32 name="Scale" offset="0x20" visible="true" />
-		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+		<comment title="Node Orientations">This block allows you to "pose" this object's nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
 The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
 DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
-		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
+		<tagblock name="Node Orientations" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
@@ -2715,7 +2543,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
-				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
+				<int16 name="Rotation [i, j, k, w]" offset="0x0" visible="true" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
 				<flags8 name="Flags" offset="0x0" visible="true">
@@ -2760,14 +2588,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations [Readable]" offset="0x10" visible="true" elementSize="0x8">
-				<int16 name="Rotation x" offset="0x0" visible="true" />
-				<int16 name="Rotation y" offset="0x2" visible="true" />
-				<int16 name="Rotation z" offset="0x4" visible="true" />
-				<int16 name="Rotation w" offset="0x6" visible="true" />
+				<quat16 name="Rotation" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
-		<int16 name="Unknown" offset="0x30" visible="false" />
-		<flags16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+		<flags16 name="Transform Flags" offset="0x30" visible="true">
+			<bit name="Mirrored" index="0" />
+		</flags16>
+		<flags16 name="Zone Set Flags" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
 			<bit name="Set 1" index="1" />
 			<bit name="Set 2" index="2" />
@@ -2785,7 +2612,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Set 14" index="14" />
 			<bit name="Set 15" index="15" />
 		</flags16>
-		<stringid name="Unique Name" offset="0x34" visible="true" />
+		<stringid name="Light Airprobe Name" offset="0x34" visible="true" />
 		<datum name="Unique ID" offset="0x38" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x3C" visible="true" />
 		<enum8 name="Type" offset="0x3E" visible="true">
@@ -2810,6 +2637,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="Editor" value="0x1" />
 			<option name="Dynamic" value="0x2" />
 			<option name="Legacy" value="0x3" />
+			<option name="Sky" value="0x4" />
+			<option name="Parent" value="0x5" />
 		</enum8>
 		<enum8 name="BSP Policy" offset="0x40" visible="true">
 			<option name="Default" value="0x0" />
@@ -2819,9 +2648,9 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int8 name="Unknown" offset="0x41" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x42" visible="true" />
 		<int16 name="Unknown" offset="0x44" visible="false" />
-		<int16 name="Parent Name Index" offset="0x46" visible="true" />
-		<stringid name="Child Name" offset="0x48" visible="true" />
-		<stringid name="Unknown" offset="0x4C" visible="true" />
+		<int16 name="Parent Object Name Index" offset="0x46" visible="true" tooltip="if an object with this name exists, we attach to it as a child" />
+		<stringid name="Parent Marker" offset="0x48" visible="true" />
+		<stringid name="Connection Marker" offset="0x4C" visible="true" />
 		<flags16 name="Can Attach To BSP Flags" offset="0x50" visible="true">
 			<bit name="BSP 0" index="0" />
 			<bit name="BSP 1" index="1" />
@@ -2857,11 +2686,11 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Power Group" offset="0x6C" visible="true" />
 		<int16 name="Position Group" offset="0x6E" visible="true" />
 		<flags32 name="Device Flags" offset="0x70" visible="true">
-			<bit name="Initially Open" index="0" />
-			<bit name="Initially Closed" index="1" />
+			<bit name="Initially Open (1.0)" index="0" />
+			<bit name="Initially Off (0.0)" index="1" />
 			<bit name="Can Only Change Once" index="2" />
 			<bit name="Position Reversed" index="3" />
-			<bit name="Usable from Both Sides" index="4" />
+			<bit name="Not Usable From Any Side" index="4" />
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
@@ -2915,10 +2744,10 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Not On Easy" index="1" />
 			<bit name="Not On Normal" index="2" />
 			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Env Object" index="4" />
-			<bit name="Lock Transform To Env Object" index="5" />
+			<bit name="Lock Type To Environment Object" index="4" />
+			<bit name="Lock Transform To Environment Object" index="5" />
 			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Env Object" index="7" />
+			<bit name="Lock Name to Environment Object" index="7" />
 			<bit name="Create At Rest" index="8" />
 			<bit name="Bit 9" index="9" />
 			<bit name="Bit 10" index="10" />
@@ -2944,17 +2773,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</flags32>
-		<float32 name="Position x" offset="0x8" visible="true" />
-		<float32 name="Position y" offset="0xC" visible="true" />
-		<float32 name="Position z" offset="0x10" visible="true" />
-		<degree name="Rotation i" offset="0x14" visible="true" />
-		<degree name="Rotation j" offset="0x18" visible="true" />
-		<degree name="Rotation k" offset="0x1C" visible="true" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
 		<float32 name="Scale" offset="0x20" visible="true" />
-		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+		<comment title="Node Orientations">This block allows you to "pose" this object's nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
 The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
 DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
-		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
+		<tagblock name="Node Orientations" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
@@ -2970,7 +2795,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
-				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
+				<int16 name="Rotation [i, j, k, w]" offset="0x0" visible="true" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
 				<flags8 name="Flags" offset="0x0" visible="true">
@@ -3015,14 +2840,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations [Readable]" offset="0x10" visible="true" elementSize="0x8">
-				<int16 name="Rotation x" offset="0x0" visible="true" />
-				<int16 name="Rotation y" offset="0x2" visible="true" />
-				<int16 name="Rotation z" offset="0x4" visible="true" />
-				<int16 name="Rotation w" offset="0x6" visible="true" />
+				<quat16 name="Rotation" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
-		<int16 name="Unknown" offset="0x30" visible="false" />
-		<flags16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+		<flags16 name="Transform Flags" offset="0x30" visible="true">
+			<bit name="Mirrored" index="0" />
+		</flags16>
+		<flags16 name="Zone Set Flags" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
 			<bit name="Set 1" index="1" />
 			<bit name="Set 2" index="2" />
@@ -3040,7 +2864,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Set 14" index="14" />
 			<bit name="Set 15" index="15" />
 		</flags16>
-		<stringid name="Unique Name" offset="0x34" visible="true" />
+		<stringid name="Light Airprobe Name" offset="0x34" visible="true" />
 		<datum name="Unique ID" offset="0x38" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x3C" visible="true" />
 		<enum8 name="Type" offset="0x3E" visible="true">
@@ -3065,6 +2889,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="Editor" value="0x1" />
 			<option name="Dynamic" value="0x2" />
 			<option name="Legacy" value="0x3" />
+			<option name="Sky" value="0x4" />
+			<option name="Parent" value="0x5" />
 		</enum8>
 		<enum8 name="BSP Policy" offset="0x40" visible="true">
 			<option name="Default" value="0x0" />
@@ -3074,9 +2900,9 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int8 name="Unknown" offset="0x41" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x42" visible="true" />
 		<int16 name="Unknown" offset="0x44" visible="false" />
-		<int16 name="Parent Name Index" offset="0x46" visible="true" />
-		<stringid name="Child Name" offset="0x48" visible="true" />
-		<stringid name="Unknown" offset="0x4C" visible="true" />
+		<int16 name="Parent Object Name Index" offset="0x46" visible="true" tooltip="if an object with this name exists, we attach to it as a child" />
+		<stringid name="Parent Marker" offset="0x48" visible="true" />
+		<stringid name="Connection Marker" offset="0x4C" visible="true" />
 		<flags16 name="Can Attach To BSP Flags" offset="0x50" visible="true">
 			<bit name="BSP 0" index="0" />
 			<bit name="BSP 1" index="1" />
@@ -3112,11 +2938,11 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Power Group" offset="0x6C" visible="true" />
 		<int16 name="Position Group" offset="0x6E" visible="true" />
 		<flags32 name="Device Flags" offset="0x70" visible="true">
-			<bit name="Initially Open" index="0" />
-			<bit name="Initially Closed" index="1" />
+			<bit name="Initially Open (1.0)" index="0" />
+			<bit name="Initially Off (0.0)" index="1" />
 			<bit name="Can Only Change Once" index="2" />
 			<bit name="Position Reversed" index="3" />
-			<bit name="Usable from Both Sides" index="4" />
+			<bit name="Not Usable From Any Side" index="4" />
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
@@ -3148,40 +2974,9 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<comment title="Control Data" />
 		<flags32 name="Control Flags" offset="0x74" visible="true">
 			<bit name="Usable From Both Sides" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
 		</flags32>
 		<int16 name="Unknown" offset="0x78" visible="true" />
-		<int16 name="Unknown" offset="0x7A" visible="true" />
+		<int16 name="Unknown" offset="0x7A" visible="false" />
 	</tagblock>
 	<tagblock name="Control Palette" offset="0x1BC" visible="true" elementSize="0x30">
 		<tagRef name="Control" offset="0x0" visible="true" />
@@ -3202,10 +2997,10 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Not On Easy" index="1" />
 			<bit name="Not On Normal" index="2" />
 			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Env Object" index="4" />
-			<bit name="Lock Transform To Env Object" index="5" />
+			<bit name="Lock Type To Environment Object" index="4" />
+			<bit name="Lock Transform To Environment Object" index="5" />
 			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Env Object" index="7" />
+			<bit name="Lock Name to Environment Object" index="7" />
 			<bit name="Create At Rest" index="8" />
 			<bit name="Bit 9" index="9" />
 			<bit name="Bit 10" index="10" />
@@ -3231,17 +3026,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</flags32>
-		<float32 name="Position x" offset="0x8" visible="true" />
-		<float32 name="Position y" offset="0xC" visible="true" />
-		<float32 name="Position z" offset="0x10" visible="true" />
-		<degree name="Rotation i" offset="0x14" visible="true" />
-		<degree name="Rotation j" offset="0x18" visible="true" />
-		<degree name="Rotation k" offset="0x1C" visible="true" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
 		<float32 name="Scale" offset="0x20" visible="true" />
-		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+		<comment title="Node Orientations">This block allows you to "pose" this object's nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
 The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
 DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
-		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
+		<tagblock name="Node Orientations" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
@@ -3257,7 +3048,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
-				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
+				<int16 name="Rotation [i, j, k, w]" offset="0x0" visible="true" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
 				<flags8 name="Flags" offset="0x0" visible="true">
@@ -3302,14 +3093,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations [Readable]" offset="0x10" visible="true" elementSize="0x8">
-				<int16 name="Rotation x" offset="0x0" visible="true" />
-				<int16 name="Rotation y" offset="0x2" visible="true" />
-				<int16 name="Rotation z" offset="0x4" visible="true" />
-				<int16 name="Rotation w" offset="0x6" visible="true" />
+				<quat16 name="Rotation" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
-		<int16 name="Unknown" offset="0x30" visible="false" />
-		<flags16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+		<flags16 name="Transform Flags" offset="0x30" visible="true">
+			<bit name="Mirrored" index="0" />
+		</flags16>
+		<flags16 name="Zone Set Flags" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
 			<bit name="Set 1" index="1" />
 			<bit name="Set 2" index="2" />
@@ -3327,7 +3117,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Set 14" index="14" />
 			<bit name="Set 15" index="15" />
 		</flags16>
-		<stringid name="Unique Name" offset="0x34" visible="true" />
+		<stringid name="Light Airprobe Name" offset="0x34" visible="true" />
 		<datum name="Unique ID" offset="0x38" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x3C" visible="true" />
 		<enum8 name="Type" offset="0x3E" visible="true">
@@ -3352,6 +3142,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="Editor" value="0x1" />
 			<option name="Dynamic" value="0x2" />
 			<option name="Legacy" value="0x3" />
+			<option name="Sky" value="0x4" />
+			<option name="Parent" value="0x5" />
 		</enum8>
 		<enum8 name="BSP Policy" offset="0x40" visible="true">
 			<option name="Default" value="0x0" />
@@ -3361,9 +3153,9 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int8 name="Unknown" offset="0x41" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x42" visible="true" />
 		<int16 name="Unknown" offset="0x44" visible="false" />
-		<int16 name="Parent Name Index" offset="0x46" visible="true" />
-		<stringid name="Child Name" offset="0x48" visible="true" />
-		<stringid name="Unknown" offset="0x4C" visible="true" />
+		<int16 name="Parent Object Name Index" offset="0x46" visible="true" tooltip="if an object with this name exists, we attach to it as a child" />
+		<stringid name="Parent Marker" offset="0x48" visible="true" />
+		<stringid name="Connection Marker" offset="0x4C" visible="true" />
 		<flags16 name="Can Attach To BSP Flags" offset="0x50" visible="true">
 			<bit name="BSP 0" index="0" />
 			<bit name="BSP 1" index="1" />
@@ -3384,12 +3176,14 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</flags16>
 		<int16 name="Unknown" offset="0x52" visible="false" />
 		<comment title="Sound Scenery Data" />
-		<int32 name="Volume Type" offset="0x54" visible="true" />
+		<enum32 name="Volume Type" offset="0x54" visible="true">
+			<option name="Sphere" value="0x0" />
+			<option name="Vertical Cylinder" value="0x1" />
+			<option name="Pill" value="0x2" />
+		</enum32>
 		<float32 name="Height" offset="0x58" visible="true" />
-		<float32 name="Override Distance min" offset="0x5C" visible="true" />
-		<float32 name="Override Distance max" offset="0x60" visible="true" />
-		<degree name="Override Cone Angle min" offset="0x64" visible="true" />
-		<degree name="Override Cone Angle max" offset="0x68" visible="true" />
+		<rangef name="Override Distance Bounds" offset="0x5C" visible="true" />
+		<ranged name="Override Cone Angle Bounds" offset="0x64" visible="true" />
 		<float32 name="Override Outer Cone Gain" offset="0x6C" visible="true" />
 	</tagblock>
 	<tagblock name="Sound Scenery Palette" offset="0x1D4" visible="true" elementSize="0x30">
@@ -3411,10 +3205,10 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Not On Easy" index="1" />
 			<bit name="Not On Normal" index="2" />
 			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Env Object" index="4" />
-			<bit name="Lock Transform To Env Object" index="5" />
+			<bit name="Lock Type To Environment Object" index="4" />
+			<bit name="Lock Transform To Environment Object" index="5" />
 			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Env Object" index="7" />
+			<bit name="Lock Name to Environment Object" index="7" />
 			<bit name="Create At Rest" index="8" />
 			<bit name="Bit 9" index="9" />
 			<bit name="Bit 10" index="10" />
@@ -3440,17 +3234,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</flags32>
-		<float32 name="Position x" offset="0x8" visible="true" />
-		<float32 name="Position y" offset="0xC" visible="true" />
-		<float32 name="Position z" offset="0x10" visible="true" />
-		<degree name="Rotation i" offset="0x14" visible="true" />
-		<degree name="Rotation j" offset="0x18" visible="true" />
-		<degree name="Rotation k" offset="0x1C" visible="true" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
 		<float32 name="Scale" offset="0x20" visible="true" />
-		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+		<comment title="Node Orientations">This block allows you to "pose" this object's nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
 The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
 DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
-		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
+		<tagblock name="Node Orientations" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
@@ -3466,7 +3256,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
-				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
+				<int16 name="Rotation [i, j, k, w]" offset="0x0" visible="true" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
 				<flags8 name="Flags" offset="0x0" visible="true">
@@ -3511,14 +3301,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations [Readable]" offset="0x10" visible="true" elementSize="0x8">
-				<int16 name="Rotation x" offset="0x0" visible="true" />
-				<int16 name="Rotation y" offset="0x2" visible="true" />
-				<int16 name="Rotation z" offset="0x4" visible="true" />
-				<int16 name="Rotation w" offset="0x6" visible="true" />
+				<quat16 name="Rotation" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
-		<int16 name="Unknown" offset="0x30" visible="false" />
-		<flags16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+		<flags16 name="Transform Flags" offset="0x30" visible="true">
+			<bit name="Mirrored" index="0" />
+		</flags16>
+		<flags16 name="Zone Set Flags" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
 			<bit name="Set 1" index="1" />
 			<bit name="Set 2" index="2" />
@@ -3536,7 +3325,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Set 14" index="14" />
 			<bit name="Set 15" index="15" />
 		</flags16>
-		<stringid name="Unique Name" offset="0x34" visible="true" />
+		<stringid name="Light Airprobe Name" offset="0x34" visible="true" />
 		<datum name="Unique ID" offset="0x38" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x3C" visible="true" />
 		<enum8 name="Type" offset="0x3E" visible="true">
@@ -3561,6 +3350,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="Editor" value="0x1" />
 			<option name="Dynamic" value="0x2" />
 			<option name="Legacy" value="0x3" />
+			<option name="Sky" value="0x4" />
+			<option name="Parent" value="0x5" />
 		</enum8>
 		<enum8 name="BSP Policy" offset="0x40" visible="true">
 			<option name="Default" value="0x0" />
@@ -3570,9 +3361,9 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int8 name="Unknown" offset="0x41" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x42" visible="true" />
 		<int16 name="Unknown" offset="0x44" visible="false" />
-		<int16 name="Parent Name Index" offset="0x46" visible="true" />
-		<stringid name="Child Name" offset="0x48" visible="true" />
-		<stringid name="Unknown" offset="0x4C" visible="true" />
+		<int16 name="Parent Object Name Index" offset="0x46" visible="true" tooltip="if an object with this name exists, we attach to it as a child" />
+		<stringid name="Parent Marker" offset="0x48" visible="true" />
+		<stringid name="Connection Marker" offset="0x4C" visible="true" />
 		<flags16 name="Can Attach To BSP Flags" offset="0x50" visible="true">
 			<bit name="BSP 0" index="0" />
 			<bit name="BSP 1" index="1" />
@@ -3606,43 +3397,20 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<color32 name="Quaternary Color" offset="0x68" alpha="true" visible="true" />
 		<comment title="Unit Data" />
 		<float32 name="Body Vitality Percentage" offset="0x6C" visible="true" />
-		<flags32 name="Flags" offset="0x70" visible="true">
+		<flags32 name="Unit Flags" offset="0x70" visible="true">
 			<bit name="Dead" index="0" />
 			<bit name="Closed" index="1" />
 			<bit name="Not Enterable by Player" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
 		</flags32>
 		<comment title="Giant Data" />
-		<int16 name="Unknown" offset="0x74" visible="true" />
-		<int16 name="Unknown" offset="0x76" visible="true" />
+		<enum16 name="Pathfinding Policy" offset="0x74" visible="true">
+			<option name="Tag Default" value="0x0" />
+			<option name="Dynamic" value="0x1" />
+			<option name="Cut-Out" value="0x2" />
+			<option name="Standard" value="0x3" />
+			<option name="None" value="0x4" />
+		</enum16>
+		<int16 name="Unknown" offset="0x76" visible="false" />
 		<tagblock name="Pathfinding References" offset="0x78" visible="true" elementSize="0x4">
 			<int16 name="BSP Index" offset="0x0" visible="true" />
 			<int16 name="Pathfinding Object Index" offset="0x2" visible="true" />
@@ -3667,10 +3435,10 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Not On Easy" index="1" />
 			<bit name="Not On Normal" index="2" />
 			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Env Object" index="4" />
-			<bit name="Lock Transform To Env Object" index="5" />
+			<bit name="Lock Type To Environment Object" index="4" />
+			<bit name="Lock Transform To Environment Object" index="5" />
 			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Env Object" index="7" />
+			<bit name="Lock Name to Environment Object" index="7" />
 			<bit name="Create At Rest" index="8" />
 			<bit name="Bit 9" index="9" />
 			<bit name="Bit 10" index="10" />
@@ -3696,17 +3464,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</flags32>
-		<float32 name="Position x" offset="0x8" visible="true" />
-		<float32 name="Position y" offset="0xC" visible="true" />
-		<float32 name="Position z" offset="0x10" visible="true" />
-		<degree name="Rotation i" offset="0x14" visible="true" />
-		<degree name="Rotation j" offset="0x18" visible="true" />
-		<degree name="Rotation k" offset="0x1C" visible="true" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
 		<float32 name="Scale" offset="0x20" visible="true" />
-		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+		<comment title="Node Orientations">This block allows you to "pose" this object's nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
 The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
 DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
-		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
+		<tagblock name="Node Orientations" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
@@ -3722,7 +3486,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
-				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
+				<int16 name="Rotation [i, j, k, w]" offset="0x0" visible="true" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
 				<flags8 name="Flags" offset="0x0" visible="true">
@@ -3767,14 +3531,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations [Readable]" offset="0x10" visible="true" elementSize="0x8">
-				<int16 name="Rotation x" offset="0x0" visible="true" />
-				<int16 name="Rotation y" offset="0x2" visible="true" />
-				<int16 name="Rotation z" offset="0x4" visible="true" />
-				<int16 name="Rotation w" offset="0x6" visible="true" />
+				<quat16 name="Rotation" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
-		<int16 name="Unknown" offset="0x30" visible="false" />
-		<flags16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+		<flags16 name="Transform Flags" offset="0x30" visible="true">
+			<bit name="Mirrored" index="0" />
+		</flags16>
+		<flags16 name="Zone Set Flags" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
 			<bit name="Set 1" index="1" />
 			<bit name="Set 2" index="2" />
@@ -3792,7 +3555,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Set 14" index="14" />
 			<bit name="Set 15" index="15" />
 		</flags16>
-		<stringid name="Unique Name" offset="0x34" visible="true" />
+		<stringid name="Light Airprobe Name" offset="0x34" visible="true" />
 		<datum name="Unique ID" offset="0x38" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x3C" visible="true" />
 		<enum8 name="Type" offset="0x3E" visible="true">
@@ -3817,6 +3580,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="Editor" value="0x1" />
 			<option name="Dynamic" value="0x2" />
 			<option name="Legacy" value="0x3" />
+			<option name="Sky" value="0x4" />
+			<option name="Parent" value="0x5" />
 		</enum8>
 		<enum8 name="BSP Policy" offset="0x40" visible="true">
 			<option name="Default" value="0x0" />
@@ -3826,9 +3591,9 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int8 name="Unknown" offset="0x41" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x42" visible="true" />
 		<int16 name="Unknown" offset="0x44" visible="false" />
-		<int16 name="Parent Name Index" offset="0x46" visible="true" />
-		<stringid name="Child Name" offset="0x48" visible="true" />
-		<stringid name="Unknown" offset="0x4C" visible="true" />
+		<int16 name="Parent Object Name Index" offset="0x46" visible="true" tooltip="if an object with this name exists, we attach to it as a child" />
+		<stringid name="Parent Marker" offset="0x48" visible="true" />
+		<stringid name="Connection Marker" offset="0x4C" visible="true" />
 		<flags16 name="Can Attach To BSP Flags" offset="0x50" visible="true">
 			<bit name="BSP 0" index="0" />
 			<bit name="BSP 1" index="1" />
@@ -3868,10 +3633,10 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Not On Easy" index="1" />
 			<bit name="Not On Normal" index="2" />
 			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Env Object" index="4" />
-			<bit name="Lock Transform To Env Object" index="5" />
+			<bit name="Lock Type To Environment Object" index="4" />
+			<bit name="Lock Transform To Environment Object" index="5" />
 			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Env Object" index="7" />
+			<bit name="Lock Name to Environment Object" index="7" />
 			<bit name="Create At Rest" index="8" />
 			<bit name="Bit 9" index="9" />
 			<bit name="Bit 10" index="10" />
@@ -3897,17 +3662,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</flags32>
-		<float32 name="Position x" offset="0x8" visible="true" />
-		<float32 name="Position y" offset="0xC" visible="true" />
-		<float32 name="Position z" offset="0x10" visible="true" />
-		<degree name="Rotation i" offset="0x14" visible="true" />
-		<degree name="Rotation j" offset="0x18" visible="true" />
-		<degree name="Rotation k" offset="0x1C" visible="true" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
 		<float32 name="Scale" offset="0x20" visible="true" />
-		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+		<comment title="Node Orientations">This block allows you to "pose" this object's nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
 The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
 DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
-		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
+		<tagblock name="Node Orientations" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
@@ -3923,7 +3684,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
-				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
+				<int16 name="Rotation [i, j, k, w]" offset="0x0" visible="true" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
 				<flags8 name="Flags" offset="0x0" visible="true">
@@ -3968,14 +3729,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations [Readable]" offset="0x10" visible="true" elementSize="0x8">
-				<int16 name="Rotation x" offset="0x0" visible="true" />
-				<int16 name="Rotation y" offset="0x2" visible="true" />
-				<int16 name="Rotation z" offset="0x4" visible="true" />
-				<int16 name="Rotation w" offset="0x6" visible="true" />
+				<quat16 name="Rotation" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
-		<int16 name="Unknown" offset="0x30" visible="false" />
-		<flags16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+		<flags16 name="Transform Flags" offset="0x30" visible="true">
+			<bit name="Mirrored" index="0" />
+		</flags16>
+		<flags16 name="Zone Set Flags" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
 			<bit name="Set 1" index="1" />
 			<bit name="Set 2" index="2" />
@@ -3993,7 +3753,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Set 14" index="14" />
 			<bit name="Set 15" index="15" />
 		</flags16>
-		<stringid name="Unique Name" offset="0x34" visible="true" />
+		<stringid name="Light Airprobe Name" offset="0x34" visible="true" />
 		<datum name="Unique ID" offset="0x38" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x3C" visible="true" />
 		<enum8 name="Type" offset="0x3E" visible="true">
@@ -4018,6 +3778,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="Editor" value="0x1" />
 			<option name="Dynamic" value="0x2" />
 			<option name="Legacy" value="0x3" />
+			<option name="Sky" value="0x4" />
+			<option name="Parent" value="0x5" />
 		</enum8>
 		<enum8 name="BSP Policy" offset="0x40" visible="true">
 			<option name="Default" value="0x0" />
@@ -4027,9 +3789,9 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int8 name="Unknown" offset="0x41" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x42" visible="true" />
 		<int16 name="Unknown" offset="0x44" visible="false" />
-		<int16 name="Parent Name Index" offset="0x46" visible="true" />
-		<stringid name="Child Name" offset="0x48" visible="true" />
-		<stringid name="Unknown" offset="0x4C" visible="true" />
+		<int16 name="Parent Object Name Index" offset="0x46" visible="true" tooltip="if an object with this name exists, we attach to it as a child" />
+		<stringid name="Parent Marker" offset="0x48" visible="true" />
+		<stringid name="Connection Marker" offset="0x4C" visible="true" />
 		<flags16 name="Can Attach To BSP Flags" offset="0x50" visible="true">
 			<bit name="BSP 0" index="0" />
 			<bit name="BSP 1" index="1" />
@@ -4053,11 +3815,11 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Power Group" offset="0x54" visible="true" />
 		<int16 name="Position Group" offset="0x56" visible="true" />
 		<flags32 name="Device Flags" offset="0x58" visible="true">
-			<bit name="Initially Open" index="0" />
-			<bit name="Initially Closed" index="1" />
+			<bit name="Initially Open (1.0)" index="0" />
+			<bit name="Initially Off (0.0)" index="1" />
 			<bit name="Can Only Change Once" index="2" />
 			<bit name="Position Reversed" index="3" />
-			<bit name="Usable from Both Sides" index="4" />
+			<bit name="Not Usable From Any Side" index="4" />
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
@@ -4107,9 +3869,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</flags16>
 		<float32 name="Lightmap Half Life" offset="0x64" visible="true" />
 		<float32 name="Lightmap Light Scale" offset="0x68" visible="true" />
-		<float32 name="X" offset="0x6C" visible="true" />
-		<float32 name="Y" offset="0x70" visible="true" />
-		<float32 name="Z" offset="0x74" visible="true" />
+		<point3 name="Target Point" offset="0x6C" visible="true" />
 		<float32 name="Width" offset="0x78" visible="true" />
 		<float32 name="Height Scale" offset="0x7C" visible="true" />
 		<degree name="Field of View" offset="0x80" visible="true" />
@@ -4127,77 +3887,77 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Sandbox Vehicles" offset="0x228" visible="true" elementSize="0x30">
+	<tagblock name="Map Variant Vehicles" offset="0x228" visible="true" elementSize="0x30">
 		<tagRef name="Object" offset="0x0" visible="true" />
-		<stringId name="Name" offset="0x10" visible="true" />
-		<int32 name="Max Allowed" offset="0x14" visible="true" />
-		<float32 name="Cost" offset="0x18" visible="true" />
+		<stringId name="Display Name" offset="0x10" visible="true" />
+		<int32 name="Maximum Allowed" offset="0x14" visible="true" tooltip="if this is &lt;= 0, these are 'unlimited' (up to a reasonable code-defined maximum)" />
+		<float32 name="Price Per Instance" offset="0x18" visible="true" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Sandbox Weapons" offset="0x234" visible="true" elementSize="0x30">
+	<tagblock name="Map Variant Weapons" offset="0x234" visible="true" elementSize="0x30">
 		<tagRef name="Object" offset="0x0" visible="true" />
-		<stringId name="Name" offset="0x10" visible="true" />
-		<int32 name="Max Allowed" offset="0x14" visible="true" />
-		<float32 name="Cost" offset="0x18" visible="true" />
+		<stringId name="Display Name" offset="0x10" visible="true" />
+		<int32 name="Maximum Allowed" offset="0x14" visible="true" tooltip="if this is &lt;= 0, these are 'unlimited' (up to a reasonable code-defined maximum)" />
+		<float32 name="Price Per Instance" offset="0x18" visible="true" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Sandbox Equipment" offset="0x240" visible="true" elementSize="0x30">
+	<tagblock name="Map Variant Equipment" offset="0x240" visible="true" elementSize="0x30">
 		<tagRef name="Object" offset="0x0" visible="true" />
-		<stringId name="Name" offset="0x10" visible="true" />
-		<int32 name="Max Allowed" offset="0x14" visible="true" />
-		<float32 name="Cost" offset="0x18" visible="true" />
+		<stringId name="Display Name" offset="0x10" visible="true" />
+		<int32 name="Maximum Allowed" offset="0x14" visible="true" tooltip="if this is &lt;= 0, these are 'unlimited' (up to a reasonable code-defined maximum)" />
+		<float32 name="Price Per Instance" offset="0x18" visible="true" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Sandbox Scenery" offset="0x24C" visible="true" elementSize="0x30">
+	<tagblock name="Map Variant Scenery" offset="0x24C" visible="true" elementSize="0x30">
 		<tagRef name="Object" offset="0x0" visible="true" />
-		<stringId name="Name" offset="0x10" visible="true" />
-		<int32 name="Max Allowed" offset="0x14" visible="true" />
-		<float32 name="Cost" offset="0x18" visible="true" />
+		<stringId name="Display Name" offset="0x10" visible="true" />
+		<int32 name="Maximum Allowed" offset="0x14" visible="true" tooltip="if this is &lt;= 0, these are 'unlimited' (up to a reasonable code-defined maximum)" />
+		<float32 name="Price Per Instance" offset="0x18" visible="true" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Sandbox Teleporters" offset="0x258" visible="true" elementSize="0x30">
+	<tagblock name="Map Variant Teleporters" offset="0x258" visible="true" elementSize="0x30">
 		<tagRef name="Object" offset="0x0" visible="true" />
-		<stringId name="Name" offset="0x10" visible="true" />
-		<int32 name="Max Allowed" offset="0x14" visible="true" />
-		<float32 name="Cost" offset="0x18" visible="true" />
+		<stringId name="Display Name" offset="0x10" visible="true" />
+		<int32 name="Maximum Allowed" offset="0x14" visible="true" tooltip="if this is &lt;= 0, these are 'unlimited' (up to a reasonable code-defined maximum)" />
+		<float32 name="Price Per Instance" offset="0x18" visible="true" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Sandbox Goal Objects" offset="0x264" visible="true" elementSize="0x30">
+	<tagblock name="Map Variant Goal Objects" offset="0x264" visible="true" elementSize="0x30">
 		<tagRef name="Object" offset="0x0" visible="true" />
-		<stringId name="Name" offset="0x10" visible="true" />
-		<int32 name="Max Allowed" offset="0x14" visible="true" />
-		<float32 name="Cost" offset="0x18" visible="true" />
+		<stringId name="Display Name" offset="0x10" visible="true" />
+		<int32 name="Maximum Allowed" offset="0x14" visible="true" tooltip="if this is &lt;= 0, these are 'unlimited' (up to a reasonable code-defined maximum)" />
+		<float32 name="Price Per Instance" offset="0x18" visible="true" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Sandbox Spawning" offset="0x270" visible="true" elementSize="0x30">
+	<tagblock name="Map Variant Spawning" offset="0x270" visible="true" elementSize="0x30">
 		<tagRef name="Object" offset="0x0" visible="true" />
-		<stringId name="Name" offset="0x10" visible="true" />
-		<int32 name="Max Allowed" offset="0x14" visible="true" />
-		<float32 name="Cost" offset="0x18" visible="true" />
+		<stringId name="Display Name" offset="0x10" visible="true" />
+		<int32 name="Maximum Allowed" offset="0x14" visible="true" tooltip="if this is &lt;= 0, these are 'unlimited' (up to a reasonable code-defined maximum)" />
+		<float32 name="Price Per Instance" offset="0x18" visible="true" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
@@ -4205,37 +3965,48 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Soft Ceilings" offset="0x27C" visible="true" elementSize="0xC">
-		<int16 name="Type" offset="0x0" visible="true" />
-		<int16 name="Unknown" offset="0x2" visible="true" />
-		<stringId name="Name" offset="0x4" visible="true" />
-		<int16 name="Unknown" offset="0x8" visible="true" />
-		<int16 name="Unknown" offset="0xA" visible="true" />
+		<flags16 name="Flags" offset="0x0" visible="true">
+			<bit name="Ignore Bipeds" index="0" />
+			<bit name="Ignore Vehicles" index="1" />
+			<bit name="Ignore Camera" index="2" />
+			<bit name="Ignore Huge Vehicles" index="3" />
+		</flags16>
+		<flags16 name="Runtime Flags" offset="0x2" visible="true">
+			<bit name="Ignore Bipeds" index="0" />
+			<bit name="Ignore Vehicles" index="1" />
+			<bit name="Ignore Camera" index="2" />
+			<bit name="Ignore Huge Vehicles" index="3" />
+		</flags16>
+		<stringid name="Name" offset="0x4" visible="true" />
+		<enum16 name="Type" offset="0x8" visible="true">
+			<option name="Acceleration" value="0x0" />
+			<option name="Soft Kill" value="0x1" />
+			<option name="Slip Surface" value="0x2" />
+		</enum16>
+		<int16 name="Unknown" offset="0xA" visible="false" />
 	</tagblock>
 	<tagblock name="Player Starting Profile" offset="0x288" visible="true" elementSize="0x58">
 		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
 		<float32 name="Starting Health Damage" offset="0x20" visible="true" />
 		<float32 name="Starting Shield Damage" offset="0x24" visible="true" />
 		<tagRef name="Primary Weapon" offset="0x28" visible="true" />
-		<int16 name="Rounds Loaded" offset="0x38" visible="true" />
-		<int16 name="Rounds Total" offset="0x3A" visible="true" />
+		<int16 name="Primary Rounds Loaded" offset="0x38" visible="true" tooltip="-1 = weapon default" />
+		<int16 name="Primary Rounds Total" offset="0x3A" visible="true" tooltip="-1 = weapon default" />
 		<tagRef name="Secondary Weapon" offset="0x3C" visible="true" />
-		<int16 name="Rounds Loaded" offset="0x4C" visible="true" />
-		<int16 name="Rounds Total" offset="0x4E" visible="true" />
+		<int16 name="Secondary Rounds Loaded" offset="0x4C" visible="true" tooltip="-1 = weapon default" />
+		<int16 name="Secondary Rounds Total" offset="0x4E" visible="true" tooltip="-1 = weapon default" />
 		<uint8 name="Starting Frag Grenade Count" offset="0x50" visible="true" />
 		<uint8 name="Starting Plasma Grenade Count" offset="0x51" visible="true" />
 		<uint8 name="Starting Spike Grenade Count" offset="0x52" visible="true" />
 		<uint8 name="Starting Firebomb Grenade Count" offset="0x53" visible="true" />
-		<int16 name="Unknown" offset="0x54" visible="false" />
+		<int16 name="Editor Folder Index" offset="0x54" visible="true" />
 		<int16 name="Unknown" offset="0x56" visible="false" />
 	</tagblock>
 	<tagblock name="Player Starting Locations" offset="0x294" visible="true" elementSize="0x1C">
-		<float32 name="Position x" offset="0x0" visible="true" />
-		<float32 name="Position y" offset="0x4" visible="true" />
-		<float32 name="Position z" offset="0x8" visible="true" />
-		<degree name="Facing y" offset="0xC" visible="true" />
-		<degree name="Facing p" offset="0x10" visible="true" />
-		<int16 name="Unknown" offset="0x14" visible="false" />
-		<int16 name="Unknown" offset="0x16" visible="false" />
+		<point3 name="Position" offset="0x0" visible="true" />
+		<degree2 name="Facing" offset="0xC" visible="true" />
+		<int16 name="Insertion Point Index" offset="0x14" visible="true" />
+		<int16 name="Unknown" offset="0x16" visible="true" />
 		<int16 name="Editor Folder Index" offset="0x18" visible="true" />
 		<int16 name="Unknown" offset="0x1A" visible="false" />
 	</tagblock>
@@ -4280,12 +4051,9 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<float32 name="Unknown" offset="0x48" visible="false" />
 			<float32 name="Unknown" offset="0x4C" visible="false" />
 		</tagblock>
-		<float32 name="Sector Bounds x0" offset="0x5C" visible="true" />
-		<float32 name="Sector Bounds x1" offset="0x60" visible="true" />
-		<float32 name="Sector Bounds y0" offset="0x64" visible="true" />
-		<float32 name="Sector Bounds y1" offset="0x68" visible="true" />
-		<float32 name="Sector Bounds z0" offset="0x6C" visible="true" />
-		<float32 name="Sector Bounds z1" offset="0x70" visible="true" />
+		<rangef name="Sector Bounds x" offset="0x5C" visible="true" />
+		<rangef name="Sector Bounds y" offset="0x64" visible="true" />
+		<rangef name="Sector Bounds z" offset="0x6C" visible="true" />
 		<float32 name="Unknown" offset="0x74" visible="true" />
 		<int16 name="Kill Trigger Volume Index" offset="0x78" visible="true" />
 		<int16 name="Editor Folder Index" offset="0x7A" visible="true" />
@@ -4358,13 +4126,8 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int8 name="Yaw" offset="0x2" visible="true" />
 		<int8 name="Pitch" offset="0x3" visible="true" />
-		<float32 name="i" offset="0x4" visible="true" />
-		<float32 name="j" offset="0x8" visible="true" />
-		<float32 name="k" offset="0xC" visible="true" />
-		<float32 name="w" offset="0x10" visible="true" />
-		<float32 name="X" offset="0x14" visible="true" />
-		<float32 name="Y" offset="0x18" visible="true" />
-		<float32 name="Z" offset="0x1C" visible="true" />
+		<vector4 name="Rotation" offset="0x4" visible="true" />
+		<point3 name="Position" offset="0x14" visible="true" />
 		<float32 name="Scale" offset="0x20" visible="true" />
 	</tagblock>
 	<tagblock name="Decal Palette" offset="0x39C" visible="true" elementSize="0x10">
@@ -4733,7 +4496,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 				<int16 name="Chance" offset="0xE" visible="true" />
 			</tagblock>
 			<enum16 name="Grenade Type" offset="0x44" visible="true">
-				<option name="NONE" value="0x0" />
+				<option name="None" value="0x0" />
 				<option name="Human Grenade" value="0x1" />
 				<option name="Covenant Plasma" value="0x2" />
 				<option name="Brute Claymore" value="0x3" />
@@ -4887,7 +4650,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 				<int16 name="Chance" offset="0xE" visible="true" />
 			</tagblock>
 			<enum16 name="Grenade Type" offset="0x44" visible="true">
-				<option name="NONE" value="0x0" />
+				<option name="None" value="0x0" />
 				<option name="Human Grenade" value="0x1" />
 				<option name="Covenant Plasma" value="0x2" />
 				<option name="Brute Claymore" value="0x3" />
@@ -4997,9 +4760,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<bit name="BSP 31" index="31" />
 		</flags32>
 		<tagblock name="Firing Positions" offset="0x24" visible="true" elementSize="0x28">
-			<float32 name="Position x" offset="0x0" visible="true" />
-			<float32 name="Position y" offset="0x4" visible="true" />
-			<float32 name="Position z" offset="0x8" visible="true" />
+			<point3 name="Position" offset="0x0" visible="true" />
 			<int16 name="Reference Frame" offset="0xC" visible="true" />
 			<int16 name="BSP Index" offset="0xE" visible="true" />
 			<flags16 name="Flags" offset="0x10" visible="true">
@@ -5025,8 +4786,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<int16 name="Cluster Index" offset="0x16" visible="true" />
 			<int16 name="Unknown" offset="0x18" visible="false" />
 			<int16 name="Unknown" offset="0x1A" visible="false" />
-			<degree name="Normal y" offset="0x1C" visible="true" />
-			<degree name="Normal p" offset="0x20" visible="true" />
+			<degree2 name="Normal" offset="0x1C" visible="true" />
 			<undefined name="Unknown" offset="0x24" visible="false" />
 		</tagblock>
 		<tagblock name="Areas" offset="0x30" visible="true" elementSize="0xA8">
@@ -5065,9 +4825,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 				<bit name="Bit 30" index="30" />
 				<bit name="Bit 31" index="31" />
 			</flags32>
-			<float32 name="Position x" offset="0x24" visible="true" />
-			<float32 name="Position y" offset="0x28" visible="true" />
-			<float32 name="Position z" offset="0x2C" visible="true" />
+			<point3 name="Position" offset="0x24" visible="true" />
 			<int16 name="Reference Frame" offset="0x30" visible="true" />
 			<int16 name="BSP Index" offset="0x32" visible="true" />
 			<float32 name="Unknown" offset="0x34" visible="false" />
@@ -5089,13 +4847,10 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 				<undefined name="Unknown" offset="0x4" visible="false" />
 			</tagblock>
 			<tagblock name="Unknown" offset="0x6C" visible="true" elementSize="0x18">
-				<float32 name="Position x" offset="0x0" visible="true" />
-				<float32 name="Position y" offset="0x4" visible="true" />
-				<float32 name="Position z" offset="0x8" visible="true" />
+				<point3 name="Position" offset="0x0" visible="true" />
 				<int16 name="Unknown" offset="0xC" visible="false" />
 				<int16 name="Unknown" offset="0xE" visible="false" />
-				<degree name="Facing y" offset="0x10" visible="true" />
-				<degree name="Facing p" offset="0x14" visible="true" />
+				<degree2 name="Facing" offset="0x10" visible="true" />
 			</tagblock>
 			<undefined name="Unknown" offset="0x78" visible="false" />
 			<undefined name="Unknown" offset="0x7C" visible="false" />
@@ -5549,14 +5304,11 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<ascii name="Name" offset="0x0" visible="true" length="0x20" />
 			<tagblock name="Points" offset="0x20" visible="true" elementSize="0x3C">
 				<ascii name="Name" offset="0x0" length="0x20" visible="true" />
-				<float name="Position x" offset="0x20" visible="true" />
-				<float name="Position y" offset="0x24" visible="true" />
-				<float name="Position z" offset="0x28" visible="true" />
+				<point3 name="Position" offset="0x20" visible="true" />
 				<int16 name="Reference Frame" offset="0x2C" visible="true" />
 				<int16 name="BSP Index" offset="0x2E" visible="true" />
 				<int32 name="Surface Index" offset="0x30" visible="true" />
-				<degree name="Facing Direction y" offset="0x34" visible="true" />
-				<degree name="Facing Direction p" offset="0x38" visible="true" />
+				<degree2 name="Facing Direction" offset="0x34" visible="true" />
 			</tagblock>
 			<int16 name="BSP Index" offset="0x2C" visible="true" />
 			<int16 name="Manual Reference Frame" offset="0x2E" visible="true" />
@@ -5631,32 +5383,14 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 	<tagblock name="Cutscene Flags" offset="0x47C" visible="true" elementSize="0x20">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<stringid name="Name" offset="0x4" visible="true" />
-		<float name="Position x" offset="0x8" visible="true" />
-		<float name="Position y" offset="0xC" visible="true" />
-		<float name="Position z" offset="0x10" visible="true" />
-		<degree name="Facing y" offset="0x14" visible="true" />
-		<degree name="Facing p" offset="0x18" visible="true" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree2 name="Facing" offset="0x14" visible="true" />
 		<int16 name="Editor Folder Index" offset="0x1C" visible="true" />
 		<int16 name="Unknown" offset="0x1E" visible="false" />
 	</tagblock>
 	<tagblock name="Cutscene Camera Points" offset="0x488" visible="true" elementSize="0x40">
 		<flags16 name="Flags" offset="0x0" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
+			<bit name="Edit As Relative" index="0" />
 		</flags16>
 		<enum16 name="Type" offset="0x2" visible="true">
 			<option name="Normal" value="0x0" />
@@ -5666,12 +5400,8 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 		</enum16>
 		<ascii name="Name" offset="0x4" visible="true" length="0x20" />
 		<int32 name="Unknown" offset="0x24" visible="false" />
-		<float32 name="Position x" offset="0x28" visible="true" />
-		<float32 name="Position y" offset="0x2C" visible="true" />
-		<float32 name="Position z" offset="0x30" visible="true" />
-		<degree name="Orientation y" offset="0x34" visible="true" />
-		<degree name="Orientation p" offset="0x38" visible="true" />
-		<degree name="Orientation r" offset="0x3C" visible="true" />
+		<point3 name="Position" offset="0x28" visible="true" />
+		<degree3 name="Orientation" offset="0x34" visible="true" />
 	</tagblock>
 	<tagblock name="Cutscene Titles" offset="0x494" visible="true" elementSize="0x28">
 		<stringid name="Name" offset="0x0" visible="true" />
@@ -5827,10 +5557,10 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 		</flags32>
 	</tagblock>
 	<tagblock name="Scenario Kill Triggers" offset="0x4D8" visible="true" elementSize="0x2">
-		<int16 name="Trigger Volume" offset="0x0" visible="true" />
+		<int16 name="Trigger Volume Index" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Scenario Safe Triggers" offset="0x4E4" visible="true" elementSize="0x2">
-		<int16 name="Trigger Volume" offset="0x0" visible="true" />
+	<tagblock name="Scenario Safe Zone Triggers" offset="0x4E4" visible="true" elementSize="0x2">
+		<int16 name="Trigger Volume Index" offset="0x0" visible="true" />
 	</tagblock>
 	<tagblock name="Script Expressions" offset="0x4F0" visible="true" elementSize="0x18">
 		<uint16 name="Salt" offset="0x0" visible="true" />
@@ -6068,9 +5798,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 		</tagblock>
 		<int32 name="BSP Checksum" offset="0x34" visible="true" />
 		<tagblock name="Cluster Centroids" offset="0x38" visible="true" elementSize="0xC">
-			<float32 name="Centroid X" offset="0x0" visible="true" />
-			<float32 name="Centroid Y" offset="0x4" visible="true" />
-			<float32 name="Centroid Z" offset="0x8" visible="true" />
+			<point3 name="Centroid" offset="0x0" visible="true" />
 		</tagblock>
 		<tagblock name="Unknown" offset="0x44" visible="false" elementSize="0x4">
 			<int16 name="Unknown" offset="0x0" visible="false" />
@@ -6227,9 +5955,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 				<bit name="Bit 30" index="30" />
 				<bit name="Bit 31" index="31" />
 			</flags32>
-			<float32 name="Position x" offset="0x10" visible="true" />
-			<float32 name="Position y" offset="0x14" visible="true" />
-			<float32 name="Position z" offset="0x18" visible="true" />
+			<point3 name="Position" offset="0x10" visible="true" />
 			<float32 name="Lower Height" offset="0x1C" visible="true" />
 			<float32 name="Upper Height" offset="0x20" visible="true" />
 			<float32 name="Inner Radius" offset="0x24" visible="true" />
@@ -6317,9 +6043,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 				<bit name="Bit 30" index="30" />
 				<bit name="Bit 31" index="31" />
 			</flags32>
-			<float32 name="Position x" offset="0x10" visible="true" />
-			<float32 name="Position y" offset="0x14" visible="true" />
-			<float32 name="Position z" offset="0x18" visible="true" />
+			<point3 name="Position" offset="0x10" visible="true" />
 			<float32 name="Lower Height" offset="0x1C" visible="true" />
 			<float32 name="Upper Height" offset="0x20" visible="true" />
 			<float32 name="Inner Radius" offset="0x24" visible="true" />
@@ -6336,10 +6060,10 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<bit name="Not On Easy" index="1" />
 			<bit name="Not On Normal" index="2" />
 			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Env Object" index="4" />
-			<bit name="Lock Transform To Env Object" index="5" />
+			<bit name="Lock Type To Environment Object" index="4" />
+			<bit name="Lock Transform To Environment Object" index="5" />
 			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Env Object" index="7" />
+			<bit name="Lock Name to Environment Object" index="7" />
 			<bit name="Create At Rest" index="8" />
 			<bit name="Bit 9" index="9" />
 			<bit name="Bit 10" index="10" />
@@ -6365,17 +6089,13 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</flags32>
-		<float32 name="Position x" offset="0x8" visible="true" />
-		<float32 name="Position y" offset="0xC" visible="true" />
-		<float32 name="Position z" offset="0x10" visible="true" />
-		<degree name="Rotation i" offset="0x14" visible="true" />
-		<degree name="Rotation j" offset="0x18" visible="true" />
-		<degree name="Rotation k" offset="0x1C" visible="true" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
 		<float32 name="Scale" offset="0x20" visible="true" />
-		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+		<comment title="Node Orientations">This block allows you to "pose" this object's nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
 The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
 DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
-		<tagblock name="Node Positioning" offset="0x24" visible="true" elementSize="0x1C">
+		<tagblock name="Node Orientations" offset="0x24" visible="true" elementSize="0x1C">
 			<int16 name="Node Count" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagblock name="Node Flags" offset="0x4" visible="true" elementSize="0x1">
@@ -6391,7 +6111,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations" offset="0x10" visible="true" elementSize="0x2">
-				<int16 name="Rotation x, y, z, w" offset="0x0" visible="false" />
+				<int16 name="Rotation [i, j, k, w]" offset="0x0" visible="true" />
 			</tagblock>
 			<tagblock name="Node Flags [Readable]" offset="0x4" visible="true" elementSize="0x4">
 				<flags8 name="Flags" offset="0x0" visible="true">
@@ -6436,14 +6156,13 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				</flags8>
 			</tagblock>
 			<tagblock name="Orientations [Readable]" offset="0x10" visible="true" elementSize="0x8">
-				<int16 name="Rotation x" offset="0x0" visible="true" />
-				<int16 name="Rotation y" offset="0x2" visible="true" />
-				<int16 name="Rotation z" offset="0x4" visible="true" />
-				<int16 name="Rotation w" offset="0x6" visible="true" />
+				<quat16 name="Rotation" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
-		<int16 name="Unknown" offset="0x30" visible="false" />
-		<flags16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+		<flags16 name="Transform Flags" offset="0x30" visible="true">
+			<bit name="Mirrored" index="0" />
+		</flags16>
+		<flags16 name="Zone Set Flags" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
 			<bit name="Set 1" index="1" />
 			<bit name="Set 2" index="2" />
@@ -6461,7 +6180,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Set 14" index="14" />
 			<bit name="Set 15" index="15" />
 		</flags16>
-		<stringid name="Unique Name" offset="0x34" visible="true" />
+		<stringid name="Light Airprobe Name" offset="0x34" visible="true" />
 		<datum name="Unique ID" offset="0x38" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x3C" visible="true" />
 		<enum8 name="Type" offset="0x3E" visible="true">
@@ -6486,6 +6205,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="Editor" value="0x1" />
 			<option name="Dynamic" value="0x2" />
 			<option name="Legacy" value="0x3" />
+			<option name="Sky" value="0x4" />
+			<option name="Parent" value="0x5" />
 		</enum8>
 		<enum8 name="BSP Policy" offset="0x40" visible="true">
 			<option name="Default" value="0x0" />
@@ -6495,9 +6216,9 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int8 name="Unknown" offset="0x41" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x42" visible="true" />
 		<int16 name="Unknown" offset="0x44" visible="false" />
-		<int16 name="Parent Name Index" offset="0x46" visible="true" />
-		<stringid name="Child Name" offset="0x48" visible="true" />
-		<stringid name="Unknown" offset="0x4C" visible="true" />
+		<int16 name="Parent Object Name Index" offset="0x46" visible="true" tooltip="if an object with this name exists, we attach to it as a child" />
+		<stringid name="Parent Marker" offset="0x48" visible="true" />
+		<stringid name="Connection Marker" offset="0x4C" visible="true" />
 		<flags16 name="Can Attach To BSP Flags" offset="0x50" visible="true">
 			<bit name="BSP 0" index="0" />
 			<bit name="BSP 1" index="1" />
@@ -6530,17 +6251,25 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<color32 name="Tertiary Color" offset="0x64" alpha="true" visible="true" />
 		<color32 name="Quaternary Color" offset="0x68" alpha="true" visible="true" />
 		<comment title="Crate Data" />
-		<undefined name="Unknown" offset="0x6C" visible="true" />
-		<tagblock name="Unknown" offset="0x70" visible="true" elementSize="0x4">
-			<undefined name="Unknown" offset="0x0" visible="true" />
+		<enum16 name="Pathfinding Policy" offset="0x6C" visible="true">
+			<option name="Tag Default" value="0x0" />
+			<option name="Dynamic" value="0x1" />
+			<option name="Cut-Out" value="0x2" />
+			<option name="Standard" value="0x3" />
+			<option name="None" value="0x4" />
+		</enum16>
+		<int16 name="Unknown" offset="0x6E" visible="false" />
+		<tagblock name="Pathfinding References" offset="0x70" visible="true" elementSize="0x4">
+			<int16 name="BSP Index" offset="0x0" visible="true" />
+			<int16 name="Pathfinding Object Index" offset="0x2" visible="true" />
 		</tagblock>
 		<comment title="Multiplayer Data" />
-		<enum32 name="Symmetry" offset="0x7C" visible="true">
-			<option name="Both" value="0x0" />
+		<enum32 name="Symmetric Placement" offset="0x7C" visible="true">
+			<option name="Ignore" value="0x0" />
 			<option name="Symmetric" value="0x1" />
 			<option name="Asymmetric" value="0x2" />
 		</enum32>
-		<flags16 name="Engine Flags" offset="0x80" visible="true">
+		<flags16 name="Game Engine Flags" offset="0x80" visible="true">
 			<bit name="Capture The Flag" index="0" />
 			<bit name="Slayer" index="1" />
 			<bit name="Oddball" index="2" />
@@ -6563,12 +6292,12 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<option name="Pink" value="0x7" />
 			<option name="Neutral" value="0x8" />
 		</enum16>
-		<int8 name="Spawn Sequence" offset="0x84" visible="true" />
-		<int8 name="Runtime Minimum" offset="0x85" visible="true" />
-		<int8 name="Runtime Maximum" offset="0x86" visible="true" />
+		<int8 name="Spawn Order" offset="0x84" visible="true" />
+		<int8 name="Quota Minimum" offset="0x85" visible="true" />
+		<int8 name="Quota Maximum" offset="0x86" visible="true" />
 		<flags8 name="Multiplayer Flags" offset="0x87" visible="true">
-			<bit name="Is Unique Object" index="0" />
-			<bit name="Not Placed At Start" index="1" />
+			<bit name="Unique Spawn" index="0" />
+			<bit name="Not Initially Placed" index="1" />
 			<bit name="Bit 2" index="2" />
 			<bit name="Bit 3" index="3" />
 			<bit name="Bit 4" index="4" />
@@ -6577,9 +6306,9 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Bit 7" index="7" />
 		</flags8>
 		<int16 name="Spawn Time" offset="0x88" visible="true" />
-		<int16 name="Abandon Time" offset="0x8A" visible="true" />
+		<int16 name="Abandonment Time" offset="0x8A" visible="true" />
 		<int8 name="Unknown" offset="0x8C" visible="false" />
-		<enum8 name="Shape" offset="0x8D" visible="true">
+		<enum8 name="Boundary Shape" offset="0x8D" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Sphere" value="0x1" />
 			<option name="Cylinder" value="0x2" />
@@ -6588,14 +6317,14 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int8 name="Teleporter Channel" offset="0x8E" visible="true" />
 		<int8 name="Unknown" offset="0x8F" visible="false" />
 		<int16 name="Unknown" offset="0x90" visible="false" />
-		<int16 name="Attached Name Index" offset="0x92" visible="true" />
-		<undefined name="Unknown" offset="0x94" visible="false" />
-		<undefined name="Unknown" offset="0x98" visible="false" />
-		<float32 name="Width/Radius" offset="0x9C" visible="true" />
-		<float32 name="Depth" offset="0xA0" visible="true" />
-		<float32 name="Top" offset="0xA4" visible="true" />
-		<float32 name="Bottom" offset="0xA8" visible="true" />
-		<undefined name="Unknown" offset="0xAC" visible="false" />
+		<int16 name="Parent Object Index" offset="0x92" visible="true" tooltip="if an object with this name exists, we attach to it as a child" />
+		<stringid name="Parent Marker" offset="0x94" visible="true" />
+		<stringid name="Connection Marker" offset="0x98" visible="true" />
+		<float32 name="Boundary Shape Width/Radius" offset="0x9C" visible="true" />
+		<float32 name="Boundary Shape Box Length" offset="0xA0" visible="true" />
+		<float32 name="Boundary Shape +Height" offset="0xA4" visible="true" />
+		<float32 name="Boundary Shape -Height" offset="0xA8" visible="true" />
+		<float32 name="Respawn Weight" offset="0xAC" visible="true" />
 	</tagblock>
 	<tagblock name="Crate Palette" offset="0x640" visible="true" elementSize="0x30">
 		<tagRef name="Crate" offset="0x0" visible="true" />
@@ -6637,11 +6366,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<float32 name="Ecology Margin" offset="0xC" visible="true" />
 		<tagblock name="Sources" offset="0x10" visible="true" elementSize="0x24">
 			<int32 name="Unknown" offset="0x0" visible="false" />
-			<float32 name="Position x" offset="0x4" visible="true" />
-			<float32 name="Position y" offset="0x8" visible="true" />
-			<float32 name="Position z" offset="0xC" visible="true" />
-			<degree name="Starting y" offset="0x10" visible="true" />
-			<degree name="Starting p" offset="0x14" visible="true" />
+			<point3 name="Position" offset="0x4" visible="true" />
+			<degree2 name="Starting" offset="0x10" visible="true" />
 			<float32 name="Radius" offset="0x18" visible="true" />
 			<float32 name="Weight" offset="0x1C" visible="true" />
 			<int8 name="Unknown" offset="0x20" visible="false" />
@@ -6650,20 +6376,15 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<int8 name="Unknown" offset="0x23" visible="false" />
 		</tagblock>
 		<tagblock name="Sinks" offset="0x1C" visible="true" elementSize="0x10">
-			<float32 name="Position x" offset="0x0" visible="true" />
-			<float32 name="Position y" offset="0x4" visible="true" />
-			<float32 name="Position z" offset="0x8" visible="true" />
+			<point3 name="Position" offset="0x0" visible="true" />
 			<float32 name="Radius" offset="0xC" visible="true" />
 		</tagblock>
-		<float32 name="Production Frequency min" offset="0x28" visible="true" />
-		<float32 name="Production Frequency max" offset="0x2C" visible="true" />
-		<float32 name="Scale min" offset="0x30" visible="true" />
-		<float32 name="Scale max" offset="0x34" visible="true" />
+		<rangef name="Production Frequency" offset="0x28" visible="true" />
+		<rangef name="Scale" offset="0x30" visible="true" />
 		<float32 name="Unknown" offset="0x38" visible="false" />
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<int16 name="Creature Palette Index" offset="0x40" visible="true" />
-		<int16 name="Boid Count min" offset="0x42" visible="true" />
-		<int16 name="Boid Count max" offset="0x44" visible="true" />
+		<range16 name="Boid Count" offset="0x42" visible="true" />
 		<int16 name="Unknown" offset="0x46" visible="false" />
 	</tagblock>
 	<tagRef name="Subtitle Strings" offset="0x664" visible="true" />
@@ -6873,8 +6594,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 				<option name="Mauler" value="0x32" />
 				<option name="Mongoose" value="0x33" />
 			</enum16>
-			<int16 name="Min" offset="0xC4" visible="true" />
-			<int16 name="Max" offset="0xC6" visible="true" />
+			<range16 name="Count" offset="0xC4" visible="true" />
 			<int16 name="Bodies" offset="0xC8" visible="true" />
 			<int16 name="Unknown" offset="0xCA" visible="false" />
 			<undefined name="Unknown" offset="0xCC" visible="false" />
@@ -6890,9 +6610,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			</tagblock>
 			<tagblock name="Point Geometry" offset="0xDC" visible="true" elementSize="0xC">
 				<tagblock name="Points" offset="0x0" visible="true" elementSize="0x10">
-					<float32 name="Point X" offset="0x0" visible="true" />
-					<float32 name="Point Y" offset="0x4" visible="true" />
-					<float32 name="Point Z" offset="0x8" visible="true" />
+					<point3 name="Point" offset="0x0" visible="true" />
 					<int16 name="Reference Frame" offset="0xC" visible="true" />
 					<int16 name="BSP Index" offset="0xE" visible="true" />
 				</tagblock>
@@ -6966,13 +6684,24 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<stringid name="Name" offset="0x0" visible="true" />
 		<tagRef name="Cinematic Light" offset="0x4" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x7B0" visible="false" />
-	<undefined name="Unknown" offset="0x7B4" visible="false" />
-	<undefined name="Unknown" offset="0x7B8" visible="false" />
-	<tagblock name="Scenario Metagame" offset="0x7BC" visible="true" elementSize="0x1C">
-		<tagblock name="Time Multipliers" offset="0x0" visible="true" elementSize="0x8">
-			<float32 name="Time" offset="0x0" visible="true" />
-			<float32 name="Multiplier" offset="0x4" visible="true" />
+	<tagblock name="Override Player Representations" offset="0x7B0" visible="true" elementSize="0x6C">
+		<stringId name="Name" offset="0x0" visible="true" />
+		<int8 name="Unknown" offset="0x4" visible="false" />
+		<int8 name="Unknown" offset="0x5" visible="false" />
+		<int8 name="Unknown" offset="0x6" visible="false" />
+		<int8 name="Unknown" offset="0x7" visible="false" />
+		<tagRef name="First Person Hands Model" offset="0x8" visible="true" />
+		<tagRef name="First Person Body Model" offset="0x18" visible="true" />
+		<tagRef name="Third Person Unit" offset="0x28" visible="true" />
+		<stringId name="Third Person Variant" offset="0x38" visible="true" />
+		<tagRef name="Binoculars Zoom In Sound" offset="0x3C" visible="true" />
+		<tagRef name="Binoculars Zoom Out Sound" offset="0x4C" visible="true" />
+		<tagRef name="Combat Dialogue" offset="0x5C" visible="true" />
+	</tagblock>
+	<tagblock name="Campaign Metagame" offset="0x7BC" visible="true" elementSize="0x1C">
+		<tagblock name="Time Bonuses" offset="0x0" visible="true" elementSize="0x8">
+			<float32 name="Time" offset="0x0" visible="true" tooltip="if you finish in under this time you get the following bonus" />
+			<float32 name="Score Multiplier" offset="0x4" visible="true" />
 		</tagblock>
 		<float32 name="Par Score" offset="0xC" visible="true" />
 		<tagblock name="Survival" offset="0x10" visible="true" elementSize="0x8">
@@ -6981,12 +6710,12 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<float32 name="Par Score" offset="0x4" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Unknown" offset="0x7C8" visible="false" elementSize="0x18">
+	<tagblock name="Soft Surfaces" offset="0x7C8" visible="true" elementSize="0x18">
 		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
+		<float32 name="Class Biped" offset="0x4" visible="true" tooltip="max - .2f" />
+		<float32 name="Class Dead Biped" offset="0x8" visible="true" tooltip="max - .09f" />
+		<float32 name="Class Crates + Vehicles" offset="0xC" visible="true" tooltip="max - .2f" />
+		<float32 name="Class Debris" offset="0x10" visible="true" tooltip="max - .04f" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 	</tagblock>
 	<tagblock name="Unknown" offset="0x7D4" visible="false" elementSize="0x10">

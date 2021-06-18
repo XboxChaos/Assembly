@@ -4,9 +4,11 @@
 	<revisions>
 		<revision author="DarkShallFall" version="1">Mapped plugin structure a new.</revision>
 	</revisions>
-	<dataRef name="Function" offset="0x0" visible="true" />
-	<float32 name="Length min" offset="0x14" visible="true" />
-	<float32 name="Length max" offset="0x18" visible="true" />
-	<float32 name="Angle" offset="0x1C" visible="true" />
-	<float32 name="Unknown" offset="0x20" visible="false" />
+	<comment title="GROUNDED FRICTION">Defines friction to be applied to grounded things (rolling or sliding) relative to the time they've been rolling/sliding. Friction of 1.0 will stop them completely in a single tick. Friction of 0.0 is the same as no friction at all. The on-ground timer used to access this graph resets if the object leaves the ground for any period of time (bounces, is blown off the ground, etc).
+FOR EXAMPLE: Set up the graph as a "Curve", set the range to 0-1 (using the boxes at the top and bottom of the right-hand side of the graph), and set the domain min and max to 0 and 5, respectively. Set the maximum slope for friction to 90 (vertical walls). The in-game result is that any object using this grounded friction will have friction of 0 (no friction) applied the instant they stop bouncing and start rolling/sliding, and that friction will ramp up (using the curve you provided) to 1 over the course of 5 seconds. After 5 seconds of sliding/rolling, the object will come to a stop, no matter what (even if it's sliding down an 85 degree slope, because you set the maximum slope for friction to 90).</comment>
+	<dataref name="Friction Over Time Function" offset="0x0" visible="true" />
+	<float32 name="Friction Over Time Domain Minimum" offset="0x14" visible="true" tooltip="Grounded time at which the graph begins to apply (corresponds to the left side of the graph). E.g. If you set this to 5.0, no friction will be applied for the first 5 seconds after an object is considered to be &quot;grounded&quot;." />
+	<float32 name="Friction Over Time Domain Maximum" offset="0x18" visible="true" tooltip="Grounded time at which the graph ends (corresponds to the right side of the graph). E.g. If want friction to be a constant 0.5 after 15 seconds of grounded motion, set this to 15 and make the graph end at 0.5." />
+	<float32 name="Maximum Slope For Friction" offset="0x1C" visible="true" tooltip="If the slope of the surface the object is resting on is steeper than this, the grounded friction timer will reset to zero (disabling friction temporarily)." />
+	<float32 name="Minimum Asymmetry Ratio For Axis Lock" offset="0x20" visible="true" tooltip="If the length of the longest axis of the object's bounding box is at least this multiple of the length of its shortest axis, angular friction will be applied only to rotation around the longest axis (to prevent the slow timber effect). 2.0 is the default if this is left at 0.0. Use a very large number to disable (e.g. 10000.0)." />
 </plugin>

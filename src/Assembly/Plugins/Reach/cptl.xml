@@ -4,35 +4,41 @@
 	<revisions>
 		<revision author="DarkShallFall" version="1">Mapped plugin structure a new.</revision>
 	</revisions>
-	<tagblock name="Particle Type Library" offset="0x0" visible="true" elementSize="0x50">
+	<tagblock name="Types" offset="0x0" visible="true" elementSize="0x50">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<float32 name="Unknown" offset="0x4" visible="true" />
-		<float32 name="Unknown" offset="0x8" visible="true" />
-		<float32 name="Unknown" offset="0xC" visible="true" />
-		<float32 name="Unknown" offset="0x10" visible="true" />
-		<float32 name="Unknown" offset="0x14" visible="true" />
-		<float32 name="Unknown" offset="0x18" visible="true" />
-		<int32 name="Sibling Index" offset="0x1C" visible="true" />
-		<int32 name="Unknown" offset="0x20" visible="true" />
-		<float32 name="Alpha" offset="0x24" visible="true" />
-		<colorf name="Color" offset="0x28" visible="true" alpha="false" />
-		<float32 name="Unknown" offset="0x34" visible="true" />
-		<float32 name="Unknown" offset="0x38" visible="true" />
-		<float32 name="Unknown" offset="0x3C" visible="true" />
-		<float32 name="Unknown" offset="0x40" visible="true" />
-		<float32 name="Unknown" offset="0x44" visible="true" />
-		<int32 name="Bitmap Index" offset="0x48" visible="true" />
-		<undefined name="Unknown" offset="0x4C" visible="true" />
+		<comment title="Physics" />
+		<float32 name="Drag" offset="0x4" visible="true" />
+		<float32 name="Gravity" offset="0x8" visible="true" />
+		<float32 name="Turbulence" offset="0xC" visible="true" />
+		<comment title="Collision" />
+		<float32 name="Depth Range" offset="0x10" visible="true" tooltip="depth range over which the particle will collide" />
+		<float32 name="Elasticity" offset="0x14" visible="true" tooltip="energy remaining after collision bounce" />
+		<float32 name="Death" offset="0x18" visible="true" tooltip="percentage change [0-1] that the particle will die on collision" />
+		<int32 name="Change Type Index" offset="0x1C" visible="true" tooltip="the type this particle will change into on collision" />
+		<comment title="Render" />
+		<enum32 name="Orientation" offset="0x20" visible="true">
+			<option name="Velocity" value="0x0" />
+			<option name="Screen Facing" value="0x1" />
+		</enum32>
+		<comment title="Render Parameters">cheap particles do not use alpha-blend transparency, they use multiply-and-add
+as such, an alpha of zero gives you additive particles, and an alpha of one gives you alpha-blend particles</comment>
+		<colorf name="Color" offset="0x24" alpha="true" visible="true" />
+		<float32 name="Intensity" offset="0x34" visible="true" />
+		<float32 name="Fade Start" offset="0x38" visible="true" tooltip="point in particles lifetime at which fade begins" />
+		<rangef name="Size" offset="0x3C" visible="true" />
+		<float32 name="Motion Blur Stretch" offset="0x44" visible="true" tooltip="how much the particle stretches as it moves" />
+		<int32 name="Texture Index" offset="0x48" visible="true" />
+		<float32 name="Texture y Scale" offset="0x4C" visible="true" tooltip="scales the texture in the y direction" />
 	</tagblock>
 	<tagblock name="Bitmaps" offset="0xC" visible="true" elementSize="0x10">
 		<tagRef name="Bitmap" offset="0x0" visible="true" />
 	</tagblock>
-	<tagRef name="Random Map" offset="0x18" visible="true" />
-	<tagRef name="Turbulence Map" offset="0x28" visible="true" />
-	<float32 name="Unknown" offset="0x38" visible="true" />
-	<float32 name="Unknown" offset="0x3C" visible="true" />
-	<float32 name="Unknown" offset="0x40" visible="true" />
-	<float32 name="Unknown" offset="0x44" visible="true" />
-	<tagRef name="Global Type Texture" offset="0x48" visible="true" />
-	<tagRef name="Global Render Texture" offset="0x58" visible="true" />
+	<tagRef name="Random" offset="0x18" visible="true" />
+	<tagRef name="Turbulence" offset="0x28" visible="true" />
+	<float32 name="Turbulence Factor u Over Time" offset="0x38" visible="true" tooltip="change in u coordinate over time" />
+	<float32 name="Turbulence Factor v Over Time" offset="0x3C" visible="true" tooltip="change in v coordinate over time" />
+	<float32 name="Turbulence Factor u Per Particle" offset="0x40" visible="true" tooltip="change in u coordinate per particle" />
+	<float32 name="Turbulence Factor v Per Particle" offset="0x44" visible="true" tooltip="change in v coordinate per particle" />
+	<tagRef name="Type Texture" offset="0x48" visible="true" />
+	<tagRef name="Render Texture" offset="0x58" visible="true" />
 </plugin>

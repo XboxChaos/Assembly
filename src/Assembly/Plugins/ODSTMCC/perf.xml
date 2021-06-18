@@ -5,7 +5,15 @@
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="Lord Zedd" version="2">Oh the xex has names.</revision>
 	</revisions>
-	<tagblock name="Performance" offset="0x0" visible="true" elementSize="0x3C">
+	<comment title="Performance Throttles">Split-screen throttle settings should be more aggresive than non-local co-op settings
+block index 0:	default non split screen
+block index 1: two way split screen
+block index 2: three way split screen
+block index 3: four way split screen
+block index 4: one additional non-local player
+block index 5: two additional non-local players
+block index 6: three additional non-local players</comment>
+	<tagblock name="Performance Throttles" offset="0x0" visible="true" elementSize="0x3C">
 		<flags32 name="Flags" offset="0x0" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Disable Self-Shadowing" index="1" />
@@ -40,19 +48,20 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</flags32>
-		<float32 name="Water" offset="0x4" visible="true" />
-		<float32 name="Decorators" offset="0x8" visible="true" />
-		<float32 name="Effects" offset="0xC" visible="true" />
-		<float32 name="Instanced Geometry" offset="0x10" visible="true" />
-		<float32 name="Object Fade" offset="0x14" visible="true" />
-		<float32 name="Object LOD" offset="0x18" visible="true" />
+		<float32 name="Water Tessellation Scale" offset="0x4" visible="true" />
+		<float32 name="Decorator Fade Distance Scale" offset="0x8" visible="true" />
+		<float32 name="Effect LOD Distance Scale" offset="0xC" visible="true" />
+		<comment title="Object Settings" />
+		<float32 name="Instance Fade Modifier" offset="0x10" visible="true" />
+		<float32 name="Object Fade Modifier" offset="0x14" visible="true" tooltip="scales down the distances at which objects first imposter and then fade out" />
+		<float32 name="Object Detail Fade Modifier" offset="0x18" visible="true" />
 		<float32 name="Decals" offset="0x1C" visible="true" />
 		<int32 name="CPU Light Count" offset="0x20" visible="true" />
 		<float32 name="CPU Light Quality" offset="0x24" visible="true" />
 		<int32 name="GPU Light Count" offset="0x28" visible="true" />
 		<float32 name="GPU Light Quality" offset="0x2C" visible="true" />
-		<int32 name="Shadow Count" offset="0x30" visible="true" />
-		<float32 name="Shadow Quality" offset="0x34" visible="true" />
+		<int32 name="Maximum Shadow Casting Objects" offset="0x30" visible="true" />
+		<float32 name="Shadow Quality LOD" offset="0x34" visible="true" tooltip="scales resolution of object shadows" />
 		<float32 name="Anisotropy Level" offset="0x38" visible="true" />
 	</tagblock>
 </plugin>

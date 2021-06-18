@@ -23,7 +23,7 @@
 		</enum16>
 		<int16 name="Placement Index" offset="0x22" visible="true" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0x8" visible="true" elementSize="0x40">
+	<tagblock name="Environment Objects" offset="0x8" visible="true" elementSize="0x40">
 		<int16 name="BSP Index" offset="0x0" visible="true" />
 		<int16 name="Unknown" offset="0x2" visible="true" />
 		<int32 name="Unique ID" offset="0x4" visible="true" />
@@ -42,15 +42,15 @@
 		<undefined name="Unknown" offset="0x38" visible="false" />
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 	</tagblock>
-	<tagblock name="Structure References" offset="0x10" visible="true" elementSize="0x44">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
+	<tagblock name="Structure BSPs" offset="0x10" visible="true" elementSize="0x44">
+		<uint32 name="Structure BSP Offset" offset="0x0" visible="true" />
+		<uint32 name="Structure BSP Size" offset="0x4" visible="true" />
+		<uint32 name="Primary Magic Meta Offset" offset="0x8" visible="true" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<tagRef name="Structure BSP" offset="0x10" visible="true" />
 		<tagRef name="Structure Lightmap" offset="0x18" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
-		<float32 name="Radiance Est. Search Distance" offset="0x24" visible="true" />
+		<float32 name="Radiance Estimated Search Distance" offset="0x24" visible="true" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<float32 name="Luminels Per World Unit" offset="0x2C" visible="true" />
 		<float32 name="Output White Reference" offset="0x30" visible="true" />
@@ -63,8 +63,8 @@
 		<int16 name="Default Sky Index" offset="0x40" visible="true" />
 		<int16 name="Unknown" offset="0x42" visible="false" />
 	</tagblock>
-	<tagblock name="Palette" offset="0x18" visible="true" elementSize="0x28">
-		<tagRef name="Name" offset="0x0" visible="true" />
+	<tagblock name="Light Volume Palette" offset="0x18" visible="true" elementSize="0x28">
+		<tagRef name="Light Volume" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
@@ -74,49 +74,45 @@
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 	</tagblock>
-	<tagblock name="Objects" offset="0x20" visible="true" elementSize="0x6C">
-		<int16 name="Type Index" offset="0x0" visible="true" />
+	<tagblock name="Light Volumes" offset="0x20" visible="true" elementSize="0x6C">
+		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Lock Type To Env. Object" index="4" />
-			<bit name="Lock Transform To Env. Object" index="5" />
+			<bit name="Not On Easy" index="1" />
+			<bit name="Not On Normal" index="2" />
+			<bit name="Not On Hard" index="3" />
+			<bit name="Lock Type To Environment Object" index="4" />
+			<bit name="Lock Transform To Environment Object" index="5" />
 			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name To Env. Object" index="7" />
+			<bit name="Lock Name to Environment Object" index="7" />
 			<bit name="Create At Rest" index="8" />
 		</flags32>
-		<float32 name="Position x" offset="0x8" visible="true" />
-		<float32 name="Position y" offset="0xC" visible="true" />
-		<float32 name="Position z" offset="0x10" visible="true" />
-		<degree name="Rotation y" offset="0x14" visible="true" />
-		<degree name="Rotation p" offset="0x18" visible="true" />
-		<degree name="Rotation r" offset="0x1C" visible="true" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
 		<float32 name="Scale" offset="0x20" visible="true" />
 		<flags16 name="Transform Flags" offset="0x24" visible="true">
 			<bit name="Mirrored" index="0" />
 		</flags16>
 		<flags16 name="Manual BSP Flags" offset="0x26" visible="true">
-			<bit name="Index 0" index="0" />
-			<bit name="Index 1" index="1" />
-			<bit name="Index 2" index="2" />
-			<bit name="Index 3" index="3" />
-			<bit name="Index 4" index="4" />
-			<bit name="Index 5" index="5" />
-			<bit name="Index 6" index="6" />
-			<bit name="Index 7" index="7" />
-			<bit name="Index 8" index="8" />
-			<bit name="Index 9" index="9" />
-			<bit name="Index 10" index="10" />
-			<bit name="Index 11" index="11" />
-			<bit name="Index 12" index="12" />
-			<bit name="Index 13" index="13" />
-			<bit name="Index 14" index="14" />
-			<bit name="Index 15" index="15" />
+			<bit name="BSP 0" index="0" />
+			<bit name="BSP 1" index="1" />
+			<bit name="BSP 2" index="2" />
+			<bit name="BSP 3" index="3" />
+			<bit name="BSP 4" index="4" />
+			<bit name="BSP 5" index="5" />
+			<bit name="BSP 6" index="6" />
+			<bit name="BSP 7" index="7" />
+			<bit name="BSP 8" index="8" />
+			<bit name="BSP 9" index="9" />
+			<bit name="BSP 10" index="10" />
+			<bit name="BSP 11" index="11" />
+			<bit name="BSP 12" index="12" />
+			<bit name="BSP 13" index="13" />
+			<bit name="BSP 14" index="14" />
+			<bit name="BSP 15" index="15" />
 		</flags16>
-		<int32 name="Unique ID" offset="0x28" visible="true" />
+		<datum name="Unique ID" offset="0x28" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x2C" visible="true" />
 		<enum8 name="Type" offset="0x2E" visible="true">
 			<option name="Biped" value="0x0" />
@@ -141,18 +137,18 @@
 		</enum8>
 		<enum8 name="BSP Policy" offset="0x30" visible="true">
 			<option name="Default" value="0x0" />
-			<option name="Always Placed" value="0x1" />
+			<option name="Always Places" value="0x1" />
 			<option name="Manual BSP Placement" value="0x2" />
 		</enum8>
 		<int8 name="Unknown" offset="0x31" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x32" visible="true" />
 		<comment title="Device Data" />
-		<int16 name="Power Group Index" offset="0x34" visible="true" />
-		<int16 name="Position Group Index" offset="0x36" visible="true" />
+		<int16 name="Power Group" offset="0x34" visible="true" />
+		<int16 name="Position Group" offset="0x36" visible="true" />
 		<flags32 name="Flags" offset="0x38" visible="true">
 			<bit name="Initially Open (1.0)" index="0" />
 			<bit name="Initially Off (0.0)" index="1" />
-			<bit name="Can Change Only Once." index="2" />
+			<bit name="Can Change Only Once" index="2" />
 			<bit name="Position Reversed" index="3" />
 			<bit name="Not Usable From Any Side" index="4" />
 		</flags32>
@@ -179,16 +175,14 @@
 		</flags16>
 		<float32 name="Lightmap Half Life" offset="0x44" visible="true" />
 		<float32 name="Lightmap Light Scale" offset="0x48" visible="true" />
-		<float32 name="Target Point x" offset="0x4C" visible="true" />
-		<float32 name="Target Point y" offset="0x50" visible="true" />
-		<float32 name="Target Point z" offset="0x54" visible="true" />
+		<point3 name="Target Point" offset="0x4C" visible="true" />
 		<float32 name="Width" offset="0x58" visible="true" />
 		<float32 name="Height Scale" offset="0x5C" visible="true" />
 		<degree name="Field Of View" offset="0x60" visible="true" />
 		<float32 name="Falloff Distance" offset="0x64" visible="true" />
 		<float32 name="Cutoff Distance" offset="0x68" visible="true" />
 	</tagblock>
-	<int32 name="Next Object ID Salt" offset="0x28" visible="true" />
+	<int32 name="Next Light Volume ID Salt" offset="0x28" visible="true" />
 	<tagblock name="Editor Folders" offset="0x2C" visible="true" elementSize="0x104">
 		<int32 name="Parent Folder Index" offset="0x0" visible="true" />
 		<ascii name="Name" offset="0x4" length="0x100" visible="true" />

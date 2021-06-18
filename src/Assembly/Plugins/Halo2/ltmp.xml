@@ -5,20 +5,20 @@
 		<revision author="Iron_Forge" version="1">Added basic layout of plugin...</revision>
 		<revision author="XZodia" version="2">Completed</revision>
 	</revisions>
-	<float32 name="Search Distance Lower Bound" offset="0x0" visible="true" />
-	<float32 name="Search Distance Upper Bound" offset="0x4" visible="true" />
-	<float32 name="Luminels Per World Unit" offset="0x8" visible="true" />
-	<float32 name="Output White Reference" offset="0xC" visible="true" />
-	<float32 name="Output Black Reference" offset="0x10" visible="true" />
-	<float32 name="Output Schlick Reference" offset="0x14" visible="true" />
-	<float32 name="Diffuse Map Scale" offset="0x18" visible="true" />
-	<float32 name="Sun Scale" offset="0x1C" visible="true" />
-	<float32 name="Sky Scale" offset="0x20" visible="true" />
-	<float32 name="Indirect Scale" offset="0x24" visible="true" />
-	<float32 name="Prt Scale" offset="0x28" visible="true" />
-	<float32 name="Surface Light Scale" offset="0x2C" visible="true" />
-	<float32 name="Scenario Light Scale" offset="0x30" visible="true" />
-	<float32 name="Lightprobe Interpolation Override" offset="0x34" visible="true" />
+	<float32 name="Search Distance Lower Bound" offset="0x0" visible="true" tooltip="the smallest distance the code will look for photons. bigger levels need a bigger search radius. Measured, in world units, 0.0 defaults to 1.0" />
+	<float32 name="Search Distance Upper Bound" offset="0x4" visible="true" tooltip="the largest distance the code will look for photons. bigger levels need a bigger search radius. Measured, in world units, 0.0 defaults to 1.0" />
+	<float32 name="Luminels Per World Unit" offset="0x8" visible="true" tooltip="how many lightmap pixels there should be per world unit. 0.0 defaults to 3.0" />
+	<float32 name="Output White Reference" offset="0xC" visible="true" tooltip="what wattage the lightmapper considers &quot;white&quot; to be for output. 0.0 defaults to 1.0" />
+	<float32 name="Output Black Reference" offset="0x10" visible="true" tooltip="what wattage the lightmapper considers &quot;black&quot; to be for output. 0.0 defaults to 0.0" />
+	<float32 name="Output Schlick Reference" offset="0x14" visible="true" tooltip="controls the way midtones are mapped. 0.0 defaults to 4.5" />
+	<float32 name="Diffuse Map Scale" offset="0x18" visible="true" tooltip="controls how diffuse maps are scaled. 0.0 defaults to 1.5" />
+	<float32 name="PRT Sun Scale" offset="0x1C" visible="true" tooltip="0.0 defaults to 100.0" />
+	<float32 name="PRT Sky Scale" offset="0x20" visible="true" tooltip="0.0 defaults to 1.0" />
+	<float32 name="PRT Indirect Scale" offset="0x24" visible="true" tooltip="0.0 defaults to 1.0" />
+	<float32 name="PRT Scale" offset="0x28" visible="true" tooltip="you must set this value." />
+	<float32 name="PRT Surface Light Scale" offset="0x2C" visible="true" tooltip="0.0 defaults to 1.0" />
+	<float32 name="PRT Scenario Light Scale" offset="0x30" visible="true" tooltip="0.0 defaults to 1.0" />
+	<float32 name="Lightprobe Interpolation Override" offset="0x34" visible="true" tooltip="overide the default sampling behavior" />
 	<undefined name="Unknown" offset="0x38" visible="false" />
 	<undefined name="Unknown" offset="0x3C" visible="false" />
 	<undefined name="Unknown" offset="0x40" visible="false" />
@@ -571,8 +571,8 @@
 			<int16 name="Opaque Point Count" offset="0xA" visible="true" />
 			<int16 name="Opaque Vertex Count" offset="0xC" visible="true" />
 			<int16 name="Opaque Part Count" offset="0xE" visible="true" />
-			<int8 name="Opague Max Nodes/Vertex" offset="0x10" visible="true" />
-			<int8 name="Transparent Max Nodes/Vertex" offset="0x11" visible="true" />
+			<int8 name="Opague Maximum Nodes/Vertex" offset="0x10" visible="true" />
+			<int8 name="Transparent Maximum Nodes/Vertex" offset="0x11" visible="true" />
 			<int16 name="Shadow-Casting Rigid Triangle" offset="0x12" visible="true" />
 			<enum16 name="Geometry Classification" offset="0x14" visible="true">
 				<option name="Worldspace" value="0x0" />
@@ -587,13 +587,13 @@
 				<bit name="Compressed Secondary Texcoord" index="2" />
 			</flags16>
 			<tagblock name="Compression" offset="0x18" visible="true" elementSize="0x38">
-				<rangef name="Position Bounds X" offset="0x0" visible="true" />
-				<rangef name="Position Bounds Y" offset="0x8" visible="true" />
-				<rangef name="Position Bounds Z" offset="0x10" visible="true" />
-				<rangef name="Texcoord Bounds X" offset="0x18" visible="true" />
-				<rangef name="Texcoord Bounds Y" offset="0x20" visible="true" />
-				<rangef name="Secondary Texcoord Bounds X" offset="0x28" visible="true" />
-				<rangef name="Secondary Texcoord Bounds Y" offset="0x30" visible="true" />
+				<rangef name="Position Bounds x" offset="0x0" visible="true" />
+				<rangef name="Position Bounds y" offset="0x8" visible="true" />
+				<rangef name="Position Bounds z" offset="0x10" visible="true" />
+				<rangef name="Texcoord Bounds x" offset="0x18" visible="true" />
+				<rangef name="Texcoord Bounds y" offset="0x20" visible="true" />
+				<rangef name="Secondary Texcoord Bounds x" offset="0x28" visible="true" />
+				<rangef name="Secondary Texcoord Bounds y" offset="0x30" visible="true" />
 			</tagblock>
 			<int8 name="Hardware Node Count" offset="0x20" visible="true" />
 			<int8 name="Node Map Size" offset="0x21" visible="true" />
@@ -648,7 +648,7 @@
 					<int16 name="Strip Length" offset="0x8" visible="true" />
 					<int16 name="First Subpart Index" offset="0xA" visible="true" />
 					<int16 name="Subpart Count" offset="0xC" visible="true" />
-					<int8 name="Max Nodes/Vertex" offset="0xE" visible="true" />
+					<int8 name="Maximum Nodes/Vertex" offset="0xE" visible="true" />
 					<int8 name="Contributing Compound Node Count" offset="0xF" visible="true" />
 					<comment title="CENTROID" />
 					<point3 name="Position" offset="0x10" visible="true" />
@@ -656,7 +656,7 @@
 					<int8 name="Node Index 2" offset="0x1D" visible="true" />
 					<int8 name="Node Index 3" offset="0x1E" visible="true" />
 					<int8 name="Node Index 4" offset="0x1F" visible="true" />
-					<comment title="ARRAY Node Weights" />
+					<comment title="Node Weights" />
 					<float32 name="Node Weight 1" offset="0x20" visible="true" />
 					<float32 name="Node Weight 2" offset="0x24" visible="true" />
 					<float32 name="Node Weight 3" offset="0x28" visible="true" />
@@ -675,9 +675,7 @@
 					<int16 name="Part Index" offset="0x6" visible="true" />
 				</tagblock>
 				<tagblock name="Visibility Bounds" offset="0x10" visible="true" elementSize="0x14">
-					<float32 name="Position X" offset="0x0" visible="true" />
-					<float32 name="Position Y" offset="0x4" visible="true" />
-					<float32 name="Position Z" offset="0x8" visible="true" />
+					<point3 name="Position" offset="0x0" visible="true" />
 					<float32 name="Radius" offset="0xC" visible="true" />
 					<int8 name="Node 0" offset="0x10" visible="true" />
 					<int8 name="Unknown" offset="0x11" visible="false" />
@@ -743,8 +741,8 @@
 			<int16 name="Opaque Point Count" offset="0xA" visible="true" />
 			<int16 name="Opaque Vertex Count" offset="0xC" visible="true" />
 			<int16 name="Opaque Part Count" offset="0xE" visible="true" />
-			<int8 name="Opague Max Nodes/Vertex" offset="0x10" visible="true" />
-			<int8 name="Transparent Max Nodes/Vertex" offset="0x11" visible="true" />
+			<int8 name="Opague Maximum Nodes/Vertex" offset="0x10" visible="true" />
+			<int8 name="Transparent Maximum Nodes/Vertex" offset="0x11" visible="true" />
 			<int16 name="Shadow-Casting Rigid Triangle" offset="0x12" visible="true" />
 			<enum16 name="Geometry Classification" offset="0x14" visible="true">
 				<option name="Worldspace" value="0x0" />
@@ -759,13 +757,13 @@
 				<bit name="Compressed Secondary Texcoord" index="2" />
 			</flags16>
 			<tagblock name="Compression" offset="0x18" visible="true" elementSize="0x38">
-				<rangef name="Position Bounds X" offset="0x0" visible="true" />
-				<rangef name="Position Bounds Y" offset="0x8" visible="true" />
-				<rangef name="Position Bounds Z" offset="0x10" visible="true" />
-				<rangef name="Texcoord Bounds X" offset="0x18" visible="true" />
-				<rangef name="Texcoord Bounds Y" offset="0x20" visible="true" />
-				<rangef name="Secondary Texcoord Bounds X" offset="0x28" visible="true" />
-				<rangef name="Secondary Texcoord Bounds Y" offset="0x30" visible="true" />
+				<rangef name="Position Bounds x" offset="0x0" visible="true" />
+				<rangef name="Position Bounds y" offset="0x8" visible="true" />
+				<rangef name="Position Bounds z" offset="0x10" visible="true" />
+				<rangef name="Texcoord Bounds x" offset="0x18" visible="true" />
+				<rangef name="Texcoord Bounds y" offset="0x20" visible="true" />
+				<rangef name="Secondary Texcoord Bounds x" offset="0x28" visible="true" />
+				<rangef name="Secondary Texcoord Bounds y" offset="0x30" visible="true" />
 			</tagblock>
 			<int8 name="Hardware Node Count" offset="0x20" visible="true" />
 			<int8 name="Node Map Size" offset="0x21" visible="true" />
@@ -820,7 +818,7 @@
 					<int16 name="Strip Length" offset="0x8" visible="true" />
 					<int16 name="First Subpart Index" offset="0xA" visible="true" />
 					<int16 name="Subpart Count" offset="0xC" visible="true" />
-					<int8 name="Max Nodes/Vertex" offset="0xE" visible="true" />
+					<int8 name="Maximum Nodes/Vertex" offset="0xE" visible="true" />
 					<int8 name="Contributing Compound Node Count" offset="0xF" visible="true" />
 					<comment title="CENTROID" />
 					<point3 name="Position" offset="0x10" visible="true" />
@@ -828,7 +826,7 @@
 					<int8 name="Node Index 2" offset="0x1D" visible="true" />
 					<int8 name="Node Index 3" offset="0x1E" visible="true" />
 					<int8 name="Node Index 4" offset="0x1F" visible="true" />
-					<comment title="ARRAY Node Weights" />
+					<comment title="Node Weights" />
 					<float32 name="Node Weight 1" offset="0x20" visible="true" />
 					<float32 name="Node Weight 2" offset="0x24" visible="true" />
 					<float32 name="Node Weight 3" offset="0x28" visible="true" />
@@ -847,9 +845,7 @@
 					<int16 name="Part Index" offset="0x6" visible="true" />
 				</tagblock>
 				<tagblock name="Visibility Bounds" offset="0x10" visible="true" elementSize="0x14">
-					<float32 name="Position X" offset="0x0" visible="true" />
-					<float32 name="Position Y" offset="0x4" visible="true" />
-					<float32 name="Position Z" offset="0x8" visible="true" />
+					<point3 name="Position" offset="0x0" visible="true" />
 					<float32 name="Radius" offset="0xC" visible="true" />
 					<int8 name="Node 0" offset="0x10" visible="true" />
 					<int8 name="Unknown" offset="0x11" visible="false" />
@@ -903,9 +899,7 @@
 			</tagblock>
 		</tagblock>
 		<tagblock name="Lighting Environments" offset="0x38" visible="true" elementSize="0xDC">
-			<float32 name="Sample Point X" offset="0x0" visible="true" />
-			<float32 name="Sample Point Y" offset="0x4" visible="true" />
-			<float32 name="Sample Point Z" offset="0x8" visible="true" />
+			<point3 name="Sample Point" offset="0x0" visible="true" />
 			<float32 name="Red Coefficient" offset="0xC" visible="true" />
 			<float32 name="Red Coefficient" offset="0x10" visible="true" />
 			<float32 name="Red Coefficient" offset="0x14" visible="true" />
@@ -924,7 +918,7 @@
 			<float32 name="Green Coefficient" offset="0x48" visible="true" />
 			<float32 name="Green Coefficient" offset="0x4C" visible="true" />
 			<float32 name="Green Coefficient" offset="0x50" visible="true" />
-			<float32 name="Green Coefficient" offset="0x54" visible="true" />
+			<float32 name="Blue Coefficient" offset="0x54" visible="true" />
 			<float32 name="Blue Coefficient" offset="0x58" visible="true" />
 			<float32 name="Blue Coefficient" offset="0x5C" visible="true" />
 			<float32 name="Blue Coefficient" offset="0x60" visible="true" />
@@ -933,32 +927,28 @@
 			<float32 name="Blue Coefficient" offset="0x6C" visible="true" />
 			<float32 name="Blue Coefficient" offset="0x70" visible="true" />
 			<float32 name="Blue Coefficient" offset="0x74" visible="true" />
-			<float32 name="Blue Coefficient" offset="0x78" visible="true" />
-			<degree name="Mean Incoming Light Direction i" offset="0x7C" visible="true" />
-			<degree name="Mean Incoming Light Direction j" offset="0x80" visible="true" />
-			<degree name="Mean Incoming Light Direction k" offset="0x84" visible="true" />
-			<float32 name="Incoming Light Intensity X" offset="0x88" visible="true" />
-			<float32 name="Incoming Light Intensity Y" offset="0x8C" visible="true" />
-			<float32 name="Incoming Light Intensity Z" offset="0x90" visible="true" />
-			<int32 name="Specular Bitmap Index" offset="0x94" visible="true" />
-			<degree name="Rotation Axis i" offset="0x98" visible="true" />
-			<degree name="Rotation Axis j" offset="0x9C" visible="true" />
-			<degree name="Rotation Axis k" offset="0xA0" visible="true" />
-			<float32 name="Rotation Speed" offset="0xA4" visible="true" />
-			<degree name="Bump Direction i" offset="0xA8" visible="true" />
-			<degree name="Bump Direction j" offset="0xAC" visible="true" />
-			<degree name="Bump Direction k" offset="0xB0" visible="true" />
-			<float32 name="Color Tint" offset="0xB4" visible="true" />
-			<enum32 name="Procedural Overide" offset="0xB8" visible="true" />
-			<flags32 name="Flags" offset="0xBC" visible="true">
+			<vector3 name="Mean Incoming Light Direction" offset="0x78" visible="true" />
+			<point3 name="Incoming Light Intensity" offset="0x84" visible="true" />
+			<int32 name="Specular Bitmap Index" offset="0x90" visible="true" />
+			<vector3 name="Rotation Axis" offset="0x94" visible="true" />
+			<float32 name="Rotation Speed" offset="0xA0" visible="true" />
+			<vector3 name="Bump Direction" offset="0xA4" visible="true" />
+			<colorf name="Color Tint" offset="0xB0" alpha="false" visible="true" />
+			<enum16 name="Procedural Overide" offset="0xBC" visible="true">
+				<option name="No Overide" value="0x0" />
+				<option name="CIE Clear Sky" value="0x1" />
+				<option name="CIE Partly Cloudy" value="0x2" />
+				<option name="CIE Cloudy" value="0x3" />
+				<option name="Directional Light" value="0x4" />
+				<option name="Cone Light" value="0x5" />
+				<option name="Sphere Light" value="0x6" />
+				<option name="Hemisphere Light" value="0x7" />
+			</enum16>
+			<flags16 name="Flags" offset="0xBE" visible="true">
 				<bit name="Leave Me Alone Please" index="0" />
-			</flags32>
-			<degree name="Procedural Param0 i" offset="0xC0" visible="true" />
-			<degree name="Procedural Param0 j" offset="0xC4" visible="true" />
-			<degree name="Procedural Param0 k" offset="0xC8" visible="true" />
-			<degree name="Procedural Param1.XYZ i" offset="0xCC" visible="true" />
-			<degree name="Procedural Param1.XYZ j" offset="0xD0" visible="true" />
-			<degree name="Procedural Param1.XYZ k" offset="0xD4" visible="true" />
+			</flags16>
+			<vector3 name="Procedural Param0" offset="0xC0" visible="true" />
+			<vector3 name="Procedural Param1.XYZ" offset="0xCC" visible="true" />
 			<degree name="Procedural Param1.w" offset="0xD8" visible="true" />
 		</tagblock>
 		<tagblock name="Geometry Buckets" offset="0x40" visible="true" elementSize="0x38">
@@ -999,8 +989,8 @@
 		<tagblock name="Instance Bucket Refs" offset="0x50" visible="true" elementSize="0xC">
 			<int16 name="Flags" offset="0x0" visible="true" />
 			<int16 name="Bucket Index" offset="0x2" visible="true" />
-			<tagblock name="Section Offsets" offset="0x4" visible="true" elementSize="0x4">
-				<int32 name="Section Offset" offset="0x0" visible="true" />
+			<tagblock name="Section Offsets" offset="0x4" visible="true" elementSize="0x2">
+				<int16 name="Section Offset" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
 		<tagblock name="Scenary Object Info" offset="0x58" visible="true" elementSize="0xC">
@@ -1013,8 +1003,8 @@
 		<tagblock name="Scenary Object Bucket Refs" offset="0x60" visible="true" elementSize="0xC">
 			<int16 name="Flags" offset="0x0" visible="true" />
 			<int16 name="Bucket Index" offset="0x2" visible="true" />
-			<tagblock name="Section Offsets" offset="0x4" visible="true" elementSize="0x4">
-				<int32 name="Section Offset" offset="0x0" visible="true" />
+			<tagblock name="Section Offsets" offset="0x4" visible="true" elementSize="0x2">
+				<int16 name="Section Offset" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
 	</tagblock>
