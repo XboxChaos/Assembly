@@ -19,7 +19,8 @@ namespace Blamite.Compression
 	{
 		Null,
 		Compressed,
-		Decompressed
+		Decompressed,
+		ReadOnly
 	}
 
 	/// <summary>
@@ -36,8 +37,13 @@ namespace Blamite.Compression
 		/// <returns></returns>
 		public static CompressionState HandleCompression(string input, EngineDatabase engineDb, CompressionState desiredState = CompressionState.Null)
 		{
+			FileInfo cache = new FileInfo(input);
+			if (cache.IsReadOnly)
+				return CompressionState.ReadOnly;
+
 			CompressionState state;
 			EngineDescription engineInfo;
+
 			using (FileStream fileStream = File.OpenRead(input))
 			{
 				var reader = new EndianReader(fileStream, Endian.LittleEndian);
@@ -147,7 +153,7 @@ namespace Blamite.Compression
 					if (cea_360_ff_byte == 0xFF)    // CEA 360
 					{
 						// TODO (Dragon): decompress first chunk to get the header with lzx
-						throw new InvalidOperationException("assembly does not support CEA 360 decompression (missing LZX)");
+						throw new InvalidOperationException("Assembly does not support CEA 360 decompression (missing LZX)");
 					}
 					else // assume CEA MCC
 					{
