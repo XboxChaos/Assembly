@@ -5,7 +5,7 @@
 	</revisions>
 	<tagRef name="Don't Use" offset="0x0" visible="true" />
 	<tagRef name="Won't Use" offset="0x10" visible="true" />
-	<tagRef name="Can't Use" offset="0x20" visible="true" tooltip="set me" />
+	<tagRef name="Can't Use" offset="0x20" visible="true" />
 	<tagblock name="Skies" offset="0x30" visible="true" elementSize="0x10">
 		<tagRef name="Sky" offset="0x0" visible="true" />
 	</tagblock>
@@ -17,6 +17,7 @@
 	<flags16 name="Flags" offset="0x3E" visible="true">
 		<bit name="Cortana Hack" index="0" tooltip="sort cortana in front of other transparent geometry" />
 		<bit name="Use Demo UI" index="1" tooltip="uses alternate UI collection for demo" />
+		<bit name="Disable Color Correction" index="2" tooltip="disable ntsc to srgb color space conversion for content authored for srgb" />
 	</flags16>
 	<tagblock name="Child Scenarios" offset="0x40" visible="true" elementSize="0x20">
 		<tagRef name="Child Scenario" offset="0x0" visible="true" />
@@ -772,17 +773,40 @@
 		<degree name="Facing" offset="0xC" visible="true" />
 		<enum16 name="Type" offset="0x10" visible="true">
 			<option name="Ctf - Flag" value="0x0" />
-			<option name="Ctf - Vehicle" value="0x1" />
+			<option name="Ctf - Vehicle" value="0x1" tooltip="unused" />
 			<option name="Oddball - Ball Spawn" value="0x2" />
 			<option name="Race - Track" value="0x3" />
 			<option name="Race - Vehicle" value="0x4" />
-			<option name="Vegas - Bank" value="0x5" />
+			<option name="Vegas - Bank" value="0x5" tooltip="unused" />
 			<option name="Teleport From" value="0x6" />
 			<option name="Teleport To" value="0x7" />
 			<option name="Hill - Flag" value="0x8" />
 		</enum16>
-		<int16 name="Team Index" offset="0x12" visible="true" />
+		<comment title="Usages">* Team index, 0=red, 1=blue
+* Player index, 0 through 15
+* Race track index, 0 through 31
+* Teleporter channel index
+* Hill index</comment>
+		<int16 name="Usage ID" offset="0x12" visible="true" />
 		<tagRef name="Weapon Group" offset="0x14" visible="true" />
+		<comment title="Ctf - Flag">Place one flag for each team (usage id)</comment>
+		<comment title="Oddball - Ball Spawn">Begin with player index (usage id) set to 0, which will be the first spawn, incrementing up to 15.
+They will be spawned incrementally as well.
+For best results, 0 should be in a team-neutral location, with each ball located on the opposite side of the map from the previous ball</comment>
+		<comment title="Race - Track">These represent the rally points for a lap in race
+Begin with track index (usage id) set to 0, incrementing up to 31, leaving no graps in numbers
+In rally *MODE*, tracks will be selected at random
+For best results, 0 should be in a team-neutral location</comment>
+		<comment title="Race - Vehicle">Place up to 16 vehicles (usage id is unused)</comment>
+		<comment title="Teleport From">Teleporter entry node. Usage id is used to link entry and exit nodes.</comment>
+		<comment title="Teleport To">Teleporter exit node. Usage id is used to link entry and exit nodes.
+These *DIFFERENCE* between the &lt;facing&gt; value for the entry and exit nodes is added to the player's yaw for their final facing direction upon exit
+E.g., assume entry's facing is -90, and exit is 0. That's a difference of +90 (exit minus entry)
+The player entrying the teleporter facing north would exit then facing east</comment>
+		<comment title="Hill - Flag">Set hill index (usage id) to designate this flag as part that hill. There can only be up to 64 total hills for a map
+A hill can consist of up to 12 flags
+If a hill consists of only 1 point, it will be 1wu wide in each cardinal direction around the position
+The hill represented by index 0 is the default in non-moving hill mode</comment>
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
@@ -884,9 +908,9 @@
 			<option name="All Except Ctf" value="0xD" />
 			<option name="All Except Race &amp; Ctf" value="0xE" />
 		</enum16>
-		<int16 name="Team Index" offset="0xC" visible="true" />
-		<int16 name="Spawn Time (In Seconds, 0 = Default)" offset="0xE" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
+		<int16 name="Team Index" offset="0xC" visible="true" tooltip="0=red, 1=blue" />
+		<int16 name="Spawn Time" offset="0xE" visible="true" tooltip="0 means default to item collection time" />
+		<int32 name="Unknown" offset="0x10" visible="true" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
@@ -2049,19 +2073,30 @@
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<rect16 name="Text Bounds (On Screen)" offset="0x28" visible="true" />
 		<int16 name="String Index" offset="0x30" visible="true" />
-		<int16 name="Unknown" offset="0x32" visible="false" />
+		<enum16 name="Style" offset="0x32" visible="true">
+			<option name="Plain" value="0x0" />
+			<option name="Bold" value="0x1" />
+			<option name="Italics" value="0x2" />
+			<option name="Condensed" value="0x3" />
+			<option name="Underlined" value="0x4" />
+		</enum16>
 		<enum16 name="Justification" offset="0x34" visible="true">
 			<option name="Left" value="0x0" />
 			<option name="Right" value="0x1" />
 			<option name="Center" value="0x2" />
 		</enum16>
 		<int16 name="Unknown" offset="0x36" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
+		<flags32 name="Text Flags" offset="0x38" visible="true">
+			<bit name="Wrap Horizontally" index="0" />
+			<bit name="Wrap Vertically" index="1" />
+			<bit name="Center Vertically" index="2" />
+			<bit name="Bottom Justify" index="3" />
+		</flags32>
 		<color32 name="Text Color" offset="0x3C" alpha="true" visible="true" />
 		<color32 name="Shadow Color" offset="0x40" alpha="true" visible="true" />
-		<float32 name="Fade In Time [Seconds]" offset="0x44" visible="true" />
-		<float32 name="Up Time [Seconds]" offset="0x48" visible="true" />
-		<float32 name="Fade Out Time [Seconds]" offset="0x4C" visible="true" />
+		<float32 name="Fade In Time" offset="0x44" visible="true" />
+		<float32 name="Up Time" offset="0x48" visible="true" />
+		<float32 name="Fade Out Time" offset="0x4C" visible="true" />
 		<undefined name="Unknown" offset="0x50" visible="false" />
 		<undefined name="Unknown" offset="0x54" visible="false" />
 		<undefined name="Unknown" offset="0x58" visible="false" />

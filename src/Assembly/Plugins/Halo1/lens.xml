@@ -22,6 +22,12 @@
 	<tagRef name="Bitmap" offset="0x20" visible="true" tooltip="used by reflections" />
 	<flags16 name="Flags" offset="0x30" visible="true">
 		<bit name="Sun" index="0" />
+		<bit name="No Occlusion Test" index="1" />
+		<bit name="Only Render In First Person" index="2" />
+		<bit name="Only Render In Third Person" index="3" />
+		<bit name="Fade In More Quickly" index="4" tooltip="not supported" />
+		<bit name="Fade Out More Quickly" index="5" tooltip="not supported" />
+		<bit name="Scale By Marker" index="6" />
 	</flags16>
 	<int16 name="Unknown" offset="0x32" visible="false" />
 	<undefined name="Unknown" offset="0x34" visible="false" />
@@ -73,8 +79,8 @@
 		<flags16 name="Flags" offset="0x0" visible="true">
 			<bit name="Align Rotation With Screen Center" index="0" />
 			<bit name="Radius NOT Scaled By Distance" index="1" />
-			<bit name="Radius Scaled By Occlusion Factor" index="2" />
-			<bit name="Occluded By Solid Objects" index="3" />
+			<bit name="Radius Scaled By Occlusion Factor" index="2" tooltip="scales radius by 1/2 to 1 as occlusion goes from 0 to 1" />
+			<bit name="Occluded By Solid Objects" index="3" tooltip="reflection will be drawn with the zbuffer enabled (it will be drawn 'behind' solid geometry)" />
 		</flags16>
 		<int16 name="Unknown" offset="0x2" visible="false" />
 		<int16 name="Bitmap Index" offset="0x4" visible="true" />
