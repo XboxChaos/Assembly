@@ -46,7 +46,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			_symbols = symbols;
 			StringIDTrie = stringIdTrie;
 
-			if (cache.Engine == EngineType.ThirdGeneration && cache.HeaderSize == 0x800)
+			if (cache.Engine < EngineType.ThirdGeneration ||
+				(cache.Engine == EngineType.ThirdGeneration && cache.HeaderSize == 0x800))
 				btnSaveAll.Visibility = btnAddNew.Visibility = Visibility.Collapsed;
 
 			// Thread the loading routine
