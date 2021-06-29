@@ -41,7 +41,7 @@ namespace SharedDump
 			ResourceTable resources;
 			using (var reader = new EndianReader(File.OpenRead(mapPath), Endian.BigEndian))
 			{
-				cacheFile = CacheFileLoader.LoadCacheFile(reader, Path.GetFileName(mapPath), db);
+				cacheFile = CacheFileLoader.LoadCacheFile(reader, mapPath, db);
 				resources = cacheFile.Resources.LoadResourceTable(reader);
 			}
 

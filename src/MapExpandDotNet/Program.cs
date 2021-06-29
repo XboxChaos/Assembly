@@ -45,7 +45,7 @@ namespace MapExpandDotNet
 				return;
 			}
 
-			var cacheFile = new ThirdGenCacheFile(stream, buildInfo, Path.GetFileName(args[0]));
+			var cacheFile = new ThirdGenCacheFile(stream, buildInfo, args[0]);
 
 			FileSegmentGroup area;
 			FileSegment section;

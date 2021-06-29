@@ -1,12 +1,11 @@
 ﻿using Blamite.IO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Blamite.Blam.SecondGen
+namespace Blamite.Blam
 {
-	public class SecondGenPointerExpander : IPointerExpander
+	/// <summary>
+	/// PointerExpander which does nothing.
+	/// </summary>
+	public class DummyPointerExpander : IPointerExpander
 	{
 		public bool IsValid { get { return false; } }//lol
 

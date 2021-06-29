@@ -51,7 +51,7 @@ namespace BlockAlignmentScanner
 				Console.WriteLine("- {0}", Path.GetFileName(mapPath));
 				using (var reader = new EndianReader(File.OpenRead(mapPath), Endian.BigEndian))
 				{
-					var map = CacheFileLoader.LoadCacheFile(reader, Path.GetFileName(mapPath), db);
+					var map = CacheFileLoader.LoadCacheFile(reader, mapPath, db);
 					var visitedTagBlocks = new HashSet<uint>();
 					foreach (var tag in map.Tags)
 					{

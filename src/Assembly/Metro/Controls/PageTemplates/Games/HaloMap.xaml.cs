@@ -156,7 +156,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			{
 				var reader = new EndianReader(fileStream, Endian.BigEndian);
 		#if DEBUG
-				_cacheFile = CacheFileLoader.LoadCacheFile(reader, Path.GetFileName(_cacheLocation), App.AssemblyStorage.AssemblySettings.DefaultDatabase,
+				_cacheFile = CacheFileLoader.LoadCacheFile(reader, _cacheLocation, App.AssemblyStorage.AssemblySettings.DefaultDatabase,
 					out _buildInfo);
 		#else
 				try
@@ -1174,7 +1174,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 										}
 
 										resourceStream = File.OpenRead(resourceCachePath);
-										resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, _cacheFile.Endianness), _buildInfo, Path.GetFileName(_cacheLocation));
+										resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, _cacheFile.Endianness), _buildInfo, _cacheLocation);
 									}
 
 									var extractor = new ResourcePageExtractor(resourceFile);

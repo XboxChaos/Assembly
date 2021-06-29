@@ -37,11 +37,11 @@ namespace ScriptTool
             {
                 if(cache.StringIDs is null)
                 {
-                    Console.WriteLine($"{cache.FileName} doesn't contain StringIDs and will be skipped.");
+                    Console.WriteLine($"{Path.GetFileName(cache.FilePath)} doesn't contain StringIDs and will be skipped.");
                 }
                 else
                 {
-                    Console.WriteLine($"Collecting StringIDs from {cache.FileName}.");
+                    Console.WriteLine($"Collecting StringIDs from {Path.GetFileName(cache.FilePath)}.");
                     IEnumerable<string> filtered = cache.StringIDs?.Select(t => t.Replace("\u001f", "\t"));
                     foreach (string id in filtered)
                     {

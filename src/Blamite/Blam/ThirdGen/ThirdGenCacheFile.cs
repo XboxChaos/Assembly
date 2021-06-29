@@ -39,9 +39,9 @@ namespace Blamite.Blam.ThirdGen
 
 		private bool _zoneOnly = false;
 
-		public ThirdGenCacheFile(IReader reader, EngineDescription buildInfo, string fileName)
+		public ThirdGenCacheFile(IReader reader, EngineDescription buildInfo, string filePath)
 		{
-			FileName = fileName;
+			FilePath = filePath;
 			_endianness = reader.Endianness;
 			_buildInfo = buildInfo;
 			_segmenter = new FileSegmenter(buildInfo.SegmentAlignment);
@@ -64,11 +64,12 @@ namespace Blamite.Blam.ThirdGen
 				_simulationDefinitions.SaveChanges(stream);
 			if (_effects != null)
 				_effects.SaveChanges(stream);
-			WriteHeader(stream);
 			WriteLanguageInfo(stream);
+			_header.Checksum = ICacheFileExtensions.GenerateChecksum(this, stream);
+			WriteHeader(stream);
 		}
 
-		public string FileName { get; private set; }
+		public string FilePath { get; private set; }
 
 		public int HeaderSize
 		{

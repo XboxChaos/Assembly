@@ -19,7 +19,7 @@ namespace ScriptTool
             {
                 using var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
                 var reader = new EndianReader(stream, Endian.BigEndian);
-                var cache = CacheFileLoader.LoadCacheFile(reader, Path.GetFileNameWithoutExtension(path), db);
+                var cache = CacheFileLoader.LoadCacheFile(reader, path, db);
                 result.Add(cache);
             }
             return result;
@@ -29,11 +29,10 @@ namespace ScriptTool
         public static Dictionary<string, ScriptTable> LoadAllScriptFiles(string path, EngineDatabase db, out EngineDescription engineInfo)
         {
             Dictionary<string, ScriptTable> result = new Dictionary<string, ScriptTable>();
-            string fileName = Path.GetFileNameWithoutExtension(path);
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 var reader = new EndianReader(stream, Endian.BigEndian);
-                var cache = CacheFileLoader.LoadCacheFile(reader,fileName, db, out engineInfo);
+                var cache = CacheFileLoader.LoadCacheFile(reader, path, db, out engineInfo);
                 if (cache.Type != CacheFileType.Shared && cache.Type != CacheFileType.SinglePlayerShared && cache.ScriptFiles.Length > 0)
                 {
                     foreach(var file in cache.ScriptFiles)
@@ -50,12 +49,10 @@ namespace ScriptTool
         {
             Dictionary<string, IEnumerable<UnitSeatMapping>> result = new Dictionary<string, IEnumerable<UnitSeatMapping>>();
 
-            string fileName = Path.GetFileNameWithoutExtension(path);
-
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 var reader = new EndianReader(stream, Endian.BigEndian);
-                var cache = CacheFileLoader.LoadCacheFile(reader, fileName, db, out engineInfo);
+                var cache = CacheFileLoader.LoadCacheFile(reader, path, db, out engineInfo);
                 if (cache.Type != CacheFileType.Shared && cache.Type != CacheFileType.SinglePlayerShared && cache.ScriptFiles.Length > 0)
                 {
                     foreach (var file in cache.ScriptFiles)

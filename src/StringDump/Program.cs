@@ -37,7 +37,7 @@ namespace StringDump
 			using (IReader reader = new EndianReader(File.OpenRead(mapPath), Endian.BigEndian))
 			{
 				Console.WriteLine("Loading cache file...");
-				cacheFile = CacheFileLoader.LoadCacheFile(reader, Path.GetFileName(mapPath), engineDb);
+				cacheFile = CacheFileLoader.LoadCacheFile(reader, mapPath, engineDb);
 
 				Console.WriteLine("Loading locales...");
 				locales = cacheFile.Languages.LoadLanguage(GameLanguage.English, reader);

@@ -47,79 +47,11 @@ namespace Blamite.Blam
             }
         }
 
-
-        /// <summary>
-        ///     Gets the number of strings in the table.
-        /// </summary>
-        public new int Count {
-            //get { return _strings.Count; }
-            get { return base.Count; }
-        }
-
-        /// <summary>
-        ///     Gets or sets the string at an index.
-        /// </summary>
-        /// <param name="index">The index of the string to get or set.</param>
-        /// <returns>The string at the given index.</returns>
-        public string this[int index] {
-            //get { return _strings[index]; }
-            //set { _strings[index] = value; }
-            get { return base[index]; }
-            set { base[index] = value; }
-        }
-
-        /*
-        public IEnumerator<string> GetEnumerator()
-        {
-            return _strings.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _strings.GetEnumerator();
-        }
-        */
-
-        /// <summary>
-        ///     Adds a string to the table.
-        /// </summary>
-        /// <param name="str">The string to add.</param>
-        public void Add(string str)
-        {
-            //_strings.Add(str);
-            base.Add(str);
-        }
-
-        /// <summary>
-        ///     Expands the table to be at least a certain length by adding null strings to the end.
-        /// </summary>
-        /// <param name="length">The minimum length that the table must have.</param>
-        public void Expand(int length)
-        {
-            /*
-            while (_strings.Count < length)
-                _strings.Add(null);
-                */
-            base.Expand(length);
-        }
-
-        /// <summary>
-        ///     Searches for a given string and returns the zero-based index of its first occurrence in the table. O(n).
-        /// </summary>
-        /// <param name="str">The string to search for. Case-sensitive.</param>
-        /// <returns>The zero-based index of the first occurrence of the string in the table, or -1 if not found.</returns>
-        public int IndexOf(string str)
-        {
-            // TODO: Change this to use a Dictionary or something if the O(n) runtime complexity is too inefficient
-            //return _strings.IndexOf(str);
-            return base.IndexOf(str);
-        }
-
         /// <summary>
         ///     Saves changes made to the string table.
         /// </summary>
         /// <param name="stream">The stream to manipulate.</param>
-        public void SaveChanges(IStream stream)
+        public new void SaveChanges(IStream stream)
         {
             //SaveOffsets(stream);
             //SaveData(stream);
