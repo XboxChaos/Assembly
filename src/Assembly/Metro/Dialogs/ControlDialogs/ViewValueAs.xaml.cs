@@ -8,6 +8,7 @@ using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Blamite.Blam;
 using Blamite.Serialization;
 using Blamite.IO;
+using System.IO;
 
 namespace Assembly.Metro.Dialogs.ControlDialogs
 {
@@ -48,6 +49,8 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			// Set Textboxes
 			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
 			txtMemOffset.Text = "0x" + _memOffset.ToString("X");
+			txtMapName.Text = Path.GetFileName(_cacheFile.FilePath);
+			txtMapName.ToolTip = _cacheFile.FilePath;
 
 			// Load Meta
 			panelMetaComponents.ItemsSource = _fields;
