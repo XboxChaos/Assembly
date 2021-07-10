@@ -48,7 +48,7 @@
 			<from>long</from>
 		</to>
 	</typecasting>
-  
+
 	<scriptTypes>
 		<type opcode="0x0" name="startup" />
 		<type opcode="0x1" name="dormant" />
@@ -1959,7 +1959,7 @@
 			<arg type="ai" />
 			<arg type="ai_command_script" />
 		</function>
-		<function opcode="0x1DF" name="cs_command_script_attached" returnType="boolean" argc="2">
+		<function opcode="0x1DF" name="cs_command_script_queued" returnType="boolean" argc="2">
 			<arg type="ai" />
 			<arg type="ai_command_script" />
 		</function>
@@ -2936,7 +2936,7 @@
 		</function>
 		<function opcode="0x2E1" name="map_reset" returnType="void" />
 		<function opcode="0x2E2" name="map_reset_random" returnType="void" null="true" />
-		<function opcode="0x2E3" name="switch_zone_set" returnType="void" argc="1">
+		<function opcode="0x2E3" name="switch_bsp" returnType="void" argc="1">
 			<arg type="long" />
 		</function>
 		<function opcode="0x2E4" name="switch_zone_set" returnType="void" argc="1">
@@ -3361,7 +3361,7 @@
 			<arg type="controller" />
 			<arg type="string_id" />
 		</function>
-		<function opcode="0x369" name="player_grant_achievement" returnType="void" argc="2">
+		<function opcode="0x369" name="achievement_grant_to_player" returnType="void" argc="2">
 			<arg type="controller" />
 			<arg type="string_id" />
 		</function>
@@ -3437,7 +3437,7 @@
 		<function opcode="0x381" name="game_engine_event_test_oddball" returnType="void" null="true" argc="1">
 			<arg type="long" />
 		</function>
-		<function opcode="0x382" name="game_engine_event_test_koth" returnType="void" null="true" argc="1">
+		<function opcode="0x382" name="game_engine_event_test_king" returnType="void" null="true" argc="1">
 			<arg type="long" />
 		</function>
 		<function opcode="0x383" name="game_engine_event_test_vip" returnType="void" null="true" argc="1">
@@ -3758,7 +3758,7 @@
 		<function opcode="0x3E7" name="cinematic_screen_effect_set_crossfade" returnType="void" null="true" argc="1">
 			<arg type="real" />
 		</function>
-		<function opcode="0x3E8" name="cinematic_screen_effect_set_crossfade" returnType="void" null="true" argc="2">
+		<function opcode="0x3E8" name="cinematic_screen_effect_set_crossfade2" returnType="void" null="true" argc="2">
 			<arg type="real" />
 			<arg type="real" />
 		</function>
@@ -3915,7 +3915,7 @@
 			<arg type="controller" />
 			<arg type="voice_output_setting" />
 		</function>
-		<function opcode="0x415" name="controller_set_voice_mask_setting" returnType="void" null="true" argc="2">
+		<function opcode="0x415" name="controller_set_voice_mask" returnType="void" null="true" argc="2">
 			<arg type="controller" />
 			<arg type="voice_mask" />
 		</function>
@@ -4121,7 +4121,7 @@
 		<function opcode="0x44D" name="objectives_secondary_show" returnType="void" argc="1">
 			<arg type="long" />
 		</function>
-		<function opcode="0x44E" name="objectives_primary_unavailable" returnType="void" argc="1">
+		<function opcode="0x44E" name="objectives_secondary_finish" returnType="void" argc="1">
 			<arg type="long" />
 		</function>
 		<function opcode="0x44F" name="objectives_secondary_unavailable" returnType="void" argc="1">
@@ -4161,11 +4161,11 @@
 			<arg type="boolean" />
 			<arg type="short" />
 		</function>
-		<function opcode="0x45D" name="net_quality_set_squad_speculative_migration_badness_history" returnType="void" null="true" argc="2">
+		<function opcode="0x45D" name="net_quality_set_group_host_badness_history" returnType="void" null="true" argc="2">
 			<arg type="boolean" />
 			<arg type="short" />
 		</function>
-		<function opcode="0x45E" name="net_quality_set_squad_bridging_badness_history" returnType="void" null="true" argc="2">
+		<function opcode="0x45E" name="net_quality_set_group_client_badness_history" returnType="void" null="true" argc="2">
 			<arg type="boolean" />
 			<arg type="short" />
 		</function>
@@ -4273,7 +4273,7 @@
 		<function opcode="0x483" name="play_bink_movie_from_tag" returnType="void" argc="1">
 			<arg type="bink_definition" />
 		</function>
-		<function opcode="0x484" name="play_credits" returnType="void" />
+		<function opcode="0x484" name="play_credits_skip_to_menu" returnType="void" />
 		<function opcode="0x485" name="bink_time" returnType="long" />
 		<function opcode="0x486" name="set_global_doppler_factor" returnType="void" null="true" argc="1">
 			<arg type="real" />
@@ -4424,7 +4424,7 @@
 		<function opcode="0x4B3" name="webstats_throttle_bandwidth" returnType="void" null="true" argc="1">
 			<arg type="long" />
 		</function>
-		<function opcode="0x4B4" name="webstats_log_uploads" returnType="void" null="true" argc="1">
+		<function opcode="0x4B4" name="netdebug_prefer_internet" returnType="void" null="true" argc="1">
 			<arg type="boolean" />
 		</function>
 		<function opcode="0x4B5" name="flag_new" returnType="void" null="true" argc="2">
@@ -5117,7 +5117,7 @@
 		<function opcode="0x59B" name="chud_show_arbiter_ai_navpoint" returnType="void" argc="1">
 			<arg type="boolean" />
 		</function>
-		<function opcode="0x59C" name="cortana_effect_tag_reference_get_scene" returnType="cinematic_scene_definition" argc="1">
+		<function opcode="0x59C" name="cortana_tag_reference_get_scene" returnType="cinematic_scene_definition" argc="1">
 			<arg type="long" />
 		</function>
 		<function opcode="0x59D" name="net_banhammer_force_download" returnType="void" null="true" argc="2">
