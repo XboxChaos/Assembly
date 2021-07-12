@@ -104,7 +104,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             itemDebugData.IsChecked = App.AssemblyStorage.AssemblySettings.OutputCompilerDebugData;
 
             // Enable compilation only for supported games.
-            if(_buildInfo.Name.Contains("Reach") || _buildInfo.Name.Contains("Halo 3") && _buildInfo.HeaderSize != 0x800 && !_buildInfo.Name.Contains("ODST"))
+            if(_buildInfo.Name.Contains("Reach") || _buildInfo.Name.Contains("Halo 3") || _buildInfo.Name.Contains("ODST") && _buildInfo.HeaderSize != 0x800)
             {
                 compileButton.Visibility = Visibility.Visible;
                 progressReporter.Visibility = Visibility.Visible;

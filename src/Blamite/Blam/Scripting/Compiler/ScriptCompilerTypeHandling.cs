@@ -158,15 +158,11 @@ namespace Blamite.Blam.Scripting.Compiler
                         break;
 
                     case "ai":
-                        // H3 and Reach do not share the same AI format.
-                        if (_buildInfo.Name.Contains("Reach"))
-                        {
-                            expression = GetAIExpressionReach(context, expectedValueType);
-                        }
+                        // H3 does not share the same AI format as ODST and Reach.
+                        if (_buildInfo.Name.Contains("Reach") || _buildInfo.Name.Contains("ODST"))
+                            expression = GetAIExpressionODST(context, expectedValueType);
                         else
-                        {
                             expression = GetAIExpressionH3(context, expectedValueType);
-                        }
                         break;
 
                     case "object_name":
@@ -323,53 +319,42 @@ namespace Blamite.Blam.Scripting.Compiler
             }
         }
 
-        private ScriptExpression GetAIExpressionReach(HS_Gen1Parser.LiteralContext context, string expectedValueType)
+        private ScriptExpression GetAIExpressionODST(HS_Gen1Parser.LiteralContext context, string expectedValueType)
         {
             string text = context.GetTextSanitized();
             string[] subStrings = text.Split(new char[] { '/' }, 2, StringSplitOptions.RemoveEmptyEntries);
             ushort opcode = _opcodes.GetTypeInfo("ai").Opcode;
             ushort valuetype = _opcodes.GetTypeInfo(expectedValueType).Opcode;
 
-            byte b1;
-            byte b2;
-            byte b3;
-            byte b4;
+            uint value = 0;
 
-            #region value generation
             // Squads.
             if (TryGetObjectFromContext(out ScriptingContextObject squadObject, Tuple.Create("ai_squad", subStrings[0])))
             {
                 // Squad.
-                if(subStrings.Length == 1)
+                if (subStrings.Length == 1)
                 {
-                    b1 = 32;
-                    b2 = 0;
-                    b3 = 0;
-                    b4 = (byte)squadObject.Index;
+                    value |= 0x20000000 + (uint)squadObject.Index;
                 }
                 // Locations.
-                else if(subStrings.Length == 2)
+                else if (subStrings.Length == 2)
                 {
+                    value |= (uint)squadObject.Index << 16;
+
                     // Group Location.
                     if (TryGetChildObjectFromObject(squadObject, "ai_group_location", subStrings[1], out ScriptingContextObject groupLocationObject))
                     {
-                        b1 = 160;
-                        b2 = (byte)squadObject.Index;
-                        b3 = 0;
-                        b4 = (byte)groupLocationObject.Index;
+                        value |= 0xA0000000 + (uint)groupLocationObject.Index;
                     }
                     // Single Location.
                     else if (TryGetChildObjectFromObject(squadObject, "ai_single_location", subStrings[1], out ScriptingContextObject singleLocationObject))
                     {
-                        b1 = 128;
-                        b2 = (byte)squadObject.Index;
-                        b3 = 0;
-                        b4 = (byte)singleLocationObject.Index;
+                        value |= 0x80000000 + (uint)singleLocationObject.Index;
                     }
                     else
                     {
                         return null;
-                    }    
+                    }
                 }
                 else
                 {
@@ -379,31 +364,25 @@ namespace Blamite.Blam.Scripting.Compiler
             // Squad Groups.
             else if (subStrings.Length == 1 && TryGetObjectFromContext(out ScriptingContextObject groupObject, Tuple.Create("ai_squad_group", subStrings[0])))
             {
-                b1 = 64;
-                b2 = 0;
-                b3 = 0;
-                b4 = (byte)groupObject.Index;
+                value |= 0x40000000 + (uint)groupObject.Index;
             }
             // Objectives.
             else if (TryGetObjectFromContext(out ScriptingContextObject objectiveObject, Tuple.Create("ai_objective", subStrings[0])))
             {
+                value = (uint)objectiveObject.Index;
+
                 // Objective.
                 if (subStrings.Length == 1)
                 {
-                    b1 = 223;
-                    b2 = 255;
-                    b3 = 0;
-                    b4 = (byte)objectiveObject.Index;
+                    value |= 0xDFFF0000;
                 }
                 else if (subStrings.Length == 2)
                 {
                     // Objective Role.
                     if (TryGetChildObjectFromObject(objectiveObject, "ai_role", subStrings[1], out ScriptingContextObject roleObject))
                     {
-                        b1 = 192;
-                        b2 = (byte)roleObject.Index;
-                        b3 = 0;
-                        b4 = (byte)objectiveObject.Index;
+                        value |= 0xC0000000;
+                        value |= (uint)roleObject.Index << 16;
                     }
                     else
                     {
@@ -420,8 +399,8 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 return null;
             }
-            #endregion
-            return new ScriptExpression(_currentIndex, opcode, valuetype, ScriptExpressionType.Expression, _strings.Cache(text), (short)context.Start.Line, b1, b2, b3, b4);
+
+            return new ScriptExpression(_currentIndex, opcode, valuetype, ScriptExpressionType.Expression, _strings.Cache(text), (short)context.Start.Line, value);
         }
 
         private ScriptExpression GetAIExpressionH3(HS_Gen1Parser.LiteralContext context, string expectedValueType)
@@ -431,18 +410,15 @@ namespace Blamite.Blam.Scripting.Compiler
             ushort opcode = _opcodes.GetTypeInfo("ai").Opcode;
             ushort valuetype = _opcodes.GetTypeInfo(expectedValueType).Opcode;
 
-            ushort value1;
-            ushort value2;
+            uint value = 0;
 
-            #region value generation
             // Squads.
             if (TryGetObjectFromContext(out ScriptingContextObject squadObject, Tuple.Create("ai_squad", subStrings[0])))
             {
                 // Squad.
                 if (subStrings.Length == 1)
                 {
-                    value1 = 0x2000;
-                    value2 = (ushort)squadObject.Index;
+                    value |= 0x20000000 + (uint)squadObject.Index;
                 }
                 // Locations.
                 else if (subStrings.Length == 2)
@@ -450,12 +426,9 @@ namespace Blamite.Blam.Scripting.Compiler
                     // Starting location.
                     if (TryGetChildObjectFromObject(squadObject, "ai_starting_location", subStrings[1], out ScriptingContextObject startingLocationObject))
                     {
-                        byte[] squadIndexBytes = BitConverter.GetBytes((short)squadObject.Index);
-                        byte b1 = (byte)(squadIndexBytes[1] | 0x80);
-                        byte b2 = squadIndexBytes[0];
-                        byte b3 = (byte)startingLocationObject.WrapperIndex;
-                        byte b4 = (byte)startingLocationObject.Index;
-                        return new ScriptExpression(_currentIndex, opcode, valuetype, ScriptExpressionType.Expression, _strings.Cache(text), (short)context.Start.Line, b1, b2, b3, b4);
+                        value |= 0x80000000 + (uint)startingLocationObject.Index;
+                        value |= (uint)squadObject.Index << 16;
+                        value |= (uint)startingLocationObject.WrapperIndex << 8;
                     }
                     else
                     {
@@ -470,25 +443,25 @@ namespace Blamite.Blam.Scripting.Compiler
             // Squad Groups.
             else if (subStrings.Length == 1 && TryGetObjectFromContext(out ScriptingContextObject groupObject, Tuple.Create("ai_squad_group", subStrings[0])))
             {
-                value1 = 0x4000;
-                value2 = (ushort)groupObject.Index;
+                value |= 0x40000000 + (uint)groupObject.Index;
             }
             // Objectives.
             else if (TryGetObjectFromContext(out ScriptingContextObject objectiveObject, Tuple.Create("ai_objective", subStrings[0])))
             {
+                value = (uint)objectiveObject.Index;
+
                 // Objective.
                 if (subStrings.Length == 1)
                 {
-                    value1 = 0xBFFF;
-                    value2 = (ushort)objectiveObject.Index;
+                    value |= 0xBFFF0000;
                 }
                 else if (subStrings.Length == 2)
                 {
                     // Objective Role.
                     if (TryGetChildObjectFromObject(objectiveObject, "ai_role", subStrings[1], out ScriptingContextObject roleObject))
                     {
-                        value1 = (ushort)(roleObject.Index | 0xA000);
-                        value2 = (ushort)objectiveObject.Index;
+                        value |= 0xA0000000;
+                        value |= (uint)roleObject.Index << 16;
                     }
                     else
                     {
@@ -505,8 +478,8 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 return null;
             }
-            #endregion
-            return new ScriptExpression(_currentIndex, opcode, valuetype, ScriptExpressionType.Expression, _strings.Cache(text), (short)context.Start.Line, value1, value2);
+
+            return new ScriptExpression(_currentIndex, opcode, valuetype, ScriptExpressionType.Expression, _strings.Cache(text), (short)context.Start.Line, value);
         }
 
         private ScriptExpression GetIndex16Expression(HS_Gen1Parser.LiteralContext context, string expectedValueType)

@@ -5,6 +5,7 @@ using System.CodeDom.Compiler;
 using System.Globalization;
 using System.Text;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace Blamite.Blam.Scripting
 {
@@ -16,8 +17,7 @@ namespace Blamite.Blam.Scripting
 		private readonly OpcodeLookup _opcodes;
 		private readonly ScriptTable _scripts;
 		private readonly Endian _endian;
-		private bool _cond = false;
-		private int _condIndent;
+		private Stack<int> _condIndentStack = new Stack<int>();
 
 		private enum BranchType
 		{
@@ -338,7 +338,7 @@ namespace Blamite.Blam.Scripting
 				else if (type == BranchType.Cond && index == 2)
 				{
 					output.WriteLine();
-					output.Indent += 4;
+					output.Indent++;
 				}
 				// make begin, or and if calls always start on a new line.
 				else if (type == BranchType.Call && IsMultilineExpression(exp))
@@ -473,11 +473,10 @@ namespace Blamite.Blam.Scripting
 			int startIndent = output.Indent;
 
 			// Handle the initial con group.
-			if (!_cond)
+			if (_condIndentStack.Count == 0 || expression.NextExpression != null)
 			{
 				// indicate that the following expressions are part of a cond construct. 
-				_cond = true;
-				_condIndent = output.Indent + 1;
+				_condIndentStack.Push(output.Indent + 1);
 
 				output.WriteLine("(cond");
 
@@ -497,13 +496,13 @@ namespace Blamite.Blam.Scripting
 				output.Indent = startIndent;
 				output.Write(")");
 
-				_cond = false;
+				_condIndentStack.Pop();
 			}
 
 			// handle all following conditionals.
 			else
 			{
-				output.Indent = _condIndent;
+				output.Indent = _condIndentStack.Peek();
 
 				// close the previous cond group and open the current one.
 				output.WriteLine(")");

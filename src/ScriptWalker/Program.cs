@@ -53,7 +53,6 @@ namespace ScriptWalker
             }
 
             WalkFiles(cleanFolder, modifiedFolder, outputFolder).Wait();
-            Console.ReadKey();
         }
 
         private static async Task WalkFiles(string cleanFolder, string modifiedFolder, string outputFolder)
@@ -86,7 +85,7 @@ namespace ScriptWalker
             }
 
             await Task.WhenAll(tasks);
-            Console.WriteLine("Finished processing the files. You can close this program now.");
+            Console.WriteLine("Finished processing the files.");
         }
 
         private static void WalkFile(string cleanFile, string modifiedFile, string outputFile, EngineDatabase db)
