@@ -747,6 +747,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			// Set the name
 			tag.TagFileName = newName;
+			tag.NotifyTooltipUpdate();
 
 			StatusUpdater.Update("Tag Renamed");
 		}
@@ -1493,7 +1494,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				{
 					MenuItem tagMenuItem = tagItem as MenuItem;
 
-					if (tagMenuItem.Name == "itemRename" && _cacheFile.Engine < EngineType.SecondGeneration)
+					if ((tagMenuItem.Name == "itemRename" ||
+						tagMenuItem.Name == "itemIsolate") &&
+						_cacheFile.Engine < EngineType.SecondGeneration)
 						tagMenuItem.Visibility = Visibility.Collapsed;
 					else if ((tagMenuItem.Name == "itemDuplicate" ||
 						tagMenuItem.Name == "itemExtract" ||
@@ -2310,6 +2313,119 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 		#endregion
+
+		private void itemIsolate_Click(object sender, RoutedEventArgs e)
+		{
+			// Get the menu item and the tag
+			var item = e.Source as MenuItem;
+			if (item == null)
+				return;
+
+			var tag = item.DataContext as TagEntry;
+			if (tag == null)
+				return;
+
+			if (tag.RawTag != null && tag.RawTag.MetaLocation == null)
+				return;
+
+			if (MetroMessageBox.Show("Tag Isolation - Assembly",
+				"This will run the equivalent of Isolating a Tag Block or Data Reference, but across the tag's base data.\r\n" +
+				"You should only use this in cases where multiple tags are pointing to the same data, and when you know what you are doing.\r\n" + 
+				"This process will also close the tag if it is open, so save any changes to it before continuing.\r\n" + 
+				"Don't forget to back up your map, too!",
+				MetroMessageBox.MessageBoxButtons.OkCancel) != MetroMessageBox.MessageBoxResult.OK)
+				return;
+
+			//close the tag if its currently open in a tab
+			TabItem tabb = contentTabs.Items.Cast<TabItem>()
+				.FirstOrDefault(ct => ct.Tag != null && ((TagEntry)ct.Tag).RawTag == tag.RawTag);
+			if (tabb != null)
+				ExternalTabClose(tabb, false);
+
+			//get the plugin to obtain the size of the base data
+			var groupName = VariousFunctions.SterilizeTagGroupName(CharConstant.ToString(tag.RawTag.Group.Magic)).Trim();
+			var pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+				_buildInfo.Settings.GetSetting<string>("plugins"), groupName);
+
+			if (!File.Exists(pluginPath) && _buildInfo.Settings.PathExists("fallbackPlugins"))
+				pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+					_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), groupName);
+
+			if (pluginPath == null || !File.Exists(pluginPath))
+			{
+				StatusUpdater.Update("Plugin doesn't exist for the selected tag. Cannot isolate.");
+				return;
+			}
+
+			int baseSize = 0;
+			using (var pluginReader = XmlReader.Create(pluginPath))
+			{
+				//redundant stuff from AssemblyPluginLoader so I don't have to create an instance
+				if (!pluginReader.ReadToNextSibling("plugin"))
+					throw new ArgumentException("The XML file is missing a <plugin> tag.");
+
+				if (pluginReader.MoveToAttribute("baseSize"))
+				{
+					string str = pluginReader.Value;
+
+					if (str.StartsWith("0x"))
+						baseSize = int.Parse(str.Substring(2), NumberStyles.HexNumber);
+					else
+						baseSize = int.Parse(str);
+				}
+			}
+
+			//allocate the new data and copy it over
+			using (var stream = _mapManager.OpenReadWrite())
+			{
+				long newAddr = _cacheFile.Allocator.Allocate(baseSize, stream);
+
+				//backup original locations
+				long origAddress = tag.RawTag.MetaLocation.AsPointer();
+				long origOffset = tag.RawTag.MetaLocation.AsOffset();
+				long origAddressMax = origAddress + baseSize;
+				uint contracted = _cacheFile.PointerExpander.Contract(origAddress);
+				uint contractedMax = _cacheFile.PointerExpander.Contract(origAddressMax);
+
+				//interops can exist within the base data, so any references should to be copied as well
+				if (_cacheFile.TagInteropTable != null)
+				{
+					List<ITagInterop> newInterops = new List<ITagInterop>();
+
+					List<ITagInterop> existingInterops = _cacheFile.TagInteropTable.Where(t => t.Pointer > contracted && t.Pointer < contractedMax).ToList();
+
+					foreach (ITagInterop interop in existingInterops)
+					{
+						long interopAddr = _cacheFile.PointerExpander.Expand(interop.Pointer);
+						long offsetIntoTag = interopAddr - origAddress;
+
+						uint newInteropAddr = _cacheFile.PointerExpander.Contract(newAddr + offsetIntoTag);
+
+						newInterops.Add(new Blamite.Blam.ThirdGen.Structures.ThirdGenTagInterop(newInteropAddr, interop.Type));
+					}
+
+					foreach (ITagInterop interop in newInterops)
+						_cacheFile.TagInteropTable.Add(interop);
+				}
+
+				tag.RawTag.MetaLocation = SegmentPointer.FromPointer(newAddr, _cacheFile.MetaArea);
+
+				_cacheFile.SaveChanges(stream);
+
+				long newOffset = _cacheFile.MetaArea.PointerToOffset(newAddr);
+
+				stream.SeekTo(origOffset);
+				byte[] data = stream.ReadBlock(baseSize);
+				stream.SeekTo(newOffset);
+				stream.WriteBlock(data);
+
+				tag.NotifyTooltipUpdate();
+
+				MetroMessageBox.Show("Tag Isolation - Assembly",
+					"The tag was isolated successfully.");
+			}
+
+		}
 
 		public class HeaderValue
 		{

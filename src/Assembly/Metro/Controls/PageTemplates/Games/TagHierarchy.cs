@@ -128,8 +128,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private string _tagFileName = string.Empty;
 		private bool _isNull;
 
-		private string _tagToolTip = null;
-
 		public TagEntry(ITag baseTag, string groupName, string name)
 		{
 			RawTag = baseTag;
@@ -139,14 +137,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (baseTag != null)
 			{
 				if (baseTag.MetaLocation == null)
-				{
 					_isNull = true;
-					TagToolTip = string.Format("{0}\r\nDatum Index: {1}\r\nThis tag refers to a shared cache.\r\nIt cannot be modified directly, only referenced.", _tagFileName, baseTag.Index);
-				}
-				else
-				{
-					TagToolTip = string.Format("{0}\r\nDatum Index: {1}\r\nMemory Address: 0x{2:X8}\r\nFile Offset: 0x{3:X}", _tagFileName, baseTag.Index, baseTag.MetaLocation.AsPointer(), baseTag.MetaLocation.AsOffset());
-				}
 			}
 		}
 
@@ -187,11 +178,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		public string TagToolTip
 		{
-			get { return _tagToolTip; }
-			internal set
+			get
 			{
-				_tagToolTip = value;
-				NotifyPropertyChanged("TagToolTip");
+				if (_isNull)
+					return string.Format("{0}\r\nDatum Index: {1}\r\nThis tag refers to a shared cache.\r\nIt cannot be modified directly, only referenced.",
+						TagFileName, RawTag.Index);
+				else if (RawTag != null)
+					return string.Format("{0}\r\nDatum Index: {1}\r\nMemory Address: 0x{2:X8}\r\nFile Offset: 0x{3:X}",
+						TagFileName, RawTag.Index, RawTag.MetaLocation.AsPointer(), RawTag.MetaLocation.AsOffset());
+				else
+					return "This value is null. Use this to remove an existing reference.";
 			}
 		}
 
@@ -209,7 +205,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			return TagFileName;
 		}
-		
+
+		public void NotifyTooltipUpdate()
+		{
+			NotifyPropertyChanged("TagToolTip");
+		}
+
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		private void NotifyPropertyChanged(String info)
