@@ -110,13 +110,21 @@
 				</Grid>
 			</Button>
 			<Button x:Name="btnJumpToTag" Content="Goto" FontSize="10" Margin="5,0,0,0"  Width="30"
-			        Visibility="{Binding ShowTagOptions}"
 			        Command="{x:Static local:TagValue.JumpToCommand}" CommandParameter="{Binding Value}"
 			        CommandTarget="{Binding ElementName=tagValue}">
 				<Button.ToolTip>
 					<TextBlock Text="Opens the selected tag in a new tab." FontSize="12" Foreground="White"/>
 				</Button.ToolTip>
 			</Button>
+			<StackPanel.Style>
+				<Style TargetType="{x:Type StackPanel}">
+					<Style.Triggers>
+						<DataTrigger Binding="{Binding ShowButtons}" Value="False">
+							<Setter Property="Visibility" Value="Hidden"/>
+						</DataTrigger>
+					</Style.Triggers>
+				</Style>
+			</StackPanel.Style>
 		</StackPanel>
 	</Grid>
 </UserControl>

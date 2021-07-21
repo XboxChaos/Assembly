@@ -171,7 +171,7 @@ namespace Blamite.Plugins
 			PrintBasicValue("StringID", name, offset, visible, tooltip);
 		}
 
-		public void VisitTagReference(string name, uint offset, bool visible, bool withGroup, bool showJumpTo, uint pluginLine, string tooltip)
+		public void VisitTagReference(string name, uint offset, bool visible, bool withGroup, uint pluginLine, string tooltip)
 		{
 			PrintBasicValue("Tag reference", name, offset, visible, tooltip);
 		}

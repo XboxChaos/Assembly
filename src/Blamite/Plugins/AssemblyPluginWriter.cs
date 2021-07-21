@@ -179,13 +179,11 @@ namespace Blamite.Plugins
 			WriteBasicValue("stringid", name, offset, visible, tooltip);
 		}
 
-		public void VisitTagReference(string name, uint offset, bool visible, bool withGroup, bool showJumpTo, uint pluginLine, string tooltip)
+		public void VisitTagReference(string name, uint offset, bool visible, bool withGroup, uint pluginLine, string tooltip)
 		{
 			WriteValueStart("tagRef", name, offset, visible, tooltip);
 			if (!withGroup)
 				_output.WriteAttributeString("withGroup", "false");
-			if (!showJumpTo)
-				_output.WriteAttributeString("showJumpTo", "false");
 			_output.WriteEndElement();
 		}
 

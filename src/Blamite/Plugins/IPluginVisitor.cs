@@ -72,7 +72,7 @@ namespace Blamite.Plugins
 		void VisitQuat16(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 		void VisitPoint16(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 		void VisitStringID(string name, uint offset, bool visible, uint pluginLine, string tooltip);
-		void VisitTagReference(string name, uint offset, bool visible, bool withGroup, bool showJumpTo, uint pluginLine, string tooltip);
+		void VisitTagReference(string name, uint offset, bool visible, bool withGroup, uint pluginLine, string tooltip);
 		void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine, string tooltip);
 
 		void VisitRangeInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip);

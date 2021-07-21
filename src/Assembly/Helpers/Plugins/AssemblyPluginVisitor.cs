@@ -12,7 +12,7 @@ using System.Windows.Media;
 
 namespace Assembly.Helpers.Plugins
 {
-	public class ThirdGenPluginVisitor : IPluginVisitor
+	public class AssemblyPluginVisitor : IPluginVisitor
 	{
 		// Private Members
 
@@ -20,6 +20,7 @@ namespace Assembly.Helpers.Plugins
 		private readonly IList<PluginRevision> _pluginRevisions = new List<PluginRevision>();
 		private readonly List<TagBlockData> _tagBlocks = new List<TagBlockData>();
 		private readonly bool _showInvisibles;
+		private readonly bool _viewValueAs;
 		private readonly Trie _stringIDTrie;
 		private readonly TagHierarchy _tags;
 		private FlagData _currentFlags;
@@ -31,7 +32,7 @@ namespace Assembly.Helpers.Plugins
 			get { return App.AssemblyStorage.AssemblySettings.PluginsShowComments; }
 		}
 		
-		public ThirdGenPluginVisitor(TagHierarchy tags, Trie stringIDTrie, FileSegmentGroup metaArea, bool showInvisibles)
+		public AssemblyPluginVisitor(TagHierarchy tags, Trie stringIDTrie, FileSegmentGroup metaArea, bool showInvisibles, bool viewValueAs = false)
 		{
 			_tags = tags;
 			_stringIDTrie = stringIDTrie;
@@ -40,6 +41,7 @@ namespace Assembly.Helpers.Plugins
 			Values = new ObservableCollection<MetaField>();
 			TagBlocks = new ObservableCollection<TagBlockData>();
 			_showInvisibles = showInvisibles;
+			_viewValueAs = viewValueAs;
 		}
 
 		// Public Members
@@ -180,15 +182,11 @@ namespace Assembly.Helpers.Plugins
 				AddValue(new RawData(name, offset, "bytes", 0, "", size, pluginLine, tooltip, _metaArea));
 		}
 
-		public void VisitTagReference(string name, uint offset, bool visible, bool withGroup, bool showJumpTo, uint pluginLine, string tooltip)
+		public void VisitTagReference(string name, uint offset, bool visible, bool withGroup, uint pluginLine, string tooltip)
 		{
 			if (!visible && !_showInvisibles) return;
 
-			Visibility jumpTo = showJumpTo
-				? Visibility.Visible
-				: Visibility.Hidden;
-
-			AddValue(new TagRefData(name, offset, 0, _tags, jumpTo, withGroup, pluginLine, tooltip));
+			AddValue(new TagRefData(name, offset, 0, _tags, !_viewValueAs, withGroup, pluginLine, tooltip));
 		}
 
 		public void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine, string tooltip)

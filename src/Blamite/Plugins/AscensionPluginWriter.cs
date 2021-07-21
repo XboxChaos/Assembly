@@ -204,7 +204,7 @@ namespace Blamite.Plugins
 			WriteBasicValue("stringid", name, offset, visible);
 		}
 
-		public void VisitTagReference(string name, uint offset, bool visible, bool withGroup, bool showJumpTo, uint pluginLine, string tooltip)
+		public void VisitTagReference(string name, uint offset, bool visible, bool withGroup, uint pluginLine, string tooltip)
 		{
 			if (!withGroup)
 				WriteBasicValue("uint32", name + " Tag ID", offset, visible);

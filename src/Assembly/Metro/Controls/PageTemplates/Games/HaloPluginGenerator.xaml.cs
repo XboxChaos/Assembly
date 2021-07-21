@@ -277,7 +277,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						case MetaValueType.TagReference:
 							if (offset <= size - 0x10)
 							{
-								writer.VisitTagReference("Unknown", (uint) offset, false, true, true, 0, "");
+								writer.VisitTagReference("Unknown", (uint) offset, false, true, 0, "");
 								offset += 0xC;
 								continue;
 							}
