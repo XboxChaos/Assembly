@@ -8,8 +8,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 	/// </summary>
 	public partial class TagBlock : UserControl
 	{
-		public static RoutedCommand ReallocateCommand = new RoutedCommand();
-		public static RoutedCommand IsolateCommand = new RoutedCommand();
+		private static RoutedCommand _reallocateCommand = new RoutedCommand();
+		private static RoutedCommand _isolateCommand = new RoutedCommand();
+		public static RoutedCommand ReallocateCommand { get { return _reallocateCommand; } }
+		public static RoutedCommand IsolateCommand { get { return _isolateCommand; } }
 
 		public TagBlock()
 		{

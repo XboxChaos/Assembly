@@ -15,7 +15,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 	/// </summary>
 	public partial class TagValue : UserControl
 	{
-		public static RoutedCommand JumpToCommand = new RoutedCommand();
+		private static RoutedCommand _jumpToCommand = new RoutedCommand();
+		public static RoutedCommand JumpToCommand { get { return _jumpToCommand; } }
 
 		public TagValue()
 		{
