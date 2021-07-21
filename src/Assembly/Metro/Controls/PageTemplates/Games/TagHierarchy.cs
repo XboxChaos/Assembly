@@ -168,7 +168,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		public string TagFileName
 		{
-			get { return _tagFileName; }
+			get
+			{
+				if (!NameExists)
+					return RawTag.Index.ToString();
+				else
+					return _tagFileName;
+			}
 			internal set
 			{
 				_tagFileName = value;
@@ -199,6 +205,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				_rawTag = value;
 				NotifyPropertyChanged("RawTag");
 			}
+		}
+
+		public bool NameExists
+		{
+			get { return !string.IsNullOrWhiteSpace(_tagFileName); }
 		}
 
 		public override string ToString()

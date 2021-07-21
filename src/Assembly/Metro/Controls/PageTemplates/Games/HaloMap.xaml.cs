@@ -1314,7 +1314,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			// Store the names back to the cache file
 			foreach (TagEntry tag in _allTags.Entries.Where(t => t != null))
-				_cacheFile.FileNames.SetTagName(tag.RawTag, tag.TagFileName);
+			{
+				if (tag.NameExists)
+					_cacheFile.FileNames.SetTagName(tag.RawTag, tag.TagFileName);
+				else
+					_cacheFile.FileNames.SetTagName(tag.RawTag, "");
+			}
 
 			// Save it
 			using (IStream stream = _mapManager.OpenReadWrite())
@@ -2187,8 +2192,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			string groupName = CharConstant.ToString(tag.Group.Magic);
 			string name = _cacheFile.FileNames.GetTagName(tag);
-			if (string.IsNullOrWhiteSpace(name))
-				name = tag.Index.ToString();
 
 			return new TagEntry(tag, groupName, name);
 		}
