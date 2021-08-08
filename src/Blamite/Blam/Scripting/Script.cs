@@ -6,6 +6,12 @@ using Blamite.IO;
 
 namespace Blamite.Blam.Scripting
 {
+	public enum ScriptLayout
+	{
+		Halo3,
+		HaloReach
+	}
+
 	/// <summary>
 	///     A script.
 	/// </summary>
@@ -46,6 +52,24 @@ namespace Blamite.Blam.Scripting
 		///     Gets or sets the datum index of the first expression to execute in the script.
 		/// </summary>
 		public DatumIndex RootExpressionIndex { get; set; }
+
+        public void Write(IWriter writer, StringIDSource stringIDs, int parameterCount, uint parameterAddress, ScriptLayout layout)
+        {
+			if(layout == ScriptLayout.HaloReach)
+            {
+				writer.WriteUInt32(stringIDs.FindOrAddStringID(Name).Value);
+			}
+			else
+            {
+				writer.WriteAscii(Name, 0x20);
+            }
+            writer.WriteInt16(ExecutionType);
+            writer.WriteInt16(ReturnType);
+            writer.WriteUInt32(RootExpressionIndex.Value);
+            writer.WriteInt32(parameterCount);
+            writer.WriteUInt32(parameterAddress);
+            writer.WriteUInt32(0);
+        }
 
 		private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs,
 			EngineDescription buildInfo, IPointerExpander expander)

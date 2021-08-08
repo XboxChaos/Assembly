@@ -60,7 +60,13 @@
 		public ScriptObjectTagBlock AISquadSingleLocations { get; set; }
 
 		/// <summary>
-		///     Gets or sets available AI objects.
+		///     Gets or sets the block to read AI squad group locations from.
+		/// </summary>
+		/// <value>The block to read AI squad group locations from.</value>
+		public ScriptObjectTagBlock AISquadGroupLocations { get; set; }
+
+		/// <summary>
+		///     Gets or sets available AI objectives.
 		/// </summary>
 		/// <value>Available AI objects.</value>
 		public ScriptObject[] AIObjects { get; set; }
@@ -83,11 +89,17 @@
 		/// <value>Available object references.</value>
 		public ScriptObject[] ZoneSets { get; set; }
 
-		/// <summary>
-		///     Gets or sets available object folders.
-		/// </summary>
-		/// <value>Available object folders.</value>
-		public ScriptObject[] ObjectFolders { get; set; }
+        /// <summary>
+        ///     Gets or sets available zone sets.
+        /// </summary>
+        /// <value>Available object references.</value>
+        public ScriptObject[] DesignerZones { get; set; }
+
+        /// <summary>
+        ///     Gets or sets available object folders.
+        /// </summary>
+        /// <value>Available object folders.</value>
+        public ScriptObject[] ObjectFolders { get; set; }
 
 		/// <summary>
 		///     Gets or sets available point sets.
@@ -100,5 +112,24 @@
 		/// </summary>
 		/// <value>The block to read point set points from.</value>
 		public ScriptObjectTagBlock PointSetPoints { get; set; }
-	}
+
+
+        /// <summary>
+        ///     Gets or sets available AI Lines.
+        /// </summary>
+        /// <value>Available point sets.</value>
+        public ScriptObject[] AILines { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the reflexive to Ai Line Variants from.
+        /// </summary>
+        /// <value>The reflexive to read point set points from.</value>
+        public ScriptObjectTagBlock AILineVariants { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the unit_seat_mapping count.
+        /// </summary>
+        /// <value>The number of unit seat mappings int he cache file.</value>
+        public int UnitSeatMappingCount { get; set; }
+    }
 }

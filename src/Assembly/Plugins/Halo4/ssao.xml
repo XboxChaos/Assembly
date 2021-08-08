@@ -4,22 +4,37 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
-	<undefined name="Unknown" offset="0x0" visible="false" />
-	<undefined name="Unknown" offset="0x4" visible="false" />
-	<undefined name="Unknown" offset="0x8" visible="false" />
-	<undefined name="Unknown" offset="0xC" visible="false" />
-	<undefined name="Unknown" offset="0x10" visible="false" />
-	<undefined name="Unknown" offset="0x14" visible="false" />
-	<undefined name="Unknown" offset="0x18" visible="false" />
-	<undefined name="Unknown" offset="0x1C" visible="false" />
-	<undefined name="Unknown" offset="0x20" visible="false" />
-	<undefined name="Unknown" offset="0x24" visible="false" />
-	<undefined name="Unknown" offset="0x28" visible="false" />
-	<undefined name="Unknown" offset="0x2C" visible="false" />
-	<undefined name="Unknown" offset="0x30" visible="false" />
-	<undefined name="Unknown" offset="0x34" visible="false" />
-	<undefined name="Unknown" offset="0x38" visible="false" />
-	<undefined name="Unknown" offset="0x3C" visible="false" />
+	<enum8 name="Downsample" offset="0x0" visible="true">
+		<option name="Block Downsample" value="0x0" />
+		<option name="Clover Downsample" value="0x1" />
+	</enum8>
+	<enum8 name="SSAO Type" offset="0x1" visible="true">
+		<option name="Off" value="0x0" />
+		<option name="HDAO Large 32 Sample" value="0x1" />
+		<option name="HDAO Large 64 Predicated" value="0x2" />
+		<option name="HDAO Small 24 Sample" value="0x3" />
+		<option name="HDAO Screenshot" value="0x4" />
+		<option name="Debug Mask" value="0x5" />
+		<option name="SSAO Midnight 16 Sample" value="0x6" />
+	</enum8>
+	<uint8 name="Version" offset="0x2" visible="true" />
+	<int8 name="Unknown" offset="0x3" visible="false" />
+	<float32 name="HDAO Ambient Shadow" offset="0x4" visible="true" tooltip="how much ssao shadowing darkens the ambient lighting" />
+	<float32 name="HDAO Point Shadow" offset="0x8" visible="true" tooltip="how much ssao shadowing darkens the point lighting ie the sun" />
+	<float32 name="Sharp Ambient Shadow" offset="0xC" visible="true" tooltip="how much the sharp dynamic shadows darken ambient lighting" />
+	<float32 name="Sharp Point Shadow" offset="0x10" visible="true" tooltip="how much the sharp dynamic shadows darken the point lighting ie the sun" />
+	<float32 name="Maximum Intensity" offset="0x14" visible="true" tooltip="unshadowed areas will have this relative intensity" />
+	<float32 name="Minimum Intensity" offset="0x18" visible="true" tooltip="fully shadowed areas will have this relative intensity" />
+	<float32 name="Falloff Width" offset="0x1C" visible="true" tooltip="controls the shape of the shadow falloff curve" />
+	<float32 name="Corner Scale" offset="0x20" visible="true" tooltip="controls shadow sensitivity to corners" />
+	<float32 name="Corner Bias" offset="0x24" visible="true" tooltip="offsets corner sensitivity, generally to ignore shallow corners" />
+	<float32 name="Bounds Scale" offset="0x28" visible="true" tooltip="controls the maximum shadow distance, as a ratio of the distance to the object" />
+	<float32 name="Bounds Offset" offset="0x2C" visible="true" tooltip="offsets the maximum shadow distance, generally to make a region of full darkness before fading" />
+	<float32 name="Near Clip" offset="0x30" visible="true" tooltip="completely removes ssao on anything closer than this" />
+	<float32 name="Near Fade Width" offset="0x34" visible="true" tooltip="distance over which the ssao fades in" />
+	<float32 name="Far Clip" offset="0x38" visible="true" tooltip="completely removes ssao on anything farther than this" />
+	<float32 name="Far Fade Width" offset="0x3C" visible="true" tooltip="distance over which the ssao fades in" />
+	<comment title="Runtime Data" />
 	<undefined name="Unknown" offset="0x40" visible="false" />
 	<undefined name="Unknown" offset="0x44" visible="false" />
 	<undefined name="Unknown" offset="0x48" visible="false" />

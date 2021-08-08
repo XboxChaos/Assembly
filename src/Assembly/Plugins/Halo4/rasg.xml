@@ -4,30 +4,253 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
+	<comment title="Default Bitmaps">0:  ............... default 2D texture (white)
+1:  ............... default normal map (no bump)
+2:  ............... default cube map (error pattern)
+3:  ............... color bars
+4:  ............... black 2D texture
+5:  ............... transparent black 2D texture
+6:  ............... gray 2D texture
+7:  ............... auto exposure weight
+8:  ............... auto exposure weight (4x3)
+9:  ............... stencil dither pattern
+10: ............... smooth noise warp
+11: ............... ripple pattern
+12: ............... rain ripple
+13: ............... unsigned noise
+14: ............... MLAA area map
+15: ............... red 2D texture
+16: ............... green 2D texture
+17: ............... blue 2D texture
+18: ............... cyan 2D texture
+19: ............... dxt5 atlas texture
+20: ............... dxn atlas texture</comment>
 	<tagblock name="Default Bitmaps" offset="0x0" visible="true" elementSize="0x14">
-		<int32 name="Unknown" offset="0x0" visible="false" />
-		<tagRef name="Bitmap" offset="0x4" visible="true" />
+		<flags32 name="Options" offset="0x0" visible="true">
+			<bit name="Don't Load Bitmap By Default" index="0" />
+		</flags32>
+		<tagRef name="Default Bitmaps" offset="0x4" visible="true" />
 	</tagblock>
-	<tagblock name="Default Rasterizer Bitmaps" offset="0xC" visible="true" elementSize="0x10">
-		<tagRef name="Bitmap" offset="0x0" visible="true" />
+	<comment title="Material Textures">0: ............... lightmap falloff sharpening
+6: ............... Approximate specular curve</comment>
+	<tagblock name="Material Textures" offset="0xC" visible="true" elementSize="0x10">
+		<tagRef name="Material Textures" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Default Shaders" offset="0x18" visible="true" elementSize="0x24">
+	<comment title="Explicit Shaders">0: ............... debug
+1: ............... debug2d
+2: ............... copy w/ scale
+3: ............... edge detect
+4: ............... blendshape generate
+5: ............... bloom: downsample 4x4 (with bloom curve)
+6: ............... bloom: downsample 4x4
+7: ............... bloom: copy RGBE -&gt; RGB
+8: ............... debug_mesh
+9: ............... bloom: add downsampled
+10: ...............bloom: add
+11: .............. bloom: kernel blur (11 horizontal)
+12: .............. bloom: kernel blur (11 vertical)
+13: .............. cubemap: blur (phi)
+14: .............. cubemap: blur (theta)
+15: .............. cubemap: clamp
+16: .............. cubemap: divide
+17: .............. write depth
+18: .............. final composite
+19: .............. tracer stateless setup
+20: .............. transparent
+21: .............. ordnance map generate
+22: .............. postprocess hologram
+23: .............. overhead map geometry
+24: .............. hologram composite
+25: .............. volume fog
+26: .............. particle update
+27: .............. particle spawn
+28: .............. screenshot combine
+29: .............. downsample 2x2
+30: .............. rotate 2d
+31: .............. bspline resample
+32: .............. bloom; downsample 4x4 (with bloom curve + DOF)
+33: .............. final composite (with DOF)
+34: .............. convolve 5-tap kernel
+35: .............. exposure downsample
+36: .............. yuv to rgb
+37: .............. displacement
+38: .............. screenshot display
+39: .............. downsample 4x4 block
+40: .............. crop
+41: .............. screenshot combine (with DOF)
+42: .............. gamma correction
+43: .............. poisson blur (alpha)
+44: .............. poisson blur (depth)
+45: .............. stencil 8x8 dither pattern
+46: .............. lens flare render
+47: .............. decorator render wind billboard
+48: .............. bloom: NEW downsample 4x4 block (with bloom curve)
+49: .............. bloom: NEW downsample 4x4 gaussian
+50: .............. apply color matrix
+51: .............. copy
+52: .............. shadow geometry
+53: .............. shadow apply
+54: .............. gradient
+55: .............. alpha test
+56: .............. patchy fog
+57: .............. light volume
+58: .............. water ripple
+59: .............. double gradient
+60: .............. sniper scope
+61: .............. shield impact
+62: .............. cheap particle spawn explicit
+63: .............. player emblem-screen
+64: .............. implicit hill
+65: .............. chud overlay blend
+66: .............. bloom add alpha1
+67: .............. lightmap debug
+68: .............. restore LDR, HDR, and depth to EDRAM
+69: .............. unused
+70: .............. decorators static billboard
+71: .............. decorators mesh
+72: .............. decorators far object
+73: .............. decorators underwater
+74: .............. final composite zoom
+75: .............. shadow apply clouds
+76: .............. shadow apply point
+77: .............. shadow apply bilinear
+78: .............. shadow apply fancy
+79: .............. shadow apply faster
+81: .............. displacement with motion blur
+82: .............. decorators volume
+83: .............. screenshot memexport
+84: .............. shadow apply variance
+85: .............. shadow generate variance
+86: .............. shadow apply blob
+87: .............. shadow apply variance no normal test
+88: .............. custom gamma correct
+89: .............. pixel copy
+90: .............. antialias blur combine
+91: .............. UNUSED
+92: .............. hud camera
+93: .............. hud camera nightvision
+94: .............. hud camera mask
+.
+.
+99-114 screen space light...
+.
+.
+116: .............. render imposter
+109: .
+110: .
+119.................shield impact procedural uv
+120.................render_rain_particles
+121.................weather wet
+122-118 rain splash...
+127.................rain sheets
+128.................screen space atmosphere fog
+129.................debug portals
+130.................shader light debug
+131.................shader light debug frustum
+132.................cui copy
+133.................cui change channel
+134.................cui linear gradient
+135.................cui directional blur
+136.................cui overlay mask
+137.................initialize cheap particles
+138.................update cheap particles
+139.................render cheap particles
+140.................spawn cheap particles
+141.................cui emblem
+142.................planar fog
+.
+.
+155.................cui debug
+156.................rigid world geometry
+157.................effects debug wireframe
+158.................effects debug heatmap
+159.................downsample 2x2 block bloom
+160.................kernel 5 sqrt
+161: ............. gaussian shadow
+162: ............. poisson shadow
+163: ............. vector hud
+176: ............. restore depth to EDRAM
+177: ............. restore color to EDRAM
+179: ............. midnight light parfait
+180: ............. particleize
+181: ............. midgraph poisson shadow 8
+182: ............. midgraph poisson shadow 6
+183: ............. gobo parfait
+184: ............. specular parfait
+185: ............. spotlight specular parfait
+186: ............. spotlight gobo specular parfait
+187: ............. gobo specular parfait
+188: ............. forge lightmap render sun structure
+189: ............. forge lightmap render sun
+190: ............. forge shadow render
+191: ............. forge lightmap render
+192: ............. forge lightmap block merge
+193: ............. forge lightmap block compress
+194: ............. forge lightmap error
+195: ............. character lighting
+196: ............. vision environment shader
+197: ............. vision object shader
+198: ............. forge lightmap postprocess
+199: ............. cui gamma correct copy
+200: ............. cui gamma correct overlay mask
+201: ............. copy surface sqrt
+202: ............. copy surface gamma 2.2
+203: ............. decorator_wind_volume
+204: ............. Midnight Point Physically Correct
+205: ............. tracer spawn
+206: ............. tracer update
+207: ............. polyart render
+208: ............. gamma correct double draw text
+209: ............. volumetric light shafts
+210: ............. Cui: Gamma correct text
+211: ............. MLAA Generate
+212: ............. FXAA
+213: ............. HUD Meter
+214: ............. Quadrant Gradient
+215: ............. Blend: Overlay
+216: ............. Filter: DropShadow
+217: ............. Filter: OuterGlow
+218: ............. Filter: InnerGlow
+219: ............. Filter: Stroke
+220: ............. Filter: EdgeDetectSetup
+221: ............. Cui: Clip corners
+222: ............. Cui: Chromatic aberration
+223: ............. Cui: HUD Meter Two Tone
+224: ............. Cui: Background blur
+225: ............. Cui: high contrast additive
+226: ............. Cui: double draw additive
+227: ............. Cui: Adjust hsv
+228: ............. Cui: HUD meter radial
+229: ............. Cui: HUD meter color blend
+230: ............. Chud: Damage generate
+231: ............. Chud: Damage apply
+232: ............. Forge: Tint highlighted
+233: ............. Forge: Tint selected
+234: ............. Forge: Tint locked
+235: ............. Cui: Shearing</comment>
+	<tagblock name="Explicit Shaders" offset="0x18" visible="true" elementSize="0x24">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<tagRef name="Vertex Shader" offset="0x4" visible="true" />
-		<tagRef name="Pixel Shader" offset="0x14" visible="true" />
+		<tagRef name="Explicit Vertex Shader" offset="0x4" visible="true" />
+		<tagRef name="Explicit Pixel Shader" offset="0x14" visible="true" />
 	</tagblock>
-	<tagRef name="Active Camo Distortion" offset="0x24" visible="true" />
-	<tagRef name="Default Performance Template" offset="0x34" visible="true" />
-	<tagRef name="Default Shield Impact" offset="0x44" visible="true" />
-	<tagRef name="Particle Library" offset="0x54" visible="true" />
+	<tagRef name="Active Camo Distortion Texture" offset="0x24" visible="true" />
+	<tagRef name="Default Performance Throttles" offset="0x34" visible="true" />
+	<tagRef name="Logo Texture" offset="0x44" visible="true" />
+	<tagRef name="Cheap Particle Type Library" offset="0x54" visible="true" />
 	<tagRef name="Emblem Library" offset="0x64" visible="true" />
-	<undefined name="Unknown" offset="0x74" visible="false" />
-	<undefined name="Unknown" offset="0x78" visible="false" />
-	<undefined name="Unknown" offset="0x7C" visible="false" />
-	<undefined name="Unknown" offset="0x80" visible="false" />
-	<colorf name="Color" offset="0x84" alpha="true" visible="true" />
+	<comment title="Motion Blur Parameters">max blur:............  max amount to blur, as a percentage of the screen
+blur scale:..........  scales blur for a given velocity
+center falloff:....... reduces motion blur around the screen center (larger values give smaller reduction regions...)</comment>
+	<float32 name="Maximum Blur" offset="0x74" visible="true" tooltip="max amount to blur, as a percentage of the screen" />
+	<float32 name="Blur Scale" offset="0x78" visible="true" tooltip="scales blur for a given velocity" />
+	<point2 name="Center Falloff" offset="0x7C" visible="true" tooltip="larger values make smaller areas of no blur" />
+	<comment title="Screen Space Light Parameters" />
+	<float32 name="Cheap Albedo Blend" offset="0x84" visible="true" tooltip="for all screen space light without shader reference" />
+	<comment title="Lighting Layer Debug Mode Albedo Override">By default the engine uses linear 50% grey
+Set a non-black color to override this debug color</comment>
+	<colorf name="Lighting Layer Albedo Color" offset="0x88" alpha="false" visible="true" tooltip="the floating point values are linear and what the shader will sample for albedo" />
 	<tagRef name="Hologram Camera FX" offset="0x94" visible="true" />
-	<tagRef name="Default Loadscreen" offset="0xA4" visible="true" />
-	<float32 name="Loadscreen Color" offset="0xB4" visible="true" />
-	<tagRef name="Debug Airprobe Model" offset="0xB8" visible="true" />
+	<tagRef name="Global Load Screen Model" offset="0xA4" visible="true" />
+	<float32 name="Global Load Screen Gradient Coordinate" offset="0xB4" visible="true" />
+	<tagRef name="Airprobe Render Model" offset="0xB8" visible="true" />
 </plugin>

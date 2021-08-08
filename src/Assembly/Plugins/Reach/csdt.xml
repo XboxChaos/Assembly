@@ -6,20 +6,20 @@
 		<revision author="OrangeMohawk" version="2">Mostly Mapped.</revision>
 		<revision author="Lord Zedd" version="3">Updating and standardizing</revision>
 	</revisions>
-	<comment title="Temporary Camera Impulse" />
-	<float32 name="Duration" offset="0x0" visible="true" />
-	<dataRef name="Fade Function" offset="0x4" visible="true" />
+	<comment title="Camera Impulse" />
+	<float32 name="Impulse Duration" offset="0x0" visible="true" />
+	<dataRef name="Function" offset="0x4" visible="true" />
 	<degree name="Rotation" offset="0x18" visible="true" />
 	<float32 name="Pushback" offset="0x1C" visible="true" />
-	<float32 name="Jitter min" offset="0x20" visible="true" />
-	<float32 name="Jitter max" offset="0x24" visible="true" />
-	<comment title="Camera Shaking" />
-	<float32 name="Duration" offset="0x28" visible="true" />
-	<dataRef name="Falloff Function" offset="0x2C" visible="true" />
-	<float32 name="Random Translation" offset="0x40" visible="true" />
-	<degree name="Random Rotation" offset="0x44" visible="true" />
+	<rangef name="Jitter" offset="0x20" visible="true" />
+	<comment title="Camera Shake" />
+	<float32 name="Shake Duration" offset="0x28" visible="true" tooltip="the effect will last for this duration." />
+	<comment title="Procedural Camera Shake" />
+	<dataRef name="Function" offset="0x2C" visible="true" />
+	<float32 name="Random Translation" offset="0x40" visible="true" tooltip="random translation in all directions" />
+	<degree name="Random Rotation" offset="0x44" visible="true" tooltip="random rotation in all directions" />
 	<float32 name="Wobble Function Period" offset="0x48" visible="true" />
-	<float32 name="Wobble Weight" offset="0x4C" visible="true" />
+	<float32 name="Wobble Weight" offset="0x4C" visible="true" tooltip="a value of 0.0 signifies that the wobble function has no effect; a value of 1.0 the wobble function completely scales the translational and rotational magnitudes. The less the weight, the less the effect wobble has." />
 	<enum16 name="Wobble Function" offset="0x50" visible="true">
 		<option name="One" value="0x0" />
 		<option name="Zero" value="0x1" />
@@ -34,7 +34,15 @@
 		<option name="Wander" value="0xA" />
 		<option name="Spark" value="0xB" />
 	</enum16>
-	<int16 name="Unknown" offset="0x52" visible="false" />
-	<tagRef name="Unknown" offset="0x54" visible="true" />
-	<undefined name="Unknown" offset="0x64" visible="false" />
+	<comment title="Animated Camera Shake" />
+	<enum8 name="Animated Shake Playback" offset="0x52" visible="true">
+		<option name="Looping" value="0x0" />
+		<option name="Frame Ratio" value="0x1" />
+	</enum8>
+	<enum8 name="Animated Shake Weight" offset="0x53" visible="true">
+		<option name="Effect Scale" value="0x0" />
+		<option name="Full" value="0x1" />
+	</enum8>
+	<tagRef name="Animation Graph" offset="0x54" visible="true" />
+	<stringid name="Animation Name" offset="0x64" visible="true" />
 </plugin>

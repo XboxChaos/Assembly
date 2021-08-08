@@ -370,14 +370,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 		}
 
-		public void VisitPoint2(Vector2Data field)
-		{
-		}
-
-		public void VisitPoint3(Vector3Data field)
-		{
-		}
-
 		public void VisitVector2(Vector2Data field)
 		{
 		}
@@ -415,14 +407,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		}
 
 		public void VisitDegree3(Degree3Data field)
-		{
-		}
-
-		public void VisitPlane2(Vector3Data field)
-		{
-		}
-
-		public void VisitPlane3(Vector4Data field)
 		{
 		}
 
@@ -615,13 +599,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			var field = (DataRef)sender;
 
-			if (e.PropertyName == "Length" || e.PropertyName == "DataAddress")
+			if (!_loading &&
+				(e.PropertyName == "Length" || e.PropertyName == "DataAddress"))
 			{
+				_loading = true;
 				_tracker.Enabled = false;
 
 				_reader.ReadDataRefContents(field);
 
 				_tracker.Enabled = true;
+				_loading = false;
 			}
 		}
 	}

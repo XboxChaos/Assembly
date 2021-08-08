@@ -17,12 +17,12 @@
 		<stringid name="Variant Name" offset="0x0" visible="true" />
 		<int16 name="Variant Index" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
-		<tagblock name="Dialogue Variations" offset="0x8" visible="true" elementSize="0x24">
+		<tagblock name="Voices" offset="0x8" visible="true" elementSize="0x24">
 			<tagRef name="Dialogue" offset="0x0" visible="true" />
 			<stringid name="Designator" offset="0x10" visible="true" />
 			<float32 name="Weight" offset="0x14" visible="true" />
-			<tagblock name="Region Name" offset="0x18" visible="true" elementSize="0x10">
-				<stringid name="Designator" offset="0x0" visible="true" />
+			<tagblock name="Region Filters" offset="0x18" visible="true" elementSize="0x10">
+				<stringid name="Region Name" offset="0x0" visible="true" />
 				<tagblock name="Permutation Filters" offset="0x4" visible="true" elementSize="0x4">
 					<stringid name="Permutation Name" offset="0x0" visible="true" />
 				</tagblock>
@@ -35,8 +35,8 @@
 			<tagRef name="Dialogue" offset="0x0" visible="true" />
 			<stringid name="Designator" offset="0x10" visible="true" />
 			<float32 name="Weight" offset="0x14" visible="true" />
-			<tagblock name="Region Name" offset="0x18" visible="true" elementSize="0x10">
-				<stringid name="Designator" offset="0x0" visible="true" />
+			<tagblock name="Region Filters" offset="0x18" visible="true" elementSize="0x10">
+				<stringid name="Region Name" offset="0x0" visible="true" />
 				<tagblock name="Permutation Filters" offset="0x4" visible="true" elementSize="0x4">
 					<stringid name="Permutation Name" offset="0x0" visible="true" />
 				</tagblock>
@@ -64,7 +64,7 @@
 			<bit name="Critical Betrayal" index="15" />
 			<bit name="Deathless Critical Betrayal" index="16" />
 		</flags32>
-		<enum16 name="Actor Type" offset="0x4" visible="true">
+		<enum16 name="Type" offset="0x4" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Player" value="0x1" />
 			<option name="Marine" value="0x2" />
@@ -100,7 +100,7 @@
 		<float32 name="Maximum Player Dialogue Distance" offset="0x14" visible="true" tooltip="never play dialogue if all players are outside of this range (if 0 then defaults to 20wu)" />
 		<float32 name="Scariness" offset="0x18" visible="true" tooltip="the inherent scariness of the character" />
 		<enum16 name="Default Grenade Type" offset="0x1C" visible="true">
-			<option name="NONE" value="0x0" />
+			<option name="None" value="0x0" />
 			<option name="Human Grenade" value="0x1" />
 			<option name="Covenant Plasma" value="0x2" />
 			<option name="Brute Claymore" value="0x3" />
@@ -119,7 +119,7 @@
 		<tagRef name="Initial Equipment" offset="0x4C" visible="true" tooltip="Fallback used if initial equipment not specified as drop item or in scenario." />
 	</tagblock>
 	<tagblock name="Proto Spawn Properties" offset="0x78" visible="true" elementSize="0x4">
-		<enum16 name="Follower Positioning" offset="0x0" visible="true" tooltip="Can be used to automatically setup a character to be spawned by another character.">
+		<enum16 name="Proto Spawn Type" offset="0x0" visible="true" tooltip="Can be used to automatically setup a character to be spawned by another character.">
 			<option name="None" value="0x0" />
 			<option name="Limbo" value="0x1" />
 			<option name="Spawner" value="0x2" />
@@ -226,7 +226,7 @@
 		<float32 name="Notice Projectile Chance" offset="0x30" visible="true" tooltip="random chance of noticing a dangerous enemy projectile (e.g. grenade)" />
 		<float32 name="Notice Vehicle Chance" offset="0x34" visible="true" tooltip="random chance of noticing a dangerous vehicle" />
 		<float32 name="Perception Time" offset="0x38" visible="true" tooltip="time required to acknowledge a visible enemy at optimal range" />
-		<float32 name="Awareness Glance Level[0,1]" offset="0x3C" visible="true" tooltip="How aware of you while acknowledging an AI must be to glance at you" />
+		<float32 name="Awareness Glance Level" offset="0x3C" visible="true" tooltip="[0,1] How aware of you while acknowledging an AI must be to glance at you" />
 		<float32 name="Awareness Glance Delta" offset="0x40" visible="true" tooltip="While acknowledging, the awareness delta at which an AI will glance at you" />
 		<float32 name="Identify Hologram Chance" offset="0x44" visible="true" tooltip="The chance that an AI identifies a unit is actually a hologram" />
 		<rangef name="Hologram Ignore Timer" offset="0x48" visible="true" tooltip="The time after which we will ignore the hologram once seen" />
@@ -268,29 +268,29 @@
 	</tagblock>
 	<tagblock name="Hopping Properties" offset="0xD8" visible="true" elementSize="0x10">
 		<flags32 name="Hopping Flags" offset="0x0" visible="true">
-			<bit name="To Cover Path Segments" index="0x0" />
-			<bit name="To End Of Path" index="0x1" />
-			<bit name="Forward Only" index="0x2" />
+			<bit name="To Cover Path Segments" index="0" />
+			<bit name="To End Of Path" index="1" />
+			<bit name="Forward Only" index="2" />
 		</flags32>
 		<tagblock name="Hopping Definition" offset="0x4" visible="true" elementSize="0x48">
 			<comment title="Default" />
 			<float32 name="Minimum Hop Distance" offset="0x0" visible="true" tooltip="Pathing shorter than this, no hopping" />
 			<float32 name="Minimum Hop Distance To Path End" offset="0x4" visible="true" tooltip="Pathing shorter than this, no hopping to end of path" />
-			<rangef name="Hop Wait Timer" offset="0x8" visible="true" tooltip="Pathing shorter than this, no hopping to end of path" />
-			<float32 name="Max Hop Distance" offset="0x10" visible="true" tooltip="Pathing longer than this, no hopping." />
-			<float32 name="Pad!" offset="0x14" visible="true" />
+			<rangef name="Hop Wait Timer" offset="0x8" visible="true" tooltip="Character will wait this random ranged timer before hopping again.(Seconds)" />
+			<float32 name="Maximum Hop Distance" offset="0x10" visible="true" tooltip="Pathing longer than this, no hopping." />
+			<float32 name="Unknown" offset="0x14" visible="true" />
 			<comment title="Passive" />
 			<float32 name="Minimum Hop Distance" offset="0x18" visible="true" tooltip="Pathing shorter than this, no hopping" />
 			<float32 name="Minimum Hop Distance To Path End" offset="0x1C" visible="true" tooltip="Pathing shorter than this, no hopping to end of path" />
-			<rangef name="Hop Wait Timer" offset="0x20" visible="true" tooltip="Pathing shorter than this, no hopping to end of path" />
-			<float32 name="Max Hop Distance" offset="0x28" visible="true" tooltip="Pathing longer than this, no hopping." />
-			<float32 name="Pad!" offset="0x2C" visible="true" />
+			<rangef name="Hop Wait Timer" offset="0x20" visible="true" tooltip="Character will wait this random ranged timer before hopping again.(Seconds)" />
+			<float32 name="Maximum Hop Distance" offset="0x28" visible="true" tooltip="Pathing longer than this, no hopping." />
+			<float32 name="Unknown" offset="0x2C" visible="true" />
 			<comment title="Aggressive" />
 			<float32 name="Minimum Hop Distance" offset="0x30" visible="true" tooltip="Pathing shorter than this, no hopping" />
 			<float32 name="Minimum Hop Distance To Path End" offset="0x34" visible="true" tooltip="Pathing shorter than this, no hopping to end of path" />
-			<rangef name="Hop Wait Timer" offset="0x38" visible="true" tooltip="Pathing shorter than this, no hopping to end of path" />
-			<float32 name="Max Hop Distance" offset="0x40" visible="true" tooltip="Pathing longer than this, no hopping." />
-			<float32 name="Pad!" offset="0x44" visible="true" />
+			<rangef name="Hop Wait Timer" offset="0x38" visible="true" tooltip="Character will wait this random ranged timer before hopping again.(Seconds)" />
+			<float32 name="Maximum Hop Distance" offset="0x40" visible="true" tooltip="Pathing longer than this, no hopping." />
+			<float32 name="Unknown" offset="0x44" visible="true" />
 		</tagblock>
 	</tagblock>
 	<tagblock name="Movement Properties" offset="0xE4" visible="true" elementSize="0x108">
@@ -329,7 +329,7 @@
 		<float32 name="Armor Lock Cooldown" offset="0x20" visible="true" tooltip="We won't go into armor lock again for this many seconds (default 0 seconds)" />
 		<float32 name="Dive Grenade Chance" offset="0x24" visible="true" />
 		<float32 name="Brace Grenade Chance" offset="0x28" visible="true" />
-		<enum16 name="Obstace Leap Minimum Size" offset="0x2C" visible="true">
+		<enum16 name="Obstacle Leap Minimum Size" offset="0x2C" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Tiny" value="0x1" />
 			<option name="Small" value="0x2" />
@@ -338,7 +338,7 @@
 			<option name="Huge" value="0x5" />
 			<option name="Immobile" value="0x6" />
 		</enum16>
-		<enum16 name="Obstace Leap Maximum Size" offset="0x2E" visible="true">
+		<enum16 name="Obstacle Leap Maximum Size" offset="0x2E" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Tiny" value="0x1" />
 			<option name="Small" value="0x2" />
@@ -347,7 +347,7 @@
 			<option name="Huge" value="0x5" />
 			<option name="Immobile" value="0x6" />
 		</enum16>
-		<enum16 name="Obstace Ignore Size" offset="0x30" visible="true">
+		<enum16 name="Obstacle Ignore Size" offset="0x30" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Tiny" value="0x1" />
 			<option name="Small" value="0x2" />
@@ -356,7 +356,7 @@
 			<option name="Huge" value="0x5" />
 			<option name="Immobile" value="0x6" />
 		</enum16>
-		<enum16 name="Obstace Smashable Size" offset="0x32" visible="true">
+		<enum16 name="Obstacle Smashable Size" offset="0x32" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Tiny" value="0x1" />
 			<option name="Small" value="0x2" />
@@ -367,7 +367,7 @@
 		</enum16>
 		<int16 name="Unknown" offset="0x34" visible="false" />
 		<enum16 name="Jump Height" offset="0x36" visible="true">
-			<option name="NONE" value="0x0" />
+			<option name="None" value="0x0" />
 			<option name="Down" value="0x1" />
 			<option name="Step" value="0x2" />
 			<option name="Crouch" value="0x3" />
@@ -379,7 +379,7 @@
 		<float32 name="Maximum Leap Height" offset="0x38" visible="true" tooltip=".How high can a crate be for this unit to leap it." />
 		<float32 name="Leap Proximity Fraction" offset="0x3C" visible="true" tooltip="How close to the obstacle should the actor be before leaping 1- too close, 0- as soon as he becomes aware of it" />
 		<float32 name="Avoidance Volume Turn Penalty Distance" offset="0x40" visible="true" tooltip="The maximum distance penalty applied to an avoidance volume search path if we're facing away from the path. 1000 wu good for space, 5 wu good for ground." />
-		<flags32 name="Movement Hint Flags" offset="0x44" visible="true">
+		<flags32 name="Movement Hints" offset="0x44" visible="true">
 			<bit name="Vault Step" index="0" />
 			<bit name="Vault Crouch" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -444,13 +444,13 @@
 		<float32 name="Phase Chance" offset="0xA8" visible="true" />
 		<float32 name="Phase Delay Seconds" offset="0xAC" visible="true" tooltip="don't attempt again before given time since last phase" />
 		<comment title="Movement Facing">Characters using composite animations can choose to align their facing with their aim-target or their destination. These settings control how the facing is determined.</comment>
-		<float32 name="Departure Distance Min" offset="0xB0" visible="true" tooltip="min distance from departure point where facing should be aligned with aim" />
+		<float32 name="Departure Distance Minimum" offset="0xB0" visible="true" tooltip="min distance from departure point where facing should be aligned with aim" />
 		<float32 name="Departure Distance Range" offset="0xB4" visible="true" tooltip="max distance from departure point where facing should be aligned with heading" />
-		<float32 name="Arrival Distance Min" offset="0xB8" visible="true" tooltip="min distance from destination point where facing should be aligned with aim" />
+		<float32 name="Arrival Distance Minimum" offset="0xB8" visible="true" tooltip="min distance from destination point where facing should be aligned with aim" />
 		<float32 name="Arrival Distance Range" offset="0xBC" visible="true" tooltip="max distance from destination point where facing should be aligned with heading" />
 		<degree name="Maximum Deviation Angle" offset="0xC0" visible="true" tooltip="how far we will allow the facing to deviate from the preference." />
 		<comment title="Smooth Throttle">Allows characters to be smooth throttle changes.</comment>
-		<enum16 name="Setting Options" offset="0xC4" visible="true">
+		<enum16 name="Settings Options" offset="0xC4" visible="true">
 			<option name="Use Engine Default Settings" value="0x0" />
 			<option name="Use Override Settings Below" value="0x1" />
 			<option name="Disable" value="0x2" />
@@ -465,7 +465,7 @@
 		<float32 name="Maximum Reversal Linear Acceleration" offset="0xDC" visible="true" tooltip="maximum linear Accel/Decel limit for throttle magnitude when reversing direction." />
 		<degree name="Maximum Reversal Angular Acceleration" offset="0xE0" visible="true" tooltip="maximum angular Accel/Decel limit for throttle heading when reversing direction." />
 		<comment title="Smooth Stopping">Allows characters to slow down smoothly when stopping.</comment>
-		<enum16 name="Setting Options" offset="0xE4" visible="true">
+		<enum16 name="Settings Options" offset="0xE4" visible="true">
 			<option name="Use Engine Default Settings" value="0x0" />
 			<option name="Use Override Settings Below" value="0x1" />
 			<option name="Disable" value="0x2" />
@@ -679,14 +679,14 @@
 		<float32 name="Melee Leap Ballistic" offset="0x34" visible="true" tooltip="min ballistic fraction" />
 		<float32 name="Melee Delay Timer" offset="0x38" visible="true" tooltip="time between melee leaps" />
 		<float32 name="Melee Leap Prediction Time" offset="0x3C" visible="true" tooltip="how far ahead (seconds) do we look at target for translational prediction?" />
-		<float32 name="Leader Abandoned Beserk Chance" offset="0x40" visible="true" tooltip="chance for a leader to berserk when all his followers die (actually charge, NOT berserk, but I'm not changing the name of the variable)" />
+		<float32 name="Leader Abandoned Berserk Chance" offset="0x40" visible="true" tooltip="chance for a leader to berserk when all his followers die (actually charge, NOT berserk, but I'm not changing the name of the variable)" />
 		<rangef name="Shield-Down Berserk Chance" offset="0x44" visible="true" tooltip="lower bound is chance to berserk at max range, upper bound is chance to berserk at min range, requires shield depleted berserk impulse" />
 		<rangef name="Shield-Down Berserk Ranges" offset="0x4C" visible="true" />
 		<float32 name="Friendly Killed Maximum Berserk Distance" offset="0x54" visible="true" tooltip="The max range at which we will go berserk if we see a friendly AI of the same type (brute, etc) get killed" />
 		<float32 name="Peer Killed Berserk Chance" offset="0x58" visible="true" tooltip="Chance that we will go berserk if we see a friendly AI of the same type (brute, etc) with the same or lower standing get killed" />
 		<float32 name="Leader Killed Berserk Chance" offset="0x5C" visible="true" tooltip="Chance that we will go berserk if we see a friendly AI of the same type (brute, etc) with higher standing get killed" />
 		<tagRef name="Berserk Weapon" offset="0x60" visible="true" tooltip="when I berserk, I pull out a ..." />
-		<float32 name="Play Beserk Animation Chance When Stuck" offset="0x70" visible="true" tooltip="Chance that AI will play berserk anim after getting stuck with a grenade.  Zero is 50%" />
+		<float32 name="Play Berserk Animation Chance When Stuck" offset="0x70" visible="true" tooltip="Chance that AI will play berserk anim after getting stuck with a grenade. Zero is 50%" />
 		<float32 name="Beserk Cooldown" offset="0x74" visible="true" tooltip="Time that I will stay in beserk after losing my target, and then revert back to normal" />
 		<float32 name="Proximity Berserk Range" offset="0x78" visible="true" tooltip="If our target is closer than this distance, and not (in a vehicle/larger size than us/using a melee weapon), we will berserk. If our target is further than this distance, we will stop berserking. Set to 0 to disable proximity berserking." />
 		<float32 name="Proximity Berserk Outside FP Range" offset="0x7C" visible="true" tooltip="We will never go more than this far outside our firing point areas when proximity-berserking. 0= no limit." />
@@ -892,8 +892,8 @@ As always, 0 means speak normally, 1 means skip everything (don't say shit)</com
 		<rangef name="Anticipated Aim Radius" offset="0x8" visible="true" tooltip="When within these bounds distance from the target, we blend in our anticipated facing vector" />
 		<rangef name="Snap Forward Angle" offset="0x10" visible="true" tooltip="When moving forward within this dot of our desired facing, just move forward" />
 	</tagblock>
-	<tagblock name="Weapon Properties" offset="0x204" visible="true" elementSize="0xCC">
-		<flags32 name="Weapon Flags" offset="0x0" visible="true">
+	<tagblock name="Weapons Properties" offset="0x204" visible="true" elementSize="0xCC">
+		<flags32 name="Weapons Flags" offset="0x0" visible="true">
 			<bit name="Bursting Inhibits Movement" index="0" />
 			<bit name="Must Crouch To Shoot" index="1" />
 			<bit name="Use Extended Safe-To-Save Range" index="2" />
@@ -908,9 +908,9 @@ As always, 0 means speak normally, 1 means skip everything (don't say shit)</com
 		<rangef name="Normal Combat Range" offset="0x1C" visible="true" />
 		<float32 name="Bombardment Range" offset="0x24" visible="true" tooltip="we offset our burst targets randomly by this range when firing at non-visible enemies (zero = never)" />
 		<float32 name="Maximum Special Target Distance" offset="0x28" visible="true" tooltip="Specific target regions on a vehicle or unit will be fired upon only under the given distance" />
-		<float32 name="Maximum Extreme Targeting Distance" offset="0x2C" visible="true" tooltip="within this distance actor will be able to do fallback engagement firing patterns. Use for extreme range engagements not otherwise permitted." />
+		<float32 name="Maximum Extreme Target Distance" offset="0x2C" visible="true" tooltip="within this distance actor will be able to do fallback engagement firing patterns. Use for extreme range engagements not otherwise permitted." />
 		<comment title="Ballistic Firing" />
-		<float32 name="Super-Ballistic Range" offset="0x30" visible="true" />
+		<float32 name="Super-Ballistic Range" offset="0x30" visible="true" tooltip="we try to aim our shots super-ballistically if target is outside this range (zero = never)" />
 		<rangef name="Ballistic Firing Bounds" offset="0x34" visible="true" tooltip="At the min range, the min ballistic fraction is used, at the max, the max ballistic fraction is used" />
 		<rangef name="Ballistic Fraction Bounds" offset="0x3C" visible="true" tooltip="Controls speed and degree of arc. 0 = high, slow, 1 = low, fast" />
 		<comment title="Behavior" />
@@ -942,9 +942,7 @@ As always, 0 means speak normally, 1 means skip everything (don't say shit)</com
 		<rangef name="Drop Weapon Loaded" offset="0x8C" visible="true" tooltip="amount of ammo loaded into the weapon that we drop (in fractions of a clip, e.g. 0.3 to 0.5)" />
 		<range16 name="Drop Weapon Ammo" offset="0x94" visible="true" tooltip="total number of rounds in the weapon that we drop (ignored for energy weapons)" />
 		<comment title="Accuracy">Parameters control how accuracy changes over the duration of a series of bursts
-Accuracy is an analog value between 0 and 1. At zero, the parameters of the first
-firing-pattern block is used. At 1, the parameters in the second block is used. In
-between, all the values are linearly interpolated</comment>
+Accuracy is an analog value between 0 and 1. At zero, the parameters of the first firing-pattern block is used. At 1, the parameters in the second block is used. In between, all the values are linearly interpolated</comment>
 		<rangef name="Normal Accuracy Bounds" offset="0x98" visible="true" tooltip="Indicates starting and ending accuracies at normal difficulty" />
 		<float32 name="Normal Accuracy Time" offset="0xA0" visible="true" tooltip="The amount of time it takes the accuracy to go from starting to ending" />
 		<rangef name="Heroic Accuracy Bounds" offset="0xA4" visible="true" tooltip="Indicates starting and ending accuracies at heroic difficulty" />
@@ -1001,14 +999,14 @@ for example if the burst origin angle and the burst return angle were both zero,
 			<degree name="Maximum Error Angle" offset="0x3C" visible="true" tooltip="cap on the maximum angle by which we will miss target (restriction on burst origin radius" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Grenade Properties" offset="0x228" visible="true" elementSize="0x40">
+	<tagblock name="Grenades Properties" offset="0x228" visible="true" elementSize="0x40">
 		<flags32 name="Grenades Flags" offset="0x0" visible="true">
 			<bit name="Do Not Throw While Bunkering" index="0" />
 			<bit name="Allow While Berserking" index="1" />
 		</flags32>
 		<enum16 name="Grenade Type" offset="0x4" visible="true" tooltip="type of grenades that we throw">
-			<option name="Frag" value="0x0" />
-			<option name="Plasma" value="0x1" />
+			<option name="Human Fragmentation" value="0x0" />
+			<option name="Covenant Plasma" value="0x1" />
 			<option name="Pulse" value="0x2" />
 			<option name="Grenade Type 3" value="0x3" />
 			<option name="Grenade Type 4" value="0x4" />
@@ -1035,7 +1033,7 @@ for example if the burst origin angle and the burst return angle were both zero,
 		<float32 name="Anti-Vehicle Grenade Chance" offset="0x34" visible="true" tooltip="how likely we are to throw a grenade against a vehicle" />
 		<comment title="Grenade Drop When Killed" />
 		<range16 name="Grenade Count" offset="0x38" visible="true" tooltip="number of grenades that we start with" />
-		<float32 name="Dont Drop Grenades Chance" offset="0x3C" visible="true" tooltip="how likely we are not to drop any grenades when we die, even if we still have some" />
+		<float32 name="Don't Drop Grenades Chance" offset="0x3C" visible="true" tooltip="how likely we are not to drop any grenades when we die, even if we still have some" />
 	</tagblock>
 	<tagblock name="Vehicle Properties" offset="0x234" visible="true" elementSize="0x14C">
 		<tagRef name="Unit" offset="0x0" visible="true" />
@@ -1079,18 +1077,18 @@ for example if the burst origin angle and the burst return angle were both zero,
 		<float32 name="AI Avoidance Radius" offset="0x7C" visible="true" tooltip="If 0, uses pathfinding radius." />
 		<float32 name="AI Destination Radius" offset="0x80" visible="true" tooltip="Distance within which goal is considered reached" />
 		<float32 name="AI Deceleration Distance" offset="0x84" visible="true" tooltip="Distance from goal at which AI starts to decelerate" />
-		<float32 name="roughly, the time it would take this vehicle to stop; default is 2 seconds" offset="0x88" visible="true" />
+		<float32 name="Stop Time" offset="0x88" visible="true" tooltip="roughly, the time it would take this vehicle to stop; default is 2 seconds" />
 		<comment title="Turning" />
 		<float32 name="AI Turning Radius" offset="0x8C" visible="true" tooltip="Idealized average turning radius (should reflect actual vehicle physics)" />
-		<float32 name="AI Inner Turning Radius" offset="0x90" visible="true" tooltip="Idealized minimum turning radius (should reflect actual vehicle physics)" />
-		<float32 name="AI Ideal Turning Radius" offset="0x94" visible="true" tooltip="Ideal turning radius for rounding turns (barring obstacles, etc.)" />
+		<float32 name="AI Inner Turning Radius" offset="0x90" visible="true" tooltip="(&lt; turn radius) Idealized minimum turning radius (should reflect actual vehicle physics)" />
+		<float32 name="AI Ideal Turning Radius" offset="0x94" visible="true" tooltip="(&gt; turn radius) Ideal turning radius for rounding turns (barring obstacles, etc.)" />
 		<comment title="Steering" />
 		<degree name="AI Banshee Steering Maximum" offset="0x98" visible="true" />
 		<float32 name="AI Maximum Steering Angle" offset="0x9C" visible="true" tooltip="Maximum steering angle from forward (ultimately controls turning speed)" />
 		<float32 name="AI Maximum Steering Delta" offset="0xA0" visible="true" tooltip="Maximum delta in steering angle from one tick to the next (ultimately controls turn acceleration)" />
 		<float32 name="AI Oversteering Scale" offset="0xA4" visible="true" />
-		<ranged name="Ai Oversteering Bounds" offset="0xA8" visible="true" tooltip="Angle to goal at which AI will oversteer" />
-		<float32 name="AI Sideslip Distance" offset="0xB0" visible="true" tooltip="Distance within which Ai will strafe to target (as opposed to turning)" />
+		<ranged name="AI Oversteering Bounds" offset="0xA8" visible="true" tooltip="Angle to goal at which AI will oversteer" />
+		<float32 name="AI Sideslip Distance" offset="0xB0" visible="true" tooltip="Distance within which AI will strafe to target (as opposed to turning)" />
 		<float32 name="AI Avoidance Distance" offset="0xB4" visible="true" tooltip="Look-ahead distance for obstacle avoidance" />
 		<float32 name="AI Minimum Urgency" offset="0xB8" visible="true" tooltip="The minimum urgency with which a turn can be made (urgency = percent of maximum steering delta)" />
 		<degree name="Destination Behind Angle" offset="0xBC" visible="true" tooltip="The angle from facing that is considered to be behind us (we do the ugly floaty slidey turn to things behind us)" />
@@ -1100,10 +1098,10 @@ for example if the burst origin angle and the burst return angle were both zero,
 		<comment title="Throttle" />
 		<float32 name="AI Throttle Maximum" offset="0xCC" visible="true" />
 		<float32 name="AI Reverse Throttle Maximum" offset="0xD0" visible="true" tooltip="If zero, default to ai throttle maximum" />
-		<float32 name="AI Goal Min Throttle Scale" offset="0xD4" visible="true" tooltip="scale on throttle when within 'ai deceleration distance' of goal (0...1)" />
-		<float32 name="AI Turn Min Throttle Scale" offset="0xD8" visible="true" tooltip="Scale on throttle due to nearness to a turn (0...1)" />
-		<float32 name="AI Direction Min Throttle Scale" offset="0xDC" visible="true" tooltip="Scale on throttle due to facing away from intended direction (0...1)" />
-		<float32 name="AI Skid Min Throttle Scale" offset="0xE0" visible="true" tooltip="Scale on throttle due to skidding (0...1)" />
+		<float32 name="AI Goal Minimum Throttle Scale" offset="0xD4" visible="true" tooltip="scale on throttle when within 'ai deceleration distance' of goal (0...1)" />
+		<float32 name="AI Turn Minimum Throttle Scale" offset="0xD8" visible="true" tooltip="Scale on throttle due to nearness to a turn (0...1)" />
+		<float32 name="AI Direction Minimum Throttle Scale" offset="0xDC" visible="true" tooltip="Scale on throttle due to facing away from intended direction (0...1)" />
+		<float32 name="AI Skid Minimum Throttle Scale" offset="0xE0" visible="true" tooltip="Scale on throttle due to skidding (0...1)" />
 		<degree name="Skid Attentuation Maximum Angle" offset="0xE4" visible="true" tooltip="Maximise min throttle at this deviation of angles from current movement" />
 		<float32 name="AI Acceleration Scale" offset="0xE8" visible="true" tooltip="The maximum allowable change in throttle between ticks" />
 		<float32 name="AI Throttle Blend" offset="0xEC" visible="true" tooltip="The degree of throttle blending between one tick and the next (0 = no blending)" />
@@ -1120,24 +1118,24 @@ for example if the burst origin angle and the burst return angle were both zero,
 		<float32 name="AI Charge Abort Distance" offset="0x110" visible="true" tooltip="Abort the charge when the target get more than this far away (0 = never abort)" />
 		<float32 name="AI Charge Abort Close Distance" offset="0x114" visible="true" tooltip="Abort the charge when the target gets closer than this far away (0 = 3 times destination radius for historical purposes.)" />
 		<float32 name="AI Charge Armor Locked Target Chance" offset="0x118" visible="true" tooltip="Probability that we decide to charge a target even if they are armor locked" />
-		<float32 name="Vehicle Ram Timeout" offset="0x11C" visible="true" />
-		<float32 name="Ram Paralysis Time" offset="0x120" visible="true" />
-		<float32 name="Ai Cover Damage Threshold" offset="0x124" visible="true" tooltip="Trigger a cover when recent damage is above given threshold (damage_vehicle_cover impulse)" />
-		<float32 name="Ai Cover Shield Damage Threshold" offset="0x128" visible="true" tooltip="Trigger a cover when recent shied damage is above given threshold (flying_cover behavior)" />
-		<float32 name="Ai Cover Min Distance" offset="0x12C" visible="true" tooltip="When executing vehicle-cover, minimum distance from the target to flee to" />
-		<float32 name="Ai Cover Time" offset="0x130" visible="true" tooltip="How long to stay away from the target" />
-		<float32 name="Ai Cover Min Boost Distance" offset="0x134" visible="true" tooltip="Boosting allowed when distance to cover destination is greater then this." />
+		<float32 name="Vehicle Ram Timeout" offset="0x11C" visible="true" tooltip="The ram behavior stops after a maximum of the given number of seconds" />
+		<float32 name="Ram Paralysis Time" offset="0x120" visible="true" tooltip="The ram behavior freezes the vehicle for a given number of seconds after performing the ram" />
+		<float32 name="AI Cover Damage Threshold" offset="0x124" visible="true" tooltip="Trigger a cover when recent damage is above given threshold (damage_vehicle_cover impulse)" />
+		<float32 name="AI Cover Shield Damage Threshold" offset="0x128" visible="true" tooltip="Trigger a cover when recent shied damage is above given threshold (flying_cover behavior)" />
+		<float32 name="AI Cover Minimum Distance" offset="0x12C" visible="true" tooltip="When executing vehicle-cover, minimum distance from the target to flee to" />
+		<float32 name="AI Cover Time" offset="0x130" visible="true" tooltip="How long to stay away from the target" />
+		<float32 name="AI Cover Minimum Boost Distance" offset="0x134" visible="true" tooltip="Boosting allowed when distance to cover destination is greater then this." />
 		<float32 name="Turtling Recent Damage Threshold" offset="0x138" visible="true" tooltip="If vehicle turtling behavior is enabled, turtling is initiated if 'recent damage' surpasses the given threshold" />
-		<float32 name="Turtling Min Time" offset="0x13C" visible="true" tooltip="If the vehicle turtling behavior is enabled, turtling occurs for at least the given time" />
+		<float32 name="Turtling Minimum Time" offset="0x13C" visible="true" tooltip="If the vehicle turtling behavior is enabled, turtling occurs for at least the given time" />
 		<float32 name="Turtling Timeout" offset="0x140" visible="true" tooltip="The turtled state times out after the given number of seconds" />
 		<enum16 name="Obstacle Ignore Size" offset="0x144" visible="true">
-			<option name="None" value="0" />
-			<option name="Tiny" value="1" />
-			<option name="Small" value="2" />
-			<option name="Medium" value="3" />
-			<option name="Large" value="4" />
-			<option name="Huge" value="5" />
-			<option name="Immobile" value="6" />
+			<option name="None" value="0x0" />
+			<option name="Tiny" value="0x1" />
+			<option name="Small" value="0x2" />
+			<option name="Medium" value="0x3" />
+			<option name="Large" value="0x4" />
+			<option name="Huge" value="0x5" />
+			<option name="Immobile" value="0x6" />
 		</enum16>
 		<int16 name="Unknown" offset="0x146" visible="false" />
 		<int16 name="Maximum Vehicle Charge" offset="0x148" visible="true" tooltip="max number of this type of vehicle in a task who can vehicle charge at once" />
@@ -1223,7 +1221,7 @@ for example if the burst origin angle and the burst return angle were both zero,
 		<float32 name="Stealth Morph Distance Threshold" offset="0xB0" visible="true" tooltip="Morphing inside this range causes a tank guy, outside this range causes a ranged fella" />
 		<float32 name="Stealth Morph Damage Threshold" offset="0xB4" visible="true" tooltip="Percentage of body health he has to be taken down in order to cause a morph" />
 		<rangef name="Stalk Range" offset="0xB8" visible="true" tooltip="We want to stalk our target within this range" />
-		<float32 name="Stalk Range Hard Max" offset="0xC0" visible="true" tooltip="We will never be able to pick a firing position more than this far from our target" />
+		<float32 name="Stalk Range Hard Maximum" offset="0xC0" visible="true" tooltip="We will never be able to pick a firing position more than this far from our target" />
 		<float32 name="Stalk Charge Chance" offset="0xC4" visible="true" tooltip="While stalking, charge randomly with this probability per second (also will charge when on periphery, this is just some spice)" />
 		<comment title="Ranged Bloke" />
 		<float32 name="Ranged Proximity Distance" offset="0xC8" visible="true" tooltip="Morph to tank/stalker when someone gets this close to me as a ranged form" />
@@ -1353,45 +1351,45 @@ for example if the burst origin angle and the burst return angle were both zero,
 	<tagblock name="Bishop Properties" offset="0x294" visible="true" elementSize="0x138">
 		<tagRef name="Junk Collect Effect" offset="0x0" visible="true" />
 		<tagRef name="Junk Attack Effect" offset="0x10" visible="true" />
-		<rangef name="Junk Attack Preperation Time" offset="0x20" visible="true" />
-		<rangef name="Junk Attack Recharge Time" offset="0x28" visible="true" />
+		<rangef name="Junk Attack Preparation Time" offset="0x20" visible="true" tooltip="(in seconds)" />
+		<rangef name="Junk Attack Recharge Time" offset="0x28" visible="true" tooltip="(in seconds)" />
 		<tagRef name="Shield Effect" offset="0x30" visible="true" />
 		<tagRef name="Shield Crate" offset="0x40" visible="true" />
-		<rangef name="Shield Lifetime" offset="0x50" visible="true" />
-		<rangef name="Shield Recharge" offset="0x58" visible="true" />
-		<float32 name="Shield Range Max" offset="0x60" visible="true" />
-		<float32 name="Shield Offset Max" offset="0x64" visible="true" tooltip="max distance of shield from shielde"/>
-		<rangef name="Repair Preperation Time" offset="0x68" visible="true" />
-		<rangef name="Repair Recharge Time" offset="0x70" visible="true" />
+		<rangef name="Shield Lifetime" offset="0x50" visible="true" tooltip="(in seconds)" />
+		<rangef name="Shield Recharge Time" offset="0x58" visible="true" tooltip="(in seconds)" />
+		<float32 name="Shield Range Maximum" offset="0x60" visible="true" tooltip="(in world units)" />
+		<float32 name="Shield Offset Maximum" offset="0x64" visible="true" tooltip="(in world units) max distance of shield from shielde" />
+		<rangef name="Repair Preparation Time" offset="0x68" visible="true" tooltip="(in seconds)" />
+		<rangef name="Repair Recharge Time" offset="0x70" visible="true" tooltip="(in seconds)" />
 		<tagRef name="Repair Beam Effect" offset="0x78" visible="true" />
 		<tagRef name="Repair Crate" offset="0x88" visible="true" />
 		<rangef name="Orbit Distance" offset="0x98" visible="true" tooltip="Min/Max distance that bishop will try to maintain orbit in." />
 		<float32 name="Minimum Follow Distance" offset="0xA0" visible="true" tooltip="Distance at which bishop will stop orbiting and try to catch up to allies." />
 		<float32 name="Vertical Offset" offset="0xA4" visible="true" tooltip="How high/low bishop will float relative to allies being protected." />
 		<float32 name="Real Line Distance" offset="0xA8" visible="true" tooltip="Controls how far bishop will hang back from combat." />
-		<float32 name="Follow Throttle (0 - 1)" offset="0xAC" visible="true" tooltip="Fraction of max throttle to use when catching up to allies." />
-		<float32 name="Orbit Throttle (0 - 1)" offset="0xB0" visible="true" tooltip="Fraction of max throttle to use when orbiting allies." />
-		<float32 name="Evasion Shield Level Trigger (0 - 1)" offset="0xB4" visible="true" tooltip="Fraction of shield level remaining required to trigger evasion." />
-		<float32 name="Evasion Body Level Trigger (0 - 1)" offset="0xB8" visible="true" tooltip="Fraction of body vitality remaining required to trigger evasion." />
+		<float32 name="Follow Throttle" offset="0xAC" visible="true" tooltip="(0 - 1) Fraction of max throttle to use when catching up to allies." />
+		<float32 name="Orbit Throttle" offset="0xB0" visible="true" tooltip="(0 - 1) Fraction of max throttle to use when orbiting allies." />
+		<float32 name="Evasion Shield Level Trigger" offset="0xB4" visible="true" tooltip="(0 - 1) Fraction of shield level remaining required to trigger evasion." />
+		<float32 name="Evasion Body Level Trigger" offset="0xB8" visible="true" tooltip="(0 - 1) Fraction of body vitality remaining required to trigger evasion." />
 		<float32 name="Evasion Danger Threshold Trigger" offset="0xBC" visible="true" tooltip="Perceived danger required to trigger evasion." />
-		<float32 name="Resurrection Initiation Delay Time (seconds)" offset="0xC0" visible="true" tooltip="Time Bishop waits upon arriving at resurrection target before activating resurrection beam." />
-		<float32 name="Resurrection Charge Up Time (seconds)" offset="0xC4" visible="true" tooltip="Time from resurrection beam activation until actual resurrection is triggered." />
-		<float32 name="Resurrection Give Up Time (seconds)" offset="0xC8" visible="true" tooltip="If the resurrection target is not reached in this amount of time, the resurrection attempt is aborted." />
+		<float32 name="Resurrection Initiation Delay Time" offset="0xC0" visible="true" tooltip="(seconds) Time Bishop waits upon arriving at resurrection target before activating resurrection beam." />
+		<float32 name="Resurrection Charge Up Time" offset="0xC4" visible="true" tooltip="(seconds) Time from resurrection beam activation until actual resurrection is triggered." />
+		<float32 name="Resurrection Give Up Time" offset="0xC8" visible="true" tooltip="(seconds) If the resurrection target is not reached in this amount of time, the resurrection attempt is aborted." />
 		<tagRef name="Resurrection Ground Effect" offset="0xCC" visible="true" tooltip="The effect created on the ground when resurrecting a dead ally." />
-		<tagRef name="Res. Area Scan Start Effect" offset="0xDC" visible="true" tooltip="The effect created on the ground when scanning for a clear area before resurrection." />
-		<tagRef name="Res. Area Success Start Effect" offset="0xEC" visible="true" tooltip="The effect created on the ground when area scan succeeds."/>
-		<tagRef name="Res. Area Failure Start Effect" offset="0xFC" visible="true" tooltip="The effect created on the ground when area scan fails." />
-		<tagRef name="Shard Object" offset="0x10C" visible="true" tooltip="Created by bishop when shard spawning.  Runs spawning logic." />
+		<tagRef name="Resurrection Area Scan Start Effect" offset="0xDC" visible="true" tooltip="The effect created on the ground when scanning for a clear area before resurrection." />
+		<tagRef name="Resurrection Area Scan Success Effect" offset="0xEC" visible="true" tooltip="The effect created on the ground when area scan succeeds." />
+		<tagRef name="Resurrection Area Scan Failure Effect" offset="0xFC" visible="true" tooltip="The effect created on the ground when area scan fails." />
+		<tagRef name="Shard Object" offset="0x10C" visible="true" tooltip="Created by bishop when shard spawning. Runs spawning logic." />
 		<tagRef name="Shard Spawn Ground Effect" offset="0x11C" visible="true" tooltip="The effect created on the ground when spawning shards (pawns)." />
-		<float32 name="Shard Creation Delay (seconds)" offset="0x12C" visible="true" tooltip="Time it takes for bishop to place shards after arriving at destination." />
-		<rangef name="Spawn Delay (seconds)" offset="0x130" visible="true" tooltip="Min/max time it takes for shards to spawn actors." />
+		<float32 name="Shard Creation Delay" offset="0x12C" visible="true" tooltip="(seconds) Time it takes for bishop to place shards after arriving at destination." />
+		<rangef name="Spawn Delay" offset="0x130" visible="true" tooltip="(seconds) Min/max time it takes for shards to spawn actors." />
 	</tagblock>
 	<tagblock name="Combotron Parent Properties" offset="0x2A0" visible="true" elementSize="0x44">
 		<comment title="Combotron Parent Props" />
-		<rangef name="Socket Cooldown (seconds)" offset="0x0" visible="true" tooltip="for each socket, this is the time to wait after desocketing before socketing something else into it" />
+		<rangef name="Socket Cooldown" offset="0x0" visible="true" tooltip="(seconds) for each socket, this is the time to wait after desocketing before socketing something else into it" />
 		<float32 name="Child Scale" offset="0x8" visible="true" tooltip="use this value to set scaling for child objects / etc..." />
 		<float32 name="Shield Scale" offset="0xC" visible="true" tooltip="if a socketed child creates a shield for me, how big should it be?" />
-		<stringid name="Shield Location (marker name)" offset="0x10" visible="true" tooltip="when bishop is attached and shielding, where should the shield go?" />
+		<stringid name="Shield Location Marker" offset="0x10" visible="true" tooltip="when bishop is attached and shielding, where should the shield go?" />
 		<tagRef name="Effect Socket Occupied" offset="0x14" visible="true" />
 		<tagRef name="Effect Socket Cooling" offset="0x24" visible="true" />
 		<tagRef name="Effect Socket Available" offset="0x34" visible="true" />
@@ -1405,35 +1403,35 @@ for example if the burst origin angle and the burst return angle were both zero,
 		<tagRef name="Socket Child" offset="0x14" visible="true" tooltip="When socketed, this guy turns into a child of the type referenced here" />
 		<tagRef name="Socket Character Definition" offset="0x24" visible="true" tooltip="Parent adopts this character definition when this guy is socketed" />
 		<float32 name="Damage Threshold When Socketed" offset="0x34" visible="true" tooltip="How much damage does this guy absorb before de-socketing" />
-		<rangef name="Socketing Cooldown (seconds)" offset="0x38" visible="true" tooltip="After being de-socketed, wait this long before re-socketing" />
-		<rangef name="Socketing Attach Distance (world units)" offset="0x40" visible="true" tooltip="at what distance does the client particleize and attach to socket" />
+		<rangef name="Socketing Cooldown" offset="0x38" visible="true" tooltip="(seconds) After being de-socketed, wait this long before re-socketing" />
+		<rangef name="Socketing Attach Distance" offset="0x40" visible="true" tooltip="(world units) at what distance does the client particleize and attach to socket" />
 		<tagRef name="Effect Socketing" offset="0x48" visible="true" tooltip="this effect plays while a child is socketing into a parent" />
 	</tagblock>
 	<tagblock name="Handle Dismemberment Properties" offset="0x2B8" visible="true" elementSize="0x28">
 		<comment title="Dismemberment Props" />
-		<stringid name="Headshot Freakout Animation (Animation String)" offset="0x0" visible="true" />
-		<stringid name="Limb Dismembered Animation (Animation String)" offset="0x4" visible="true" />
+		<stringid name="Headshot Freakout Animation" offset="0x0" visible="true" />
+		<stringid name="Limb Dismembered Animation" offset="0x4" visible="true" />
 		<tagRef name="Berserk Persistent Melee Effect" offset="0x8" visible="true" />
 		<tagRef name="Alternate Weapon" offset="0x18" visible="true" tooltip="If I lose my firing arm then I pull out a ..." />
 	</tagblock>
 	<tagblock name="Fight From Cover" offset="0x2C4" visible="true" elementSize="0x90">
-		<rangef name="Cover Fight (In World Units)" offset="0x0" visible="true" tooltip="Character will prefer to use cover fighting between min/max distances" />
-		<rangef name="Wanted Cover Time (In Seconds)" offset="0x8" visible="true" tooltip="How much time do we want to spend before assessing other actions/spots." />
-		<rangef name="Wanted Kneeling Time (In Seconds)" offset="0x10" visible="true" tooltip="How long do we want to kneel." />
-		<rangef name="Wanted Standing Time (In Seconds)" offset="0x18" visible="true" tooltip="How long do we want to stand in cover." />
-		<float32 name="Realize No Cover Found (In Seconds)" offset="0x20" visible="true" tooltip="How long do we wait before we realize that no cover spot can be found." />
-		<rangef name="No Cover Found Suppress (In Seconds)" offset="0x24" visible="true" tooltip="How long to disallow cover fight behavior when no cover is found." />
-		<float32 name="Fully Expose Width (0-1 Of Bounding Sphere)" offset="0x2C" visible="true" tooltip="How much of the character needs to be visible before cover is broken." />
+		<rangef name="Cover Fight" offset="0x0" visible="true" tooltip="(in world units) Character will prefer to use cover fighting between min/max distances" />
+		<rangef name="Wanted Cover Time" offset="0x8" visible="true" tooltip="(in seconds) How much time do we want to spend before assessing other actions/spots." />
+		<rangef name="Wanted Kneeling Time" offset="0x10" visible="true" tooltip="(in seconds) How long do we want to kneel." />
+		<rangef name="Wanted Standing Time" offset="0x18" visible="true" tooltip="(in seconds) How long do we want to stand in cover." />
+		<float32 name="Realize No Cover Found" offset="0x20" visible="true" tooltip="(in seconds) How long do we wait before we realize that no cover spot can be found." />
+		<rangef name="No Cover Found Suppress" offset="0x24" visible="true" tooltip="(in seconds) How long to disallow cover fight behavior when no cover is found." />
+		<float32 name="Fully Exposed Width" offset="0x2C" visible="true" tooltip="(0-1 of Bounding Sphere) How much of the character needs to be visible before cover is broken." />
 		<float32 name="Move Exposed Avoidance Radius" offset="0x30" visible="true" tooltip="How big is the area that I want to avoid when I am exposed." />
-		<float32 name="Move Avoidance Radius " offset="0x34" visible="true" tooltip="How big is the area that I want to avoid when I move from cover to cover." />
-		<float32 name="Cover Fight Chance When Found Cover (0-1)" offset="0x38" visible="true" tooltip="How often to go into cover fighting when found good cover." />
-		<float32 name="Balling Chance (0-1)" offset="0x3C" visible="true" tooltip="How often to go into ball movement when moving from cover to cover." />
-		<float32 name="Prefer Distance Over Flank Movement (0-10)" offset="0x40" visible="true" tooltip="How we rate distance vs side movement when choosing next cover spot." />
+		<float32 name="Move Avoidance Radius" offset="0x34" visible="true" tooltip="How big is the area that I want to avoid when I move from cover to cover." />
+		<float32 name="Cover Fight Chance When Found Cover" offset="0x38" visible="true" tooltip="(0-1) How often to go into cover fighting when found good cover." />
+		<float32 name="Balling Chance" offset="0x3C" visible="true" tooltip="(0-1) How often to go into ball movement when moving from cover to cover." />
+		<float32 name="Prefer Distance Over Flank Movement" offset="0x40" visible="true" tooltip="(0-10) How we rate distance vs side movement when choosing next cover spot." />
 		<float32 name="Chance Of Exiting Cover Fight When Too Close" offset="0x44" visible="true" tooltip="Chance of exiting cover fight when too close." />
 		<float32 name="Balling Interrupt Damage" offset="0x48" visible="true" tooltip="Damage delta when to interrupt balling." />
-		<stringid name="Balling Interrupt Animation (Animation String)" offset="0x4C" visible="true" />
+		<stringid name="Balling Interrupt Animation" offset="0x4C" visible="true" />
 		<tagRef name="Into Ball Transition Effect" offset="0x50" visible="true" />
-		<tagRef name="Out of Ball Transition Effect" offset="0x60" visible="true" />
+		<tagRef name="Out Of Ball Transition Effect" offset="0x60" visible="true" />
 		<tagRef name="Ball Moving Effect" offset="0x70" visible="true" />
 		<tagRef name="Ball Interrupted Effect" offset="0x80" visible="true" />
 	</tagblock>
@@ -1450,13 +1448,13 @@ for example if the burst origin angle and the burst return angle were both zero,
 		</flags32>
 		<flags32 name="Task Generation Flags" offset="0x4" visible="true" tooltip="Controls which tasks can be generated by this AI.">
 			<bit name="Protect Me" index="0" />
-			<bit name="Resurrect On Death" index="0" />
+			<bit name="Resurrect On Death" index="1" />
 		</flags32>
 		<float32 name="Protect Request Shield Level" offset="0x8" visible="true" tooltip="Shield vitality must be less than or equal to this level before AI will post Protect task." />
 		<float32 name="Protect Request Body Level" offset="0xC" visible="true" tooltip="Body vitality must be less than or equal to this level before AI will post Protect task." />
 		<float32 name="Resurrection Req. Chance" offset="0x10" visible="true" tooltip="Percent chance that actor will request to be resurrected on death." />
 		<float32 name="Shield Task Priority" offset="0x14" visible="true" tooltip="Priority level of Shield task generated by this character." />
-		<rangef name="Protect Task Priorities (Min Health - Max Health)" offset="0x18" visible="true" tooltip="Priority levels of Protect task as health drops." />
+		<rangef name="Protect Task Priorities" offset="0x18" visible="true" tooltip="(min health - max health) Priority levels of Protect task as health drops." />
 		<float32 name="Resurrection Task Priority" offset="0x20" visible="true" tooltip="Priority level of Resurrection task generated by this character." />
 		<float32 name="Shield During Resurrection Task Priority" offset="0x24" visible="true" tooltip="Priority of the shield task generated while being resurrected." />
 		<tagRef name="Shield Crate Override" offset="0x28" visible="true" tooltip="Crate created to represent projected shield." />
@@ -1467,7 +1465,7 @@ for example if the burst origin angle and the burst return angle were both zero,
 			<bit name="Charge On Shield Down" index="0" />
 		</flags32>
 		<float32 name="Shield Trigger Vitality" offset="0x8" visible="true" tooltip="shield level that triggers charge if charge on shields down is set." />
-		<float32 name="Max Range" offset="0xC" visible="true" tooltip="Max allowed range to target for advance to trigger." />
+		<float32 name="Maximum Range" offset="0xC" visible="true" tooltip="Max allowed range to target for advance to trigger." />
 		<float32 name="Terminator Range" offset="0x10" visible="true" tooltip="Distance at which terminator (slow advance) behavior can kick in." />
 		<stringid name="Terminator Throttle Style" offset="0x14" visible="true" tooltip="Throttle used while terminating." />
 		<stringid name="Fast Charge Throttle Style" offset="0x18" visible="true" tooltip="Throttle used for fast advance." />
@@ -1481,14 +1479,14 @@ for example if the burst origin angle and the burst return angle were both zero,
 			<option name="Teleport" value="0x1" />
 			<option name="Leap" value="0x2" />
 		</enum32>
-		<float32 name="Teleport destination distance" offset="0x34" visible="true" tooltip="How far from target to arrive" />
-		<float32 name="Teleport Sidestep distance" offset="0x38" visible="true" tooltip="How far to appear to the side of teleport line for intermediate steps" />
-		<float32 name="Teleport Forward distance" offset="0x3C" visible="true" tooltip="How far to teleport forward for intermediate steps" />
-		<float32 name="Teleport runup time" offset="0x40" visible="true" tooltip="Time between end of sword flick and first teleport" />
-		<float32 name="Teleport position time" offset="0x44" visible="true" tooltip="Time spent at each teleport location" />
-		<float32 name="Teleport cooldown time" offset="0x48" visible="true" tooltip="Time after attack before trying to get away" />
-		<float32 name="Teleport tracking distance" offset="0x4C" visible="true" tooltip="How far the landing point can move between jumps" />
-		<float32 name="Teleport tracking lockdown dist" offset="0x50" visible="true" tooltip="How far from the target do we stop tracking" />
+		<float32 name="Teleport Destination Distance" offset="0x34" visible="true" tooltip="How far from target to arrive" />
+		<float32 name="Teleport Sidestep Distance" offset="0x38" visible="true" tooltip="How far to appear to the side of teleport line for intermediate steps" />
+		<float32 name="Teleport Forward Distance" offset="0x3C" visible="true" tooltip="How far to teleport forward for intermediate steps" />
+		<float32 name="Teleport Runup Time" offset="0x40" visible="true" tooltip="Time between end of sword flick and first teleport" />
+		<float32 name="Teleport Position Time" offset="0x44" visible="true" tooltip="Time spent at each teleport location" />
+		<float32 name="Teleport Cooldown Time" offset="0x48" visible="true" tooltip="Time after attack before trying to get away" />
+		<float32 name="Teleport Tracking Distance" offset="0x4C" visible="true" tooltip="How far the landing point can move between jumps" />
+		<float32 name="Teleport Tracking Lockdown Distance" offset="0x50" visible="true" tooltip="How far from the target do we stop tracking" />
 		<tagRef name="Teleport Launch FX" offset="0x54" visible="true" tooltip="Effect to play at teleport launch point" />
 		<tagRef name="Teleport Land FX" offset="0x64" visible="true" tooltip="Effect to play at teleport destination point" />
 	</tagblock>
@@ -1513,7 +1511,7 @@ for example if the burst origin angle and the burst return angle were both zero,
 		<rangef name="Strafe Time" offset="0x0" visible="true" tooltip="Time spent facing the player and strafing after reaching a position." />
 		<rangef name="Extra Firing Time" offset="0x8" visible="true" tooltip="Time after strafe that trigger is held down." />
 		<float32 name="Target Patience Time" offset="0x10" visible="true" tooltip="Time allowed for turning back onto target at FP, not always counted against firing time." />
-		<degree name="Max Angle From Threat" offset="0x14" visible="true" tooltip="Angle used by outside of spring evaluator, including rejector." />
+		<degree name="Maximum Angle From Threat Axis" offset="0x14" visible="true" tooltip="Angle used by outside of spring evaluator, including rejector." />
 		<degree name="Nearby Inner Angle" offset="0x18" visible="true" tooltip="Angle within which the nearby evaluator considers the point fully preferred." />
 		<degree name="Nearby Outer Angle" offset="0x1C" visible="true" tooltip="Angle outside which the nearby evaluator considers the point fully avoided." />
 		<stringid name="Strafe Throttle Style" offset="0x20" visible="true" tooltip="Throttle used in slow strafe mode" />
@@ -1526,8 +1524,8 @@ for example if the burst origin angle and the burst return angle were both zero,
 		<float32 name="Hamstring Delay" offset="0xC" visible="true" tooltip="Time after last hamstring or melee attack that behavior is banned." />
 		<float32 name="Initiate Chance" offset="0x10" visible="true" tooltip="Chance hamstring is initiated per second." />
 		<float32 name="Maximum Rush Time" offset="0x14" visible="true" tooltip="Time to close from flank range to melee charge range." />
-		<float32 name="Melee Attack Time Min" offset="0x18" visible="true" tooltip="Minimum time for terminal melee attack." />
-		<float32 name="Melee Attack Time Max" offset="0x1C" visible="true" tooltip="Maximum time for terminal melee attack." />
+		<float32 name="Melee Attack Time Minimum" offset="0x18" visible="true" tooltip="Minimum time for terminal melee attack." />
+		<float32 name="Melee Attack Time Maximum" offset="0x1C" visible="true" tooltip="Maximum time for terminal melee attack." />
 	</tagblock>
 	<tagblock name="Forerunner" offset="0x324" visible="true" elementSize="0x24">
 		<flags32 name="Forerunner Flags" offset="0x0" visible="true">
@@ -1538,7 +1536,7 @@ for example if the burst origin angle and the burst return angle were both zero,
 		<float32 name="Order Minion Charge Radius" offset="0x8" visible="true" tooltip="Radius within which lackeys can be ordered to charge." />
 		<float32 name="Minion Charge Minimum Time" offset="0xC" visible="true" tooltip="min time for lackey charge." />
 		<float32 name="Minion Charge Maximum Time" offset="0x10" visible="true" tooltip="max time for lackey charge." />
-		<rangef name="Phase To Position Distance Bound" offset="0x14" visible="true" tooltip="Below min, no phase. as distance moves from low to high, chance moves from low to high probabilities" />
+		<rangef name="Phase To Position Distance Bounds" offset="0x14" visible="true" tooltip="Below min, no phase. as distance moves from low to high, chance moves from low to high probabilities" />
 		<rangef name="Phase To Position Probability Range" offset="0x1C" visible="true" tooltip="As distance moves from low to high, chance to phase moves from low to high values" />
 	</tagblock>
 	<tagblock name="Gravity Jump" offset="0x330" visible="true" elementSize="0x20">

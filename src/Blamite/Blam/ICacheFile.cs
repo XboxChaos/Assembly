@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Blamite.Blam.Localization;
 using Blamite.Blam.Resources;
 using Blamite.Blam.Resources.Sounds;
@@ -14,6 +15,11 @@ namespace Blamite.Blam
 	/// </summary>
 	public interface ICacheFile
 	{
+		/// <summary>
+		///		The full file path of the cache file.
+		/// </summary>
+		string FilePath { get; }
+
 		/// <summary>
 		///     The size of the file header.
 		/// </summary>
@@ -198,5 +204,29 @@ namespace Blamite.Blam
 		Endian Endianness { get; }
 
 		EffectInterop EffectInterops { get; }
+	}
+
+	public static class ICacheFileExtensions
+	{
+		public static uint GenerateChecksum(this ICacheFile cacheFile, IReader reader)
+		{
+			// XOR all of the uint32s in the file after the header
+			// based on http://codeescape.com/2009/05/optimized-c-halo-2-map-signing-algorithm/
+			uint checksum = 0;
+			int blockSize = 0x10000;
+			reader.SeekTo(cacheFile.HeaderSize);
+
+			while (reader.Position < reader.Length)
+			{
+				int actualSize = Math.Min(blockSize, (int)(reader.Length - reader.Position));
+				int adjustedSize = (actualSize + 3) & ~0x3;
+				byte[] block = new byte[adjustedSize];
+				reader.ReadBlock(block, 0, actualSize);
+				for (int i = 0; i < block.Length; i += 4)
+					checksum ^= BitConverter.ToUInt32(block, i);
+			}
+
+			return checksum;
+		}
 	}
 }

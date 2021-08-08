@@ -7,10 +7,12 @@
 		<revision author="XZodia" version="3">Completed</revision>
 		<revision author="Lord Zedd" version="4">Fixed</revision>
 	</revisions>
+	<comment title="LENS FLARE" />
 	<degree name="Falloff Angle" offset="0x0" visible="true" />
 	<degree name="Cutoff Angle" offset="0x4" visible="true" />
 	<float32 name="Unknown" offset="0x8" visible="false" />
 	<float32 name="Unknown" offset="0xC" visible="false" />
+	<comment title="OCCLUSION">Occlusion factor affects overall lens flare brightness and can also affect scale. Occlusion never affects rotation.</comment>
 	<float32 name="Occlusion Radius" offset="0x10" visible="true" />
 	<enum16 name="Occlusion Offset Direction" offset="0x14" visible="true">
 		<option name="Toward Viewer" value="0x0" />
@@ -26,8 +28,8 @@
 		<option name="1/32" value="0x5" />
 		<option name="1/64" value="0x6" />
 	</enum16>
-	<float32 name="Near Fade Distance" offset="0x18" visible="true" />
-	<float32 name="Far Fade Distance" offset="0x1C" visible="true" />
+	<float32 name="Near Fade Distance" offset="0x18" visible="true" tooltip="distance at which the lens flare brightness is maximum" />
+	<float32 name="Far Fade Distance" offset="0x1C" visible="true" tooltip="distance at which the lens flare brightness is minimum; set to zero to disable distance fading" />
 	<tagRef name="Bitmap" offset="0x20" visible="true" />
 	<flags16 name="Flags" offset="0x28" visible="true">
 		<bit name="Sun" index="0" />
@@ -47,8 +49,7 @@
 	</enum16>
 	<int16 name="Unknown" offset="0x2E" visible="false" />
 	<degree name="Rotation Function Scale" offset="0x30" visible="true" />
-	<float32 name="Corona Scale i" offset="0x34" visible="true" />
-	<float32 name="Corona Scale j" offset="0x38" visible="true" />
+	<vector2 name="Corona Scale" offset="0x34" visible="true" tooltip="amount to stretch the corona" />
 	<enum16 name="Falloff Function" offset="0x3C" visible="true">
 		<option name="Linear" value="0x0" />
 		<option name="Late" value="0x1" />
@@ -72,17 +73,15 @@
 		<int16 name="Unknown" offset="0x2" visible="false" />
 		<int16 name="Bitmap Index" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
-		<float32 name="Position Along Flare Axis" offset="0x8" visible="true" />
+		<float32 name="Position" offset="0x8" visible="true" tooltip="0 is on top of light, 1 is opposite light, 0.5 is the center of the screen, etc." />
 		<float32 name="Rotation Offset" offset="0xC" visible="true" />
-		<float32 name="Radius min" offset="0x10" visible="true" />
-		<float32 name="Radius max" offset="0x14" visible="true" />
-		<float32 name="Brightness min" offset="0x18" visible="true" />
-		<float32 name="Brightness max" offset="0x1C" visible="true" />
-		<float32 name="Tint Modulation Factor" offset="0x20" visible="true" />
-		<float32 name="Tint Color R" offset="0x24" visible="true" />
-		<float32 name="Tint Color G" offset="0x28" visible="true" />
-		<float32 name="Tint Color B" offset="0x2C" visible="true" />
+		<rangef name="Radius" offset="0x10" visible="true" tooltip="interpolated by external input" />
+		<rangef name="Brightness" offset="0x18" visible="true" tooltip="interpolated by external input" />
+		<comment title="TINT COLOR">Tinting and modulating are not the same; 'tinting' a reflection will color the darker regions but leave the highlights, while 'modulating' will color everything uniformly. The modulation factor controls how much the reflection is modulated as opposed to tinted (0 is tinted, 1 is modulated).</comment>
+		<float32 name="Modulation Factor" offset="0x20" visible="true" />
+		<colorf name="Color" offset="0x24" alpha="false" visible="true" />
 	</tagblock>
+	<comment title="ANIMATION" />
 	<flags16 name="Flags" offset="0x48" visible="true">
 		<bit name="Synchronized" index="0" />
 	</flags16>

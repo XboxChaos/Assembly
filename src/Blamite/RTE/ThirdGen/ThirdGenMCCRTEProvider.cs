@@ -44,7 +44,7 @@ namespace Blamite.RTE.ThirdGen
 			if (gameMemory.BaseModule == null)
 				return null;
 
-			if (mapInfo.MapName != cacheFile.InternalName)
+			if (cacheFile != null && mapInfo.MapName != cacheFile.InternalName)
 			{
 				gameMemory.Close();
 				return null;

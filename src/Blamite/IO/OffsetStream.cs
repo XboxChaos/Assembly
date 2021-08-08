@@ -96,5 +96,13 @@ namespace Blamite.IO
 			if (disposing)
 				_baseStream.Dispose();
 		}
+
+		/// <summary>
+		/// Gets the current offset used by this stream.
+		/// </summary>
+		public long Offset
+		{
+			get { return _offset; }
+		}
 	}
 }

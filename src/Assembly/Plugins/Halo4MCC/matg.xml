@@ -349,7 +349,7 @@
 		<float32 name="Bounding Sphere Radius" offset="0x7C" visible="true" tooltip="radius of sphere for collision" />
 		<float32 name="Flying Cam Movement Delay" offset="0x80" visible="true" tooltip="how quickly the camera responds to the user's input" />
 		<float32 name="Zoom Transition Time" offset="0x84" visible="true" tooltip="how long it takes to zoom in or out" />
-		<float32 name="Vertical Movement Time To Max Speed" offset="0x88" visible="true" />
+		<float32 name="Vertical Movement Time To Maximum Speed" offset="0x88" visible="true" />
 		<enum16 name="Vertical Movement Function" offset="0x8C" visible="true">
 			<option name="Linear" value="0x0" />
 			<option name="Early" value="0x1" />
@@ -403,7 +403,7 @@
 			<float32 name="Peg Threshold" offset="0x4" visible="true" tooltip="[0,1] magnitude of analog input for pegged acceleration to kick in" />
 			<point2 name="Pegged Time" offset="0x8" visible="true" tooltip="time for a pegged look to reach maximum effect" />
 			<point2 name="Pegged Scale" offset="0x10" visible="true" tooltip="the maximum effect achieved over the duration of the pegged time." />
-			<degree name="Peg Max Angular Velocity" offset="0x18" visible="true" tooltip="the maximum turning speed during peg" />
+			<degree name="Peg Maximum Angular Velocity" offset="0x18" visible="true" tooltip="the maximum turning speed during peg" />
 			<tagblock name="Input Mapping Function" offset="0x1C" visible="true" elementSize="0x14">
 				<dataref name="Function" offset="0x0" visible="true" />
 			</tagblock>
@@ -419,7 +419,7 @@
 			<float32 name="Peg Threshold" offset="0x4" visible="true" tooltip="[0,1] magnitude of analog input for pegged acceleration to kick in" />
 			<point2 name="Pegged Time" offset="0x8" visible="true" tooltip="time for a pegged look to reach maximum effect" />
 			<point2 name="Pegged Scale" offset="0x10" visible="true" tooltip="the maximum effect achieved over the duration of the pegged time." />
-			<degree name="Peg Max Angular Velocity" offset="0x18" visible="true" tooltip="the maximum turning speed during peg" />
+			<degree name="Peg Maximum Angular Velocity" offset="0x18" visible="true" tooltip="the maximum turning speed during peg" />
 			<tagblock name="Input Mapping Function" offset="0x1C" visible="true" elementSize="0x14">
 				<dataref name="Function" offset="0x0" visible="true" />
 			</tagblock>
@@ -455,7 +455,7 @@
 		<float32 name="Throw Drawing Maximum Time" offset="0x84" visible="true" tooltip="how long you can take to become pegged at the start of a throw" />
 		<float32 name="Throw Drawn Maximum Time" offset="0x88" visible="true" tooltip="how long you can stay pegged at the start of a throw" />
 		<float32 name="Throw Throwing Maximum Time" offset="0x8C" visible="true" tooltip="how long you can take to throw the stick to pegged on the other side" />
-		<float32 name="Flick Peg Jump Max Time" offset="0x90" visible="true" tooltip="max time you can be pegged and then press jump to activate" />
+		<float32 name="Flick Peg Jump Maximum Time" offset="0x90" visible="true" tooltip="max time you can be pegged and then press jump to activate" />
 		<float32 name="Double Tap Interval Time" offset="0x94" visible="true" tooltip="to engage double-tap, user must press jump twice in this much time" />
 		<comment title="Jump Assist" />
 		<float32 name="Vault Speed Gain" offset="0x98" visible="true" />
@@ -468,7 +468,7 @@
 		<float32 name="Vault Sprint Height Minimum" offset="0xB4" visible="true" />
 		<float32 name="Vault Height Traverse" offset="0xB8" visible="true" />
 		<float32 name="Vault Sprint Height Traverse" offset="0xBC" visible="true" />
-		<float32 name="Vault imum Downward Distance" offset="0xC0" visible="true" />
+		<float32 name="Vault Maximum Downward Distance" offset="0xC0" visible="true" />
 		<float32 name="Vault Sprint Maximum Downward Distance" offset="0xC4" visible="true" />
 		<float32 name="Vault Maximum Distance" offset="0xC8" visible="true" />
 		<float32 name="Vault Sprint Maximum Distance" offset="0xCC" visible="true" />
@@ -1140,8 +1140,8 @@
 			<float32 name="Sprint Turn Multiplier" offset="0x14" visible="true" tooltip="how much faster to turn when sprinting" />
 			<float32 name="Pegged Magnitude" offset="0x18" visible="true" tooltip="how far the stick needs to be pressed before being considered pegged" />
 			<float32 name="Pegged Angular Threshold" offset="0x1C" visible="true" tooltip="how far off straight up (in degrees) we consider pegged" />
-			<degree name="Max Look Yaw Velocity" offset="0x20" visible="true" />
-			<degree name="Max Look Pitch Velocity" offset="0x24" visible="true" />
+			<degree name="Maximum Look Yaw Velocity" offset="0x20" visible="true" />
+			<degree name="Maximum Look Pitch Velocity" offset="0x24" visible="true" />
 			<float32 name="Minimum Player Velocity To Be Considered In A Momentum State" offset="0x28" visible="true" />
 			<float32 name="Look Window Length" offset="0x2C" visible="true" tooltip="period of time over which we record the biped's look angle for deciding if we should drop him out of momentum" />
 			<stringid name="Momentum Animation Stance" offset="0x30" visible="true" />
@@ -1411,8 +1411,8 @@
 	<uint32 name="String Data Size" offset="0x2CC" visible="true" />
 	<uint32 name="String Reference Cache Offset" offset="0x2D0" visible="true" />
 	<uint32 name="String Data Cache Offset" offset="0x2D4" visible="true" />
-	<raw name="Reference Cache Hash" offset="0x2D8" size="0x14" visible="true" />
-	<raw name="Data Cache Hash" offset="0x2EC" size="0x14" visible="true" />
+	<raw name="String Reference Checksum" offset="0x2D8" size="0x14" visible="true" />
+	<raw name="String Data Checksum" offset="0x2EC" size="0x14" visible="true" />
 	<uint32 name="Unknown" offset="0x300" visible="false" />
 	<uint32 name="Unknown" offset="0x304" visible="false" />
 	<comment title="Japanese Locales" />
@@ -1422,8 +1422,8 @@
 	<uint32 name="String Data Size" offset="0x31C" visible="true" />
 	<uint32 name="String Reference Cache Offset" offset="0x320" visible="true" />
 	<uint32 name="String Data Cache Offset" offset="0x324" visible="true" />
-	<raw name="Reference Cache Hash" offset="0x328" size="0x14" visible="true" />
-	<raw name="Data Cache Hash" offset="0x33C" size="0x14" visible="true" />
+	<raw name="String Reference Checksum" offset="0x328" size="0x14" visible="true" />
+	<raw name="String Data Checksum" offset="0x33C" size="0x14" visible="true" />
 	<uint32 name="Unknown" offset="0x350" visible="false" />
 	<uint32 name="Unknown" offset="0x354" visible="false" />
 	<comment title="German Locales" />
@@ -1433,8 +1433,8 @@
 	<uint32 name="String Data Size" offset="0x36C" visible="true" />
 	<uint32 name="String Reference Cache Offset" offset="0x370" visible="true" />
 	<uint32 name="String Data Cache Offset" offset="0x374" visible="true" />
-	<raw name="Reference Cache Hash" offset="0x378" size="0x14" visible="true" />
-	<raw name="Data Cache Hash" offset="0x38C" size="0x14" visible="true" />
+	<raw name="String Reference Checksum" offset="0x378" size="0x14" visible="true" />
+	<raw name="String Data Checksum" offset="0x38C" size="0x14" visible="true" />
 	<uint32 name="Unknown" offset="0x3A0" visible="false" />
 	<uint32 name="Unknown" offset="0x3A4" visible="false" />
 	<comment title="French Locales" />
@@ -1444,8 +1444,8 @@
 	<uint32 name="String Data Size" offset="0x3BC" visible="true" />
 	<uint32 name="String Reference Cache Offset" offset="0x3C0" visible="true" />
 	<uint32 name="String Data Cache Offset" offset="0x3C4" visible="true" />
-	<raw name="Reference Cache Hash" offset="0x3C8" size="0x14" visible="true" />
-	<raw name="Data Cache Hash" offset="0x3DC" size="0x14" visible="true" />
+	<raw name="String Reference Checksum" offset="0x3C8" size="0x14" visible="true" />
+	<raw name="String Data Checksum" offset="0x3DC" size="0x14" visible="true" />
 	<uint32 name="Unknown" offset="0x3F0" visible="false" />
 	<uint32 name="Unknown" offset="0x3F4" visible="false" />
 	<comment title="Spanish Locales" />
@@ -1455,8 +1455,8 @@
 	<uint32 name="String Data Size" offset="0x40C" visible="true" />
 	<uint32 name="String Reference Cache Offset" offset="0x410" visible="true" />
 	<uint32 name="String Data Cache Offset" offset="0x414" visible="true" />
-	<raw name="Reference Cache Hash" offset="0x418" size="0x14" visible="true" />
-	<raw name="Data Cache Hash" offset="0x42C" size="0x14" visible="true" />
+	<raw name="String Reference Checksum" offset="0x418" size="0x14" visible="true" />
+	<raw name="String Data Checksum" offset="0x42C" size="0x14" visible="true" />
 	<uint32 name="Unknown" offset="0x440" visible="false" />
 	<uint32 name="Unknown" offset="0x444" visible="false" />
 	<comment title="Latin American Spanish Locales" />
@@ -1466,8 +1466,8 @@
 	<uint32 name="String Data Size" offset="0x45C" visible="true" />
 	<uint32 name="String Reference Cache Offset" offset="0x460" visible="true" />
 	<uint32 name="String Data Cache Offset" offset="0x464" visible="true" />
-	<raw name="Reference Cache Hash" offset="0x468" size="0x14" visible="true" />
-	<raw name="Data Cache Hash" offset="0x47C" size="0x14" visible="true" />
+	<raw name="String Reference Checksum" offset="0x468" size="0x14" visible="true" />
+	<raw name="String Data Checksum" offset="0x47C" size="0x14" visible="true" />
 	<uint32 name="Unknown" offset="0x490" visible="false" />
 	<uint32 name="Unknown" offset="0x494" visible="false" />
 	<comment title="Italian Locales" />
@@ -1477,8 +1477,8 @@
 	<uint32 name="String Data Size" offset="0x4AC" visible="true" />
 	<uint32 name="String Reference Cache Offset" offset="0x4B0" visible="true" />
 	<uint32 name="String Data Cache Offset" offset="0x4B4" visible="true" />
-	<raw name="Reference Cache Hash" offset="0x4B8" size="0x14" visible="true" />
-	<raw name="Data Cache Hash" offset="0x4CC" size="0x14" visible="true" />
+	<raw name="String Reference Checksum" offset="0x4B8" size="0x14" visible="true" />
+	<raw name="String Data Checksum" offset="0x4CC" size="0x14" visible="true" />
 	<uint32 name="Unknown" offset="0x4E0" visible="false" />
 	<uint32 name="Unknown" offset="0x4E4" visible="false" />
 	<comment title="Korean Locales" />
@@ -1488,8 +1488,8 @@
 	<uint32 name="String Data Size" offset="0x4FC" visible="true" />
 	<uint32 name="String Reference Cache Offset" offset="0x500" visible="true" />
 	<uint32 name="String Data Cache Offset" offset="0x504" visible="true" />
-	<raw name="Reference Cache Hash" offset="0x508" size="0x14" visible="true" />
-	<raw name="Data Cache Hash" offset="0x51C" size="0x14" visible="true" />
+	<raw name="String Reference Checksum" offset="0x508" size="0x14" visible="true" />
+	<raw name="String Data Checksum" offset="0x51C" size="0x14" visible="true" />
 	<uint32 name="Unknown" offset="0x530" visible="false" />
 	<uint32 name="Unknown" offset="0x534" visible="false" />
 	<comment title="Chinese Traditional Locales" />
@@ -1499,8 +1499,8 @@
 	<uint32 name="String Data Size" offset="0x54C" visible="true" />
 	<uint32 name="String Reference Cache Offset" offset="0x550" visible="true" />
 	<uint32 name="String Data Cache Offset" offset="0x554" visible="true" />
-	<raw name="Reference Cache Hash" offset="0x558" size="0x14" visible="true" />
-	<raw name="Data Cache Hash" offset="0x56C" size="0x14" visible="true" />
+	<raw name="String Reference Checksum" offset="0x558" size="0x14" visible="true" />
+	<raw name="String Data Checksum" offset="0x56C" size="0x14" visible="true" />
 	<uint32 name="Unknown" offset="0x580" visible="false" />
 	<uint32 name="Unknown" offset="0x584" visible="false" />
 	<comment title="Chinese Simplified Locales" />
@@ -1510,8 +1510,8 @@
 	<uint32 name="String Data Size" offset="0x59C" visible="true" />
 	<uint32 name="String Reference Cache Offset" offset="0x5A0" visible="true" />
 	<uint32 name="String Data Cache Offset" offset="0x5A4" visible="true" />
-	<raw name="Reference Cache Hash" offset="0x5A8" size="0x14" visible="true" />
-	<raw name="Data Cache Hash" offset="0x5BC" size="0x14" visible="true" />
+	<raw name="String Reference Checksum" offset="0x5A8" size="0x14" visible="true" />
+	<raw name="String Data Checksum" offset="0x5BC" size="0x14" visible="true" />
 	<uint32 name="Unknown" offset="0x5D0" visible="false" />
 	<uint32 name="Unknown" offset="0x5D4" visible="false" />
 	<comment title="Portuguese Locales" />
@@ -1521,8 +1521,8 @@
 	<uint32 name="String Data Size" offset="0x5EC" visible="true" />
 	<uint32 name="String Reference Cache Offset" offset="0x5F0" visible="true" />
 	<uint32 name="String Data Cache Offset" offset="0x5F4" visible="true" />
-	<raw name="Reference Cache Hash" offset="0x5F8" size="0x14" visible="true" />
-	<raw name="Data Cache Hash" offset="0x60C" size="0x14" visible="true" />
+	<raw name="String Reference Checksum" offset="0x5F8" size="0x14" visible="true" />
+	<raw name="String Data Checksum" offset="0x60C" size="0x14" visible="true" />
 	<uint32 name="Unknown" offset="0x620" visible="false" />
 	<uint32 name="Unknown" offset="0x624" visible="false" />
 	<comment title="Polish Locales" />
@@ -1532,8 +1532,8 @@
 	<uint32 name="String Data Size" offset="0x63C" visible="true" />
 	<uint32 name="String Reference Cache Offset" offset="0x640" visible="true" />
 	<uint32 name="String Data Cache Offset" offset="0x644" visible="true" />
-	<raw name="Reference Cache Hash" offset="0x648" size="0x14" visible="true" />
-	<raw name="Data Cache Hash" offset="0x65C" size="0x14" visible="true" />
+	<raw name="String Reference Checksum" offset="0x648" size="0x14" visible="true" />
+	<raw name="String Data Checksum" offset="0x65C" size="0x14" visible="true" />
 	<uint32 name="Unknown" offset="0x670" visible="false" />
 	<uint32 name="Unknown" offset="0x674" visible="false" />
 	<comment title="Russian Locales" />
@@ -1543,8 +1543,8 @@
 	<uint32 name="String Data Size" offset="0x68C" visible="true" />
 	<uint32 name="String Reference Cache Offset" offset="0x690" visible="true" />
 	<uint32 name="String Data Cache Offset" offset="0x694" visible="true" />
-	<raw name="Reference Cache Hash" offset="0x698" size="0x14" visible="true" />
-	<raw name="Data Cache Hash" offset="0x6AC" size="0x14" visible="true" />
+	<raw name="String Reference Checksum" offset="0x698" size="0x14" visible="true" />
+	<raw name="String Data Checksum" offset="0x6AC" size="0x14" visible="true" />
 	<uint32 name="Unknown" offset="0x6C0" visible="false" />
 	<uint32 name="Unknown" offset="0x6C4" visible="false" />
 	<comment title="Danish Locales" />
@@ -1554,8 +1554,8 @@
 	<uint32 name="String Data Size" offset="0x6DC" visible="true" />
 	<uint32 name="String Reference Cache Offset" offset="0x6E0" visible="true" />
 	<uint32 name="String Data Cache Offset" offset="0x6E4" visible="true" />
-	<raw name="Reference Cache Hash" offset="0x6E8" size="0x14" visible="true" />
-	<raw name="Data Cache Hash" offset="0x6FC" size="0x14" visible="true" />
+	<raw name="String Reference Checksum" offset="0x6E8" size="0x14" visible="true" />
+	<raw name="String Data Checksum" offset="0x6FC" size="0x14" visible="true" />
 	<uint32 name="Unknown" offset="0x710" visible="false" />
 	<uint32 name="Unknown" offset="0x714" visible="false" />
 	<comment title="Finnish Locales" />
@@ -1565,8 +1565,8 @@
 	<uint32 name="String Data Size" offset="0x72C" visible="true" />
 	<uint32 name="String Reference Cache Offset" offset="0x730" visible="true" />
 	<uint32 name="String Data Cache Offset" offset="0x734" visible="true" />
-	<raw name="Reference Cache Hash" offset="0x738" size="0x14" visible="true" />
-	<raw name="Data Cache Hash" offset="0x74C" size="0x14" visible="true" />
+	<raw name="String Reference Checksum" offset="0x738" size="0x14" visible="true" />
+	<raw name="String Data Checksum" offset="0x74C" size="0x14" visible="true" />
 	<uint32 name="Unknown" offset="0x760" visible="false" />
 	<uint32 name="Unknown" offset="0x764" visible="false" />
 	<comment title="Dutch Locales" />
@@ -1576,8 +1576,8 @@
 	<uint32 name="String Data Size" offset="0x77C" visible="true" />
 	<uint32 name="String Reference Cache Offset" offset="0x780" visible="true" />
 	<uint32 name="String Data Cache Offset" offset="0x784" visible="true" />
-	<raw name="Reference Cache Hash" offset="0x788" size="0x14" visible="true" />
-	<raw name="Data Cache Hash" offset="0x79C" size="0x14" visible="true" />
+	<raw name="String Reference Checksum" offset="0x788" size="0x14" visible="true" />
+	<raw name="String Data Checksum" offset="0x79C" size="0x14" visible="true" />
 	<uint32 name="Unknown" offset="0x7B0" visible="false" />
 	<uint32 name="Unknown" offset="0x7B4" visible="false" />
 	<comment title="Norwegian Locales" />
@@ -1587,8 +1587,8 @@
 	<uint32 name="String Data Size" offset="0x7CC" visible="true" />
 	<uint32 name="String Reference Cache Offset" offset="0x7D0" visible="true" />
 	<uint32 name="String Data Cache Offset" offset="0x7D4" visible="true" />
-	<raw name="Reference Cache Hash" offset="0x7D8" size="0x14" visible="true" />
-	<raw name="Data Cache Hash" offset="0x7EC" size="0x14" visible="true" />
+	<raw name="String Reference Checksum" offset="0x7D8" size="0x14" visible="true" />
+	<raw name="String Data Checksum" offset="0x7EC" size="0x14" visible="true" />
 	<uint32 name="Unknown" offset="0x800" visible="false" />
 	<uint32 name="Unknown" offset="0x804" visible="false" />
 	<tagref name="Rasterizer Globals" offset="0x808" visible="true" />

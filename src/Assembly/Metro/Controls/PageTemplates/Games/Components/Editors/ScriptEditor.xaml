@@ -3,30 +3,86 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:Vectors="clr-namespace:Assembly.Metro.Controls.Vectors"
              xmlns:Editors="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.Editors"
-             xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+             xmlns:AvalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
              mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="1000">
-	<Grid>
-        <avalonEdit:TextEditor Name="txtScript" Height="Auto" Margin="0,0,0,30"
-		                       FontFamily="Consolas" FontSize="10pt"
-		                       Background="#252526" BorderBrush="#FF595959" Foreground="White"
-		                       ShowLineNumbers="True" IsReadOnly="True">
-            <avalonEdit:TextEditor.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Command="Cut"/>
-                    <MenuItem Command="Copy"/>
-                    <MenuItem Command="Paste"/>
-                </ContextMenu>
-            </avalonEdit:TextEditor.ContextMenu>
-        </avalonEdit:TextEditor>
-        <Border Height="30" VerticalAlignment="Bottom" BorderThickness="0,1,0,0" BorderBrush="#434346" Background="#FF303032">
-			<StackPanel Orientation="Horizontal">
-				<Button x:Name="btnCompile" Content="Save and Compile" Width="132" VerticalAlignment="Center"
-				        HorizontalAlignment="Left" Margin="10,0,0,0" Click="btnCompile_Click" Visibility="Collapsed"/>
-				<Button x:Name="btnExport" Content="Export..." Width="80" VerticalAlignment="Center" HorizontalAlignment="Left"
-				        Margin="10,0,0,0" Click="btnExport_Click" />
-			</StackPanel>
-		</Border>
-	</Grid>
+             d:DesignHeight="600" d:DesignWidth="1000" Loaded="EditorLoadedAsync">
+    <UserControl.Resources>
+        <Style TargetType="MenuItem">
+            <Style.Triggers>
+                <Trigger Property="Role" Value="TopLevelItem">
+                    <Setter Property="Padding" Value="5,5,5,5"/>
+                </Trigger>
+                <Trigger Property="Role" Value="TopLevelHeader">
+                    <Setter Property="Padding" Value="5,5,5,5"/>
+                </Trigger>
+            </Style.Triggers>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <DockPanel LastChildFill="True">
+            <Border Height="30" BorderThickness="0,0,0,1" BorderBrush="#434346" Background="#FF303032" DockPanel.Dock="Top">
+                <Grid>
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                        <Menu VerticalAlignment="Center" FontFamily="{DynamicResource MetroFontLight}" Background="{x:Null}">
+                            <MenuItem Header="Options">
+                                <MenuItem.Icon>
+                                    <ContentControl ContentTemplate="{StaticResource ScriptSettingsIcon}" Width="16"/>
+                                </MenuItem.Icon>
+                                <MenuItem x:Name="itemShowInformation" Header="Show Additional Information" IsCheckable="True" Checked="AdditionalInfoCheckChange" Unchecked="AdditionalInfoCheckChange" 
+                                          ToolTip="Toggles additional Information in the Script Editor, such as Datum Indices.">
+                                </MenuItem>
+                                <Separator/>
+                                <MenuItem x:Name="itemDebugData" Header="Output Debug Data" IsCheckable="True" Checked="OutputDebugDataCheckChange" Unchecked="OutputDebugDataCheckChange"
+                                          ToolTip="Toggles the output of debugging data to the Compiler directory.">
+                                </MenuItem>
+                                <Separator/>
+                                <MenuItem x:Name="itemReloadContext" Header="Reload Context" Click="ReloadContextClick"
+                                          ToolTip="Reloads the scripting context. Use this after making changes to the scripting objects in the map to improve the code completion.">
+                                </MenuItem>
+                            </MenuItem>
+                            <MenuItem Header="Import" Click="ImportClick" ToolTip="Imports a source file into the Script Editor.">
+                                <MenuItem.Icon>
+                                    <ContentControl ContentTemplate="{StaticResource ImportIcon}" Width="16"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Export">
+                                <MenuItem.Icon>
+                                    <ContentControl ContentTemplate="{StaticResource ExportIcon}" Width="16"/>
+                                </MenuItem.Icon>
+                                <MenuItem Header="Source File" Click="ExportSourceClick" ToolTip="Exports the source file to a directory of your choice."/>
+                                <Separator/>
+                                <MenuItem Header="Script Expressions" Click="ExportExpressionsClick" ToolTip="Exports the script expressions to XML."/>
+                            </MenuItem>
+                            <MenuItem Name="compileButton"  Header="Compile" Click="CompileClick" ToolTip="Starts the compilation process and saves the scripts." Visibility="Collapsed">
+                                <MenuItem.Icon>
+                                    <ContentControl ContentTemplate="{StaticResource RunIcon}" Width="16"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </Menu>
+                        <Grid x:Name="progressReporter" Margin="5,0,0,0" VerticalAlignment="Center" Visibility="Collapsed">
+                            <Border BorderBrush="#616161" BorderThickness="1" Height="22" VerticalAlignment="Center">
+                                <ProgressBar x:Name="progressBar" Maximum="100" Height="20" Width="150" Background="Transparent"/>
+                            </Border>
+                            <TextBlock Text="{Binding ElementName=progressBar, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <AvalonEdit:TextEditor Name="txtScript" Padding="0" BorderThickness="0" LineNumbersForeground="{DynamicResource ExtryzeAccentBrush}" ShowLineNumbers="True" 
+                                   Background="#252526" Foreground="#FF839496" VerticalScrollBarVisibility="Auto"
+		                           HorizontalScrollBarVisibility="Auto" FontFamily="Consolas" FontSize="10pt">
+                <AvalonEdit:TextEditor.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="Cut"/>
+                        <MenuItem Command="Copy"/>
+                        <MenuItem Command="Paste"/>
+                    </ContextMenu>
+                </AvalonEdit:TextEditor.ContextMenu>
+            </AvalonEdit:TextEditor>
+        </DockPanel>
+    </Grid>
 </UserControl>

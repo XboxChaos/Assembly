@@ -7,7 +7,7 @@
 	</revisions>
 	<tagRef name="Parent Animation Graph" offset="0x0" visible="true" />
 	<flags8 name="Inheritance Flags" offset="0x10" visible="true">
-		<bit name="Inherit Root Trans Scale Only" index="0" />
+		<bit name="Inherit Root Translation Scale Only" index="0" />
 		<bit name="Inherit For Use On Player" index="1" />
 	</flags8>
 	<flags8 name="Private Flags" offset="0x11" visible="true">
@@ -464,7 +464,7 @@
 			<bit name="Enable Animated Source Interpolation" index="9" />
 			<bit name="Disable ik Sets" index="10" />
 			<bit name="Disable ik Chains" index="11" />
-			<bit name="Translate And Scale Root Only" index="12" tooltip="ignore all transtion and scale on all nodes except the root" />
+			<bit name="Translate And Scale Root Only" index="12" tooltip="ignore all transition and scale on all nodes except the root" />
 			<bit name="Enable Blend-Out On Replacement Anims" index="13" tooltip="fade out this animation as they reach the end of the animation." />
 			<bit name="Use Custom Blend-Out Time" index="14" tooltip="when possible, fade this animation out over the 'blend out' time below (requires 'enable blend-out' above, replacement anims only)" />
 			<bit name="Override Player Input With Motion" index="15" tooltip="use the movement data in this anim instead of player physics (player only)" />
@@ -970,7 +970,7 @@ These groups should be present in the PCA Groups block.</comment>
 		<stringid name="Yaw Source Object Function" offset="0x18" visible="true" />
 		<stringid name="Pitch Source Object Function" offset="0x1C" visible="true" />
 		<stringid name="Weight Source Object Function" offset="0x20" visible="true" />
-		<int16 name="Weight Function index" offset="0x24" visible="true" />
+		<int16 name="Weight Function Index" offset="0x24" visible="true" />
 		<int16 name="Unknown" offset="0x26" visible="false" />
 		<int16 name="Graph Index" offset="0x28" visible="true" />
 		<int16 name="Animation" offset="0x2A" visible="true" />
@@ -1040,7 +1040,7 @@ These groups should be present in the PCA Groups block.</comment>
 	<tagblock name="ik Sets" offset="0xF0" visible="true" elementSize="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<tagblock name="ik Points" offset="0x4" visible="true" elementSize="0x4">
-			<int16 name="ik Point index" offset="0x0" visible="true" />
+			<int16 name="ik Point Index" offset="0x0" visible="true" />
 			<flags16 name="Flags" offset="0x2" visible="true">
 				<bit name="Disable" index="0" />
 			</flags16>
@@ -1133,8 +1133,7 @@ These groups should be present in the PCA Groups block.</comment>
 			<dataref name="Neighbors" offset="0x3C" visible="true" />
 			<dataref name="Containment" offset="0x50" visible="true" />
 			<dataref name="Example Grid" offset="0x64" visible="true" />
-			<float32 name="Normalized Bounds min" offset="0x78" visible="true" />
-			<float32 name="Normalized Bounds max" offset="0x7C" visible="true" />
+			<rangef name="Normalized Bounds" offset="0x78" visible="true" />
 			<int8 name="Offset" offset="0x80" visible="true" />
 			<int8 name="Unknown" offset="0x81" visible="false" />
 			<int16 name="Timing Animation Index" offset="0x82" visible="true" />
@@ -1557,11 +1556,11 @@ Unlike Halo 3, Graph Index is obsolete, so inheritance is done right inside the 
 		</flags32>
 		<float32 name="Uniform Translation Scale" offset="0x2C" visible="true" />
 	</tagblock>
-	<tagblock name="Weapon List" offset="0x178" visible="true" elementSize="0x8">
+	<tagblock name="Weapon List" offset="0x178" visible="true" elementSize="0x8" sort="true">
 		<stringid name="Weapon Name" offset="0x0" visible="true" />
 		<stringid name="Weapon Class" offset="0x4" visible="true" />
 	</tagblock>
-	<flags32 name="Left Arm Nodes 1" offset="0x184" visible="false">
+	<flags32 name="Left Arm Nodes 1" offset="0x184" visible="true">
 		<bit name="Node 0" index="0" />
 		<bit name="Node 1" index="1" />
 		<bit name="Node 2" index="2" />
@@ -1595,7 +1594,7 @@ Unlike Halo 3, Graph Index is obsolete, so inheritance is done right inside the 
 		<bit name="Node 30" index="30" />
 		<bit name="Node 31" index="31" />
 	</flags32>
-	<flags32 name="Left Arm Nodes 2" offset="0x188" visible="false">
+	<flags32 name="Left Arm Nodes 2" offset="0x188" visible="true">
 		<bit name="Node 32" index="0" />
 		<bit name="Node 33" index="1" />
 		<bit name="Node 34" index="2" />
@@ -1629,7 +1628,7 @@ Unlike Halo 3, Graph Index is obsolete, so inheritance is done right inside the 
 		<bit name="Node 62" index="30" />
 		<bit name="Node 63" index="31" />
 	</flags32>
-	<flags32 name="Left Arm Nodes 3" offset="0x18C" visible="false">
+	<flags32 name="Left Arm Nodes 3" offset="0x18C" visible="true">
 		<bit name="Node 64" index="0" />
 		<bit name="Node 65" index="1" />
 		<bit name="Node 66" index="2" />
@@ -1663,7 +1662,7 @@ Unlike Halo 3, Graph Index is obsolete, so inheritance is done right inside the 
 		<bit name="Node 94" index="30" />
 		<bit name="Node 95" index="31" />
 	</flags32>
-	<flags32 name="Left Arm Nodes 4" offset="0x190" visible="false">
+	<flags32 name="Left Arm Nodes 4" offset="0x190" visible="true">
 		<bit name="Node 96" index="0" />
 		<bit name="Node 97" index="1" />
 		<bit name="Node 98" index="2" />
@@ -1697,7 +1696,7 @@ Unlike Halo 3, Graph Index is obsolete, so inheritance is done right inside the 
 		<bit name="Node 126" index="30" />
 		<bit name="Node 127" index="31" />
 	</flags32>
-	<flags32 name="Left Arm Nodes 5" offset="0x194" visible="false">
+	<flags32 name="Left Arm Nodes 5" offset="0x194" visible="true">
 		<bit name="Node 128" index="0" />
 		<bit name="Node 129" index="1" />
 		<bit name="Node 130" index="2" />
@@ -1731,7 +1730,7 @@ Unlike Halo 3, Graph Index is obsolete, so inheritance is done right inside the 
 		<bit name="Node 158" index="30" />
 		<bit name="Node 159" index="31" />
 	</flags32>
-	<flags32 name="Left Arm Nodes 6" offset="0x198" visible="false">
+	<flags32 name="Left Arm Nodes 6" offset="0x198" visible="true">
 		<bit name="Node 160" index="0" />
 		<bit name="Node 161" index="1" />
 		<bit name="Node 162" index="2" />
@@ -1765,7 +1764,7 @@ Unlike Halo 3, Graph Index is obsolete, so inheritance is done right inside the 
 		<bit name="Node 190" index="30" />
 		<bit name="Node 191" index="31" />
 	</flags32>
-	<flags32 name="Left Arm Nodes 7" offset="0x19C" visible="false">
+	<flags32 name="Left Arm Nodes 7" offset="0x19C" visible="true">
 		<bit name="Node 192" index="0" />
 		<bit name="Node 193" index="1" />
 		<bit name="Node 194" index="2" />
@@ -1799,7 +1798,7 @@ Unlike Halo 3, Graph Index is obsolete, so inheritance is done right inside the 
 		<bit name="Node 222" index="30" />
 		<bit name="Node 223" index="31" />
 	</flags32>
-	<flags32 name="Left Arm Nodes 8" offset="0x1A0" visible="false">
+	<flags32 name="Left Arm Nodes 8" offset="0x1A0" visible="true">
 		<bit name="Node 224" index="0" />
 		<bit name="Node 225" index="1" />
 		<bit name="Node 226" index="2" />
@@ -1833,7 +1832,7 @@ Unlike Halo 3, Graph Index is obsolete, so inheritance is done right inside the 
 		<bit name="Node 254" index="30" />
 		<bit name="Node 255" index="31" />
 	</flags32>
-	<flags32 name="Right Arm Nodes 1" offset="0x1A4" visible="false">
+	<flags32 name="Right Arm Nodes 1" offset="0x1A4" visible="true">
 		<bit name="Node 0" index="0" />
 		<bit name="Node 1" index="1" />
 		<bit name="Node 2" index="2" />
@@ -1867,7 +1866,7 @@ Unlike Halo 3, Graph Index is obsolete, so inheritance is done right inside the 
 		<bit name="Node 30" index="30" />
 		<bit name="Node 31" index="31" />
 	</flags32>
-	<flags32 name="Right Arm Nodes 2" offset="0x1A8" visible="false">
+	<flags32 name="Right Arm Nodes 2" offset="0x1A8" visible="true">
 		<bit name="Node 32" index="0" />
 		<bit name="Node 33" index="1" />
 		<bit name="Node 34" index="2" />
@@ -1901,7 +1900,7 @@ Unlike Halo 3, Graph Index is obsolete, so inheritance is done right inside the 
 		<bit name="Node 62" index="30" />
 		<bit name="Node 63" index="31" />
 	</flags32>
-	<flags32 name="Right Arm Nodes 3" offset="0x1AC" visible="false">
+	<flags32 name="Right Arm Nodes 3" offset="0x1AC" visible="true">
 		<bit name="Node 64" index="0" />
 		<bit name="Node 65" index="1" />
 		<bit name="Node 66" index="2" />
@@ -1935,7 +1934,7 @@ Unlike Halo 3, Graph Index is obsolete, so inheritance is done right inside the 
 		<bit name="Node 94" index="30" />
 		<bit name="Node 95" index="31" />
 	</flags32>
-	<flags32 name="Right Arm Nodes 4" offset="0x1B0" visible="false">
+	<flags32 name="Right Arm Nodes 4" offset="0x1B0" visible="true">
 		<bit name="Node 96" index="0" />
 		<bit name="Node 97" index="1" />
 		<bit name="Node 98" index="2" />
@@ -1969,7 +1968,7 @@ Unlike Halo 3, Graph Index is obsolete, so inheritance is done right inside the 
 		<bit name="Node 126" index="30" />
 		<bit name="Node 127" index="31" />
 	</flags32>
-	<flags32 name="Right Arm Nodes 5" offset="0x1B4" visible="false">
+	<flags32 name="Right Arm Nodes 5" offset="0x1B4" visible="true">
 		<bit name="Node 128" index="0" />
 		<bit name="Node 129" index="1" />
 		<bit name="Node 130" index="2" />
@@ -2003,7 +2002,7 @@ Unlike Halo 3, Graph Index is obsolete, so inheritance is done right inside the 
 		<bit name="Node 158" index="30" />
 		<bit name="Node 159" index="31" />
 	</flags32>
-	<flags32 name="Right Arm Nodes 6" offset="0x1B8" visible="false">
+	<flags32 name="Right Arm Nodes 6" offset="0x1B8" visible="true">
 		<bit name="Node 160" index="0" />
 		<bit name="Node 161" index="1" />
 		<bit name="Node 162" index="2" />
@@ -2037,7 +2036,7 @@ Unlike Halo 3, Graph Index is obsolete, so inheritance is done right inside the 
 		<bit name="Node 190" index="30" />
 		<bit name="Node 191" index="31" />
 	</flags32>
-	<flags32 name="Right Arm Nodes 7" offset="0x1BC" visible="false">
+	<flags32 name="Right Arm Nodes 7" offset="0x1BC" visible="true">
 		<bit name="Node 192" index="0" />
 		<bit name="Node 193" index="1" />
 		<bit name="Node 194" index="2" />
@@ -2071,7 +2070,7 @@ Unlike Halo 3, Graph Index is obsolete, so inheritance is done right inside the 
 		<bit name="Node 222" index="30" />
 		<bit name="Node 223" index="31" />
 	</flags32>
-	<flags32 name="Right Arm Nodes 8" offset="0x1C0" visible="false">
+	<flags32 name="Right Arm Nodes 8" offset="0x1C0" visible="true">
 		<bit name="Node 224" index="0" />
 		<bit name="Node 225" index="1" />
 		<bit name="Node 226" index="2" />

@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using Blamite.IO;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Blamite.Serialization
 {
@@ -9,7 +11,7 @@ namespace Blamite.Serialization
 	public class EngineDatabase : IEnumerable<EngineDescription>
 	{
 		private readonly Dictionary<string, EngineDescription> _enginesByName = new Dictionary<string, EngineDescription>();
-		private readonly Dictionary<string, EngineDescription> _enginesByVersion = new Dictionary<string, EngineDescription>();
+		private readonly List<EngineDescription> _engines = new List<EngineDescription>();
 
 		/// <summary>
 		///     Returns an enumerator that iterates through the collection.
@@ -40,18 +42,30 @@ namespace Blamite.Serialization
 		public void RegisterEngine(EngineDescription engine)
 		{
 			_enginesByName[engine.Name] = engine;
-			_enginesByVersion[engine.Version] = engine;
+			_engines.Add(engine);
 		}
 
 		/// <summary>
-		///     Finds an engine description by its version string.
+		///     Finds engine descriptions that use a specific version number.
 		/// </summary>
-		/// <param name="version">The version string of the engine description to find.</param>
-		/// <returns>The description if found, or <c>null</c> otherwise.</returns>
-		public EngineDescription FindEngineByVersion(string version)
+		/// <param name="version">The version number of the EngineDescriptions to find.</param>
+		/// <param name="endian">The endian of the EngineDescriptions to find.</param>
+		/// <returns>A list containing matching EngineDescriptions</returns>
+		public List<EngineDescription> FindEnginesByVersion(int version, Endian endian)
 		{
-			EngineDescription result;
-			_enginesByVersion.TryGetValue(version, out result);
+			List<EngineDescription> results = _engines.Where(x => x.Version == version || x.VersionAlt == version)
+				.Where(x => x.Endian == endian).ToList();
+			return results;
+		}
+
+		/// <summary>
+		///     Finds an engine description by its build string. 
+		/// </summary>
+		/// <param name="build">The build string of the engine description to find.</param>
+		/// <returns>The description if found, or <c>null</c> otherwise.</returns>
+		public EngineDescription FindEngineByBuild(string build)
+		{
+			EngineDescription result = _engines.Where(x => x.BuildVersion == build).FirstOrDefault();
 			return result;
 		}
 

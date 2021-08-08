@@ -5,6 +5,7 @@
 		<revision author="Iron_Forge" version="1">Added basic layout of plugin...</revision>
 		<revision author="XZodia" version="2">Completed</revision>
 	</revisions>
+	<comment title="LIQUID" />
 	<int16 name="Unknown" offset="0x0" visible="false" />
 	<enum16 name="Type" offset="0x2" visible="true">
 		<option name="Standard" value="0x0" />
@@ -37,6 +38,7 @@
 	<undefined name="Unknown" offset="0x60" visible="false" />
 	<undefined name="Unknown" offset="0x64" visible="false" />
 	<tagblock name="Arcs" offset="0x68" visible="true" elementSize="0xEC">
+		<comment title="LIQUID ARC">Note that if the type is not STANDARD, then the 'collide_with_stuff' and material effects will not have any effect. In addition, the 'natural_length' will not have an effect except as a means to compute the collision fraction.</comment>
 		<flags16 name="Flags" offset="0x0" visible="true">
 			<bit name="Basis Marker-Relative" index="0" />
 			<bit name="Spread By External Input" index="1" />
@@ -63,10 +65,10 @@
 		<tagRef name="Bitmap" offset="0x24" visible="true" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
-		<dataRef name="Horizontal Range" offset="0x34" visible="true" />
-		<dataRef name="Vertical Range" offset="0x3C" visible="true" />
+		<dataRef name="Horizontal Range Function" offset="0x34" visible="true" tooltip="In world units, how far the noise extends horizontally. By default the horizontal range is along the world XY plane." />
+		<dataRef name="Vertical Range Function" offset="0x3C" visible="true" tooltip="In world units, how far the noise extends vertically. By default the vertical range is along the world Z axis (up)." />
 		<float32 name="Vertical Negative Scale" offset="0x44" visible="true" />
-		<dataRef name="Vertical Negative Scale" offset="0x48" visible="true" />
+		<dataRef name="Roughness Function" offset="0x48" visible="true" tooltip="Roughness controls how the different 'octaves' of noise get scaled. Usually it is in the range [0,1] but it can be slightly higher or lower and still make sense (zero is actually a pretty decent value). The mathematical equation used is 2^(-k*(1-r)) where 'k' is the octave index starting at 0 and 'r' is the roughness value." />
 		<undefined name="Unknown" offset="0x50" visible="false" />
 		<undefined name="Unknown" offset="0x54" visible="false" />
 		<undefined name="Unknown" offset="0x58" visible="false" />
@@ -83,15 +85,22 @@
 		<undefined name="Unknown" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
 		<undefined name="Unknown" offset="0x8C" visible="false" />
-		<float32 name="Octave 1 Frequency Cycles Per Sec" offset="0x90" visible="true" />
-		<float32 name="Octave 2 Frequency Cycles Per Sec" offset="0x94" visible="true" />
-		<float32 name="Octave 3 Frequency Cycles Per Sec" offset="0x98" visible="true" />
-		<float32 name="Octave 4 Frequency Cycles Per Sec" offset="0x9C" visible="true" />
-		<float32 name="Octave 5 Frequency Cycles Per Sec" offset="0xA0" visible="true" />
-		<float32 name="Octave 6 Frequency Cycles Per Sec" offset="0xA4" visible="true" />
-		<float32 name="Octave 7 Frequency Cycles Per Sec" offset="0xA8" visible="true" />
-		<float32 name="Octave 8 Frequency Cycles Per Sec" offset="0xAC" visible="true" />
-		<float32 name="Octave 9 Frequency Cycles Per Sec" offset="0xB0" visible="true" />
+		<comment title="NOISE FREQUENCIES">4 sprites is 3 octaves
+8 sprites is 4 octaves
+16 sprites is 5 octaves
+32 sprites is 6 octaves
+64 sprites is 7 octaves
+128 sprites is 8 octaves
+256 sprites is 9 octaves, etc.</comment>
+		<float32 name="Octave 1 Frequency" offset="0x90" visible="true" />
+		<float32 name="Octave 2 Frequency" offset="0x94" visible="true" />
+		<float32 name="Octave 3 Frequency" offset="0x98" visible="true" />
+		<float32 name="Octave 4 Frequency" offset="0x9C" visible="true" />
+		<float32 name="Octave 5 Frequency" offset="0xA0" visible="true" />
+		<float32 name="Octave 6 Frequency" offset="0xA4" visible="true" />
+		<float32 name="Octave 7 Frequency" offset="0xA8" visible="true" />
+		<float32 name="Octave 8 Frequency" offset="0xAC" visible="true" />
+		<float32 name="Octave 9 Frequency" offset="0xB0" visible="true" />
 		<undefined name="Unknown" offset="0xB4" visible="false" />
 		<undefined name="Unknown" offset="0xB8" visible="false" />
 		<undefined name="Unknown" offset="0xBC" visible="false" />
@@ -111,18 +120,18 @@
 			<bit name="Octave 9" index="8" />
 		</flags32>
 		<tagblock name="Cores" offset="0xD4" visible="true" elementSize="0x38">
-			<int16 name="Bitmap Index" offset="0x0" visible="true" />
-			<int16 name="Unknown" offset="0x2" visible="false" />
+			<undefined name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<dataRef name="Thickness" offset="0x10" visible="true" />
+			<int16 name="Bitmap Index" offset="0xC" visible="true" />
+			<int16 name="Unknown" offset="0xE" visible="false" />
+			<dataRef name="Thickness" offset="0x10" visible="true" tooltip="In world units." />
 			<dataRef name="Color" offset="0x18" visible="true" />
-			<dataRef name="Brightness/Time" offset="0x20" visible="true" />
-			<dataRef name="Brightness/Facing" offset="0x28" visible="true" />
-			<dataRef name="Along-Axis Scale" offset="0x30" visible="true" />
+			<dataRef name="Brightness/Time" offset="0x20" visible="true" tooltip="Periodic function based on time." />
+			<dataRef name="Brightness/Facing" offset="0x28" visible="true" tooltip="Brightness when facing perpendicular versus parallel." />
+			<dataRef name="Along-Axis Scale" offset="0x30" visible="true" tooltip="Scale along-axis. Default should be 1." />
 		</tagblock>
-		<dataRef name="Range-Collision Scale" offset="0xDC" visible="true" />
-		<dataRef name="Brightness-Collision Scale" offset="0xE4" visible="true" />
+		<dataRef name="Range-Collision Scale" offset="0xDC" visible="true" tooltip="Scales range (amplitude) by collision fraction. The input to the function will be 1 if there is no collision, and 0 if the collision occurs at the origin." />
+		<dataRef name="Brightness-Collision Scale" offset="0xE4" visible="true" tooltip="Scales brightness by collision fraction." />
 	</tagblock>
 </plugin>

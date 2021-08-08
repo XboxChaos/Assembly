@@ -104,6 +104,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 				case CompressionState.Null:
 					MetroMessageBox.Show("Compression Not Required", "The provided map does not require compression. It has not been modified.");
 					break;
+				case CompressionState.ReadOnly:
+					MetroMessageBox.Show("Map is Read Only", "The provided map is readonly and cannot be modified. Check the file's properties and try again.");
+					break;
 				default:
 					MetroMessageBox.Show("Action Complete", string.Format("The provided map was {0} successfully.", result.ToString().ToLower()));
 					break;

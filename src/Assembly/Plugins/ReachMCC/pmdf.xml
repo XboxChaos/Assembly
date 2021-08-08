@@ -4,27 +4,24 @@
 		<revision author="Lord Zedd" version="1">Blah.</revision>
 		<revision author="Lord Zedd" version="2">thanks h5</revision>
 	</revisions>
-	<comment title="Render Geometry" />
+	<comment title="Import Render Geometry" />
 	<flags32 name="Flags" offset="0x0" visible="true">
 		<bit name="Processed" index="0" />
 		<bit name="Available" index="1" />
 		<bit name="Has Valid Budgets (Really)" index="2" />
 		<bit name="Manual Resource Creation" index="3" />
 		<bit name="Keep Raw Geometry" index="4" />
-		<bit name="Dont Use Compressed Vertex Positions" index="5" />
-		<bit name="Pca Animation Table Sorted" index="6" />
-		<bit name="Needs No Lightmap UVs" index="7" />
-		<bit name="Always Needs Lightmap UVs" index="8" />
+		<bit name="Don't Use Compressed Vertex Positions" index="5" />
 	</flags32>
 	<tagblock name="Meshes" offset="0x4" visible="true" elementSize="0x5C">
 		<tagblock name="Parts" offset="0x0" visible="true" elementSize="0x18">
-			<int16 name="Render Method Index" offset="0x0" visible="true" />
+			<int16 name="Render Material Index" offset="0x0" visible="true" />
 			<int16 name="Transparent Sorting Index" offset="0x2" visible="true" />
-			<int32 name="Index Start" offset="0x4" visible="true" />
-			<int32 name="Index Count" offset="0x8" visible="true" />
+			<uint32 name="Index Start" offset="0x4" visible="true" />
+			<uint32 name="Index Count" offset="0x8" visible="true" />
 			<int16 name="Subpart Start" offset="0xC" visible="true" />
-			<int16 name="Subpart Count" offset="0xE" visible="true" />
-			<int8 name="Part Type" offset="0x10" visible="true" /><!-- value of 4 enables above transparent sorting index-->
+			<uint16 name="Subpart Count" offset="0xE" visible="true" />
+			<int8 name="Part Type" offset="0x10" visible="true" tooltip="4 uses above transparent sorting index" />
 			<enum8 name="Specialized Render" offset="0x11" visible="true">
 				<option name="None" value="0x0" />
 				<option name="Fail" value="0x1" />
@@ -47,7 +44,7 @@
 				<bit name="Cannot Single Pass Render" index="7" />
 				<bit name="Is Transparent" index="8" />
 				<bit name="Cannot Two Pass" index="9" />
-				<bit name="Transparent Should Output Depth For Dof" index="10" tooltip="expensive" />
+				<bit name="Transparent Should Output Depth For DOF" index="10" tooltip="expensive" />
 				<bit name="Do Not Include In Static Lightmap" index="11" />
 				<bit name="Do Not Include In PVS Generation" index="12" />
 				<bit name="Draw Cull Rendering Active Camo" index="13" />
@@ -55,14 +52,14 @@
 			<uint16 name="Budget Vertex Count" offset="0x14" visible="true" />
 			<enum16 name="Tessellation" offset="0x16" visible="true">
 				<option name="None" value="0x0" />
-				<option name="Fixed X4 Faces" value="0x1" />
-				<option name="Fixed X9 Faces" value="0x2" />
-				<option name="Fixed X36 Faces" value="0x3" />
+				<option name="Fixed x4 Faces" value="0x1" />
+				<option name="Fixed x9 Faces" value="0x2" />
+				<option name="Fixed x36 Faces" value="0x3" />
 			</enum16>
 		</tagblock>
 		<tagblock name="Subparts" offset="0xC" visible="true" elementSize="0x10">
-			<int32 name="Index Buffer Start" offset="0x0" visible="true" />
-			<int32 name="Index Buffer Count" offset="0x4" visible="true" />
+			<uint32 name="Index Start" offset="0x0" visible="true" />
+			<uint32 name="Index Count" offset="0x4" visible="true" />
 			<int16 name="Part Index" offset="0x8" visible="true" />
 			<uint16 name="Budget Vertex Count" offset="0xA" visible="true" />
 			<uint32 name="Analytical Light Index" offset="0xC" visible="true" />
@@ -144,9 +141,9 @@
 			<option name="Point List" value="0x0" />
 			<option name="Line List" value="0x1" />
 			<option name="Line Strip" value="0x2" />
-			<option name="Triange List" value="0x3" />
-			<option name="Triange Fan" value="0x4" />
-			<option name="Triange Strip" value="0x5" />
+			<option name="Triangle List" value="0x3" />
+			<option name="Triangle Fan" value="0x4" />
+			<option name="Triangle Strip" value="0x5" />
 		</enum8>
 		<int8 name="Unknown" offset="0x33" visible="false" />
 		<tagblock name="Instance Buckets" offset="0x34" visible="true" elementSize="0x10">
@@ -169,22 +166,22 @@
 			<bit name="Compression Optimized" index="2" />
 		</flags16>
 		<int16 name="Unknown" offset="0x2" visible="false" />
-		<rangeF name="Position Bounds X" offset="0x4" visible="true" />
-		<rangeF name="Position Bounds Y" offset="0xC" visible="true" />
-		<rangeF name="Position Bounds Z" offset="0x14" visible="true" />
-		<rangeF name="Texcoord Bounds X" offset="0x1C" visible="true" />
-		<rangeF name="Texcoord Bounds Y" offset="0x24" visible="true" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
+		<rangeF name="Position Bounds x" offset="0x4" visible="true" />
+		<rangeF name="Position Bounds y" offset="0xC" visible="true" />
+		<rangeF name="Position Bounds z" offset="0x14" visible="true" />
+		<rangeF name="Texcoord Bounds x" offset="0x1C" visible="true" />
+		<rangeF name="Texcoord Bounds y" offset="0x24" visible="true" />
+		<float32 name="Unknown" offset="0x2C" visible="true" />
+		<float32 name="Unknown" offset="0x30" visible="true" />
 	</tagblock>
 	<tagblock name="Part Sorting Position" offset="0x1C" visible="true" elementSize="0x30">
 		<plane3 name="Plane" offset="0x0" visible="true" />
 		<point3 name="Position" offset="0x10" visible="true" />
 		<float32 name="Radius" offset="0x1C" visible="true" />
-		<uint8 name="Node Index 1" offset="0x20" visible="true" />
-		<uint8 name="Node Index 2" offset="0x21" visible="true" />
-		<uint8 name="Node Index 3" offset="0x22" visible="true" />
-		<uint8 name="Node Index 4" offset="0x23" visible="true" />
+		<int8 name="Node Index 1" offset="0x20" visible="true" />
+		<int8 name="Node Index 2" offset="0x21" visible="true" />
+		<int8 name="Node Index 3" offset="0x22" visible="true" />
+		<int8 name="Node Index 4" offset="0x23" visible="true" />
 		<float32 name="Node Weight 1" offset="0x24" visible="true" />
 		<float32 name="Node Weight 2" offset="0x28" visible="true" />
 		<float32 name="Node Weight 3" offset="0x2C" visible="true" />
@@ -214,7 +211,7 @@
 			<float32 name="Node Weight 3" offset="0x4C" visible="true" />
 			<float32 name="Node Weight 4" offset="0x50" visible="true" />
 			<point3 name="Vertex Color" offset="0x54" visible="true" />
-			<point2 name="Texcoord1" offset="0x60" visible="true" />
+			<point2 name="Texcoord 1" offset="0x60" visible="true" />
 		</tagblock>
 		<tagblock name="Raw Indices" offset="0xC" visible="true" elementSize="0x2">
 			<int16 name="Short" offset="0x0" visible="true" />
@@ -224,7 +221,7 @@
 		</tagblock>
 		<tagblock name="Raw Water Data" offset="0x24" visible="true" elementSize="0x18">
 			<tagblock name="Raw Water Indices" offset="0x0" visible="true" elementSize="0x2">
-				<int16 name="Word" offset="0x0" visible="true" />
+				<int16 name="Short" offset="0x0" visible="true" />
 			</tagblock>
 			<tagblock name="Raw Water Vertices" offset="0xC" visible="true" elementSize="0x8">
 				<point2 name="Base Texcoord" offset="0x0" visible="true" />
@@ -244,7 +241,7 @@
 			<uint32 name="Color" offset="0xC" visible="true" />
 			<float32 name="HDR Scaler" offset="0x10" visible="true" />
 		</tagblock>
-		<int32 name="Per Vertex Lighting Vertex Size" offset="0x48" visible="true" />
+		<int32 name="Per-Vertex Lighting Vertex Size" offset="0x48" visible="true" />
 		<int16 name="Parameterized Texture Width" offset="0x4C" visible="true" />
 		<int16 name="Parameterized Texture Height" offset="0x4E" visible="true" />
 		<flags32 name="Flags" offset="0x50" visible="true">
@@ -258,19 +255,30 @@
 	<undefined name="Unknown" offset="0x48" visible="false" />
 	<tagblock name="Per-Mesh Node Map" offset="0x4C" visible="true" elementSize="0xC">
 		<tagblock name="Node Map" offset="0x0" visible="true" elementSize="0x1">
-			<uint8 name="Node Index" offset="0x0" visible="true" />
+			<int8 name="Node Index" offset="0x0" visible="true" />
 		</tagblock>
 	</tagblock>
-	<uint32 name="block here 1" offset="0x58" visible="false" />
-	<uint32 name="block here 1" offset="0x5C" visible="false" />
-	<uint32 name="block here 1" offset="0x60" visible="false" />
-	<uint32 name="block here 2" offset="0x64" visible="false" />
-	<uint32 name="block here 2" offset="0x68" visible="false" />
-	<uint32 name="block here 2" offset="0x6C" visible="false" />
-	<uint32 name="block here 3" offset="0x70" visible="false" />
-	<uint32 name="block here 3" offset="0x74" visible="false" />
-	<uint32 name="block here 3" offset="0x78" visible="false" />
-	<tagblock name="Unknown Yo" offset="0x7C" visible="true" elementSize="0x2">
+	<tagblock name="Per-Mesh Subpart Visibility" offset="0x58" visible="true" elementSize="0xC">
+		<tagblock name="Bounding Sphere" offset="0x0" visible="true" elementSize="0x30">
+			<plane3 name="Plane" offset="0x0" visible="true" />
+			<point3 name="Position" offset="0x10" visible="true" />
+			<float32 name="Radius" offset="0x1C" visible="true" />
+			<uint8 name="Node Index 1" offset="0x20" visible="true" />
+			<uint8 name="Node Index 2" offset="0x21" visible="true" />
+			<uint8 name="Node Index 3" offset="0x22" visible="true" />
+			<uint8 name="Node Index 4" offset="0x23" visible="true" />
+			<float32 name="Node Weight 1" offset="0x24" visible="true" />
+			<float32 name="Node Weight 2" offset="0x28" visible="true" />
+			<float32 name="Node Weight 3" offset="0x2C" visible="true" />
+		</tagblock>
+	</tagblock>
+	<uint32 name="block here 1" offset="0x64" visible="false" />
+	<uint32 name="block here 1" offset="0x68" visible="false" />
+	<uint32 name="block here 1" offset="0x6C" visible="false" />
+	<uint32 name="block here 2" offset="0x70" visible="false" />
+	<uint32 name="block here 2" offset="0x74" visible="false" />
+	<uint32 name="block here 2" offset="0x78" visible="false" />
+	<tagblock name="Per-Instance Lightmap Texcoords" offset="0x7C" visible="true" elementSize="0x2">
 		<int16 name="Vertex Buffer Index" offset="0x0" visible="true" />
 	</tagblock>
 	<tagblock name="Water Bounding Box" offset="0x88" visible="true" elementSize="0x1C">
@@ -287,10 +295,11 @@
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<int32 name="Useless Padding" offset="0x8" visible="false" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0xA8" visible="true" elementSize="0x10" align="0x10">
-		<undefined name="Unknown" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="true" />
-		<undefined name="Unknown" offset="0x8" visible="true" />
-		<undefined name="Unknown" offset="0xC" visible="true" />
+	<comment title="M GPU Data" />
+	<tagblock name="M Variants" offset="0xA8" visible="true" elementSize="0x10">
+		<float32 name="Runtime GPU Real" offset="0x0" visible="true" />
+		<float32 name="Runtime GPU Real" offset="0x4" visible="true" />
+		<float32 name="Runtime GPU Real" offset="0x8" visible="true" />
+		<float32 name="Runtime GPU Real" offset="0xC" visible="true" />
 	</tagblock>
 </plugin>

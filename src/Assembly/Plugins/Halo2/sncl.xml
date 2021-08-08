@@ -4,7 +4,7 @@
 	<revisions>
 		<revision author="XZodia" version="1">Completed</revision>
 	</revisions>
-	<comment title="Index Names">Ripped from the executable:
+	<comment title="Class Names">Ripped from the executable:
 0 - projectile_impact
 1 - projectile_detonation
 2 - projectile_flyby
@@ -60,9 +60,9 @@
 52 - test
 53 - multilingual_test</comment>
 	<tagblock name="Sound Classes" offset="0x0" visible="true" elementSize="0x5C">
-		<int16 name="Max Sounds Per Tag" offset="0x0" visible="true" />
-		<int16 name="Max Sounds Per Object" offset="0x2" visible="true" />
-		<int32 name="Preemption Time" offset="0x4" visible="true" />
+		<int16 name="Maximum Sounds Per Tag" offset="0x0" visible="true" tooltip="[1,16] maximum number of sounds playing per individual sound tag" />
+		<int16 name="Maximum Sounds Per Object" offset="0x2" visible="true" tooltip="[1,16] maximum number of sounds per individual sound tag playing on an object" />
+		<int32 name="Preemption Time" offset="0x4" visible="true" tooltip="replaces other instances after this many milliseconds" />
 		<flags16 name="Internal Flags" offset="0x8" visible="true">
 			<bit name="Valid" index="0" />
 			<bit name="Is Speech" index="1" />
@@ -93,25 +93,27 @@
 			<option name="Discard" value="0x0" />
 			<option name="Postpone" value="0x1" />
 		</enum16>
-		<float32 name="Reverb Gain" offset="0x10" visible="true" />
+		<float32 name="Reverb Gain" offset="0x10" visible="true" tooltip="how much reverb applies to this sound class" />
 		<float32 name="Override Speaker Gain" offset="0x14" visible="true" />
 		<rangef name="Distance Bounds" offset="0x18" visible="true" />
 		<rangef name="Gain Bounds" offset="0x20" visible="true" />
 		<float32 name="Cutscene Ducking" offset="0x28" visible="true" />
 		<float32 name="Cutscene Ducking Fade In Time" offset="0x2C" visible="true" />
-		<float32 name="Cutscene Ducking Sustain Time" offset="0x30" visible="true" />
+		<float32 name="Cutscene Ducking Sustain Time" offset="0x30" visible="true" tooltip="how long this lasts after the cutscene ends" />
 		<float32 name="Cutscene Ducking Fade Out Time" offset="0x34" visible="true" />
 		<float32 name="Scripted Dialog Ducking" offset="0x38" visible="true" />
 		<float32 name="Scripted Dialog Ducking Fade In Time" offset="0x3C" visible="true" />
-		<float32 name="Scripted Dialog Ducking Sustain Time" offset="0x40" visible="true" />
+		<float32 name="Scripted Dialog Ducking Sustain Time" offset="0x40" visible="true" tooltip="how long this lasts after the scripted dialog ends" />
 		<float32 name="Scripted Dialog Ducking Fade Out Time" offset="0x44" visible="true" />
 		<float32 name="Doppler Factor" offset="0x48" visible="true" />
-		<enum32 name="Stereo Playback Type" offset="0x4C" visible="true">
+		<enum8 name="Stereo Playback Type" offset="0x4C" visible="true">
 			<option name="First Person" value="0x0" />
 			<option name="Ambient" value="0x1" />
-		</enum32>
+		</enum8>
+		<int8 name="Unknown" offset="0x4D" visible="false" />
+		<int16 name="Unknown" offset="0x4E" visible="false" />
 		<float32 name="Transmission Multiplier" offset="0x50" visible="true" />
-		<float32 name="Obstruction Max Bend" offset="0x54" visible="true" />
-		<float32 name="Occlusion Max Bend" offset="0x58" visible="true" />
+		<float32 name="Obstruction Maximum Bend" offset="0x54" visible="true" />
+		<float32 name="Occlusion Maximum Bend" offset="0x58" visible="true" />
 	</tagblock>
 </plugin>

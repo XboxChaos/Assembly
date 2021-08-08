@@ -2,13 +2,208 @@
 <engines>
 	<!-- Blamite Engine Information Database -->
 	<!-- Only edit this if you know what you're doing! -->
+	
+	<!-- Supported Options:
+	<engine
+		name="{engine name}" - Name of the engine.
+		version="{version number}" - The number located at offset 0x4.
+		versionAlt="{version number}" - An alternate version number used by the engine, see above.
+		build="{build string}" - The full build string.
+		inherits="{name of another defined engine}" - Uses the given engine as a base, anything else defined in this new engine overwrites the inherited value. You cannot chain multiple inherits.
+		>
+		
+		<shortname>{short name}</shortname> - A shorthand name for the engine.
+		<plugins>{plugin directory}</plugins> - The name of the directory relative to {Assembly Install}\Plugins\ where plugins are located.
+		<fallbackPlugins>{plugin directory}</fallbackPlugins> - The name of the directory relative to {Assembly Install}\Plugins\ where plugins are located. If a plugin is not found in the above directory, this directory is checked next (used mainly to reduce MCC redundancy)
+		
+		<engineInfo>
+			<generation>{"first", "second", "third"}</generation> - The engine generation of the cache file.
+			<endian>{"little", "big"}</endian> - The endianness of the cache file.
+			<segmentAlignment>{number}</segmentAlignment> - The alignment that sections of the cache file stick to.
+			<expandMagic>{number}</expandMagic> - The number used by MCC in compacting various addresses. {compressedAddr << 2 + expandMagic}
+			<gameExecutable>{executable name without extension}</gameExecutable> - The primary process name of the game to attach to for poking.
+			<gameExecutableAlt>{executable name without extension}</gameExecutableAlt> - The secondary process name of the game to attach to for poking, mainly for MCC WinStore support.
+			<gameModule>{module name without extension}M/moduleName> - The name of the DLL used by MCC for the individual game.
+			<pokingOffset>{number}</pokingOffset> - The offset into the pointer defined in a "_Poking.xml" that leads to the value used to convert addresses to runtime ones.
+			<tagNameKey>{key}</tagNameKey> - Used to decrypt tag names in engines where they are encrypted.
+			<stringIdKey>{key}</stringIdKey> - Used to decrypt string ID strings in engines where they are encrypted.
+			<localeKey>{key}</localeKey> - Used to decrypt localization strings in engines where they are encrypted.
+			<usesCompression>{"true", "false"}</usesCompression> - Whether the cache files for this engine have some sort of overall compression. (H1X, H2MCC, etc)
+			<usesStringHashes>{"true", "false"}</usesStringHashes> - Whether hashes inside the globals tag should be updated upon modification to localizations. Because for some reason giving hashes when they shipped as 0's can crash.
+			<usesRawHashes>{"true", "false"}</usesRawHashes> - Whether hashes inside the play or zone tags are fully implemented or some/all are 0'd. This aids in making sure the relevant option in the Import dialog is checked/unchecked by default as tag injection optimizations use hashes to reduce redundant pages.
+			<optimizedShaders>{"true", "false"}</optimizedShaders> - Whether the shaders in each map are stripped down to only shaders used by that specific cache file. This aids in making sure the relevant option in the Import dialog is checked/unchecked by default as if shaders are optimized then you can't trust the existing shader during tag injection and must rename/inject the new shader to prevent ingame issues.
+		</engineInfo>
+		
+		<databases> (refer to the individual xmls for more information on their formatting)
+			<layouts>{layouts directory}</layouts> - The directory relative to {Assembly Install}\ (so include "Formats\") where xml layouts for this engine are located. XML names in the path are arbitrary but there is an existing pattern.
+			
+			!However there MUST be a layout defined for "header" somewhere in the directory WITH a valid size and field inside named "build string" containing the offset of the build string!
+			
+			<stringIds>{file path}</stringIds> - The xml file relative to {Assembly Install}\ (so include "Formats\") which defines namespace information for the engine's string IDs.
+			<scripting>{file path}</scripting> - The xml relative to {Assembly Install}\ (so include "Formats\") file which defines scripting information (opcodes, types, globals) for the engine.
+			<localeSymbols>{file path}</localeSymbols> - The xml file relative to {Assembly Install}\ (so include "Formats\") which defines unicode characters used by localization for the engine. This allows for a more readible locale strings like <_a_button/> to be displayed instead of a bunch of "unsupported" squares.
+			<vertexLayouts>{file path}</vertexLayouts> - (Unused) The xml file relative to {Assembly Install}\ (so include "Formats\") which defines vertex layouts for the engine, for scrapped model extraction support.
+			<groupNames>{file path}</groupNames> - The xml file relative to {Assembly Install}\ (so include "Formats\") which defines the full names of tag groups if the cache file does not already suppy them. If no group names are available, you will see a bunch of "unknown_description"s in the tag tree.
+			<poking>{file path}</poking> - The xml file relative to {Assembly Install}\ (so include "Formats\") which defines the poking information for the engine.
+		</databases>
+	</engine>-->
+
+	<!-- Halo 1 Builds -->
+	<engine name="Halo 1" version="5" build="01.10.12.2276">
+		<shortName>Halo1</shortName>
+		<plugins>Halo1</plugins>
+		<engineInfo>
+			<generation>first</generation>
+			<endian>little</endian>
+			<segmentAlignment>0x4</segmentAlignment>
+			<usesCompression>true</usesCompression>
+		</engineInfo>
+		<databases>
+			<layouts type="layouts" path="Formats/Halo1/LayoutsXbox" />
+			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
+			<scripting type="scripting" path="Formats/Halo1/H1X_Scripting.xml" />
+		</databases>
+	</engine>
+	
+	<engine name="Halo 1 Xbox Demo" version="5" build="" inherits="Halo 1">
+		<shortName>H1D</shortName>
+	</engine>
+
+	<!-- Halo 1 Beta Builds -->
+	<engine name="Halo 1 Beta 1749" version="5" build="01.08.15.1749" inherits="Halo 1">
+		<shortName>H1B_1749</shortName>
+	</engine>
+
+	<engine name="Halo 1 Beta 2247" version="5" build="01.09.25.2247" inherits="Halo 1">
+		<shortName>H1B_2247</shortName>
+	</engine>
+	
+	<!-- Halo 1 Misc Builds -->
+	<engine name="Shadowrun Prototype" version="5" build="01.12.07.0132" inherits="Halo 1">
+		<shortName>Shadow</shortName>
+		<databases>
+			<scripting type="scripting" path="Formats/Halo1/Shadow_Scripting.xml" />
+		</databases>
+	</engine>
+	
+	<engine name="Stubbs The Zombie Xbox" version="5" build="400">
+		<shortName>StubbsX</shortName>
+		<plugins>Halo1</plugins>
+		<engineInfo>
+			<generation>first</generation>
+			<endian>little</endian>
+			<segmentAlignment>0x4</segmentAlignment>
+			<usesCompression>true</usesCompression>
+		</engineInfo>
+		<databases>
+			<layouts type="layouts" path="Formats/Stubbs/LayoutsXbox" />
+			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
+			<scripting type="scripting" path="Formats/Stubbs/SX_Scripting.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Stubbs The Zombie PC" version="5" build="">
+		<shortName>StubbsPC</shortName>
+		<plugins>Halo1</plugins>
+		<engineInfo>
+			<generation>first</generation>
+			<endian>little</endian>
+			<segmentAlignment>0x4</segmentAlignment>
+			<usesCompression>true</usesCompression>
+		</engineInfo>
+		<databases>
+			<layouts type="layouts" path="Formats/Stubbs/LayoutsPC" />
+			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
+			<scripting type="scripting" path="Formats/Stubbs/SPC_Scripting.xml" />
+		</databases>
+	</engine>
+	
+	<!-- todo: need more code to distinguish this from original PC version, also needs all new plugins due to x64
+	<engine name="Stubbs The Zombie Rerelease" version="5" build="">
+		<shortName>StubbsR</shortName>
+		<plugins>Halo1</plugins>
+		<engineInfo>
+			<generation>first</generation>
+			<endian>little</endian>
+			<segmentAlignment>0x4</segmentAlignment>
+			<usesCompression>true</usesCompression>
+		</engineInfo>
+		<databases>
+			<layouts type="layouts" path="Formats/Stubbs/LayoutsRerelease" />
+			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
+		</databases>
+	</engine>-->
+
+	<!-- Halo 1 PC Builds -->
+	<engine name="Halo 1 PC" version="7" build="01.00.00.0564">
+		<shortName>H1PC</shortName>
+		<plugins>Halo1</plugins>
+		<engineInfo>
+			<generation>first</generation>
+			<endian>little</endian>
+			<segmentAlignment>0x4</segmentAlignment>
+			<gameExecutable>halo</gameExecutable>
+		</engineInfo>
+		<databases>
+			<layouts type="layouts" path="Formats/Halo1/Layouts" />
+			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
+			<scripting type="scripting" path="Formats/Halo1/H1_Scripting.xml" />
+			<poking type="poking" path="Formats/Halo1/H1_Poking.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 1 PC v10" version="7" build="01.00.10.0621" inherits="Halo 1 PC" />
+
+	<engine name="Halo 1 PC Invader" version="7" build="Invader 0.44.0.r3320" inherits="Halo 1 PC" />
+
+	<engine name="Halo 1 Custom Edition" version="609" versionAlt="343" build="01.00.00.0609">
+		<shortName>H1CE</shortName>
+		<plugins>Halo1</plugins>
+		<engineInfo>
+			<generation>first</generation>
+			<endian>little</endian>
+			<!-- NOTE: custom edition apparently doesnt care if things are aligned at ALL -->
+			<segmentAlignment>0x1</segmentAlignment>
+			<gameExecutable>haloce</gameExecutable>
+		</engineInfo>
+		<databases>
+			<layouts type="layouts" path="Formats/Halo1/Layouts" />
+			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
+			<scripting type="scripting" path="Formats/Halo1/H1CE_Scripting.xml" />
+			<poking type="poking" path="Formats/Halo1/H1CE_Poking.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 1 Custom Edition v10" version="609" versionAlt="343" build="01.00.10.0621" inherits="Halo 1 Custom Edition" />
+
+	<engine name="Halo 1 Custom Edition Invader" version="609" versionAlt="343" build="Invader 0.44.0.r3320" inherits="Halo 1 Custom Edition" />
+
+	<!-- NOTE: CEA 360 and MCC have the same build strings, this makes things harder -->
+	<engine name="Halo 1 Anniversary" version="7" build="01.00.01.0563">
+		<shortName>H1A</shortName>
+		<plugins>Halo1</plugins>
+		<engineInfo>
+			<generation>first</generation>
+			<endian>big</endian>
+			<segmentAlignment>0x4</segmentAlignment>
+			<usesCompression>true</usesCompression>
+		</engineInfo>
+		<databases>
+			<layouts type="layouts" path="Formats/Halo1/Layouts" />
+			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
+			<scripting type="scripting" path="Formats/Halo1/H1A_Scripting.xml" />
+			<!-- TODO (Dragon): 360 poking is different so we hardcoded an address when we make the  -->
+			<!--                RTE provider. should probably set that up to support poking xmls -->
+		</databases>
+	</engine>
 
 	<!-- Halo 2 Builds -->
-	<engine name="Halo 2 Vista" version="11081.07.04.30.0934.main">
+	<engine name="Halo 2 Vista" version="8" build="11081.07.04.30.0934.main">
 		<shortName>H2Vista</shortName>
 		<plugins>Halo2</plugins>
 		<engineInfo>
-			<headerSize>0x800</headerSize>
+			<generation>second</generation>
+			<endian>little</endian>
 			<segmentAlignment>0x200</segmentAlignment>
 			<gameExecutable>halo2</gameExecutable>
 		</engineInfo>
@@ -21,14 +216,16 @@
 		</databases>
 	</engine>
 
-	<engine name="Halo 2 Vista" version="11122.07.08.24.1808.main" inherits="Halo 2 Vista" />
+	<engine name="Halo 2 Vista Custom 1" version="8" build="11091.07.05.11.1104.main" inherits="Halo 2 Vista" />
+	<engine name="Halo 2 Vista Custom 2" version="8" build="11122.07.08.24.1808.main" inherits="Halo 2 Vista" />
 
 	<!-- Halo 3 Beta Builds -->
-	<engine name="Halo 3 Beta" version="09699.07.05.01.1534.delta">
+	<engine name="Halo 3 Beta" version="9" build="09699.07.05.01.1534.delta">
 		<shortName>H3Beta</shortName>
 		<plugins>Halo3Beta</plugins>
 		<engineInfo>
-			<headerSize>0x800</headerSize>
+			<generation>third</generation>
+			<endian>big</endian>
 			<segmentAlignment>0x800</segmentAlignment>
 		</engineInfo>
 		<databases>
@@ -39,12 +236,53 @@
 		</databases>
 	</engine>
 
+	<engine name="Halo 3 Pre-Beta March 7" version="9" build="08117.07.03.07.1702.delta" inherits="Halo 3 Beta">
+		<plugins>Halo3Beta\march_delta</plugins>
+		<fallbackPlugins>Halo3Beta</fallbackPlugins>
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo3Beta/H3BMarch7_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/Halo3Beta/H3BMarch_Scripting.xml" />
+			<layouts type="layouts" path="Formats/Halo3Beta/LayoutsMarch" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 3 Pre-Beta March 8" version="9" build="08172.07.03.08.2240.delta" inherits="Halo 3 Beta">
+		<plugins>Halo3Beta\march_delta</plugins>
+		<fallbackPlugins>Halo3Beta</fallbackPlugins>
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo3Beta/H3BMarch8_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/Halo3Beta/H3BMarch_Scripting.xml" />
+			<layouts type="layouts" path="Formats/Halo3Beta/LayoutsMarch" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 3 Pre-Beta March 9" version="9" build="Mar  9 2007 22:22:32" inherits="Halo 3 Beta">
+		<plugins>Halo3Beta\march9_delta</plugins>
+		<fallbackPlugins>Halo3Beta</fallbackPlugins>
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo3Beta/H3BMarch8_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/Halo3Beta/H3BMarch_Scripting.xml" />
+			<layouts type="layouts" path="Formats/Halo3Beta/LayoutsMarch" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 3 Pre-Beta March 10" version="9" build="Mar 10 2007 16:16:44" inherits="Halo 3 Beta">
+		<plugins>Halo3Beta\march9_delta</plugins>
+		<fallbackPlugins>Halo3Beta</fallbackPlugins>
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo3Beta/H3BMarch8_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/Halo3Beta/H3BMarch_Scripting.xml" />
+			<layouts type="layouts" path="Formats/Halo3Beta/LayoutsMarch" />
+		</databases>
+	</engine>
+
 	<!-- Halo 3 Builds -->
-	<engine name="Halo 3" version="11855.07.08.20.2317.halo3_ship">
+	<engine name="Halo 3" version="11" build="11855.07.08.20.2317.halo3_ship">
 		<shortName>Halo3</shortName>
 		<plugins>Halo3</plugins>
 		<engineInfo>
-			<headerSize>0x3000</headerSize>
+			<generation>third</generation>
+			<endian>big</endian>
 			<segmentAlignment>0x1000</segmentAlignment>
 		</engineInfo>
 		<databases>
@@ -55,22 +293,23 @@
 		</databases>
 	</engine>
 
-	<engine name="Halo 3 Epsilon" version="11856.07.08.20.2332.release" inherits="Halo 3">
+	<engine name="Halo 3 Epsilon" version="11" build="11856.07.08.20.2332.release" inherits="Halo 3">
 		<shortName>H3Epsilon</shortName>
 	</engine>
-	<engine name="Halo 3 Expo" version="11729.07.08.10.0021.main" inherits="Halo 3">
+	<engine name="Halo 3 Expo" version="11" build="11729.07.08.10.0021.main" inherits="Halo 3">
 		<shortName>H3Expo</shortName>
 	</engine>
-	<engine name="Halo 3 Mythic" version="12065.08.08.26.0819.halo3_ship" inherits="Halo 3">
+	<engine name="Halo 3 Mythic" version="11" build="12065.08.08.26.0819.halo3_ship" inherits="Halo 3">
 		<shortName>H3Mythic</shortName>
 	</engine>
 
 	<!-- ODST Builds -->
-	<engine name="Halo 3: ODST" version="13895.09.04.27.2201.atlas_relea">
+	<engine name="Halo 3: ODST" version="11" build="13895.09.04.27.2201.atlas_relea">
 		<shortName>ODST</shortName>
 		<plugins>ODST</plugins>
 		<engineInfo>
-			<headerSize>0x3000</headerSize>
+			<generation>third</generation>
+			<endian>big</endian>
 			<segmentAlignment>0x1000</segmentAlignment>
 		</engineInfo>
 		<databases>
@@ -82,11 +321,12 @@
 	</engine>
 
 	<!-- Reach Beta Builds -->
-	<engine name="Halo: Reach Pre-Beta" version="09449.10.03.25.1545.omaha_beta">
+	<engine name="Halo: Reach Pre-Beta" version="11" build="09449.10.03.25.1545.omaha_beta">
 		<shortName>ReachPreBeta</shortName>
 		<plugins>ReachBeta</plugins>
 		<engineInfo>
-			<headerSize>0x4000</headerSize>
+			<generation>third</generation>
+			<endian>big</endian>
 			<segmentAlignment>0x1000</segmentAlignment>
 			<encryption>
 				<tagNameKey>rs&amp;m*l#/t%_()e;[</tagNameKey>
@@ -103,16 +343,17 @@
 		</databases>
 	</engine>
 
-	<engine name="Halo: Reach Beta" version="09730.10.04.09.1309.omaha_delta" inherits="Halo: Reach Pre-Beta">
+	<engine name="Halo: Reach Beta" version="11" build="09730.10.04.09.1309.omaha_delta" inherits="Halo: Reach Pre-Beta">
 		<shortName>ReachBeta</shortName>
 	</engine>
 
 	<!-- Reach builds -->
-	<engine name="Halo: Reach" version="11860.10.07.24.0147.omaha_relea">
+	<engine name="Halo: Reach" version="12" build="11860.10.07.24.0147.omaha_relea">
 		<shortName>Reach</shortName>
 		<plugins>Reach</plugins>
 		<engineInfo>
-			<headerSize>0xA000</headerSize>
+			<generation>third</generation>
+			<endian>big</endian>
 			<segmentAlignment>0x1000</segmentAlignment>
 			<encryption>
 				<tagNameKey>LetsAllPlayNice!</tagNameKey>
@@ -130,7 +371,7 @@
 		</databases>
 	</engine>
 
-	<engine name="Halo: Reach Demo" version="00095.11.04.09.1509.demo" inherits="Halo: Reach">
+	<engine name="Halo: Reach Demo" version="12" build="00095.11.04.09.1509.demo" inherits="Halo: Reach">
 		<shortName>ReachDemo</shortName>
 		<databases>
 			<stringIds type="stringIds" path="Formats/Reach/ReachDemo_StringIDs.xml" />
@@ -138,11 +379,12 @@
 	</engine>
 
 	<!-- Halo 4 Beta builds -->
-	<engine name="Halo 4 Network Test" version="14064.12.05.05.1011.beta">
+	<engine name="Halo 4 Network Test" version="12" build="14064.12.05.05.1011.beta">
 		<shortName>H4Network</shortName>
 		<plugins>Halo4NetTest</plugins>
 		<engineInfo>
-			<headerSize>0x1E000</headerSize>
+			<generation>third</generation>
+			<endian>big</endian>
 			<segmentAlignment>0x1000</segmentAlignment>
 			<encryption>
 				<tagNameKey>LetsAllPlayNice!</tagNameKey>
@@ -160,12 +402,47 @@
 		</databases>
 	</engine>
 
+	<!-- Halo 4 E3 builds -->
+	<engine name="Halo 4 E3 Keynote" version="12" build="15119.12.05.31.0400.e3m60">
+		<shortName>H4E3</shortName>
+		<plugins>Halo4NetTest</plugins>
+		<engineInfo>
+			<generation>third</generation>
+			<endian>big</endian>
+			<segmentAlignment>0x1000</segmentAlignment>
+			<encryption>
+				<tagNameKey>LetsAllPlayNice!</tagNameKey>
+				<stringIdKey>ILikeSafeStrings</stringIdKey>
+				<localeKey>BungieHaloReach!</localeKey>
+			</encryption>
+		</engineInfo>
+		<databases>
+			<localeSymbols type="localeSymbols" path="Formats/Halo4NetTest/H4Net_LocaleSymbols.xml" />
+			<stringIds type="stringIds" path="Formats/Halo4E3/H4Keynote_StringIDs.xml" />
+			<vertexLayouts type="vertexLayouts" path="Formats/Halo4/H4_VertexBuffer.xml" />
+			<scripting type="scripting" path="Formats/Halo4NetTest/H4Net_Scripting.xml" />
+			<layouts type="layouts" path="Formats/Halo4E3/Layouts" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 4 E3 Spartan Ops" version="12" build="15117.12.05.31.0300.e3" inherits="Halo 4 E3 Keynote">
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo4E3/H4Wargames_StringIDs.xml" />
+		</databases>
+	</engine>
+	<engine name="Halo 4 E3 Multiplayer" version="12" build="15116.12.05.31.0300.e3" inherits="Halo 4 E3 Keynote">
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo4E3/H4Wargames_StringIDs.xml" />
+		</databases>
+	</engine>
+
 	<!-- Halo 4 builds -->
-	<engine name="Halo 4" version="20810.12.09.22.1647.main">
+	<engine name="Halo 4" version="12" build="20810.12.09.22.1647.main">
 		<shortName>Halo4</shortName>
 		<plugins>Halo4</plugins>
 		<engineInfo>
-			<headerSize>0x1E000</headerSize>
+			<generation>third</generation>
+			<endian>big</endian>
 			<segmentAlignment>0x1000</segmentAlignment>
 			<encryption>
 				<tagNameKey>LetsAllPlayNice!</tagNameKey>
@@ -184,39 +461,33 @@
 		</databases>
 	</engine>
 
-	<engine name="Halo 4 TU2" version="21122.12.11.21.0101.main" inherits="Halo 4">
-		<shortName>Halo4TU2</shortName>
-	</engine>
-	<engine name="Halo 4 TU3" version="21165.12.12.12.0112.main" inherits="Halo 4">
-		<shortName>Halo4TU3</shortName>
-	</engine>
-	<engine name="Halo 4 TU4" version="21339.13.02.05.0117.main" inherits="Halo 4">
-		<shortName>Halo4TU4</shortName>
-	</engine>
-	<engine name="Halo 4 TU5" version="21391.13.03.13.1711.main" inherits="Halo 4">
-		<shortName>Halo4TU5</shortName>
-	</engine>
-	<engine name="Halo 4 TU6" version="21401.13.04.23.1849.main" inherits="Halo 4">
-		<shortName>Halo4TU6</shortName>
-	</engine>
-	<engine name="Halo 4 TU7" version="21501.13.08.06.2311.main" inherits="Halo 4">
-		<shortName>Halo4TU7</shortName>
-	</engine>
-	<engine name="Halo 4 TU8" version="21522.13.10.17.1936.main" inherits="Halo 4">
-		<shortName>Halo4TU8</shortName>
+	<engine name="Halo 4 Prerelease" version="12" build="19057.12.08.19.0400.main" inherits="Halo 4">
+		<shortName>Halo4Pre</shortName>
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo4/H4Pre_StringIDs.xml" />
+		</databases>
 	</engine>
 
+	<engine name="Halo 4 TU2" version="12" build="21122.12.11.21.0101.main" inherits="Halo 4" />
+	<engine name="Halo 4 TU3" version="12" build="21165.12.12.12.0112.main" inherits="Halo 4" />
+	<engine name="Halo 4 TU4" version="12" build="21339.13.02.05.0117.main" inherits="Halo 4" />
+	<engine name="Halo 4 TU5" version="12" build="21391.13.03.13.1711.main" inherits="Halo 4" />
+	<engine name="Halo 4 TU6" version="12" build="21401.13.04.23.1849.main" inherits="Halo 4" />
+	<engine name="Halo 4 TU7" version="12" build="21501.13.08.06.2311.main" inherits="Halo 4" />
+	<engine name="Halo 4 TU8" version="12" build="21522.13.10.17.1936.main" inherits="Halo 4" />
+
 	<!-- Reach MCC -->
-	<engine name="Halo: Reach MCC Flight 1" version="Jun 24 2019 00:36:03">
+	<engine name="Halo: Reach MCC Flight 1" version="13" build="Jun 24 2019 00:36:03">
 		<shortName>ReachMCC_F1</shortName>
 		<plugins>ReachMCC</plugins>
 		<fallbackPlugins>Reach</fallbackPlugins>
 		<engineInfo>
-			<headerSize>0xA000</headerSize>
+			<generation>third</generation>
+			<endian>little</endian>
 			<segmentAlignment>0x1000</segmentAlignment>
 			<expandMagic>0x10000000</expandMagic>
 			<gameExecutable>MCC-Win64-Shipping</gameExecutable>
-			<gameExecutableAlt>MCC-Win64-Shipping-WinStore</gameExecutableAlt>
+			<gameExecutableAlt>MCCWinStore-Win64-Shipping</gameExecutableAlt>
 			<gameModule>haloreach</gameModule>
 			<pokingOffset>0xA0</pokingOffset>
 		</engineInfo>
@@ -228,20 +499,21 @@
 		</databases>
 	</engine>
 
-	<engine name="Halo: Reach MCC Flight 2" version="Jul 30 2019 14:17:16" inherits="Halo: Reach MCC Flight 1">
+	<engine name="Halo: Reach MCC Flight 2" version="13" build="Jul 30 2019 14:17:16" inherits="Halo: Reach MCC Flight 1">
 		<shortName>ReachMCC_F2</shortName>
 	</engine>
 
-	<engine name="Halo: Reach MCC" version="Oct 24 2019 15:56:32" >
+	<engine name="Halo: Reach MCC" version="13" build="Oct 24 2019 15:56:32">
 		<shortName>ReachMCC</shortName>
 		<plugins>ReachMCC</plugins>
 		<fallbackPlugins>Reach</fallbackPlugins>
 		<engineInfo>
-			<headerSize>0xA000</headerSize>
+			<generation>third</generation>
+			<endian>little</endian>
 			<segmentAlignment>0x1000</segmentAlignment>
 			<expandMagic>0x50000000</expandMagic>
 			<gameExecutable>MCC-Win64-Shipping</gameExecutable>
-			<gameExecutableAlt>MCC-Win64-Shipping-WinStore</gameExecutableAlt>
+			<gameExecutableAlt>MCCWinStore-Win64-Shipping</gameExecutableAlt>
 			<gameModule>haloreach</gameModule>
 			<pokingOffset>0xA0</pokingOffset>
 		</engineInfo>
@@ -254,42 +526,102 @@
 		</databases>
 	</engine>
 
-	<engine name="Halo: Reach MCC Update 1" version="Jan 30 2020 16:55:25" inherits="Halo: Reach MCC">
+	<engine name="Halo: Reach MCC Update 1" version="13" build="Jan 30 2020 16:55:25" inherits="Halo: Reach MCC">
 		<databases>
 			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U1_StringIDs.xml" />
 		</databases>
 	</engine>
 
-	<engine name="Halo: Reach MCC Update 2" version="Mar 24 2020 12:10:36" inherits="Halo: Reach MCC">
+	<engine name="Halo: Reach MCC Update 2" version="13" build="Mar 24 2020 12:10:36" inherits="Halo: Reach MCC">
 		<databases>
 			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
 		</databases>
 	</engine>
 
-	<engine name="Halo: Reach MCC Update 3" version="Jun  5 2020 10:40:14" inherits="Halo: Reach MCC">
+	<engine name="Halo: Reach MCC Update 3" version="13" build="Jun  5 2020 10:40:14" inherits="Halo: Reach MCC">
 		<databases>
 			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU3" />
 		</databases>
 	</engine>
 
-	<engine name="Halo: Reach MCC Update 4" version="Oct 15 2020 18:23:50" inherits="Halo: Reach MCC">
+	<engine name="Halo: Reach MCC Update 4" version="13" build="Oct 15 2020 18:23:50" inherits="Halo: Reach MCC">
 		<databases>
 			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU3" />
+		</databases>
+	</engine>
+
+	<engine name="Halo: Reach MCC Update 5" version="13" build="Nov 24 2020 18:32:37" inherits="Halo: Reach MCC">
+		<databases>
+			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU3" />
+		</databases>
+	</engine>
+
+	<engine name="Halo: Reach MCC Flight 3" version="13" build="Feb 17 2021 21:07:38" inherits="Halo: Reach MCC">
+		<databases>
+			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU3" />
+		</databases>
+	</engine>
+	
+	<engine name="Halo: Reach MCC Update 6" version="13" build="Mar  4 2021 13:14:28" inherits="Halo: Reach MCC">
+		<databases>
+			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU3" />
+		</databases>
+	</engine>
+
+	<engine name="Halo: Reach MCC Update 7" version="13" build="May 26 2021 10:02:45" inherits="Halo: Reach MCC">
+		<databases>
+			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU3" />
+		</databases>
+	</engine>
+	
+	<!-- Halo 1 MCC -->
+	<!-- NOTE: CEA 360 and MCC have the same build strings, this makes things harder -->
+	<engine name="Halo 1 Anniversary MCC" version="7" build="01.00.01.0563">
+		<shortName>H1AMCC</shortName>
+		<plugins>Halo1</plugins>
+		<engineInfo>
+			<generation>first</generation>
+			<endian>little</endian>
+			<segmentAlignment>0x4</segmentAlignment>
+			<gameExecutable>MCC-Win64-Shipping</gameExecutable>
+			<gameExecutableAlt>MCCWinStore-Win64-Shipping</gameExecutableAlt>
+			<gameModule>halo1</gameModule>
+			<usesCompression>true</usesCompression>
+		</engineInfo>
+		<databases>
+			<layouts type="layouts" path="Formats/Halo1/Layouts" />
+			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
+			<scripting type="scripting" path="Formats/Halo1/H1AMCC_Scripting.xml" />
+			<poking type="poking" path="Formats/Halo1/H1AMCC_Poking.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 1 Anniversary MCC Update 1" version="13" build="01.03.43.0000" inherits="Halo 1 Anniversary MCC">
+		<engineInfo>
+			<segmentAlignment>0x1</segmentAlignment>
+		</engineInfo>
+		<databases>
+			<scripting type="scripting" path="Formats/Halo1/H1AMCC_U1_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<!-- Halo 2 MCC -->
-	<engine name="Halo 2 MCC" version=""><!-- gee thanks for the empty string 343 I appreciate it -->
+	<engine name="Halo 2 MCC" version="10" build=""><!-- gee thanks for the empty string 343 I appreciate it -->
 		<shortName>H2MCC</shortName>
 		<plugins>Halo2MCC</plugins>
 		<fallbackPlugins>Halo2</fallbackPlugins>
 		<engineInfo>
-			<headerSize>0x1000</headerSize>
+			<generation>second</generation>
+			<endian>little</endian>
 			<segmentAlignment>0x80</segmentAlignment>
 			<gameExecutable>MCC-Win64-Shipping</gameExecutable>
-			<gameExecutableAlt>MCC-Win64-Shipping-WinStore</gameExecutableAlt>
+			<gameExecutableAlt>MCCWinStore-Win64-Shipping</gameExecutableAlt>
 			<gameModule>halo2</gameModule>
 			<usesCompression>true</usesCompression>
 		</engineInfo>
@@ -303,16 +635,17 @@
 	</engine>
 
 	<!-- Groundhog MCC -->
-	<engine name="Halo 2 Anniversary MCC Flight" version="Apr  9 2020 01:36:04" >
+	<engine name="Halo 2 Anniversary MCC Flight" version="12" build="Apr  9 2020 01:36:04">
 		<shortName>H2AMCC</shortName>
 		<plugins>Halo2AMCC</plugins>
 		<fallbackPlugins>Halo4</fallbackPlugins>
 		<engineInfo>
-			<headerSize>0x1E000</headerSize>
+			<generation>third</generation>
+			<endian>little</endian>
 			<segmentAlignment>0x1000</segmentAlignment>
 			<expandMagic>0x7AC00000</expandMagic>
 			<gameExecutable>MCC-Win64-Shipping</gameExecutable>
-			<gameExecutableAlt>MCC-Win64-Shipping-WinStore</gameExecutableAlt>
+			<gameExecutableAlt>MCCWinStore-Win64-Shipping</gameExecutableAlt>
 			<gameModule>groundhog</gameModule>
 			<sortLocalesByStringId>true</sortLocalesByStringId>
 			<pokingOffset>0xA8</pokingOffset>
@@ -328,43 +661,50 @@
 		</databases>
 	</engine>
 	
-	<engine name="Halo 2 Anniversary MCC" version="Apr 13 2020 02:24:30" inherits="Halo 2 Anniversary MCC Flight" />
+	<engine name="Halo 2 Anniversary MCC" version="12" build="Apr 13 2020 02:24:30" inherits="Halo 2 Anniversary MCC Flight" />
 
-	<engine name="Halo 2 Anniversary MCC Update 1" version="May 10 2020 21:14:00" inherits="Halo 2 Anniversary MCC Flight">
+	<engine name="Halo 2 Anniversary MCC Update 1" version="12" build="May 10 2020 21:14:00" inherits="Halo 2 Anniversary MCC Flight">
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo2AMCC/H2AMCC_U1_StringIDs.xml" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 2 Anniversary MCC Update 2" version="May 12 2020 12:18:21" inherits="Halo 2 Anniversary MCC Flight">
+	<engine name="Halo 2 Anniversary MCC Update 2" version="12" build="May 12 2020 12:18:21" inherits="Halo 2 Anniversary MCC Flight">
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo2AMCC/H2AMCC_U2_StringIDs.xml" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 2 Anniversary MCC Update 3" version="Jul 25 2020 22:24:58" inherits="Halo 2 Anniversary MCC Flight">
+	<engine name="Halo 2 Anniversary MCC Update 3" version="12" build="Jul 25 2020 22:24:58" inherits="Halo 2 Anniversary MCC Flight">
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo2AMCC/H2AMCC_U2_StringIDs.xml" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 2 Anniversary MCC Update 4" version="Sep 30 2020 20:30:41" inherits="Halo 2 Anniversary MCC Flight">
+	<engine name="Halo 2 Anniversary MCC Update 4" version="12" build="Sep 30 2020 20:30:41" inherits="Halo 2 Anniversary MCC Flight">
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo2AMCC/H2AMCC_U2_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 2 Anniversary MCC Update 5" version="12" build="Dec 25 2020 16:05:40" inherits="Halo 2 Anniversary MCC Flight">
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo2AMCC/H2AMCC_U2_StringIDs.xml" />
 		</databases>
 	</engine>
 
 	<!-- Halo 3 MCC -->
-	<engine name="Halo 3 MCC Flight" version="Jun  4 2020 20:29:31" >
+	<engine name="Halo 3 MCC Flight" version="11" build="Jun  4 2020 20:29:31">
 		<shortName>H3MCC</shortName>
 		<plugins>Halo3MCC</plugins>
 		<fallbackPlugins>Halo3</fallbackPlugins>
 		<engineInfo>
-			<headerSize>0x3000</headerSize>
+			<generation>third</generation>
+			<endian>little</endian>
 			<segmentAlignment>0x1000</segmentAlignment>
 			<expandMagic>0</expandMagic>
 			<gameExecutable>MCC-Win64-Shipping</gameExecutable>
-			<gameExecutableAlt>MCC-Win64-Shipping-WinStore</gameExecutableAlt>
+			<gameExecutableAlt>MCCWinStore-Win64-Shipping</gameExecutableAlt>
 			<gameModule>halo3</gameModule>
 			<usesStringHashes>false</usesStringHashes>
 			<usesRawHashes>false</usesRawHashes>
@@ -378,28 +718,13 @@
 		</databases>
 	</engine>
 
-	<engine name="Halo 3 MCC Flight Update 1" version="Jun 21 2020 16:34:20" inherits="Halo 3 MCC Flight">
+	<engine name="Halo 3 MCC Flight Update 1" version="11" build="Jun 21 2020 16:34:20" inherits="Halo 3 MCC Flight">
 		<engineInfo>
 			<usesStringHashes>true</usesStringHashes>
 		</engineInfo>
 	</engine>
 
-	<engine name="Halo 3 MCC Flight 2" version="Aug 11 2020 23:34:41" inherits="Halo 3 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-		</engineInfo>
-		<databases>
-			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
-		</databases>
-	</engine>
-
-	<engine name="Halo 3 MCC" version="Jun 25 2020 15:02:49" inherits="Halo 3 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-		</engineInfo>
-	</engine>
-
-	<engine name="Halo 3 MCC Update 1" version="Aug 26 2020 21:24:11" inherits="Halo 3 MCC Flight">
+	<engine name="Halo 3 MCC Flight 2" version="11" build="Aug 11 2020 23:34:41" inherits="Halo 3 MCC Flight">
 		<engineInfo>
 			<usesStringHashes>true</usesStringHashes>
 		</engineInfo>
@@ -408,7 +733,13 @@
 		</databases>
 	</engine>
 
-	<engine name="Halo 3 MCC Update 2" version="Oct 21 2020 09:24:30" inherits="Halo 3 MCC Flight">
+	<engine name="Halo 3 MCC" version="11" build="Jun 25 2020 15:02:49" inherits="Halo 3 MCC Flight">
+		<engineInfo>
+			<usesStringHashes>true</usesStringHashes>
+		</engineInfo>
+	</engine>
+
+	<engine name="Halo 3 MCC Update 1" version="11" build="Aug 26 2020 21:24:11" inherits="Halo 3 MCC Flight">
 		<engineInfo>
 			<usesStringHashes>true</usesStringHashes>
 		</engineInfo>
@@ -417,17 +748,90 @@
 		</databases>
 	</engine>
 
+	<engine name="Halo 3 MCC Update 2" version="11" build="Oct 21 2020 09:24:30" inherits="Halo 3 MCC Flight">
+		<engineInfo>
+			<usesStringHashes>true</usesStringHashes>
+		</engineInfo>
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 3 MCC Update 3" version="11" build="Nov 24 2020 15:47:48" inherits="Halo 3 MCC Flight">
+		<engineInfo>
+			<usesStringHashes>true</usesStringHashes>
+		</engineInfo>
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 3 MCC Flight 3" version="11" build="Feb 19 2021 11:19:43" inherits="Halo 3 MCC Flight">
+		<engineInfo>
+			<usesStringHashes>true</usesStringHashes>
+		</engineInfo>
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 3 MCC Flight 3 Main Menu" version="11" build="Oct  7 2020 03:55:07" inherits="Halo 3 MCC Flight"><!-- mainmenu has a different build string -->
+		<engineInfo>
+			<usesStringHashes>true</usesStringHashes>
+		</engineInfo>
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
+		</databases>
+	</engine>
+	
+	<engine name="Halo 3 MCC Flight 4" version="11" build="Mar  5 2021 08:45:13" inherits="Halo 3 MCC Flight">
+		<engineInfo>
+			<usesStringHashes>true</usesStringHashes>
+		</engineInfo>
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 3 MCC Update 4" version="11" build="Mar 14 2021 03:19:55" inherits="Halo 3 MCC Flight">
+		<engineInfo>
+			<usesStringHashes>true</usesStringHashes>
+		</engineInfo>
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 3 MCC Flight 5" version="11" build="May 19 2021 16:19:54" inherits="Halo 3 MCC Flight">
+		<engineInfo>
+			<usesStringHashes>true</usesStringHashes>
+		</engineInfo>
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 3 MCC Update 5" version="11" build="Jun  9 2021 09:25:41" inherits="Halo 3 MCC Flight">
+		<engineInfo>
+			<usesStringHashes>true</usesStringHashes>
+		</engineInfo>
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
+		</databases>
+	</engine>
+	
 	<!-- ODST MCC -->
-	<engine name="Halo ODST MCC Flight" version="Aug 11 2020 06:58:27" >
+	<engine name="Halo ODST MCC Flight" version="11" build="Aug 11 2020 06:58:27">
 		<shortName>ODSTMCC</shortName>
 		<plugins>ODSTMCC</plugins>
 		<fallbackPlugins>ODST</fallbackPlugins>
 		<engineInfo>
-			<headerSize>0x3000</headerSize>
+			<generation>third</generation>
+			<endian>little</endian>
 			<segmentAlignment>0x1000</segmentAlignment>
 			<expandMagic>0</expandMagic>
 			<gameExecutable>MCC-Win64-Shipping</gameExecutable>
-			<gameExecutableAlt>MCC-Win64-Shipping-WinStore</gameExecutableAlt>
+			<gameExecutableAlt>MCCWinStore-Win64-Shipping</gameExecutableAlt>
 			<gameModule>halo3odst</gameModule>
 			<usesStringHashes>true</usesStringHashes>
 			<usesRawHashes>false</usesRawHashes>
@@ -441,25 +845,28 @@
 		</databases>
 	</engine>
 
-	<engine name="Halo ODST MCC Flight Update 1" version="Aug 17 2020 01:12:27" inherits="Halo ODST MCC Flight" />
+	<engine name="Halo ODST MCC Flight Update 1" version="11" build="Aug 17 2020 01:12:27" inherits="Halo ODST MCC Flight" />
 
-	<engine name="Halo ODST MCC Flight Update 2" version="Aug 24 2020 08:37:26" inherits="Halo ODST MCC Flight" />
+	<engine name="Halo ODST MCC Flight Update 2" version="11" build="Aug 24 2020 08:37:26" inherits="Halo ODST MCC Flight" />
 
-	<engine name="Halo ODST MCC" version="Aug 28 2020 08:43:36" inherits="Halo ODST MCC Flight" />
+	<engine name="Halo ODST MCC" version="11" build="Aug 28 2020 08:43:36" inherits="Halo ODST MCC Flight" />
 
-	<engine name="Halo ODST MCC Update 1" version="Sep 29 2020 10:59:04" inherits="Halo ODST MCC Flight" />
+	<engine name="Halo ODST MCC Update 1" version="11" build="Sep 29 2020 10:59:04" inherits="Halo ODST MCC Flight" />
+
+	<engine name="Halo ODST MCC Update 2" version="11" build="Dec  4 2020 18:24:06" inherits="Halo ODST MCC Flight" />
 
 	<!-- Halo 4 MCC -->
-	<engine name="Halo 4 MCC Flight" version="Oct 12 2020 08:13:40" >
+	<engine name="Halo 4 MCC Flight" version="12" build="Oct 12 2020 08:13:40">
 		<shortName>H4MCC</shortName>
 		<plugins>Halo4MCC</plugins>
 		<fallbackPlugins>Halo4</fallbackPlugins>
 		<engineInfo>
-			<headerSize>0x1E000</headerSize>
+			<generation>third</generation>
+			<endian>little</endian>
 			<segmentAlignment>0x1000</segmentAlignment>
 			<expandMagic>0x4FFF0000</expandMagic>
 			<gameExecutable>MCC-Win64-Shipping</gameExecutable>
-			<gameExecutableAlt>MCC-Win64-Shipping-WinStore</gameExecutableAlt>
+			<gameExecutableAlt>MCCWinStore-Win64-Shipping</gameExecutableAlt>
 			<gameModule>halo4</gameModule>
 			<sortLocalesByStringId>true</sortLocalesByStringId>
 			<pokingOffset>0xA8</pokingOffset>
@@ -476,6 +883,23 @@
 		</databases>
 	</engine>
 
-	<engine name="Halo 4 MCC" version="Oct 26 2020 11:43:08" inherits="Halo 4 MCC Flight" />
+	<engine name="Halo 4 MCC" version="12" build="Oct 26 2020 11:43:08" inherits="Halo 4 MCC Flight" />
 
+	<engine name="Halo 4 MCC Update 1" version="12" build="Mar 20 2021 04:23:02" inherits="Halo 4 MCC Flight">
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo4MCC/H4MCC_U1_StringIDs.xml" />
+		</databases>
+	</engine>
+	
+	<engine name="Halo 4 MCC Flight 2" version="12" build="May 16 2021 10:41:44" inherits="Halo 4 MCC Flight">
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo4MCC/H4MCC_U1_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 4 MCC Update 2" version="12" build="May 27 2021 15:23:34" inherits="Halo 4 MCC Flight">
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo4MCC/H4MCC_U1_StringIDs.xml" />
+		</databases>
+	</engine>
 </engines>

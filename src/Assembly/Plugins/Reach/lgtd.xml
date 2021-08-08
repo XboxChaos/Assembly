@@ -4,11 +4,11 @@
 	<revisions>
 		<revision author="DarkShallFall" version="1">Mapped plugin structure a new.</revision>
 	</revisions>
-	<tagblock name="Default Loadouts" offset="0x0" visible="true" elementSize="0x14" align="0x8">
+	<tagblock name="Default Loadouts" offset="0x0" visible="true" elementSize="0x14">
 		<stringid name="Loadout Name" offset="0x0" visible="true" />
-		<stringid name="Primary Weapon" offset="0x4" visible="true" />
-		<stringid name="Secondary Weapon" offset="0x8" visible="true" />
-		<stringid name="Equipment" offset="0xC" visible="true" />
+		<stringid name="Initial Primary Weapon" offset="0x4" visible="true" tooltip="name of an element from global starting weapons block. Other values" />
+		<stringid name="Initial Secondary Weapon" offset="0x8" visible="true" tooltip="see above" />
+		<stringid name="Initial Equipment" offset="0xC" visible="true" tooltip="see above" />
 		<enum8 name="Grenade Count" offset="0x10" visible="true">
 			<option name="Unchanged" value="0x0" />
 			<option name="Map Default" value="0x1" />
@@ -27,17 +27,16 @@
 			<option name="4x Each" value="0xE" />
 		</enum8>
 		<int8 name="Unknown" offset="0x11" visible="false" />
-		<int8 name="Unknown" offset="0x12" visible="false" />
-		<int8 name="Unknown" offset="0x13" visible="false" />
+		<int16 name="Unknown" offset="0x12" visible="false" />
 	</tagblock>
-	<tagblock name="Loadout Sets" offset="0xC" visible="true" elementSize="0x10">
-		<stringid name="Set Name" offset="0x0" visible="true" />
-		<tagblock name="Set Loadouts" offset="0x4" visible="true" elementSize="0x4">
-			<int16 name="Default Loadout Index" offset="0x0" visible="true" />
+	<tagblock name="Loadout Palettes" offset="0xC" visible="true" elementSize="0x10">
+		<stringid name="Palette Name" offset="0x0" visible="true" />
+		<tagblock name="Loadout Choices" offset="0x4" visible="true" elementSize="0x4">
+			<int16 name="Loadout Index" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Custom Loadout Names List" offset="0x18" visible="true" elementSize="0x4">
-		<stringid name="Name" offset="0x0" visible="true" />
+	<tagblock name="Loadout Names" offset="0x18" visible="true" elementSize="0x4">
+		<stringid name="Display Name" offset="0x0" visible="true" />
 	</tagblock>
 </plugin>

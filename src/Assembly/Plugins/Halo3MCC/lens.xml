@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo3MCC" baseSize="0x9C">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="Lord Zedd" version="1">k</revision>
+	</revisions>
+	<comment title="LENS FLARE" />
+	<degree name="Falloff Angle" offset="0x0" visible="true" />
+	<degree name="Cutoff Angle" offset="0x4" visible="true" />
+	<comment title="OCCLUSION">Occlusion factor affects overall lens flare brightness and can also affect scale. Occlusion never affects rotation.</comment>
+	<int32 name="Occlusion Reflection Index" offset="0x8" visible="true" tooltip="occlusion information will be generated against the size of this reflection" />
+	<float32 name="Occlusion Offset Distance" offset="0xC" visible="true" tooltip="distance along offset direction used to test occlusion" />
+	<enum16 name="Occlusion Offset Direction" offset="0x10" visible="true">
+		<option name="Toward Viewer" value="0x0" />
+		<option name="Marker Forward" value="0x1" />
+		<option name="None" value="0x2" />
+	</enum16>
+	<int16 name="Unknown" offset="0x12" visible="false" />
+	<float32 name="Near Fade Begin Distance" offset="0x14" visible="true" tooltip="distance where the lens flare starts to fade in" />
+	<float32 name="Near Fade End Distance" offset="0x18" visible="true" tooltip="distance where the lens flare is fully faded in" />
+	<float32 name="Near Fade Distance" offset="0x1C" visible="true" tooltip="distance at which the lens flare brightness is maximum" />
+	<float32 name="Far Fade Distance" offset="0x20" visible="true" tooltip="distance at which the lens flare brightness is minimum; set to zero to disable distance fading" />
+	<tagRef name="Bitmap" offset="0x24" visible="true" />
+	<flags16 name="Flags" offset="0x34" visible="true">
+		<bit name="Rotate Occlusion Testing Box With Lens Flare" index="0" tooltip="otherwise remains aligned with screen. turn on render_debug_lens_flares and look at green box" />
+		<bit name="No Occlusion Test" index="1" />
+		<bit name="Only Render In First Person" index="2" />
+		<bit name="Only Render In Third Person" index="3" />
+		<bit name="Use Simple Occlusion Box Test" index="4" tooltip="ignore fancy occlusion box scaling - useful for very big or very far away lens flares (skybox flares, etc)" />
+		<bit name="No Reflection Opacity Feedback" index="5" tooltip="unchecked, each reflection evaluates its opacity from the previous reflection in the list" />
+		<bit name="Scale By Marker" index="6" />
+		<bit name="Don't Autofade" index="7" tooltip="otherwise fade based on effect time, for effect attachments only" />
+		<bit name="Bit 8" index="8" />
+		<bit name="Bit 9" index="9" />
+		<bit name="Bit 10" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
+	</flags16>
+	<int16 name="Runtime Flags" offset="0x36" visible="true" />
+	<enum16 name="Rotation Function" offset="0x38" visible="true">
+		<option name="None" value="0x0" />
+		<option name="Rotation A" value="0x1" />
+		<option name="Rotation B" value="0x2" />
+		<option name="Rotation-Translation" value="0x3" />
+		<option name="Translation" value="0x4" />
+	</enum16>
+	<int16 name="Unknown" offset="0x3A" visible="false" />
+	<degree name="Rotation Function Scale" offset="0x3C" visible="true" />
+	<comment title="EFFECT PARAMETERS">Only affects lens flares created by effects.</comment>
+	<enum16 name="Falloff Function" offset="0x40" visible="true">
+		<option name="Linear" value="0x0" />
+		<option name="Late" value="0x1" />
+		<option name="Very Late" value="0x2" />
+		<option name="Early" value="0x3" />
+		<option name="Very Early" value="0x4" />
+		<option name="Cosine" value="0x5" />
+		<option name="Zero" value="0x6" />
+		<option name="One" value="0x7" />
+	</enum16>
+	<int16 name="Unknown" offset="0x42" visible="false" />
+	<tagblock name="Reflections" offset="0x44" visible="true" elementSize="0x9C">
+		<flags16 name="Flags" offset="0x0" visible="true">
+			<bit name="Rotate From Center Of Screen" index="0" />
+			<bit name="Radius Scaled By Distance" index="1" />
+			<bit name="Radius Scaled By Occlusion Factor" index="2" />
+			<bit name="Ignore External Color" index="3" />
+			<bit name="Lock To Flare x" index="4" />
+			<bit name="Lock To Flare y" index="5" />
+			<bit name="Proximity To Center As Function Input" index="6" tooltip="The input to the curves below should be multiplied by 1 if at the center of the screen and 0 if at the edge" />
+			<bit name="Mirror Across Flare" index="7" tooltip="Also renders this reflection's mirror image across the flare center" />
+			<bit name="Disabled For Debugging" index="8" />
+			<bit name="Flip u Coordinate" index="9" />
+			<bit name="Flip v Coordinate" index="10" />
+			<bit name="Draw In World Space Instead Of Screen Space" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+		</flags16>
+		<int16 name="Bitmap Index" offset="0x2" visible="true" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<tagRef name="Bitmap Override" offset="0x8" visible="true" />
+		<float32 name="Rotation Offset" offset="0x18" visible="true" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<dataref name="Radius Curve Function" offset="0x38" visible="true" />
+		<dataref name="Scale Curve x Function" offset="0x4C" visible="true" />
+		<dataref name="Scale Curve y Function" offset="0x60" visible="true" />
+		<dataref name="Brightness Curve Function" offset="0x74" visible="true" />
+		<comment title="TINT COLOR">Tinting and modulating are not the same; 'tinting' a reflection will color the darker regions but leave the highlights, while 'modulating' will color everything uniformly. The modulation factor controls how much the reflection is modulated as opposed to tinted (0 is tinted, 1 is modulated). The tint power affects the curve of how much of the color range to tint.</comment>
+		<colorf name="Color" offset="0x88" alpha="false" visible="true" />
+		<float32 name="Modulation Factor" offset="0x94" visible="true" />
+		<float32 name="Tint Power" offset="0x98" visible="true" />
+	</tagblock>
+	<comment title="ANIMATION" />
+	<flags16 name="Animation Flags" offset="0x50" visible="true">
+		<bit name="Synchronized" index="0" />
+	</flags16>
+	<int16 name="Unknown" offset="0x52" visible="false" />
+	<tagblock name="Time Brightness" offset="0x54" visible="true" elementSize="0x14">
+		<dataref name="Function" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Age Brightness" offset="0x60" visible="true" elementSize="0x14">
+		<dataref name="Function" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Time Color" offset="0x6C" visible="true" elementSize="0x24">
+		<comment title="Color Animation" />
+		<stringid name="Input Variable" offset="0x0" visible="true" />
+		<stringid name="Range Variable" offset="0x4" visible="true" />
+		<enum16 name="Output Modifier" offset="0x8" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Plus" value="0x1" />
+			<option name="Times" value="0x2" />
+		</enum16>
+		<int16 name="Unknown" offset="0xA" visible="false" />
+		<stringid name="Output Modifier Input" offset="0xC" visible="true" />
+		<dataref name="Function" offset="0x10" visible="true" />
+	</tagblock>
+	<tagblock name="Age Color" offset="0x78" visible="true" elementSize="0x24">
+		<comment title="Color Animation" />
+		<stringid name="Input Variable" offset="0x0" visible="true" />
+		<stringid name="Range Variable" offset="0x4" visible="true" />
+		<enum16 name="Output Modifier" offset="0x8" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Plus" value="0x1" />
+			<option name="Times" value="0x2" />
+		</enum16>
+		<int16 name="Unknown" offset="0xA" visible="false" />
+		<stringid name="Output Modifier Input" offset="0xC" visible="true" />
+		<dataref name="Function" offset="0x10" visible="true" />
+	</tagblock>
+	<tagblock name="Time Rotation" offset="0x84" visible="true" elementSize="0x14">
+		<dataref name="Function" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Age Rotation" offset="0x90" visible="true" elementSize="0x14">
+		<dataref name="Function" offset="0x0" visible="true" />
+	</tagblock>
+</plugin>

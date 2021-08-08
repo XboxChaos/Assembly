@@ -1,6 +1,12 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Xml.Linq;
+using System.Xml;
+using System.IO;
+using Blamite.Blam.Scripting;
 
 namespace Blamite.Util
 {
@@ -234,6 +240,94 @@ namespace Blamite.Util
 
 			result = default(T);
 			return false;
+		}
+
+		public static void WriteScriptExpressionsToXml(IEnumerable<ScriptExpression> expressions, string outputPath)
+		{
+			if (expressions.Count() > 0)
+			{
+				var settings = new XmlWriterSettings
+				{
+					Indent = true
+				};
+
+				using (var writer = XmlWriter.Create(outputPath, settings))
+				{
+					writer.WriteStartDocument();
+					writer.WriteStartElement("Expressions");
+
+					foreach (var expr in expressions)
+					{
+						WriteExpression(writer, expr);
+					}
+
+					writer.WriteEndDocument();
+					writer.Close();
+				}
+			}
+		}
+
+		private static void WriteExpression(XmlWriter writer, ScriptExpression expression)
+		{
+			writer.WriteStartElement("Expression");
+			writer.WriteAttributeString("Index", expression.Index.Index.ToString("X4"));
+			writer.WriteAttributeString("Salt", expression.Index.Salt.ToString("X4"));
+			writer.WriteAttributeString("Opcode", expression.Opcode.ToString("X4"));
+			writer.WriteAttributeString("ValueType", expression.ReturnType.ToString("X4"));
+			switch (expression.Type)
+			{
+				case ScriptExpressionType.Group:
+					writer.WriteAttributeString("ExpressionType", "Call");
+					break;
+				case ScriptExpressionType.Expression:
+					writer.WriteAttributeString("ExpressionType", "Expression");
+					break;
+				case ScriptExpressionType.ScriptReference:
+					writer.WriteAttributeString("ExpressionType", "Script");
+					break;
+				case ScriptExpressionType.GlobalsReference:
+					writer.WriteAttributeString("ExpressionType", "Global");
+					break;
+				case ScriptExpressionType.ParameterReference:
+					writer.WriteAttributeString("ExpressionType", "Parameter");
+					break;
+			}
+			writer.WriteAttributeString("NextSalt", expression.Next.Salt.ToString("X4"));
+			writer.WriteAttributeString("NextIndex", expression.Next.Index.ToString("X4"));
+			writer.WriteAttributeString("StringOff", expression.StringOffset.ToString("X"));
+			writer.WriteAttributeString("String", expression.StringValue);
+			writer.WriteAttributeString("Value", expression.Value.ToString());
+			writer.WriteAttributeString("LineNum", expression.LineNumber.ToString("X4"));
+			writer.WriteEndElement();
+		}
+
+		public static void WritUnitSeatMappingsToXml(IEnumerable<UnitSeatMapping> mappings, string outputPath)
+        {
+			if (mappings.Count() > 0)
+			{
+				var settings = new XmlWriterSettings
+				{
+					Indent = true
+				};
+
+				using (var writer = XmlWriter.Create(outputPath, settings))
+				{
+					writer.WriteStartDocument();
+					writer.WriteStartElement("UnitSeatMappings");
+
+					foreach (var mapping in mappings.OrderBy(m => m.Index))
+					{
+						writer.WriteStartElement("Mapping");
+						writer.WriteAttributeString("Index", mapping.Index.ToString());
+						writer.WriteAttributeString("Name", mapping.Name);
+						writer.WriteAttributeString("Count", mapping.Count.ToString());
+						writer.WriteEndElement();
+					}
+
+					writer.WriteEndDocument();
+					writer.Close();
+				}
+			}
 		}
 	}
 }

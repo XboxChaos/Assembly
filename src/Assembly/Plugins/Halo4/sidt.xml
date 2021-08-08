@@ -4,31 +4,70 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
-	<undefined name="Unknown" offset="0x0" visible="false" />
-	<int16 name="Unknown" offset="0x4" visible="false" />
-	<int16 name="Unknown" offset="0x6" visible="false" />
-	<float32 name="Unknown" offset="0x8" visible="false" />
-	<float32 name="Unknown" offset="0xC" visible="false" />
-	<dataRef name="Unknown" offset="0x10" visible="false" />
-	<float32 name="Unknown" offset="0x24" visible="false" />
-	<undefined name="Unknown" offset="0x28" visible="false" />
-	<undefined name="Unknown" offset="0x2C" visible="false" />
-	<undefined name="Unknown" offset="0x30" visible="false" />
-	<undefined name="Unknown" offset="0x34" visible="false" />
-	<undefined name="Unknown" offset="0x38" visible="false" />
-	<undefined name="Unknown" offset="0x3C" visible="false" />
-	<comment title="" />
-	<undefined name="Unknown" offset="0x40" visible="false" />
-	<int16 name="Unknown" offset="0x44" visible="false" />
-	<int16 name="Unknown" offset="0x46" visible="false" />
-	<float32 name="Unknown" offset="0x48" visible="false" />
-	<float32 name="Unknown" offset="0x4C" visible="false" />
-	<dataRef name="Unknown" offset="0x50" visible="false" />
-	<float32 name="Unknown" offset="0x64" visible="false" />
-	<undefined name="Unknown" offset="0x68" visible="false" />
-	<undefined name="Unknown" offset="0x6C" visible="false" />
-	<undefined name="Unknown" offset="0x70" visible="false" />
-	<undefined name="Unknown" offset="0x74" visible="false" />
-	<undefined name="Unknown" offset="0x78" visible="false" />
-	<undefined name="Unknown" offset="0x7C" visible="false" />
+	<comment title="Simulated Input (SI)">Adds accelerations into unit's movement (by simulating movement stick change) and/or view angle (by simulating camera stick change)</comment>
+	<comment title="Impulse">At SI spawn time the SI's angle is determined by adding the result of 'response type' &amp; 'mapping type' to a random angle in given angle range.
+Each tick, this acceleration angle is multiplied by the final scaler resulting from logic below. That scaled impulse is then applied as stick input.</comment>
+	<comment title="Scalers">Starting scaler value comes from damage multiplier or is set to 1.0 if SI not directly related to damage.
+That is then scaled by the following:
+ * area control falloff
+ * function output y: func(SI_elapsed_time/duration) --&gt; y)
+ * 1 / zoom magnification
+ * tick_delta_secs / tick_length
+result of this is final scaler value</comment>
+	<comment title="Screen Space Angles">0 - pitch up, +/-180 - pitch down
+-90 - yaw left, +90 - yaw right</comment>
+	<comment title="Move" />
+	<flags32 name="Flags" offset="0x0" visible="true">
+		<bit name="Ignore Base Scaler" index="0" tooltip="Always start with 1.0 instead of any value from damage multiplier value" />
+		<bit name="Ignore Area Control Falloff" index="1" tooltip="Skip this scaler" />
+		<bit name="Ignore Elapsed Time Function Scaler" index="2" tooltip="Skip this scaler" />
+		<bit name="Ignore Zoom Scaler" index="3" tooltip="Skip this scaler" />
+		<bit name="Ignore Tick Delta Secs Scaler" index="4" tooltip="Skip this scaler" />
+	</flags32>
+	<enum16 name="Response Type" offset="0x4" visible="true">
+		<option name="Aim Vector" value="0x0" />
+		<option name="Hit Vector" value="0x1" />
+		<option name="Inverse Hit Vector" value="0x2" />
+		<option name="Attacker Origin To Victim Origin" value="0x3" />
+		<option name="Victim Origin To Attacker Origin" value="0x4" />
+	</enum16>
+	<enum16 name="Mapping Type" offset="0x6" visible="true">
+		<option name="Top Down" value="0x0" />
+		<option name="Screen Space" value="0x1" />
+	</enum16>
+	<rangef name="Angle" offset="0x8" visible="true" />
+	<dataref name="Function" offset="0x10" visible="true" />
+	<float32 name="Duration" offset="0x24" visible="true" />
+	<float32 name="Inverse Duration" offset="0x28" visible="true" tooltip="if &gt;0.f, accumulated impulse will be 'undone' over the give time span" />
+	<float32 name="Inverse Random Length" offset="0x2C" visible="true" tooltip="15.0 would randomly adjust length of accumulated impulse +/-15%" />
+	<rangef name="Inverse Random Angle" offset="0x30" visible="true" tooltip="apply random adjustment to direction of accumulated impulse" />
+	<float32 name="Linear Zoom Penalty" offset="0x38" visible="true" tooltip="linear multiplier of zoom that increases effect; computed for no change at zoom 1" />
+	<float32 name="Square Root Zoom Penalty" offset="0x3C" visible="true" tooltip="multiplier to increase effect proportional to square root of zoom; computed for no change at zoom 1" />
+	<comment title="Look" />
+	<flags32 name="Flags" offset="0x40" visible="true">
+		<bit name="Ignore Base Scaler" index="0" tooltip="Always start with 1.0 instead of any value from damage multiplier value" />
+		<bit name="Ignore Area Control Falloff" index="1" tooltip="Skip this scaler" />
+		<bit name="Ignore Elapsed Time Function Scaler" index="2" tooltip="Skip this scaler" />
+		<bit name="Ignore Zoom Scaler" index="3" tooltip="Skip this scaler" />
+		<bit name="Ignore Tick Delta Secs Scaler" index="4" tooltip="Skip this scaler" />
+	</flags32>
+	<enum16 name="Response Type" offset="0x44" visible="true">
+		<option name="Aim Vector" value="0x0" />
+		<option name="Hit Vector" value="0x1" />
+		<option name="Inverse Hit Vector" value="0x2" />
+		<option name="Attacker Origin To Victim Origin" value="0x3" />
+		<option name="Victim Origin To Attacker Origin" value="0x4" />
+	</enum16>
+	<enum16 name="Mapping Type" offset="0x46" visible="true">
+		<option name="Top Down" value="0x0" />
+		<option name="Screen Space" value="0x1" />
+	</enum16>
+	<rangef name="Angle" offset="0x48" visible="true" />
+	<dataref name="Function" offset="0x50" visible="true" />
+	<float32 name="Duration" offset="0x64" visible="true" />
+	<float32 name="Inverse Duration" offset="0x68" visible="true" tooltip="if &gt;0.f, accumulated impulse will be 'undone' over the give time span" />
+	<float32 name="Inverse Random Length" offset="0x6C" visible="true" tooltip="15.0 would randomly adjust length of accumulated impulse +/-15%" />
+	<rangef name="Inverse Random Angle" offset="0x70" visible="true" tooltip="apply random adjustment to direction of accumulated impulse" />
+	<float32 name="Linear Zoom Penalty" offset="0x78" visible="true" tooltip="linear multiplier of zoom that increases effect; computed for no change at zoom 1" />
+	<float32 name="Square Root Zoom Penalty" offset="0x7C" visible="true" tooltip="multiplier to increase effect proportional to square root of zoom; computed for no change at zoom 1" />
 </plugin>

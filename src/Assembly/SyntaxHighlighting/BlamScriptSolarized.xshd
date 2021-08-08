@@ -1,0 +1,90 @@
+﻿<SyntaxDefinition name="BlamScript" extensions=".hsc" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+  
+  <!-- Keyword Colors -->
+  <Color foreground="#d33682" name="Declaration" exampleText="global" />
+  <Color foreground="#268bd2" name="ScriptType" exampleText="static" />
+  <Color foreground="#b58900" name="ValueType" exampleText="trigger_volume" />
+  <Color foreground="#859900" name="Function" exampleText="sleep_until" />
+
+  <!-- Text Artifact Colors-->
+  <Color foreground="#2aa198" name="String" exampleText="'jun: look at that...'" />
+  <Color foreground="#6c71c4" name="NumberLiteral" exampleText="15.7" />
+  <Color foreground="#6c71c4" name="Boolean" exampleText="true" />
+  <Color foreground="#6c71c4" name="NoneKeyword" exampleText="none" />
+
+  <!-- Other Colors-->
+  <Color foreground="#93a1a1" name="Parenthesis" exampleText="(" />
+  <Color foreground="#586e75" name="Comment" exampleText="; This is a comment" />
+
+  <!-- Main Rule Set -->
+  <RuleSet ignoreCase="false">
+    <Import ruleSet="TextSet"/>
+    
+    <Span color="Comment" fontStyle="italic">
+      <Begin>;</Begin>
+    </Span>
+    <!-- Declarations -->
+    <Span color="Parenthesis">
+      <Begin>\((?=(script|global|variable|local))</Begin>
+      <End>\s</End>
+      <RuleSet>
+        <Rule color="Declaration">
+          (script|global|variable|local)
+        </Rule>
+      </RuleSet>
+    </Span>
+  </RuleSet>
+  
+  <RuleSet name="TextSet" ignoreCase="false">
+    <Span color="String">
+      <Begin>"</Begin>
+      <End>"</End>
+      <RuleSet>
+        <!-- span for escape sequences -->
+        <Span begin="\\" end="."/>
+      </RuleSet>
+    </Span>
+
+    <Span color="String">
+      <Begin>'</Begin>
+      <End>'</End>
+      <RuleSet>
+        <!-- span for escape sequences -->
+        <Span begin="\\" end="."/>
+      </RuleSet>
+    </Span>
+
+    <!-- Leave these lists empty! We will add words to them during runtime. -->
+    <Keywords color="ScriptType">
+    </Keywords>
+    
+    <Keywords color="ValueType">
+    </Keywords>
+
+    <Keywords color="Function">
+    </Keywords>
+
+    <Keywords color="Boolean">
+      <Word>true</Word>
+      <Word>false</Word>
+      <Word>True</Word>
+      <Word>False</Word>
+      <Word>TRUE</Word>
+      <Word>FALSE</Word>
+    </Keywords>
+
+    <Keywords color="NoneKeyword">
+      <Word>none</Word>
+      <Word>None</Word>
+      <Word>NONE</Word>
+    </Keywords>
+
+    <Rule color="NumberLiteral">
+      \b\d+(\.[0-9]+)?\b
+    </Rule>
+    <Rule color="Parenthesis">
+      [\(\)]+
+    </Rule>
+  </RuleSet>
+
+</SyntaxDefinition>

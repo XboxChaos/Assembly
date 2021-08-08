@@ -4,23 +4,29 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
-	<tagblock name="Categories" offset="0x0" visible="false" elementSize="0xC">
-		<stringid name="Unknown" offset="0x0" visible="false" />
-		<stringid name="Unknown" offset="0x4" visible="false" />
-		<int16 name="Unknown" offset="0x8" visible="false" />
-		<int16 name="Unknown Points" offset="0xA" visible="false" />
+	<tagblock name="Tiers" offset="0x0" visible="true" elementSize="0xC">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<stringid name="Description" offset="0x4" visible="true" />
+		<int16 name="Sequence Index" offset="0x8" visible="true" />
+		<int16 name="Point Value" offset="0xA" visible="true" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0xC" visible="false" elementSize="0x14">
-		<stringid name="Unknown" offset="0x0" visible="false" />
-		<stringid name="Unknown" offset="0x4" visible="false" />
-		<int16 name="Bitmap Index" offset="0x8" visible="false" />
-		<int8 name="Category Index" offset="0xA" visible="false" />
+	<tagblock name="Medals" offset="0xC" visible="true" elementSize="0x14">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<stringid name="Description" offset="0x4" visible="true" />
+		<int16 name="Sequence Index" offset="0x8" visible="true" />
+		<enum8 name="Medal Class" offset="0xA" visible="true">
+			<option name="Special" value="0x0" />
+			<option name="Role Spree" value="0x1" />
+			<option name="Spree" value="0x2" />
+			<option name="Multikill" value="0x3" />
+			<option name="Objectives" value="0x4" />
+			<option name="Circumstance" value="0x5" />
+			<option name="Finesse" value="0x6" />
+		</enum8>
 		<int8 name="Unknown" offset="0xB" visible="false" />
-		<int8 name="Unknown" offset="0xC" visible="false" />
-		<int8 name="Unknown" offset="0xD" visible="false" />
-		<int16 name="Unknown Points" offset="0xE" visible="false" />
-		<int8 name="Unknown" offset="0x10" visible="false" />
-		<int8 name="Unknown" offset="0x11" visible="false" />
-		<int16 name="Unknown Points" offset="0x12" visible="false" />
+		<int32 name="Ordnance Points" offset="0xC" visible="true" tooltip="The number of ordnance points that are awarded to the player when they earn this medal." />
+		<uint8 name="Ordnance Multiplier" offset="0x10" visible="true" tooltip="The ordnance multiplier to add to players ordnance multiplier when they earn this medal." />
+		<uint8 name="Tier Index" offset="0x11" visible="true" tooltip="the tier that this medal belongs to" />
+		<int16 name="Override Point Value" offset="0x12" visible="true" tooltip="if greater than zero, this point value will be awarded to players instead of the tier's point value" />
 	</tagblock>
 </plugin>

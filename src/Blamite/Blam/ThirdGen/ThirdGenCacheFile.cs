@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Blamite.Blam.Localization;
 using Blamite.Blam.Resources;
 using Blamite.Blam.Resources.Sounds;
@@ -38,14 +39,15 @@ namespace Blamite.Blam.ThirdGen
 
 		private bool _zoneOnly = false;
 
-		public ThirdGenCacheFile(IReader reader, EngineDescription buildInfo, string buildString)
+		public ThirdGenCacheFile(IReader reader, EngineDescription buildInfo, string filePath)
 		{
+			FilePath = filePath;
 			_endianness = reader.Endianness;
 			_buildInfo = buildInfo;
 			_segmenter = new FileSegmenter(buildInfo.SegmentAlignment);
 			_expander = new ThirdGenPointerExpander(buildInfo.ExpandMagic);
 			Allocator = new MetaAllocator(this, 0x10000);
-			Load(reader, buildString);
+			Load(reader);
 		}
 
 		public ThirdGenHeader FullHeader
@@ -62,9 +64,12 @@ namespace Blamite.Blam.ThirdGen
 				_simulationDefinitions.SaveChanges(stream);
 			if (_effects != null)
 				_effects.SaveChanges(stream);
-			WriteHeader(stream);
 			WriteLanguageInfo(stream);
+			_header.Checksum = ICacheFileExtensions.GenerateChecksum(this, stream);
+			WriteHeader(stream);
 		}
+
+		public string FilePath { get; private set; }
 
 		public int HeaderSize
 		{
@@ -239,15 +244,15 @@ namespace Blamite.Blam.ThirdGen
 			get { return _soundGestalt; }
 		}
 
-		private void Load(IReader reader, string buildString)
+		private void Load(IReader reader)
 		{
-			LoadHeader(reader, buildString);
+			LoadHeader(reader);
 			LoadFileNames(reader);
 			var resolver = LoadStringIDNamespaces(reader);
 			LoadStringIDs(reader, resolver);
 			LoadTags(reader);
 			LoadLanguageGlobals(reader);
-			LoadScriptFiles(reader);
+			LoadScriptFiles();
 			LoadResourceManager(reader);
 			LoadSoundResourceManager(reader);
 			LoadSimulationDefinitions(reader);
@@ -255,11 +260,11 @@ namespace Blamite.Blam.ThirdGen
 			ShaderStreamer = new ThirdGenShaderStreamer(this, _buildInfo);
 		}
 
-		private void LoadHeader(IReader reader, string buildString)
+		private void LoadHeader(IReader reader)
 		{
 			reader.SeekTo(0);
 			StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("header"));
-			_header = new ThirdGenHeader(values, _buildInfo, buildString, _segmenter, _expander);
+			_header = new ThirdGenHeader(values, _buildInfo, _segmenter, _expander);
 		}
 
 		private void LoadTags(IReader reader)
@@ -420,32 +425,22 @@ namespace Blamite.Blam.ThirdGen
 			}
 		}
 
-		private void LoadScriptFiles(IReader reader)
+		private void LoadScriptFiles()
 		{
-			ScriptFiles = new IScriptFile[0];
-
 			if (_tags != null)
 			{
-				List<ThirdGenScenarioScriptFile> l_scriptfiles = new List<ThirdGenScenarioScriptFile>();
-
 				if (_buildInfo.Layouts.HasLayout("hsdt"))
 				{
-					ITag mainScenario = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
-					if (mainScenario == null)
-						return;
-
-					foreach (ITag hs in _tags.FindTagsByGroup("hsdt"))
-						l_scriptfiles.Add(new ThirdGenScenarioScriptFile(mainScenario, hs, _fileNames.GetTagName(hs.Index), MetaArea, StringIDs, _buildInfo, _expander));
+					ScriptFiles = _tags.FindTagsByGroup("hsdt").Select(t => new HsdtScriptFile(t, _fileNames.GetTagName(t.Index), MetaArea, _buildInfo, StringIDs, _expander)).ToArray();
 				}
 				else if (_buildInfo.Layouts.HasLayout("scnr"))
 				{
-					foreach (ITag hs in _tags.FindTagsByGroup("scnr"))
-						l_scriptfiles.Add(new ThirdGenScenarioScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, StringIDs, _buildInfo, _expander));
+					ScriptFiles = _tags.FindTagsByGroup("scnr").Select(t => new ScnrScriptFile(t, _fileNames.GetTagName(t.Index), MetaArea, _buildInfo, StringIDs, _expander, Allocator)).ToArray();
 				}
 				else
-					return;
-
-				ScriptFiles = l_scriptfiles.ToArray();
+                {
+					ScriptFiles = new IScriptFile[0];
+				}
 			}
 		}
 

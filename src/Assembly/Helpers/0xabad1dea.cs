@@ -5,7 +5,6 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Blamite.IO;
 
 namespace Assembly.Helpers
 {
@@ -15,8 +14,7 @@ namespace Assembly.Helpers
 		{
 			if (App.AssemblyStorage.AssemblySettings.ApplicationEasterEggs)
 			{
-				//if (!IWff.CheckFileIsDownloaded())
-				//    IWff.BeginSilentFileDownload();
+
 			}
 		}
 
@@ -35,19 +33,16 @@ namespace Assembly.Helpers
 
 		public class IWff
 		{
-			public static bool Heman(EndianReader reader)
+			public static bool Play()
 			{
 				try
 				{
 					if (!App.AssemblyStorage.AssemblySettings.ApplicationEasterEggs) return false;
 
-					reader.SeekTo(0x00);
-					if (reader.ReadUInt32() != 1230464614) return false;
-
 					// Play Video
 					App.AssemblyStorage.AssemblySettings.HomeWindow.mediaIWff.LoadedBehavior = MediaState.Manual;
 					App.AssemblyStorage.AssemblySettings.HomeWindow.mediaIWff.Source =
-						new Uri("http://assembly.xboxchaos.com/kbdata/IWff.etmp");
+						new Uri("http://archive.org/download/Rick_Astley_Never_Gonna_Give_You_Up/Rick_Astley_Never_Gonna_Give_You_Up.mp4");
 					App.AssemblyStorage.AssemblySettings.HomeWindow.maskingIWff.Visibility = Visibility.Visible;
 					App.AssemblyStorage.AssemblySettings.HomeWindow.mediaIWff.Play();
 					App.AssemblyStorage.AssemblySettings.HomeWindow.mediaIWff.MediaEnded += (o, args) =>
@@ -115,6 +110,14 @@ namespace Assembly.Helpers
 						{
 							Source = new Uri("/Assembly;component/Helpers/0xabad1dea/DingDong.xaml", UriKind.Relative)
 						});
+					}
+					catch
+					{
+					}
+				else if (realHistory.EndsWith("autoaim"))
+					try
+					{
+						IWff.Play();
 					}
 					catch
 					{

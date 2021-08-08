@@ -5,66 +5,109 @@
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
 	<flags32 name="Flags" offset="0x0" visible="true">
-		<bit name="Bit 0" index="0" />
-		<bit name="Bit 1" index="1" />
-		<bit name="Bit 2" index="2" />
-		<bit name="Bit 3" index="3" />
-		<bit name="Bit 4" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Bit 6" index="6" />
-		<bit name="Bit 7" index="7" />
-		<bit name="Bit 8" index="8" />
-		<bit name="Bit 9" index="9" />
-		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
-		<bit name="Bit 16" index="16" />
-		<bit name="Bit 17" index="17" />
-		<bit name="Bit 18" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Bit 20" index="20" />
-		<bit name="Bit 21" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Bit 25" index="25" />
-		<bit name="Bit 26" index="26" />
-		<bit name="Bit 27" index="27" />
-		<bit name="Bit 28" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Bit 31" index="31" />
+		<bit name="Deafening To AIs" index="0" tooltip="when used as a background stereo track, causes nearby AIs to be unable to hear" />
+		<bit name="Not A Loop" index="1" tooltip="this is a collection of permutations strung together that should play once then stop." />
+		<bit name="Stops Music" index="2" tooltip="all other music loops will stop when this one starts." />
+		<bit name="Always Spatialize" index="3" tooltip="always play as 3d sound, even in first person" />
+		<bit name="Synchronize With Owner" index="4" tooltip="synchronizes playback with other looping sounds attached to the owner of this sound" />
+		<bit name="Synchronize Tracks" index="5" />
+		<bit name="Fake Spatialization With Distance" index="6" />
+		<bit name="Combine All 3D Playback" index="7" />
+		<bit name="Persistent Flyby" index="8" tooltip="like a laser blast" />
+		<bit name="Don't Apply Random Spatialization To Details" index="9" />
+		<bit name="Allow Marker Stitching" index="10" tooltip="you need to reimport the sound_looping for this to take effect" />
+		<bit name="Don't Delay Retries" index="11" tooltip="don't delay retrying the looping sound, in case the bank is loaded now" />
+		<bit name="Use Vehicle Parent For Playerness" index="12" tooltip="Look to the parent of the vehicle. Only works on vehicles. Duh" />
+		<bit name="Implicit Speed RPTC" index="13" tooltip="looping_sound_speed" />
 	</flags32>
-	<undefined name="Unknown" offset="0x4" visible="false" />
-	<undefined name="Unknown" offset="0x8" visible="false" />
-	<undefined name="Unknown" offset="0xC" visible="false" />
-	<undefined name="Unknown" offset="0x10" visible="false" />
-	<undefined name="Unknown" offset="0x14" visible="false" />
-	<undefined name="Unknown" offset="0x18" visible="false" />
-	<undefined name="Unknown" offset="0x1C" visible="false" />
-	<undefined name="Unknown" offset="0x20" visible="false" />
-	<tagblock name="Tracks" offset="0x24" visible="true" elementSize="0xB0">
+	<rangef name="Marty's Music Time" offset="0x4" visible="true" />
+	<rangef name="Distance Bounds" offset="0xC" visible="true" />
+	<float32 name="Maximum Flyby Range Distance" offset="0x14" visible="true" />
+	<enum16 name="Sound Class" offset="0x18" visible="true">
+		<option name="projectile_impact" value="0x0" />
+		<option name="projectile_detonation" value="0x1" />
+		<option name="projectile_flyby" value="0x2" />
+		<option name="projectile_detonation_lod" value="0x3" />
+		<option name="weapon_fire" value="0x4" />
+		<option name="weapon_ready" value="0x5" />
+		<option name="weapon_reload" value="0x6" />
+		<option name="weapon_empty" value="0x7" />
+		<option name="weapon_charge" value="0x8" />
+		<option name="weapon_overheat" value="0x9" />
+		<option name="weapon_idle" value="0xA" />
+		<option name="weapon_melee" value="0xB" />
+		<option name="weapon_animation" value="0xC" />
+		<option name="object_impacts" value="0xD" />
+		<option name="particle_impacts" value="0xE" />
+		<option name="weapon_fire_lod" value="0xF" />
+		<option name="water_transitions" value="0x10" />
+		<option name="lowpass_effects" value="0x11" />
+		<option name="unit_footsteps" value="0x12" />
+		<option name="unit_dialog" value="0x13" />
+		<option name="unit_animation" value="0x14" />
+		<option name="unit_unused!" value="0x15" />
+		<option name="vehicle_collision" value="0x16" />
+		<option name="vehicle_engine" value="0x17" />
+		<option name="vehicle_animation" value="0x18" />
+		<option name="vehicle_engine_lod" value="0x19" />
+		<option name="device_door" value="0x1A" />
+		<option name="device_unused0!" value="0x1B" />
+		<option name="device_machinery" value="0x1C" />
+		<option name="device_stationary" value="0x1D" />
+		<option name="device_unused1!" value="0x1E" />
+		<option name="device_unused2!" value="0x1F" />
+		<option name="music" value="0x20" />
+		<option name="ambient_nature" value="0x21" />
+		<option name="ambient_machinery" value="0x22" />
+		<option name="ambient_stationary" value="0x23" />
+		<option name="huge_ass" value="0x24" />
+		<option name="object_looping" value="0x25" />
+		<option name="cinematic_music" value="0x26" />
+		<option name="unknown_unused0!" value="0x27" />
+		<option name="unknown_unused1!" value="0x28" />
+		<option name="ambient_flock" value="0x29" />
+		<option name="no_pad" value="0x2A" />
+		<option name="no_pad_stationary" value="0x2B" />
+		<option name="equipment_effect" value="0x2C" />
+		<option name="mission_dialog" value="0x2D" />
+		<option name="cinematic_dialog" value="0x2E" />
+		<option name="scripted_cinematic_foley" value="0x2F" />
+		<option name="game_event" value="0x30" />
+		<option name="ui" value="0x31" />
+		<option name="test" value="0x32" />
+		<option name="multiplayer_dialog" value="0x33" />
+		<option name="ambient_nature_details" value="0x34" />
+		<option name="ambient_machinery_details" value="0x35" />
+		<option name="inside_surround_tail" value="0x36" />
+		<option name="outside_surround_tail" value="0x37" />
+		<option name="vehicle_detonation" value="0x38" />
+		<option name="ambient_detonation" value="0x39" />
+		<option name="first_person_inside" value="0x3A" />
+		<option name="first_person_outside" value="0x3B" />
+		<option name="first_person_anywhere" value="0x3C" />
+		<option name="space_projectile_detonation" value="0x3D" />
+		<option name="space_projectile_flyby" value="0x3E" />
+		<option name="space_vehicle_engine" value="0x3F" />
+		<option name="space_weapon_fire" value="0x40" />
+		<option name="player_voice_team" value="0x41" />
+		<option name="player_voice_proxy" value="0x42" />
+		<option name="projectile_impact_postpone" value="0x43" />
+		<option name="unit_footsteps_postpone" value="0x44" />
+		<option name="weapon_ready_third_person" value="0x45" />
+		<option name="ui_music" value="0x46" />
+	</enum16>
+	<int16 name="Unknown" offset="0x1A" visible="false" />
+	<stringid name="Master Marker Track" offset="0x1C" visible="true" tooltip="This track's markers, flags, gain and fade settings are copied to the other tracks. Its gain and fadeout settings are also copied to the details. If you want to change the master track use the sound-looping tool command" />
+	<float32 name="Maximum Radius" offset="0x20" visible="true" />
+	<tagblock name="Tracks" offset="0x24" visible="true" elementSize="0xB0" tooltip="tracks play in parallel and loop continuously for the duration of the looping sound.">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<flags16 name="Flags" offset="0x4" visible="true">
-			<bit name="Fade In At Start" index="0" />
-			<bit name="Fade Out At Stop" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
+			<bit name="Fade In At Start" index="0" tooltip="the loop sound should fade in while the start sound is playing." />
+			<bit name="Fade Out At Stop" index="1" tooltip="the loop sound should fade out while the stop sound is playing." />
+			<bit name="Fade Out At Alternate Stop" index="2" tooltip="the alt loop sound should fade out while the alt stop sound is playing." />
+			<bit name="Crossfade Alternate Loop" index="3" tooltip="crossfade when switching between alt loop and loop." />
+			<bit name="Make Fades Wait For Markers" index="4" />
+			<bit name="Master Surround Sound Track" index="5" />
 		</flags16>
 		<enum16 name="Output Effect" offset="0x6" visible="true">
 			<option name="None" value="0x0" />
@@ -81,70 +124,93 @@
 		<tagRef name="Alternate Transition In" offset="0x5C" visible="true" />
 		<tagRef name="Alternate Transition Out" offset="0x6C" visible="true" />
 		<float32 name="Fade In Duration" offset="0x7C" visible="true" />
-		<undefined name="Unknown" offset="0x80" visible="false" />
+		<enum32 name="Fade In Mode" offset="0x80" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Linear" value="0x1" />
+			<option name="Equal Power" value="0x2" />
+			<option name="Inverse Power" value="0x3" />
+			<option name="S Curve" value="0x4" />
+		</enum32>
 		<float32 name="Fade Out Duration" offset="0x84" visible="true" />
-		<int16 name="Unknown" offset="0x88" visible="false" />
-		<int16 name="Unknown" offset="0x8A" visible="false" />
-		<float32 name="Alt Crossfade Duration" offset="0x8C" visible="true" />
-		<undefined name="Unknown" offset="0x90" visible="false" />
+		<enum32 name="Fade Out Mode" offset="0x88" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Linear" value="0x1" />
+			<option name="Equal Power" value="0x2" />
+			<option name="Inverse Power" value="0x3" />
+			<option name="S Curve" value="0x4" />
+		</enum32>
+		<float32 name="Alternate Crossfade Duration" offset="0x8C" visible="true" />
+		<enum32 name="Alternate Crossfade Mode" offset="0x90" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Linear" value="0x1" />
+			<option name="Equal Power" value="0x2" />
+			<option name="Inverse Power" value="0x3" />
+			<option name="S Curve" value="0x4" />
+		</enum32>
 		<float32 name="Alternate Fade Out Duration" offset="0x94" visible="true" />
-		<undefined name="Unknown" offset="0x98" visible="false" />
-		<undefined name="Unknown" offset="0x9C" visible="false" />
-		<undefined name="Unknown" offset="0xA0" visible="false" />
-		<undefined name="Unknown" offset="0xA4" visible="false" />
-		<undefined name="Unknown" offset="0xA8" visible="false" />
-		<undefined name="Unknown" offset="0xAC" visible="false" />
+		<enum32 name="Alternate Fade Out Mode" offset="0x98" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Linear" value="0x1" />
+			<option name="Equal Power" value="0x2" />
+			<option name="Inverse Power" value="0x3" />
+			<option name="S Curve" value="0x4" />
+		</enum32>
+		<comment title="Layer Settings" />
+		<enum16 name="Layer" offset="0x9C" visible="true">
+			<option name="None" value="0x0" />
+			<option name="1" value="0x1" />
+			<option name="2" value="0x2" />
+			<option name="3" value="0x3" />
+			<option name="4" value="0x4" />
+		</enum16>
+		<flags16 name="Layer Flags" offset="0x9E" visible="true">
+			<bit name="Make Layer Wait For Markers" index="0" />
+		</flags16>
+		<float32 name="Layer Fade In Duration" offset="0xA0" visible="true" />
+		<enum32 name="Layer Fade In Mode" offset="0xA4" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Linear" value="0x1" />
+			<option name="Equal Power" value="0x2" />
+			<option name="Inverse Power" value="0x3" />
+			<option name="S Curve" value="0x4" />
+		</enum32>
+		<float32 name="Layer Fade Out Duration" offset="0xA8" visible="true" />
+		<enum32 name="Layer Fade Out Mode" offset="0xAC" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Linear" value="0x1" />
+			<option name="Equal Power" value="0x2" />
+			<option name="Inverse Power" value="0x3" />
+			<option name="S Curve" value="0x4" />
+		</enum32>
 	</tagblock>
-	<tagblock name="Detail Sounds" offset="0x30" visible="true" elementSize="0x48">
+	<tagblock name="Detail Sounds" offset="0x30" visible="true" elementSize="0x48" tooltip="detail sounds play at random throughout the duration of the looping sound.">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<tagRef name="Sound" offset="0x4" visible="true" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
 		<comment title="Frequency Of Play" />
-		<float32 name="Random Period Bounds min" offset="0x18" visible="true" />
-		<float32 name="Random Period Bounds max" offset="0x1C" visible="true" />
-		<float32 name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="true" />
-		<undefined name="Unknown" offset="0x28" visible="true" />
+		<enum32 name="Period Type" offset="0x14" visible="true">
+			<option name="Ignores Playback Time" value="0x0" />
+			<option name="Relative To End Of Playback" value="0x1" />
+		</enum32>
+		<rangef name="Random Period Bounds" offset="0x18" visible="true" tooltip="the time between successive playings of this sound will be randomly selected from this range." />
+		<float32 name="Detail Gain" offset="0x20" visible="true" />
+		<float32 name="Fade Out Duration" offset="0x24" visible="true" />
+		<enum32 name="Fade Out Mode" offset="0x28" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Linear" value="0x1" />
+			<option name="Equal Power" value="0x2" />
+			<option name="Inverse Power" value="0x3" />
+			<option name="S Curve" value="0x4" />
+		</enum32>
 		<flags32 name="Flags" offset="0x2C" visible="true">
 			<bit name="Don't Play With Alternate" index="0" />
 			<bit name="Don't Play Without Alternate" index="1" />
 			<bit name="Start Immediately With Loop" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
+			<bit name="Inherit Scale From Loop" index="3" />
+			<bit name="Don't Fade With Loop" index="4" />
 		</flags32>
-		<comment title="Random Spatialization" />
-		<degree name="Yaw Bounds min" offset="0x30" visible="true" />
-		<degree name="Yaw Bounds max" offset="0x34" visible="true" />
-		<degree name="Pitch Bounds min" offset="0x38" visible="true" />
-		<degree name="Pitch Bounds max" offset="0x3C" visible="true" />
-		<float32 name="Distance Bounds min" offset="0x40" visible="true" />
-		<float32 name="Distance Bounds max" offset="0x44" visible="true" />
+		<comment title="Random Spatialization">if the flag above is not set, this detail will be randomly spatialized according to the following constraints. if both lower and upper bounds are zero for any of the following fields, the sound's position will be randomly selected from all possible directions or distances.</comment>
+		<ranged name="Yaw Bounds" offset="0x30" visible="true" tooltip="the sound's position along the horizon will be randomly selected from this range." />
+		<ranged name="Pitch Bounds" offset="0x38" visible="true" tooltip="the sound's position above (positive values) or below (negative values) the horizon will be randomly selected from this range." />
+		<rangef name="Distance Bounds" offset="0x40" visible="true" tooltip="the sound's distance (from its spatialized looping sound or from the listener if the looping sound is stereo) will be randomly selected from this range." />
 	</tagblock>
 </plugin>

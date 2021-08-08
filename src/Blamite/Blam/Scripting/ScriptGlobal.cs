@@ -1,4 +1,5 @@
 ﻿using Blamite.Serialization;
+using Blamite.IO;
 
 namespace Blamite.Blam.Scripting
 {
@@ -40,5 +41,13 @@ namespace Blamite.Blam.Scripting
 			Type = (short) values.GetInteger("type");
 			ExpressionIndex = new DatumIndex(values.GetInteger("expression index"));
 		}
+
+        public void Write(IWriter writer)
+        {
+            writer.WriteAscii(Name, 0x20);
+            writer.WriteInt16(Type);
+            writer.WriteInt16(0);
+            writer.WriteUInt32(ExpressionIndex.Value);
+        }
 	}
 }

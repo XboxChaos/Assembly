@@ -27,6 +27,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		public ObservableCollection<MapEntry> GeneratorMaps = new ObservableCollection<MapEntry>();
 		private bool _isWorking;
 
+		private string[] MapFilter = new string[] //maps that arent proper cache files.
+			{
+				"bitmaps.map",
+				"loc.map",
+				"sounds.map",
+			};
+
 		public HaloPluginGenerator()
 		{
 			InitializeComponent();
@@ -57,9 +64,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			foreach (
 				FileInfo fi in
 					fis.Where(
-						fi =>
-							!fi.Name.ToLower().StartsWith("campaign") && !fi.Name.ToLower().StartsWith("shared") &&
-							!fi.Name.ToLower().StartsWith("english") && !fi.Name.ToLower().StartsWith("single_player_shared")))
+						fi => !MapFilter.Contains(fi.Name.ToLower())))
 			{
 				GeneratorMaps.Add(new MapEntry
 				{
@@ -162,6 +167,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				IReader reader;
 				KeyValuePair<ICacheFile, EngineDescription> cacheData = LoadMap(generatorMaps[i].LocalMapPath, out reader);
 				ICacheFile cacheFile = cacheData.Key;
+
+				if (cacheFile.MetaArea == null || cacheFile.Tags.Count == 0)
+					continue;
+
 				var analyzer = new MetaAnalyzer(cacheFile);
 				if (gameIdentifier == "")
 					gameIdentifier = cacheData.Value.Settings.GetSetting<string>("shortName");
@@ -216,6 +225,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			foreach (var map in globalMaps)
 			{
 				string filename = badChars.Aggregate(map.Key, (current, badChar) => current.Replace(badChar, '_'));
+				filename = filename.Replace(" ", "");
 				filename += ".xml";
 				string path = Path.Combine(outputPath, filename);
 
@@ -267,7 +277,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						case MetaValueType.TagReference:
 							if (offset <= size - 0x10)
 							{
-								writer.VisitTagReference("Unknown", (uint) offset, false, true, true, 0, "");
+								writer.VisitTagReference("Unknown", (uint) offset, false, true, 0, "");
 								offset += 0xC;
 								continue;
 							}
@@ -365,16 +375,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private KeyValuePair<ICacheFile, EngineDescription> LoadMap(string path, out IReader reader)
 		{
 			reader = new EndianReader(File.OpenRead(path), Endian.BigEndian);
-			reader.SeekTo(0);
-			byte[] headerMagic = reader.ReadBlock(4);
-			reader.Endianness = CacheFileLoader.DetermineCacheFileEndianness(headerMagic);
-			var versionInfo = new CacheFileVersionInfo(reader);
-			EngineDescription buildInfo =
-				App.AssemblyStorage.AssemblySettings.DefaultDatabase.FindEngineByVersion(versionInfo.BuildString);
+
+			var cacheFile = CacheFileLoader.LoadCacheFile(reader, path, App.AssemblyStorage.AssemblySettings.DefaultDatabase, out EngineDescription buildInfo);
 
 			return
-				new KeyValuePair<ICacheFile, EngineDescription>(new ThirdGenCacheFile(reader, buildInfo, versionInfo.BuildString),
-					buildInfo);
+				new KeyValuePair<ICacheFile, EngineDescription>(cacheFile, buildInfo);
 		}
 
 		public class MapEntry

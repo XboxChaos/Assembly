@@ -3,6 +3,7 @@ using System.IO;
 using System.Xml.Linq;
 using System.Collections.Generic;
 using Blamite.Util;
+using System.Runtime.CompilerServices;
 
 namespace Blamite.Serialization.Settings
 {
@@ -107,14 +108,30 @@ namespace Blamite.Serialization.Settings
 			string name = XMLUtil.GetStringAttribute(element, "name");
 			int offset = (int)XMLUtil.GetNumericAttribute(element, "offset");
 
-			if (IsArrayElement(element))
-				HandleArrayElement(layout, element, name, offset);
-			else if (IsRawElement(element))
-				HandleRawElement(layout, element, name, offset);
-			else if (IsStructElement(element))
-				HandleStructElement(layout, element, name, offset);
-			else
-				HandleBasicElement(layout, element, name, offset);
+			switch(element.Name.LocalName)
+            {
+				case "array":
+					HandleArrayElement(layout, element, name, offset);
+					break;
+				case "raw":
+					HandleRawElement(layout, element, name, offset);
+					break;
+				case "struct":
+					HandleStructElement(layout, element, name, offset);
+					break;
+				case "tagblock":
+					HandleTagBlockElement(layout, element, name, offset);
+					break;
+				case "stringId":
+					HandleStringIDElement(layout, element, name, offset);
+					break;
+				case "tagRef":
+					HandleTagReferenceElement(layout, element, name, offset);
+					break;
+				default:
+					HandleBasicElement(layout, element, name, offset);
+					break;
+			}
 		}
 
 		/// <summary>
@@ -145,6 +162,23 @@ namespace Blamite.Serialization.Settings
 			int entrySize = (int)XMLUtil.GetNumericAttribute(element, "entrySize");
 			layout.AddArrayField(name, offset, count, LoadLayout(element, entrySize));
 		}
+
+		private void HandleTagBlockElement(StructureLayout layout, XElement element, string name, int offset)
+        {
+			int entrySize = (int)XMLUtil.GetNumericAttribute(element, "entrySize");
+			layout.AddTagBlockField(name, offset, LoadLayout(element, entrySize));
+		}
+
+		private void HandleTagReferenceElement(StructureLayout layout, XElement element, string name, int offset)
+        {
+			bool withGroup = XMLUtil.GetBoolAttribute(element, "withGroup");
+			layout.AddTagReferenceField(name, offset, withGroup);
+        }
+
+		private void HandleStringIDElement(StructureLayout layout, XElement element, string name, int offset)
+        {
+			layout.AddStringIDField(name, offset);
+        }
 
 		/// <summary>
 		///     Parses an XML element representing an raw byte array and adds the
@@ -225,36 +259,6 @@ namespace Blamite.Serialization.Settings
 				default:
 					throw new ArgumentException("Unknown value type " + name);
 			}
-		}
-
-		/// <summary>
-		///     Determines whether or not an element represents an array of values.
-		/// </summary>
-		/// <param name="element">The XML element to parse.</param>
-		/// <returns>true if the element represents an array field.</returns>
-		private static bool IsArrayElement(XElement element)
-		{
-			return (element.Name == "array");
-		}
-
-		/// <summary>
-		///     Determines whether or not an element represents a raw byte array.
-		/// </summary>
-		/// <param name="element">The XML element to parse.</param>
-		/// <returns>true if the element represents a raw byte array.</returns>
-		private static bool IsRawElement(XElement element)
-		{
-			return (element.Name == "raw");
-		}
-
-		/// <summary>
-		/// Determines whether or not an element represents an embedded structure.
-		/// </summary>
-		/// <param name="element">The XML element to parse.</param>
-		/// <returns><c>true</c> if the element represents an embedded structure.</returns>
-		private static bool IsStructElement(XElement element)
-		{
-			return (element.Name == "struct");
 		}
 
 		/// <summary>

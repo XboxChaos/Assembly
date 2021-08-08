@@ -7,64 +7,128 @@
 		<revision author="Snipe" version="3">Data Layout+Reflections+Random Stuff.</revision>
 		<revision author="Lord Zedd" version="4">Cleanup and porting</revision>
 	</revisions>
+	<comment title="LENS FLARE" />
 	<degree name="Falloff Angle" offset="0x0" visible="true" />
 	<degree name="Cutoff Angle" offset="0x4" visible="true" />
-	<float32 name="Occlusion Radius" offset="0x8" visible="true" />
-	<int16 name="Unknown" offset="0xC" visible="false" />
+	<comment title="OCCLUSION">Occlusion factor affects overall lens flare brightness and can also affect scale. Occlusion never affects rotation.</comment>
+	<float32 name="Occlusion Offset Distance" offset="0x8" visible="true" tooltip="distance along offset direction used to test occlusion" />
+	<enum16 name="Occlusion Offset Direction" offset="0xC" visible="true">
+		<option name="Toward Viewer" value="0x0" />
+		<option name="Marker Forward" value="0x1" />
+		<option name="None" value="0x2" />
+	</enum16>
 	<int16 name="Unknown" offset="0xE" visible="false" />
-	<float32 name="Unknown" offset="0x10" visible="false" />
-	<undefined name="Unknown" offset="0x14" visible="false" />
-	<undefined name="Unknown" offset="0x18" visible="false" />
-	<float32 name="Near Fade Distance" offset="0x1C" visible="true" />
-	<float32 name="Far Fade Distance" offset="0x20" visible="true" />
+	<float32 name="Occlusion Inner Radius Scale" offset="0x10" visible="true" tooltip="percent of the corona to occlude against (ie 0.25, 0.125, etc)" />
+	<float32 name="Near Fade Begin Distance" offset="0x14" visible="true" tooltip="distance where the lens flare starts to fade in" />
+	<float32 name="Near Fade End Distance" offset="0x18" visible="true" tooltip="distance where the lens flare is fully faded in" />
+	<float32 name="Near Fade Distance" offset="0x1C" visible="true" tooltip="distance at which the lens flare brightness is maximum" />
+	<float32 name="Far Fade Distance" offset="0x20" visible="true" tooltip="distance at which the lens flare brightness is minimum; set to zero to disable distance fading" />
 	<tagRef name="Bitmap" offset="0x24" visible="true" />
-	<int16 name="Unknown" offset="0x34" visible="false" />
-	<int16 name="Unknown" offset="0x36" visible="false" />
-	<int16 name="Unknown" offset="0x38" visible="false" />
+	<flags16 name="Flags" offset="0x34" visible="true">
+		<bit name="Rotate Occlusion Testing Box With Lens Flare" index="0" tooltip="otherwise remains aligned with screen. turn on render_debug_lens_flares and look at green box" />
+		<bit name="No Occlusion Test" index="1" />
+		<bit name="Only Render In First Person" index="2" />
+		<bit name="Only Render In Third Person" index="3" />
+		<bit name="Use Simple Occlusion Box Test" index="4" tooltip="ignore fancy occlusion box scaling - useful for very big or very far away lens flares (skybox flares, etc)" />
+		<bit name="No Reflection Opacity Feedback" index="5" tooltip="unchecked, each reflection evaluates its opacity from the previous reflection in the list" />
+		<bit name="Scale By Marker" index="6" />
+		<bit name="Don't Autofade" index="7" tooltip="otherwise fade based on effect time, for effect attachments only" />
+		<bit name="Bit 8" index="8" />
+		<bit name="Bit 9" index="9" />
+		<bit name="Bit 10" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
+	</flags16>
+	<int16 name="Runtime Flags" offset="0x36" visible="true" />
+	<enum16 name="Rotation Function" offset="0x38" visible="true">
+		<option name="None" value="0x0" />
+		<option name="Rotation A" value="0x1" />
+		<option name="Rotation B" value="0x2" />
+		<option name="Rotation-Translation" value="0x3" />
+		<option name="Translation" value="0x4" />
+	</enum16>
 	<int16 name="Unknown" offset="0x3A" visible="false" />
 	<degree name="Rotation Function Scale" offset="0x3C" visible="true" />
-	<int16 name="Unknown" offset="0x40" visible="false" />
+	<comment title="EFFECT PARAMETERS">Only affects lens flares created by effects.</comment>
+	<enum16 name="Falloff Function" offset="0x40" visible="true">
+		<option name="Linear" value="0x0" />
+		<option name="Late" value="0x1" />
+		<option name="Very Late" value="0x2" />
+		<option name="Early" value="0x3" />
+		<option name="Very Early" value="0x4" />
+		<option name="Cosine" value="0x5" />
+		<option name="Zero" value="0x6" />
+		<option name="One" value="0x7" />
+	</enum16>
 	<int16 name="Unknown" offset="0x42" visible="false" />
 	<tagblock name="Reflections" offset="0x44" visible="true" elementSize="0x58">
-		<int8 name="Unknown" offset="0x0" visible="false" />
+		<flags8 name="Flags" offset="0x0" visible="true">
+			<bit name="Align Rotation With Screen Center" index="0" />
+			<bit name="Radius Not Scaled By Distance" index="1" />
+			<bit name="Radius Scaled By Occlusion Factor" index="2" />
+			<bit name="Occluded By Solid Objects" index="3" />
+			<bit name="Ignore Light Color" index="4" />
+			<bit name="Not Affected By Inner Occlusion" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</flags8>
 		<int8 name="Unknown" offset="0x1" visible="false" />
-		<int8 name="Unknown" offset="0x2" visible="false" />
-		<int8 name="Unknown" offset="0x3" visible="false" />
-		<float32 name="Position Along Flare Axis" offset="0x4" visible="true" />
-		<float32 name="Rotation Offset" offset="0x8" visible="true" />
-		<float32 name="Radius min" offset="0xC" visible="true" />
-		<float32 name="Radius max" offset="0x10" visible="true" />
-		<float32 name="Brightness min" offset="0x14" visible="true" />
-		<float32 name="Brightness max" offset="0x18" visible="true" />
-		<dataRef name="Primary Scale Function" offset="0x1C" visible="true" />
-		<dataRef name="Secondary Scale Function" offset="0x30" visible="true" />
-		<float32 name="Tint Modulation Factor" offset="0x44" visible="true" />
-		<float32 name="Tint Color R" offset="0x48" visible="true" />
-		<float32 name="Tint Color G" offset="0x4C" visible="true" />
-		<float32 name="Tint Color B" offset="0x50" visible="true" />
-		<float32 name="Alpha" offset="0x54" visible="true" />
+		<int16 name="Bitmap Index" offset="0x2" visible="true" />
+		<float32 name="Rotation Offset" offset="0x4" visible="true" />
+		<float32 name="Axis Offset" offset="0x8" visible="true" tooltip="percent offset in screen space along corona axis - 0.0 is on the corona, 1.0 is primary side edge of the screen, -1.0 is opposite side" />
+		<rangef name="Radius" offset="0xC" visible="true" />
+		<rangef name="Brightness" offset="0x14" visible="true" />
+		<dataref name="Radius Curve Function" offset="0x1C" visible="true" />
+		<dataref name="Brightness Curve Function" offset="0x30" visible="true" />
+		<comment title="TINT COLOR">Tinting and modulating are not the same; 'tinting' a reflection will color the darker regions but leave the highlights, while 'modulating' will color everything uniformly. The modulation factor controls how much the reflection is modulated as opposed to tinted (0 is tinted, 1 is modulated). The tint power affects the curve of how much of the color range to tint.</comment>
+		<float32 name="Modulation Factor" offset="0x44" visible="true" />
+		<colorf name="Color" offset="0x48" alpha="false" visible="true" />
+		<float32 name="Tint Power" offset="0x54" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x50" visible="false" />
-	<tagblock name="Brightness" offset="0x54" visible="true" elementSize="0x14">
-		<dataRef name="Function" offset="0x0" visible="true" />
+	<comment title="ANIMATION" />
+	<flags16 name="Animation Flags" offset="0x50" visible="true">
+		<bit name="Synchronized" index="0" />
+	</flags16>
+	<int16 name="Unknown" offset="0x52" visible="false" />
+	<tagblock name="Time Brightness" offset="0x54" visible="true" elementSize="0x14">
+		<dataref name="Function" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Color" offset="0x60" visible="true" elementSize="0x14">
-		<dataRef name="Function" offset="0x0" visible="true" />
+	<tagblock name="Age Brightness" offset="0x60" visible="true" elementSize="0x14">
+		<dataref name="Function" offset="0x0" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x6C" visible="false" />
-	<undefined name="Unknown" offset="0x70" visible="false" />
-	<undefined name="Unknown" offset="0x74" visible="false" />
-	<tagblock name="Unknown" offset="0x78" visible="true" elementSize="0x24">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<dataRef name="Function" offset="0x10" visible="true" />
+	<tagblock name="Time Color" offset="0x6C" visible="true" elementSize="0x24">
+		<comment title="Color Animation" />
+		<stringid name="Input Variable" offset="0x0" visible="true" />
+		<stringid name="Range Variable" offset="0x4" visible="true" />
+		<enum16 name="Output Modifier" offset="0x8" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Plus" value="0x1" />
+			<option name="Times" value="0x2" />
+		</enum16>
+		<int16 name="Unknown" offset="0xA" visible="false" />
+		<stringid name="Output Modifier Input" offset="0xC" visible="true" />
+		<dataref name="Function" offset="0x10" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x84" visible="false" />
-	<undefined name="Unknown" offset="0x88" visible="false" />
-	<undefined name="Unknown" offset="0x8C" visible="false" />
-	<tagblock name="Unknown" offset="0x90" visible="true" elementSize="0x14">
-		<dataRef name="Function" offset="0x0" visible="true" />
+	<tagblock name="Age Color" offset="0x78" visible="true" elementSize="0x24">
+		<comment title="Color Animation" />
+		<stringid name="Input Variable" offset="0x0" visible="true" />
+		<stringid name="Range Variable" offset="0x4" visible="true" />
+		<enum16 name="Output Modifier" offset="0x8" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Plus" value="0x1" />
+			<option name="Times" value="0x2" />
+		</enum16>
+		<int16 name="Unknown" offset="0xA" visible="false" />
+		<stringid name="Output Modifier Input" offset="0xC" visible="true" />
+		<dataref name="Function" offset="0x10" visible="true" />
+	</tagblock>
+	<tagblock name="Time Rotation" offset="0x84" visible="true" elementSize="0x14">
+		<dataref name="Function" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Age Rotation" offset="0x90" visible="true" elementSize="0x14">
+		<dataref name="Function" offset="0x0" visible="true" />
 	</tagblock>
 </plugin>

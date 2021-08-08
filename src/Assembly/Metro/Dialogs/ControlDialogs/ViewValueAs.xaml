@@ -19,74 +19,90 @@
 	<Border Background="#FF28282B" BorderThickness="1,1,1,23" BorderBrush="{DynamicResource ExtryzeAccentBrush}">
 		<Grid>
 			<Grid>
-				<Grid VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="72" Background="{DynamicResource MainBackgroundBrush}" />
+				<Grid.RowDefinitions>
+					<RowDefinition Height="72"/>
+					<RowDefinition Height="*"/>
+					<RowDefinition Height="20"/>
+				</Grid.RowDefinitions>
 
-				<Grid VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="30" Margin="0,40,0,0">
-					<StackPanel Orientation="Horizontal">
-						<TextBlock x:Name="lblOffset" Margin="20,0,0,0" Text="File Offset:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-						<TextBox x:Name="txtOffset" Margin="10,0,0,0" Padding="0,0,0,0" Width="90" Text="" VerticalAlignment="Center"
+				<Grid VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="72" Background="{DynamicResource MainBackgroundBrush}">
+
+					<Grid VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="30" Margin="0,40,0,0">
+						<StackPanel Orientation="Horizontal">
+							<TextBlock x:Name="lblOffset" Margin="20,0,0,0" Text="File Offset:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+							<TextBox x:Name="txtOffset" Margin="10,0,0,0" Padding="0,0,0,0" Width="90" Text="" VerticalAlignment="Center"
 						         KeyDown="txtOffset_KeyDown" />
 
-						<TextBlock x:Name="lblMemOffset" Margin="7,0,0,0" Text="Memory Address:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-						<TextBox x:Name="txtMemOffset" Margin="10,0,0,0" Width="90" Text="" VerticalAlignment="Center" 
+							<TextBlock x:Name="lblMemOffset" Margin="7,0,0,0" Text="Memory Address:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+							<TextBox x:Name="txtMemOffset" Margin="10,0,0,0" Width="90" Text="" VerticalAlignment="Center" 
 								 KeyDown="txtMemOffset_KeyDown" />
 
-						<Button x:Name="btnDown" Content="&lt;" Width="20" Margin="7,0,0,0" Click="btnDown_Click" />
-						<ComboBox x:Name="cbSkip" Width="35" Margin="2,0,0,0" SelectedIndex="0">
-							<ComboBoxItem Content="1"/>
-							<ComboBoxItem Content="2"/>
-							<ComboBoxItem Content="4"/>
-						</ComboBox>
-						<Button x:Name="btnUp" Content="&gt;" Width="20" Margin="2,0,0,0" Click="btnUp_Click" />
+							<Button x:Name="btnDown" Content="&lt;" Width="20" Margin="7,0,0,0" Click="btnDown_Click" />
+							<ComboBox x:Name="cbSkip" Width="35" Margin="2,0,0,0" SelectedIndex="0">
+								<ComboBoxItem Content="1"/>
+								<ComboBoxItem Content="2"/>
+								<ComboBoxItem Content="4"/>
+							</ComboBox>
+							<Button x:Name="btnUp" Content="&gt;" Width="20" Margin="2,0,0,0" Click="btnUp_Click" />
 
-						<Button x:Name="btnReset" Content="Reset" Width="60" Margin="7,0,0,0" Click="btnReset_Click" />
-					</StackPanel>
-				</Grid>
+							<Button x:Name="btnReset" Content="Reset" Width="60" Margin="7,0,0,0" Click="btnReset_Click" />
+						</StackPanel>
+					</Grid>
 
-				<Path Style="{StaticResource AsmLogo}" Margin="6,6,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="34" Width="34" />
-				<TextBlock x:Name="lblTitle" Text="Tag Value Viewer - Assembly" Foreground="#989898" VerticalAlignment="Top"
+					<Path Style="{StaticResource AsmLogo}" Margin="6,6,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="34" Width="34" />
+					<TextBlock x:Name="lblTitle" Text="Tag Value Viewer - Assembly" Foreground="#989898" VerticalAlignment="Top"
 				           HorizontalAlignment="Stretch" FontSize="15" Margin="45,12,141,0"
 				           FontFamily="{DynamicResource MetroFontLight}" TextTrimming="CharacterEllipsis" />
 
-				<ListBox Name="panelMetaComponents" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,72,0,0"
+					<Grid x:Name="headerThumb"
+				      Background="Transparent"
+				      Height="42" VerticalAlignment="Top"
+				      n:WindowMovement.DragsWindow="True" />
+
+					<Button x:Name="btnActionClose" ToolTip="Close" Width="34" Height="26" Margin="0"
+				        Style="{StaticResource WindowActionButton}" VerticalAlignment="Top" HorizontalAlignment="Right"
+				        Click="btnClose_Click">
+						<Vectors:CloseModule Width="34" Height="26" />
+					</Button>
+				</Grid>
+
+				<Grid Grid.Row="1">
+					<ListBox Name="panelMetaComponents" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
 				         VirtualizingStackPanel.IsVirtualizing="False" ScrollViewer.CanContentScroll="False"
-				         Padding="15,10,5,10" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-					<ListBox.Template>
-						<ControlTemplate>
-							<ScrollViewer Focusable="False" Padding="14,4,4,4">
-								<ItemsPresenter />
-							</ScrollViewer>
-						</ControlTemplate>
-					</ListBox.Template>
-					<ListBox.ItemContainerStyle>
-						<Style TargetType="{x:Type ListBoxItem}">
-							<Setter Property="Template">
-								<Setter.Value>
-									<ControlTemplate>
-										<ContentPresenter Content="{TemplateBinding ContentControl.Content}"
+				         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+						<ListBox.Template>
+							<ControlTemplate>
+								<ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}">
+									<ItemsPresenter />
+								</ScrollViewer>
+							</ControlTemplate>
+						</ListBox.Template>
+						<ListBox.ItemContainerStyle>
+							<Style TargetType="{x:Type ListBoxItem}">
+								<Setter Property="Template">
+									<Setter.Value>
+										<ControlTemplate>
+											<ContentPresenter Content="{TemplateBinding ContentControl.Content}"
+														  Margin="10,0,0,0"
 										                  ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
 										                  ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
 										                  HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
 										                  VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
 										                  SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-									</ControlTemplate>
-								</Setter.Value>
-							</Setter>
-						</Style>
-					</ListBox.ItemContainerStyle>
-				</ListBox>
+										</ControlTemplate>
+									</Setter.Value>
+								</Setter>
+							</Style>
+						</ListBox.ItemContainerStyle>
+					</ListBox>
+				</Grid>
 
-
-				<Grid x:Name="headerThumb"
-				      Background="Transparent"
-				      Height="42" VerticalAlignment="Top"
-				      n:WindowMovement.DragsWindow="True" />
-
-				<Button x:Name="btnActionClose" ToolTip="Close" Width="34" Height="26" Margin="0"
-				        Style="{StaticResource WindowActionButton}" VerticalAlignment="Top" HorizontalAlignment="Right"
-				        Click="btnClose_Click">
-					<Vectors:CloseModule Width="34" Height="26" />
-				</Button>
+				<Border BorderThickness="0,1,0,0" BorderBrush="#434346" Background="#FF303032" Grid.Row="2">
+					<TextBlock Text="forerunnertank.map" x:Name="txtMapName" FontSize="10" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}"
+							   TextAlignment="Right" VerticalAlignment="Center" Grid.Row="2" Style="{DynamicResource GenericTextblock}" Margin="0,0,10,0"
+							   SnapsToDevicePixels="True" />
+				</Border>
+				
 			</Grid>
 
 			<Grid Margin="-1, -1, -1, -23">

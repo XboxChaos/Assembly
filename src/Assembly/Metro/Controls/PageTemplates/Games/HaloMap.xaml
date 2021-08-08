@@ -226,6 +226,11 @@
 									                             VirtualizingStackPanel.IsVirtualizing="True"
 									                             VirtualizingStackPanel.VirtualizationMode="Standard"
 																 Grid.Row="0" Style="{StaticResource batchSizer}">
+										<MetroTreeView:MetroTreeView.ContextMenu>
+											<ContextMenu>
+												<MenuItem Header="Dump Full Tag List..." Click="DumpFullTagList" />
+											</ContextMenu>
+										</MetroTreeView:MetroTreeView.ContextMenu>
 										<MetroTreeView:MetroTreeView.Resources>
 											<HierarchicalDataTemplate DataType="{x:Type  DataBind:TagGroup}" ItemsSource="{Binding Children}">
 												<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
@@ -237,9 +242,10 @@
 													</TextBlock>
 													<StackPanel.ContextMenu>
 														<ContextMenu IsVisibleChanged="GroupContextMenu_IsVisibleChanged">
-															<MenuItem Name="itemGroupBatch" Header="Add Group To Extract List..." Click="itemGroupBatch_Click" />
+															<MenuItem Name="itemGroupBatch" Header="Add Group To Extract List..." Click="itemGroupBatch_Click" ToolTip="If the tags are being filtered by the search bar, only visible tags will be added." />
 															<MenuItem Header="Dump Tag List..." Click="DumpGroupTagList" />
-														</ContextMenu>
+                                                            <MenuItem Name="hscItem" Header="Extract Source Files" Click="HscItem_Click" />
+                                                        </ContextMenu>
 													</StackPanel.ContextMenu>
 												</StackPanel>
 											</HierarchicalDataTemplate>
@@ -260,6 +266,7 @@
 															<MenuItem Name="itemForce" Header="Forceload..." Click="contextForce_Click" ToolTip="Adds everything related to this tag into the Global Zoneset as if it were injected. Will crash the game if any raw data is null." />
 															<MenuItem Name="itemExtract" Header="Extract..." Click="contextExtract_Click" />
 															<MenuItem Name="itemTagBatch" Header="Add To Extract List..." Click="itemTagBatch_Click" />
+															<MenuItem Name="itemIsolate" Header="Isolate Shared Tag..." Click="itemIsolate_Click" ToolTip="Isolates this tag from other shared instances by copying to a new address." />
 															<Separator Name="sepTopBookmark"/>
 															<MenuItem x:Name="contextmenuBookmark" Header="Add/Remove Bookmark" Foreground="White"
 														          Click="contextBookmark_Click" />
@@ -387,22 +394,11 @@
 						</Grid>
 					</TabItem>
 
-					<TabItem x:Name="tabScripts" Header="Scripts" Style="{StaticResource MetroHeaderTabItem}" Height="16" Margin="20,0,-20,-8"
+                    <TabItem x:Name="tabScripts" Header="Scripts" Style="{StaticResource MetroHeaderTabItem}" Height="16" Margin="20,0,-20,-8"
 							 VerticalAlignment="Bottom">
-						<Grid Margin="25,20,15,5">
-							<DockPanel>
-								<ToggleButton Grid.Row="1" x:Name="btnScriptOptions" VerticalAlignment="Stretch" HorizontalAlignment="Left" IsChecked="False" ToolTip="Click to view options relating to this field." DockPanel.Dock="Bottom" Margin="-10,4,0,0">
-									<Path VerticalAlignment="Center" Margin="2" Fill="#989898" Style="{StaticResource GearIcon}" />
-								</ToggleButton>
-								<Popup x:Name="popScriptOptions" IsOpen="{Binding IsChecked, ElementName=btnScriptOptions}" PlacementTarget="{x:Reference btnScriptOptions}" StaysOpen="False" >
-									<Border BorderThickness="1" Background="#1b1b1c" BorderBrush="#333337">
-										<StackPanel>
-											<MenuItem x:Name="cbShowHSInfo" Header="Show Extra Information" IsCheckable="True" Foreground="White"
-														  Checked="cbShowHSInfo_Altered" Unchecked="cbShowHSInfo_Altered" ToolTip="Toggles the display of block indices and expression indices for variables/globals/scripts as comments. Will need to close/reopen any script tabs to take effect."/>
-										</StackPanel>
-									</Border>
-								</Popup>
-								<ListBox x:Name="lbScripts" BorderBrush="{x:Null}" Background="Transparent" VerticalAlignment="Stretch"
+                        <Grid Margin="25,20,15,5">
+                            <DockPanel>
+                                <ListBox x:Name="lbScripts" BorderBrush="{x:Null}" Background="Transparent" VerticalAlignment="Stretch"
 							         ScrollViewer.CanContentScroll="False" DockPanel.Dock="Top">
 									<ListBox.ItemTemplate>
 										<DataTemplate>

@@ -5,10 +5,10 @@
 		<revision author="DarkShallFall" version="1">Mapped plugin structure a new.</revision>
 		<revision author="Lord Zedd" version="2">thanks h5</revision>
 	</revisions>
-	<tagRef name="Shared Globals" offset="0x0" visible="true" />
-	<tagRef name="MP Variant Settings UI" offset="0x10" visible="true" />
-	<tagRef name="Game Hopper Strings" offset="0x20" visible="true" />
-	<tagblock name="CUI Screen Widgets" offset="0x30" visible="true" elementSize="0x14">
+	<tagRef name="Shared Globals" offset="0x0" visible="true" tooltip="This is a reference to the ui shared globals tag" />
+	<tagref name="MP Variant Settings UI" offset="0x10" visible="true" tooltip="This blob defines the ui for setting multiplayer game variant parameters" />
+	<tagref name="Game Hopper Descriptions" offset="0x20" visible="true" tooltip="This is for the loc game hopper strings" />
+	<tagblock name="CUI Screen Widgets" offset="0x30" visible="true" elementSize="0x14" tooltip="These are the HaloX screen widgets">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<tagRef name="CUI Screen" offset="0x4" visible="true" />
 	</tagblock>
@@ -22,10 +22,10 @@
 		</enum8>
 		<int8 name="Unknown" offset="0x5" visible="false" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
-		<float32 name="Z Near" offset="0x8" visible="true" />
-		<float32 name="Z Far" offset="0xC" visible="true" />
-		<float32 name="X Angle Degrees" offset="0x10" visible="true" />
-		<float32 name="Y Angle Degrees" offset="0x14" visible="true" />
+		<float32 name="z Near" offset="0x8" visible="true" />
+		<float32 name="z Far" offset="0xC" visible="true" />
+		<float32 name="x Angle Degrees" offset="0x10" visible="true" />
+		<float32 name="y Angle Degrees" offset="0x14" visible="true" />
 	</tagblock>
 	<tagblock name="Player Model Camera Settings" offset="0x48" visible="true" elementSize="0x64">
 		<comment title="Camera Settings">These are model-viewing camera parameters that you can control
@@ -39,28 +39,14 @@
 * Camera Rotational Step Size is the incremental change in camera rotation per game tick
 * The Transition Functions are used to control the camera zoom with controller input. if left empty, a linear interpolation is used for camera zoom</comment>
 		<stringid name="Name" offset="0x0" visible="true" />
-		<float32 name="Model World Position x" offset="0x4" visible="true" />
-		<float32 name="Model World Position y" offset="0x8" visible="true" />
-		<float32 name="Model World Position z" offset="0xC" visible="true" />
-		<float32 name="Minimum World Position x" offset="0x10" visible="true" />
-		<float32 name="Minimum World Position y" offset="0x14" visible="true" />
-		<float32 name="Minimum World Position z" offset="0x18" visible="true" />
-		<float32 name="Maximum World Position x" offset="0x1C" visible="true" />
-		<float32 name="Maximum World Position y" offset="0x20" visible="true" />
-		<float32 name="Maximum World Position z" offset="0x24" visible="true" />
+		<point3 name="Model World Position" offset="0x4" visible="true" tooltip="arbitrary location in the world to place the model" />
+		<point3 name="Minimum World Position" offset="0x10" visible="true" />
+		<point3 name="Maximum World Position" offset="0x1C" visible="true" />
 		<stringid name="Viewed Model Marker Name" offset="0x28" visible="true" />
-		<float32 name="Minimum Camera Offset x" offset="0x2C" visible="true" />
-		<float32 name="Minimum Camera Offset y" offset="0x30" visible="true" />
-		<float32 name="Minimum Camera Offset z" offset="0x34" visible="true" />
-		<float32 name="Minimum Camera Focal Offset x" offset="0x38" visible="true" />
-		<float32 name="Minimum Camera Focal Offset y" offset="0x3C" visible="true" />
-		<float32 name="Minimum Camera Focal Offset z" offset="0x40" visible="true" />
-		<float32 name="Maximum Camera Offset x" offset="0x44" visible="true" />
-		<float32 name="Maximum Camera Offset y" offset="0x48" visible="true" />
-		<float32 name="Maximum Camera Offset z" offset="0x4C" visible="true" />
-		<float32 name="Maximum Camera Focal Offset x" offset="0x50" visible="true" />
-		<float32 name="Maximum Camera Focal Offset y" offset="0x54" visible="true" />
-		<float32 name="Maximum Camera Focal Offset z" offset="0x58" visible="true" />
+		<point3 name="Minimum Camera Offset" offset="0x2C" visible="true" />
+		<point3 name="Minimum Camera Focal Offset" offset="0x38" visible="true" />
+		<point3 name="Maximum Camera Offset" offset="0x44" visible="true" />
+		<point3 name="Maximum Camera Focal Offset" offset="0x50" visible="true" />
 		<float32 name="Initial Zoom" offset="0x5C" visible="true" />
 		<float32 name="FOV" offset="0x60" visible="true" />
 	</tagblock>
@@ -68,23 +54,20 @@
 		<stringid name="Name" offset="0x0" visible="true" />
 		<float32 name="Zoom Speed" offset="0x4" visible="true" />
 		<dataref name="Zoom Transition Function" offset="0x8" visible="true" />
-		<degree name="Initial Rotation y" offset="0x1C" visible="true" />
-		<degree name="Initial Rotation p" offset="0x20" visible="true" />
-		<degree name="Minimum Rotation y" offset="0x24" visible="true" />
-		<degree name="Minimum Rotation p" offset="0x28" visible="true" />
-		<degree name="Maximum Rotation y" offset="0x2C" visible="true" />
-		<degree name="Maximum Rotation p" offset="0x30" visible="true" />
+		<degree2 name="Initial Rotation" offset="0x1C" visible="true" />
+		<degree2 name="Minimum Rotation" offset="0x24" visible="true" />
+		<degree2 name="Maximum Rotation" offset="0x2C" visible="true" />
 		<float32 name="Rotation Speed" offset="0x34" visible="true" />
 	</tagblock>
 	<tagblock name="Player Model Camera Transition Settings" offset="0x60" visible="true" elementSize="0x14">
 		<dataref name="Camera Transition Function" offset="0x0" visible="true" />
 	</tagblock>
-	<tagRef name="Cookie Purchase Globals" offset="0x6C" visible="true" />
+	<tagRef name="Purchase Globals" offset="0x6C" visible="true" />
 	<tagblock name="Active Roster Settings" offset="0x7C" visible="true" elementSize="0x14">
 		<dataref name="Analog Scroll Function" offset="0x0" visible="true" />
 	</tagblock>
-	<tagRef name="PGCR Categories Definitions" offset="0x88" visible="true" />
-	<tagblock name="Campaign State Screen Scripts" offset="0x98" visible="true" elementSize="0x18">
+	<tagref name="PGCR Categories Definitions" offset="0x88" visible="true" tooltip="This is a reference to the tag storing the categories we want to display in the PGCR" />
+	<tagblock name="Campaign State Screen Scripts" offset="0x98" visible="true" elementSize="0x18" tooltip="Contains a mapping of campaign map IDs and screen scripts used to implement lobby backgrounds that track campaign state. This block should only be non-empty for the main menu.">
 		<int32 name="Map ID" offset="0x0" visible="true" />
 		<stringid name="Screen Script Name" offset="0x4" visible="true" />
 		<tagRef name="Music Override" offset="0x8" visible="true" />

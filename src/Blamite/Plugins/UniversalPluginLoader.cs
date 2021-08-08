@@ -425,15 +425,12 @@ namespace Blamite.Plugins
 		private static void ReadTagRef(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
 			uint pluginLine, string tooltip)
 		{
-			bool showJumpTo = true;
 			bool withGroup = true;
 
-			if (reader.MoveToAttribute("showJumpTo"))
-				showJumpTo = ParseBool(reader.Value);
 			if (reader.MoveToAttribute("withClass") || reader.MoveToAttribute("withGroup"))
 				withGroup = ParseBool(reader.Value);
 
-			visitor.VisitTagReference(name, offset, visible, withGroup, showJumpTo, pluginLine, tooltip);
+			visitor.VisitTagReference(name, offset, visible, withGroup, pluginLine, tooltip);
 		}
 
 		private static void ReadAscii(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,

@@ -11,13 +11,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+// TODO (Dragon): write compress/decompress for CEA 360
+
 namespace Blamite.Compression
 {
 	public enum CompressionState
 	{
 		Null,
 		Compressed,
-		Decompressed
+		Decompressed,
+		ReadOnly
 	}
 
 	/// <summary>
@@ -34,18 +37,21 @@ namespace Blamite.Compression
 		/// <returns></returns>
 		public static CompressionState HandleCompression(string input, EngineDatabase engineDb, CompressionState desiredState = CompressionState.Null)
 		{
+			FileInfo cache = new FileInfo(input);
+			if (cache.IsReadOnly)
+				return CompressionState.ReadOnly;
+
 			CompressionState state;
-			EngineType type;
+			EngineDescription engineInfo;
+
 			using (FileStream fileStream = File.OpenRead(input))
 			{
-				var reader = new EndianReader(fileStream, Endian.BigEndian);
-
-				state = DetermineState(reader, engineDb, out type);
+				var reader = new EndianReader(fileStream, Endian.LittleEndian);
+				state = DetermineState(reader, engineDb, out engineInfo);
 			}
 
 			if (state == desiredState)
 				return state;
-
 			switch (state)
 			{
 				default:
@@ -53,7 +59,30 @@ namespace Blamite.Compression
 					return state;
 				case CompressionState.Compressed:
 					{
-						if (type == EngineType.SecondGeneration)
+						if (engineInfo.Engine == EngineType.FirstGeneration)
+						{
+							if (engineInfo.Version == 5)
+							{
+								DecompressFirstGenCEXbox(input);
+								return CompressionState.Decompressed;
+							}
+							else if (engineInfo.Version == 7)
+							{
+								if (engineInfo.Endian == Endian.BigEndian)
+								{
+									DecompressFirstGenCEA360(input);
+									return CompressionState.Decompressed;
+								}
+								else
+								{
+									DecompressFirstGenCEAMCC(input);
+									return CompressionState.Decompressed;
+								}
+							}
+							else
+								return state;
+						}
+						else if (engineInfo.Engine == EngineType.SecondGeneration)
 						{
 							DecompressSecondGen(input);
 							return CompressionState.Decompressed;
@@ -63,7 +92,30 @@ namespace Blamite.Compression
 					}
 				case CompressionState.Decompressed:
 					{
-						if (type == EngineType.SecondGeneration)
+						if (engineInfo.Engine == EngineType.FirstGeneration)
+						{
+							if (engineInfo.Version == 5)
+							{
+								CompressFirstGenCEXbox(input);
+								return CompressionState.Compressed;
+							}
+							else if (engineInfo.Version == 7)
+							{
+								if (engineInfo.Endian == Endian.BigEndian)
+								{
+									CompressFirstGenCEA360(input);
+									return CompressionState.Compressed;
+								}
+								else
+								{
+									CompressFirstGenCEAMCC(input);
+									return CompressionState.Compressed;
+								}
+							}
+							else
+								return state;
+						}
+						else if (engineInfo.Engine == EngineType.SecondGeneration)
 						{
 							CompressSecondGen(input);
 							return CompressionState.Compressed;
@@ -74,32 +126,292 @@ namespace Blamite.Compression
 			}
 		}
 
-		private static CompressionState DetermineState(IReader reader, EngineDatabase engineDb, out EngineType type)
+		// TODO (Dragon): support CEA 360 with LZX
+		private static CompressionState DetermineState(IReader reader, EngineDatabase engineDb, out EngineDescription engineInfo)
 		{
-			// Set the reader's endianness based upon the file's header magic
-			reader.SeekTo(0);
-			byte[] headerMagic = reader.ReadBlock(4);
-			reader.Endianness = CacheFileLoader.DetermineCacheFileEndianness(headerMagic);
-
-			// Load engine version info
-			var version = new CacheFileVersionInfo(reader);
-			type = version.Engine;
-
-			if (version.Engine == EngineType.SecondGeneration)
+			// not all compressed maps have a decompressed header
+			// so we handle that here
+			try
 			{
-				// Load build info
-				var engineInfo = engineDb.FindEngineByVersion(version.BuildString);
-				if (engineInfo == null)
-					return CompressionState.Null;
-
-				if (!engineInfo.UsesCompression)
-					return CompressionState.Null;
-
-				return AnalyzeSecondGen(reader, engineInfo);
+				// Load engine version info
+				engineInfo = CacheFileLoader.FindEngineDescription(reader, engineDb);
 			}
+			catch (ArgumentException e) // map had no header, assume its CEA
+			{
+				using (MemoryStream ms_header_out = new MemoryStream())
+				{
+					// first chunk offset is at 0x4
+					reader.SeekTo(0x4);
+					int first_chunk_offset = reader.ReadInt32();
+					int second_chunk_offset = reader.ReadInt32();
+					int first_chunk_size = second_chunk_offset - first_chunk_offset - 6;
+
+					reader.SeekTo(first_chunk_offset);
+
+					// CEA 360 stores an 0xFF, use it for ID
+					byte cea_360_ff_byte = reader.ReadByte();
+					if (cea_360_ff_byte == 0xFF)    // CEA 360
+					{
+						// TODO (Dragon): decompress first chunk to get the header with lzx
+						throw new InvalidOperationException("Assembly does not support CEA 360 decompression (missing LZX)");
+					}
+					else // assume CEA MCC
+					{
+						reader.SeekTo(first_chunk_offset + 6);
+						byte[] first_chunk_bytes = reader.ReadBlock(first_chunk_size);
+						using (MemoryStream ms_header_comp = new MemoryStream(first_chunk_bytes))
+						{
+							//ms_header_comp.Write(first_chunk_bytes, 0, first_chunk_size);
+							using (DeflateStream ds = new DeflateStream(ms_header_comp, CompressionMode.Decompress))
+							{
+								ds.CopyTo(ms_header_out);
+							}
+						}
+					}
+
+					EndianReader header_reader = new EndianReader(ms_header_out, Endian.LittleEndian);
+					engineInfo = CacheFileLoader.FindEngineDescription(header_reader, engineDb);
+				}
+			}
+
+			// if engine wasnt set its because we couldnt read a proper header, throw an exception
+			if (engineInfo == null || !engineInfo.UsesCompression)
+				return CompressionState.Null;
+
+			if (engineInfo.Engine == EngineType.FirstGeneration)
+				return AnalyzeFirstGen(reader, engineInfo);
+			else if (engineInfo.Engine == EngineType.SecondGeneration)
+				return AnalyzeSecondGen(reader, engineInfo);
 			else
 				return CompressionState.Null;
 		}
+
+		#region First Generation
+
+		private static CompressionState AnalyzeFirstGen(IReader reader, EngineDescription engineInfo)
+		{
+			reader.SeekTo(0);
+			StructureValueCollection headerValues = StructureReader.ReadStructure(reader, engineInfo.Layouts.GetLayout("header"));
+
+			var metaOffset = (int)headerValues.GetInteger("meta offset");
+
+			if (metaOffset >= reader.Length)
+				return CompressionState.Compressed;
+
+
+			reader.SeekTo(metaOffset);
+
+			StructureValueCollection tagTableValues = StructureReader.ReadStructure(reader, engineInfo.Layouts.GetLayout("meta header"));
+
+			if ((uint)tagTableValues.GetInteger("magic") != CharConstant.FromString("tags"))
+				return CompressionState.Compressed;
+
+			return CompressionState.Decompressed;
+		}
+
+		// TODO (Dragon): using these wrappers may make things cleaner
+		// NOTE: wrappers because first gen has multiple methods of compression
+		private static void CompressFirstGen(string file)
+		{
+			// TODO (Dragon): check for and compress CE Xbox
+			// TODO (Dragon): check for and compress CEA 360
+			// TODO (Dragon): check for and compress CEA MCC
+		}
+
+		private static void DecompressFirstGen(string file)
+		{
+			// TODO (Dragon): check for and decompress CE Xbox
+			// TODO (Dragon): check for and decompress CEA 360
+			// TODO (Dragon): check for and decompress CEA MCC
+		}
+
+		#region Original Xbox
+
+		// TODO (Dragon): see if theres a good way to minimize memory consumption
+		private static void CompressFirstGenCEXbox(string file)
+		{
+			using (MemoryStream msOutput = new MemoryStream())
+			{
+				using (FileStream fsInput = new FileStream(file, FileMode.Open))
+				{
+					using (BinaryReader brInput = new BinaryReader(fsInput))
+					{
+						//header is uncompressed
+						msOutput.Write(brInput.ReadBytes(0x800), 0, 0x800);
+
+						int realsize = (int)fsInput.Length - 0x800;
+						byte[] chunkData = new byte[realsize];
+
+						fsInput.Seek(0x800, SeekOrigin.Begin);
+						fsInput.Read(chunkData, 0, realsize);
+
+						msOutput.WriteByte((byte)0x78);
+						msOutput.WriteByte((byte)0x9C);
+
+						using (DeflateStream ds = new DeflateStream(msOutput, CompressionMode.Compress, true))
+						{
+							realsize = fsInput.Read(chunkData, 0, chunkData.Length);
+							ds.Write(chunkData, 0, chunkData.Length);
+						}
+
+						// NOTE: actual zlib has an adler-32 checksum trailer on the end
+						uint adler = Adler32.Calculate(chunkData);
+
+						// write the bytes
+						msOutput.WriteByte((byte)((adler & 0xFF000000) >> 24));
+						msOutput.WriteByte((byte)((adler & 0xFF0000) >> 16));
+						msOutput.WriteByte((byte)((adler & 0xFF00) >> 8));
+						msOutput.WriteByte((byte)(adler & 0xFF));
+
+						// CE xbox has some padding on the end to a 0x800 alignment
+						int pad_size = 0x800 - ((int)msOutput.Length % 0x800);
+						byte[] padding = new byte[pad_size];
+						msOutput.Write(padding, 0, pad_size);
+					}
+				}
+				File.WriteAllBytes(file, msOutput.ToArray());
+			}
+		}
+
+		// TODO (Dragon): see if theres a good way to minimize memory consumption
+		private static void DecompressFirstGenCEXbox(string file)
+		{
+			using (MemoryStream msOutput = new MemoryStream())
+			{
+				using (FileStream fsInput = new FileStream(file, FileMode.Open))
+				{
+					using (BinaryReader brInput = new BinaryReader(fsInput))
+					{
+						//header is uncompressed
+						msOutput.Write(brInput.ReadBytes(0x800), 0, 0x800);
+
+						fsInput.Seek(0x8, SeekOrigin.Begin); // TODO (Dragon): dont hardcode offset 
+						int realsize = brInput.ReadInt32() - 0x800;
+						byte[] chunkData = new byte[realsize];
+
+						fsInput.Seek(0x802, SeekOrigin.Begin);
+						using (DeflateStream ds = new DeflateStream(fsInput, CompressionMode.Decompress, true))
+						{
+							realsize = ds.Read(chunkData, 0, chunkData.Length);
+						}
+						msOutput.Write(chunkData, 0, realsize);
+					}
+				}
+				File.WriteAllBytes(file, msOutput.ToArray());
+			}
+		}
+		#endregion
+
+		#region CEA 360
+
+		// TODO (Dragon): add some kinda lzx and add CEA 360 support
+		private static void CompressFirstGenCEA360(string file)
+		{
+			throw new InvalidOperationException("assembly does not support CEA 360 compression (missing LZX)");
+		}
+
+		private static void DecompressFirstGenCEA360(string file)
+		{
+			throw new InvalidOperationException("assembly does not support CEA 360 decompression (missing LZX)");
+		}
+		#endregion
+
+		#region CEA MCC
+
+		private static void CompressFirstGenCEAMCC(string file)
+		{
+			using (MemoryStream msOutput = new MemoryStream())
+			{
+				using (BinaryWriter bwOutput = new BinaryWriter(msOutput))
+				{
+					using (FileStream fsInput = new FileStream(file, FileMode.Open))
+					{
+						List<int> chunk_offsets = new List<int>();
+
+						int datalength = (int)fsInput.Length;
+						int chunkcount = (((datalength + 0x1FFFF) & ~0x1FFFF) / 0x20000);
+
+						bwOutput.Write(chunkcount);
+
+						int datastart = 0x40000;
+						msOutput.Position = datastart;
+
+						for (int i = 0; i < chunkcount; i++)
+						{
+							chunk_offsets.Add((int)bwOutput.BaseStream.Position);
+							int size = 0x20000;
+							if (i == chunkcount - 1)
+								size = (int)fsInput.Length % 0x20000;
+
+							bwOutput.Write(size);
+							bwOutput.Write((byte)0x28);
+							bwOutput.Write((byte)0x15);
+
+							using (DeflateStream ds = new DeflateStream(msOutput, CompressionLevel.Fastest, true))
+							{
+								byte[] chunkData = new byte[size];
+								fsInput.Read(chunkData, 0, size);
+								ds.Write(chunkData, 0, chunkData.Length);
+							}
+						}
+
+						msOutput.Position = 0x4;
+						for (int i = 0; i < chunkcount; i++)
+						{
+							bwOutput.Write(chunk_offsets[i]);
+						}
+					}
+					File.WriteAllBytes(file, msOutput.ToArray());
+				}
+			}
+		}
+
+		private static void DecompressFirstGenCEAMCC(string file)
+		{
+			using (MemoryStream msOutput = new MemoryStream())
+			{
+				using (FileStream fsInput = new FileStream(file, FileMode.Open))
+				{
+					using (BinaryReader brInput = new BinaryReader(fsInput))
+					{
+						int chunk_count = brInput.ReadInt32();
+
+						List<int> chunk_offsets = new List<int>();
+
+						for (int i = 0; i < chunk_count; i++)
+						{
+							int offset = brInput.ReadInt32();
+
+							if (offset >= fsInput.Length)
+								throw new ArgumentException("Chunk " + i + " has an offset past the end of the file.");
+
+							chunk_offsets.Add(offset);
+						}
+
+						for (int i = 0; i < chunk_offsets.Count(); i++)
+						{
+							fsInput.Seek(chunk_offsets[i], SeekOrigin.Begin);
+
+							int realsize = brInput.ReadInt32();
+
+							fsInput.Seek(chunk_offsets[i] + 6, SeekOrigin.Begin);
+
+							byte[] chunkData = new byte[realsize];
+
+							using (DeflateStream ds = new DeflateStream(fsInput, CompressionMode.Decompress, true))
+							{
+								ds.Read(chunkData, 0, chunkData.Length);
+							}
+
+							msOutput.Write(chunkData, 0, realsize);
+						}
+					}
+				}
+				File.WriteAllBytes(file, msOutput.ToArray());
+			}
+		}
+		#endregion
+		#endregion
 
 		#region Second Generation
 		private static CompressionState AnalyzeSecondGen(IReader reader, EngineDescription engineInfo)

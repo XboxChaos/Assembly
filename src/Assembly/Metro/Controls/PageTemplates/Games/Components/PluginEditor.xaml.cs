@@ -43,13 +43,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			App.AssemblyStorage.AssemblySettings.PropertyChanged += Settings_SettingsChanged;
 
 			string groupName = VariousFunctions.SterilizeTagGroupName(CharConstant.ToString(tag.RawTag.Group.Magic)).Trim();
-			_pluginPath =
-				string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 					buildInfo.Settings.GetSetting<string>("plugins"), groupName.Trim());
 
 			if (buildInfo.Settings.PathExists("fallbackPlugins"))
-				_fallbackPluginPath =
-				string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+				_fallbackPluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 					buildInfo.Settings.GetSetting<string>("fallbackPlugins"), groupName.Trim());
 			LoadPlugin();
 		}
@@ -58,9 +56,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			UpdateLayout();
 
-			DocumentLine selectedLineDetails = txtPlugin.Document.GetLineByNumber(line);
-			txtPlugin.ScrollToLine(line);
-			txtPlugin.Select(selectedLineDetails.Offset, selectedLineDetails.Length);
+			if (line < txtPlugin.Document.LineCount)
+			{
+				DocumentLine selectedLineDetails = txtPlugin.Document.GetLineByNumber(line);
+				txtPlugin.ScrollToLine(line);
+				txtPlugin.Select(selectedLineDetails.Offset, selectedLineDetails.Length);
+			}
+			else
+				txtPlugin.ScrollToEnd();
 		}
 
 		private void Settings_SettingsChanged(object sender, EventArgs e)
@@ -144,16 +147,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void LoadPlugin()
 		{
-			// Load Plugin Path
-			string pluginpath = _pluginPath;
+			string bestPluginPath;
 
-			if (!File.Exists(pluginpath))
-				pluginpath = _fallbackPluginPath;
+			if (string.IsNullOrEmpty(_pluginPath) || !File.Exists(_pluginPath))
+			{
+				if (string.IsNullOrEmpty(_fallbackPluginPath) || !File.Exists(_fallbackPluginPath))
+					return;
 
-			if (pluginpath == null || !File.Exists(pluginpath))
-				return;
+				bestPluginPath = _fallbackPluginPath;
+			}
+			else
+				bestPluginPath = _pluginPath;
 
-			txtPlugin.Text = File.ReadAllText(pluginpath);
+			txtPlugin.Text = File.ReadAllText(bestPluginPath);
 		}
 
 		private void LoadCodeCompletion()

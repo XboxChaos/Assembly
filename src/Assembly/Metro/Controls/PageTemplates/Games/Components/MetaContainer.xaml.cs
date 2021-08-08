@@ -118,6 +118,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			tbMetaEditors.SelectedItem = tabMetaEditor;
 		}
 
+        public void RefreshMetaEditor()
+        {
+            _metaEditor.RefreshEditor(MetaData.MetaReader.LoadType.File);
+        }
+
 		public void LoadNewTagEntry(TagEntry tag)
 		{
 			TagEntry = tag;

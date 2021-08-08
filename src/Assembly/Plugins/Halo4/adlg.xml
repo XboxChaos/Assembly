@@ -7,20 +7,19 @@
 		<revision author="Lord Zedd" version="4">thanks h5</revision>
 	</revisions>
 	<comment title="Global Timing" />
-	<float32 name="Strike Delay Bounds min" offset="0x0" visible="true" />
-	<float32 name="Strike Delay Bounds max" offset="0x4" visible="true" />
+	<rangef name="Strike Delay Bounds" offset="0x0" visible="true" />
 	<float32 name="Remind Delay" offset="0x8" visible="true" />
 	<float32 name="Cover Curse Chance" offset="0xC" visible="true" />
 	<comment title="Player Look Settings">used to play look and look_longtime dialogue in campain and firefight</comment>
-	<float32 name="Player Look Max Distance" offset="0x10" visible="true" />
-	<float32 name="Player Look" offset="0x14" visible="true" />
-	<float32 name="Player Look Long Time" offset="0x18" visible="true" />
+	<float32 name="Player Look Maximum Distance" offset="0x10" visible="true" tooltip="defaults to 10 wu" />
+	<float32 name="Player Look" offset="0x14" visible="true" tooltip="defaults to 3 secs" />
+	<float32 name="Player Look Long Time" offset="0x18" visible="true" tooltip="defaults to 15 secs" />
 	<comment title="Spartan Nearby Search Distance">this is used when checking if the player is with other spartan ais.</comment>
-	<float32 name="Spartan Nearby Search Distance" offset="0x1C" visible="true" />
+	<float32 name="Spartan Nearby Search Distance" offset="0x1C" visible="true" tooltip="defaults to 7 wu" />
 	<comment title="Face Friendly Player Distance">when talking to friendly players within this distance, if not in combat, we will turn to face them.</comment>
-	<float32 name="Face Friendly Player Distance" offset="0x20" visible="true" />
+	<float32 name="Face Friendly Player Distance" offset="0x20" visible="true" tooltip="0" />
 	<comment title="Space Dialogue Effect">at some point this will be moved into the patterns block...</comment>
-	<stringid name="Space Dialogue Effect" offset="0x24" visible="true" />
+	<stringid name="Space Dialogue Effect" offset="0x24" visible="true" tooltip="used for dialog lines started by a pattern with &quot;speaker in space&quot; set" />
 	<comment title="Default Stimulus Suppressors">when these stimuli are active on an actor, default stimulus permutations will be suppressed.</comment>
 	<tagblock name="Default Stimulus Suppressors" offset="0x28" visible="true" elementSize="0x4">
 		<stringid name="Stimulus" offset="0x0" visible="true" />
@@ -30,22 +29,21 @@
 		<int16 name="Parent Index" offset="0x4" visible="true" />
 		<enum16 name="Priority" offset="0x6" visible="true">
 			<option name="None" value="0x0" />
-			<option name="Autonomic" value="0x1" />
-			<option name="Recall" value="0x2" />
-			<option name="Idle" value="0x3" />
-			<option name="Comment" value="0x4" />
-			<option name="Idle Response" value="0x5" />
-			<option name="Postcombat" value="0x6" />
-			<option name="Combat" value="0x7" />
-			<option name="Status" value="0x8" />
-			<option name="Respond" value="0x9" />
-			<option name="Warn" value="0xA" />
-			<option name="Act" value="0xB" />
-			<option name="React" value="0xC" />
-			<option name="Involuntary" value="0xD" />
-			<option name="Scream" value="0xE" />
-			<option name="Scripted" value="0xF" />
-			<option name="Death" value="0x10" />
+			<option name="Recall" value="0x1" />
+			<option name="Idle" value="0x2" />
+			<option name="Comment" value="0x3" />
+			<option name="Idle Response" value="0x4" />
+			<option name="Postcombat" value="0x5" />
+			<option name="Combat" value="0x6" />
+			<option name="Status" value="0x7" />
+			<option name="Respond" value="0x8" />
+			<option name="Warn" value="0x9" />
+			<option name="Act" value="0xA" />
+			<option name="React" value="0xB" />
+			<option name="Involuntary" value="0xC" />
+			<option name="Scream" value="0xD" />
+			<option name="Scripted" value="0xE" />
+			<option name="Death" value="0xF" />
 		</enum16>
 		<flags32 name="Flags" offset="0x8" visible="true">
 			<bit name="Immediate" index="0" />
@@ -53,10 +51,9 @@
 			<bit name="Cancel Low Priority" index="2" />
 			<bit name="Disable Dialogue Effect" index="3" />
 			<bit name="Predict Facial Animations" index="4" />
-			<bit name="No Distance Check Exceptions" index="5" />
 		</flags32>
-		<enum16 name="Glance Behavior" offset="0xC" visible="true">
-			<option name="NONE" value="0x0" />
+		<enum16 name="Glance Behavior" offset="0xC" visible="true" tooltip="how does the speaker of this vocalization direct his gaze?">
+			<option name="None" value="0x0" />
 			<option name="Glance Subject Short" value="0x1" />
 			<option name="Glance Subject Long" value="0x2" />
 			<option name="Glance Cause Short" value="0x3" />
@@ -64,8 +61,8 @@
 			<option name="Glance Friend Short" value="0x5" />
 			<option name="Glance Friend Long" value="0x6" />
 		</enum16>
-		<enum16 name="Glance Recipient Behavior" offset="0xE" visible="true">
-			<option name="NONE" value="0x0" />
+		<enum16 name="Glance Recipient Behavior" offset="0xE" visible="true" tooltip="how does someone who hears me behave?">
+			<option name="None" value="0x0" />
 			<option name="Glance Subject Short" value="0x1" />
 			<option name="Glance Subject Long" value="0x2" />
 			<option name="Glance Cause Short" value="0x3" />
@@ -78,7 +75,7 @@
 			<option name="Speaker" value="0x1" />
 			<option name="Listener" value="0x2" />
 		</enum16>
-		<enum16 name="Max Combat Status" offset="0x12" visible="true">
+		<enum16 name="Maximum Combat Status" offset="0x12" visible="true">
 			<option name="Asleep" value="0x0" />
 			<option name="Idle" value="0x1" />
 			<option name="Alert" value="0x2" />
@@ -105,15 +102,15 @@
 			<option name="Fallback" value="0xB" />
 		</enum16>
 		<int16 name="Proxy Dialogue Index" offset="0x16" visible="true" />
-		<float32 name="Sound Repetition Delay" offset="0x18" visible="true" />
-		<float32 name="Allowable Queue Delay" offset="0x1C" visible="true" />
-		<float32 name="Pre Voc. Delay" offset="0x20" visible="true" />
-		<float32 name="Notification Delay" offset="0x24" visible="true" />
-		<float32 name="Post Voc. Delay" offset="0x28" visible="true" />
-		<float32 name="Repeat Delay" offset="0x2C" visible="true" />
-		<float32 name="Weight" offset="0x30" visible="true" />
-		<float32 name="Speaker Freeze Time" offset="0x34" visible="true" />
-		<float32 name="Listener Freeze Time" offset="0x38" visible="true" />
+		<float32 name="Sound Repetition Delay" offset="0x18" visible="true" tooltip="Minimum delay time between playing the same permutation" />
+		<float32 name="Allowable Queue Delay" offset="0x1C" visible="true" tooltip="How long to wait to actually start the vocalization" />
+		<float32 name="Pre Vocalization Delay" offset="0x20" visible="true" tooltip="How long to wait to actually start the vocalization" />
+		<float32 name="Notification Delay" offset="0x24" visible="true" tooltip="How long into the vocalization the AI should be notified" />
+		<float32 name="Post Vocalization Delay" offset="0x28" visible="true" tooltip="How long speech is suppressed in the speaking unit after vocalizing" />
+		<float32 name="Repeat Delay" offset="0x2C" visible="true" tooltip="How long before the same vocalization can be repeated" />
+		<float32 name="Weight" offset="0x30" visible="true" tooltip="Inherent weight of this vocalization" />
+		<float32 name="Speaker Freeze Time" offset="0x34" visible="true" tooltip="speaker won't move for the given amount of time" />
+		<float32 name="Listener Freeze Time" offset="0x38" visible="true" tooltip="listener won't move for the given amount of time (from start of vocalization)" />
 		<enum16 name="Speaker Emotion" offset="0x3C" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Happy" value="0x1" />
@@ -140,10 +137,9 @@
 		<float32 name="Player Skip Fraction" offset="0x44" visible="true" />
 		<float32 name="Flood Skip Fraction" offset="0x48" visible="true" />
 		<float32 name="Skip Fraction" offset="0x4C" visible="true" />
-		<int16 name="Mission Min Value" offset="0x50" visible="true" />
-		<int16 name="Mission Max Value" offset="0x52" visible="true" />
+		<range16 name="Mission Value" offset="0x50" visible="true" tooltip="The range of mission ids that we play this line in" />
 		<stringid name="Sample Line" offset="0x54" visible="true" />
-		<tagblock name="Reponses" offset="0x58" visible="true" elementSize="0xC">
+		<tagblock name="Responses" offset="0x58" visible="true" elementSize="0xC">
 			<stringid name="Vocalization Name" offset="0x0" visible="true" />
 			<flags16 name="Flags" offset="0x4" visible="true">
 				<bit name="Nonexclusive" index="0" />
@@ -159,12 +155,171 @@
 				<option name="Leader" value="0x5" />
 				<option name="Friend Infantry" value="0x6" />
 			</enum16>
-			<int16 name="Dialogue Index (Import)" offset="0xA" visible="true" />
+			<int16 name="Dialogue Index" offset="0xA" visible="true" />
 		</tagblock>
 	</tagblock>
 	<tagblock name="Patterns" offset="0x40" visible="true" elementSize="0x38">
-		<int16 name="Dialog Type" offset="0x0" visible="true" />
-		<int16 name="Vocalizations Index" offset="0x2" visible="true" />
+		<enum16 name="Dialogue Type" offset="0x0" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Death" value="0x1" />
+			<option name="Death Headshot" value="0x2" />
+			<option name="Death Assassination" value="0x3" />
+			<option name="Damage" value="0x4" />
+			<option name="Anounce" value="0x5" />
+			<option name="Sighted Interest" value="0x6" />
+			<option name="Sighted New" value="0x7" />
+			<option name="Sighted New Major" value="0x8" />
+			<option name="Sighted First" value="0x9" />
+			<option name="Sighted Special" value="0xA" />
+			<option name="Heard New" value="0xB" />
+			<option name="Heard Old" value="0xC" />
+			<option name="Found Unit" value="0xD" />
+			<option name="Found Unit Pursuit" value="0xE" />
+			<option name="Throwing Grenade" value="0xF" />
+			<option name="Throwing Grenade All" value="0x10" />
+			<option name="Stuck Grenade" value="0x11" />
+			<option name="Fighting" value="0x12" />
+			<option name="Suppressing Fire" value="0x13" />
+			<option name="Grenade Uncover" value="0x14" />
+			<option name="Jump" value="0x15" />
+			<option name="Reload" value="0x16" />
+			<option name="Reload Low Ammo" value="0x17" />
+			<option name="Ready Spartan Laser" value="0x18" />
+			<option name="Ready Rocket Launcher" value="0x19" />
+			<option name="Ready Flak Cannon" value="0x1A" />
+			<option name="Ready Plasma Launcher" value="0x1B" />
+			<option name="Surprised" value="0x1C" />
+			<option name="Lost Contact" value="0x1D" />
+			<option name="Investigate Failed" value="0x1E" />
+			<option name="Pursuit Failed" value="0x1F" />
+			<option name="Investigate Start" value="0x20" />
+			<option name="Investigate Interest" value="0x21" />
+			<option name="Searching" value="0x22" />
+			<option name="Abandoned Search Space" value="0x23" />
+			<option name="Abandoned Search Time" value="0x24" />
+			<option name="Presearch Failed" value="0x25" />
+			<option name="Abandoned Search Restricted" value="0x26" />
+			<option name="Pursuit Start" value="0x27" />
+			<option name="Postcombat Inspect Body" value="0x28" />
+			<option name="Vehicle Slow Down" value="0x29" />
+			<option name="Vehicle Get In" value="0x2A" />
+			<option name="Idle" value="0x2B" />
+			<option name="Combat Idle" value="0x2C" />
+			<option name="Taunt" value="0x2D" />
+			<option name="Taunt Reply" value="0x2E" />
+			<option name="Retreat" value="0x2F" />
+			<option name="Retreat From Scary Target" value="0x30" />
+			<option name="Retreat From Dead Leader" value="0x31" />
+			<option name="Retreat From Proximity" value="0x32" />
+			<option name="Retreat From Low Shield" value="0x33" />
+			<option name="Flee" value="0x34" />
+			<option name="Cowering" value="0x35" />
+			<option name="Melee Charge" value="0x36" />
+			<option name="Melee Attack" value="0x37" />
+			<option name="Vehicle Falling" value="0x38" />
+			<option name="Vehicle Woohoo" value="0x39" />
+			<option name="Vehicle Scared" value="0x3A" />
+			<option name="Vehicle Crazy" value="0x3B" />
+			<option name="Leap" value="0x3C" />
+			<option name="Postcombat Win" value="0x3D" />
+			<option name="Postcombat Lose" value="0x3E" />
+			<option name="Postcombat Neutral" value="0x3F" />
+			<option name="Shoot Corpse" value="0x40" />
+			<option name="Postcombat Start" value="0x41" />
+			<option name="Inspect Body Start" value="0x42" />
+			<option name="Postcombat Status" value="0x43" />
+			<option name="Postcombat Last Standing" value="0x44" />
+			<option name="Vehicle Entry Start Driver" value="0x45" />
+			<option name="Vehicle Enter" value="0x46" />
+			<option name="Vehicle Entry Start Gun" value="0x47" />
+			<option name="Vehicle Entry Start Passenger" value="0x48" />
+			<option name="Vehicle Exit" value="0x49" />
+			<option name="Evict Driver" value="0x4A" />
+			<option name="Evict Gunner" value="0x4B" />
+			<option name="Evict Passenger" value="0x4C" />
+			<option name="New Order Enemy Advancing" value="0x4D" />
+			<option name="New Order Enemy Charging" value="0x4E" />
+			<option name="New Order Enemy Fallingback" value="0x4F" />
+			<option name="New Order Advance" value="0x50" />
+			<option name="New Order Charge" value="0x51" />
+			<option name="New Order Fallback" value="0x52" />
+			<option name="New Order Moveon" value="0x53" />
+			<option name="New Order Fllplr" value="0x54" />
+			<option name="New Order Arrive Combat" value="0x55" />
+			<option name="New Order End Combat" value="0x56" />
+			<option name="New Order Investigate" value="0x57" />
+			<option name="New Order Spread" value="0x58" />
+			<option name="New Order Hold" value="0x59" />
+			<option name="New Order Find Cover" value="0x5A" />
+			<option name="New Order Covering Fire" value="0x5B" />
+			<option name="Order Ack Positive" value="0x5C" />
+			<option name="Order Ack Negative" value="0x5D" />
+			<option name="Order Ack Canceled" value="0x5E" />
+			<option name="Order Ack Completed" value="0x5F" />
+			<option name="Order Ack Regroup" value="0x60" />
+			<option name="Order Ack Disband" value="0x61" />
+			<option name="Order Ack Weapon Change" value="0x62" />
+			<option name="Order Ack Attack Vehicle" value="0x63" />
+			<option name="Order Ack Attack Infantry" value="0x64" />
+			<option name="Order Ack Interact" value="0x65" />
+			<option name="Order Ack Pinned Down" value="0x66" />
+			<option name="Fireteam Member Join" value="0x67" />
+			<option name="Fireteam Member Danger" value="0x68" />
+			<option name="Fireteam Member Died" value="0x69" />
+			<option name="Emerge" value="0x6A" />
+			<option name="Curse" value="0x6B" />
+			<option name="Threaten" value="0x6C" />
+			<option name="Cover Friend" value="0x6D" />
+			<option name="Move Cover" value="0x6E" />
+			<option name="In Cover" value="0x6F" />
+			<option name="Pinned Down" value="0x70" />
+			<option name="Strike" value="0x71" />
+			<option name="Open Fire" value="0x72" />
+			<option name="Shoot" value="0x73" />
+			<option name="Shoot Multiple" value="0x74" />
+			<option name="Shoot Gunner" value="0x75" />
+			<option name="Gloat" value="0x76" />
+			<option name="Greet" value="0x77" />
+			<option name="Player Look" value="0x78" />
+			<option name="Player Look Longtime" value="0x79" />
+			<option name="Panic Grenade Attached" value="0x7A" />
+			<option name="Panic Vehicle Destroyed" value="0x7B" />
+			<option name="Help Response" value="0x7C" />
+			<option name="Remind" value="0x7D" />
+			<option name="Overheated" value="0x7E" />
+			<option name="Weapon Trade Better" value="0x7F" />
+			<option name="Weapon Trade Worse" value="0x80" />
+			<option name="Weapon Trade Equal" value="0x81" />
+			<option name="Betray" value="0x82" />
+			<option name="Forgive" value="0x83" />
+			<option name="Warn Target" value="0x84" />
+			<option name="Warn Pursuit" value="0x85" />
+			<option name="Use Equipment" value="0x86" />
+			<option name="Ambush" value="0x87" />
+			<option name="Undr Fire" value="0x88" />
+			<option name="Undr Fire Trrt" value="0x89" />
+			<option name="Flood Boom" value="0x8A" />
+			<option name="Vehicle Boom" value="0x8B" />
+			<option name="Berserk" value="0x8C" />
+			<option name="Stealth" value="0x8D" />
+			<option name="Infection" value="0x8E" />
+			<option name="Reanimate" value="0x8F" />
+			<option name="Scold" value="0x90" />
+			<option name="Praise" value="0x91" />
+			<option name="Scorn" value="0x92" />
+			<option name="Plead" value="0x93" />
+			<option name="Thank" value="0x94" />
+			<option name="Ok" value="0x95" />
+			<option name="Cheer" value="0x96" />
+			<option name="Invite Vehicle" value="0x97" />
+			<option name="Invite Vehicle Driver" value="0x98" />
+			<option name="Invite Vehicle Gunner" value="0x99" />
+			<option name="Player Blocking" value="0x9A" />
+			<option name="Player Multi Kill" value="0x9B" />
+			<option name="Advance Start" value="0x9C" />
+			<option name="Hamstring Charge" value="0x9D" />
+		</enum16>
+		<int16 name="Vocalization Index" offset="0x2" visible="true" />
 		<stringid name="Vocalization Name" offset="0x4" visible="true" />
 		<enum16 name="Speaker Type" offset="0x8" visible="true">
 			<option name="Subject" value="0x0" />
@@ -181,7 +336,7 @@
 			<option name="Peer" value="0xB" />
 			<option name="None" value="0xC" />
 		</enum16>
-		<enum16 name="Listener/Target" offset="0xA" visible="true">
+		<enum16 name="Listener/Target" offset="0xA" visible="true" tooltip="who/what am I speaking to/of?">
 			<option name="Subject" value="0x0" />
 			<option name="Cause" value="0x1" />
 			<option name="Friend" value="0x2" />
@@ -196,8 +351,8 @@
 			<option name="Peer" value="0xB" />
 			<option name="None" value="0xC" />
 		</enum16>
-		<enum16 name="Hostility" offset="0xC" visible="true">
-			<option name="NONE" value="0x0" />
+		<enum16 name="Hostility" offset="0xC" visible="true" tooltip="The relationship between the subject and the cause">
+			<option name="None" value="0x0" />
 			<option name="Self" value="0x1" />
 			<option name="Neutral" value="0x2" />
 			<option name="Friend" value="0x3" />
@@ -215,12 +370,9 @@
 			<bit name="Cause Is Infantry" index="7" />
 			<bit name="Subject Is Infantry" index="8" />
 			<bit name="Speaker Is Infantry" index="9" />
-			<bit name="Bit 10" index="10" />
+			<bit name="Speaker In Space" index="10" />
 			<bit name="Speaker Has Low Health" index="11" />
 			<bit name="Cause Is Targeting Player" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
 		</flags16>
 		<enum16 name="Cause Actor Type" offset="0x10" visible="true">
 			<option name="None" value="0x0" />
@@ -246,11 +398,77 @@
 			<option name="Mounted Weapon" value="0x14" />
 			<option name="Octopus" value="0x15" />
 		</enum16>
-		<int16 name="Cause Type" offset="0x12" visible="true" />
+		<enum16 name="Cause Type" offset="0x12" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Player" value="0x1" />
+			<option name="Actor" value="0x2" />
+			<option name="Biped" value="0x3" />
+			<option name="Body" value="0x4" />
+			<option name="Vehicle" value="0x5" />
+			<option name="Projectile" value="0x6" />
+			<option name="Actor Or Player" value="0x7" />
+			<option name="Turret" value="0x8" />
+			<option name="Unit In Vehicle" value="0x9" />
+			<option name="Unit In Turret" value="0xA" />
+			<option name="Unit Carrying Turret" value="0xB" />
+			<option name="Driver" value="0xC" />
+			<option name="Gunner" value="0xD" />
+			<option name="Passenger" value="0xE" />
+			<option name="Postcombat" value="0xF" />
+			<option name="Postcombat Won" value="0x10" />
+			<option name="Postcombat Lost" value="0x11" />
+			<option name="Player Masterchief" value="0x12" />
+			<option name="Player Spartans" value="0x13" />
+			<option name="Player Dervish" value="0x14" />
+			<option name="Heretic" value="0x15" />
+			<option name="Majorly Scary" value="0x16" />
+			<option name="Last Man In Vehicle" value="0x17" />
+			<option name="Male" value="0x18" />
+			<option name="Female" value="0x19" />
+			<option name="Grenade" value="0x1A" />
+			<option name="Stealth" value="0x1B" />
+			<option name="Flood" value="0x1C" />
+			<option name="Pureform" value="0x1D" />
+			<option name="Player Empty Vehicle" value="0x1E" />
+			<option name="Equipment" value="0x1F" />
+		</enum16>
 		<stringid name="Cause AI Type Name" offset="0x14" visible="true" />
 		<stringid name="Cause Equipment Type Name" offset="0x18" visible="true" />
 		<comment title="Speaker" />
-		<int16 name="Speaker Object Type" offset="0x1C" visible="true" />
+		<enum16 name="Speaker Object Type" offset="0x1C" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Player" value="0x1" />
+			<option name="Actor" value="0x2" />
+			<option name="Biped" value="0x3" />
+			<option name="Body" value="0x4" />
+			<option name="Vehicle" value="0x5" />
+			<option name="Projectile" value="0x6" />
+			<option name="Actor Or Player" value="0x7" />
+			<option name="Turret" value="0x8" />
+			<option name="Unit In Vehicle" value="0x9" />
+			<option name="Unit In Turret" value="0xA" />
+			<option name="Unit Carrying Turret" value="0xB" />
+			<option name="Driver" value="0xC" />
+			<option name="Gunner" value="0xD" />
+			<option name="Passenger" value="0xE" />
+			<option name="Postcombat" value="0xF" />
+			<option name="Postcombat Won" value="0x10" />
+			<option name="Postcombat Lost" value="0x11" />
+			<option name="Player Masterchief" value="0x12" />
+			<option name="Player Spartans" value="0x13" />
+			<option name="Player Dervish" value="0x14" />
+			<option name="Heretic" value="0x15" />
+			<option name="Majorly Scary" value="0x16" />
+			<option name="Last Man In Vehicle" value="0x17" />
+			<option name="Male" value="0x18" />
+			<option name="Female" value="0x19" />
+			<option name="Grenade" value="0x1A" />
+			<option name="Stealth" value="0x1B" />
+			<option name="Flood" value="0x1C" />
+			<option name="Pureform" value="0x1D" />
+			<option name="Player Empty Vehicle" value="0x1E" />
+			<option name="Equipment" value="0x1F" />
+		</enum16>
 		<enum16 name="Speaker Behavior" offset="0x1E" visible="true">
 			<option name="Any" value="0x0" />
 			<option name="Combat" value="0x1" />
@@ -265,8 +483,8 @@
 			<option name="Fought Brutes" value="0xA" />
 			<option name="Fought Flood" value="0xB" />
 		</enum16>
-		<enum16 name="Danger Level" offset="0x20" visible="true">
-			<option name="NONE" value="0x0" />
+		<enum16 name="Danger Level" offset="0x20" visible="true" tooltip="Speaker must have danger level of at least this much">
+			<option name="None" value="0x0" />
 			<option name="Broadly Facing" value="0x1" />
 			<option name="Shooting Near" value="0x2" />
 			<option name="Shooting At" value="0x3" />
@@ -276,8 +494,34 @@
 			<option name="Body Damage" value="0x7" />
 			<option name="Body Extended Damage" value="0x8" />
 		</enum16>
-		<int8 name="Speaker/Subject Position" offset="0x22" visible="true" />
-		<int8 name="Speaker/Cause Position" offset="0x23" visible="true" />
+		<enum8 name="Speaker/Subject Position" offset="0x22" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Very Near" value="0x1" />
+			<option name="Near" value="0x2" />
+			<option name="Medium Range" value="0x3" />
+			<option name="Far" value="0x4" />
+			<option name="Very Far" value="0x5" />
+			<option name="In Front Of" value="0x6" />
+			<option name="Behind" value="0x7" />
+			<option name="Above" value="0x8" />
+			<option name="Below" value="0x9" />
+			<option name="Few" value="0xA" />
+			<option name="In Range" value="0xB" />
+		</enum8>
+		<enum8 name="Speaker/Cause Position" offset="0x23" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Very Near" value="0x1" />
+			<option name="Near" value="0x2" />
+			<option name="Medium Range" value="0x3" />
+			<option name="Far" value="0x4" />
+			<option name="Very Far" value="0x5" />
+			<option name="In Front Of" value="0x6" />
+			<option name="Behind" value="0x7" />
+			<option name="Above" value="0x8" />
+			<option name="Below" value="0x9" />
+			<option name="Few" value="0xA" />
+			<option name="In Range" value="0xB" />
+		</enum8>
 		<flags32 name="Conditions" offset="0x24" visible="true">
 			<bit name="Asleep" index="0" />
 			<bit name="Idle" index="1" />
@@ -294,9 +538,22 @@
 			<bit name="Vehicle Passenger" index="12" />
 		</flags32>
 		<comment title="Matching" />
-		<int16 name="Spacial Relation" offset="0x28" visible="true" />
+		<enum16 name="Spatial Relation" offset="0x28" visible="true" tooltip="with respect to the subject, the cause is ...">
+			<option name="None" value="0x0" />
+			<option name="Very Near" value="0x1" />
+			<option name="Near" value="0x2" />
+			<option name="Medium Range" value="0x3" />
+			<option name="Far" value="0x4" />
+			<option name="Very Far" value="0x5" />
+			<option name="In Front Of" value="0x6" />
+			<option name="Behind" value="0x7" />
+			<option name="Above" value="0x8" />
+			<option name="Below" value="0x9" />
+			<option name="Few" value="0xA" />
+			<option name="In Range" value="0xB" />
+		</enum16>
 		<enum16 name="Damage Type" offset="0x2A" visible="true">
-			<option name="NONE" value="0x0" />
+			<option name="None" value="0x0" />
 			<option name="Falling" value="0x1" />
 			<option name="Bullet" value="0x2" />
 			<option name="Grenade" value="0x3" />
@@ -344,14 +601,47 @@
 			<option name="Mounted Weapon" value="0x14" />
 			<option name="Octopus" value="0x15" />
 		</enum16>
-		<int16 name="Subject Type" offset="0x30" visible="true" />
+		<enum16 name="Subject Type" offset="0x30" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Player" value="0x1" />
+			<option name="Actor" value="0x2" />
+			<option name="Biped" value="0x3" />
+			<option name="Body" value="0x4" />
+			<option name="Vehicle" value="0x5" />
+			<option name="Projectile" value="0x6" />
+			<option name="Actor Or Player" value="0x7" />
+			<option name="Turret" value="0x8" />
+			<option name="Unit In Vehicle" value="0x9" />
+			<option name="Unit In Turret" value="0xA" />
+			<option name="Unit Carrying Turret" value="0xB" />
+			<option name="Driver" value="0xC" />
+			<option name="Gunner" value="0xD" />
+			<option name="Passenger" value="0xE" />
+			<option name="Postcombat" value="0xF" />
+			<option name="Postcombat Won" value="0x10" />
+			<option name="Postcombat Lost" value="0x11" />
+			<option name="Player Masterchief" value="0x12" />
+			<option name="Player Spartans" value="0x13" />
+			<option name="Player Dervish" value="0x14" />
+			<option name="Heretic" value="0x15" />
+			<option name="Majorly Scary" value="0x16" />
+			<option name="Last Man In Vehicle" value="0x17" />
+			<option name="Male" value="0x18" />
+			<option name="Female" value="0x19" />
+			<option name="Grenade" value="0x1A" />
+			<option name="Stealth" value="0x1B" />
+			<option name="Flood" value="0x1C" />
+			<option name="Pureform" value="0x1D" />
+			<option name="Player Empty Vehicle" value="0x1E" />
+			<option name="Equipment" value="0x1F" />
+		</enum16>
 		<int16 name="Unknown" offset="0x32" visible="false" />
 		<stringid name="Subject AI Type Name" offset="0x34" visible="true" />
 	</tagblock>
 	<undefined name="Unknown" offset="0x4C" visible="false" />
 	<undefined name="Unknown" offset="0x50" visible="false" />
 	<undefined name="Unknown" offset="0x54" visible="false" />
-	<tagblock name="Dialog Data" offset="0x58" visible="true" elementSize="0x4">
+	<tagblock name="Dialogue Data" offset="0x58" visible="true" elementSize="0x4">
 		<int16 name="Start Index" offset="0x0" visible="true" />
 		<int16 name="Length" offset="0x2" visible="true" />
 	</tagblock>

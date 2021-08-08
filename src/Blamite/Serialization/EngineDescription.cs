@@ -1,6 +1,7 @@
 ﻿using Blamite.Blam;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.Util;
+using Blamite.IO;
 using Blamite.Serialization.Settings;
 
 namespace Blamite.Serialization
@@ -16,10 +17,12 @@ namespace Blamite.Serialization
 		/// <param name="name">The engine's name.</param>
 		/// <param name="version">The engine's version.</param>
 		/// <param name="settings">The engine's settings.</param>
-		public EngineDescription(string name, string version, SettingsGroup settings)
+		public EngineDescription(string name, int version, int versionalt, string build, SettingsGroup settings)
 		{
 			Name = name;
 			Version = version;
+			VersionAlt = versionalt;
+			BuildVersion = build;
 			Settings = settings;
 
 			LoadSettings();
@@ -31,9 +34,19 @@ namespace Blamite.Serialization
 		public string Name { get; private set; }
 
 		/// <summary>
-		///     Gets the engine's version string.
+		///     Gets the engine's version number.
 		/// </summary>
-		public string Version { get; private set; }
+		public int Version { get; private set; }
+
+		/// <summary>
+		///     Gets the engine's alternate version number in cases there are more that 1 known.
+		/// </summary>
+		public int VersionAlt { get; private set; }
+
+		/// <summary>
+		///     Gets the engine's build string.
+		/// </summary>
+		public string BuildVersion { get; private set; }
 
 		/// <summary>
 		///     Gets the settings for the engine.
@@ -41,7 +54,7 @@ namespace Blamite.Serialization
 		public SettingsGroup Settings { get; private set; }
 
 		/// <summary>
-		///     Gets the size of a map header.
+		///     Gets the size of a map header. Pulled from the header layout.
 		/// </summary>
 		public int HeaderSize { get; private set; }
 
@@ -97,7 +110,7 @@ namespace Blamite.Serialization
 		///     Can be <c>null</c> if not present.
 		/// </summary>
 		public VertexLayoutCollection VertexLayouts { get; private set; }
-
+		
 		/// <summary>
 		///     Gets group names for the engine.
 		///     Can be <c>null</c> if not present.
@@ -158,15 +171,30 @@ namespace Blamite.Serialization
 		/// </summary>
 		public bool OptimizedShaders { get; private set; }
 
+		/// <summary>
+		///		Expected Endianness of the build.
+		/// </summary>
+		public Endian Endian { get; private set; }
+
+		/// <summary>
+		///		The location of the build string for this engine. Pulled from the header layout.
+		/// </summary>
+		public int BuildStringOffset { get; private set; }
+
+		/// <summary>
+		///		The engine's generation.
+		/// </summary>
+		public EngineType Engine { get; set; }
+
 		private void LoadSettings()
 		{
 			LoadEngineSettings();
 			LoadDatabases();
+			LoadCrucialLayoutInfo();
 		}
 
 		private void LoadEngineSettings()
 		{
-			HeaderSize = Settings.GetSetting<int>("engineInfo/headerSize");
 			SegmentAlignment = Settings.GetSettingOrDefault("engineInfo/segmentAlignment", 0x1000);
 			ExpandMagic = Settings.GetSettingOrDefault("engineInfo/expandMagic", -1);
 
@@ -174,6 +202,26 @@ namespace Blamite.Serialization
 			UsesStringHashes = Settings.GetSettingOrDefault("engineInfo/usesStringHashes", true);
 			UsesRawHashes = Settings.GetSettingOrDefault("engineInfo/usesRawHashes", true);
 			OptimizedShaders = Settings.GetSettingOrDefault("engineInfo/optimizedShaders", false);
+
+			string endian = Settings.GetSettingOrDefault("engineInfo/endian", "undefined");
+
+			if (endian.Contains("big"))
+				Endian = Endian.BigEndian;
+			else if (endian.Contains("little"))
+				Endian = Endian.LittleEndian;
+			else
+				throw new System.Exception("Invalid endian type \"" + endian + "\" for build " + Name + "in engines.xml. Only \"big\", and \"little\" are valid.");
+
+			string generation = Settings.GetSettingOrDefault("engineInfo/generation", "undefined");
+
+			if (generation.Contains("first"))
+				Engine = EngineType.FirstGeneration;
+			else if (generation.Contains("second"))
+				Engine = EngineType.SecondGeneration;
+			else if (generation.Contains("third"))
+				Engine = EngineType.ThirdGeneration;
+			else
+				throw new System.Exception("Invalid generation type \"" + generation + "\" for build " + Name + "in engines.xml. Only \"first\", \"second\", and \"third\" are valid.");
 
 			if (Settings.PathExists("engineInfo/pokingOffset"))
 				PokingOffset = Settings.GetSettingOrDefault("engineInfo/pokingOffset", 0);
@@ -201,6 +249,21 @@ namespace Blamite.Serialization
 			VertexLayouts = Settings.GetSettingOrDefault<VertexLayoutCollection>("databases/vertexLayouts", null);
 			GroupNames = Settings.GetSettingOrDefault<GroupNameCollection>("databases/groupNames", null);
 			Poking = Settings.GetSettingOrDefault<PokingCollection>("databases/poking", null);
+		}
+
+		private void LoadCrucialLayoutInfo()
+		{
+			var header = Layouts.GetLayout("header");
+			if (header == null)
+				throw new System.Exception("Build " + Name + "in engines.xml is missing a layout for \"header\".");
+
+			if (header.Size == 0)
+				throw new System.Exception("Header layout for build " + Name + "in engines.xml is missing a valid size attribute.");
+			HeaderSize = header.Size;
+
+			if (!header.HasField("build string"))
+				throw new System.Exception("Header layout for build " + Name + "in engines.xml is missing a \"build string\" field.");
+			BuildStringOffset = header.GetFieldOffset("build string");
 		}
 	}
 }

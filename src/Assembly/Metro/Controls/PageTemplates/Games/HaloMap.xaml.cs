@@ -35,6 +35,8 @@ using Blamite.Blam.SecondGen;
 using Blamite.Blam.ThirdGen;
 using Blamite.RTE.ThirdGen;
 using Blamite.Blam.Resources.Sounds;
+using System.Reflection;
+using Blamite.RTE.FirstGen;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -105,7 +107,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			cbShowBookmarkedTagsOnly.IsChecked = App.AssemblyStorage.AssemblySettings.HalomapOnlyShowBookmarkedTags;
 			cbOpenDuplicate.IsChecked = App.AssemblyStorage.AssemblySettings.AutoOpenDuplicates;
 			cbTabOpenMode.SelectedIndex = (int) App.AssemblyStorage.AssemblySettings.HalomapTagOpenMode;
-			cbShowHSInfo.IsChecked = App.AssemblyStorage.AssemblySettings.ShowScriptInfo;
 
 			App.AssemblyStorage.AssemblySettings.PropertyChanged += SettingsChanged;
 
@@ -155,12 +156,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			{
 				var reader = new EndianReader(fileStream, Endian.BigEndian);
 		#if DEBUG
-				_cacheFile = CacheFileLoader.LoadCacheFile(reader, App.AssemblyStorage.AssemblySettings.DefaultDatabase,
+				_cacheFile = CacheFileLoader.LoadCacheFile(reader, _cacheLocation, App.AssemblyStorage.AssemblySettings.DefaultDatabase,
 					out _buildInfo);
 		#else
 				try
 				{
-					_cacheFile = CacheFileLoader.LoadCacheFile(reader, App.AssemblyStorage.AssemblySettings.DefaultDatabase,
+					_cacheFile = CacheFileLoader.LoadCacheFile(reader, Path.GetFileName(_cacheLocation), App.AssemblyStorage.AssemblySettings.DefaultDatabase,
 						out _buildInfo);
 				}
 				catch (Exception ex)
@@ -172,7 +173,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						{
 							StatusUpdater.Update("Not a supported target engine");
 							MetroMessageBox.Show("Unable to open cache file",
-								ex.Message + ".\r\nWhy not add support in the 'Formats' folder?");
+								ex.Message + ".\r\nMake sure your Assembly is up to date, otherwise try adding support in the 'Formats' folder.");
 						}
 						else
 						{
@@ -202,6 +203,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				// Set up RTE
 				switch (_cacheFile.Engine)
 				{
+					case EngineType.FirstGeneration:
+						if (_buildInfo.Endian == Endian.BigEndian) // CEA 360
+							_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm, 0xC226CC54);
+						else if (!string.IsNullOrEmpty(_buildInfo.GameModule)) // CEA MCC
+							_rteProvider = new FirstGenMCCRTEProvider(_buildInfo);
+						else // PC or Custom
+							_rteProvider = new FirstGenRTEProvider(_buildInfo);
+						break;
+
 					case EngineType.SecondGeneration:
 						if (!string.IsNullOrEmpty(_buildInfo.GameModule))
 							_rteProvider = new SecondGenMCCRTEProvider(_buildInfo);
@@ -210,10 +220,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						break;
 
 					case EngineType.ThirdGeneration:
-						if (_cacheFile.Endianness == Endian.BigEndian)
-							_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm);
-						else
+						if (!string.IsNullOrEmpty(_buildInfo.GameModule))
 							_rteProvider = new ThirdGenMCCRTEProvider(_buildInfo);
+						else
+							_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm);
 						break;
 				}
 
@@ -370,7 +380,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				Dispatcher.Invoke(new Action(() => btnImport.IsEnabled = false));
 
 			// Hide import button if the cache file isn't thirdgen
-			if (_cacheFile.Engine != EngineType.ThirdGeneration)
+			if (_cacheFile.Engine != EngineType.ThirdGeneration || (_cacheFile.Engine == EngineType.ThirdGeneration && _cacheFile.HeaderSize == 0x800))
 				Dispatcher.Invoke(new Action(() => btnImport.Visibility = Visibility.Collapsed));
 
 			// Hide save name button if the cache file isn't secondgen or thirdgen
@@ -490,7 +500,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				));
 		}
 
-		private void HeaderValueData_MouseDown(object sender, MouseButtonEventArgs e)
+        private void HeaderValueData_MouseDown(object sender, MouseButtonEventArgs e)
 		{
 			if (e.ClickCount == 2)
 				Clipboard.SetText(((TextBlock) e.OriginalSource).Text);
@@ -606,11 +616,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
-		private void cbShowHSInfo_Altered(object sender, RoutedEventArgs e)
-		{
-			App.AssemblyStorage.AssemblySettings.ShowScriptInfo = cbShowHSInfo.IsChecked;
-		}
-
 		private void ScriptButtonClick(object sender, RoutedEventArgs e)
 		{
 			var elem = e.Source as FrameworkElement;
@@ -625,14 +630,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 			else
 			{
-				var tab = new CloseableTabItem
-				{
-					Header = new ContentControl
-					{
-						Content = tabName,
-						ContextMenu = BaseContextMenu
-					},
-					Content = new ScriptEditor(_buildInfo, script, _mapManager, _cacheFile.Endianness)
+                var tab = new CloseableTabItem
+                {
+                    Header = new ContentControl
+                    {
+                        Content = tabName,
+                        ContextMenu = BaseContextMenu
+                    },
+                    Content = new ScriptEditor(_buildInfo, script, _mapManager, _cacheFile, _cacheFile.Endianness)
 				};
 
 				contentTabs.Items.Add(tab);
@@ -677,6 +682,36 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			MetroMessageBox.Show("Dump Successful", "Tag list dumped successfully.");
 		}
 
+		private void DumpFullTagList(object sender, RoutedEventArgs e)
+		{
+			var sfd = new SaveFileDialog
+			{
+				Title = "Save Tag List",
+				Filter = "Text Files|*.txt|Tag Lists|*.taglist|All Files|*.*"
+			};
+			bool? result = sfd.ShowDialog();
+			if (!result.Value)
+				return;
+
+			using (var writer = new StreamWriter(sfd.FileName))
+			{
+				foreach (ITag tag in _cacheFile.Tags)
+				{
+					if (tag == null || tag.Group == null) continue;
+
+					var groupArray = BitConverter.GetBytes(tag.Group.Magic);
+					Array.Reverse(groupArray);
+					var groupString = System.Text.Encoding.ASCII.GetString(groupArray);
+
+					string name = _cacheFile.FileNames.GetTagName(tag);
+					if (name != null)
+						writer.WriteLine("{0},{1},{2}", groupString, tag.Index, name);
+				}
+			}
+
+			MetroMessageBox.Show("Dump Successful", "Tag list dumped successfully.");
+		}
+
 		private void NotifyPropertyChanged(String info)
 		{
 			if (PropertyChanged != null)
@@ -712,6 +747,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			// Set the name
 			tag.TagFileName = newName;
+			tag.NotifyTooltipUpdate();
 
 			StatusUpdater.Update("Tag Renamed");
 		}
@@ -813,17 +849,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					var pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 						_buildInfo.Settings.GetSetting<string>("plugins"), groupName);
 
-					string fallbackPluginPath = null;
-					if (_buildInfo.Settings.PathExists("fallbackPlugins"))
-						fallbackPluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+					if (!File.Exists(pluginPath) && _buildInfo.Settings.PathExists("fallbackPlugins"))
+						pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 							_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), groupName);
 
-					string realpluginpath = pluginPath;
-
-					if (!File.Exists(realpluginpath))
-						realpluginpath = fallbackPluginPath;
-
-					if (realpluginpath == null || !File.Exists(realpluginpath))
+					if (pluginPath == null || !File.Exists(pluginPath))
 					{
 						StatusUpdater.Update("Plugin doesn't exist for an extracted tag. Cannot extract.");
 						return null;
@@ -831,7 +861,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 					// Extract dem data blocks
 					var blockBuilder = new DataBlockBuilder(reader, currentTag, _cacheFile, _buildInfo);
-					using (var pluginReader = XmlReader.Create(realpluginpath))
+					using (var pluginReader = XmlReader.Create(pluginPath))
 						AssemblyPluginLoader.LoadPlugin(pluginReader, blockBuilder);
 
 					foreach (var block in blockBuilder.DataBlocks)
@@ -917,6 +947,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					if (soundCodecsProcessed.Contains(index))
 						continue;
 
+					if (index >= soundResources.Codecs.Count)
+						throw new IndexOutOfRangeException("Cannot extract sound codec index " + index + " because it is out of range.");
+
 					container.AddSoundCodec(new ExtractedSoundCodec(index, soundResources.Codecs[index]));
 				}
 
@@ -925,6 +958,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					var index = soundPitchRangesToProcess.Dequeue();
 					if (soundPitchRangesProcessed.Contains(index))
 						continue;
+
+					if (index >= soundResources.PitchRanges.Count)
+						throw new IndexOutOfRangeException("Cannot extract sound pitch range index " + index + " because it is out of range.");
 
 					var pRange = soundResources.PitchRanges[index];
 
@@ -1001,6 +1037,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 						exLI.LanguageIndex = lang.LanguageIndex;
 
+						if (index >= soundResources.PitchRanges.Count)
+							throw new IndexOutOfRangeException("Cannot extract sound pitch range index " + index + " because it is out of range.");
+
 						var pRange = lang.PitchRanges[index];
 
 						exLI.Durations = new List<int>();
@@ -1018,6 +1057,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					if (soundPlaybacksProcessed.Contains(index))
 						continue;
 
+					if (index >= soundResources.Playbacks.Count)
+						throw new IndexOutOfRangeException("Cannot extract sound playback index " + index + " because it is out of range.");
+
 					container.AddSoundPlayback(new ExtractedSoundPlayback(index, soundResources.Playbacks[index]));
 				}
 
@@ -1026,6 +1068,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					var index = soundScalesToProcess.Dequeue();
 					if (soundScalesProcessed.Contains(index))
 						continue;
+
+					if (index >= soundResources.Scales.Count)
+						throw new IndexOutOfRangeException("Cannot extract sound scale index " + index + " because it is out of range.");
 
 					container.AddSoundScale(new ExtractedSoundScale(index, soundResources.Scales[index]));
 				}
@@ -1036,6 +1081,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					if (soundPromotionsProcessed.Contains(index))
 						continue;
 
+					if (index >= soundResources.Promotions.Count)
+						throw new IndexOutOfRangeException("Cannot extract sound promotion index " + index + " because it is out of range.");
+
 					container.AddSoundPromotion(new ExtractedSoundPromotion(index, soundResources.Promotions[index]));
 				}
 
@@ -1045,6 +1093,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					if (soundCustomPlaybacksProcessed.Contains(index))
 						continue;
 
+					if (index >= soundResources.CustomPlaybacks.Count)
+						throw new IndexOutOfRangeException("Cannot extract sound custom playback index " + index + " because it is out of range.");
+
 					container.AddSoundCustomPlayback(new ExtractedSoundCustomPlayback(index, soundResources.CustomPlaybacks[index]));
 				}
 
@@ -1053,6 +1104,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					var index = soundExtraInfoToProcess.Dequeue();
 					if (soundExtraInfoProcessed.Contains(index))
 						continue;
+
+					if (index >= soundResources.ExtraInfos.Count)
+						throw new IndexOutOfRangeException("Cannot extract sound extra info index " + index + " because it is out of range.");
 
 					container.AddSoundExtraInfo(new ExtractedSoundExtraInfo(index, soundResources.ExtraInfos[index]));
 
@@ -1074,6 +1128,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						var index = resourcesToProcess.Dequeue();
 						if (resourcesProcessed.Contains(index))
 							continue;
+
+						if (index.Index >= resources.Resources.Count)
+							throw new IndexOutOfRangeException("Cannot extract resource index " + index + " because it is out of range.");
 
 						// Add the resource
 						var resource = resources.Resources[index.Index];
@@ -1117,10 +1174,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 											return null;
 										}
 
-										resourceStream =
-											File.OpenRead(resourceCachePath);
-										resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, _cacheFile.Endianness), _buildInfo,
-											_cacheFile.BuildString);
+										resourceStream = File.OpenRead(resourceCachePath);
+										resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, _cacheFile.Endianness), _buildInfo, _cacheLocation);
 									}
 
 									var extractor = new ResourcePageExtractor(resourceFile);
@@ -1259,7 +1314,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			// Store the names back to the cache file
 			foreach (TagEntry tag in _allTags.Entries.Where(t => t != null))
-				_cacheFile.FileNames.SetTagName(tag.RawTag, tag.TagFileName);
+			{
+				if (tag.NameExists)
+					_cacheFile.FileNames.SetTagName(tag.RawTag, tag.TagFileName);
+				else
+					_cacheFile.FileNames.SetTagName(tag.RawTag, "");
+			}
 
 			// Save it
 			using (IStream stream = _mapManager.OpenReadWrite())
@@ -1439,13 +1499,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				{
 					MenuItem tagMenuItem = tagItem as MenuItem;
 
-					if (tagMenuItem.Name == "itemRename" && _cacheFile.Engine < EngineType.SecondGeneration)
+					if ((tagMenuItem.Name == "itemRename" ||
+						tagMenuItem.Name == "itemIsolate") &&
+						_cacheFile.Engine < EngineType.SecondGeneration)
 						tagMenuItem.Visibility = Visibility.Collapsed;
 					else if ((tagMenuItem.Name == "itemDuplicate" ||
 						tagMenuItem.Name == "itemExtract" ||
 						tagMenuItem.Name == "itemForce" ||
 						tagMenuItem.Name == "itemTagBatch")
-						&& _cacheFile.Engine != EngineType.ThirdGeneration)
+						&& (_cacheFile.Engine != EngineType.ThirdGeneration || (_cacheFile.Engine == EngineType.ThirdGeneration && _cacheFile.HeaderSize == 0x800)))
 						tagMenuItem.Visibility = Visibility.Collapsed;
 				}
 				if (tagItem is Separator)
@@ -1460,19 +1522,30 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private void GroupContextMenu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
 			var tagContext = sender as ContextMenu;
+			var group = tagContext.DataContext as TagGroup;
 
-			// Check if we need to hide stuff because the cache isn't thirdgen
-			if (_cacheFile.Engine != EngineType.ThirdGeneration)
-				foreach (object tagItem in tagContext.Items)
+
+			foreach (object tagItem in tagContext.Items)
+			{
+				// Check for particular names/objects to hide because datatemplate
+				if (tagItem is MenuItem)
 				{
-					// Check for particular names/objects to hide because datatemplate
-					if (tagItem is MenuItem)
+					MenuItem tagMenuItem = tagItem as MenuItem;
+
+					// Check if we need to hide stuff because the cache isn't thirdgen
+					if (_cacheFile.Engine != EngineType.ThirdGeneration || (_cacheFile.Engine == EngineType.ThirdGeneration && _cacheFile.HeaderSize == 0x800))
 					{
-						MenuItem tagMenuItem = tagItem as MenuItem;
+						
 						if (tagMenuItem.Name == "itemGroupBatch")
 							tagMenuItem.Visibility = Visibility.Collapsed;
 					}
+
+					if(group.TagGroupMagic != "hsc*" && tagMenuItem.Name == "hscItem")
+					{
+						tagMenuItem.Visibility = Visibility.Collapsed;
+					}
 				}
+			}
 		}
 
 		private void SIDButton_Click(object sender, RoutedEventArgs e)
@@ -1521,13 +1594,70 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						Content = tabName,
 						ContextMenu = BaseContextMenu
 					},
-					Content = new AddressTools(_cacheFile)
+					Content = new AddressTools(_cacheFile, _buildInfo)
 				};
 
 				contentTabs.Items.Add(tab);
 				contentTabs.SelectedItem = tab;
 			}
 
+		}
+
+		private void HscItem_Click(object sender, RoutedEventArgs e)
+		{
+			DumpHscs();
+		}
+
+		private void DumpHscs()
+		{
+			var tags = _cacheFile.Tags.FindTagsByGroup("hsc*");
+
+			if (_buildInfo.Layouts.HasLayout("hsc*") && tags != null)
+			{
+				string folder;
+
+				using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+				{
+					System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+					if (result == System.Windows.Forms.DialogResult.OK)
+					{
+						folder = dialog.SelectedPath;
+					}
+					else
+					{
+						return;
+					}
+				}
+
+				foreach (var tag in tags)
+				{
+					string fileName;
+					byte[] data;
+
+					using (IReader reader = _mapManager.OpenRead())
+					{
+						reader.SeekTo(tag.MetaLocation.AsOffset());
+						var values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("hsc*"));
+
+						uint pointer = (uint)values.GetInteger("source pointer");
+						var exp = _cacheFile.PointerExpander.Expand(pointer);
+						var offset = _cacheFile.MetaArea.PointerToOffset(exp);
+						reader.SeekTo(offset);
+						data = reader.ReadBlock((int)values.GetInteger("source size"));
+						fileName = values.GetString("file name") + ".hsc";
+					}
+
+					string path = Path.Combine(folder, fileName);
+
+					File.WriteAllBytes(path, data);
+				}
+
+				MetroMessageBox.Show("All source files have been extracted.");
+			}
+			else
+			{
+				MetroMessageBox.Show("This map doesn't contain hsc files.");
+			}
 		}
 
 		#region Tag List
@@ -2009,6 +2139,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			throw new Exception();
 		}
 
+        public void RefreshTags()
+        {
+            foreach (CloseableTabItem tab in contentTabs.Items)
+            {
+                var meta = tab.Content as MetaContainer;
+                if(meta != null)
+                {
+                    meta.RefreshMetaEditor();
+                }
+            }
+        }
+
 		private void UpdateTagOpenMode()
 		{
 			_tagOpenMode = App.AssemblyStorage.AssemblySettings.HalomapTagOpenMode;
@@ -2050,8 +2192,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			string groupName = CharConstant.ToString(tag.Group.Magic);
 			string name = _cacheFile.FileNames.GetTagName(tag);
-			if (string.IsNullOrWhiteSpace(name))
-				name = tag.Index.ToString();
 
 			return new TagEntry(tag, groupName, name);
 		}
@@ -2177,6 +2317,119 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		}
 		#endregion
 
+		private void itemIsolate_Click(object sender, RoutedEventArgs e)
+		{
+			// Get the menu item and the tag
+			var item = e.Source as MenuItem;
+			if (item == null)
+				return;
+
+			var tag = item.DataContext as TagEntry;
+			if (tag == null)
+				return;
+
+			if (tag.RawTag != null && tag.RawTag.MetaLocation == null)
+				return;
+
+			if (MetroMessageBox.Show("Tag Isolation - Assembly",
+				"This will run the equivalent of Isolating a Tag Block or Data Reference, but across the tag's base data.\r\n" +
+				"You should only use this in cases where multiple tags are pointing to the same data, and when you know what you are doing.\r\n" + 
+				"This process will also close the tag if it is open, so save any changes to it before continuing.\r\n" + 
+				"Don't forget to back up your map, too!",
+				MetroMessageBox.MessageBoxButtons.OkCancel) != MetroMessageBox.MessageBoxResult.OK)
+				return;
+
+			//close the tag if its currently open in a tab
+			TabItem tabb = contentTabs.Items.Cast<TabItem>()
+				.FirstOrDefault(ct => ct.Tag != null && ((TagEntry)ct.Tag).RawTag == tag.RawTag);
+			if (tabb != null)
+				ExternalTabClose(tabb, false);
+
+			//get the plugin to obtain the size of the base data
+			var groupName = VariousFunctions.SterilizeTagGroupName(CharConstant.ToString(tag.RawTag.Group.Magic)).Trim();
+			var pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+				_buildInfo.Settings.GetSetting<string>("plugins"), groupName);
+
+			if (!File.Exists(pluginPath) && _buildInfo.Settings.PathExists("fallbackPlugins"))
+				pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+					_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), groupName);
+
+			if (pluginPath == null || !File.Exists(pluginPath))
+			{
+				StatusUpdater.Update("Plugin doesn't exist for the selected tag. Cannot isolate.");
+				return;
+			}
+
+			int baseSize = 0;
+			using (var pluginReader = XmlReader.Create(pluginPath))
+			{
+				//redundant stuff from AssemblyPluginLoader so I don't have to create an instance
+				if (!pluginReader.ReadToNextSibling("plugin"))
+					throw new ArgumentException("The XML file is missing a <plugin> tag.");
+
+				if (pluginReader.MoveToAttribute("baseSize"))
+				{
+					string str = pluginReader.Value;
+
+					if (str.StartsWith("0x"))
+						baseSize = int.Parse(str.Substring(2), NumberStyles.HexNumber);
+					else
+						baseSize = int.Parse(str);
+				}
+			}
+
+			//allocate the new data and copy it over
+			using (var stream = _mapManager.OpenReadWrite())
+			{
+				long newAddr = _cacheFile.Allocator.Allocate(baseSize, stream);
+
+				//backup original locations
+				long origAddress = tag.RawTag.MetaLocation.AsPointer();
+				long origOffset = tag.RawTag.MetaLocation.AsOffset();
+				long origAddressMax = origAddress + baseSize;
+				uint contracted = _cacheFile.PointerExpander.Contract(origAddress);
+				uint contractedMax = _cacheFile.PointerExpander.Contract(origAddressMax);
+
+				//interops can exist within the base data, so any references should to be copied as well
+				if (_cacheFile.TagInteropTable != null)
+				{
+					List<ITagInterop> newInterops = new List<ITagInterop>();
+
+					List<ITagInterop> existingInterops = _cacheFile.TagInteropTable.Where(t => t.Pointer > contracted && t.Pointer < contractedMax).ToList();
+
+					foreach (ITagInterop interop in existingInterops)
+					{
+						long interopAddr = _cacheFile.PointerExpander.Expand(interop.Pointer);
+						long offsetIntoTag = interopAddr - origAddress;
+
+						uint newInteropAddr = _cacheFile.PointerExpander.Contract(newAddr + offsetIntoTag);
+
+						newInterops.Add(new Blamite.Blam.ThirdGen.Structures.ThirdGenTagInterop(newInteropAddr, interop.Type));
+					}
+
+					foreach (ITagInterop interop in newInterops)
+						_cacheFile.TagInteropTable.Add(interop);
+				}
+
+				tag.RawTag.MetaLocation = SegmentPointer.FromPointer(newAddr, _cacheFile.MetaArea);
+
+				_cacheFile.SaveChanges(stream);
+
+				long newOffset = _cacheFile.MetaArea.PointerToOffset(newAddr);
+
+				stream.SeekTo(origOffset);
+				byte[] data = stream.ReadBlock(baseSize);
+				stream.SeekTo(newOffset);
+				stream.WriteBlock(data);
+
+				tag.NotifyTooltipUpdate();
+
+				MetroMessageBox.Show("Tag Isolation - Assembly",
+					"The tag was isolated successfully.");
+			}
+
+		}
+
 		public class HeaderValue
 		{
 			public string Title { get; set; }
@@ -2242,7 +2495,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			if (!_buildInfo.Layouts.HasLayout(bspLayoutName) || !_buildInfo.Layouts.HasLayout(bspInstancedLayoutName))
 			{
-				MetroMessageBox.Show("Free StringIDs", "This current engine does not contain the required &quot;" + bspLayoutName + "&quot; and &quot;" + bspInstancedLayoutName + "&quot; layouts in the Formats folder. Can not continue.");
+				MetroMessageBox.Show("Free StringIDs", "This current engine does not contain the required \"" + bspLayoutName + "\" and \"" + bspInstancedLayoutName + "\" layouts in the Formats folder. Can not continue.");
 				return;
 			}
 
@@ -2251,12 +2504,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			if (!sbspLayout.HasField(bspLayoutBlockCountName) || !sbspLayout.HasField(bspLayoutBlockAddrName))
 			{
-				MetroMessageBox.Show("Free StringIDs", "This current engine does not contain the required &quot;" + bspLayoutBlockCountName + "&quot; and &quot;" + bspLayoutBlockAddrName + "&quot; fields for the &quot;" + bspLayoutName + "&quot; layout in the Formats folder. Can not continue.");
+				MetroMessageBox.Show("Free StringIDs", "This current engine does not contain the required \"" + bspLayoutBlockCountName + "\" and \"" + bspLayoutBlockAddrName + "\" fields for the \"" + bspLayoutName + "\" layout in the Formats folder. Can not continue.");
 				return;
 			}
 			else if (!sbspLayout.HasField(bspLayoutBlockCountName))
 			{
-				MetroMessageBox.Show("Free StringIDs", "This current engine does not contain the required &quot;" + bspInstancedLayoutStringIDName + "&quot; field for the &quot;" + sbspInstancedLayout + "&quot; layout in the Formats folder. Can not continue.");
+				MetroMessageBox.Show("Free StringIDs", "This current engine does not contain the required \"" + bspInstancedLayoutStringIDName + "\" field for the \"" + sbspInstancedLayout + "\" layout in the Formats folder. Can not continue.");
 				return;
 			}
 

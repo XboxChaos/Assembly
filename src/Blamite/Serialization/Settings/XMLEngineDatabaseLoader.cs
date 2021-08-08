@@ -42,7 +42,9 @@ namespace Blamite.Serialization.Settings
 			foreach (XElement elem in container.Elements("engine"))
 			{
 				string name = XMLUtil.GetStringAttribute(elem, "name");
-				string version = XMLUtil.GetStringAttribute(elem, "version");
+				string build = XMLUtil.GetStringAttribute(elem, "build");
+				var version = XMLUtil.GetNumericAttribute(elem, "version");
+				var versionAlt = XMLUtil.GetNumericAttribute(elem, "version", -1);
 				string inherits = XMLUtil.GetStringAttribute(elem, "inherits", null);
 				SettingsGroup settings = loader.LoadSettingsGroup(elem);
 				if (!string.IsNullOrWhiteSpace(inherits))
@@ -52,7 +54,7 @@ namespace Blamite.Serialization.Settings
 					baseSettings.Import(settings);
 					settings = baseSettings;
 				}
-				var desc = new EngineDescription(name, version, settings);
+				var desc = new EngineDescription(name, (int)version, (int)versionAlt, build, settings);
 				result.RegisterEngine(desc);
 			}
 			return result;
@@ -68,7 +70,7 @@ namespace Blamite.Serialization.Settings
 			loader.RegisterComplexSettingLoader("scripting", new XMLOpcodeLookupLoader());
 			loader.RegisterComplexSettingLoader("vertexLayouts", new XMLVertexLayoutLoader());
 			loader.RegisterComplexSettingLoader("poking", new XMLPokingLoader());
-			return loader;
+            return loader;
 		}
 	}
 }

@@ -8,8 +8,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 	/// </summary>
 	public partial class RawBlock : UserControl
 	{
-		public static RoutedCommand AllocateCommand = new RoutedCommand();
-		public static RoutedCommand IsolateCommand = new RoutedCommand();
+		private static RoutedCommand _allocateCommand = new RoutedCommand();
+		private static RoutedCommand _isolateCommand = new RoutedCommand();
+		public static RoutedCommand AllocateCommand { get { return _allocateCommand; } }
+		public static RoutedCommand IsolateCommand { get { return _isolateCommand; } }
 
 		public RawBlock()
 		{
