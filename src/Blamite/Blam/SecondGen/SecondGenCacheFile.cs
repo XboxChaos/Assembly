@@ -47,9 +47,18 @@ namespace Blamite.Blam.SecondGen
 			_stringIDs.SaveChanges(stream);
 			if (_simulationDefinitions != null)
 				_simulationDefinitions.SaveChanges(stream);
+			int checksumOffset = WriteHeader(stream);
 			WriteLanguageInfo(stream);
-			_header.Checksum = ICacheFileExtensions.GenerateChecksum(this, stream);
-			WriteHeader(stream);
+
+			if (checksumOffset != -1)
+			{
+				//checksum needs to be handled last due to WriteLanguageInfo writing where we need to calculate,
+				//and WriteHeader updates important info for languages so it has to come before that, (but maybe that should be run separately?)
+				//leaving this hacky checksum writing
+				_header.Checksum = ICacheFileExtensions.GenerateChecksum(this, stream);
+				stream.SeekTo(checksumOffset);
+				stream.WriteUInt32(_header.Checksum);
+			}
 		}
 
 		public string FilePath { get; private set; }
@@ -356,14 +365,19 @@ namespace Blamite.Blam.SecondGen
 			}
 		}
 
-		private void WriteHeader(IWriter writer)
+		private int WriteHeader(IWriter writer)
 		{
 			// Update tagname and stringid info (so. ugly.)
 			_header.FileNameCount = _fileNames.Count;
 			_header.StringIDCount = _stringIDs.Count;
 
+			StructureLayout headerLayout = _buildInfo.Layouts.GetLayout("header");
 			writer.SeekTo(0);
-			StructureWriter.WriteStructure(_header.Serialize(), _buildInfo.Layouts.GetLayout("header"), writer);
+			StructureWriter.WriteStructure(_header.Serialize(), headerLayout, writer);
+			int checksumOffset = -1;
+			if (headerLayout.HasField("checksum"))
+				checksumOffset = headerLayout.GetFieldOffset("checksum");
+			return checksumOffset;
 		}
 
 		private void WriteLanguageInfo(IWriter writer)
