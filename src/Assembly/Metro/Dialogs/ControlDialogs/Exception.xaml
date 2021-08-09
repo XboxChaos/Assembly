@@ -6,36 +6,62 @@
         WindowStartupLocation="CenterOwner" SnapsToDevicePixels="True"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Height="324" Width="607"
+        Height="400" Width="610"
         n:WindowMovement.IsDraggable="True">
 	<Border Background="#FF2E2E31" BorderThickness="1,1,1,5" BorderBrush="{DynamicResource ExtryzeAccentBrush}">
 		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="60px" />
+				<RowDefinition Height="*" />
+				<RowDefinition Height="36px" />
+			</Grid.RowDefinitions>
+
 			<Path Style="{StaticResource AsmLogo}" Margin="6,6,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="34" Width="34" />
-			<TextBlock Text="Assembly Exception Catching Service" Foreground="#989898" VerticalAlignment="Top"
+			<TextBlock Text="Assembly Error Catching Service" Foreground="#989898" VerticalAlignment="Top"
 			           HorizontalAlignment="Stretch" FontSize="15" Margin="45,12,141,0"
 			           FontFamily="{DynamicResource MetroFontLight}" TextTrimming="CharacterEllipsis" />
 
-			<Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="36" Background="#FF424244" />
-
-			<StackPanel Margin="20,55,20,5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-				<TextBox x:Name="lblContent" IsReadOnly="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-				         Height="197" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto"
-				         ScrollViewer.VerticalScrollBarVisibility="Auto" />
-
-				<TextBlock Text="If you continue, your content might become corrupt (rare, but possible)." Margin="0,5,0,0"
-				           VerticalAlignment="Top" HorizontalAlignment="Left" Style="{DynamicResource GenericTextblock}" />
-
-				<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
-                    <Button x:Name="btnContinue" Content="Continue" Click="btnContinue_Click" Width="80" Margin="0,0,10,0" />
-                    <Button x:Name="btnExit" Content="Exit" Click="btnExit_Click" Width="80" />
-				</StackPanel>
-			</StackPanel>
-			<Grid
+			<Grid Grid.Row="0"
 				x:Name="headerThumb"
 				Opacity="0"
 				Background="Transparent"
 				Margin="0,0,0,0" Height="53.5" VerticalAlignment="Top"
 				n:WindowMovement.DragsWindow="True" />
+
+			<Grid Grid.Row="1" Margin="33,0,33,6">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+
+				<TextBlock Grid.Row="0" Text="An error has occured. Please read the details below:" Margin="0,4,0,5"
+				           VerticalAlignment="Stretch" HorizontalAlignment="Left" Style="{DynamicResource GenericTextblock}" />
+				
+				<TextBox Grid.Row="1" x:Name="lblMessage" IsReadOnly="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+				         ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto"
+				         ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0,0,0,4" Height="Auto" />
+
+				<TextBlock Grid.Row="2" Text="Full Information: (Share this one if needed)" Margin="0,4,0,5"
+				           VerticalAlignment="Stretch" HorizontalAlignment="Left" Style="{DynamicResource GenericTextblock}" />
+
+				<TextBox Grid.Row="3" x:Name="lblContent" IsReadOnly="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+				         ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto"
+				         ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0,0,0,4" Height="Auto" />
+
+				<TextBlock Grid.Row="4" Text="If you continue, your content might become corrupt (rare, but possible)." Margin="0,5,0,0"
+				           VerticalAlignment="Stretch" HorizontalAlignment="Left" Style="{DynamicResource GenericTextblock}" />
+
+			</Grid>
+
+			<Grid Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="36" Background="#FF424244" />
+			<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,20,5"
+							VerticalAlignment="Bottom">
+				<Button x:Name="btnContinue" Padding="10,0,10,0" Margin="10,0,10,0" Content="Continue" Click="btnContinue_Click" />
+				<Button x:Name="btnExit" Padding="10,0,10,0" Margin="0" Content="Exit" Click="btnExit_Click" />
+			</StackPanel>
 		</Grid>
 	</Border>
 </Window>
