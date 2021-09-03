@@ -300,7 +300,6 @@ namespace Blamite.Blam.ThirdGen
 
 		private StringIDNamespaceResolver LoadStringIDNamespaces(IReader reader)
 		{
-			// making some assumptions here based on all current stringid xmls
 			if (_header.StringIDNamespaceCount > 1)
 			{
 				int[] namespaces = new int[_header.StringIDNamespaceCount];
@@ -308,21 +307,11 @@ namespace Blamite.Blam.ThirdGen
 				for (int i = 0; i < namespaces.Length; i++)
 					namespaces[i] = reader.ReadInt32();
 
-				// shift our way to the namespace bits, assuming index is always at least 16 bits
-				int firstNamespaceBit = -1;
-				for (int i = 16; i < 32; i++)
-					if (namespaces[1] >> i == 1)
-					{
-						firstNamespaceBit = i;
-						break;
-					}
+				//get layout info from formats
+				var sidLayout = _buildInfo.StringIDs.IDLayout;
+				var resolver = new StringIDNamespaceResolver(sidLayout);
 
-				if (firstNamespaceBit == -1)
-					return null;
-
-				// assuming here that the namespace is always 8 bits
-				var resolver = new StringIDNamespaceResolver(new StringIDLayout(firstNamespaceBit, 8, 32 - 8 - firstNamespaceBit));
-				int indexMask = (1 << firstNamespaceBit) - 1;
+				int indexMask = (1 << sidLayout.NamespaceStart) - 1;
 
 				// register all but the first namespace as that needs the final count
 				int counter = namespaces[0] & indexMask;
