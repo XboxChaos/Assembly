@@ -409,11 +409,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public void VisitRect16(RectangleData field)
 		{
+			//they are stored in TLBR order
 			SeekToOffset(field.Offset);
-			field.A = _reader.ReadInt16();
 			field.B = _reader.ReadInt16();
-			field.C = _reader.ReadInt16();
+			field.A = _reader.ReadInt16();
 			field.D = _reader.ReadInt16();
+			field.C = _reader.ReadInt16();
 		}
 
 		public void VisitQuat16(Quaternion16Data field)
