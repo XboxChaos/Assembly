@@ -10,12 +10,12 @@ namespace Blamite.RTE.ThirdGen
 {
 	public class ThirdGenMapPointerReader : MapPointerReader
 	{
-		public ThirdGenMapPointerReader(ProcessMemoryStream stream, EngineDescription engineInfo, PokingInformation info)
+		public ThirdGenMapPointerReader(ProcessMemoryStream processStream, EngineDescription engineInfo, PokingInformation info)
 		{
-			_baseAddress = (long)stream.BaseProcess.MainModule.BaseAddress;
+			_baseAddress = (long)processStream.BaseProcess.MainModule.BaseAddress;
 			GetLayoutConstants(engineInfo);
 
-			var reader = new EndianReader(stream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
+			var reader = new EndianReader(processStream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
 
 			if (info.HeaderPointer.HasValue)
 			{
@@ -35,12 +35,12 @@ namespace Blamite.RTE.ThirdGen
 			ProcessMapHeader();
 		}
 
-		public ThirdGenMapPointerReader(ProcessModuleMemoryStream stream, EngineDescription engineInfo, PokingInformation info)
+		public ThirdGenMapPointerReader(ProcessModuleMemoryStream moduleStream, EngineDescription engineInfo, PokingInformation info)
 		{
-			_baseAddress = (long)stream.BaseModule.BaseAddress;
+			_baseAddress = (long)moduleStream.BaseModule.BaseAddress;
 			GetLayoutConstants(engineInfo);
 
-			var reader = new EndianReader(stream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
+			var reader = new EndianReader(moduleStream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
 
 			if (info.HeaderPointer.HasValue)
 			{

@@ -11,29 +11,29 @@ namespace Blamite.RTE.FirstGen
 	public class FirstGenMapPointerReader : MapPointerReader
 	{
 
-		public FirstGenMapPointerReader(ProcessMemoryStream stream, EngineDescription engineInfo, PokingInformation info)
+		public FirstGenMapPointerReader(ProcessMemoryStream processStream, EngineDescription engineInfo, PokingInformation info)
 		{
-			_baseAddress = (long)stream.BaseProcess.MainModule.BaseAddress;
+			_baseAddress = (long)processStream.BaseProcess.MainModule.BaseAddress;
 			_mapHeaderAddress = _baseAddress + info.HeaderAddress.Value;
 			_mapMagicAddress = _baseAddress + info.MagicAddress.Value;
 
 			GetLayoutConstants(engineInfo);
 
-			var reader = new EndianReader(stream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
+			var reader = new EndianReader(processStream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
 			ReadMapPointers32(reader);
 			ReadMapHeader(reader);
 			ProcessMapHeader();
 		}
 
-		public FirstGenMapPointerReader(ProcessModuleMemoryStream stream, EngineDescription engineInfo, PokingInformation info)
+		public FirstGenMapPointerReader(ProcessModuleMemoryStream moduleStream, EngineDescription engineInfo, PokingInformation info)
 		{
-			_baseAddress = (long)stream.BaseModule.BaseAddress;
+			_baseAddress = (long)moduleStream.BaseModule.BaseAddress;
 			_mapHeaderAddress = _baseAddress + info.HeaderAddress.Value;
 			_mapMagicAddress = _baseAddress + info.MagicAddress.Value;
 
 			GetLayoutConstants(engineInfo);
 
-			var reader = new EndianReader(stream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
+			var reader = new EndianReader(moduleStream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
 			ReadMapPointers64(reader);
 			ReadMapHeader(reader);
 			ProcessMapHeader();

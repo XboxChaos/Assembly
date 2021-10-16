@@ -43,11 +43,12 @@ namespace Blamite.Compression
 
 			CompressionState state;
 			EngineDescription engineInfo;
+			StructureValueCollection headerValues;
 
 			using (FileStream fileStream = File.OpenRead(input))
 			{
 				var reader = new EndianReader(fileStream, Endian.LittleEndian);
-				state = DetermineState(reader, engineDb, out engineInfo);
+				state = DetermineState(reader, engineDb, out engineInfo, out headerValues);
 			}
 
 			if (state == desiredState)
@@ -63,19 +64,19 @@ namespace Blamite.Compression
 						{
 							if (engineInfo.Version == 5)
 							{
-								DecompressFirstGenCEXbox(input);
+								DecompressFirstGenCEXbox(input, headerValues);
 								return CompressionState.Decompressed;
 							}
 							else if (engineInfo.Version == 7)
 							{
 								if (engineInfo.Endian == Endian.BigEndian)
 								{
-									DecompressFirstGenCEA360(input);
+									DecompressFirstGenCEA360(input, headerValues);
 									return CompressionState.Decompressed;
 								}
 								else
 								{
-									DecompressFirstGenCEAMCC(input);
+									DecompressFirstGenCEAMCC(input, headerValues);
 									return CompressionState.Decompressed;
 								}
 							}
@@ -84,7 +85,7 @@ namespace Blamite.Compression
 						}
 						else if (engineInfo.Engine == EngineType.SecondGeneration)
 						{
-							DecompressSecondGen(input);
+							DecompressSecondGen(input, headerValues);
 							return CompressionState.Decompressed;
 						}
 						else
@@ -96,19 +97,19 @@ namespace Blamite.Compression
 						{
 							if (engineInfo.Version == 5)
 							{
-								CompressFirstGenCEXbox(input);
+								CompressFirstGenCEXbox(input, headerValues);
 								return CompressionState.Compressed;
 							}
 							else if (engineInfo.Version == 7)
 							{
 								if (engineInfo.Endian == Endian.BigEndian)
 								{
-									CompressFirstGenCEA360(input);
+									CompressFirstGenCEA360(input, headerValues);
 									return CompressionState.Compressed;
 								}
 								else
 								{
-									CompressFirstGenCEAMCC(input);
+									CompressFirstGenCEAMCC(input, headerValues);
 									return CompressionState.Compressed;
 								}
 							}
@@ -117,7 +118,7 @@ namespace Blamite.Compression
 						}
 						else if (engineInfo.Engine == EngineType.SecondGeneration)
 						{
-							CompressSecondGen(input);
+							CompressSecondGen(input, headerValues);
 							return CompressionState.Compressed;
 						}
 						else
@@ -127,8 +128,9 @@ namespace Blamite.Compression
 		}
 
 		// TODO (Dragon): support CEA 360 with LZX
-		private static CompressionState DetermineState(IReader reader, EngineDatabase engineDb, out EngineDescription engineInfo)
+		private static CompressionState DetermineState(IReader reader, EngineDatabase engineDb, out EngineDescription engineInfo, out StructureValueCollection headerValues)
 		{
+			headerValues = null;
 			// not all compressed maps have a decompressed header
 			// so we handle that here
 			try
@@ -179,19 +181,22 @@ namespace Blamite.Compression
 				return CompressionState.Null;
 
 			if (engineInfo.Engine == EngineType.FirstGeneration)
-				return AnalyzeFirstGen(reader, engineInfo);
+				return AnalyzeFirstGen(reader, engineInfo, out headerValues);
 			else if (engineInfo.Engine == EngineType.SecondGeneration)
-				return AnalyzeSecondGen(reader, engineInfo);
+				return AnalyzeSecondGen(reader, engineInfo, out headerValues);
 			else
 				return CompressionState.Null;
 		}
 
 		#region First Generation
 
-		private static CompressionState AnalyzeFirstGen(IReader reader, EngineDescription engineInfo)
+		private static CompressionState AnalyzeFirstGen(IReader reader, EngineDescription engineInfo, out StructureValueCollection headerValues)
 		{
 			reader.SeekTo(0);
-			StructureValueCollection headerValues = StructureReader.ReadStructure(reader, engineInfo.Layouts.GetLayout("header"));
+			var headerLayout = engineInfo.Layouts.GetLayout("header");
+			headerValues = StructureReader.ReadStructure(reader, headerLayout);
+			//hax
+			headerValues.SetInteger("_header_length_", (ulong)headerLayout.Size);
 
 			var metaOffset = (int)headerValues.GetInteger("meta offset");
 
@@ -228,7 +233,7 @@ namespace Blamite.Compression
 		#region Original Xbox
 
 		// TODO (Dragon): see if theres a good way to minimize memory consumption
-		private static void CompressFirstGenCEXbox(string file)
+		private static void CompressFirstGenCEXbox(string file, StructureValueCollection headerValues)
 		{
 			using (MemoryStream msOutput = new MemoryStream())
 			{
@@ -236,10 +241,12 @@ namespace Blamite.Compression
 				{
 					using (BinaryReader brInput = new BinaryReader(fsInput))
 					{
-						//header is uncompressed
-						msOutput.Write(brInput.ReadBytes(0x800), 0, 0x800);
+						int headerSize = (int)headerValues.GetInteger("_header_length_");
 
-						int realsize = (int)fsInput.Length - 0x800;
+						//header is uncompressed
+						msOutput.Write(brInput.ReadBytes(headerSize), 0, headerSize);
+
+						int realsize = (int)fsInput.Length - headerSize;
 						byte[] chunkData = new byte[realsize];
 
 						fsInput.Seek(0x800, SeekOrigin.Begin);
@@ -274,7 +281,7 @@ namespace Blamite.Compression
 		}
 
 		// TODO (Dragon): see if theres a good way to minimize memory consumption
-		private static void DecompressFirstGenCEXbox(string file)
+		private static void DecompressFirstGenCEXbox(string file, StructureValueCollection headerValues)
 		{
 			using (MemoryStream msOutput = new MemoryStream())
 			{
@@ -282,14 +289,16 @@ namespace Blamite.Compression
 				{
 					using (BinaryReader brInput = new BinaryReader(fsInput))
 					{
+						int headerSize = (int)headerValues.GetInteger("_header_length_");
+
 						//header is uncompressed
-						msOutput.Write(brInput.ReadBytes(0x800), 0, 0x800);
+						msOutput.Write(brInput.ReadBytes(headerSize), 0, headerSize);
 
 						fsInput.Seek(0x8, SeekOrigin.Begin); // TODO (Dragon): dont hardcode offset 
-						int realsize = brInput.ReadInt32() - 0x800;
+						int realsize = brInput.ReadInt32() - headerSize;
 						byte[] chunkData = new byte[realsize];
 
-						fsInput.Seek(0x802, SeekOrigin.Begin);
+						fsInput.Seek(headerSize + 2, SeekOrigin.Begin);
 						using (DeflateStream ds = new DeflateStream(fsInput, CompressionMode.Decompress, true))
 						{
 							realsize = ds.Read(chunkData, 0, chunkData.Length);
@@ -305,12 +314,12 @@ namespace Blamite.Compression
 		#region CEA 360
 
 		// TODO (Dragon): add some kinda lzx and add CEA 360 support
-		private static void CompressFirstGenCEA360(string file)
+		private static void CompressFirstGenCEA360(string file, StructureValueCollection headerValues)
 		{
 			throw new InvalidOperationException("assembly does not support CEA 360 compression (missing LZX)");
 		}
 
-		private static void DecompressFirstGenCEA360(string file)
+		private static void DecompressFirstGenCEA360(string file, StructureValueCollection headerValues)
 		{
 			throw new InvalidOperationException("assembly does not support CEA 360 decompression (missing LZX)");
 		}
@@ -318,7 +327,7 @@ namespace Blamite.Compression
 
 		#region CEA MCC
 
-		private static void CompressFirstGenCEAMCC(string file)
+		private static void CompressFirstGenCEAMCC(string file, StructureValueCollection headerValues)
 		{
 			using (MemoryStream msOutput = new MemoryStream())
 			{
@@ -329,7 +338,7 @@ namespace Blamite.Compression
 						List<int> chunk_offsets = new List<int>();
 
 						int datalength = (int)fsInput.Length;
-						int chunkcount = (((datalength + 0x1FFFF) & ~0x1FFFF) / 0x20000);
+						int chunkcount = ((datalength + 0x1FFFF) & ~0x1FFFF) / 0x20000;
 
 						bwOutput.Write(chunkcount);
 
@@ -366,7 +375,7 @@ namespace Blamite.Compression
 			}
 		}
 
-		private static void DecompressFirstGenCEAMCC(string file)
+		private static void DecompressFirstGenCEAMCC(string file, StructureValueCollection headerValues)
 		{
 			using (MemoryStream msOutput = new MemoryStream())
 			{
@@ -414,13 +423,26 @@ namespace Blamite.Compression
 		#endregion
 
 		#region Second Generation
-		private static CompressionState AnalyzeSecondGen(IReader reader, EngineDescription engineInfo)
+		private static CompressionState AnalyzeSecondGen(IReader reader, EngineDescription engineInfo, out StructureValueCollection headerValues)
 		{
 			// H2 header is uncompressed, so the cache file needs to be loaded enough to check if the tag table is readable
 			var segmenter = new FileSegmenter(engineInfo.SegmentAlignment);
 
 			reader.SeekTo(0);
-			StructureValueCollection headerValues = StructureReader.ReadStructure(reader, engineInfo.Layouts.GetLayout("header"));
+			var headerLayout = engineInfo.Layouts.GetLayout("header");
+			headerValues = StructureReader.ReadStructure(reader, headerLayout);
+			//hax
+			headerValues.SetInteger("_header_length_", (ulong)headerLayout.Size);
+			if (headerLayout.HasField("compression data chunk size"))
+				headerValues.SetInteger("_header_chunk_size_", (ulong)headerLayout.GetFieldOffset("compression data chunk size"));
+			if (headerLayout.HasField("compression data offset"))
+				headerValues.SetInteger("_header_data_offset_", (ulong)headerLayout.GetFieldOffset("compression data offset"));
+			if (headerLayout.HasField("compression chunk table offset"))
+				headerValues.SetInteger("_header_chunks_offset_", (ulong)headerLayout.GetFieldOffset("compression chunk table offset"));
+			if (headerLayout.HasField("compression chunk table count"))
+				headerValues.SetInteger("_header_chunk_count_", (ulong)headerLayout.GetFieldOffset("compression chunk table count"));
+			if (headerLayout.HasField("flags"))
+				headerValues.SetInteger("_header_flags_", (ulong)headerLayout.GetFieldOffset("flags"));
 
 			var metaOffset = (int)headerValues.GetInteger("meta offset");
 			var metaSize = (int)headerValues.GetInteger("meta size");
@@ -443,7 +465,7 @@ namespace Blamite.Compression
 			return CompressionState.Decompressed;
 		}
 
-		private static void CompressSecondGen(string file)
+		private static void CompressSecondGen(string file, StructureValueCollection headerValues)
 		{
 			using (MemoryStream msOutput = new MemoryStream())
 			{
@@ -453,22 +475,28 @@ namespace Blamite.Compression
 					{
 						List<Tuple<int, int>> Chunks = new List<Tuple<int, int>>();
 
+						//constants
+						int headerSize = (int)headerValues.GetInteger("_header_length_");
+						int chunkSize = 0x40000;
+						int chunkSizeMask = 0x3FFFF;
+						bool newFormat = headerValues.HasInteger("compression data chunk size");
+						uint dataStart = newFormat ? (uint)headerSize : 0x3000;
+
 						//header is uncompressed
-						byte[] header = new byte[0x1000];
-						fsInput.Read(header, 0, 0x1000);
-						msOutput.Write(header, 0, 0x1000);
+						byte[] header = new byte[headerSize];
+						fsInput.Read(header, 0, headerSize);
+						msOutput.Write(header, 0, headerSize);
 
-						int datalength = (int)fsInput.Length - 0x1000;
-						int chunkcount = ((datalength + 0x3FFFF) & ~0x3FFFF) / 0x40000;
+						int datalength = (int)fsInput.Length - headerSize;
+						int chunkcount = ((datalength + chunkSizeMask) & ~chunkSizeMask) / chunkSize;
 
-						int datastart = 0x3000;
-						msOutput.Position = datastart;
+						msOutput.Position = dataStart;
 
 						while (fsInput.Position < fsInput.Length)
 						{
-							int size = 0x40000;
+							int size = chunkSize;
 							if (fsInput.Length - fsInput.Position < size)
-								size = datalength % 0x40000;
+								size = datalength % chunkSize;
 
 							int start = (int)msOutput.Position;
 
@@ -491,11 +519,44 @@ namespace Blamite.Compression
 							msOutput.Seek(0x80 - remainder, SeekOrigin.Current);
 						}
 
-						msOutput.Position = 0x1000;
+						uint tableOffset = newFormat ? (uint)msOutput.Position : (uint)headerSize;
+						int tableSize = chunkcount * 8;
+
+						msOutput.Position = tableOffset;
+						
 						for (int i = 0; i < chunkcount; i++)
 						{
 							bwOutput.Write(Chunks[i].Item1);
 							bwOutput.Write(Chunks[i].Item2);
+						}
+
+						if (newFormat)
+						{
+							//table is padded in the new format
+							long remainder = tableSize % 0x80;
+							msOutput.Seek(0x80 - remainder - 1, SeekOrigin.Current);
+							bwOutput.Write((byte)0);
+
+							//write info to header
+							msOutput.Seek((long)headerValues.GetInteger("_header_chunk_size_"), SeekOrigin.Begin);
+							bwOutput.Write(chunkSize);
+
+							msOutput.Seek((long)headerValues.GetInteger("_header_data_offset_"), SeekOrigin.Begin);
+							bwOutput.Write(headerSize);
+
+							msOutput.Seek((long)headerValues.GetInteger("_header_chunks_offset_"), SeekOrigin.Begin);
+							bwOutput.Write(tableOffset);
+
+							msOutput.Seek((long)headerValues.GetInteger("_header_chunk_count_"), SeekOrigin.Begin);
+							bwOutput.Write(chunkcount);
+
+							//write compressed bit
+							int flags = BitConverter.ToInt16(header, (int)headerValues.GetInteger("_header_flags_"));
+
+							flags |= 1;
+
+							msOutput.Seek((long)headerValues.GetInteger("_header_flags_"), SeekOrigin.Begin);
+							bwOutput.Write((short)flags);
 						}
 					}
 					File.WriteAllBytes(file, msOutput.ToArray());
@@ -503,7 +564,7 @@ namespace Blamite.Compression
 			}
 		}
 
-		private static void DecompressSecondGen(string file)
+		private static void DecompressSecondGen(string file, StructureValueCollection headerValues)
 		{
 			using (MemoryStream msOutput = new MemoryStream())
 			{
@@ -511,12 +572,23 @@ namespace Blamite.Compression
 				{
 					using (BinaryReader brInput = new BinaryReader(fsInput))
 					{
+						//constants
+						int headerSize = (int)headerValues.GetInteger("_header_length_");
+						int chunkSize = headerValues.HasInteger("compression data chunk size") ?
+							(int)headerValues.GetInteger("compression data chunk size") : 0x40000;
+						uint chunkTableOffset = headerValues.HasInteger("compression chunk table offset") ?
+							(uint)headerValues.GetInteger("compression chunk table offset") : (uint)headerSize;
+						int chunkCount = headerValues.HasInteger("compression chunk table count") ?
+							(int)headerValues.GetInteger("compression chunk table count") : 0x400;
+
 						//header is uncompressed
-						msOutput.Write(brInput.ReadBytes(0x1000), 0, 0x1000);
+						msOutput.Write(brInput.ReadBytes(headerSize), 0, headerSize);
 
 						List<Tuple<int, int>> Chunks = new List<Tuple<int, int>>();
 
-						for (int i = 0; i < 0x400; i++)
+						fsInput.Seek(chunkTableOffset, SeekOrigin.Begin);
+
+						for (int i = 0; i < chunkCount; i++)
 						{
 							int csize = brInput.ReadInt32();
 							int offset = brInput.ReadInt32();
@@ -549,7 +621,7 @@ namespace Blamite.Compression
 							{
 								fsInput.Seek(Chunks[i].Item2 + 2, SeekOrigin.Begin);
 
-								int realsize = 0x40000;
+								int realsize = chunkSize;
 								byte[] chunkData = new byte[realsize];
 
 								using (DeflateStream ds = new DeflateStream(fsInput, CompressionMode.Decompress, true))
@@ -559,6 +631,17 @@ namespace Blamite.Compression
 
 								msOutput.Write(chunkData, 0, realsize);
 							}
+						}
+
+						//clear compressed bit so it can run ingame
+						if (headerValues.HasInteger("flags"))
+						{
+							fsInput.Seek((long)headerValues.GetInteger("_header_flags_"), SeekOrigin.Begin);
+							int flags = brInput.ReadInt16();
+							flags &= 0x7FFFFFFE;
+
+							msOutput.Seek((long)headerValues.GetInteger("_header_flags_"), SeekOrigin.Begin);
+							msOutput.Write(BitConverter.GetBytes((short)flags), 0, 2);
 						}
 					}
 				}

@@ -32,8 +32,8 @@ namespace Blamite.RTE.SecondGen
 
 			PokingInformation info = RetrieveInformation(gameProcess);
 
-			if (!info.HeaderAddress.HasValue)
-				throw new NotImplementedException("Second Generation poking requires a HeaderAddress value.");
+			if (!info.HeaderAddress.HasValue && !info.HeaderPointer.HasValue)
+				throw new NotImplementedException("Second Generation poking requires a HeaderAddress value or HeaderPointer value.");
 			if (!info.MagicAddress.HasValue)
 				throw new NotImplementedException("Second Generation poking requires a MagicAddress value.");
 			if (!info.SharedMagicAddress.HasValue)
