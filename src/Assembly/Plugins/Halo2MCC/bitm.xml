@@ -20,7 +20,7 @@
 		<option name="Monochrome" value="0x5" />
 	</enum16>
 	<enum16 name="Usage" offset="0x4" visible="true">
-		<option name="Alpha Blend" value="0x0" />
+		<option name="Alpha-Blend" value="0x0" />
 		<option name="Default" value="0x1" />
 		<option name="Height Map" value="0x2" />
 		<option name="Detail Map" value="0x3" />
@@ -38,7 +38,7 @@
 		<bit name="Uniform Sprite Sequnces" index="2" />
 		<bit name="Filthy Sprite Bugfix" index="3" />
 		<bit name="Use Sharp Bump Filter" index="4" />
-		<bit name="Bit 5" index="5" />
+		<bit name="WDP Compression" index="5" />
 		<bit name="Use Clamped/Mirrored Bump Filter" index="6" />
 		<bit name="Invert Detail Fade" index="7" />
 		<bit name="Swap x-y Vector Components" index="8" />
@@ -110,7 +110,8 @@
 		<flags8 name="More Flags" offset="0x9" visible="true">
 			<bit name="Delete From Cache File" index="0" />
 			<bit name="Bitmap Create Attempted" index="1" />
-			<bit name="Bit 2" index="2" />
+			<bit name="Bitmap Recreate Allowed" index="2" />
+			<bit name="Bitmap Sampling Allowed" index="3" />
 		</flags8>
 		<enum16 name="Type" offset="0xA" visible="true" tooltip="Determines bitmap &quot;geometry.&quot;">
 			<option name="2D Texture" value="0x0" />
@@ -163,15 +164,39 @@
 		</flags16>
 		<point16 name="Registration Point" offset="0x10" visible="true" />
 		<int16 name="Mipmap Count" offset="0x14" visible="true" />
-		<int16 name="Low-Detail Mipmap Count" offset="0x16" visible="true" />
+		<int8 name="Lod Adjust" offset="0x16" visible="true" />
+		<enum8 name="Cache Usage" offset="0x17" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Environment" value="0x1" />
+			<option name="Environment Bump" value="0x2" />
+			<option name="Environment Lightmap" value="0x3" />
+			<option name="Scenery" value="0x4" />
+			<option name="Scenery Bump" value="0x5" />
+			<option name="Weapon" value="0x6" />
+			<option name="Weapon Bump" value="0x7" />
+			<option name="Vehicle" value="0x8" />
+			<option name="Vehicle Bump" value="0x9" />
+			<option name="Biped" value="0xA" />
+			<option name="Biped Bump" value="0xB" />
+			<option name="Object" value="0xC" />
+			<option name="Object Bump" value="0xD" />
+			<option name="Effect" value="0xE" />
+			<option name="HUD" value="0xF" />
+			<option name="UI" value="0x10" />
+			<option name="Sky" value="0x11" />
+			<option name="First Person" value="0x12" />
+			<option name="Rasterizer" value="0x13" />
+		</enum8>
 		<int32 name="Pixels Offset" offset="0x18" visible="true" />
 		<tagref name="Datum" offset="0x1C" withGroup="false" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
+		<tagblock name="Native Mipmap Info" offset="0x20" visible="true" elementSize="0xC">
+			<int32 name="Offset" offset="0x0" visible="true" />
+			<int32 name="Pitch Row" offset="0x4" visible="true" />
+			<int32 name="Pitch Slice" offset="0x8" visible="true" />
+		</tagblock>
+		<int32 name="Native Size" offset="0x28" visible="true" />
+		<int32 name="Tile Mode" offset="0x2C" visible="true" />
+		<uint64 name="Runtime Pointer" offset="0x30" visible="true" />
 		<int32 name="LOD1 Offset" offset="0x38" visible="true" />
 		<int32 name="LOD2 Offset" offset="0x3C" visible="true" />
 		<int32 name="LOD3 Offset" offset="0x40" visible="true" />
@@ -181,25 +206,19 @@
 		<int32 name="LOD1 Size" offset="0x50" visible="true" />
 		<int32 name="LOD2 Size" offset="0x54" visible="true" />
 		<int32 name="LOD3 Size" offset="0x58" visible="true" />
-		<undefined name="Unknown" offset="0x5C" visible="false" />
-		<undefined name="Unknown" offset="0x60" visible="false" />
-		<undefined name="Unknown" offset="0x64" visible="false" />
-		<undefined name="Unknown" offset="0x68" visible="false" />
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<undefined name="Unknown" offset="0x70" visible="false" />
+		<uint64 name="Runtime Pointer" offset="0x5C" visible="true" />
+		<uint64 name="Runtime Pointer" offset="0x64" visible="true" />
+		<uint64 name="Runtime Pointer" offset="0x6C" visible="true" />
 		<undefined name="Unknown" offset="0x74" visible="false" />
-		<undefined name="Unknown" offset="0x78" visible="false" />
-		<undefined name="Unknown" offset="0x7C" visible="false" />
-		<undefined name="Unknown" offset="0x80" visible="false" />
-		<undefined name="Unknown" offset="0x84" visible="false" />
+		<uint64 name="Runtime Pointer" offset="0x78" visible="true" />
+		<uint64 name="Runtime Pointer" offset="0x80" visible="true" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
 		<undefined name="Unknown" offset="0x8C" visible="false" />
 		<undefined name="Unknown" offset="0x90" visible="false" />
 		<undefined name="Unknown" offset="0x94" visible="false" />
 		<undefined name="Unknown" offset="0x98" visible="false" />
 		<undefined name="Unknown" offset="0x9C" visible="false" />
-		<undefined name="Unknown" offset="0xA0" visible="false" />
-		<undefined name="Unknown" offset="0xA4" visible="false" />
+		<uint64 name="Runtime Pointer" offset="0xA0" visible="true" />
 	</tagblock>
 	<comment title="WDP Fields" />
 	<int8 name="Color Compression Quality" offset="0x4C" visible="true" tooltip="1 means lossless, 127 means crappy" />

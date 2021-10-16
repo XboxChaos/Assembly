@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin game="Halo2MCC" baseSize="0x38">
+<plugin game="Halo2MCC" baseSize="0x1C">
 	<revisions>
 		<revision author="Lord Zedd" version="1">k</revision>
 	</revisions>
-	<tagref name="Remastered Sound" offset="0x0" visible="true" />
-	<flags16 name="Flags" offset="0x8" visible="true">
+	<flags16 name="Flags" offset="0x0" visible="true">
 		<bit name="Fit To ADPCM Blocksize" index="0" />
 		<bit name="Split Long Sound Into Permutations" index="1" />
 		<bit name="Always Spatialize" index="2" tooltip="always play as 3d sound, even in first person" />
@@ -15,14 +14,14 @@
 		<bit name="Pitch Range Is Language" index="7" />
 		<bit name="Don't Use Sound Class Speaker Flag" index="8" />
 		<bit name="Don't Use Lipsync Data" index="9" />
-		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
+		<bit name="Play Only In Legacy Mode" index="10" />
+		<bit name="Play Only In Remastered Mode" index="11" />
 		<bit name="Bit 12" index="12" />
 		<bit name="Bit 13" index="13" />
 		<bit name="Bit 14" index="14" />
 		<bit name="Bit 15" index="15" />
 	</flags16>
-	<enum8 name="Sound Class" offset="0xA" visible="true">
+	<enum8 name="Sound Class" offset="0x2" visible="true">
 		<option name="projectile_impact" value="0x0" />
 		<option name="projectile_detonation" value="0x1" />
 		<option name="projectile_flyby" value="0x2" />
@@ -78,40 +77,18 @@
 		<option name="test" value="0x34" />
 		<option name="multilingual_test" value="0x35" />
 	</enum8>
-	<enum8 name="Sample Rate" offset="0xB" visible="true">
-		<option name="22kHz" value="0x0" />
-		<option name="44kHz" value="0x1" />
-		<option name="32kHz" value="0x2" />
-		<option name="Unknown" value="0x3" />
-	</enum8>
-	<enum8 name="Encoding" offset="0xC" visible="true">
-		<option name="Mono" value="0x0" />
-		<option name="Stereo" value="0x1" />
-		<option name="Codec" value="0x2" />
-	</enum8>
-	<enum8 name="Compression" offset="0xD" visible="true">
-		<option name="None (Big Endian)" value="0x0" />
-		<option name="Xbox ADPCM" value="0x1" />
-		<option name="IMA ADPCM" value="0x2" />
-		<option name="None (Little Endian)" value="0x3" />
-		<option name="WMA" value="0x4" />
-		<option name="Unknown" value="0x5" />
-	</enum8>
-	<int16 name="[ugh!] Playback Parameter Index" offset="0xE" visible="false" />
-	<int16 name="[ugh!] Pitch Range Index" offset="0x10" visible="false" />
-	<int8 name="Unknown" offset="0x12" visible="false" />
-	<int8 name="[ugh!] Scale Index" offset="0x13" visible="false" />
-	<int8 name="[ugh!] Promotion Index" offset="0x14" visible="false" />
-	<int8 name="[ugh!] Custom Playback Index" offset="0x15" visible="false" />
-	<int16 name="[ugh!] Extra Info Index" offset="0x16" visible="false" />
-	<int32 name="Maximum Play Time" offset="0x18" visible="false" />
-	<undefined name="Unknown" offset="0x1C" visible="false" />
-	<tagblock name="Environment Reflections" offset="0x20" visible="true" elementSize="0x10">
-		<stringid name="Environment Name" offset="0x0" visible="true" />
-		<tagRef name="Sound" offset="0x4" visible="true" />
-		<int32 name="Unknown" offset="0xC" visible="false" />
-	</tagblock>
-	<undefined name="Unknown" offset="0x28" visible="false" />
-	<undefined name="Unknown" offset="0x2C" visible="false" />
-	<dataref name="Unknown" offset="0x30" visible="false" />
+	<int8 name="[ugh!] Codec Index" offset="0x3" visible="true" />
+	<int16 name="[ugh!] Remastered Sound Reference Index" offset="0x4" visible="true" />
+	<int16 name="[ugh!] Playback Parameter Index" offset="0x6" visible="true" />
+	<int16 name="[ugh!] Pitch Range Index" offset="0x8" visible="true" />
+	<int8 name="[ugh!] Pitch Range Count" offset="0xA" visible="true" />
+	<int8 name="[ugh!] Scale Index" offset="0xB" visible="true" />
+	<int8 name="[ugh!] Promotion Index" offset="0xC" visible="true" />
+	<int8 name="[ugh!] Custom Playback Index" offset="0xD" visible="true" />
+	<int16 name="[ugh!] Extra Info Index" offset="0xE" visible="true" />
+	<int32 name="Maximum Play Time" offset="0x10" visible="true" />
+	<float32 name="Inner Silence Distance" offset="0x14" visible="true" tooltip="don't play below this distance" />
+	<int16 name="[ugh!] First Reflection Parameters Index" offset="0x18" visible="true" />
+	<int8 name="[ugh!] Reflection Parameters Count" offset="0x1A" visible="true" />
+	<int8 name="[ugh!] Low Pass Cut Off Parameters Index" offset="0x1B" visible="true" />
 </plugin>

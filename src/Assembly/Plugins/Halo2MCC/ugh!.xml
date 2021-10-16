@@ -1,9 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin game="Halo2" baseSize="0x58">
+<plugin game="Halo2" baseSize="0x78">
 	<revisions>
 		<revision author="Lord Zedd" version="1">k</revision>
 	</revisions>
-	<tagblock name="Playback Parameters" offset="0x0" visible="true" elementSize="0x38">
+	<tagblock name="Codecs" offset="0x0" visible="true" elementSize="0x3">
+		<enum8 name="Sample Rate" offset="0x0" visible="true">
+			<option name="22kHz" value="0x0" />
+			<option name="44kHz" value="0x1" />
+			<option name="32kHz" value="0x2" />
+			<option name="48kHz" value="0x3" />
+		</enum8>
+		<enum8 name="Encoding" offset="0x1" visible="true">
+			<option name="Mono" value="0x0" />
+			<option name="Stereo" value="0x1" />
+			<option name="Codec" value="0x2" />
+			<option name="Quad" value="0x3" />
+		</enum8>
+		<enum8 name="Compression" offset="0x2" visible="true">
+			<option name="None (Big Endian)" value="0x0" />
+			<option name="Xbox ADPCM" value="0x1" />
+			<option name="Ima ADPCM" value="0x2" />
+			<option name="None (Little Endian)" value="0x3" />
+			<option name="WMA" value="0x4" />
+			<option name="Opus" value="0x5" />
+		</enum8>
+	</tagblock>
+	<tagblock name="Playback Parameters" offset="0x8" visible="true" elementSize="0x38">
 		<comment title="Distances" />
 		<float32 name="Minimum Distance" offset="0x0" visible="true" tooltip="the distance below which this sound no longer gets louder" />
 		<float32 name="Maximum Distance" offset="0x4" visible="true" tooltip="the distance beyond which this sound is no longer audible" />
@@ -33,21 +55,21 @@ azimuth:
 		<float32 name="Positional Gain" offset="0x30" visible="true" />
 		<float32 name="First Person Gain" offset="0x34" visible="true" />
 	</tagblock>
-	<tagblock name="Scales" offset="0x8" visible="true" elementSize="0x14">
+	<tagblock name="Scales" offset="0x10" visible="true" elementSize="0x14">
 		<comment title="Scale Modifiers">as the sound's input scale changes from zero to one, these modifiers move between the two values specified here. the sound will play using the current scale modifier multiplied by the values specified above. (0 values are ignored.)</comment>
 		<rangef name="Gain Modifier" offset="0x0" visible="true" />
 		<range16 name="Pitch Modifier" offset="0x8" visible="true" />
 		<rangef name="Skip Fraction Modifier" offset="0xC" visible="true" />
 	</tagblock>
-	<tagblock name="Import Names" offset="0x10" visible="true" elementSize="0x4">
+	<tagblock name="Import Names" offset="0x18" visible="true" elementSize="0x4">
 		<stringid name="Import Name" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Pitch Range Parameters" offset="0x18" visible="true" elementSize="0xA">
+	<tagblock name="Pitch Range Parameters" offset="0x20" visible="true" elementSize="0xA">
 		<int16 name="Natural Pitch" offset="0x0" visible="true" />
 		<range16 name="Bend Bounds" offset="0x2" visible="true" tooltip="the range of pitches that will be represented using this sample." />
 		<range16 name="Maximum Gain Pitch Bounds" offset="0x6" visible="true" />
 	</tagblock>
-	<tagblock name="Pitch Ranges" offset="0x20" visible="true" elementSize="0xC">
+	<tagblock name="Pitch Ranges" offset="0x28" visible="true" elementSize="0xC">
 		<int16 name="Import Name Index" offset="0x0" visible="true" />
 		<int16 name="Pitch Range Parameter Index" offset="0x2" visible="true" />
 		<int16 name="Encoded Permutation Data Index" offset="0x4" visible="true" />
@@ -55,7 +77,7 @@ azimuth:
 		<int16 name="First Permutation" offset="0x8" visible="true" />
 		<int16 name="Permutation Count" offset="0xA" visible="true" />
 	</tagblock>
-	<tagblock name="Permutations" offset="0x28" visible="true" elementSize="0x10">
+	<tagblock name="Permutations" offset="0x30" visible="true" elementSize="0x10">
 		<int16 name="Import Name Index" offset="0x0" visible="true" />
 		<int16 name="Encoded Skip Fraction" offset="0x2" visible="true" />
 		<int8 name="Gain" offset="0x4" visible="true" />
@@ -67,7 +89,7 @@ azimuth:
 			<int16 name="Chunk Count" offset="0x6" visible="false" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Custom Playbacks" offset="0x30" visible="true" elementSize="0x34">
+	<tagblock name="Custom Playbacks" offset="0x38" visible="true" elementSize="0x34">
 		<tagblock name="Mix" offset="0x0" visible="true" elementSize="0x8">
 			<enum32 name="Mixbin" offset="0x0" visible="true">
 				<option name="Front Left" value="0x0" />
@@ -212,10 +234,23 @@ for stereo sounds:
 			</tagblock>
 		</tagblock>
 	</tagblock>
-	<tagblock name="Runtime Permutation Flags" offset="0x38" visible="true" elementSize="0x1">
+	<tagblock name="Reflections" offset="0x40" visible="true" elementSize="0x10">
+		<stringid name="Reflection Type" offset="0x0" visible="true" tooltip="type which is compared with type in current sound_environment tag" />
+		<tagRef name="Reflection Sound" offset="0x4" visible="true" />
+		<int32 name="Reflection Sound" offset="0xC" visible="true" />
+	</tagblock>
+	<tagblock name="Lowpass Cut Off Parameters" offset="0x48" visible="true" elementSize="0x10">
+		<float32 name="Low Pass Minimum Distance" offset="0x0" visible="true" />
+		<float32 name="Low Pass Maximum Distance" offset="0x4" visible="true" />
+		<dataref name="Function" offset="0x8" visible="true" />
+	</tagblock>
+	<tagblock name="Remastered Sound" offset="0x50" visible="true" elementSize="0x8">
+		<tagRef name="Remastered Sound" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Runtime Permutation Flags" offset="0x58" visible="true" elementSize="0x1">
 		<int8 name="Unknown" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Permutation Chunks" offset="0x40" visible="true" elementSize="0x8">
+	<tagblock name="Permutation Chunks" offset="0x60" visible="true" elementSize="0x8">
 		<tagblock name="Languages" offset="0x0" visible="true" elementSize="0x10">
 			<int32 name="File Offset" offset="0x0" visible="false" />
 			<int16 name="Compressed Size?" offset="0x4" visible="false" />
@@ -224,7 +259,7 @@ for stereo sounds:
 			<int32 name="Runtime Index" offset="0xC" visible="false" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Promotions" offset="0x48" visible="true" elementSize="0x1C">
+	<tagblock name="Promotions" offset="0x68" visible="true" elementSize="0x1C">
 		<tagblock name="Rules" offset="0x0" visible="true" elementSize="0x10">
 			<int16 name="Pitch Range Index" offset="0x0" visible="true" />
 			<int16 name="Maximum Playing Count" offset="0x2" visible="true" />
@@ -239,7 +274,7 @@ for stereo sounds:
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
 	</tagblock>
-	<tagblock name="Extra Info" offset="0x50" visible="true" elementSize="0x14C">
+	<tagblock name="Extra Info" offset="0x70" visible="true" elementSize="0x14C">
 		<tagblock name="Encoded Permutation Section" offset="0x0" visible="true" elementSize="0x10">
 			<dataref name="Encoded Data" offset="0x0" visible="true" />
 			<tagblock name="Sound Dialogue Info" offset="0x8" visible="true" elementSize="0x10">
