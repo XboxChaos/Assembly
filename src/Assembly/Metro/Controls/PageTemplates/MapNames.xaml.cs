@@ -194,6 +194,10 @@ namespace Assembly.Metro.Controls.PageTemplates
 			new MapEntry("sidewinder", "Avalanche", "470", MapType.Multiplayer),
 			new MapEntry("spacecamp", "Orbital", "500", MapType.Multiplayer),
 			new MapEntry("warehouse", "Foundry", "480", MapType.Multiplayer),
+
+			new MapEntry("s3d_waterfall", "Waterfall", "706", MapType.Multiplayer),
+			new MapEntry("s3d_edge", "Edge", "703", MapType.Multiplayer),
+			new MapEntry("s3d_turf", "Icebox", "31", MapType.Multiplayer),
 		};
 
 		private List<MapEntry> HaloODST = new List<MapEntry>()
