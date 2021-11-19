@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Assembly.Windows;
+using Blamite.IO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -117,7 +119,8 @@ namespace Assembly.Helpers
 				else if (realHistory.EndsWith("autoaim"))
 					try
 					{
-						IWff.Play();
+						if (IWff.Play())
+							StatusUpdater.Update("I know what you did.");
 					}
 					catch
 					{
