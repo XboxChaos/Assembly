@@ -4,20 +4,26 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
-	<tagblock name="Unknown" offset="0x0" visible="false" elementSize="0x20">
-		<int32 name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
+	<tagblock name="SH Lights" offset="0x0" visible="true" elementSize="0x20">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="Debug This Light" index="0" />
+		</flags32>
+		<float32 name="Direction" offset="0x4" visible="true" />
+		<float32 name="Front-Back" offset="0x8" visible="true" />
+		<float32 name="Intensity" offset="0xC" visible="true" />
 		<colorf name="Color" offset="0x10" alpha="false" visible="true" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<float32 name="Diffusion" offset="0x1C" visible="true" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0xC" visible="false" elementSize="0x20">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<tagRef name="Unknown" offset="0x10" visible="false" />
+	<tagblock name="Dynamic Lights" offset="0xC" visible="true" elementSize="0x20">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="Debug This Light" index="0" />
+			<bit name="Follow Object" index="1" />
+			<bit name="Position At Marker" index="2" />
+		</flags32>
+		<float32 name="Direction" offset="0x4" visible="true" />
+		<float32 name="Front-Back" offset="0x8" visible="true" />
+		<float32 name="Distance" offset="0xC" visible="true" />
+		<tagRef name="Light" offset="0x10" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x18" visible="false" />
+	<float32 name="Environmental Lighting Scale" offset="0x18" visible="true" />
 </plugin>
