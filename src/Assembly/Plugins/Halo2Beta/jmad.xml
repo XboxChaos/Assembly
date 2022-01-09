@@ -1,0 +1,334 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo2Beta" baseSize="0xEC">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+        <revision author="Dragon" version="2">named some fields</revision>
+	</revisions>
+	<tagRef name="Parent Animation Graph" offset="0x0" visible="true" />
+    <flags8 name="Inheritance Flags" offset="0x10" visible="true">
+        <bit name="Inherit Root Trans Scale Only" index="0" />
+        <bit name="Inherit For Use On Player" index="1" />
+    </flags8>
+    <flags8 name="Private Flags" offset="0x11" visible="true">
+        <bit name="Prepared For Cache" index="0" />
+        <bit name="Bit 1" index="1" />
+        <bit name="Imported With Codec Compressors" index="2" />
+        <bit name="Bit 3" index="3" />
+        <bit name="Written To Cache" index="4" />
+        <bit name="Animation Data Reordered" index="5" />
+    </flags8>
+    <int16 name="Animation Codec Pack" offset="0x12" visible="true" />
+	<tagblock name="Skeleton Nodes" offset="0x14" visible="true" elementSize="0x20">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int16 name="Next Sibling Node Index" offset="0x4" visible="true" />
+        <int16 name="First Child Node Index" offset="0x6" visible="true" />
+		<int16 name="Parent Node Index" offset="0x8" visible="true" />
+        <flags8 name="Model Flags" offset="0xA" visible="true">
+            <bit name="Primary Model" index="0" />
+            <bit name="Secondary Model" index="1" />
+            <bit name="Local Root" index="2" />
+            <bit name="Left Hand" index="3" />
+            <bit name="Right Hand" index="4" />
+            <bit name="Left Arm Member" index="5" />
+        </flags8>
+        <flags8 name="Node Joint Flags" offset="0xB" visible="true">
+            <bit name="Ball-Socket" index="0" />
+            <bit name="Hinge" index="1" />
+            <bit name="No Movement" index="2" />
+        </flags8>
+        <vector3 name="Base Vector" offset="0xC" visible="true" />
+        <float32 name="Vector Range" offset="0x18" visible="true" />
+        <float32 name="z Position" offset="0x1C" visible="true" />
+	</tagblock>
+	<tagblock name="Sound References" offset="0x20" visible="true" elementSize="0x14">
+		<tagRef name="Sound" offset="0x0" visible="true" />
+        <flags16 name="Flags" offset="0x10" visible="true">
+            <bit name="Allow On Player" index="0" />
+            <bit name="Left Arm Only" index="1" />
+            <bit name="Right Arm Only" index="2" />
+            <bit name="First-Person Only" index="3" />
+            <bit name="Forward Only" index="4" />
+            <bit name="Reverse Only" index="5" />
+        </flags16>
+        <int16 name="Unknown" offset="0x12" visible="false" />
+	</tagblock>
+	<tagblock name="Effect References" offset="0x2C" visible="true" elementSize="0x14">
+		<tagref name="Effect" offset="0x0" visible="true" />
+        <flags16 name="Flags" offset="0x10" visible="true">
+            <bit name="Allow On Player" index="0" />
+            <bit name="Left Arm Only" index="1" />
+            <bit name="Right Arm Only" index="2" />
+            <bit name="First-Person Only" index="3" />
+            <bit name="Forward Only" index="4" />
+            <bit name="Reverse Only" index="5" />
+        </flags16>
+        <int16 name="Unknown" offset="0x12" visible="false" />
+	</tagblock>
+	<tagblock name="Blend Screens" offset="0x38" visible="true" elementSize="0x1C">
+        <stringId name="Label" offset="0x0" visible="true" />
+        <degree name="Right Yaw Per Frame" offset="0x4" visible="true" />
+        <degree name="Left Yaw Per Frame" offset="0x8" visible="true" />
+        <int16 name="Right Frame Count" offset="0xC" visible="true" />
+        <int16 name="Left Frame Count" offset="0xE" visible="true" />
+        <degree name="Down Pitch Per Frame" offset="0x10" visible="true" />
+        <degree name="Up Pitch Per Frame" offset="0x14" visible="true" />
+        <int16 name="Down Pitch Frame Count" offset="0x18" visible="true" />
+        <int16 name="Up Pitch Frame Count" offset="0x1A" visible="true" />
+	</tagblock>
+	<tagblock name="Animations" offset="0x44" visible="true" elementSize="0x7C">
+        <stringId name="Name" offset="0x0" visible="true" />
+        <int32 name="Node List Checksum" offset="0x4" visible="true" />
+        <int32 name="Production Checksum" offset="0x8" visible="true" />
+        <int32 name="Import Checksum" offset="0xC" visible="true" />
+        <enum8 name="Type" offset="0x10" visible="true">
+            <option name="Base" value="0x0" />
+            <option name="Overlay" value="0x1" />
+            <option name="Replacement" value="0x2" />
+        </enum8>
+        <enum8 name="Frame Info Type" offset="0x11" visible="true">
+            <option name="None" value="0x0" />
+            <option name="dx,dy" value="0x1" />
+            <option name="dx,dy,dyaw" value="0x2" />
+            <option name="dx,dy,dz,dyaw" value="0x3" />
+        </enum8>
+        <int8 name="Blend Screen" offset="0x12" visible="true" />
+        <uint8 name="Node Count" offset="0x13" visible="true" />
+        <int16 name="Frame Count" offset="0x14" visible="true" />
+        <flags8 name="Internal Flags" offset="0x16" visible="true">
+            <bit name="Bit 0" index="0" />
+            <bit name="World Relative" index="1" />
+            <bit name="Bit 2" index="2" />
+            <bit name="Bit 3" index="3" />
+            <bit name="Bit 4" index="4" />
+            <bit name="Compression Disabled" index="5" />
+            <bit name="Old Production Checksum" index="6" />
+            <bit name="Valid Production Checksum" index="7" />
+        </flags8>
+        <flags8 name="Production Flags" offset="0x17" visible="true">
+            <bit name="Do Not Monitor Changes" index="0" />
+            <bit name="Verify Sound Events" index="1" />
+            <bit name="Do Not Inherit For Player Graphs" index="2" />
+        </flags8>
+        <flags16 name="Playback Flags" offset="0x18" visible="true">
+            <bit name="Disable Interpolation In" index="0" />
+            <bit name="Disable Interpolation Out" index="1" />
+            <bit name="Disable Mode ik" index="2" />
+            <bit name="Disable Weapon ik" index="3" />
+            <bit name="Disable Weapon Aim/First Person" index="4" />
+            <bit name="Disable Look Screen" index="5" />
+            <bit name="Disable Transition Adjustment" index="6" />
+        </flags16>
+        <enum8 name="Desired Compression" offset="0x1A" visible="true">
+            <option name="Best Score" value="0x0" />
+            <option name="Best Compression" value="0x1" />
+            <option name="Best Accuracy" value="0x2" />
+            <option name="Best Fullframe" value="0x3" />
+            <option name="Best Small Keyframe" value="0x4" />
+            <option name="Best Large Keyframe" value="0x5" />
+        </enum8>
+        <enum8 name="Current Compression" offset="0x1B" visible="true">
+            <option name="Best Score" value="0x0" />
+            <option name="Best Compression" value="0x1" />
+            <option name="Best Accuracy" value="0x2" />
+            <option name="Best Fullframe" value="0x3" />
+            <option name="Best Small Keyframe" value="0x4" />
+            <option name="Best Large Keyframe" value="0x5" />
+        </enum8>
+        <float32 name="Weight" offset="0x1C" visible="true" />
+        <int16 name="Loop Frame Index" offset="0x20" visible="true" />
+        <int16 name="Parent Animation Index" offset="0x22" visible="true" />
+        <int16 name="Next Animation Index" offset="0x24" visible="true" />
+        <int16 name="Unknown" offset="0x26" visible="true" />
+        <int16 name="Offset in Raw" offset="0x28" visible="true" />
+        <int16 name="Unknown" offset="0x2A" visible="true" />
+        <int16 name="Unknown" offset="0x2C" visible="true" />
+        <int16 name="Unknown" offset="0x2E" visible="true" />
+        <int8 name="Unknown" offset="0x30" visible="true" />
+        <int8 name="Unknown" offset="0x31" visible="true" />
+        <int16 name="Unknown" offset="0x32" visible="true" />
+        <int16 name="Unknown" offset="0x34" visible="true" />
+        <int16 name="Unknown" offset="0x36" visible="true" />
+        <int32 name="Unknown" offset="0x38" visible="true" />
+        <int32 name="Unknown" offset="0x3C" visible="true" />
+		<undefined name="Unknown" offset="0x40" visible="true" />
+		<undefined name="Unknown" offset="0x44" visible="true" />
+		<undefined name="Unknown" offset="0x48" visible="true" />
+		<undefined name="Unknown" offset="0x4C" visible="true" />
+		<undefined name="Unknown" offset="0x50" visible="true" />
+		<undefined name="Unknown" offset="0x54" visible="true" />
+		<tagblock name="Unknown" offset="0x58" visible="true" elementSize="0x8">
+			<undefined name="Unknown" offset="0x0" visible="true" />
+			<undefined name="Unknown" offset="0x4" visible="true" />
+		</tagblock>
+		<tagblock name="Unknown" offset="0x64" visible="true" elementSize="0x8">
+			<undefined name="Unknown" offset="0x0" visible="true" />
+			<undefined name="Unknown" offset="0x4" visible="true" />
+		</tagblock>
+		<undefined name="Unknown" offset="0x70" visible="true" />
+		<undefined name="Unknown" offset="0x74" visible="true" />
+		<undefined name="Unknown" offset="0x78" visible="true" />
+	</tagblock>
+	<tagblock name="Modes" offset="0x50" visible="true" elementSize="0x1C">
+		<stringid name="Label" offset="0x0" visible="true" />
+		<tagblock name="Weapon Class" offset="0x4" visible="true" elementSize="0x1C">
+			<stringid name="Label" offset="0x0" visible="true" />
+			<tagblock name="Weapon Type" offset="0x4" visible="true" elementSize="0x34">
+				<stringid name="Label" offset="0x0" visible="true" />
+				<tagblock name="Actions" offset="0x4" visible="true" elementSize="0x8">
+					<stringid name="Label" offset="0x0" visible="true" />
+                    <int16 name="Graph Index" offset="0x4" visible="true" />
+                    <int16 name="Animation Index" offset="0x6" visible="true" />
+				</tagblock>
+				<tagblock name="Overlays" offset="0x10" visible="true" elementSize="0x8">
+					<stringid name="Label" offset="0x0" visible="true" />
+                    <int16 name="Graph Index" offset="0x4" visible="true" />
+                    <int16 name="Animation Index" offset="0x6" visible="true" />
+				</tagblock>
+				<tagblock name="Death and Damage" offset="0x1C" visible="true" elementSize="0x10">
+					<stringid name="Label" offset="0x0" visible="true" />
+					<tagblock name="Directions" offset="0x4" visible="true" elementSize="0xC">
+						<tagblock name="Regions" offset="0x0" visible="true" elementSize="0x4">
+                            <int16 name="Graph Index" offset="0x0" visible="true" />
+                            <int16 name="Animation Index" offset="0x2" visible="true" />
+						</tagblock>
+					</tagblock>
+				</tagblock>
+				<undefined name="Unknown" offset="0x28" visible="true" />
+				<undefined name="Unknown" offset="0x2C" visible="true" />
+				<undefined name="Unknown" offset="0x30" visible="true" />
+			</tagblock>
+			<tagblock name="Unknown" offset="0x10" visible="true" elementSize="0x8">
+				<undefined name="Unknown" offset="0x0" visible="true" />
+				<undefined name="Unknown" offset="0x4" visible="true" />
+			</tagblock>
+		</tagblock>
+		<undefined name="Unknown" offset="0x10" visible="true" />
+		<undefined name="Unknown" offset="0x14" visible="true" />
+		<undefined name="Unknown" offset="0x18" visible="true" />
+	</tagblock>
+	<tagblock name="Unknown" offset="0x5C" visible="true" elementSize="0x28">
+		<undefined name="Unknown" offset="0x0" visible="true" />
+		<undefined name="Unknown" offset="0x4" visible="true" />
+		<undefined name="Unknown" offset="0x8" visible="true" />
+		<undefined name="Unknown" offset="0xC" visible="true" />
+		<undefined name="Unknown" offset="0x10" visible="true" />
+		<undefined name="Unknown" offset="0x14" visible="true" />
+		<undefined name="Unknown" offset="0x18" visible="true" />
+		<undefined name="Unknown" offset="0x1C" visible="true" />
+		<undefined name="Unknown" offset="0x20" visible="true" />
+		<undefined name="Unknown" offset="0x24" visible="true" />
+	</tagblock>
+	<tagblock name="Unknown" offset="0x68" visible="true" elementSize="0x14">
+		<undefined name="Unknown" offset="0x0" visible="true" />
+		<undefined name="Unknown" offset="0x4" visible="true" />
+		<undefined name="Unknown" offset="0x8" visible="true" />
+		<undefined name="Unknown" offset="0xC" visible="true" />
+		<undefined name="Unknown" offset="0x10" visible="true" />
+	</tagblock>
+	<tagblock name="Inheritance List" offset="0x74" visible="true" elementSize="0x30">
+		<tagref name="Inherited Graph" offset="0x0" visible="true" />
+		<tagblock name="Node Map" offset="0x10" visible="true" elementSize="0x2">
+			<int16 name="Local Node" offset="0x0" visible="true" />
+		</tagblock>
+		<tagblock name="Node Map Flags" offset="0x1C" visible="true" elementSize="0x4">
+            <flags32 name="Local Node Flags" offset="0x0" visible="true">
+                <bit name="Node 0, 32, 64, 96, 128, 160, 192, 224" index="0" />
+                <bit name="Node 1, 33, 65, 97, 129, 161, 193, 225" index="1" />
+                <bit name="Node 2, 34, 66, 98, 130, 162, 194, 226" index="2" />
+                <bit name="Node 3, 35, 67, 99, 131, 163, 195, 227" index="3" />
+                <bit name="Node 4, 36, 68, 100, 132, 164, 196, 228" index="4" />
+                <bit name="Node 5, 37, 69, 101, 133, 165, 197, 229" index="5" />
+                <bit name="Node 6, 38, 70, 102, 134, 166, 198, 230" index="6" />
+                <bit name="Node 7, 39, 71, 103, 135, 167, 199, 231" index="7" />
+                <bit name="Node 8, 40, 72, 104, 136, 168, 200, 232" index="8" />
+                <bit name="Node 9, 41, 73, 105, 137, 169, 201, 233" index="9" />
+                <bit name="Node 10, 42, 74, 106, 138, 170, 202, 234" index="10" />
+                <bit name="Node 11, 43, 75, 107, 139, 171, 203, 235" index="11" />
+                <bit name="Node 12, 44, 76, 108, 140, 172, 204, 236" index="12" />
+                <bit name="Node 13, 45, 77, 109, 141, 173, 205, 237" index="13" />
+                <bit name="Node 14, 46, 78, 110, 142, 174, 206, 238" index="14" />
+                <bit name="Node 15, 47, 79, 111, 143, 175, 207, 239" index="15" />
+                <bit name="Node 16, 48, 80, 112, 144, 176, 208, 240" index="16" />
+                <bit name="Node 17, 49, 81, 113, 145, 177, 209, 241" index="17" />
+                <bit name="Node 18, 50, 82, 114, 146, 178, 210, 242" index="18" />
+                <bit name="Node 19, 51, 83, 115, 147, 179, 211, 243" index="19" />
+                <bit name="Node 20, 52, 84, 116, 148, 180, 212, 244" index="20" />
+                <bit name="Node 21, 53, 85, 117, 149, 181, 213, 245" index="21" />
+                <bit name="Node 22, 54, 86, 118, 150, 182, 214, 246" index="22" />
+                <bit name="Node 23, 55, 87, 119, 151, 183, 215, 247" index="23" />
+                <bit name="Node 24, 56, 88, 120, 152, 184, 216, 248" index="24" />
+                <bit name="Node 25, 57, 89, 121, 153, 185, 217, 249" index="25" />
+                <bit name="Node 26, 58, 90, 122, 154, 186, 218, 250" index="26" />
+                <bit name="Node 27, 59, 91, 123, 155, 187, 219, 251" index="27" />
+                <bit name="Node 28, 60, 92, 124, 156, 188, 220, 252" index="28" />
+                <bit name="Node 29, 61, 93, 125, 157, 189, 221, 253" index="29" />
+                <bit name="Node 30, 62, 94, 126, 158, 190, 222, 254" index="30" />
+                <bit name="Node 31, 63, 95, 127, 159, 191, 223, 255" index="31" />
+            </flags32>
+		</tagblock>
+        <float32 name="Root z Offset" offset="0x28" visible="true" />
+        <flags32 name="Inheritance Flags" offset="0x2C" visible="true">
+            <bit name="Tighten Nodes" index="0" />
+            <bit name="Bit 1" index="1" />
+            <bit name="Bit 2" index="2" />
+            <bit name="Bit 3" index="3" />
+            <bit name="Bit 4" index="4" />
+            <bit name="Bit 5" index="5" />
+            <bit name="Bit 6" index="6" />
+            <bit name="Bit 7" index="7" />
+            <bit name="Bit 8" index="8" />
+            <bit name="Bit 9" index="9" />
+            <bit name="Bit 10" index="10" />
+            <bit name="Bit 11" index="11" />
+            <bit name="Bit 12" index="12" />
+            <bit name="Bit 13" index="13" />
+            <bit name="Bit 14" index="14" />
+            <bit name="Bit 15" index="15" />
+            <bit name="Bit 16" index="16" />
+            <bit name="Bit 17" index="17" />
+            <bit name="Bit 18" index="18" />
+            <bit name="Bit 19" index="19" />
+            <bit name="Bit 20" index="20" />
+            <bit name="Bit 21" index="21" />
+            <bit name="Bit 22" index="22" />
+            <bit name="Bit 23" index="23" />
+            <bit name="Bit 24" index="24" />
+            <bit name="Bit 25" index="25" />
+            <bit name="Bit 26" index="26" />
+            <bit name="Bit 27" index="27" />
+            <bit name="Bit 28" index="28" />
+            <bit name="Bit 29" index="29" />
+            <bit name="Bit 30" index="30" />
+            <bit name="Bit 31" index="31" />
+        </flags32>
+	</tagblock>
+	<tagblock name="Weapon List" offset="0x80" visible="true" elementSize="0x8">
+        <stringId name="Weapon Name" offset="0x0" visible="true" />
+        <stringId name="Weapon Class" offset="0x4" visible="true" />
+	</tagblock>
+	<undefined name="Unknown" offset="0x8C" visible="true" />
+	<undefined name="Unknown" offset="0x90" visible="true" />
+	<undefined name="Unknown" offset="0x94" visible="true" />
+	<undefined name="Unknown" offset="0x98" visible="true" />
+	<undefined name="Unknown" offset="0x9C" visible="true" />
+	<undefined name="Unknown" offset="0xA0" visible="true" />
+	<undefined name="Unknown" offset="0xA4" visible="true" />
+	<undefined name="Unknown" offset="0xA8" visible="true" />
+	<undefined name="Unknown" offset="0xAC" visible="true" />
+	<undefined name="Unknown" offset="0xB0" visible="true" />
+	<undefined name="Unknown" offset="0xB4" visible="true" />
+	<undefined name="Unknown" offset="0xB8" visible="true" />
+	<undefined name="Unknown" offset="0xBC" visible="true" />
+	<undefined name="Unknown" offset="0xC0" visible="true" />
+	<undefined name="Unknown" offset="0xC4" visible="true" />
+	<undefined name="Unknown" offset="0xC8" visible="true" />
+	<undefined name="Unknown" offset="0xCC" visible="true" />
+	<undefined name="Unknown" offset="0xD0" visible="true" />
+	<undefined name="Unknown" offset="0xD4" visible="true" />
+	<undefined name="Unknown" offset="0xD8" visible="true" />
+	<undefined name="Unknown" offset="0xDC" visible="true" />
+	<undefined name="Unknown" offset="0xE0" visible="true" />
+	<undefined name="Unknown" offset="0xE4" visible="true" />
+	<undefined name="Unknown" offset="0xE8" visible="true" />
+</plugin>
