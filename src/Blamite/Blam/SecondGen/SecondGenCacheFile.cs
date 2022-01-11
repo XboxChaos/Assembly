@@ -22,7 +22,14 @@ namespace Blamite.Blam.SecondGen
 		private SecondGenLanguageGlobals _languageInfo;
 		private SecondGenLanguagePackLoader _languageLoader;
 		private IndexedStringIDSource _stringIDs;
-		private SecondGenTagTable _tags;
+
+		// NOTE (Dragon): this may cause problems in the future, but since the beta uses a first gen style tag table
+		//				  we need to be able to use one here. we *DO* cast to a SecondGenTagTable for other builds though
+		//				  (see SaveChanges() and the TagGroups property)
+		//private SecondGenTagTable _tags;
+		private TagTable _tags;				
+		
+		
 		private DummyPointerExpander _expander;
 		private Endian _endianness;
 		private SoundResourceManager _soundGestalt;
@@ -41,7 +48,18 @@ namespace Blamite.Blam.SecondGen
 
 		public void SaveChanges(IStream stream)
 		{
-			_tags.SaveChanges(stream);
+			//_tags.SaveChanges(stream);
+			if (BuildString == "02.06.28.07902")
+            {
+				// TODO (Dragon): forgot that first gen tag tables never got proper saving lol
+				//((FirstGen.Structures.FirstGenTagTable)_tags).SaveChanges(stream);
+				throw new NotImplementedException("Saving halo 2 beta tag table not *properly* supported, but tag edits may still work if you continue (blame Dragon)");
+			}
+			else
+            {
+				((SecondGenTagTable)_tags).SaveChanges(stream);
+			}
+			
 			WriteStringBlock(stream);
 			_fileNames.SaveChanges(stream);
 			_stringIDs.SaveChanges(stream);
@@ -142,7 +160,13 @@ namespace Blamite.Blam.SecondGen
 
 		public IList<ITagGroup> TagGroups
 		{
-			get { return _tags.Groups; }
+			//get { return _tags.Groups; }
+			get {
+				if (BuildString == "02.06.28.07902")
+					return ((FirstGen.Structures.FirstGenTagTable)_tags).Groups;
+				else
+					return ((SecondGenTagTable)_tags).Groups;
+			}
 		}
 
 		public TagTable Tags
@@ -246,7 +270,13 @@ namespace Blamite.Blam.SecondGen
 			_fileNames = LoadFileNames(reader);
 			_stringIDs = LoadStringIDs(reader);
 
-			LoadLanguageGlobals(reader);
+			// TODO (Dragon): double check to see if there even is language data in beta
+			// dont load language globals on the beta
+			if (_buildInfo.BuildVersion != "02.06.28.07902")
+            {
+				LoadLanguageGlobals(reader);
+			}
+
 			LoadScriptFiles();
 			LoadSimulationDefinitions(reader);
 		}
@@ -255,18 +285,88 @@ namespace Blamite.Blam.SecondGen
 		{
 			reader.SeekTo(0);
 			StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("header"));
+
+			// TODO (Dragon): this is really gross even for a hack
+			// hack to pack meta header size for metaOffsetMask calculation on xbox
+			if (_buildInfo.BuildVersion == "02.09.27.09809" || _buildInfo.BuildVersion == "02.06.28.07902")
+			{
+				var oldReadPos = reader.Position;
+				if (_buildInfo.BuildVersion == "02.09.27.09809")
+				{
+					reader.SeekTo((long)values.GetInteger("meta offset"));
+					uint metaMask = (uint)reader.ReadUInt32() - (uint)_buildInfo.Layouts.GetLayout("meta header").Size;
+					reader.SeekTo((long)values.GetInteger("meta offset") + 8);
+					uint tagTableOffset = reader.ReadUInt32() - metaMask + (uint)values.GetInteger("meta offset");
+
+					values.SetInteger("meta header size", (uint)_buildInfo.Layouts.GetLayout("meta header").Size);
+					values.SetInteger("tag table offset", (uint)tagTableOffset);
+
+					reader.SeekTo((long)tagTableOffset + 8);
+					uint firstTagAddress = reader.ReadUInt32();
+					values.SetInteger("first tag address", firstTagAddress);
+					//values.SetInteger("meta header mask", metaMask);
+					//reader.SeekTo(oldReadPos);
+					reader.SeekTo((long)tagTableOffset);
+				}
+				else if (_buildInfo.BuildVersion == "02.06.28.07902")
+				{
+					reader.SeekTo((long)values.GetInteger("meta offset"));
+					uint metaMask = (uint)reader.ReadUInt32() - (uint)_buildInfo.Layouts.GetLayout("meta header").Size;
+					reader.SeekTo((long)values.GetInteger("meta offset"));
+					uint tagTableOffset = reader.ReadUInt32() - metaMask + (uint)values.GetInteger("meta offset");
+
+					values.SetInteger("meta header size", (uint)_buildInfo.Layouts.GetLayout("meta header").Size);
+					values.SetInteger("tag table offset", (uint)tagTableOffset);
+
+					reader.SeekTo((long)tagTableOffset + 0x14);
+					uint firstTagAddress = reader.ReadUInt32();
+					values.SetInteger("first tag address", firstTagAddress);
+					values.SetInteger("meta header mask", metaMask);
+					//reader.SeekTo(oldReadPos);
+					reader.SeekTo((long)tagTableOffset);
+				}
+
+			}
+
 			return new SecondGenHeader(values, _buildInfo, _segmenter);
 		}
 
-		private SecondGenTagTable LoadTagTable(IReader reader)
+		// TODO (Dragon): it might be better to write another method entirely here
+		private TagTable LoadTagTable(IReader reader)
 		{
+			
+			// TODO (Dragon): this stuff is actually unused for everything other than the beta
+			reader.SeekTo(MetaArea.Offset);
+			StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("meta header"));
+
+			if (_buildInfo.BuildVersion == "02.09.27.09809" || _buildInfo.BuildVersion == "02.06.28.07902")
+			{
+				var oldReadPos = reader.Position;
+				reader.SeekTo(MetaArea.Offset);
+				var metaMask = reader.ReadUInt32() - (uint)_buildInfo.Layouts.GetLayout("meta header").Size;
+				values.SetInteger("meta header mask", metaMask);
+				reader.SeekTo(oldReadPos);
+			}
+			
+			// TODO (Dragon): this is the hackiest thing so far
+			if (_buildInfo.BuildVersion == "02.06.28.07902")
+				return new FirstGen.Structures.FirstGenTagTable(reader, values, MetaArea, _buildInfo);
+			
 			return new SecondGenTagTable(reader, MetaArea, Allocator, _buildInfo);
 		}
 
 		private IndexedFileNameSource LoadFileNames(IReader reader)
 		{
-			var strings = new IndexedStringTable(reader, _header.FileNameCount, _header.FileNameIndexTable, _header.FileNameData,
+			IndexedStringTable strings;
+			if (_buildInfo.BuildVersion == "02.06.28.07902")
+			{
+				strings = new FirstGenIndexedStringTable(reader, (FirstGen.Structures.FirstGenTagTable)_tags);
+			}
+			else
+			{
+				strings = new IndexedStringTable(reader, _header.FileNameCount, _header.FileNameIndexTable, _header.FileNameData,
 				_buildInfo.TagNameKey);
+			}
 			return new IndexedFileNameSource(strings);
 		}
 

@@ -46,8 +46,8 @@ namespace Blamite.Blam.SecondGen.Structures
 		private void Load(StructureValueCollection values, FileSegmentGroup metaArea, Dictionary<int, ITagGroup> groupsById)
 		{
 			Offset = (int)values.GetInteger("offset");
-			if (Offset > 0)
-				MetaLocation = SegmentPointer.FromPointer(Offset, metaArea);
+			if ((uint)Offset > 0)
+				MetaLocation = SegmentPointer.FromPointer((uint)Offset, metaArea);
 
 			// Load the tag group by looking up the magic value that's stored
 			var groupMagic = (int) values.GetInteger("tag group magic");
