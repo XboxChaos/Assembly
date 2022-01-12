@@ -10,10 +10,18 @@
 	<tagRef name="Animation" offset="0x20" visible="true" />
 	<tagRef name="Physics" offset="0x30" visible="true" />
 	<tagRef name="Physics Model" offset="0x40" visible="true" />
-    <comment title="Level of Detail" />
+    <comment title="Level of Detail">
+If a model is further away than the LOD reduction distance, it will be reduced to that LOD.
+So the L1 reduction distance should be really long and the L5 reduction distance should be really short.
+This means distances should be in descending order, e.g. 5 4 3 2 1.
+
+Note that if we run out of memory or too many models are on screen at once, the engine may reduce models to a lower LOD BEFORE they reach the reduction distance for that LOD.
+
+If a model has a begin fade distance and disappear distance, it will begin fading out at that distance, reaching zero alpha and disappearing at the disappear distance. These distances should be greater than all of the LOD reduction distances.
+    </comment>
 	<float32 name="Disappear Distance" offset="0x50" visible="true" />
     <float32 name="Begin Fade Distance" offset="0x54" visible="true" />
-    <float32 name="Unknown" offset="0x58" visible="false" />
+    <undefined name="Unknown" offset="0x58" visible="false" />
     <float32 name="Reduce To L1" offset="0x5C" visible="true" />
     <float32 name="Reduce To L2" offset="0x60" visible="true" />
     <float32 name="Reduce To L3" offset="0x64" visible="true" />
@@ -71,9 +79,24 @@
                 <int16 name="Unknown" offset="0x6" visible="false" />
                 <float32 name="Probability" offset="0x8" visible="true" />
 				<tagblock name="States" offset="0xC" visible="true" elementSize="0x1C">
-					<undefined name="Unknown" offset="0x0" visible="true" />
-					<undefined name="Unknown" offset="0x4" visible="true" />
-					<tagRef name="Unknown" offset="0x8" visible="true" />
+					<stringid name="Permutation Name" offset="0x0" visible="true" />
+					<int8 name="Permutation Index" offset="0x4" visible="true" />
+                    <flags8 name="Property Flags" offset="0x5" visible="true">
+                        <bit name="Blurred" index="0" />
+                        <bit name="Hella Blurred" index="1" />
+                        <bit name="Shielded" index="2" />
+                        <bit name="Battery Depleted" index="3" />
+                    </flags8>
+                    <enum16 name="State" offset="0x6" visible="true">
+                        <option name="Default" value="0x0" />
+                        <option name="Minor Damage" value="0x1" />
+                        <option name="Medium Damage" value="0x2" />
+                        <option name="Major Damage" value="0x3" />
+                        <option name="Destroyed" value="0x4" />
+                    </enum16>
+					<tagRef name="Looping Effect" offset="0x8" visible="true" tooltip="played while the model is in this state" />
+                    <!-- TODO: test to see which this is -->
+                    <comment title="NEEDS TESTING">this could either be Looping Effect Marker Name or Initial Probability</comment>
 					<undefined name="Unknown" offset="0x18" visible="true" />
 				</tagblock>
                 <int8 name="Runtime Permutation Index" offset="0x18" visible="true" />
@@ -83,7 +106,7 @@
                 <int8 name="Runtime Permutation Index" offset="0x1C" visible="true" />
                 <int8 name="Unknown" offset="0x1D" visible="false" />
                 <int16 name="Unknown" offset="0x1E" visible="false" />
-				<undefined name="Unknown" offset="0x20" visible="true" />
+				<undefined name="Unknown" offset="0x20" visible="false" />
 			</tagblock>
 		</tagblock>
 		<tagblock name="Objects" offset="0x20" visible="true" elementSize="0x18">
@@ -91,8 +114,8 @@
             <stringId name="Child Marker" offset="0x4" visible="true" />
             <tagRef name="Child Object" offset="0x8" visible="true" />
 		</tagblock>
-		<undefined name="Unknown" offset="0x2C" visible="true" />
-		<undefined name="Unknown" offset="0x30" visible="true" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
         <stringId name="Dialogue Sound Effect" offset="0x34" visible="true" />
 		<tagRef name="Dialogue" offset="0x38" visible="true" />
 	</tagblock>
@@ -156,7 +179,7 @@
         <int16 name="Indirect Damage Section Index" offset="0x8" visible="true" tooltip="absorbes AOE or child damage" />
         <int16 name="Unknown" offset="0xA" visible="false" />
         <undefined name="Unknown" offset="0xC" visible="false" />
-        <enum16 name="Collision Damage Reporting Type" offset="0x10" visible="true">
+        <enum8 name="Collision Damage Reporting Type" offset="0x10" visible="true">
             <option name="Teh Guardians" value="0x0" />
             <option name="Falling Damage" value="0x1" />
             <option name="Generic Collision Damage" value="0x2" />
@@ -199,8 +222,10 @@
             <option name="Sentinel Beam" value="0x27" />
             <option name="Sentinel Rpg" value="0x28" />
             <option name="Teleporter" value="0x29" />
-        </enum16>
-        <enum16 name="Response Damage Reporting Type" offset="0x12" visible="true">
+            <option name="Warthog Gunner Gauss" value="0x2A" />
+            <option name="Warthog Gunner Rocket" value="0x2B" />
+        </enum8>
+        <enum8 name="Response Damage Reporting Type" offset="0x11" visible="true">
             <option name="Teh Guardians" value="0x0" />
             <option name="Falling Damage" value="0x1" />
             <option name="Generic Collision Damage" value="0x2" />
@@ -243,7 +268,10 @@
             <option name="Sentinel Beam" value="0x27" />
             <option name="Sentinel Rpg" value="0x28" />
             <option name="Teleporter" value="0x29" />
-        </enum16>
+            <option name="Warthog Gunner Gauss" value="0x2A" />
+            <option name="Warthog Gunner Rocket" value="0x2B" />
+        </enum8>
+        <int16 name="Unknown" offset="0x12" visible="false" />
         <undefined name="Unknown" offset="0x14" visible="false" />
         <undefined name="Unknown" offset="0x18" visible="false" />
         <undefined name="Unknown" offset="0x1C" visible="false" />
@@ -255,22 +283,22 @@
         <float32 name="Stun Time" offset="0x30" visible="true" tooltip="the length of time the health stay stunned (do not recharge) after taking damage" />
         <float32 name="Recharge Time" offset="0x34" visible="true" tooltip="the length of time it would take for the shields to fully recharge after being completely depleted" />
         <float32 name="Recharge Fraction" offset="0x38" visible="true" tooltip="0 defaults to 1 - to what maximum level the body health will be allowed to recharge" />
-		<undefined name="Unknown" offset="0x3C" visible="true" />
-		<undefined name="Unknown" offset="0x40" visible="true" />
-		<undefined name="Unknown" offset="0x44" visible="true" />
-		<undefined name="Unknown" offset="0x48" visible="true" />
-		<undefined name="Unknown" offset="0x4C" visible="true" />
-		<undefined name="Unknown" offset="0x50" visible="true" />
-		<undefined name="Unknown" offset="0x54" visible="true" />
-		<undefined name="Unknown" offset="0x58" visible="true" />
-		<undefined name="Unknown" offset="0x5C" visible="true" />
-		<undefined name="Unknown" offset="0x60" visible="true" />
-		<undefined name="Unknown" offset="0x64" visible="true" />
-		<undefined name="Unknown" offset="0x68" visible="true" />
-		<undefined name="Unknown" offset="0x6C" visible="true" />
-		<undefined name="Unknown" offset="0x70" visible="true" />
-		<undefined name="Unknown" offset="0x74" visible="true" />
-		<undefined name="Unknown" offset="0x78" visible="true" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
+		<undefined name="Unknown" offset="0x5C" visible="false" />
+		<undefined name="Unknown" offset="0x60" visible="false" />
+		<undefined name="Unknown" offset="0x64" visible="false" />
+		<undefined name="Unknown" offset="0x68" visible="false" />
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+		<undefined name="Unknown" offset="0x78" visible="false" />
         <comment title="Shield" />
 		<tagRef name="Shield Damaged First Person Shader" offset="0x7C" visible="true" />
 		<tagRef name="Shield Damaged Shader" offset="0x8C" visible="true" />
@@ -323,9 +351,9 @@
                     <bit name="Forces Drop Weapon" index="4" tooltip="from halo 1 - makes the unit drop its current weapon" />
                     <bit name="Kills Weapon Primary Trigger" index="5" />
                     <bit name="Kills Weapon Secondary Trigger" index="6" />
-                    <bit name="Destroys Object" index="7" />
-                    <bit name="Damages Weapon Primary Trigger" index="8" />
-                    <bit name="Damages Weapon Secondary Trigger" index="9" />
+                    <bit name="Destroys Object" index="7" tooltip="when the response fires the object is destroyed" />
+                    <bit name="Damages Weapon Primary Trigger" index="8" tooltip="destroys the primary trigger on the unit's current weapon" />
+                    <bit name="Damages Weapon Secondary Trigger" index="9" tooltip="destroys the secondary trigger on the unit's current weapon" />
                     <bit name="Light Damage Left Turn" index="10" />
                     <bit name="Major Damage Left Turn" index="11" />
                     <bit name="Light Damage Right Turn" index="12" />
@@ -342,7 +370,7 @@
                     <bit name="Only On Special Death" index="23" />
                     <bit name="Only Not On Special Death" index="24" />
                 </flags32>
-                <float32 name="Damage Threshold" offset="0x8" visible="true" />
+                <float32 name="Damage Threshold" offset="0x8" visible="true" tooltip="response fires after crossing this threshold. 1=full health" />
 				<tagRef name="Transition Effect" offset="0xC" visible="true" />
 				<tagRef name="Transition Damage Effect" offset="0x1C" visible="true" />
 				<stringid name="Region" offset="0x2C" visible="true" />
@@ -359,24 +387,27 @@
                 <comment title="Response Delay">If desired, you can specify a delay until the response fires.This delay is pre-empted if another timed response for the same section fires.The delay effect plays while the timer is counting down.If the damage threshold is taken in a single hit while counting down, it will prematurely fire.</comment>
                 <float32 name="Response Delay" offset="0x3C" visible="true" tooltip="in seconds" />
 				<tagRef name="Delay Effect" offset="0x40" visible="true" />
+                <!-- TODO: test to see which these are -->
+                <comment title="NEEDS TESTING">these closely match release but are missing one value
+so all of these need some testing to figure out which one is missing</comment>
 				<undefined name="Unknown" offset="0x50" visible="true" />
 				<undefined name="Unknown" offset="0x54" visible="true" />
 				<undefined name="Unknown" offset="0x58" visible="true" />
 				<undefined name="Unknown" offset="0x5C" visible="true" />
 				<undefined name="Unknown" offset="0x60" visible="true" />
 			</tagblock>
-			<undefined name="Unknown" offset="0x18" visible="true" />
-			<undefined name="Unknown" offset="0x1C" visible="true" />
-			<undefined name="Unknown" offset="0x20" visible="true" />
-			<undefined name="Unknown" offset="0x24" visible="true" />
-			<undefined name="Unknown" offset="0x28" visible="true" />
-			<undefined name="Unknown" offset="0x2C" visible="true" />
+			<undefined name="Unknown" offset="0x18" visible="false" />
+			<undefined name="Unknown" offset="0x1C" visible="false" />
+			<undefined name="Unknown" offset="0x20" visible="false" />
+			<undefined name="Unknown" offset="0x24" visible="false" />
+			<undefined name="Unknown" offset="0x28" visible="false" />
+			<undefined name="Unknown" offset="0x2C" visible="false" />
 			<float32 name="Stun Time" offset="0x30" visible="true" />
 			<float32 name="Recharge Time" offset="0x34" visible="true" />
 			<float32 name="Runtim Recharge Velocity" offset="0x38" visible="true" />
 			<stringid name="Resurrection Restored Region Name" offset="0x3C" visible="true" />
 			<int16 name="Resurrection Region Runtime Index" offset="0x40" visible="true" />
-            <int16 name="Unknown" offset="0x42" visible="true" />
+            <int16 name="Unknown" offset="0x42" visible="false" />
 		</tagblock>
 		<tagblock name="Nodes" offset="0xF0" visible="true" elementSize="0x10">
             <int16 name="Runtime Damage Part" offset="0x0" visible="true" />
@@ -385,9 +416,10 @@
             <undefined name="Unknown" offset="0x8" visible="false" />
             <undefined name="Unknown" offset="0xC" visible="false" />
 		</tagblock>
-		<undefined name="Unknown" offset="0xFC" visible="true" />
-		<undefined name="Unknown" offset="0x100" visible="true" />
-		<undefined name="Unknown" offset="0x104" visible="true" />
+		<int16 name="Global Shield Material Index" offset="0xFC" visible="true" />
+        <int16 name="Global Inderect Material Index" offset="0xFE" visible="true" />
+		<float32 name="Shield Recharge Velocity" offset="0x100" visible="true" />
+		<float32 name="Health Recharge Velocity" offset="0x104" visible="true" />
 		<tagblock name="Damage Seats" offset="0x108" visible="true" elementSize="0x14">
             <stringid name="Seat Label" offset="0x0" visible="true" />
             <float32 name="Direct Damage Scale" offset="0x4" visible="true" tooltip="0==no damage, 1==full damage" />
@@ -462,6 +494,6 @@
         <point3 name="Offset" offset="0x4" visible="true" />
         <float32 name="Radius" offset="0x10" visible="true" />
 	</tagblock>
-	<tagRef name="Unit Dialogue" offset="0xD0" visible="true" />
+	<tagRef name="Unit Dialogue" offset="0xD0" visible="true" tooltip="The default dialogue tag for this model (overriden by variants)" />
 	<tagRef name="Active Camo Shader" offset="0xE0" visible="true" />
 </plugin>
