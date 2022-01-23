@@ -242,14 +242,36 @@ namespace Blamite.Blam.FirstGen
 			reader.SeekTo(0);
 			StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("header"));
 
-
 			// hack to pack meta header size for metaOffsetMask calculation
 			var oldReadPos = reader.Position;
-			reader.SeekTo((long)values.GetInteger("meta offset"));
-			var tagTableOffset = reader.ReadUInt32();
-			values.SetInteger("meta header size", (ulong)_buildInfo.Layouts.GetLayout("meta header").Size);
-			values.SetInteger("tag table offset", (ulong)tagTableOffset);
+
+			if (_buildInfo.BuildVersion == "02.01.07.4998")
+			{
+				reader.SeekTo((long)values.GetInteger("meta offset"));
+				uint metaMask = (uint)reader.ReadUInt32() - (uint)_buildInfo.Layouts.GetLayout("meta header").Size;
+				reader.SeekTo((long)values.GetInteger("meta offset"));
+				uint tagTableOffset = reader.ReadUInt32() - metaMask + (uint)values.GetInteger("meta offset");
+
+				values.SetInteger("meta header size", (uint)_buildInfo.Layouts.GetLayout("meta header").Size);
+				values.SetInteger("tag table offset", (uint)tagTableOffset);
+
+				reader.SeekTo((long)tagTableOffset + 0x14);
+				uint firstTagAddress = reader.ReadUInt32();
+				values.SetInteger("first tag address", firstTagAddress);
+				values.SetInteger("meta header mask", metaMask);
+				//reader.SeekTo(oldReadPos);
+				reader.SeekTo((long)tagTableOffset);
+			}
+			else
+            {
+				reader.SeekTo((long)values.GetInteger("meta offset"));
+				var tagTableOffset = reader.ReadUInt32();
+				values.SetInteger("meta header size", (ulong)_buildInfo.Layouts.GetLayout("meta header").Size);
+				values.SetInteger("tag table offset", (ulong)tagTableOffset);
+			}
+			
 			reader.SeekTo(oldReadPos);
+			
 
 			return new FirstGenHeader(values, _buildInfo, _segmenter);
 		}
@@ -258,6 +280,16 @@ namespace Blamite.Blam.FirstGen
 		{
 			reader.SeekTo(MetaArea.Offset);
 			StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("meta header"));
+
+			if (_buildInfo.BuildVersion == "02.01.07.4998")
+			{
+				var oldReadPos = reader.Position;
+				reader.SeekTo(MetaArea.Offset);
+				var metaMask = reader.ReadUInt32() - (uint)_buildInfo.Layouts.GetLayout("meta header").Size;
+				values.SetInteger("meta header mask", metaMask);
+				reader.SeekTo(oldReadPos);
+			}
+
 			return new FirstGenTagTable(reader, values, MetaArea, _buildInfo);
 		}
 

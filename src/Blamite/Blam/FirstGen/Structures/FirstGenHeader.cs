@@ -87,8 +87,18 @@ namespace Blamite.Blam.FirstGen.Structures
 			var metaSegment = new FileSegment(
 				segmenter.DefineSegment(metaOffset, metaSize, 0x4, SegmentResizeOrigin.Beginning), segmenter);
 
+			uint metaOffsetMask;
 			// we hacked in a meta header size into the values earlier in the cache load
-			uint metaOffsetMask = (uint)(values.GetInteger("tag table offset") - values.GetInteger("meta header size"));
+			// hack to set meta offset mask on xbox
+			if (BuildString == "02.01.07.4998")
+			{
+				// we hacked in a first tag address earlier
+				metaOffsetMask = (uint)values.GetInteger("first tag address") - (uint)values.GetInteger("tag data offset");
+			}
+			else {
+				metaOffsetMask = (uint)(values.GetInteger("tag table offset") - values.GetInteger("meta header size"));
+			}
+			
 			MetaArea = new FileSegmentGroup(new MetaOffsetConverter(metaSegment, metaOffsetMask));
 
 			IndexHeaderLocation = MetaArea.AddSegment(metaSegment);
