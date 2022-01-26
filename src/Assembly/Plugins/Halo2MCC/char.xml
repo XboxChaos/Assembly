@@ -120,9 +120,9 @@
 		<float32 name="Hard Ping Threshold (With Shields)" offset="0x24" visible="true" tooltip="damage necessary to trigger a hard ping when shields are up" />
 		<float32 name="Hard Ping Threshold (No Shields)" offset="0x28" visible="true" tooltip="damage necessary to trigger a hard ping when shields are down" />
 		<float32 name="Hard Ping Minimum Interrupt Time" offset="0x2C" visible="true" tooltip="minimum time before a hard ping can be interrupted" />
-		<float32 name="Current Damage Decay Delay" offset="0x30" visible="true" tooltip="current damage begins to fall after a time delay has passed since last the damage" />
+		<float32 name="Current Damage Decay Delay" offset="0x30" visible="true" tooltip="current damage begins to fall after a time delay has passed since last the damage (max 4.1, because timer is stored in a char so 127 ticks maximum)" />
 		<float32 name="Current Damage Decay Time" offset="0x34" visible="true" tooltip="amount of time it would take for 100% current damage to decay to 0" />
-		<float32 name="Recent Damage Decay Delay" offset="0x38" visible="true" tooltip="recent damage begins to fall after a time delay has passed since last the damage" />
+		<float32 name="Recent Damage Decay Delay" offset="0x38" visible="true" tooltip="recent damage begins to fall after a time delay has passed since last the damage (max 4.1, because timer is stored in a char so 127 ticks maximum)" />
 		<float32 name="Recent Damage Decay Time" offset="0x3C" visible="true" tooltip="amount of time it would take for 100% recent damage to decay to 0" />
 		<float32 name="Body Recharge Delay Time" offset="0x40" visible="true" tooltip="amount of time delay before a shield begins to recharge" />
 		<float32 name="Body Recharge Time" offset="0x44" visible="true" tooltip="amount of time for shields to recharge completely" />
@@ -334,7 +334,7 @@ All chances are expressed as 'chance of triggering cover in a 1 second period'.<
 		<float32 name="Disallow Cover Distance" offset="0x30" visible="true" tooltip="Disallow covering from visible target under the given distance away" />
 		<float32 name="Proximity Melee Distance" offset="0x34" visible="true" tooltip="When self preserving from a target less than given distance, causes melee attack (assuming proximity_melee_impulse is enabled)" />
 		<float32 name="Unreachable Enemy Danger Threshold" offset="0x38" visible="true" tooltip="When danger from an unreachable enemy surpasses threshold, actor cover (assuming unreachable_enemy_cover impulse is enabled)" />
-		<float32 name="Scary Target Threshold" offset="0x3C" visible="true" tooltip="When target is aware of me and surpasses the given scariness, self-preserve (scary_target_cover_impulse)" />
+		<float32 name="Scary Target Threshold" offset="0x3C" visible="true" tooltip="When target is aware of me and surpasses the given scariness, self-preserve (assuming scary_target_cover_impulse is enabled)" />
 	</tagblock>
 	<tagblock name="Retreat Properties" offset="0x94" visible="true" elementSize="0x4C">
 		<flags32 name="Retreat Flags" offset="0x0" visible="true">
@@ -372,7 +372,7 @@ All chances are expressed as 'chance of triggering cover in a 1 second period'.<
 		<rangef name="Minimum Presearch Time" offset="0x4" visible="true" tooltip="If the min presearch time expires and the target is (actually) outside the min-certainty radius, presearch turns off" />
 		<rangef name="Maximum Presearch Time" offset="0xC" visible="true" tooltip="Presearch turns off after the given time" />
 		<float32 name="Minimum Certainty Radius" offset="0x14" visible="true" />
-		<float32 name="Unknown" offset="0x18" visible="true" />
+		<float32 name="Maximum Uncover Distance" offset="0x18" visible="true" />
 		<rangef name="Minimum Suppressing Time" offset="0x1C" visible="true" tooltip="if the min suppressing time expires and the target is outside the min-certainty radius, suppressing fire turns off" />
 	</tagblock>
 	<tagblock name="Idle Properties" offset="0xAC" visible="true" elementSize="0xC">
@@ -586,11 +586,11 @@ for example if the burst origin angle and the burst return angle were both zero,
 		</enum16>
 		<int16 name="Unknown" offset="0xB2" visible="false" />
 	</tagblock>
-	<undefined name="Unknown" offset="0xEC" visible="false" />
-	<undefined name="Unknown" offset="0xF0" visible="false" />
-	<undefined name="Unknown" offset="0xF4" visible="false" />
-	<undefined name="Unknown" offset="0xF8" visible="false" />
-	<tagblock name="MCC Campaign Metagame" offset="0xFC" visible="true" elementSize="0x4">
+	<tagblock name="Fake Empty Morph Properties" offset="0xEC" visible="false" elementSize="0x0">
+	</tagblock>
+	<tagblock name="Fake Empty Equipment Definitions" offset="0xF4" visible="false" elementSize="0x0">
+	</tagblock>
+	<tagblock name="Campaign Metagame Bucket" offset="0xFC" visible="true" elementSize="0x4">
 		<enum8 name="Metagame Type" offset="0x0" visible="true">
 			<option name="Brute" value="0x0" />
 			<option name="Grunt" value="0x1" />

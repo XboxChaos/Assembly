@@ -466,7 +466,8 @@ namespace Assembly.Windows
 			{ ".campaign", (home, path) => home.AddCampaignTabModule(path) },
 			{ ".asmp", (home, path) => home.AddPatchTabModule(path) },
 			{ ".ascpatch", (home, path) => home.AddPatchTabModule(path) },
-			{ ".patchdat", (home, path) => home.AddPatchTabModule(path) }
+			{ ".patchdat", (home, path) => home.AddPatchTabModule(path) },
+			{ ".module", (home, path) => home.AddCacheTabModule(path) }
 		};
 
 		/// <summary>

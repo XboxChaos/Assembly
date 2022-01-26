@@ -33,7 +33,6 @@ namespace Blamite.Blam.SecondGen.Structures
 
 		public FileSegment RawTable { get; private set; }
 
-		public FileSegmentGroup LocaleArea { get; private set; }
 		public FileSegmentGroup StringArea { get; private set; }
 
 		public int StringIDCount { get; set; }
@@ -122,8 +121,9 @@ namespace Blamite.Blam.SecondGen.Structures
 			ScenarioName = values.GetString("scenario name");
 
 			StringArea = new FileSegmentGroup();
-			StringArea.AddSegment(segmenter.WrapSegment((int) values.GetInteger("string block offset"), StringIDCount*0x80, 0x80,
-				SegmentResizeOrigin.End));
+			if (values.HasInteger("string block offset"))
+				StringArea.AddSegment(segmenter.WrapSegment((int) values.GetInteger("string block offset"), StringIDCount*0x80, 0x80,
+					SegmentResizeOrigin.End));
 			StringArea.AddSegment(StringIDIndexTable);
 			StringArea.AddSegment(StringIDData);
 			StringArea.AddSegment(FileNameIndexTable);
@@ -133,8 +133,6 @@ namespace Blamite.Blam.SecondGen.Structures
 			StringIDDataLocation = SegmentPointer.FromOffset(StringIDData.Offset, StringArea);
 			FileNameIndexTableLocation = SegmentPointer.FromOffset(FileNameIndexTable.Offset, StringArea);
 			FileNameDataLocation = SegmentPointer.FromOffset(FileNameData.Offset, StringArea);
-
-			LocaleArea = new FileSegmentGroup();
 
 			var rawTableOffset = (int) values.GetInteger("raw table offset");
 			var rawTableSize = (int) values.GetInteger("raw table size");

@@ -18,7 +18,7 @@
 	<float32 name="PRT Scale" offset="0x28" visible="true" tooltip="you must set this value." />
 	<float32 name="PRT Surface Light Scale" offset="0x2C" visible="true" tooltip="0.0 defaults to 1.0" />
 	<float32 name="PRT Scenario Light Scale" offset="0x30" visible="true" tooltip="0.0 defaults to 1.0" />
-	<float32 name="Lightprobe Interpolation Override" offset="0x34" visible="true" tooltip="overide the default sampling behavior" />
+	<float32 name="Lightprobe Interpolation Override" offset="0x34" visible="true" tooltip="override the default sampling behavior" />
 	<undefined name="Unknown" offset="0x38" visible="false" />
 	<undefined name="Unknown" offset="0x3C" visible="false" />
 	<undefined name="Unknown" offset="0x40" visible="false" />
@@ -725,8 +725,7 @@
 				<tagblock name="Vertex Buffers" offset="0x38" visible="true" elementSize="0x4">
 					<uint32 name="Vertex Buffer" offset="0x0" visible="true" />
 				</tagblock>
-				<undefined name="Unknown" offset="0x40" visible="false" />
-				<undefined name="Unknown" offset="0x44" visible="false" />
+				<uint64 name="Index Buffer Pointer" offset="0x40" visible="true" />
 			</tagblock>
 		</tagblock>
 		<tagblock name="Cluster Render Info" offset="0x28" visible="true" elementSize="0x4">
@@ -896,8 +895,7 @@
 				<tagblock name="Vertex Buffers" offset="0x38" visible="true" elementSize="0x4">
 					<uint32 name="Vertex Buffer" offset="0x0" visible="true" />
 				</tagblock>
-				<undefined name="Unknown" offset="0x40" visible="false" />
-				<undefined name="Unknown" offset="0x44" visible="false" />
+				<uint64 name="Index Buffer Pointer" offset="0x40" visible="true" />
 			</tagblock>
 		</tagblock>
 		<tagblock name="Lighting Environments" offset="0x38" visible="true" elementSize="0xDC">
@@ -936,8 +934,8 @@
 			<float32 name="Rotation Speed" offset="0xA0" visible="true" />
 			<vector3 name="Bump Direction" offset="0xA4" visible="true" />
 			<colorf name="Color Tint" offset="0xB0" alpha="false" visible="true" />
-			<enum16 name="Procedural Overide" offset="0xBC" visible="true">
-				<option name="No Overide" value="0x0" />
+			<enum16 name="Procedural Override" offset="0xBC" visible="true">
+				<option name="No Override" value="0x0" />
 				<option name="CIE Clear Sky" value="0x1" />
 				<option name="CIE Partly Cloudy" value="0x2" />
 				<option name="CIE Cloudy" value="0x3" />
@@ -947,7 +945,7 @@
 				<option name="Hemisphere Light" value="0x7" />
 			</enum16>
 			<flags16 name="Flags" offset="0xBE" visible="true">
-				<bit name="Leave Me Alone Please" index="0" />
+				<bit name="Lock Values" index="0" />
 			</flags16>
 			<vector3 name="Procedural Param0" offset="0xC0" visible="true" />
 			<vector3 name="Procedural Param1.XYZ" offset="0xCC" visible="true" />

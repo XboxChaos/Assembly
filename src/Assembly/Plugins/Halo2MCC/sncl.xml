@@ -87,6 +87,7 @@
 			<bit name="Loop Fade Out Is Linear" index="10" />
 			<bit name="Stop When Object Dies" index="11" />
 			<bit name="Allow Cache File Editing" index="12" />
+			<bit name="Bypass Lfe" index="13" />
 		</flags16>
 		<int16 name="Priority" offset="0xC" visible="true" />
 		<enum16 name="Cache Miss Mode" offset="0xE" visible="true">
@@ -115,16 +116,76 @@
 		<float32 name="Transmission Multiplier" offset="0x50" visible="true" />
 		<float32 name="Obstruction Maximum Bend" offset="0x54" visible="true" />
 		<float32 name="Occlusion Maximum Bend" offset="0x58" visible="true" />
-		<float32 name="Unknown" offset="0x5C" visible="false" />
-		<undefined name="Unknown" offset="0x60" visible="false" />
-		<float32 name="Unknown" offset="0x64" visible="false" />
-		<dataref name="Unknown" offset="0x68" visible="false" />
-		<tagblock name="Unknown" offset="0x70" visible="false" elementSize="0x14">
-			<int32 name="Unknown" offset="0x0" visible="false" />
-			<float32 name="Unknown" offset="0x4" visible="false" />
-			<float32 name="Unknown" offset="0x8" visible="false" />
-			<float32 name="Unknown" offset="0xC" visible="false" />
-			<float32 name="Unknown" offset="0x10" visible="false" />
+		<float32 name="Inner Silence Distance" offset="0x5C" visible="true" />
+		<comment title="Low Pass Filter Parameters" />
+		<comment title="STRUCT Lowpass Cut Off Parameters" />
+		<float32 name="Low Pass Minimum Distance" offset="0x60" visible="true" />
+		<float32 name="Low Pass Maximum Distance" offset="0x64" visible="true" />
+		<comment title="Mapping" />
+		<tagblock name="Data" offset="0x68" visible="true" elementSize="0x1">
+			<int8 name="Value" offset="0x0" visible="true" />
+		</tagblock>
+		<tagblock name="Ext Ducking" offset="0x70" visible="true" elementSize="0x14">
+			<enum32 name="Sound Class" offset="0x0" visible="true">
+				<option name="projectile_impact" value="0x0" />
+				<option name="projectile_detonation" value="0x1" />
+				<option name="projectile_flyby" value="0x2" />
+				<option name="unused" value="0x3" />
+				<option name="weapon_fire" value="0x4" />
+				<option name="weapon_ready" value="0x5" />
+				<option name="weapon_reload" value="0x6" />
+				<option name="weapon_empty" value="0x7" />
+				<option name="weapon_charge" value="0x8" />
+				<option name="weapon_overheat" value="0x9" />
+				<option name="weapon_idle" value="0xA" />
+				<option name="weapon_melee" value="0xB" />
+				<option name="weapon_animation" value="0xC" />
+				<option name="object_impacts" value="0xD" />
+				<option name="particle_impacts" value="0xE" />
+				<option name="weapon_fire_lod" value="0xF" />
+				<option name="weapon_fire_lod_far" value="0x10" />
+				<option name="lfe" value="0x11" />
+				<option name="unit_footsteps" value="0x12" />
+				<option name="unit_dialog" value="0x13" />
+				<option name="unit_animation" value="0x14" />
+				<option name="unused" value="0x15" />
+				<option name="vehicle_collision" value="0x16" />
+				<option name="vehicle_engine" value="0x17" />
+				<option name="vehicle_animation" value="0x18" />
+				<option name="unused" value="0x19" />
+				<option name="device_door" value="0x1A" />
+				<option name="unused" value="0x1B" />
+				<option name="device_machinery" value="0x1C" />
+				<option name="device_stationary" value="0x1D" />
+				<option name="unused" value="0x1E" />
+				<option name="unused" value="0x1F" />
+				<option name="music" value="0x20" />
+				<option name="ambient_nature" value="0x21" />
+				<option name="ambient_machinery" value="0x22" />
+				<option name="unused" value="0x23" />
+				<option name="huge_ass" value="0x24" />
+				<option name="object_looping" value="0x25" />
+				<option name="cinematic_music" value="0x26" />
+				<option name="reflection" value="0x27" />
+				<option name="reflection_lod" value="0x28" />
+				<option name="reflection_lod_far" value="0x29" />
+				<option name="unused" value="0x2A" />
+				<option name="unused" value="0x2B" />
+				<option name="unused" value="0x2C" />
+				<option name="cortana_mission" value="0x2D" />
+				<option name="cortana_cinematic" value="0x2E" />
+				<option name="mission_dialog" value="0x2F" />
+				<option name="cinematic_dialog" value="0x30" />
+				<option name="scripted_cinematic_foley" value="0x31" />
+				<option name="game_event" value="0x32" />
+				<option name="ui" value="0x33" />
+				<option name="test" value="0x34" />
+				<option name="multilingual_test" value="0x35" />
+			</enum32>
+			<float32 name="Ducking" offset="0x4" visible="true" />
+			<float32 name="Ducking Fade In Time" offset="0x8" visible="true" />
+			<float32 name="Ducking Sustain Time" offset="0xC" visible="true" tooltip="how long this lasts after the sound ends" />
+			<float32 name="Ducking Fade Out Time" offset="0x10" visible="true" />
 		</tagblock>
 	</tagblock>
 </plugin>

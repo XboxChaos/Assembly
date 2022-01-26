@@ -18,6 +18,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			DwmDropShadow.DropShadowToWindow(this);
 			_exception = ex;
 
+			lblMessage.Text = ex.Message;
 			lblContent.Text = ex.ToString();
 
 			Activate();

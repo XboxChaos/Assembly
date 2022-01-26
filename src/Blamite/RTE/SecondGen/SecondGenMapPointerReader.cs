@@ -12,31 +12,40 @@ namespace Blamite.RTE.SecondGen
 	{
 		private long _mapSharedMagicAddress;
 
-		public SecondGenMapPointerReader(ProcessMemoryStream stream, EngineDescription engineInfo, PokingInformation info)
+		public SecondGenMapPointerReader(ProcessMemoryStream processStream, EngineDescription engineInfo, PokingInformation info)
 		{
-			_baseAddress = (long)stream.BaseProcess.MainModule.BaseAddress;
+			_baseAddress = (long)processStream.BaseProcess.MainModule.BaseAddress;
 			_mapHeaderAddress = _baseAddress + info.HeaderAddress.Value;
 			_mapMagicAddress = _baseAddress + info.MagicAddress.Value;
 			_mapSharedMagicAddress = _baseAddress + info.SharedMagicAddress.Value;
 
 			GetLayoutConstants(engineInfo);
 
-			var reader = new EndianReader(stream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
+			var reader = new EndianReader(processStream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
 			ReadMapPointers32(reader);
 			ReadMapHeader(reader);
 			ProcessMapHeader();
 		}
 
-		public SecondGenMapPointerReader(ProcessModuleMemoryStream stream, EngineDescription engineInfo, PokingInformation info)
+		public SecondGenMapPointerReader(ProcessModuleMemoryStream moduleStream, EngineDescription engineInfo, PokingInformation info)
 		{
-			_baseAddress = (long)stream.BaseModule.BaseAddress;
-			_mapHeaderAddress = _baseAddress + info.HeaderAddress.Value;
+			_baseAddress = (long)moduleStream.BaseModule.BaseAddress;
+
+			var reader = new EndianReader(moduleStream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
+
+			if (info.HeaderPointer.HasValue)
+			{
+				reader.SeekTo(_baseAddress + info.HeaderPointer.Value);
+				_mapHeaderAddress = reader.ReadInt64();
+			}
+			else
+				_mapHeaderAddress = _baseAddress + info.HeaderAddress.Value;
+
 			_mapMagicAddress = _baseAddress + info.MagicAddress.Value;
 			_mapSharedMagicAddress = _baseAddress + info.SharedMagicAddress.Value;
 
 			GetLayoutConstants(engineInfo);
 
-			var reader = new EndianReader(stream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
 			ReadMapPointers64(reader);
 			ReadMapHeader(reader);
 			ProcessMapHeader();

@@ -169,16 +169,31 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					Dispatcher.Invoke(new Action(delegate
 					{
 
-						if (ex is NotSupportedException)
+						reader.SeekTo(0x00);
+						if (reader.ReadUInt32() != 1836017764)//check for secret sauce
 						{
-							StatusUpdater.Update("Not a supported target engine");
-							MetroMessageBox.Show("Unable to open cache file",
-								ex.Message + ".\r\nMake sure your Assembly is up to date, otherwise try adding support in the 'Formats' folder.");
+							if (ex is NotSupportedException)
+							{
+								StatusUpdater.Update("Not a supported target engine");
+								MetroMessageBox.Show("Unable to open cache file",
+									ex.Message + ".\r\nMake sure your Assembly is up to date, otherwise try adding support in the 'Formats' folder.");
+							}
+							else
+							{
+								StatusUpdater.Update("An unknown error occured. Cache file may be corrupted.");
+								throw ex;
+							}
 						}
 						else
 						{
-							StatusUpdater.Update("An unknown error occured. Cache file may be corrupted.");
-							throw ex;
+							if (_0xabad1dea.IWff.Play())
+								StatusUpdater.Update("Opening Module File...");
+							else
+							{
+								StatusUpdater.Update("Not a supported target engine");
+								MetroMessageBox.Show("Unable to open module file",
+									"Module files are not supported.");
+							}
 						}
 
 						App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose(_tab);
