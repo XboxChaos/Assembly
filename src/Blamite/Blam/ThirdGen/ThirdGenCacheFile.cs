@@ -370,7 +370,7 @@ namespace Blamite.Blam.ThirdGen
 				tag = _tags.FindTagByGroup("patg");
 				layout = _buildInfo.Layouts.GetLayout("patg");
 			}
-			if (tag == null)
+			if (tag == null && _buildInfo.Layouts.HasLayout("matg"))
 			{
 				tag = _tags.FindTagByGroup("matg");
 				layout = _buildInfo.Layouts.GetLayout("matg");
