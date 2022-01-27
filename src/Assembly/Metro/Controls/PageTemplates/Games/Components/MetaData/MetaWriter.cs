@@ -271,6 +271,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 					default:
 						bytes = FunctionHelpers.HexStringToBytes(field.Value);
 						break;
+					case "utf16":
+						bytes = Encoding.GetEncoding(1200).GetBytes(field.Value);
+						break;
 					case "asciiz":
 						bytes = Encoding.GetEncoding(28591).GetBytes(field.Value);
 						break;
