@@ -8,8 +8,7 @@
 	<tagblock name="Shaders" offset="0x0" visible="true" elementSize="0x10">
 		<tagref name="Shader" offset="0x0" visible="true" />
 	</tagblock>
-	<float32 name="Lighting Min Scale" offset="0xC" visible="true" />
-	<float32 name="Lighting Max Scale" offset="0x10" visible="true" />
+	<rangef name="Lighting Scale" offset="0xC" visible="true" />
 	<tagblock name="Classes" offset="0x14" visible="true" elementSize="0x18">
 		<stringid name="Name" offset="0x0" visible="true" />
         <enum32 name="Type" offset="0x4" visible="true">
@@ -36,16 +35,9 @@
             </enum8>
             <int16 name="Index" offset="0x8" visible="true" />
             <int16 name="Distribution Weight" offset="0xA" visible="true" />
-            <float32 name="Scale" offset="0xC" visible="true" />
-            <float32 name="...To" offset="0x10" visible="true" />
-            <uint8 name="Tint 1 A" offset="0x14" visible="true" />
-            <uint8 name="Tint 1 R" offset="0x15" visible="true" />
-            <uint8 name="Tint 1 G" offset="0x16" visible="true" />
-            <uint8 name="Tint 1 B" offset="0x17" visible="true" />
-            <uint8 name="Tint 2 A" offset="0x18" visible="true" />
-            <uint8 name="Tint 2 R" offset="0x19" visible="true" />
-            <uint8 name="Tint 2 G" offset="0x1A" visible="true" />
-            <uint8 name="Tint 2 B" offset="0x1B" visible="true" />
+            <rangef name="Scale" offset="0xC" visible="true" />
+            <colorf name="Tint 1" offset="0x14" alpha="false" visible="true" />
+            <colorf name="Tint 2" offset="0x18" alpha="false" visible="true" />
             <float32 name="Base Map Tint Percentage" offset="0x1C" visible="true" />
             <float32 name="Lightmap Tint Percentage" offset="0x20" visible="true" />
             <float32 name="Wind Scale" offset="0x24" visible="true" />
@@ -57,43 +49,42 @@
         <int16 name="Index Count" offset="0x6" visible="true" />
 	</tagblock>
 	<tagblock name="Raw Vertices" offset="0x2C" visible="true" elementSize="0x38">
-        <float32 name="X" offset="0x0" visible="true" />
-        <float32 name="Y" offset="0x4" visible="true" />
-        <float32 name="Z" offset="0x8" visible="true" />
-        <degree name="Normal i" offset="0xC" visible="true" />
-        <degree name="Normal j" offset="0x10" visible="true" />
-        <degree name="Normal k" offset="0x14" visible="true" />
-        <degree name="Tangent i" offset="0x18" visible="true" />
-        <degree name="Tangent j" offset="0x1C" visible="true" />
-        <degree name="Tangent k" offset="0x20" visible="true" />
-        <degree name="Binormal i" offset="0x24" visible="true" />
-        <degree name="Binormal j" offset="0x28" visible="true" />
-        <degree name="Binormal k" offset="0x2C" visible="true" />
+        <point3 name="Position" offset="0x0" visible="true" />
+        <vector3 name="Normal" offset="0xC" visible="true" />
+        <vector3 name="Tangent" offset="0x18" visible="true" />
+        <vector3 name="Binormal" offset="0x24" visible="true" />
         <float32 name="U" offset="0x30" visible="true" />
         <float32 name="V" offset="0x34" visible="true" />
 	</tagblock>
 	<tagblock name="Indices" offset="0x38" visible="true" elementSize="0x2">
 		<int16 name="Index" offset="0x0" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x44" visible="true" />
-	<undefined name="Unknown" offset="0x48" visible="true" />
-	<undefined name="Unknown" offset="0x4C" visible="true" />
-	<uint32 name="Block Offset" offset="0x50" visible="true" />
-	<uint32 name="Block Size" offset="0x54" visible="true" />
+	<undefined name="Unknown" offset="0x44" visible="false" />
+	<undefined name="Unknown" offset="0x48" visible="false" />
+	<undefined name="Unknown" offset="0x4C" visible="false" />
+	<uint32 name="Resource Block Offset" offset="0x50" visible="true" />
+	<uint32 name="Resource Block Size" offset="0x54" visible="true" />
 	<uint32 name="Section Data Size" offset="0x58" visible="true" />
 	<uint32 name="Resource Data Size" offset="0x5C" visible="true" />
 	<tagblock name="Resources" offset="0x60" visible="true" elementSize="0x10">
-        <enum32 name="Type" offset="0x0" visible="true" />
+        <enum8 name="Type" offset="0x0" visible="true">
+            <option name="Tag Block" value="0x0" />
+            <option name="Tag Data" value="0x1" />
+            <option name="Vertex Buffer" value="0x2" />
+        </enum8>
+        <int8 name="Unknown" offset="0x1" visible="false" />
+        <int16 name="Unknown" offset="0x2" visible="false" />
         <int16 name="Primary Locator" offset="0x4" visible="true" />
         <int16 name="Secondary Locator" offset="0x6" visible="true" />
-        <uint32 name="Data Size" offset="0x8" visible="true" />
-        <uint32 name="Data Offset" offset="0xC" visible="true" />
+        <uint32 name="Resource Data Size" offset="0x8" visible="true" />
+        <uint32 name="Resource Data Offset" offset="0xC" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x6C" visible="true" />
-	<undefined name="Unknown" offset="0x70" visible="true" />
-	<undefined name="Unknown" offset="0x74" visible="true" />
-	<undefined name="Unknown" offset="0x78" visible="true" />
-	<undefined name="Unknown" offset="0x7C" visible="true" />
-	<undefined name="Unknown" offset="0x80" visible="true" />
-	<undefined name="Unknown" offset="0x84" visible="true" />
+	<tagref name="Owner Tag" offset="0x6C" withGroup="false" visible="true" />
+	<int16 name="Owner Tag Section Offset" offset="0x70" visible="true" />
+    <int16 name="Unknown" offset="0x72" visible="false" />
+	<int32 name="Unknown" offset="0x74" visible="false" />
+	<undefined name="Unknown" offset="0x78" visible="false" />
+	<undefined name="Unknown" offset="0x7C" visible="false" />
+	<undefined name="Unknown" offset="0x80" visible="false" />
+	<undefined name="Unknown" offset="0x84" visible="false" />
 </plugin>
