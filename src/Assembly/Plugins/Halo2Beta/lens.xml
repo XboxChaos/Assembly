@@ -17,13 +17,27 @@
         <option name="Marker Forward" value="0x1" />
         <option name="None" value="0x2" />
     </enum16>
-    <int16 name="Unknown" offset="0x16" visible="false" />
+    <enum16 name="Occlusion Inner Radius Scale" offset="0x16" visible="true">
+        <option name="None" value="0x0" />
+        <option name="1/2" value="0x1" />
+        <option name="1/4" value="0x2" />
+        <option name="1/8" value="0x3" />
+        <option name="1/16" value="0x4" />
+        <option name="1/32" value="0x5" />
+        <option name="1/64" value="0x6" />
+    </enum16>
     <float32 name="Near Fade Distance" offset="0x18" visible="true" tooltip="distance at which the lens flare brightness is maximum" />
     <float32 name="Far Fade Distance" offset="0x1C" visible="true" tooltip="distance at which the lens flare brightness is minimum; set to zero to disable distance fading" />
     <comment title="Bitmaps" />
     <tagRef name="Bitmap" offset="0x20" visible="true" tooltip="used by reflections" />
     <flags16 name="Flags" offset="0x30" visible="true">
         <bit name="Sun" index="0" />
+        <bit name="No Occlusion Test" index="1" />
+        <bit name="Only Render In First Person" index="2" />
+        <bit name="Only Render In Third Person" index="3" />
+        <bit name="Fade In More Quickly" index="4" tooltip="not supported" />
+        <bit name="Fade Out More Quickly" index="5" tooltip="not supported" />
+        <bit name="Scale By Marker" index="6" />
     </flags16>
     <int16 name="Unknown" offset="0x32" visible="false" />
     <undefined name="Unknown" offset="0x34" visible="false" />
@@ -75,8 +89,8 @@
         <flags16 name="Flags" offset="0x0" visible="true">
             <bit name="Align Rotation With Screen Center" index="0" />
             <bit name="Radius NOT Scaled By Distance" index="1" />
-            <bit name="Radius Scaled By Occlusion Factor" index="2" />
-            <bit name="Occluded By Solid Objects" index="3" />
+            <bit name="Radius Scaled By Occlusion Factor" index="2" tooltip="scales radius by 1/2 to 1 as occlusion goes from 0 to 1" />
+            <bit name="Occluded By Solid Objects" index="3" tooltip="reflection will be drawn with the zbuffer enabled (it will be drawn 'behind' solid geometry)" />
         </flags16>
         <int16 name="Unknown" offset="0x2" visible="false" />
         <int16 name="Bitmap Index" offset="0x4" visible="true" />
@@ -133,25 +147,55 @@
         <undefined name="Unknown" offset="0x7C" visible="false" />
     </tagblock>
 	<undefined name="Unknown" offset="0xD0" visible="true" />
+    <!-- TODO (Dragon): test this -->
+    <comment title="NEEDS TESTING">this is either brightness, color, or rotation</comment>
 	<tagblock name="Unknown" offset="0xD4" visible="true" elementSize="0x20">
-		<undefined name="Unknown" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="true" />
-		<undefined name="Unknown" offset="0x8" visible="true" />
-		<undefined name="Unknown" offset="0xC" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="true" />
-		<tagblock name="Unknown" offset="0x14" visible="true" elementSize="0x4">
-			<undefined name="Unknown" offset="0x0" visible="true" />
-		</tagblock>
+        <enum16 name="Graph Type" offset="0x0" visible="true">
+            <option name="identity" value="0x0" />
+            <option name="constant" value="0x1" />
+            <option name="transition" value="0x2" />
+            <option name="periodic" value="0x3" />
+            <option name="linear" value="0x4" />
+            <option name="linear key" value="0x5" />
+            <option name="multi linear key" value="0x6" />
+            <option name="spline" value="0x7" />
+            <option name="multi spline" value="0x8" />
+            <option name="exponent" value="0x9" />
+            <option name="spline2" value="0xA" />
+        </enum16>
+        <int16 name="Unknown" offset="0x2" visible="true" />
+        <float32 name="A" offset="0x4" visible="true" tooltip="context dependent based on enums above" />
+        <float32 name="B" offset="0x8" visible="true" tooltip="context dependent based on enums above" />
+        <float32 name="C" offset="0xC" visible="true" tooltip="context dependent based on enums above" />
+        <float32 name="D" offset="0x10" visible="true" tooltip="context dependent based on enums above" />
+        <tagblock name="Function Values" offset="0x14" visible="true" elementSize="0x4">
+            <undefined name="Value" offset="0x0" visible="true" />
+        </tagblock>
 	</tagblock>
+    <!-- TODO (Dragon): test this -->
+    <comment title="NEEDS TESTING">this is either brightness, color, or rotation</comment>
 	<tagblock name="Unknown" offset="0xE0" visible="true" elementSize="0x20">
-		<undefined name="Unknown" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="true" />
-		<undefined name="Unknown" offset="0x8" visible="true" />
-		<undefined name="Unknown" offset="0xC" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="true" />
-		<tagblock name="Unknown" offset="0x14" visible="true" elementSize="0x4">
-			<undefined name="Unknown" offset="0x0" visible="true" />
-		</tagblock>
+        <enum16 name="Graph Type" offset="0x0" visible="true">
+            <option name="identity" value="0x0" />
+            <option name="constant" value="0x1" />
+            <option name="transition" value="0x2" />
+            <option name="periodic" value="0x3" />
+            <option name="linear" value="0x4" />
+            <option name="linear key" value="0x5" />
+            <option name="multi linear key" value="0x6" />
+            <option name="spline" value="0x7" />
+            <option name="multi spline" value="0x8" />
+            <option name="exponent" value="0x9" />
+            <option name="spline2" value="0xA" />
+        </enum16>
+        <int16 name="Unknown" offset="0x2" visible="true" />
+        <float32 name="A" offset="0x4" visible="true" tooltip="context dependent based on enums above" />
+        <float32 name="B" offset="0x8" visible="true" tooltip="context dependent based on enums above" />
+        <float32 name="C" offset="0xC" visible="true" tooltip="context dependent based on enums above" />
+        <float32 name="D" offset="0x10" visible="true" tooltip="context dependent based on enums above" />
+        <tagblock name="Function Values" offset="0x14" visible="true" elementSize="0x4">
+            <undefined name="Value" offset="0x0" visible="true" />
+        </tagblock>
 	</tagblock>
 	<undefined name="Unknown" offset="0xEC" visible="true" />
 </plugin>

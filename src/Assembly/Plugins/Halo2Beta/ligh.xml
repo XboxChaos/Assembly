@@ -41,8 +41,7 @@
         <option name="Pyramid" value="0x3" />
     </enum16>
     <int16 name="Unknown" offset="0x16" visible="false" />
-    <float32 name="Size Modifier min" offset="0x18" visible="true" />
-    <float32 name="Size Modifier max" offset="0x1C" visible="true" />
+    <rangef name="Size Modifier" offset="0x18" visible="true" />
     <float32 name="Shadow Quality Bias" offset="0x20" visible="true" />
     <enum16 name="Shadow Tap Bias" offset="0x24" visible="true">
         <option name="3 Tap" value="0x0" />
@@ -56,8 +55,8 @@
 	<undefined name="Unknown" offset="0x34" visible="true" />
 	<undefined name="Unknown" offset="0x38" visible="true" />
 	<undefined name="Unknown" offset="0x3C" visible="true" />
-	<undefined name="Unknown" offset="0x40" visible="true" />
-	<undefined name="Unknown" offset="0x44" visible="true" />
+	<float32 name="Radius" offset="0x40" visible="true" />
+	<float32 name="Specular Radius" offset="0x44" visible="true" />
 	<undefined name="Unknown" offset="0x48" visible="true" />
 	<undefined name="Unknown" offset="0x4C" visible="true" />
 	<undefined name="Unknown" offset="0x50" visible="true" />
@@ -71,25 +70,17 @@
     <degree name="Field Of View" offset="0x70" visible="true" />
     <float32 name="Falloff Distance" offset="0x74" visible="true" />
     <float32 name="Cutoff Distance" offset="0x78" visible="true" />
+    <!-- TODO (Dragon): test these -->
+    <comment title="NEEDS TESTING">flags are probably in here</comment>
 	<undefined name="Unknown" offset="0x7C" visible="true" />
 	<undefined name="Unknown" offset="0x80" visible="true" />
-	<undefined name="Unknown" offset="0x84" visible="true" />
-	<undefined name="Unknown" offset="0x88" visible="true" />
+	<rangef name="Bloom Bounds" offset="0x84" visible="true" />
 	<undefined name="Unknown" offset="0x8C" visible="true" />
-	<undefined name="Unknown" offset="0x90" visible="true" />
-	<undefined name="Unknown" offset="0x94" visible="true" />
-	<undefined name="Unknown" offset="0x98" visible="true" />
-	<undefined name="Unknown" offset="0x9C" visible="true" />
-	<undefined name="Unknown" offset="0xA0" visible="true" />
-	<undefined name="Unknown" offset="0xA4" visible="true" />
-	<undefined name="Unknown" offset="0xA8" visible="true" />
-	<undefined name="Unknown" offset="0xAC" visible="true" />
-	<undefined name="Unknown" offset="0xB0" visible="true" />
-	<undefined name="Unknown" offset="0xB4" visible="true" />
-	<undefined name="Unknown" offset="0xB8" visible="true" />
-	<undefined name="Unknown" offset="0xBC" visible="true" />
-	<undefined name="Unknown" offset="0xC0" visible="true" />
-	<undefined name="Unknown" offset="0xC4" visible="true" />
+	<colorf name="Specular Lower Bound" offset="0x90" alpha="false" visible="true" />
+	<colorf name="Specular Upper Bound" offset="0x9C" alpha="false" visible="true" />
+	<colorf name="Diffuse Lower Bound" offset="0xA8" alpha="false" visible="true" />
+	<colorf name="Diffuse Upper Bound" offset="0xB4" alpha="false" visible="true" />
+	<rangef name="Brightness Bounds" offset="0xC0" visible="true" />
 	<undefined name="Unknown" offset="0xC8" visible="true" />
 	<tagRef name="Gel Map" offset="0xCC" visible="true" />
     <enum16 name="Specular Mask" offset="0xDC" visible="true">
@@ -98,6 +89,8 @@
         <option name="Gel Alpha" value="0x2" />
         <option name="Gel Color" value="0x3" />
     </enum16>
+    <!-- TODO (Dragon): test these -->
+    <comment title="NEEDS TESTING">some stuff in here</comment>
     <int16 name="Unknown" offset="0xDE" visible="false" />
 	<undefined name="Unknown" offset="0xE0" visible="true" />
 	<undefined name="Unknown" offset="0xE4" visible="true" />
@@ -159,9 +152,11 @@
         <option name="Directional" value="0x1" />
         <option name="Spherical" value="0x2" />
     </enum16>
-	<undefined name="Unknown" offset="0x17C" visible="true" />
-	<undefined name="Unknown" offset="0x180" visible="true" />
+	<undefined name="Unknown" offset="0x17C" visible="false" />
+	<undefined name="Unknown" offset="0x180" visible="false" />
 	<tagRef name="Lens Flare" offset="0x184" visible="true" />
+    <!-- TODO (Dragon): test these -->
+    <comment title="NEEDS TESTING">some stuff probably in here</comment>
 	<undefined name="Unknown" offset="0x194" visible="true" />
 	<undefined name="Unknown" offset="0x198" visible="true" />
 	<undefined name="Unknown" offset="0x19C" visible="true" />
@@ -177,7 +172,9 @@
 	<undefined name="Unknown" offset="0x1C4" visible="true" />
 	<undefined name="Unknown" offset="0x1C8" visible="true" />
 	<undefined name="Unknown" offset="0x1CC" visible="true" />
-	<undefined name="Unknown" offset="0x1D0" visible="true" />
+	<float32 name="Duration" offset="0x1D0" visible="true" />
+    <!-- TODO (Dragon): test these -->
+    <comment title="NEEDS TESTING">some stuff probably in here</comment>
 	<undefined name="Unknown" offset="0x1D4" visible="true" />
 	<undefined name="Unknown" offset="0x1D8" visible="true" />
 	<undefined name="Unknown" offset="0x1DC" visible="true" />
@@ -186,26 +183,56 @@
 	<undefined name="Unknown" offset="0x1E8" visible="true" />
 	<undefined name="Unknown" offset="0x1EC" visible="true" />
 	<undefined name="Unknown" offset="0x1F0" visible="true" />
-	<tagblock name="Unknown" offset="0x1F4" visible="true" elementSize="0x20">
-		<undefined name="Unknown" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="true" />
-		<undefined name="Unknown" offset="0x8" visible="true" />
-		<undefined name="Unknown" offset="0xC" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="true" />
-		<tagblock name="Unknown" offset="0x14" visible="true" elementSize="0x4">
-			<undefined name="Unknown" offset="0x0" visible="true" />
-		</tagblock>
+	<tagblock name="Brightness Animation" offset="0x1F4" visible="true" elementSize="0x20">
+        <enum16 name="Graph Type" offset="0x0" visible="true">
+            <option name="identity" value="0x0" />
+            <option name="constant" value="0x1" />
+            <option name="transition" value="0x2" />
+            <option name="periodic" value="0x3" />
+            <option name="linear" value="0x4" />
+            <option name="linear key" value="0x5" />
+            <option name="multi linear key" value="0x6" />
+            <option name="spline" value="0x7" />
+            <option name="multi spline" value="0x8" />
+            <option name="exponent" value="0x9" />
+            <option name="spline2" value="0xA" />
+        </enum16>
+        <int16 name="Unknown" offset="0x2" visible="true" />
+        <float32 name="A" offset="0x4" visible="true" tooltip="context dependent based on enums above" />
+        <float32 name="B" offset="0x8" visible="true" tooltip="context dependent based on enums above" />
+        <float32 name="C" offset="0xC" visible="true" tooltip="context dependent based on enums above" />
+        <float32 name="D" offset="0x10" visible="true" tooltip="context dependent based on enums above" />
+        <tagblock name="Function Values" offset="0x14" visible="true" elementSize="0x4">
+            <undefined name="Value" offset="0x0" visible="true" />
+        </tagblock>
 	</tagblock>
+    <!-- TODO (Dragon): test this -->
+    <comment title="NEEDS TESTING">this is either color animation or gel animation</comment>
 	<tagblock name="Unknown" offset="0x200" visible="true" elementSize="0x20">
-		<undefined name="Unknown" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="true" />
-		<undefined name="Unknown" offset="0x8" visible="true" />
-		<undefined name="Unknown" offset="0xC" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="true" />
-		<tagblock name="Unknown" offset="0x14" visible="true" elementSize="0x4">
-			<undefined name="Unknown" offset="0x0" visible="true" />
-		</tagblock>
+        <enum16 name="Graph Type" offset="0x0" visible="true">
+            <option name="identity" value="0x0" />
+            <option name="constant" value="0x1" />
+            <option name="transition" value="0x2" />
+            <option name="periodic" value="0x3" />
+            <option name="linear" value="0x4" />
+            <option name="linear key" value="0x5" />
+            <option name="multi linear key" value="0x6" />
+            <option name="spline" value="0x7" />
+            <option name="multi spline" value="0x8" />
+            <option name="exponent" value="0x9" />
+            <option name="spline2" value="0xA" />
+        </enum16>
+        <int16 name="Unknown" offset="0x2" visible="true" />
+        <float32 name="A" offset="0x4" visible="true" tooltip="context dependent based on enums above" />
+        <float32 name="B" offset="0x8" visible="true" tooltip="context dependent based on enums above" />
+        <float32 name="C" offset="0xC" visible="true" tooltip="context dependent based on enums above" />
+        <float32 name="D" offset="0x10" visible="true" tooltip="context dependent based on enums above" />
+        <tagblock name="Function Values" offset="0x14" visible="true" elementSize="0x4">
+            <undefined name="Value" offset="0x0" visible="true" />
+        </tagblock>
 	</tagblock>
+    <!-- TODO (Dragon): test these -->
+    <comment title="NEEDS TESTING">maybe a block here</comment>
 	<undefined name="Unknown" offset="0x20C" visible="true" />
 	<undefined name="Unknown" offset="0x210" visible="true" />
 	<undefined name="Unknown" offset="0x214" visible="true" />
