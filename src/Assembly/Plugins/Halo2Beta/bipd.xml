@@ -155,11 +155,9 @@
         <stringid name="Export Name" offset="0x8" visible="true" />
         <stringid name="Turn Off With" offset="0xC" visible="true" tooltip="if the specified function is off, so is this function" />
         <float32 name="Minimum Value" offset="0x10" visible="true" tooltip="function must exceed this value (after mapping) to be active 0. means do nothing" />
-        <dataref name="Default Function" offset="0x14" visible="true" />
-        <stringId name="Scale By" offset="0x1C" visible="true" />
-        <!-- TODO (Dragon): test these -->
-        <comment title="NEEDS TESTING">not really sure what this stuff would even be</comment>
-        <undefined name="Unknown" offset="0x1C" visible="true" />
+		<undefined name="Unknown" offset="0x14" visible="true" />
+		<undefined name="Unknown" offset="0x18" visible="true" />
+		<undefined name="Unknown" offset="0x1C" visible="true" />
         <undefined name="Unknown" offset="0x20" visible="true" />
         <undefined name="Unknown" offset="0x24" visible="true" />
         <tagblock name="Unknown" offset="0x28" visible="true" elementSize="0x4">
@@ -184,7 +182,7 @@
         <!-- TODO (Dragon): test these-->
         <comment title="NEEDS TESTING">theres a few things here like Change Color or Secondary Scale that need testing to find</comment>
         <tagRef name="Type" offset="0x0" visible="true" />
-        <ascii name="Marker" offset="0x10" visible="true" />
+        <ascii name="Marker" offset="0x10" length="0x1C" visible="true" />
         <stringid name="Marker" offset="0x2C" visible="true" />
         <undefined name="Unknown" offset="0x30" visible="true" />
         <undefined name="Unknown" offset="0x34" visible="true" />
@@ -200,7 +198,8 @@
         <undefined name="Unknown" offset="0x18" visible="false" />
         <undefined name="Unknown" offset="0x1C" visible="false" />
     </tagblock>
-    <tagblock name="Old Functions" offset="0xA4" visible="false" elementSize="0x50">
+    <!-- TODO (Dragon): this tag block might have a different layout, but its unused so idk -->
+    <tagblock name="Old Functions" offset="0x158" visible="false" elementSize="0x50">
         <undefined name="Unknown" offset="0x0" visible="false" />
         <undefined name="Unknown" offset="0x4" visible="false" />
         <undefined name="Unknown" offset="0x8" visible="false" />
@@ -388,7 +387,7 @@
     <comment title="Unit Camera" />
     <ascii name="Camera Marker Name" offset="0x1A8" length="0x1C" visible="true" />
     <stringid name="Camera Marker Name" offset="0x1C4" visible="true" />
-    <ascii name="Camera Submerged Marker Name" offset="0x1C8" visible="true" />
+    <ascii name="Camera Submerged Marker Name" offset="0x1C8" length="0x1C" visible="true" />
     <stringId name="Camera Submerged Marker Name" offset="0x1E4" visible="true" />
     <degree name="Pitch Auto-Level" offset="0x1E8" visible="true" />
     <ranged name="Pitch Range" offset="0x1EC" visible="true" />
@@ -436,7 +435,7 @@
         <option name="Small" value="0x1" />
         <option name="Large" value="0x2" />
     </enum16>
-    <int16 name="Unknown" offset="0x196" visible="false" />
+    <int16 name="Unknown" offset="0x2BA" visible="false" />
     <tagblock name="Postures" offset="0x2BC" visible="true" elementSize="0x28">
         <undefined name="Unknown" offset="0x0" visible="true" />
         <undefined name="Unknown" offset="0x4" visible="true" />
@@ -449,20 +448,19 @@
         <undefined name="Unknown" offset="0x20" visible="true" />
         <undefined name="Unknown" offset="0x24" visible="true" />
     </tagblock>
-    <tagblock name="New HUD Interfaces" offset="0x2C8" visible="true" elementSize="0x36">
+    <tagblock name="New HUD Interfaces" offset="0x2C8" visible="true" elementSize="0x30">
         <tagref name="Unit HUD Interface" offset="0x0" visible="true" />
         <tagRef name="New Unit HUD Interface" offset="0x10" visible="true" />
         <undefined name="Unknown" offset="0x20" visible="true" />
         <undefined name="Unknown" offset="0x24" visible="true" />
         <undefined name="Unknown" offset="0x28" visible="true" />
         <undefined name="Unknown" offset="0x2C" visible="true" />
-        <tagref name="Unit MP HUD Interface" offset="0x30" visible="true" />
     </tagblock>
-    <!-- TODO (Dragon) figure this out-->
-    <comment title="NEEDS TESTING">probably actually the dialogue variants block</comment>
-    <undefined name="Unknown" offset="0x2D4" visible="true" />
-    <undefined name="Unknown" offset="0x2D8" visible="true" />
-    <undefined name="Unknown" offset="0x2DC" visible="true" />
+    <tagblock name="Dialogue Variants" offset="0x2D4" visible="true" elementSize="0x14">
+        <int16 name="Variant Number" offset="0x0" visible="true" tooltip="variant number to use this dialogue with (must match the suffix in the permutations on the unit's model)" />
+        <int16 name="Unknown" offset="0x2" visible="false" />
+        <tagRef name="Dialogue" offset="0x4" visible="true" />
+    </tagblock>
     <float32 name="Grenade Velocity" offset="0x2E0" visible="true" />
     <enum16 name="Grenade Type" offset="0x2E4" visible="true" >
         <option name="Human Fragmentation" value="0x0" />

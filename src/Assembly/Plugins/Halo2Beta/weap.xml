@@ -155,16 +155,14 @@
 		<stringid name="Export Name" offset="0x8" visible="true" />
 		<stringid name="Turn Off With" offset="0xC" visible="true" tooltip="if the specified function is off, so is this function" />
         <float32 name="Minimum Value" offset="0x10" visible="true" tooltip="function must exceed this value (after mapping) to be active 0. means do nothing" />
-        <dataref name="Default Function" offset="0x14" visible="true" />
-        <stringId name="Scale By" offset="0x1C" visible="true" />
-        <!-- TODO (Dragon): test these -->
-        <comment title="NEEDS TESTING">not really sure what this stuff would even be</comment>
+		<undefined name="Unknown" offset="0x14" visible="true" />
+		<undefined name="Unknown" offset="0x18" visible="true" />
 		<undefined name="Unknown" offset="0x1C" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="true" />
-		<undefined name="Unknown" offset="0x24" visible="true" />
-		<tagblock name="Unknown" offset="0x28" visible="true" elementSize="0x4">
-			<undefined name="Unknown" offset="0x0" visible="true" />
-		</tagblock>
+        <undefined name="Unknown" offset="0x20" visible="true" />
+        <undefined name="Unknown" offset="0x24" visible="true" />
+        <tagblock name="Unknown" offset="0x28" visible="true" elementSize="0x4">
+            <undefined name="Unknown" offset="0x0" visible="true" />
+        </tagblock>
 	</tagblock>
 	<undefined name="Unknown" offset="0x108" visible="false" />
 	<undefined name="Unknown" offset="0x10C" visible="false" />
@@ -180,19 +178,19 @@
 	<rangef name="Absolute Scale (default)" offset="0x134" visible="true" tooltip="0-1" />
 	<int16 name="HUD Text Message Index" offset="0x13C" visible="true" />
     <int16 name="Unknown" offset="0x13E" visible="false" />
-	<tagblock name="Attachments" offset="0x140" visible="true" elementSize="0x48">
+    <tagblock name="Attachments" offset="0x140" visible="true" elementSize="0x48">
         <!-- TODO (Dragon): test these-->
         <comment title="NEEDS TESTING">theres a few things here like Change Color or Secondary Scale that need testing to find</comment>
-		<tagRef name="Type" offset="0x0" visible="true" />
-		<ascii name="Marker" offset="0x10" visible="true" />
-		<stringid name="Marker" offset="0x2C" visible="true" />
-		<undefined name="Unknown" offset="0x30" visible="true" />
-		<undefined name="Unknown" offset="0x34" visible="true" />
-		<stringid name="Primary Scale" offset="0x38" visible="true" />
-		<undefined name="Unknown" offset="0x3C" visible="true" />
-		<undefined name="Unknown" offset="0x40" visible="true" />
-		<undefined name="Unknown" offset="0x44" visible="true" />
-	</tagblock>
+        <tagRef name="Type" offset="0x0" visible="true" />
+        <ascii name="Marker" offset="0x10" length="0x1C" visible="true" />
+        <stringid name="Marker" offset="0x2C" visible="true" />
+        <undefined name="Unknown" offset="0x30" visible="true" />
+        <undefined name="Unknown" offset="0x34" visible="true" />
+        <stringid name="Primary Scale" offset="0x38" visible="true" />
+        <undefined name="Unknown" offset="0x3C" visible="true" />
+        <undefined name="Unknown" offset="0x40" visible="true" />
+        <undefined name="Unknown" offset="0x44" visible="true" />
+    </tagblock>
 	<tagblock name="Widgets" offset="0x14C" visible="true" elementSize="0x20">
 		<tagRef name="Type" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="true" />
@@ -200,6 +198,7 @@
 		<undefined name="Unknown" offset="0x18" visible="true" />
 		<undefined name="Unknown" offset="0x1C" visible="true" />
 	</tagblock>
+    <!-- TODO (Dragon): this tag block might have a different layout, but its unused so idk -->
     <tagblock name="Old Functions" offset="0x158" visible="false" elementSize="0x50">
         <undefined name="Unknown" offset="0x0" visible="false" />
         <undefined name="Unknown" offset="0x4" visible="false" />
@@ -498,6 +497,7 @@ Damage Pyramid Depth: How far the melee attack searches for a target
         <option name="Warthog Gunner Rocket" value="0x2B" />
     </enum8>
     <int8 name="Unknown" offset="0x491" visible="false" />
+	<int16 name="Unknown" offset="0x492" visible="false" />
 	<undefined name="Unknown" offset="0x494" visible="false" />
 	<int16 name="Unknown" offset="0x498" visible="false" />
     <comment title="Zoom" />
@@ -596,7 +596,7 @@ Damage Pyramid Depth: How far the melee attack searches for a target
             <option name="Lightmap Instance Bitmaps" value="0x8" />
         </enum16>
         <int16 name="Resource Index" offset="0x2" visible="true" />
-		<tagref name="Tag Index" offset="0x4" visible="true" />
+		<tagref name="Tag Index" offset="0x4" withGroup="false" visible="true" />
 	</tagblock>
 	<tagblock name="Magazines" offset="0x5CC" visible="true" elementSize="0x90">
         <flags32 name="Flags" offset="0x0" visible="true">
@@ -776,7 +776,6 @@ Damage Pyramid Depth: How far the melee attack searches for a target
 		<degree name="Minimum Error" offset="0x8C" visible="true" />
 		<ranged name="Error Angle" offset="0x90" visible="true" />
         <comment title="NEEDS TESTING">one of these is probably First Person Offset</comment>
-		<undefined name="Unknown" offset="0x94" visible="true" />
 		<undefined name="Unknown" offset="0x98" visible="true" />
 		<undefined name="Unknown" offset="0x9C" visible="true" />
 		<undefined name="Unknown" offset="0xA0" visible="true" />
@@ -798,6 +797,7 @@ Damage Pyramid Depth: How far the melee attack searches for a target
 		<undefined name="Unknown" offset="0xEC" visible="true" />
 		<undefined name="Unknown" offset="0xF0" visible="true" />
 		<undefined name="Unknown" offset="0xF4" visible="true" />
+		<undefined name="Unknown" offset="0xF8" visible="true" />
 		<float32 name="Angle Change Acceleration Time" offset="0xFC" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve its final angle per shot" />
 		<float32 name="Angle Change Deceleration Time" offset="0x100" visible="true" tooltip="the continuous idle time it takes for the weapon to return its initial angle per shot" />
         <enum16 name="Angle Change Function" offset="0x104" visible="true" tooltip="function used to scale between initial and final angle change per shot">
