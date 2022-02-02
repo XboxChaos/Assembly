@@ -11,7 +11,7 @@ namespace AssemblyUpdateManager
 	internal class Program
 	{
 		// DLLs to avoid deleting
-		private static readonly string[] KeepDlls = { "XDevkit.dll" };
+		private static readonly string[] KeepDlls = { "XDKInterop.dll" };
 
 		private static void Main(string[] args)
 		{
