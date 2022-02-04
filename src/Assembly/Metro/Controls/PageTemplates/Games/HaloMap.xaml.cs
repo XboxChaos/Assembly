@@ -469,8 +469,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				totalStrings += language.StringCount;
 			Dispatcher.Invoke(new Action(delegate { lblLocaleTotalCount.Text = totalStrings.ToString(); }));*/
 
-			if (_cacheFile.Languages == null) return;
-
 			if (!_cacheFile.Languages.AvailableLanguages.Any())
 			{
 				Dispatcher.Invoke(new Action(() => tabStrings.Visibility = Visibility.Collapsed));

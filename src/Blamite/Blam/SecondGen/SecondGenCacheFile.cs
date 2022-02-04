@@ -270,13 +270,7 @@ namespace Blamite.Blam.SecondGen
 			_fileNames = LoadFileNames(reader);
 			_stringIDs = LoadStringIDs(reader);
 
-			// TODO (Dragon): double check to see if there even is language data in beta
-			// dont load language globals on the beta
-			if (_buildInfo.BuildVersion != "02.06.28.07902")
-            {
-				LoadLanguageGlobals(reader);
-			}
-
+			LoadLanguageGlobals(reader);
 			LoadScriptFiles();
 			LoadSimulationDefinitions(reader);
 		}
@@ -404,9 +398,11 @@ namespace Blamite.Blam.SecondGen
 			if (_tags == null)
 				return false;
 
-			tag = _tags.FindTagByGroup("matg");
-			layout = _buildInfo.Layouts.GetLayout("matg");
-
+			if (_buildInfo.Layouts.HasLayout("matg"))
+			{
+				tag = _tags.FindTagByGroup("matg");
+				layout = _buildInfo.Layouts.GetLayout("matg");
+			}
 			return (tag != null && layout != null && tag.MetaLocation != null);
 		}
 
