@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Halo2Beta" baseSize="0xEC">
 	<!-- Automatically generated plugin -->
 	<revisions>
@@ -140,36 +140,47 @@
         <int16 name="Parent Animation Index" offset="0x22" visible="true" />
         <int16 name="Next Animation Index" offset="0x24" visible="true" />
         <int16 name="Unknown" offset="0x26" visible="true" />
-        <int16 name="Offset in Raw" offset="0x28" visible="true" />
-        <int16 name="Unknown" offset="0x2A" visible="true" />
-        <int16 name="Unknown" offset="0x2C" visible="true" />
-        <int16 name="Unknown" offset="0x2E" visible="true" />
-        <int8 name="Unknown" offset="0x30" visible="true" />
-        <int8 name="Unknown" offset="0x31" visible="true" />
-        <int16 name="Unknown" offset="0x32" visible="true" />
-        <int16 name="Unknown" offset="0x34" visible="true" />
-        <int16 name="Unknown" offset="0x36" visible="true" />
-        <int32 name="Unknown" offset="0x38" visible="true" />
+        <dataref name="Unknown" offset="0x28" visible="true" />
         <int32 name="Unknown" offset="0x3C" visible="true" />
-        <!-- TODO (Dragon): test these -->
-        <comment title="NEEDS TESTING">need to figure out if theres empty tagblocks here, and what the unk tagblocks are</comment>
 		<undefined name="Unknown" offset="0x40" visible="true" />
 		<undefined name="Unknown" offset="0x44" visible="true" />
-		<undefined name="Unknown" offset="0x48" visible="true" />
-		<undefined name="Unknown" offset="0x4C" visible="true" />
-		<undefined name="Unknown" offset="0x50" visible="true" />
-		<undefined name="Unknown" offset="0x54" visible="true" />
-		<tagblock name="Unknown" offset="0x58" visible="true" elementSize="0x8">
-			<undefined name="Unknown" offset="0x0" visible="true" />
-			<undefined name="Unknown" offset="0x4" visible="true" />
+		<int32 name="Unknown" offset="0x48" visible="true" />
+		<tagblock name="Frame Events" offset="0x4C" visible="true" elementSize="0x4">
+			<enum16 name="Type" offset="0x0" visible="true">
+				<option name="Primary Keyframe" value="0x0" />
+				<option name="Secondary Keyframe" value="0x1" />
+				<option name="Left Foot" value="0x2" />
+				<option name="Right Foot" value="0x3" />
+				<option name="Allow Interruption" value="0x4" />
+				<option name="Transition A" value="0x5" />
+				<option name="Transition B" value="0x6" />
+				<option name="Transition C" value="0x7" />
+				<option name="Transition D" value="0x8" />
+				<option name="Both-Feet Shuffle" value="0x9" />
+				<option name="Body Impact" value="0xA" />
+			</enum16>
+			<int16 name="Frame" offset="0x2" visible="true" />
 		</tagblock>
-		<tagblock name="Unknown" offset="0x64" visible="true" elementSize="0x8">
-			<undefined name="Unknown" offset="0x0" visible="true" />
-			<undefined name="Unknown" offset="0x4" visible="true" />
+		<tagblock name="Sound Events" offset="0x58" visible="true" elementSize="0x8">
+			<int16 name="Sound" offset="0x0" visible="true" />
+			<int16 name="Frame" offset="0x2" visible="true" />
+			<stringId name="Marker Name" offset="0x4" visible="true" />
 		</tagblock>
-		<undefined name="Unknown" offset="0x70" visible="true" />
-		<undefined name="Unknown" offset="0x74" visible="true" />
-		<undefined name="Unknown" offset="0x78" visible="true" />
+		<tagblock name="Effect Events" offset="0x64" visible="true" elementSize="0x4">
+			<int16 name="Effect" offset="0x0" visible="true" />
+			<int16 name="Frame" offset="0x2" visible="true" />
+		</tagblock>
+		<tagblock name="Object-Space Parent Nodes" offset="0x70" visible="true" elementSize="0x24">
+			<int16 name="Node Index" offset="0x0" visible="true" />
+			<flags16 name="Component Flags" offset="0x2" visible="true">
+				<bit name="Rotation" index="0" />
+				<bit name="Translation" index="1" />
+				<bit name="Scale" index="2" />
+			</flags16>
+			<vector4 name="Rotation" offset="0x4" visible="true" />
+			<point3 name="Default Translation" offset="0x14" visible="true" />
+			<float32 name="Default Scale" offset="0x20" visible="true" />
+		</tagblock>
 	</tagblock>
 	<tagblock name="Modes" offset="0x50" visible="true" elementSize="0x1C">
 		<stringid name="Label" offset="0x0" visible="true" />

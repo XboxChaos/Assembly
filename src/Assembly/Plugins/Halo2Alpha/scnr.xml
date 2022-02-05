@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Halo2Alpha" baseSize="0x4CC">
 	<!-- Automatically generated plugin -->
 	<revisions>
@@ -1453,56 +1453,163 @@
 	<undefined name="Unknown" offset="0x278" visible="true" />
 	<undefined name="Unknown" offset="0x27C" visible="true" />
 	<undefined name="Unknown" offset="0x280" visible="true" />
-    <!-- TODO (Dragon): test these -->
-    <comment title="NEEDS TESTING">these datarefs might not be *exactly* what theyre supposed to be</comment>
     <dataRef name="Script Syntax Data" offset="0x284" visible="true" />
 	<dataref name="Script String Data" offset="0x298" visible="true" />
 	<tagblock name="Scripts" offset="0x2AC" visible="true" elementSize="0x5C">
-        <!-- TODO (Dragon): test these -->
-        <comment title="NEEDS TESTING">someone with script experience will need to look at these closer</comment>
-		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
-		<undefined name="Unknown" offset="0x20" visible="true" />
-		<undefined name="Unknown" offset="0x24" visible="true" />
-		<undefined name="Unknown" offset="0x28" visible="true" />
-		<undefined name="Unknown" offset="0x2C" visible="true" />
-		<undefined name="Unknown" offset="0x30" visible="true" />
-		<undefined name="Unknown" offset="0x34" visible="true" />
-		<undefined name="Unknown" offset="0x38" visible="true" />
-		<undefined name="Unknown" offset="0x3C" visible="true" />
-		<undefined name="Unknown" offset="0x40" visible="true" />
-		<undefined name="Unknown" offset="0x44" visible="true" />
-		<undefined name="Unknown" offset="0x48" visible="true" />
-		<undefined name="Unknown" offset="0x4C" visible="true" />
-		<undefined name="Unknown" offset="0x50" visible="true" />
-		<undefined name="Unknown" offset="0x54" visible="true" />
-		<undefined name="Unknown" offset="0x58" visible="true" />
+        <ascii name="Name" offset="0x0" visible="true" length="0x20" />
+		<enum16 name="Script Type" offset="0x20" visible="true">
+			<option name="Startup" value="0x0" />
+			<option name="Dormant" value="0x1" />
+			<option name="Continuous" value="0x2" />
+			<option name="Static" value="0x3" />
+			<option name="Stub" value="0x4" />
+		</enum16>
+		<enum16 name="Return Type" offset="0x22" visible="true">
+			<option name="unparsed" value="0x0" />
+			<option name="special_form" value="0x1" />
+			<option name="function_name" value="0x2" />
+			<option name="passthrough" value="0x3" />
+			<option name="void" value="0x4" />
+			<option name="boolean" value="0x5" />
+			<option name="real" value="0x6" />
+			<option name="short" value="0x7" />
+			<option name="long" value="0x8" />
+			<option name="string" value="0x9" />
+			<option name="script" value="0xA" />
+			<option name="trigger_volume" value="0xB" />
+			<option name="cutscene_flag" value="0xC" />
+			<option name="cutscene_camera_point" value="0xD" />
+			<option name="cutscene_title" value="0xE" />
+			<option name="cutscene_recording" value="0xF" />
+			<option name="device_group" value="0x10" />
+			<option name="ai" value="0x11" />
+			<option name="ai_command_list" value="0x12" />
+			<option name="ai_command_script" value="0x13" />
+			<option name="ai_behavior" value="0x14" />
+			<option name="ai_orders" value="0x15" />
+			<option name="starting_profile" value="0x16" />
+			<option name="conversation" value="0x17" />
+			<option name="navpoint" value="0x18" />
+			<option name="point_reference" value="0x19" />
+			<option name="style" value="0x1A" />
+			<option name="hud_message" value="0x1B" />
+			<option name="object_list" value="0x1C" />
+			<option name="sound" value="0x1D" />
+			<option name="effect" value="0x1E" />
+			<option name="damage" value="0x1F" />
+			<option name="looping_sound" value="0x20" />
+			<option name="animation_graph" value="0x21" />
+			<option name="damage_effect" value="0x22" />
+			<option name="object_definition" value="0x23" />
+			<option name="bitmap" value="0x24" />
+			<option name="game_difficulty" value="0x25" />
+			<option name="team" value="0x26" />
+			<option name="actor_type" value="0x27" />
+			<option name="hud_corner" value="0x28" />
+			<option name="model_state" value="0x29" />
+			<option name="network_event" value="0x2A" />
+			<option name="object" value="0x2B" />
+			<option name="unit" value="0x2C" />
+			<option name="vehicle" value="0x2D" />
+			<option name="weapon" value="0x2E" />
+			<option name="device" value="0x2F" />
+			<option name="scenery" value="0x30" />
+			<option name="object_name" value="0x31" />
+			<option name="unit_name" value="0x32" />
+			<option name="vehicle_name" value="0x33" />
+			<option name="weapon_name" value="0x34" />
+			<option name="device_name" value="0x35" />
+			<option name="scenery_name" value="0x36" />
+		</enum16>
+		<datum name="Root Expression" offset="0x24" visible="true" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
 	</tagblock>
     <tagblock name="Globals" offset="0x2B8" visible="true" elementSize="0x5C">
-        <!-- TODO (Dragon): test these -->
-        <comment title="NEEDS TESTING">someone with script experience will need to look at these closer</comment>
-        <undefined name="Unknown" offset="0x0" visible="true" />
-        <undefined name="Unknown" offset="0x4" visible="true" />
-        <undefined name="Unknown" offset="0x8" visible="true" />
-        <undefined name="Unknown" offset="0xC" visible="true" />
-        <undefined name="Unknown" offset="0x10" visible="true" />
-        <undefined name="Unknown" offset="0x14" visible="true" />
-        <undefined name="Unknown" offset="0x18" visible="true" />
-        <undefined name="Unknown" offset="0x1C" visible="true" />
-        <undefined name="Unknown" offset="0x20" visible="true" />
-        <undefined name="Unknown" offset="0x24" visible="true" />
-        <undefined name="Unknown" offset="0x28" visible="true" />
-        <undefined name="Unknown" offset="0x2C" visible="true" />
-        <undefined name="Unknown" offset="0x30" visible="true" />
-        <undefined name="Unknown" offset="0x34" visible="true" />
-        <undefined name="Unknown" offset="0x38" visible="true" />
-        <undefined name="Unknown" offset="0x3C" visible="true" />
-        <undefined name="Unknown" offset="0x40" visible="true" />
-        <undefined name="Unknown" offset="0x44" visible="true" />
-        <undefined name="Unknown" offset="0x48" visible="true" />
-        <undefined name="Unknown" offset="0x4C" visible="true" />
-        <undefined name="Unknown" offset="0x50" visible="true" />
-        <undefined name="Unknown" offset="0x54" visible="true" />
-        <undefined name="Unknown" offset="0x58" visible="true" />
+        <ascii name="Name" offset="0x0" visible="true" length="0x20" />
+		<enum16 name="Type" offset="0x20" visible="true">
+			<option name="unparsed" value="0x0" />
+			<option name="special_form" value="0x1" />
+			<option name="function_name" value="0x2" />
+			<option name="passthrough" value="0x3" />
+			<option name="void" value="0x4" />
+			<option name="boolean" value="0x5" />
+			<option name="real" value="0x6" />
+			<option name="short" value="0x7" />
+			<option name="long" value="0x8" />
+			<option name="string" value="0x9" />
+			<option name="script" value="0xA" />
+			<option name="trigger_volume" value="0xB" />
+			<option name="cutscene_flag" value="0xC" />
+			<option name="cutscene_camera_point" value="0xD" />
+			<option name="cutscene_title" value="0xE" />
+			<option name="cutscene_recording" value="0xF" />
+			<option name="device_group" value="0x10" />
+			<option name="ai" value="0x11" />
+			<option name="ai_command_list" value="0x12" />
+			<option name="ai_command_script" value="0x13" />
+			<option name="ai_behavior" value="0x14" />
+			<option name="ai_orders" value="0x15" />
+			<option name="starting_profile" value="0x16" />
+			<option name="conversation" value="0x17" />
+			<option name="navpoint" value="0x18" />
+			<option name="point_reference" value="0x19" />
+			<option name="style" value="0x1A" />
+			<option name="hud_message" value="0x1B" />
+			<option name="object_list" value="0x1C" />
+			<option name="sound" value="0x1D" />
+			<option name="effect" value="0x1E" />
+			<option name="damage" value="0x1F" />
+			<option name="looping_sound" value="0x20" />
+			<option name="animation_graph" value="0x21" />
+			<option name="damage_effect" value="0x22" />
+			<option name="object_definition" value="0x23" />
+			<option name="bitmap" value="0x24" />
+			<option name="game_difficulty" value="0x25" />
+			<option name="team" value="0x26" />
+			<option name="actor_type" value="0x27" />
+			<option name="hud_corner" value="0x28" />
+			<option name="model_state" value="0x29" />
+			<option name="network_event" value="0x2A" />
+			<option name="object" value="0x2B" />
+			<option name="unit" value="0x2C" />
+			<option name="vehicle" value="0x2D" />
+			<option name="weapon" value="0x2E" />
+			<option name="device" value="0x2F" />
+			<option name="scenery" value="0x30" />
+			<option name="object_name" value="0x31" />
+			<option name="unit_name" value="0x32" />
+			<option name="vehicle_name" value="0x33" />
+			<option name="weapon_name" value="0x34" />
+			<option name="device_name" value="0x35" />
+			<option name="scenery_name" value="0x36" />
+		</enum16>
+		<int16 name="Unknown" offset="0x22" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<datum name="Initialization Expression" offset="0x28" visible="true" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
     </tagblock>
     <!-- TODO (Dragon): test this -->
     <comment title="NEEDS TESTING">these are definitely references and source files block but unused so unknown element size</comment>
@@ -1673,68 +1780,61 @@
         <int16 name="Opcode" offset="0x2" visible="true" />
         <enum16 name="Value Type" offset="0x4" visible="true">
             <option name="INVALID" value="0xBABA" />
-            <option name="unparsed" value="0x0" />
-            <option name="special_form" value="0x1" />
-            <option name="function_name" value="0x2" />
-            <option name="passthrough" value="0x3" />
-            <option name="void" value="0x4" />
-            <option name="boolean" value="0x5" />
-            <option name="real" value="0x6" />
-            <option name="short" value="0x7" />
-            <option name="long" value="0x8" />
-            <option name="string" value="0x9" />
-            <option name="script" value="0xA" />
-            <option name="string_id" value="0xB" />
-            <option name="unit_seat_mapping" value="0xC" />
-            <option name="trigger_volume" value="0xD" />
-            <option name="cutscene_flag" value="0xE" />
-            <option name="cutscene_camera_point" value="0xF" />
-            <option name="cutscene_title" value="0x10" />
-            <option name="cutscene_recording" value="0x11" />
-            <option name="device_group" value="0x12" />
-            <option name="ai" value="0x13" />
-            <option name="ai_command_list" value="0x14" />
-            <option name="ai_command_script" value="0x15" />
-            <option name="ai_behavior" value="0x16" />
-            <option name="ai_orders" value="0x17" />
-            <option name="starting_profile" value="0x18" />
-            <option name="conversation" value="0x19" />
-            <option name="structure_bsp" value="0x1A" />
-            <option name="navpoint" value="0x1B" />
-            <option name="point reference" value="0x1C" />
-            <option name="style" value="0x1D" />
-            <option name="hud_message" value="0x1E" />
-            <option name="object_list" value="0x1F" />
-            <option name="sound" value="0x20" />
-            <option name="effect" value="0x21" />
-            <option name="damage" value="0x22" />
-            <option name="looping_sound" value="0x23" />
-            <option name="animation_graph" value="0x24" />
-            <option name="damage_effect" value="0x25" />
-            <option name="object_definition" value="0x26" />
-            <option name="bitmap" value="0x27" />
-            <option name="shader" value="0x28" />
-            <option name="render model" value="0x29" />
-            <option name="structure definition" value="0x2A" />
-            <option name="lightmap definition" value="0x2B" />
-            <option name="game_difficulty" value="0x2C" />
-            <option name="team" value="0x2D" />
-            <option name="actor_type" value="0x2E" />
-            <option name="hud_corner" value="0x2F" />
-            <option name="model_state" value="0x30" />
-            <option name="network_event" value="0x31" />
-            <option name="object" value="0x32" />
-            <option name="unit" value="0x33" />
-            <option name="vehicle" value="0x34" />
-            <option name="weapon" value="0x35" />
-            <option name="device" value="0x36" />
-            <option name="scenery" value="0x37" />
-            <option name="object_name" value="0x38" />
-            <option name="unit_name" value="0x39" />
-            <option name="vehicle_name" value="0x3A" />
-            <option name="weapon_name" value="0x3B" />
-            <option name="device_name" value="0x3C" />
-            <option name="scenery_name" value="0x3D" />
+			<option name="unparsed" value="0x0" />
+			<option name="special_form" value="0x1" />
+			<option name="function_name" value="0x2" />
+			<option name="passthrough" value="0x3" />
+			<option name="void" value="0x4" />
+			<option name="boolean" value="0x5" />
+			<option name="real" value="0x6" />
+			<option name="short" value="0x7" />
+			<option name="long" value="0x8" />
+			<option name="string" value="0x9" />
+			<option name="script" value="0xA" />
+			<option name="trigger_volume" value="0xB" />
+			<option name="cutscene_flag" value="0xC" />
+			<option name="cutscene_camera_point" value="0xD" />
+			<option name="cutscene_title" value="0xE" />
+			<option name="cutscene_recording" value="0xF" />
+			<option name="device_group" value="0x10" />
+			<option name="ai" value="0x11" />
+			<option name="ai_command_list" value="0x12" />
+			<option name="ai_command_script" value="0x13" />
+			<option name="ai_behavior" value="0x14" />
+			<option name="ai_orders" value="0x15" />
+			<option name="starting_profile" value="0x16" />
+			<option name="conversation" value="0x17" />
+			<option name="navpoint" value="0x18" />
+			<option name="point_reference" value="0x19" />
+			<option name="style" value="0x1A" />
+			<option name="hud_message" value="0x1B" />
+			<option name="object_list" value="0x1C" />
+			<option name="sound" value="0x1D" />
+			<option name="effect" value="0x1E" />
+			<option name="damage" value="0x1F" />
+			<option name="looping_sound" value="0x20" />
+			<option name="animation_graph" value="0x21" />
+			<option name="damage_effect" value="0x22" />
+			<option name="object_definition" value="0x23" />
+			<option name="bitmap" value="0x24" />
+			<option name="game_difficulty" value="0x25" />
+			<option name="team" value="0x26" />
+			<option name="actor_type" value="0x27" />
+			<option name="hud_corner" value="0x28" />
+			<option name="model_state" value="0x29" />
+			<option name="network_event" value="0x2A" />
+			<option name="object" value="0x2B" />
+			<option name="unit" value="0x2C" />
+			<option name="vehicle" value="0x2D" />
+			<option name="weapon" value="0x2E" />
+			<option name="device" value="0x2F" />
+			<option name="scenery" value="0x30" />
+			<option name="object_name" value="0x31" />
+			<option name="unit_name" value="0x32" />
+			<option name="vehicle_name" value="0x33" />
+			<option name="weapon_name" value="0x34" />
+			<option name="device_name" value="0x35" />
+			<option name="scenery_name" value="0x36" />
         </enum16>
         <flags16 name="Flags" offset="0x6" visible="true">
             <bit name="Primitive" index="0" />
