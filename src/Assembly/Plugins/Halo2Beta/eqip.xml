@@ -20,10 +20,10 @@
         <option name="Crate" value="0xB" />
         <option name="Creature" value="0xC" />
     </enum16>
-    <flags16 name="Flags" offset="0x2" visible="true">
+    <flags16 name="Flags" offset="0x2" visible="true" >
         <bit name="Does Not Cast Shadow" index="0" />
-        <bit name="Search Cardinal Direction Lightmaps on Failure" index="1" />
-        <bit name="Bit 2" index="2" />
+        <bit name="Search Cardinal Direction Lightmaps" index="1" />
+        <bit name="Unused" index="2" />
         <bit name="Not A Pathfinding Obstacle" index="3" />
         <bit name="Extension Of Parent" index="4" tooltip="object passes all function values to parent and uses parent's markers" />
         <bit name="Does Not Cause Collision Damage" index="5" />
@@ -85,22 +85,22 @@
         <bit name="Bit 30" index="30" />
         <bit name="Bit 31" index="31" />
     </flags32>
-    <undefined name="Unknown" offset="0x2C" visible="true" />
-    <undefined name="Unknown" offset="0x30" visible="true" />
-    <undefined name="Unknown" offset="0x34" visible="true" />
-    <undefined name="Unknown" offset="0x38" visible="true" />
-    <undefined name="Unknown" offset="0x3C" visible="true" />
-    <undefined name="Unknown" offset="0x40" visible="true" />
-    <undefined name="Unknown" offset="0x44" visible="true" />
-    <undefined name="Unknown" offset="0x48" visible="true" />
-    <undefined name="Unknown" offset="0x4C" visible="true" />
-    <undefined name="Unknown" offset="0x50" visible="true" />
-    <undefined name="Unknown" offset="0x54" visible="true" />
-    <undefined name="Unknown" offset="0x58" visible="true" />
+    <undefined name="Unknown" offset="0x2C" visible="false" />
+    <undefined name="Unknown" offset="0x30" visible="false" />
+    <undefined name="Unknown" offset="0x34" visible="false" />
+    <undefined name="Unknown" offset="0x38" visible="false" />
+    <undefined name="Unknown" offset="0x3C" visible="false" />
+    <undefined name="Unknown" offset="0x40" visible="false" />
+    <undefined name="Unknown" offset="0x44" visible="false" />
+    <undefined name="Unknown" offset="0x48" visible="false" />
+    <undefined name="Unknown" offset="0x4C" visible="false" />
+    <undefined name="Unknown" offset="0x50" visible="false" />
+    <undefined name="Unknown" offset="0x54" visible="false" />
+    <undefined name="Unknown" offset="0x58" visible="false" />
     <stringid name="Default Model Variant" offset="0x5C" visible="true" />
     <tagRef name="Model" offset="0x60" visible="true" />
-    <tagRef name="Create Object" offset="0x70" visible="true" />
-    <tagRef name="Physics" offset="0x80" visible="true" />
+    <tagRef name="Crate Object" offset="0x70" visible="true" />
+    <tagref name="Physics" offset="0x80" visible="true" />
     <tagRef name="Modifier Shader" offset="0x90" visible="true" />
     <tagRef name="Creation Effect" offset="0xA0" visible="true" />
     <tagRef name="Material Effects" offset="0xB0" visible="true" />
@@ -118,7 +118,7 @@
         </flags32>
         <stringId name="AI Type Name" offset="0x4" visible="true" tooltip="used for combat dialogue, etc." />
         <undefined name="Unknown" offset="0x8" visible="false" />
-        <enum16 name="AI Size" offset="0xC" visible="true">
+        <enum16 name="Size" offset="0xC" visible="true">
             <option name="Default" value="0x0" />
             <option name="Tiny" value="0x1" />
             <option name="Small" value="0x2" />
@@ -155,21 +155,56 @@
         <stringid name="Export Name" offset="0x8" visible="true" />
         <stringid name="Turn Off With" offset="0xC" visible="true" tooltip="if the specified function is off, so is this function" />
         <float32 name="Minimum Value" offset="0x10" visible="true" tooltip="function must exceed this value (after mapping) to be active 0. means do nothing" />
-		<undefined name="Unknown" offset="0x14" visible="true" />
-		<undefined name="Unknown" offset="0x18" visible="true" />
-		<undefined name="Unknown" offset="0x1C" visible="true" />
-        <undefined name="Unknown" offset="0x20" visible="true" />
-        <undefined name="Unknown" offset="0x24" visible="true" />
-        <tagblock name="Unknown" offset="0x28" visible="true" elementSize="0x4">
-            <undefined name="Unknown" offset="0x0" visible="true" />
+        <enum8 name="Graph Type" offset="0x14" visible="true">
+            <option name="Unknown 0" value="0x0" />
+            <option name="Unknown 1" value="0x1" />
+            <option name="Unknown 2" value="0x2" />
+            <option name="Unknown 3" value="0x3" />
+            <option name="Unknown 4" value="0x4" />
+            <option name="Unknown 5" value="0x5" />
+            <option name="Unknown 6" value="0x6" />
+            <option name="Unknown 7" value="0x7" />
+        </enum8>
+        <flags8 name="Unknown Color" offset="0x15" visible="true">
+            <bit name="Bit 0" index="0" />
+            <bit name="Bit 1" index="1" />
+            <bit name="Bit 2" index="2" />
+            <bit name="Bit 3" index="3" />
+            <bit name="Enum Bit 0" index="4" />
+            <bit name="Enum Bit 1" index="5" />
+            <bit name="Enum Bit 2" index="6" />
+            <bit name="Enum Bit 3" index="7" />
+        </flags8>
+        <enum8 name="Unknown" offset="0x16" visible="true">
+            <option name="Unknown 0" value="0x0" />
+            <option name="Unknown 1" value="0x1" />
+            <option name="Unknown 2" value="0x2" />
+            <option name="Unknown 3" value="0x3" />
+            <option name="Unknown 4" value="0x4" />
+            <option name="Unknown 5" value="0x5" />
+        </enum8>
+        <enum8 name="Unknown" offset="0x17" visible="true">
+            <option name="Unknown 0" value="0x0" />
+            <option name="Unknown 1" value="0x1" />
+            <option name="Unknown 2" value="0x2" />
+            <option name="Unknown 3" value="0x3" />
+            <option name="Unknown 4" value="0x4" />
+            <option name="Unknown 5" value="0x5" />
+        </enum8>
+        <float32 name="A" offset="0x18" visible="true" tooltip="context dependent based on enums above" />
+        <float32 name="B" offset="0x1C" visible="true" tooltip="context dependent based on enums above" />
+        <float32 name="C" offset="0x20" visible="true" tooltip="context dependent based on enums above" />
+        <float32 name="D" offset="0x24" visible="true" tooltip="context dependent based on enums above" />
+        <tagblock name="Function Values" offset="0x28" visible="true" elementSize="0x4">
+            <undefined name="Value" offset="0x0" visible="true" />
         </tagblock>
     </tagblock>
     <undefined name="Unknown" offset="0x108" visible="false" />
     <undefined name="Unknown" offset="0x10C" visible="false" />
     <undefined name="Unknown" offset="0x110" visible="false" />
     <undefined name="Unknown" offset="0x114" visible="false" />
-    <comment title="Applying Collision Damage">for things that want to cause more or less collision damage</comment>
-    <float32 name="Apply Collision Damage Scale" offset="0x118" visible="true"  tooltip="0 means 1. 1 is standard scale. Some things may want to apply more damage" />
+    <comment title="Applying Collision Damage">For things that want to cause more or less collision damage</comment>
+    <float32 name="Apply Collision Damage Scale" offset="0x118" visible="true" tooltip="0 means 1. 1 is standard scale. Some things may want to apply more damage" />
     <comment title="Game Collision Damage Parameters">0 - means take default value from globals.globals</comment>
     <rangef name="Game Acceleration" offset="0x11C" visible="true" tooltip="0-oo" />
     <rangef name="Game Scale" offset="0x124" visible="true" tooltip="0-1" />
@@ -179,17 +214,22 @@
     <int16 name="HUD Text Message Index" offset="0x13C" visible="true" />
     <int16 name="Unknown" offset="0x13E" visible="false" />
     <tagblock name="Attachments" offset="0x140" visible="true" elementSize="0x48">
-        <!-- TODO (Dragon): test these-->
-        <comment title="NEEDS TESTING">theres a few things here like Change Color or Secondary Scale that need testing to find</comment>
         <tagRef name="Type" offset="0x0" visible="true" />
         <ascii name="Marker" offset="0x10" length="0x1C" visible="true" />
         <stringid name="Marker" offset="0x2C" visible="true" />
-        <undefined name="Unknown" offset="0x30" visible="true" />
-        <undefined name="Unknown" offset="0x34" visible="true" />
+        <undefined name="Unknown" offset="0x30" visible="false" />
+        <enum16 name="Change Color" offset="0x34" visible="true">
+            <option name="None" value="0x0" />
+            <option name="Primary" value="0x1" />
+            <option name="Secondary" value="0x2" />
+            <option name="Tertiary" value="0x3" />
+            <option name="Quaternary" value="0x4" />
+        </enum16>
+        <int16 name="Unknown" offset="0x36" visible="false" />
         <stringid name="Primary Scale" offset="0x38" visible="true" />
-        <undefined name="Unknown" offset="0x3C" visible="true" />
-        <undefined name="Unknown" offset="0x40" visible="true" />
-        <undefined name="Unknown" offset="0x44" visible="true" />
+        <stringid name="Sceondary Scale" offset="0x3C" visible="true" />
+        <undefined name="Unknown" offset="0x40" visible="false" />
+        <undefined name="Unknown" offset="0x44" visible="false" />
     </tagblock>
     <tagblock name="Widgets" offset="0x14C" visible="true" elementSize="0x20">
         <tagRef name="Type" offset="0x0" visible="true" />
@@ -198,7 +238,7 @@
         <undefined name="Unknown" offset="0x18" visible="false" />
         <undefined name="Unknown" offset="0x1C" visible="false" />
     </tagblock>
-    <!-- TODO (Dragon): this tag block might have a different layout, but its unused so idk -->
+    <!-- unused -->
     <tagblock name="Old Functions" offset="0x158" visible="false" elementSize="0x50">
         <undefined name="Unknown" offset="0x0" visible="false" />
         <undefined name="Unknown" offset="0x4" visible="false" />
@@ -254,7 +294,7 @@
             <float32 name="Weight" offset="0x0" visible="true" />
             <colorf name="Color Lower Bound" offset="0x4" alpha="false" visible="true" />
             <colorf name="Color Upper Bound" offset="0x10" alpha="false" visible="true" />
-            <stringid name="Variant Name" offset="0x1C" visible="true" />
+            <stringid name="Variant Name" offset="0x1C" visible="true" tooltip="if empty, may be used by any model variant" />
         </tagblock>
         <tagblock name="Functions" offset="0x2C" visible="true" elementSize="0x28">
             <undefined name="Unknown" offset="0x0" visible="false" />
@@ -291,10 +331,10 @@
     </flags32>
     <int16 name="Old Message Index" offset="0x180" visible="true" />
     <int16 name="Sort Order" offset="0x182" visible="true" />
-	<float32 name="Multiplayer On-Ground Scale" offset="0x184" visible="true" />
-	<float32 name="Campaign On-Ground Scale" offset="0x188" visible="true" />
-	<stringid name="Pickup Message" offset="0x18C" visible="true" />
-	<stringid name="Swap Message" offset="0x190" visible="true" />
+    <float32 name="Multiplayer On-Ground Scale" offset="0x184" visible="true" />
+    <float32 name="Campaign On-Ground Scale" offset="0x188" visible="true" />
+    <stringid name="Pickup Message" offset="0x18C" visible="true" />
+    <stringid name="Swap Message" offset="0x190" visible="true" />
     <stringid name="Pickup or Dual Wield Message" offset="0x194" visible="true" />
     <stringid name="Swap or Dual Wield Message" offset="0x198" visible="true" />
     <stringid name="Dual Wield Only Message" offset="0x19C" visible="true" />
@@ -303,81 +343,81 @@
     <stringid name="Plural Quantity Message" offset="0x1A8" visible="true" />
     <stringid name="Switch-To Message" offset="0x1AC" visible="true" />
     <stringid name="Switch-To From AI Message" offset="0x1B0" visible="true" />
-	<undefined name="Unknown" offset="0x1B4" visible="false" />
-	<undefined name="Unknown" offset="0x1B8" visible="false" />
-	<undefined name="Unknown" offset="0x1BC" visible="false" />
-	<undefined name="Unknown" offset="0x1C0" visible="false" />
-	<undefined name="Unknown" offset="0x1C4" visible="false" />
-	<undefined name="Unknown" offset="0x1C8" visible="false" />
-	<undefined name="Unknown" offset="0x1CC" visible="false" />
-	<undefined name="Unknown" offset="0x1D0" visible="false" />
-	<undefined name="Unknown" offset="0x1D4" visible="false" />
-	<undefined name="Unknown" offset="0x1D8" visible="false" />
-	<undefined name="Unknown" offset="0x1DC" visible="false" />
-	<undefined name="Unknown" offset="0x1E0" visible="false" />
-	<undefined name="Unknown" offset="0x1E4" visible="false" />
-	<undefined name="Unknown" offset="0x1E8" visible="false" />
-	<undefined name="Unknown" offset="0x1EC" visible="false" />
-	<undefined name="Unknown" offset="0x1F0" visible="false" />
-	<undefined name="Unknown" offset="0x1F4" visible="false" />
-	<undefined name="Unknown" offset="0x1F8" visible="false" />
-	<undefined name="Unknown" offset="0x1FC" visible="false" />
-	<undefined name="Unknown" offset="0x200" visible="false" />
-	<undefined name="Unknown" offset="0x204" visible="false" />
-	<undefined name="Unknown" offset="0x208" visible="false" />
-	<undefined name="Unknown" offset="0x20C" visible="false" />
-	<undefined name="Unknown" offset="0x210" visible="false" />
-	<undefined name="Unknown" offset="0x214" visible="false" />
-	<undefined name="Unknown" offset="0x218" visible="false" />
-	<undefined name="Unknown" offset="0x21C" visible="false" />
-	<undefined name="Unknown" offset="0x220" visible="false" />
-	<undefined name="Unknown" offset="0x224" visible="false" />
-	<undefined name="Unknown" offset="0x228" visible="false" />
-	<undefined name="Unknown" offset="0x22C" visible="false" />
-	<undefined name="Unknown" offset="0x230" visible="false" />
-	<undefined name="Unknown" offset="0x234" visible="false" />
-	<undefined name="Unknown" offset="0x238" visible="false" />
-	<undefined name="Unknown" offset="0x23C" visible="false" />
-	<undefined name="Unknown" offset="0x240" visible="false" />
-	<undefined name="Unknown" offset="0x244" visible="false" />
-	<tagRef name="Unknown" offset="0x248" visible="true" />
-	<tagRef name="Collision Sound" offset="0x258" visible="true" />
+    <undefined name="Unknown" offset="0x1B4" visible="false" />
+    <undefined name="Unknown" offset="0x1B8" visible="false" />
+    <undefined name="Unknown" offset="0x1BC" visible="false" />
+    <undefined name="Unknown" offset="0x1C0" visible="false" />
+    <undefined name="Unknown" offset="0x1C4" visible="false" />
+    <undefined name="Unknown" offset="0x1C8" visible="false" />
+    <undefined name="Unknown" offset="0x1CC" visible="false" />
+    <undefined name="Unknown" offset="0x1D0" visible="false" />
+    <undefined name="Unknown" offset="0x1D4" visible="false" />
+    <undefined name="Unknown" offset="0x1D8" visible="false" />
+    <undefined name="Unknown" offset="0x1DC" visible="false" />
+    <undefined name="Unknown" offset="0x1E0" visible="false" />
+    <undefined name="Unknown" offset="0x1E4" visible="false" />
+    <undefined name="Unknown" offset="0x1E8" visible="false" />
+    <undefined name="Unknown" offset="0x1EC" visible="false" />
+    <undefined name="Unknown" offset="0x1F0" visible="false" />
+    <undefined name="Unknown" offset="0x1F4" visible="false" />
+    <undefined name="Unknown" offset="0x1F8" visible="false" />
+    <undefined name="Unknown" offset="0x1FC" visible="false" />
+    <undefined name="Unknown" offset="0x200" visible="false" />
+    <undefined name="Unknown" offset="0x204" visible="false" />
+    <undefined name="Unknown" offset="0x208" visible="false" />
+    <undefined name="Unknown" offset="0x20C" visible="false" />
+    <undefined name="Unknown" offset="0x210" visible="false" />
+    <undefined name="Unknown" offset="0x214" visible="false" />
+    <undefined name="Unknown" offset="0x218" visible="false" />
+    <undefined name="Unknown" offset="0x21C" visible="false" />
+    <undefined name="Unknown" offset="0x220" visible="false" />
+    <undefined name="Unknown" offset="0x224" visible="false" />
+    <undefined name="Unknown" offset="0x228" visible="false" />
+    <undefined name="Unknown" offset="0x22C" visible="false" />
+    <undefined name="Unknown" offset="0x230" visible="false" />
+    <undefined name="Unknown" offset="0x234" visible="false" />
+    <undefined name="Unknown" offset="0x238" visible="false" />
+    <undefined name="Unknown" offset="0x23C" visible="false" />
+    <undefined name="Unknown" offset="0x240" visible="false" />
+    <undefined name="Unknown" offset="0x244" visible="false" />
+    <tagRef name="Unknown" offset="0x248" visible="true" />
+    <tagRef name="Collision Sound" offset="0x258" visible="true" />
     <!-- TODO (Dragon): test this big ol block-->
     <comment title="NEEDS TESTING">probably has Predicted Bitmaps block and Detonation Delay. might not have Detonation Damage Effect</comment>
-	<undefined name="Unknown" offset="0x268" visible="true" />
-	<undefined name="Unknown" offset="0x26C" visible="true" />
-	<undefined name="Unknown" offset="0x270" visible="true" />
-	<undefined name="Unknown" offset="0x274" visible="true" />
-	<undefined name="Unknown" offset="0x278" visible="true" />
-	<undefined name="Unknown" offset="0x27C" visible="true" />
-	<undefined name="Unknown" offset="0x280" visible="true" />
-	<undefined name="Unknown" offset="0x284" visible="true" />
-	<undefined name="Unknown" offset="0x288" visible="true" />
-	<undefined name="Unknown" offset="0x28C" visible="true" />
-	<undefined name="Unknown" offset="0x290" visible="true" />
-	<undefined name="Unknown" offset="0x294" visible="true" />
-	<undefined name="Unknown" offset="0x298" visible="true" />
-	<undefined name="Unknown" offset="0x29C" visible="true" />
-	<undefined name="Unknown" offset="0x2A0" visible="true" />
-	<undefined name="Unknown" offset="0x2A4" visible="true" />
-	<undefined name="Unknown" offset="0x2A8" visible="true" />
-	<undefined name="Unknown" offset="0x2AC" visible="true" />
-	<undefined name="Unknown" offset="0x2B0" visible="true" />
-	<undefined name="Unknown" offset="0x2B4" visible="true" />
-	<undefined name="Unknown" offset="0x2B8" visible="true" />
-	<undefined name="Unknown" offset="0x2BC" visible="true" />
-	<undefined name="Unknown" offset="0x2C0" visible="true" />
-	<undefined name="Unknown" offset="0x2C4" visible="true" />
-	<undefined name="Unknown" offset="0x2C8" visible="true" />
-	<undefined name="Unknown" offset="0x2CC" visible="true" />
-	<undefined name="Unknown" offset="0x2D0" visible="true" />
-	<undefined name="Unknown" offset="0x2D4" visible="true" />
-	<undefined name="Unknown" offset="0x2D8" visible="true" />
-	<undefined name="Unknown" offset="0x2DC" visible="true" />
-	<float32 name="Detonation Delay Min" offset="0x2E0" visible="true" />
-	<float32 name="Detonation Delay Max" offset="0x2E4" visible="true" />
-	<tagRef name="Detonating Effect" offset="0x2E8" visible="true" />
-	<tagRef name="Detonation Effect" offset="0x2F8" visible="true" />
+    <undefined name="Unknown" offset="0x268" visible="true" />
+    <undefined name="Unknown" offset="0x26C" visible="true" />
+    <undefined name="Unknown" offset="0x270" visible="true" />
+    <undefined name="Unknown" offset="0x274" visible="true" />
+    <undefined name="Unknown" offset="0x278" visible="true" />
+    <undefined name="Unknown" offset="0x27C" visible="true" />
+    <undefined name="Unknown" offset="0x280" visible="true" />
+    <undefined name="Unknown" offset="0x284" visible="true" />
+    <undefined name="Unknown" offset="0x288" visible="true" />
+    <undefined name="Unknown" offset="0x28C" visible="true" />
+    <undefined name="Unknown" offset="0x290" visible="true" />
+    <undefined name="Unknown" offset="0x294" visible="true" />
+    <undefined name="Unknown" offset="0x298" visible="true" />
+    <undefined name="Unknown" offset="0x29C" visible="true" />
+    <undefined name="Unknown" offset="0x2A0" visible="true" />
+    <undefined name="Unknown" offset="0x2A4" visible="true" />
+    <undefined name="Unknown" offset="0x2A8" visible="true" />
+    <undefined name="Unknown" offset="0x2AC" visible="true" />
+    <undefined name="Unknown" offset="0x2B0" visible="true" />
+    <undefined name="Unknown" offset="0x2B4" visible="true" />
+    <undefined name="Unknown" offset="0x2B8" visible="true" />
+    <undefined name="Unknown" offset="0x2BC" visible="true" />
+    <undefined name="Unknown" offset="0x2C0" visible="true" />
+    <undefined name="Unknown" offset="0x2C4" visible="true" />
+    <undefined name="Unknown" offset="0x2C8" visible="true" />
+    <undefined name="Unknown" offset="0x2CC" visible="true" />
+    <undefined name="Unknown" offset="0x2D0" visible="true" />
+    <undefined name="Unknown" offset="0x2D4" visible="true" />
+    <undefined name="Unknown" offset="0x2D8" visible="true" />
+    <undefined name="Unknown" offset="0x2DC" visible="true" />
+    <float32 name="Detonation Delay Min" offset="0x2E0" visible="true" />
+    <float32 name="Detonation Delay Max" offset="0x2E4" visible="true" />
+    <tagRef name="Detonating Effect" offset="0x2E8" visible="true" />
+    <tagRef name="Detonation Effect" offset="0x2F8" visible="true" />
     <comment title="EQUIPMENT" />
     <enum16 name="Powerup Type" offset="0x308" visible="true">
         <option name="None" value="0x0" />
