@@ -85,18 +85,18 @@
         <bit name="Bit 30" index="30" />
         <bit name="Bit 31" index="31" />
     </flags32>
-    <undefined name="Unknown" offset="0x2C" visible="true" />
-    <undefined name="Unknown" offset="0x30" visible="true" />
-    <undefined name="Unknown" offset="0x34" visible="true" />
-    <undefined name="Unknown" offset="0x38" visible="true" />
-    <undefined name="Unknown" offset="0x3C" visible="true" />
-    <undefined name="Unknown" offset="0x40" visible="true" />
-    <undefined name="Unknown" offset="0x44" visible="true" />
-    <undefined name="Unknown" offset="0x48" visible="true" />
-    <undefined name="Unknown" offset="0x4C" visible="true" />
-    <undefined name="Unknown" offset="0x50" visible="true" />
-    <undefined name="Unknown" offset="0x54" visible="true" />
-    <undefined name="Unknown" offset="0x58" visible="true" />
+    <undefined name="Unknown" offset="0x2C" visible="false" />
+    <undefined name="Unknown" offset="0x30" visible="false" />
+    <undefined name="Unknown" offset="0x34" visible="false" />
+    <undefined name="Unknown" offset="0x38" visible="false" />
+    <undefined name="Unknown" offset="0x3C" visible="false" />
+    <undefined name="Unknown" offset="0x40" visible="false" />
+    <undefined name="Unknown" offset="0x44" visible="false" />
+    <undefined name="Unknown" offset="0x48" visible="false" />
+    <undefined name="Unknown" offset="0x4C" visible="false" />
+    <undefined name="Unknown" offset="0x50" visible="false" />
+    <undefined name="Unknown" offset="0x54" visible="false" />
+    <undefined name="Unknown" offset="0x58" visible="false" />
     <stringid name="Default Model Variant" offset="0x5C" visible="true" />
     <tagRef name="Model" offset="0x60" visible="true" />
     <tagRef name="Crate Object" offset="0x70" visible="true" />
@@ -104,24 +104,24 @@
     <tagRef name="Modifier Shader" offset="0x90" visible="true" />
     <tagRef name="Creation Effect" offset="0xA0" visible="true" />
     <tagRef name="Material Effects" offset="0xB0" visible="true" />
-    <undefined name="Unknown" offset="0xC0" visible="true" />
-    <undefined name="Unknown" offset="0xC4" visible="true" />
-    <undefined name="Unknown" offset="0xC8" visible="true" />
-    <undefined name="Unknown" offset="0xCC" visible="true" />
-    <undefined name="Unknown" offset="0xD0" visible="true" />
-    <undefined name="Unknown" offset="0xD4" visible="true" />
-    <undefined name="Unknown" offset="0xD8" visible="true" />
-    <undefined name="Unknown" offset="0xDC" visible="true" />
-    <undefined name="Unknown" offset="0xE0" visible="true" />
-    <undefined name="Unknown" offset="0xE4" visible="true" />
-    <undefined name="Unknown" offset="0xE8" visible="true" />
-    <undefined name="Unknown" offset="0xEC" visible="true" />
-    <undefined name="Unknown" offset="0xF0" visible="true" />
-    <undefined name="Unknown" offset="0xF4" visible="true" />
-    <undefined name="Unknown" offset="0xF8" visible="true" />
-    <undefined name="Unknown" offset="0xFC" visible="true" />
-    <undefined name="Unknown" offset="0x100" visible="true" />
-    <undefined name="Unknown" offset="0x104" visible="true" />
+    <undefined name="Unknown" offset="0xC0" visible="false" />
+    <undefined name="Unknown" offset="0xC4" visible="false" />
+    <undefined name="Unknown" offset="0xC8" visible="false" />
+    <undefined name="Unknown" offset="0xCC" visible="false" />
+    <undefined name="Unknown" offset="0xD0" visible="false" />
+    <undefined name="Unknown" offset="0xD4" visible="false" />
+    <undefined name="Unknown" offset="0xD8" visible="false" />
+    <undefined name="Unknown" offset="0xDC" visible="false" />
+    <undefined name="Unknown" offset="0xE0" visible="false" />
+    <undefined name="Unknown" offset="0xE4" visible="false" />
+    <undefined name="Unknown" offset="0xE8" visible="false" />
+    <undefined name="Unknown" offset="0xEC" visible="false" />
+    <undefined name="Unknown" offset="0xF0" visible="false" />
+    <undefined name="Unknown" offset="0xF4" visible="false" />
+    <undefined name="Unknown" offset="0xF8" visible="false" />
+    <undefined name="Unknown" offset="0xFC" visible="false" />
+    <undefined name="Unknown" offset="0x100" visible="false" />
+    <undefined name="Unknown" offset="0x104" visible="false" />
     <comment title="Export To Functions" />
     <enum16 name="A In" offset="0x108" visible="true">
         <option name="None" value="0x0" />
@@ -211,8 +211,8 @@
         <option name="Alive" value="0x12" />
         <option name="Compass" value="0x13" />
     </enum16>
-    <undefined name="Unknown" offset="0x110" visible="true" />
-    <undefined name="Unknown" offset="0x114" visible="true" />
+    <undefined name="Unknown" offset="0x110" visible="false" />
+    <undefined name="Unknown" offset="0x114" visible="false" />
     <comment title="Applying Collision Damage">for things that want to cause more or less collision damage</comment>
     <float32 name="Apply Collision Damage Scale" offset="0x118" visible="true" tooltip="0 means 1. 1 is standard scale. Some things may want to apply more damage" />
     <comment title="Game Collision Damage Parameters">0 - means take default value from globals.globals</comment>
@@ -224,9 +224,10 @@
     <int16 name="HUD Text Message Index" offset="0x13C" visible="true" />
     <int16 name="Unknown" offset="0x13E" visible="false" />
     <tagblock name="Attachments" offset="0x140" visible="true" elementSize="0x48">
+        <!-- TODO (Dragon): test these -->
+        <comment title="NEEDS TESTING">not sure if attachments block is right</comment>
         <tagRef name="Type" offset="0x0" visible="true" />
         <ascii name="Marker" offset="0x10" length="0x1C" visible="true" />
-        <!-- TODO (Dragon): need to look at more examples but idk if its the ascii then stringid format -->
         <stringid name="Marker" offset="0x2C" visible="true" />
         <enum16 name="Primary Scale" offset="0x30" visible="true">
             <option name="None" value="0x0" />
@@ -434,14 +435,34 @@
         <ascii name="Usage" offset="0x148" length="0x20" visible="true" />
     </tagblock>
     <tagblock name="Change Colors" offset="0x164" visible="true" elementSize="0x38">
-        <undefined name="Unknown" offset="0x0" visible="true" />
-        <undefined name="Unknown" offset="0x4" visible="true" />
-        <undefined name="Unknown" offset="0x8" visible="true" />
-        <undefined name="Unknown" offset="0xC" visible="true" />
-        <undefined name="Unknown" offset="0x10" visible="true" />
-        <undefined name="Unknown" offset="0x14" visible="true" />
-        <undefined name="Unknown" offset="0x18" visible="true" />
-        <undefined name="Unknown" offset="0x1C" visible="true" />
+        <enum16 name="Darken By" offset="0x0" visible="true">
+            <option name="None" value="0x0" />
+            <option name="A In" value="0x1" />
+            <option name="B In" value="0x2" />
+            <option name="C In" value="0x3" />
+            <option name="D In" value="0x4" />
+            <option name="A Out" value="0x5" />
+            <option name="B Out" value="0x6" />
+            <option name="C Out" value="0x7" />
+            <option name="D Out" value="0x8" />
+        </enum16>
+        <enum16 name="Scale By" offset="0x2" visible="true">
+            <option name="None" value="0x0" />
+            <option name="A In" value="0x1" />
+            <option name="B In" value="0x2" />
+            <option name="C In" value="0x3" />
+            <option name="D In" value="0x4" />
+            <option name="A Out" value="0x5" />
+            <option name="B Out" value="0x6" />
+            <option name="C Out" value="0x7" />
+            <option name="D Out" value="0x8" />
+        </enum16>
+        <flags32 name="Scale Flags" offset="0x4" visible="true">
+            <bit name="Blend In HSV" index="0" tooltip="blends colors in hsv rather than rgb space" />
+            <bit name="...More Colors" index="1" tooltip="blends colors through more hues (goes the long way around the color wheel)" />
+        </flags32>
+        <colorf name="Color Lower Bound" offset="0x8" alpha="false" visible="true" />
+        <colorf name="Color Upper Bound" offset="0x14" alpha="false" visible="true" />
         <tagblock name="Initial Permutations" offset="0x20" visible="true" elementSize="0x20">
             <float32 name="Weight" offset="0x0" visible="true" />
             <colorf name="Color Lower Bound" offset="0x4" alpha="false" visible="true" />
@@ -592,7 +613,7 @@
     <vector3 name="Acceleration Range" offset="0x200" visible="true" />
     <float32 name="Acceleration Action Scale" offset="0x20C" visible="true" />
     <float32 name="Acceleration Attach Scale" offset="0x210" visible="true" />
-    <undefined name="Unknown" offset="0x214" visible="true" />
+    <undefined name="Unknown" offset="0x214" visible="false" />
     <comment title="Pings" />
     <float32 name="Soft Ping Threshold" offset="0x218" visible="true" />
     <float32 name="Soft Ping Interrupt Time" offset="0x21C" visible="true" />
@@ -618,7 +639,7 @@
     <stringid name="Right Hand Node" offset="0x278" visible="true" tooltip="where the primary weapon is attached" />
     <stringid name="Left Hand Node" offset="0x27C" visible="true" tooltip="where the seconday weapon is attached (for dual-pistol modes)" />
     <stringid name="Preferred Gun Node" offset="0x280" visible="true" tooltip="if found, use this gun marker" />
-    <undefined name="Unknown" offset="0x284" visible="true" />
+    <undefined name="Unknown" offset="0x284" visible="false" />
     <tagRef name="Melee Damage" offset="0x288" visible="true" />
     <enum16 name="Motion Sensor Blip Size" offset="0x298" visible="true">
         <option name="Medium" value="0x0" />
@@ -695,11 +716,11 @@
         <undefined name="Unknown" offset="0x28" visible="false" />
         <undefined name="Unknown" offset="0x2C" visible="false" />
     </tagblock>
-    <!-- TODO (Dragon) figure this out-->
-    <comment title="NEEDS TESTING">probably actually the dialogue variants block</comment>
-    <undefined name="Unknown" offset="0x2B4" visible="true" />
-    <undefined name="Unknown" offset="0x2B8" visible="true" />
-    <undefined name="Unknown" offset="0x2BC" visible="true" />
+    <tagblock name="Dialogue Variants" offset="0x2B4" visible="true" elementSize="0x14">
+        <int16 name="Variant Number" offset="0x0" visible="true" tooltip="variant number to use this dialogue with (must match the suffix in the permutations on the unit's model)" />
+        <int16 name="Unknown" offset="0x2" visible="false" />
+        <tagRef name="Dialogue" offset="0x4" visible="true" />
+    </tagblock>
     <float32 name="Grenade Velocity" offset="0x2C0" visible="true" />
     <enum16 name="Grenade Type" offset="0x2C4" visible="true">
         <option name="Human Fragmentation" value="0x0" />
@@ -786,12 +807,10 @@
         </enum16>
         <int16 name="Boarding Seat Index" offset="0x76" visible="true" />
         <float32 name="Listener Interpolation Factor" offset="0x78" visible="true" tooltip="how far to interpolate listener position from camera to occupant's head" />
-        <comment title="Speed Dependent Turn Rates">
-            when the unit velocity is 0, the yaw/pitch rates are the left values at [max speed reference], the yaw/pitch rates are the right values.
-            the max speed reference is what the code uses to generate a clamped speed from 0..1
-            the exponent controls how midrange speeds are interpreted.
-            IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are scaled from low --&gt; high
-        </comment>
+        <comment title="Speed Dependent Turn Rates">when the unit velocity is 0, the yaw/pitch rates are the left values at [max speed reference], the yaw/pitch rates are the right values.
+the max speed reference is what the code uses to generate a clamped speed from 0..1
+the exponent controls how midrange speeds are interpreted.
+IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are scaled from low --&gt; high</comment>
         <rangef name="Yaw Rate Bounds" offset="0x7C" visible="true" />
         <rangef name="Pitch Rate Bounds" offset="0x84" visible="true" />
         <float32 name="Minimum Speed Reference" offset="0x8C" visible="true" tooltip="Initial t is computed from velocity/(max speed - min speed)" />
