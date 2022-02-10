@@ -12,7 +12,7 @@
     <enum16 name="Class" offset="0x4" visible="true">
         <option name="projectile_impact" value="0x0" />
         <option name="projectile_detonation" value="0x1" />
-        <option name="unused" value="0x2" />
+        <option name="projectile_flyby" value="0x2" />
         <option name="unused" value="0x3" />
         <option name="weapon_fire" value="0x4" />
         <option name="weapon_ready" value="0x5" />
@@ -21,8 +21,8 @@
         <option name="weapon_charge" value="0x8" />
         <option name="weapon_overheat" value="0x9" />
         <option name="weapon_idle" value="0xA" />
-        <option name="unused" value="0xB" />
-        <option name="unused" value="0xC" />
+        <option name="weapon_melee" value="0xB" />
+        <option name="weapon_animation" value="0xC" />
         <option name="object_impacts" value="0xD" />
         <option name="particle_impacts" value="0xE" />
         <option name="slow_particle_impacts" value="0xF" />
@@ -30,7 +30,7 @@
         <option name="unused" value="0x11" />
         <option name="unit_footsteps" value="0x12" />
         <option name="unit_dialog" value="0x13" />
-        <option name="unused" value="0x14" />
+        <option name="unit_animation" value="0x14" />
         <option name="unused" value="0x15" />
         <option name="vehicle_collision" value="0x16" />
         <option name="vehicle_engine" value="0x17" />
@@ -46,8 +46,8 @@
         <option name="ambient_nature" value="0x21" />
         <option name="ambient_machinery" value="0x22" />
         <option name="ambient_computers" value="0x23" />
-        <option name="unused" value="0x24" />
-        <option name="unused" value="0x25" />
+        <option name="huge_ass" value="0x24" />
+        <option name="object_looping" value="0x25" />
         <option name="unused" value="0x26" />
         <option name="first_person_damage" value="0x27" />
         <option name="unused" value="0x28" />
@@ -58,7 +58,7 @@
         <option name="scripted_effect" value="0x2D" />
         <option name="scripted_dialog_other" value="0x2E" />
         <option name="scripted_dialog_force_unspatialized" value="0x2F" />
-        <option name="unused" value="0x30" />
+        <option name="cinematic_dialog" value="0x30" />
         <option name="unused" value="0x31" />
         <option name="game_event" value="0x32" />
     </enum16>
@@ -66,11 +66,12 @@
         <option name="22kHz" value="0x0" />
         <option name="44kHz" value="0x1" />
     </enum16>
-	<undefined name="Unknown" offset="0x8" visible="true" />
+    <int16 name="Unknown" offset="0x8" visible="true" />
+    <int16 name="Unknown" offset="0xA" visible="true" />
 	<undefined name="Minimum Distance" offset="0xC" visible="true" />
 	<undefined name="Maximum Distance" offset="0x10" visible="true" />
 	<undefined name="Skip Fraction" offset="0x14" visible="true" />
-	<undefined name="Ben Per Second" offset="0x18" visible="true" />
+	<undefined name="Bend Per Second" offset="0x18" visible="true" />
 	<float32 name="Gain Base" offset="0x1C" visible="true" />
 	<float32 name="Gain Variance" offset="0x20" visible="true" />
 	<rangef name="Random Pitch Bounds" offset="0x24" visible="true" />
@@ -88,15 +89,26 @@
 	<rangef name="Gain Modifier" offset="0x48" visible="true" />
 	<rangef name="Pitch Modifier" offset="0x50" visible="true" />
 	<rangef name="Skip Fraction Modifier" offset="0x58" visible="true" />
-	<undefined name="Unknown" offset="0x60" visible="true" />
-	<tagblock name="Unknown" offset="0x64" visible="true" elementSize="0x10">
-		<undefined name="Unknown" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="true" />
-		<undefined name="Unknown" offset="0x8" visible="true" />
-		<undefined name="Unknown" offset="0xC" visible="true" />
+	<comment title="Import Properties" />
+	<enum16 name="Encoding" offset="0x60" visible="true">
+		<option name="Mono" value="0x0" />
+		<option name="Stereo" value="0x1" />
+	</enum16>
+	<enum16 name="Compression" offset="0x62" visible="true">
+		<option name="None" value="0x0" />
+		<option name="Xbox ADPCM" value="0x1" />
+		<option name="IMA ADPCM" value="0x2" />
+		<option name="OGG" value="0x3" />
+	</enum16>
+	<tagblock name="Promotion Rules" offset="0x64" visible="true" elementSize="0x10">
+		<int16 name="Pitch Range index" offset="0x0" visible="true" />
+		<int16 name="Maximum Playing Count" offset="0x2" visible="true" />
+		<float32 name="Suppression Time" offset="0x4" visible="true" tooltip="time from when first permutation plays to when another sound from an equal or lower promotion can play" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0x70" visible="true" elementSize="0x4">
-		<undefined name="Unknown" offset="0x0" visible="true" />
+	<tagblock name="Runtime Promotion Timers" offset="0x70" visible="true" elementSize="0x4">
+		<int32 name="Timer" offset="0x0" visible="true" />
 	</tagblock>
 	<undefined name="Unknown" offset="0x7C" visible="true" />
 	<undefined name="Unknown" offset="0x80" visible="true" />
@@ -105,7 +117,7 @@
 	<undefined name="Unknown" offset="0x8C" visible="true" />
 	<undefined name="Unknown" offset="0x90" visible="true" />
 	<tagblock name="Pitch Ranges" offset="0x94" visible="true" elementSize="0x50">
-		<undefined name="Unknown" offset="0x0" visible="true" />
+		<stringid name="Name" offset="0x0" visible="true" tooltip="the name of the imported pitch range directory" />
 		<undefined name="Unknown" offset="0x4" visible="true" />
 		<undefined name="Unknown" offset="0x8" visible="true" />
 		<undefined name="Unknown" offset="0xC" visible="true" />
@@ -123,28 +135,29 @@
 		<undefined name="Unknown" offset="0x3C" visible="true" />
 		<undefined name="Unknown" offset="0x40" visible="true" />
 		<tagblock name="Permutations" offset="0x44" visible="true" elementSize="0x64">
-			<stringid name="Name" offset="0x0" visible="true" />
-			<undefined name="Unknown" offset="0x4" visible="true" />
-			<undefined name="Unknown" offset="0x8" visible="true" />
-			<undefined name="Unknown" offset="0xC" visible="true" />
+			<stringid name="Name" offset="0x0" visible="true" tooltip="name of the file from which this sample was imported" />
+			<float32 name="Skip Fraction" offset="0x4" visible="true" tooltip="fraction of requests to play this permutation that are ignored (a different permutation is selected.)" />
+			<float32 name="Gain" offset="0x8" visible="true" tooltip="fraction of recorded volume to play at." />
+			<int32 name="Sample Size" offset="0xC" visible="true" />
 			<undefined name="Unknown" offset="0x10" visible="true" />
 			<undefined name="Unknown" offset="0x14" visible="true" />
 			<undefined name="Unknown" offset="0x18" visible="true" />
 			<undefined name="Unknown" offset="0x1C" visible="true" />
 			<dataref name="Unknown" offset="0x20" visible="true" />
 			<tagblock name="Permutation Chunks" offset="0x34" visible="true" elementSize="0x10">
-				<undefined name="Unknown" offset="0x0" visible="true" />
-				<undefined name="Unknown" offset="0x4" visible="true" />
-				<undefined name="Unknown" offset="0x8" visible="true" />
-				<undefined name="Runtime Index" offset="0xC" visible="true" />
+				<uint32 name="Offset" offset="0x0" visible="true" />
+				<int32 name="Size" offset="0x4" visible="true" />
+				<tagref name="Tag" offset="0x8" withGroup="false" visible="true" />
+				<int32 name="Runtime Index" offset="0xC" visible="true" />
 			</tagblock>
-			<undefined name="Unknown" offset="0x40" visible="true" />
+			<int32 name="Unknown" offset="0x40" visible="true" />
 			<dataref name="Unknown" offset="0x44" visible="true" />
 			<undefined name="Unknown" offset="0x58" visible="true" />
 			<undefined name="Unknown" offset="0x5C" visible="true" />
 			<undefined name="Unknown" offset="0x60" visible="true" />
 		</tagblock>
 	</tagblock>
+	<!--likely platform parameters but idk what tag uses it-->
 	<tagblock name="Unknown" offset="0xA0" visible="true" elementSize="0x54">
 		<undefined name="Unknown" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x4" visible="true" />

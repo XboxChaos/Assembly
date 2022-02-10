@@ -66,11 +66,12 @@
         <option name="22kHz" value="0x0" />
         <option name="44kHz" value="0x1" />
     </enum16>
-    <undefined name="Unknown" offset="0x8" visible="true" />
+    <int16 name="Unknown" offset="0x8" visible="true" />
+    <int16 name="Unknown" offset="0xA" visible="true" />
     <undefined name="Minimum Distance" offset="0xC" visible="true" />
     <undefined name="Maximum Distance" offset="0x10" visible="true" />
     <undefined name="Skip Fraction" offset="0x14" visible="true" />
-    <undefined name="Ben Per Second" offset="0x18" visible="true" />
+    <undefined name="Bend Per Second" offset="0x18" visible="true" />
     <float32 name="Gain Base" offset="0x1C" visible="true" />
     <float32 name="Gain Variance" offset="0x20" visible="true" />
     <rangef name="Random Pitch Bounds" offset="0x24" visible="true" />
@@ -79,31 +80,42 @@
     <float32 name="Outer Cone Gain" offset="0x34" visible="true" />
 	<undefined name="Unknown" offset="0x38" visible="true" />
 	<undefined name="Unknown" offset="0x3C" visible="true" />
-	<undefined name="Unknown" offset="0x40" visible="true" />
-	<undefined name="Unknown" offset="0x44" visible="true" />
-	<undefined name="Unknown" offset="0x48" visible="true" />
-	<undefined name="Unknown" offset="0x4C" visible="true" />
-	<undefined name="Unknown" offset="0x50" visible="true" />
-	<tagblock name="Unknown" offset="0x54" visible="true" elementSize="0x10">
-		<undefined name="Unknown" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="true" />
-		<undefined name="Unknown" offset="0x8" visible="true" />
-		<undefined name="Unknown" offset="0xC" visible="true" />
+	<float32 name="Unknown" offset="0x40" visible="true" />
+	<float32 name="Unknown" offset="0x44" visible="true" />
+	<float32 name="Unknown" offset="0x48" visible="true" />
+	<float32 name="Unknown" offset="0x4C" visible="true" />
+	<comment title="Import Properties" />
+	<enum16 name="Encoding" offset="0x50" visible="true">
+		<option name="Mono" value="0x0" />
+		<option name="Stereo" value="0x1" />
+	</enum16>
+	<enum16 name="Compression" offset="0x52" visible="true">
+		<option name="None" value="0x0" />
+		<option name="Xbox ADPCM" value="0x1" />
+		<option name="IMA ADPCM" value="0x2" />
+		<option name="OGG" value="0x3" />
+	</enum16>
+	<tagblock name="Promotion Rules" offset="0x54" visible="true" elementSize="0x10">
+		<int16 name="Pitch Range index" offset="0x0" visible="true" />
+		<int16 name="Maximum Playing Count" offset="0x2" visible="true" />
+		<float32 name="Suppression Time" offset="0x4" visible="true" tooltip="time from when first permutation plays to when another sound from an equal or lower promotion can play" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0x60" visible="true" elementSize="0x4">
-		<undefined name="Unknown" offset="0x0" visible="true" />
+	<tagblock name="Runtime Promotion Timers" offset="0x60" visible="true" elementSize="0x4">
+		<int32 name="Timer" offset="0x0" visible="true" />
 	</tagblock>
 	<undefined name="Unknown" offset="0x6C" visible="true" />
 	<undefined name="Unknown" offset="0x70" visible="true" />
 	<undefined name="Unknown" offset="0x74" visible="true" />
-	<undefined name="Unknown" offset="0x78" visible="true" />
+	<int32 name="Unknown" offset="0x78" visible="true" />
 	<undefined name="Unknown" offset="0x7C" visible="true" />
 	<undefined name="Unknown" offset="0x80" visible="true" />
 	<tagblock name="Pitch Ranges" offset="0x84" visible="true" elementSize="0x50">
-		<undefined name="Unknown" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="true" />
-		<undefined name="Unknown" offset="0x8" visible="true" />
-		<undefined name="Unknown" offset="0xC" visible="true" />
+		<stringid name="Name" offset="0x0" visible="true" tooltip="the name of the imported pitch range directory" />
+		<comment title="Pitch Control">these settings control what pitches this set of samples represents. if there is only one pitch range, all three values are ignored.</comment>
+		<float32 name="Natural Pitch" offset="0x4" visible="true" tooltip="the apparent pitch when these samples are played at their recorded pitch." />
+		<rangef name="Bend Bounds" offset="0x8" visible="true" tooltip="the range of pitches that will be represented using this sample. this should always contain the natural pitch." />
 		<undefined name="Unknown" offset="0x10" visible="true" />
 		<undefined name="Unknown" offset="0x14" visible="true" />
 		<undefined name="Unknown" offset="0x18" visible="true" />
@@ -118,25 +130,26 @@
 		<undefined name="Unknown" offset="0x3C" visible="true" />
 		<undefined name="Unknown" offset="0x40" visible="true" />
 		<tagblock name="Permutations" offset="0x44" visible="true" elementSize="0x58">
-			<undefined name="Unknown" offset="0x0" visible="true" />
-			<undefined name="Unknown" offset="0x4" visible="true" />
-			<undefined name="Unknown" offset="0x8" visible="true" />
-			<undefined name="Unknown" offset="0xC" visible="true" />
+			<stringid name="Name" offset="0x0" visible="true" tooltip="name of the file from which this sample was imported" />
+			<float32 name="Skip Fraction" offset="0x4" visible="true" tooltip="fraction of requests to play this permutation that are ignored (a different permutation is selected.)" />
+			<float32 name="Gain" offset="0x8" visible="true" tooltip="fraction of recorded volume to play at." />
+			<int32 name="Sample Size" offset="0xC" visible="true" />
 			<undefined name="Unknown" offset="0x10" visible="true" />
 			<undefined name="Unknown" offset="0x14" visible="true" />
 			<undefined name="Unknown" offset="0x18" visible="true" />
 			<undefined name="Unknown" offset="0x1C" visible="true" />
 			<dataref name="Unknown" offset="0x20" visible="true" />
 			<tagblock name="Permutation Chunks" offset="0x34" visible="true" elementSize="0x10">
-				<undefined name="Unknown" offset="0x0" visible="true" />
-				<undefined name="Unknown" offset="0x4" visible="true" />
-				<undefined name="Unknown" offset="0x8" visible="true" />
-				<undefined name="Unknown" offset="0xC" visible="true" />
+				<uint32 name="Offset" offset="0x0" visible="true" />
+				<int32 name="Size" offset="0x4" visible="true" />
+				<tagref name="Tag" offset="0x8" withGroup="false" visible="true" />
+				<int32 name="Runtime Index" offset="0xC" visible="true" />
 			</tagblock>
-			<undefined name="Unknown" offset="0x40" visible="true" />
+			<int32 name="Unknown" offset="0x40" visible="true" />
 			<dataref name="Unknown" offset="0x44" visible="true" />
 		</tagblock>
 	</tagblock>
+	<!--likely platform parameters-->
 	<undefined name="Unknown" offset="0x90" visible="true" />
 	<undefined name="Unknown" offset="0x94" visible="true" />
 	<undefined name="Unknown" offset="0x98" visible="true" />
