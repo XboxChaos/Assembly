@@ -107,6 +107,34 @@ namespace Blamite.Blam.FirstGen.Structures
 			var headerGroup = new FileSegmentGroup();
 			headerGroup.AddSegment(segmenter.WrapSegment(0, HeaderSize, 1, SegmentResizeOrigin.None));
 
+			//h2 alpha forcing this to be shoved in
+			if (values.HasInteger("string table count"))
+			{
+				StringIDCount = (int)values.GetInteger("string table count");
+				var sidDataSize = (int)values.GetInteger("string table size");
+				StringIDData = segmenter.WrapSegment((int)values.GetInteger("string table offset"), sidDataSize, 1,
+					SegmentResizeOrigin.End);
+				StringIDIndexTable = segmenter.WrapSegment((int)values.GetInteger("string index table offset"), StringIDCount * 4, 4,
+					SegmentResizeOrigin.End);
+
+				StringArea = new FileSegmentGroup();
+				if (values.HasInteger("string block offset"))
+					StringArea.AddSegment(segmenter.WrapSegment((int)values.GetInteger("string block offset"), StringIDCount * 0x80, 0x80,
+						SegmentResizeOrigin.End));
+				StringArea.AddSegment(StringIDIndexTable);
+				StringArea.AddSegment(StringIDData);
+
+				StringIDIndexTableLocation = SegmentPointer.FromOffset(StringIDIndexTable.Offset, StringArea);
+				StringIDDataLocation = SegmentPointer.FromOffset(StringIDData.Offset, StringArea);
+			}
+			else
+			{
+				//dummy
+				StringIDCount = 0;
+				StringIDData = _eofSegment;
+				StringIDIndexTable = _eofSegment;
+			}
+
 			InternalName = values.GetString("internal name");
 
 			Checksum = (uint)values.GetInteger("checksum");
@@ -115,10 +143,6 @@ namespace Blamite.Blam.FirstGen.Structures
 			Partitions = new Partition[1];
 			Partitions[0] = new Partition(SegmentPointer.FromOffset(MetaArea.Offset, MetaArea), (uint)MetaArea.Size);
 
-			// dummy stringids
-			StringIDCount = 0;
-			StringIDData = _eofSegment;
-			StringIDIndexTable = _eofSegment;
 		}
 	}
 }
