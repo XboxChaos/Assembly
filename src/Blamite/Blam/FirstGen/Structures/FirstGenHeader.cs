@@ -71,34 +71,24 @@ namespace Blamite.Blam.FirstGen.Structures
 			var metaOffset = (int)values.GetInteger("meta offset");
 
 			int metaSize;
-
-			// TODO (Dragon): hack for h2 alpha
-			if (BuildString == "02.01.07.4998")
+			if (values.HasInteger("tag data offset"))
 			{
 				metaSize = (int)values.GetInteger("tag data offset") + (int)values.GetInteger("tag data size");
 				// hack to rewrite the "meta size" value even though its not actually the meta size
 				//_saved_meta_size_hack = (uint)values.GetInteger("meta size");
 			}
 			else
-			{
 				metaSize = (int)values.GetInteger("meta size");
-			}
 			
 			var metaSegment = new FileSegment(
 				segmenter.DefineSegment(metaOffset, metaSize, 0x4, SegmentResizeOrigin.Beginning), segmenter);
 
 			uint metaOffsetMask;
-			// we hacked in a meta header size into the values earlier in the cache load
-			// hack to set meta offset mask on xbox
-			if (BuildString == "02.01.07.4998")
-			{
-				// we hacked in a first tag address earlier
-				metaOffsetMask = (uint)values.GetInteger("first tag address") - (uint)values.GetInteger("tag data offset");
-			}
-			else {
+			if (values.HasInteger("xbox meta offset mask"))
+				metaOffsetMask = (uint)values.GetInteger("xbox meta offset mask");
+			else
 				metaOffsetMask = (uint)(values.GetInteger("tag table offset") - values.GetInteger("meta header size"));
-			}
-			
+
 			MetaArea = new FileSegmentGroup(new MetaOffsetConverter(metaSegment, metaOffsetMask));
 
 			IndexHeaderLocation = MetaArea.AddSegment(metaSegment);

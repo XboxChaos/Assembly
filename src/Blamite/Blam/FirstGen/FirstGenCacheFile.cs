@@ -219,11 +219,10 @@ namespace Blamite.Blam.FirstGen
 
 		private void Load(IReader reader)
 		{
-			_header = LoadHeader(reader);
-			_tags = LoadTagTable(reader);
+			_header = LoadHeader(reader, out uint mask);
+			_tags = LoadTagTable(reader, mask);
 			_fileNames = LoadFileNames(reader);
 			
-			// firstgen has no StringIDs
 			_stringIDs = LoadStringIDs(reader);
 
 			// hack to get scenario name
@@ -237,59 +236,54 @@ namespace Blamite.Blam.FirstGen
 			LoadScriptFiles();
 		}
 
-		private FirstGenHeader LoadHeader(IReader reader)
+		private FirstGenHeader LoadHeader(IReader reader, out uint mask)
 		{
+			mask = 0;
 			reader.SeekTo(0);
 			StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("header"));
 
 			// hack to pack meta header size for metaOffsetMask calculation
 			var oldReadPos = reader.Position;
 
-			if (_buildInfo.BuildVersion == "02.01.07.4998")
+			if (values.HasInteger("tag data offset"))
 			{
-				reader.SeekTo((long)values.GetInteger("meta offset"));
-				uint metaMask = (uint)reader.ReadUInt32() - (uint)_buildInfo.Layouts.GetLayout("meta header").Size;
-				reader.SeekTo((long)values.GetInteger("meta offset"));
-				uint tagTableOffset = reader.ReadUInt32() - metaMask + (uint)values.GetInteger("meta offset");
+				//oh boy
+				StructureLayout indexHeaderLayout = _buildInfo.Layouts.GetLayout("meta header");
+				StructureLayout tagElementLayout = _buildInfo.Layouts.GetLayout("tag element");
 
-				values.SetInteger("meta header size", (uint)_buildInfo.Layouts.GetLayout("meta header").Size);
-				values.SetInteger("tag table offset", (uint)tagTableOffset);
+				uint indexHeaderOffset = (uint)values.GetInteger("meta offset");
+				reader.SeekTo(indexHeaderOffset);
+				uint firstVal = reader.ReadUInt32();
+				reader.SeekTo(indexHeaderOffset + indexHeaderLayout.GetFieldOffset("tag table offset"));
+				uint tagTableAddress = reader.ReadUInt32();
+				mask = firstVal - (uint)indexHeaderLayout.Size;
+				uint tagTableOffset = tagTableAddress - mask + indexHeaderOffset;
 
-				reader.SeekTo((long)tagTableOffset + 0x14);
+				reader.SeekTo(tagTableOffset + tagElementLayout.GetFieldOffset("offset"));
 				uint firstTagAddress = reader.ReadUInt32();
-				values.SetInteger("first tag address", firstTagAddress);
-				values.SetInteger("meta header mask", metaMask);
-				//reader.SeekTo(oldReadPos);
-				reader.SeekTo((long)tagTableOffset);
+
+				values.SetInteger("xbox meta offset mask", firstTagAddress - (uint)values.GetInteger("tag data offset"));
 			}
 			else
-            {
+			{
 				reader.SeekTo((long)values.GetInteger("meta offset"));
 				var tagTableOffset = reader.ReadUInt32();
 				values.SetInteger("meta header size", (ulong)_buildInfo.Layouts.GetLayout("meta header").Size);
 				values.SetInteger("tag table offset", (ulong)tagTableOffset);
 			}
 			
-			reader.SeekTo(oldReadPos);
-			
 
 			return new FirstGenHeader(values, _buildInfo, _segmenter);
 		}
 
-		private FirstGenTagTable LoadTagTable(IReader reader)
+		private FirstGenTagTable LoadTagTable(IReader reader, uint mask)
 		{
 			reader.SeekTo(MetaArea.Offset);
 			StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("meta header"));
 
-			if (_buildInfo.BuildVersion == "02.01.07.4998")
-			{
-				var oldReadPos = reader.Position;
-				reader.SeekTo(MetaArea.Offset);
-				var metaMask = reader.ReadUInt32() - (uint)_buildInfo.Layouts.GetLayout("meta header").Size;
-				values.SetInteger("meta header mask", metaMask);
-				reader.SeekTo(oldReadPos);
-			}
-
+			if (mask > 0)
+				values.SetInteger("meta header mask", mask);
+			
 			return new FirstGenTagTable(reader, values, MetaArea, _buildInfo);
 		}
 

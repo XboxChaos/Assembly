@@ -59,31 +59,14 @@ namespace Blamite.Blam.SecondGen.Structures
 			result.SetInteger("tag data offset", (uint)MetaArea.Segments[0].Size);
 			result.SetInteger("tag data size", (uint)MetaArea.Segments[1].Size);
 
-
-			// hack to set a saved "meta size" for ogbox
-			// since this value isnt actually the meta size
-			// but the console crashes otherwise. idk, needs more research
-			if (BuildString == "02.09.27.09809" || BuildString == "02.06.28.07902")
-			{
+			//handle xbox silliness
+			if (_saved_meta_size_hack > 0)
 				result.SetInteger("meta size", _saved_meta_size_hack);
-			}
 			else
 			{
 				result.SetInteger("meta size", (uint)MetaArea.Size);
-			}
-
-			// hack to set meta offset mask to 0
-			// technically we could get away without this but im stupid and use
-			// a meta offset mask of 0 as an xbox identifier so uh yeah
-			if (BuildString == "02.09.27.09809" || BuildString == "02.06.28.07902")
-			{
-				result.SetInteger("meta offset mask", 0);
-			}
-			else
-			{
 				result.SetInteger("meta offset mask", (uint)MetaArea.BasePointer);
 			}
-
 
 			result.SetInteger("type", (uint) Type);
 			result.SetInteger("string block offset", (uint) StringArea.Offset);
@@ -116,48 +99,23 @@ namespace Blamite.Blam.SecondGen.Structures
 			var headSegment = new FileSegment(
 				segmenter.DefineSegment(metaOffset, tagTableSize, 0x1000, SegmentResizeOrigin.Beginning), segmenter);
 
-			int metaSize;
-			
-			// hack to set meta size on xbox
-			if (BuildString == "02.09.27.09809" || BuildString == "02.06.28.07902")
-			{
-				metaSize = (int)values.GetInteger("tag data offset") + (int)values.GetInteger("tag data size");
-				// hack to rewrite the "meta size" value even though its not actually the meta size
-				_saved_meta_size_hack = (uint)values.GetInteger("meta size");
-			}
-			else
-			{
-				metaSize = (int)values.GetInteger("meta size");
-			}
-
-
+			//xbox haxx, we can assume thru the existance of the code-set xbox mask
 			uint metaOffsetMask;
-			// hack to set meta offset mask on xbox
-			if (BuildString == "02.09.27.09809")
-			{
-				// we hacked in a first tag address earlier
-				metaOffsetMask = (uint)values.GetInteger("first tag address") - (uint)values.GetInteger("tag data offset");
-			}
-			else if (BuildString == "02.06.28.07902")
-			{
-				metaOffsetMask = (uint)values.GetInteger("first tag address") - (uint)values.GetInteger("tag data offset");
-			}
-			else
-			{
-				metaOffsetMask = (uint)values.GetInteger("meta offset mask");
-			}
-
-
 			FileSegment metaSegment = null;
+			if (values.HasInteger("xbox meta offset mask"))
+			{
+				// store the stock meta size since xbox's size is virtual
+				_saved_meta_size_hack = (uint)values.GetInteger("meta size");
 
-			// hack to set segment alignment on xbox
-			if (BuildString == "02.09.27.09809" || BuildString == "02.06.28.07902")
-            {
+				metaOffsetMask = (uint)values.GetInteger("xbox meta offset mask");
+
 				metaSegment = new FileSegment(
 					segmenter.DefineSegment(metaOffset + tagTableSize, tagDataSize, 0x4, SegmentResizeOrigin.End), segmenter);
 			}
 			else
-            {
+			{
+				metaOffsetMask = (uint)values.GetInteger("meta offset mask");
+
 				metaSegment = new FileSegment(
 					segmenter.DefineSegment(metaOffset + tagTableSize, tagDataSize, 0x1000, SegmentResizeOrigin.End), segmenter);
 			}
@@ -166,7 +124,6 @@ namespace Blamite.Blam.SecondGen.Structures
 
 			IndexHeaderLocation = MetaArea.AddSegment(headSegment);
 			MetaArea.AddSegment(metaSegment);
-
 
 			Type = (CacheFileType) values.GetInteger("type");
 
@@ -180,9 +137,7 @@ namespace Blamite.Blam.SecondGen.Structures
 			StringIDIndexTable = segmenter.WrapSegment((int) values.GetInteger("string index table offset"), StringIDCount*4, 4,
 				SegmentResizeOrigin.End);
 
-
-			// TODO (Dragon): beta has no file table fields in the header
-			if (BuildString != "02.06.28.07902")
+			if (values.HasInteger("file table count"))
 			{
 				FileNameCount = (int)values.GetInteger("file table count");
 				var fileDataSize = (int)values.GetInteger("file table size");
@@ -191,7 +146,6 @@ namespace Blamite.Blam.SecondGen.Structures
 				FileNameIndexTable = segmenter.WrapSegment((int)values.GetInteger("file index table offset"), FileNameCount * 4, 4,
 					SegmentResizeOrigin.End);
 			}
-
 
 			InternalName = values.GetString("internal name");
 			ScenarioName = values.GetString("scenario name");
@@ -203,28 +157,21 @@ namespace Blamite.Blam.SecondGen.Structures
 			StringArea.AddSegment(StringIDIndexTable);
 			StringArea.AddSegment(StringIDData);
 
-			// TODO (Dragon): beta has no file table
-			if (BuildString != "02.06.28.07902")
-			{
-				StringArea.AddSegment(FileNameIndexTable);
-				StringArea.AddSegment(FileNameData);
-			}
-
 			StringIDIndexTableLocation = SegmentPointer.FromOffset(StringIDIndexTable.Offset, StringArea);
 			StringIDDataLocation = SegmentPointer.FromOffset(StringIDData.Offset, StringArea);
 
-			// TODO (Dragon): beta has no file table fields in the header
-			if (BuildString != "02.06.28.07902")
+			if (FileNameIndexTable != null)
 			{
+				StringArea.AddSegment(FileNameIndexTable);
+				StringArea.AddSegment(FileNameData);
+
 				FileNameIndexTableLocation = SegmentPointer.FromOffset(FileNameIndexTable.Offset, StringArea);
 				FileNameDataLocation = SegmentPointer.FromOffset(FileNameData.Offset, StringArea);
 			}
 
 			int rawTableOffset;
 			int rawTableSize;
-
-			// TODO (Dragon): h2x has no raw table offset. if we spoof one itll be a gnarly linear search
-			if (BuildString != "02.09.27.09809" && BuildString != "02.06.28.07902")
+			if (values.HasInteger("raw table offset"))
 			{
 				rawTableOffset = (int)values.GetInteger("raw table offset");
 				rawTableSize = (int)values.GetInteger("raw table size");

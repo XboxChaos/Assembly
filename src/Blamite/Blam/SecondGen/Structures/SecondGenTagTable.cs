@@ -145,43 +145,28 @@ namespace Blamite.Blam.SecondGen.Structures
 				return;
 
 
-			// Groups
 			var numGroups = (int) headerValues.GetInteger("number of tag groups");
 			uint groupTableOffset;
 
-			// hack to set group table offset for xbox
-			if (_buildInfo.BuildVersion == "02.09.27.09809" || _buildInfo.BuildVersion == "02.06.28.07902")
+			uint tagTableOffset;
+			var numTags = (int)headerValues.GetInteger("number of tags");
+
+			// xbox hax
+			if (headerValues.HasInteger("meta header mask"))
 			{
 				groupTableOffset = (uint)headerValues.GetInteger("tag group table offset") - (uint)headerValues.GetInteger("meta header mask") + (uint)_metaArea.Offset;
+				tagTableOffset = (uint)(_metaArea.Offset + (uint)headerValues.GetInteger("tag table offset")) - (uint)headerValues.GetInteger("meta header mask");
 			}
 			else
 			{
 				groupTableOffset = (uint)(_metaArea.Offset + (uint)headerValues.GetInteger("tag group table offset"));
-			}
-
-			// Offset is relative to the header
-			_groups = LoadGroups(reader, groupTableOffset, numGroups, _buildInfo);
-			_groupsById = BuildGroupLookup(_groups);
-
-			// Tags
-			var numTags = (int) headerValues.GetInteger("number of tags");
-			uint tagTableOffset;
-
-			// hack to set tag table offset for xbox
-			if (_buildInfo.BuildVersion == "02.09.27.09809")
-			{
-				tagTableOffset = (uint)(_metaArea.Offset + (uint)headerValues.GetInteger("tag table offset")) - (uint)headerValues.GetInteger("meta header mask");
-			}
-			else if (_buildInfo.BuildVersion == "02.06.28.07902")
-			{
-				tagTableOffset = (uint)(_metaArea.Offset + (uint)headerValues.GetInteger("tag table offset")) - (uint)headerValues.GetInteger("meta header mask");
-			}
-			else
-			{
 				tagTableOffset = (uint)(_metaArea.Offset + (uint)headerValues.GetInteger("tag table offset"));
 			}
 
-			// Offset is relative to the header
+			// offsets are relative to the header
+			_groups = LoadGroups(reader, groupTableOffset, numGroups, _buildInfo);
+			_groupsById = BuildGroupLookup(_groups);
+
 			_tags = LoadTags(reader, tagTableOffset, numTags, _buildInfo, _metaArea);
 		}
 
@@ -195,9 +180,8 @@ namespace Blamite.Blam.SecondGen.Structures
 			if ((uint)result.GetInteger("magic") != CharConstant.FromString("tags"))
 				throw new ArgumentException("Invalid index table header magic. This map could be compressed, try the Compressor in the Tools menu before reporting.");
 
-
 			// hack to get and store a value we need later
-			if (_buildInfo.BuildVersion == "02.09.27.09809" || _buildInfo.BuildVersion == "02.06.28.07902")
+			if (!result.HasInteger("meta header mask"))
 			{
 				var oldReadPos = reader.Position;
 				reader.SeekTo(_metaArea.Offset);
@@ -205,7 +189,6 @@ namespace Blamite.Blam.SecondGen.Structures
 				result.SetInteger("meta header mask", metaMask);
 				reader.SeekTo(oldReadPos);
 			}
-
 
 			return result;
 		}

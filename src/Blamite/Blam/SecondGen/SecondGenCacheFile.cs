@@ -265,8 +265,8 @@ namespace Blamite.Blam.SecondGen
 
 		private void Load(IReader reader)
 		{
-			_header = LoadHeader(reader);
-			_tags = LoadTagTable(reader);
+			_header = LoadHeader(reader, out uint primaryMask);
+			_tags = LoadTagTable(reader, primaryMask);
 			_fileNames = LoadFileNames(reader);
 			_stringIDs = LoadStringIDs(reader);
 
@@ -275,72 +275,45 @@ namespace Blamite.Blam.SecondGen
 			LoadSimulationDefinitions(reader);
 		}
 
-		private SecondGenHeader LoadHeader(IReader reader)
+		private SecondGenHeader LoadHeader(IReader reader, out uint primaryMask)
 		{
+			primaryMask = 0;
 			reader.SeekTo(0);
 			StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("header"));
 
-			// TODO (Dragon): this is really gross even for a hack
-			// hack to pack meta header size for metaOffsetMask calculation on xbox
-			if (_buildInfo.BuildVersion == "02.09.27.09809" || _buildInfo.BuildVersion == "02.06.28.07902")
+			//set up a mask for xbox if needed
+			if (!values.HasInteger("meta offset mask"))
 			{
-				var oldReadPos = reader.Position;
-				if (_buildInfo.BuildVersion == "02.09.27.09809")
-				{
-					reader.SeekTo((long)values.GetInteger("meta offset"));
-					uint metaMask = (uint)reader.ReadUInt32() - (uint)_buildInfo.Layouts.GetLayout("meta header").Size;
-					reader.SeekTo((long)values.GetInteger("meta offset") + 8);
-					uint tagTableOffset = reader.ReadUInt32() - metaMask + (uint)values.GetInteger("meta offset");
+				//oh boy
+				StructureLayout indexHeaderLayout = _buildInfo.Layouts.GetLayout("meta header");
+				StructureLayout tagElementLayout = _buildInfo.Layouts.GetLayout("tag element");
 
-					values.SetInteger("meta header size", (uint)_buildInfo.Layouts.GetLayout("meta header").Size);
-					values.SetInteger("tag table offset", (uint)tagTableOffset);
+				uint indexHeaderOffset = (uint)values.GetInteger("meta offset");
+				reader.SeekTo(indexHeaderOffset);
+				uint firstVal = reader.ReadUInt32();
+				reader.SeekTo(indexHeaderOffset + indexHeaderLayout.GetFieldOffset("tag table offset"));
+				uint tagTableAddress = reader.ReadUInt32();
+				primaryMask = firstVal - (uint)indexHeaderLayout.Size;
+				uint tagTableOffset = tagTableAddress - primaryMask + indexHeaderOffset;
 
-					reader.SeekTo((long)tagTableOffset + 8);
-					uint firstTagAddress = reader.ReadUInt32();
-					values.SetInteger("first tag address", firstTagAddress);
-					//values.SetInteger("meta header mask", metaMask);
-					//reader.SeekTo(oldReadPos);
-					reader.SeekTo((long)tagTableOffset);
-				}
-				else if (_buildInfo.BuildVersion == "02.06.28.07902")
-				{
-					reader.SeekTo((long)values.GetInteger("meta offset"));
-					uint metaMask = (uint)reader.ReadUInt32() - (uint)_buildInfo.Layouts.GetLayout("meta header").Size;
-					reader.SeekTo((long)values.GetInteger("meta offset"));
-					uint tagTableOffset = reader.ReadUInt32() - metaMask + (uint)values.GetInteger("meta offset");
+				reader.SeekTo(tagTableOffset + tagElementLayout.GetFieldOffset("offset"));
+				uint firstTagAddress = reader.ReadUInt32();
 
-					values.SetInteger("meta header size", (uint)_buildInfo.Layouts.GetLayout("meta header").Size);
-					values.SetInteger("tag table offset", (uint)tagTableOffset);
-
-					reader.SeekTo((long)tagTableOffset + 0x14);
-					uint firstTagAddress = reader.ReadUInt32();
-					values.SetInteger("first tag address", firstTagAddress);
-					values.SetInteger("meta header mask", metaMask);
-					//reader.SeekTo(oldReadPos);
-					reader.SeekTo((long)tagTableOffset);
-				}
-
+				values.SetInteger("xbox meta offset mask", firstTagAddress - (uint)values.GetInteger("tag data offset"));
 			}
 
 			return new SecondGenHeader(values, _buildInfo, _segmenter);
 		}
 
-		// TODO (Dragon): it might be better to write another method entirely here
-		private TagTable LoadTagTable(IReader reader)
+		private TagTable LoadTagTable(IReader reader, uint primaryMask)
 		{
 			
 			// TODO (Dragon): this stuff is actually unused for everything other than the beta
 			reader.SeekTo(MetaArea.Offset);
 			StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("meta header"));
 
-			if (_buildInfo.BuildVersion == "02.09.27.09809" || _buildInfo.BuildVersion == "02.06.28.07902")
-			{
-				var oldReadPos = reader.Position;
-				reader.SeekTo(MetaArea.Offset);
-				var metaMask = reader.ReadUInt32() - (uint)_buildInfo.Layouts.GetLayout("meta header").Size;
-				values.SetInteger("meta header mask", metaMask);
-				reader.SeekTo(oldReadPos);
-			}
+			if (primaryMask > 0)
+				values.SetInteger("meta header mask", primaryMask);
 			
 			// TODO (Dragon): this is the hackiest thing so far
 			if (_buildInfo.BuildVersion == "02.06.28.07902")
