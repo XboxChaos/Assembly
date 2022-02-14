@@ -23,7 +23,7 @@ namespace Blamite.Blam.SecondGen.Structures
 
 		public CacheFileType Type { get; private set; }
 		public string InternalName { get; private set; }
-		public string ScenarioName { get; private set; }
+		public string ScenarioName { get; set; }
 		public string BuildString { get; private set; }
 		public int XDKVersion { get; set; }
 

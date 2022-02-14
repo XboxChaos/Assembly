@@ -269,6 +269,13 @@ namespace Blamite.Blam.SecondGen
 			LoadLanguageGlobals(reader);
 			LoadScriptFiles();
 			LoadSimulationDefinitions(reader);
+
+			if (string.IsNullOrEmpty(_header.ScenarioName))
+			{
+				//header didn't contain a scenario path yet, but later engines do so might as well grab it
+				ITag scenario = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
+				_header.ScenarioName = _fileNames.GetTagName(scenario.Index);
+			}
 		}
 
 		private SecondGenHeader LoadHeader(IReader reader, out uint primaryMask)
