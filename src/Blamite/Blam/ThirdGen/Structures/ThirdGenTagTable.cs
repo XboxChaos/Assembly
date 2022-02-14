@@ -56,7 +56,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			get { return _interops; }
 		}
 
-		public ITag GetGlobalTag(int magic)
+		public override ITag GetGlobalTag(int magic)
 		{
 			if (_globalTags.ContainsKey(magic))
 				return _globalTags[magic];

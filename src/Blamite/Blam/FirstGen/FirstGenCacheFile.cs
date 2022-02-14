@@ -9,6 +9,7 @@ using Blamite.Blam.Shaders;
 using Blamite.Blam.Util;
 using Blamite.IO;
 using Blamite.Serialization;
+using Blamite.Util;
 
 namespace Blamite.Blam.FirstGen
 {
@@ -225,13 +226,9 @@ namespace Blamite.Blam.FirstGen
 			
 			_stringIDs = LoadStringIDs(reader);
 
-			// hack to get scenario name
-			reader.SeekTo(MetaArea.Offset);
-			StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("meta header"));
-			
-			// TODO (Dragon): idk if we should mask this like this
-			var scenarioIndex = (int)values.GetInteger("scenario datum index") & 0xFFFF;
-			_header.ScenarioName = _fileNames.GetTagName(scenarioIndex);
+			//header doesn't contain a scenario path, but later engines do so might as well grab it
+			ITag scenario = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
+			_header.ScenarioName = _fileNames.GetTagName(scenario.Index);
 
 			LoadScriptFiles();
 		}
@@ -312,10 +309,9 @@ namespace Blamite.Blam.FirstGen
 
 				if (_buildInfo.Layouts.HasLayout("scnr"))
 				{
-					foreach (ITag hs in _tags.FindTagsByGroup("scnr"))
-					{
-						l_scriptfiles.Add(new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, _buildInfo, StringIDs, _expander, Allocator));
-					}
+					//caches are intended for 1 scenario, so only load the *real* one
+					ITag hs = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
+					l_scriptfiles.Add(new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, _buildInfo, StringIDs, _expander, Allocator));
 				}
 				else
 				{

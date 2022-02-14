@@ -51,12 +51,14 @@ namespace Blamite.Blam.FirstGen.Structures
 
 		public uint Checksum { get; set; }
 
+		private uint _saved_meta_size_hack = 0;
+
 		public StructureValueCollection Serialize()
 		{
 			var result = new StructureValueCollection();
 			result.SetInteger("file size", FileSize);
 			result.SetInteger("meta offset", (uint)MetaArea.Offset);
-			result.SetInteger("meta size", (uint)MetaArea.Size);
+			result.SetInteger("meta size", _saved_meta_size_hack);
 			result.SetString("internal name", InternalName);
 			result.SetString("build string", BuildString);
 			result.SetInteger("type", (uint)Type);
@@ -74,12 +76,14 @@ namespace Blamite.Blam.FirstGen.Structures
 			if (values.HasInteger("tag data offset"))
 			{
 				metaSize = (int)values.GetInteger("tag data offset") + (int)values.GetInteger("tag data size");
-				// hack to rewrite the "meta size" value even though its not actually the meta size
-				//_saved_meta_size_hack = (uint)values.GetInteger("meta size");
 			}
 			else
 				metaSize = (int)values.GetInteger("meta size");
-			
+
+			// store the stock meta size since xbox's size is virtual
+			//todo: figure out how this is calculated instead of doing a hack
+			_saved_meta_size_hack = (uint)values.GetInteger("meta size");
+
 			var metaSegment = new FileSegment(
 				segmenter.DefineSegment(metaOffset, metaSize, 0x4, SegmentResizeOrigin.Beginning), segmenter);
 

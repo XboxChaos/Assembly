@@ -76,10 +76,16 @@ namespace Blamite.Blam.SecondGen.Structures
 			result.SetInteger("string table offset", (uint) StringIDData.Offset);
 			result.SetString("internal name", InternalName);
 			result.SetString("scenario name", ScenarioName);
-			result.SetInteger("file table count", (uint) FileNameCount);
-			result.SetInteger("file table offset", (uint) FileNameData.Offset);
-			result.SetInteger("file table size", (uint) FileNameData.Size);
-			result.SetInteger("file index table offset", (uint) FileNameIndexTable.Offset);
+
+			//beta didnt have names in the header yet
+			if (FileNameData != null)
+			{
+				result.SetInteger("file table count", (uint)FileNameCount);
+				result.SetInteger("file table offset", (uint)FileNameData.Offset);
+				result.SetInteger("file table size", (uint)FileNameData.Size);
+				result.SetInteger("file index table offset", (uint)FileNameIndexTable.Offset);
+			}
+			
 			result.SetInteger("raw table offset", RawTable != null ? (uint)RawTable.Offset : 0xFFFFFFFF);
 			result.SetInteger("raw table size", RawTable != null ? (uint)RawTable.Size : 0);
 			result.SetInteger("checksum", Checksum);
@@ -105,6 +111,7 @@ namespace Blamite.Blam.SecondGen.Structures
 			if (values.HasInteger("xbox meta offset mask"))
 			{
 				// store the stock meta size since xbox's size is virtual
+				//todo: figure out how this is calculated instead of doing a hack
 				_saved_meta_size_hack = (uint)values.GetInteger("meta size");
 
 				metaOffsetMask = (uint)values.GetInteger("xbox meta offset mask");
