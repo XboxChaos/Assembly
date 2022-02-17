@@ -1,12 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Halo2Alpha" baseSize="0xC8">
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
         <revision author="Dragon" version="2">named some fields</revision>
 	</revisions>
-    <!-- TODO (Dragon): test these -->
-    <comment title="NEEDS TESTING">probably has some block offsets and flags</comment>
 	<undefined name="Unknown" offset="0x0" visible="true" />
 	<undefined name="Unknown" offset="0x4" visible="true" />
 	<undefined name="Unknown" offset="0x8" visible="true" />
@@ -122,17 +120,16 @@
                     <int16 name="Unknown" offset="0xE" visible="true" />
                 </tagblock>
 			</tagblock>
-            <!-- TODO (Dragon): test these -->
-            <comment title="NEEDS TESTING">not really sure what this block is</comment>
-			<tagblock name="Unknown" offset="0x28" visible="true" elementSize="0x20">
-				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
-				<undefined name="Unknown" offset="0x8" visible="false" />
-				<undefined name="Unknown" offset="0xC" visible="false" />
-				<undefined name="Unknown" offset="0x10" visible="false" />
-				<undefined name="Unknown" offset="0x14" visible="false" />
-				<undefined name="Unknown" offset="0x18" visible="false" />
-				<undefined name="Unknown" offset="0x1C" visible="false" />
+			<tagblock name="Unknown Physics" offset="0x28" visible="true" elementSize="0x20">
+                <uint32 name="Runtime Code Pointer" offset="0x0" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
+                <int16 name="Size" offset="0x4" visible="true" />
+                <int16 name="Count" offset="0x6" visible="true" />
+                <uint32 name="User Data" offset="0x8" visible="true" tooltip="The offset from the start of the block to the start of this shape (index * block element size). This becomes a pointer to this shape in memory at runtime. don't poke me" />
+                <uint32 name="Unknown" offset="0xC" visible="false" />
+				<uint32 name="Unknown" offset="0x10" visible="false" />
+				<uint32 name="Pad" offset="0x14" visible="false" />
+				<uint32 name="Pad" offset="0x18" visible="false" />
+				<uint32 name="Pad" offset="0x1C" visible="false" />
 			</tagblock>
 			<tagblock name="BSP Physics" offset="0x34" visible="true" elementSize="0x40">
                 <uint32 name="Runtime Code Pointer" offset="0x0" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />

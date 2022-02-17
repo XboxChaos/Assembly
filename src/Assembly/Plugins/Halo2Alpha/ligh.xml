@@ -70,8 +70,6 @@
     <degree name="Field Of View" offset="0x70" visible="true" />
     <float32 name="Falloff Distance" offset="0x74" visible="true" />
     <float32 name="Cutoff Distance" offset="0x78" visible="true" />
-    <!-- TODO (Dragon): test these -->
-    <comment title="NEEDS TESTING">flags are probably in here</comment>
     <undefined name="Unknown" offset="0x7C" visible="true" />
     <undefined name="Unknown" offset="0x80" visible="true" />
     <rangef name="Bloom Bounds" offset="0x84" visible="true" />
@@ -89,8 +87,6 @@
         <option name="Gel Alpha" value="0x2" />
         <option name="Gel Color" value="0x3" />
     </enum16>
-    <!-- TODO (Dragon): test these -->
-    <comment title="NEEDS TESTING">some stuff in here</comment>
     <int16 name="Unknown" offset="0xDE" visible="false" />
     <undefined name="Unknown" offset="0xE0" visible="true" />
     <undefined name="Unknown" offset="0xE4" visible="true" />
@@ -116,14 +112,56 @@
     <undefined name="Unknown" offset="0x134" visible="true" />
     <undefined name="Unknown" offset="0x138" visible="true" />
     <undefined name="Unknown" offset="0x13C" visible="true" />
-    <undefined name="Unknown" offset="0x140" visible="true" />
-    <undefined name="Unknown" offset="0x144" visible="true" />
+	<int16 name="Unknown" offset="0x140" visible="false" />
+	<enum16 name="Yaw Function" offset="0x142" visible="true" tooltip="a function to control rotation of the gel in yaw">
+		<option name="One" value="0x0" />
+		<option name="Zero" value="0x1" />
+		<option name="Cosine" value="0x2" />
+		<option name="Cosine (Variable Period)" value="0x3" />
+		<option name="Diagonal Wave" value="0x4" />
+		<option name="Diagonal Wave (Variable Period)" value="0x5" />
+		<option name="Slide" value="0x6" />
+		<option name="Slide (Variable Period)" value="0x7" />
+		<option name="Noise" value="0x8" />
+		<option name="Jitter" value="0x9" />
+		<option name="Wander" value="0xA" />
+		<option name="Spark" value="0xB" />
+	</enum16>
+	<float32 name="Yaw Period" offset="0x144" visible="true" tooltip="time between repeats" />
     <undefined name="Unknown" offset="0x148" visible="true" />
-    <undefined name="Unknown" offset="0x14C" visible="true" />
-    <undefined name="Unknown" offset="0x150" visible="true" />
+	<int16 name="Unknown" offset="0x14C" visible="false" />
+	<enum16 name="Roll Function" offset="0x14E" visible="true" tooltip="a function to control rotation of the gel in roll">
+		<option name="One" value="0x0" />
+		<option name="Zero" value="0x1" />
+		<option name="Cosine" value="0x2" />
+		<option name="Cosine (Variable Period)" value="0x3" />
+		<option name="Diagonal Wave" value="0x4" />
+		<option name="Diagonal Wave (Variable Period)" value="0x5" />
+		<option name="Slide" value="0x6" />
+		<option name="Slide (Variable Period)" value="0x7" />
+		<option name="Noise" value="0x8" />
+		<option name="Jitter" value="0x9" />
+		<option name="Wander" value="0xA" />
+		<option name="Spark" value="0xB" />
+	</enum16>
+	<float32 name="Roll Period" offset="0x150" visible="true" tooltip="time between repeats" />
     <undefined name="Unknown" offset="0x154" visible="true" />
-    <undefined name="Unknown" offset="0x158" visible="true" />
-    <undefined name="Unknown" offset="0x15C" visible="true" />
+	<int16 name="Unknown" offset="0x158" visible="false" />
+	<enum16 name="Pitch Function" offset="0x15A" visible="true" tooltip="a function to control rotation of the gel in pitch">
+		<option name="One" value="0x0" />
+		<option name="Zero" value="0x1" />
+		<option name="Cosine" value="0x2" />
+		<option name="Cosine (Variable Period)" value="0x3" />
+		<option name="Diagonal Wave" value="0x4" />
+		<option name="Diagonal Wave (Variable Period)" value="0x5" />
+		<option name="Slide" value="0x6" />
+		<option name="Slide (Variable Period)" value="0x7" />
+		<option name="Noise" value="0x8" />
+		<option name="Jitter" value="0x9" />
+		<option name="Wander" value="0xA" />
+		<option name="Spark" value="0xB" />
+	</enum16>
+	<float32 name="Pitch Period" offset="0x15C" visible="true" tooltip="time between repeats" />
     <undefined name="Unknown" offset="0x160" visible="true" />
     <undefined name="Unknown" offset="0x164" visible="true" />
     <undefined name="Unknown" offset="0x168" visible="true" />
@@ -154,17 +192,22 @@
     </enum16>
     <undefined name="Unknown" offset="0x17C" visible="false" />
     <undefined name="Unknown" offset="0x180" visible="false" />
+	<comment title="Lens Flare">optional lens flare and light volume associated with this light</comment>
     <tagRef name="Lens Flare" offset="0x184" visible="true" />
-    <!-- TODO (Dragon): test these -->
-    <comment title="NEEDS TESTING">some stuff probably in here</comment>
-    <undefined name="Unknown" offset="0x194" visible="true" />
+	<float32 name="Bounding Radius" offset="0x194" visible="true" tooltip="used to generate a bounding radius for lensflare-only lights" />
     <undefined name="Unknown" offset="0x198" visible="true" />
     <undefined name="Unknown" offset="0x19C" visible="true" />
     <undefined name="Unknown" offset="0x1A0" visible="true" />
     <undefined name="Unknown" offset="0x1A4" visible="true" />
     <undefined name="Unknown" offset="0x1A8" visible="true" />
     <undefined name="Unknown" offset="0x1AC" visible="true" />
-    <undefined name="Unknown" offset="0x1B0" visible="true" />
+	<comment title="Radiosity">how the light affects the lightmaps (ignored for dynamic lights)</comment>
+	<enum16 name="Default Lightmap Setting" offset="0x1B0" visible="true">
+		<option name="Dynamic Only" value="0x0" />
+		<option name="Dynamic With Lightmaps" value="0x1" />
+		<option name="Lightmaps Only" value="0x2" />
+	</enum16>
+	<int16 name="Unknown" offset="0x1B2" visible="false" />
     <undefined name="Unknown" offset="0x1B4" visible="true" />
     <undefined name="Unknown" offset="0x1B8" visible="true" />
     <undefined name="Unknown" offset="0x1BC" visible="true" />
@@ -173,13 +216,43 @@
     <undefined name="Unknown" offset="0x1C8" visible="true" />
     <undefined name="Unknown" offset="0x1CC" visible="true" />
     <float32 name="Duration" offset="0x1D0" visible="true" />
-    <!-- TODO (Dragon): test these -->
-    <comment title="NEEDS TESTING">some stuff probably in here</comment>
-    <undefined name="Unknown" offset="0x1D4" visible="true" />
+	<comment title="Effect Parameters">if the light is created by an effect, it will animate itself as follows</comment>
+	<int16 name="Unknown" offset="0x1D4" visible="false" />
+	<enum16 name="Falloff Function" offset="0x1D6" visible="true" tooltip="the scale of the light will diminish over time according to this function">
+		<option name="Linear" value="0x0" />
+		<option name="Late" value="0x1" />
+		<option name="Very Late" value="0x2" />
+		<option name="Early" value="0x3" />
+		<option name="Very Early" value="0x4" />
+		<option name="Cosine" value="0x5" />
+		<option name="Zero" value="0x6" />
+		<option name="One" value="0x7" />
+	</enum16>
     <undefined name="Unknown" offset="0x1D8" visible="true" />
     <undefined name="Unknown" offset="0x1DC" visible="true" />
-    <undefined name="Unknown" offset="0x1E0" visible="true" />
-    <undefined name="Unknown" offset="0x1E4" visible="true" />
+	<comment title="Distance Fading Parameters">To fade the light's illumination and shadow casting abilities</comment>
+	<enum16 name="Illumination Fade" offset="0x1E0" visible="true">
+		<option name="Fade Very Far" value="0x0" />
+		<option name="Fade Far" value="0x1" />
+		<option name="Fade Medium" value="0x2" />
+		<option name="Fade Close" value="0x3" />
+		<option name="Fade Very Close" value="0x4" />
+	</enum16>
+	<enum16 name="Shadow Fade" offset="0x1E2" visible="true">
+		<option name="Fade Very Far" value="0x0" />
+		<option name="Fade Far" value="0x1" />
+		<option name="Fade Medium" value="0x2" />
+		<option name="Fade Close" value="0x3" />
+		<option name="Fade Very Close" value="0x4" />
+	</enum16>
+	<enum16 name="Specular Fade" offset="0x1E4" visible="true">
+		<option name="Fade Very Far" value="0x0" />
+		<option name="Fade Far" value="0x1" />
+		<option name="Fade Medium" value="0x2" />
+		<option name="Fade Close" value="0x3" />
+		<option name="Fade Very Close" value="0x4" />
+	</enum16>
+	<int16 name="Unknown" offset="0x1E6" visible="false" />
     <undefined name="Unknown" offset="0x1E8" visible="true" />
     <undefined name="Unknown" offset="0x1EC" visible="true" />
     <undefined name="Unknown" offset="0x1F0" visible="true" />
@@ -228,9 +301,7 @@
             <float32 name="Value" offset="0x0" visible="true" />
         </tagblock>
     </tagblock>
-    <!-- TODO (Dragon): test this -->
-    <comment title="NEEDS TESTING">this is either color animation or gel animation</comment>
-    <tagblock name="Unknown" offset="0x200" visible="true" elementSize="0x20">
+    <tagblock name="Color Animation" offset="0x200" visible="true" elementSize="0x20">
         <enum8 name="Graph Type" offset="0x0" visible="true">
             <option name="Unknown 0" value="0x0" />
             <option name="Unknown 1" value="0x1" />
@@ -275,8 +346,6 @@
             <float32 name="Value" offset="0x0" visible="true" />
         </tagblock>
     </tagblock>
-    <!-- TODO (Dragon): test these -->
-    <comment title="NEEDS TESTING">maybe a block here</comment>
     <undefined name="Unknown" offset="0x20C" visible="true" />
     <undefined name="Unknown" offset="0x210" visible="true" />
     <undefined name="Unknown" offset="0x214" visible="true" />

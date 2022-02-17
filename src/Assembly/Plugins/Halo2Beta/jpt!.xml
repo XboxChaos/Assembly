@@ -56,11 +56,9 @@
 	<degree name="Damage Inner Cone Angle" offset="0x28" visible="true" />
 	<degree name="Damage Outer Cone Angle" offset="0x2C" visible="true" />
 	<float32 name="Active Camoflauge Damage" offset="0x30" visible="true" tooltip="how much more visible this damage makes a player who is active camouflaged" />
-    <!-- TODO (Dragon): test these -->
-    <comment title="NEEDS TESTING">this almost certainly has the stun stuff but theres an extra field so itll need tested</comment>
-	<undefined name="Unknown" offset="0x34" visible="true" />
-	<undefined name="Unknown" offset="0x38" visible="true" />
-	<undefined name="Unknown" offset="0x3C" visible="true" />
+    <float32 name="Stun" offset="0x34" visible="true" tooltip="amount of stun added to damaged unit" />
+    <float32 name="Maximum Stun" offset="0x38" visible="true" tooltip="damaged unit's stun will never exceed this amount" />
+    <float32 name="Stun Time" offset="0x3C" visible="true" tooltip="duration of stun due to this damage" />
 	<undefined name="Unknown" offset="0x40" visible="true" />
 	<float32 name="Instantaneous Acceleration" offset="0x44" visible="true" />
 	<undefined name="Unknown" offset="0x48" visible="true" />
@@ -152,7 +150,7 @@
 		<undefined name="Maximum Intensity" offset="0x24" visible="true" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<colorf name="Color" offset="0x2C" alpha="true" visible="true" />
-		<comment title="Low Frequency Vibrate"></comment>
+		<comment title="Low Frequency Vibrate" />
 		<float32 name="Low Frequency Vibration Duration" offset="0x3C" visible="true" />
         <enum8 name="Graph Type" offset="0x40" visible="true">
             <option name="Unknown 0" value="0x0" />
@@ -197,7 +195,7 @@
         <tagblock name="Function Values" offset="0x54" visible="true" elementSize="0x4">
             <float32 name="Value" offset="0x0" visible="true" />
         </tagblock>
-        <comment title="High Frequency Vibrate"></comment>
+        <comment title="High Frequency Vibrate" />
 		<undefined name="Unknown" offset="0x60" visible="false" />
 		<undefined name="Unknown" offset="0x64" visible="false" />
 		<undefined name="Unknown" offset="0x68" visible="false" />
@@ -246,8 +244,6 @@
         <tagblock name="Function Values" offset="0x88" visible="true" elementSize="0x4">
             <float32 name="Value" offset="0x0" visible="true" />
         </tagblock>
-        <!-- TODO (Dragon): test these -->
-		<comment title="NEEDS TESTING">this might have sound effect stuff</comment>
 		<undefined name="Unknown" offset="0x94" visible="true" />
 		<undefined name="Unknown" offset="0x98" visible="true" />
 		<undefined name="Unknown" offset="0x9C" visible="true" />
@@ -273,31 +269,61 @@
 		<undefined name="Unknown" offset="0xEC" visible="true" />
 		<undefined name="Unknown" offset="0xF0" visible="true" />
 	</tagblock>
-    <!-- TODO (Dragon): test these -->
-    <comment title="NEEDS TESTING">this almost certainly has the camera shake stuff</comment>
-	<undefined name="Unknown" offset="0x110" visible="true" />
-	<undefined name="Unknown" offset="0x114" visible="true" />
-	<undefined name="Unknown" offset="0x118" visible="true" />
-	<undefined name="Unknown" offset="0x11C" visible="true" />
-	<undefined name="Unknown" offset="0x120" visible="true" />
-	<undefined name="Unknown" offset="0x124" visible="true" />
+	<comment title="Temporary Camera Impulse" />
+	<float32 name="Duration" offset="0x110" visible="true" />
+	<enum16 name="Fade Function" offset="0x114" visible="true">
+		<option name="Linear" value="0x0" />
+		<option name="Early" value="0x1" />
+		<option name="Very Early" value="0x2" />
+		<option name="Late" value="0x3" />
+		<option name="Very Late" value="0x4" />
+		<option name="Cosine" value="0x5" />
+	</enum16>
+	<int16 name="Unknown" offset="0x116" visible="false" />
+	<degree name="Rotation" offset="0x118" visible="true" />
+	<float32 name="Pushback" offset="0x11C" visible="true" />
+	<rangef name="Jitter" offset="0x120" visible="true" />
 	<undefined name="Unknown" offset="0x128" visible="true" />
 	<undefined name="Unknown" offset="0x12C" visible="true" />
-	<undefined name="Unknown" offset="0x130" visible="true" />
+	<comment title="Permanent Camera Impulse" />
+	<degree name="Angle" offset="0x130" visible="true" />
 	<undefined name="Unknown" offset="0x134" visible="true" />
 	<undefined name="Unknown" offset="0x138" visible="true" />
 	<undefined name="Unknown" offset="0x13C" visible="true" />
 	<undefined name="Unknown" offset="0x140" visible="true" />
-	<undefined name="Unknown" offset="0x144" visible="true" />
-	<undefined name="Unknown" offset="0x148" visible="true" />
-	<undefined name="Unknown" offset="0x14C" visible="true" />
-	<undefined name="Unknown" offset="0x150" visible="true" />
+	<comment title="Camera Shaking" />
+	<float32 name="Duration" offset="0x144" visible="true" tooltip="the effect will last for this duration." />
+	<enum16 name="Falloff Function" offset="0x148" visible="true" tooltip="a function to envelope the effect's magnitude over time">
+		<option name="Linear" value="0x0" />
+		<option name="Early" value="0x1" />
+		<option name="Very Early" value="0x2" />
+		<option name="Late" value="0x3" />
+		<option name="Very Late" value="0x4" />
+		<option name="Cosine" value="0x5" />
+	</enum16>
+	<int16 name="Unknown" offset="0x14A" visible="false" />
+	<float32 name="Random Translation" offset="0x14C" visible="true" tooltip="random translation in all directions" />
+	<degree name="Random Rotation" offset="0x150" visible="true" tooltip="random rotation in all directions" />
 	<undefined name="Unknown" offset="0x154" visible="true" />
 	<undefined name="Unknown" offset="0x158" visible="true" />
 	<undefined name="Unknown" offset="0x15C" visible="true" />
-	<undefined name="Unknown" offset="0x160" visible="true" />
-	<undefined name="Unknown" offset="0x164" visible="true" />
-	<undefined name="Unknown" offset="0x168" visible="true" />
+	<enum16 name="Wobble Function" offset="0x160" visible="true" tooltip="a function to perturb the effect's behavior over time">
+		<option name="One" value="0x0" />
+		<option name="Zero" value="0x1" />
+		<option name="Cosine" value="0x2" />
+		<option name="Cosine (Variable Period)" value="0x3" />
+		<option name="Diagonal Wave" value="0x4" />
+		<option name="Diagonal Wave (Variable Period)" value="0x5" />
+		<option name="Slide" value="0x6" />
+		<option name="Slide (Variable Period)" value="0x7" />
+		<option name="Noise" value="0x8" />
+		<option name="Jitter" value="0x9" />
+		<option name="Wander" value="0xA" />
+		<option name="Spark" value="0xB" />
+	</enum16>
+	<int16 name="Unknown" offset="0x162" visible="false" />
+	<float32 name="Wobble Function Period" offset="0x164" visible="true" />
+	<float32 name="Wobble Weight" offset="0x168" visible="true" tooltip="a value of 0.0 signifies that the wobble function has no effect; a value of 1.0 signifies that the effect will not be felt when the wobble function's value is zero." />
 	<undefined name="Unknown" offset="0x16C" visible="true" />
 	<undefined name="Unknown" offset="0x170" visible="true" />
 	<undefined name="Unknown" offset="0x174" visible="true" />

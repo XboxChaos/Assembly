@@ -17,8 +17,7 @@ This means distances should be in descending order, e.g. 5 4 3 2 1.
 
 Note that if we run out of memory or too many models are on screen at once, the engine may reduce models to a lower LOD BEFORE they reach the reduction distance for that LOD.
 
-If a model has a begin fade distance and disappear distance, it will begin fading out at that distance, reaching zero alpha and disappearing at the disappear distance. These distances should be greater than all of the LOD reduction distances.
-    </comment>
+If a model has a begin fade distance and disappear distance, it will begin fading out at that distance, reaching zero alpha and disappearing at the disappear distance. These distances should be greater than all of the LOD reduction distances.</comment>
 	<float32 name="Disappear Distance" offset="0x50" visible="true" />
     <float32 name="Begin Fade Distance" offset="0x54" visible="true" />
     <undefined name="Unknown" offset="0x58" visible="false" />
@@ -95,9 +94,7 @@ If a model has a begin fade distance and disappear distance, it will begin fadin
                         <option name="Destroyed" value="0x4" />
                     </enum16>
 					<tagRef name="Looping Effect" offset="0x8" visible="true" tooltip="played while the model is in this state" />
-                    <!-- TODO: test to see which this is -->
-                    <comment title="NEEDS TESTING">this could either be Looping Effect Marker Name or Initial Probability</comment>
-					<undefined name="Unknown" offset="0x18" visible="true" />
+                    <stringId name="Looping Effect Marker Name" offset="0x18" visible="true" />
 				</tagblock>
                 <int8 name="Runtime Permutation Index" offset="0x18" visible="true" />
                 <int8 name="Runtime Permutation Index" offset="0x19" visible="true" />
@@ -332,10 +329,9 @@ If a model has a begin fade distance and disappear distance, it will begin fadin
                     <option name="Recieves Local Damage" value="0x2" />
                 </enum16>
                 <comment title="Constraint Damage Type">
-                    * if you specify a constraint group name (see lower section of this block) you can specify a constraint damage
-                    * loosening a constraint takes it out of the rigid state - activates it
-                    * destroying a constraint sets the attached body free
-                </comment>
+* if you specify a constraint group name (see lower section of this block) you can specify a constraint damage
+* loosening a constraint takes it out of the rigid state - activates it
+* destroying a constraint sets the attached body free</comment>
                 <enum16 name="Constraint Damage Type" offset="0x2" visible="true">
                     <option name="None" value="0x0" />
                     <option name="Destroy One Of Group" value="0x1" tooltip="sets the attached body of this constraint free" />
@@ -387,21 +383,21 @@ If a model has a begin fade distance and disappear distance, it will begin fadin
                 <comment title="Response Delay">If desired, you can specify a delay until the response fires.This delay is pre-empted if another timed response for the same section fires.The delay effect plays while the timer is counting down.If the damage threshold is taken in a single hit while counting down, it will prematurely fire.</comment>
                 <float32 name="Response Delay" offset="0x3C" visible="true" tooltip="in seconds" />
 				<tagRef name="Delay Effect" offset="0x40" visible="true" />
-                <!-- TODO: test to see which these are -->
-                <comment title="NEEDS TESTING">these closely match release but are missing one value
-so all of these need some testing to figure out which one is missing</comment>
-				<undefined name="Unknown" offset="0x50" visible="true" />
-				<undefined name="Unknown" offset="0x54" visible="true" />
-				<undefined name="Unknown" offset="0x58" visible="true" />
-				<undefined name="Unknown" offset="0x5C" visible="true" />
-				<undefined name="Unknown" offset="0x60" visible="true" />
+                <stringId name="Delay Effect Marker Name" offset="0x50" visible="true" />
+				<comment title="Constraint Destruction">- a response can destroy a single constraint by naming it explicitly.
+- alternatively it can randomly destroy a single constraint from a specified group if the "destroy one group constraint" flag is set
+- also it can destroy all constraints in a specified group if the "destroy all group constraints" flag is set</comment>
+				<stringId name="Constraint/Group Name" offset="0x54" visible="true" />
+				<stringId name="Ejecting Seat Label" offset="0x58" visible="true" />
+				<float32 name="Skip Fraction" offset="0x5C" visible="true" tooltip="0.0 always fires, 1.0 never fires" />
+				<stringId name="Destroyed Child Object Marker Name" offset="0x60" visible="true" tooltip="when this response fires, any children objects created at the supplied marker name will be destroyed" />
 			</tagblock>
-			<undefined name="Unknown" offset="0x18" visible="false" />
-			<undefined name="Unknown" offset="0x1C" visible="false" />
-			<undefined name="Unknown" offset="0x20" visible="false" />
-			<undefined name="Unknown" offset="0x24" visible="false" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<undefined name="Unknown" offset="0x2C" visible="false" />
+			<uint32 name="Empty Block 1" offset="0x18" visible="false" />
+			<uint32 name="Empty Block 1" offset="0x1C" visible="false" />
+			<uint32 name="Empty Block 1" offset="0x20" visible="false" />
+			<uint32 name="Empty Block 2" offset="0x24" visible="false" />
+			<uint32 name="Empty Block 2" offset="0x28" visible="false" />
+			<uint32 name="Empty Block 2" offset="0x2C" visible="false" />
 			<float32 name="Stun Time" offset="0x30" visible="true" />
 			<float32 name="Recharge Time" offset="0x34" visible="true" />
 			<float32 name="Runtim Recharge Velocity" offset="0x38" visible="true" />

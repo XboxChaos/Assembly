@@ -249,8 +249,6 @@
     <int16 name="HUD Text Message Index" offset="0x13C" visible="true" />
     <int16 name="Unknown" offset="0x13E" visible="false" />
     <tagblock name="Attachments" offset="0x140" visible="true" elementSize="0x48">
-        <!-- TODO (Dragon): test these -->
-        <comment title="NEEDS TESTING">not sure if attachments block is right</comment>
         <tagRef name="Type" offset="0x0" visible="true" />
         <ascii name="Marker" offset="0x10" length="0x1C" visible="true" />
         <stringid name="Marker" offset="0x2C" visible="true" />
@@ -502,8 +500,8 @@
             </flags32>
             <colorf name="Color Lower Bound" offset="0x8" alpha="false" visible="true" />
             <colorf name="Color Upper Bound" offset="0x14" alpha="false" visible="true" />
-            <stringid name="Darken By..." offset="0x20" visible="true" />
-            <stringid name="Scale By..." offset="0x24" visible="true" />
+            <stringid name="Darken By" offset="0x20" visible="true" />
+            <stringid name="Scale By" offset="0x24" visible="true" />
         </tagblock>
     </tagblock>
     <tagblock name="Predicted Resources" offset="0x170" visible="true" elementSize="0x8">
@@ -829,11 +827,10 @@
         <int16 name="Boarding Seat Index" offset="0x76" visible="true" />
         <float32 name="Listener Interpolation Factor" offset="0x78" visible="true" tooltip="how far to interpolate listener position from camera to occupant's head" />
         <comment title="Speed Dependent Turn Rates">
-            when the unit velocity is 0, the yaw/pitch rates are the left values at [max speed reference], the yaw/pitch rates are the right values.
-            the max speed reference is what the code uses to generate a clamped speed from 0..1
-            the exponent controls how midrange speeds are interpreted.
-            IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are scaled from low --&gt; high
-        </comment>
+when the unit velocity is 0, the yaw/pitch rates are the left values at [max speed reference], the yaw/pitch rates are the right values.
+the max speed reference is what the code uses to generate a clamped speed from 0..1
+the exponent controls how midrange speeds are interpreted.
+IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are scaled from low --&gt; high</comment>
         <rangef name="Yaw Rate Bounds" offset="0x7C" visible="true" />
         <rangef name="Pitch Rate Bounds" offset="0x84" visible="true" />
         <float32 name="Minimum Speed Reference" offset="0x8C" visible="true" tooltip="Initial t is computed from velocity/(max speed - min speed)" />

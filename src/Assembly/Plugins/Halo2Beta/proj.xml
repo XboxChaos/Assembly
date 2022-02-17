@@ -238,7 +238,6 @@
         <undefined name="Unknown" offset="0x18" visible="false" />
         <undefined name="Unknown" offset="0x1C" visible="false" />
     </tagblock>
-    <!-- unused -->
     <tagblock name="Old Functions" offset="0x158" visible="false" elementSize="0x50">
         <undefined name="Unknown" offset="0x0" visible="false" />
         <undefined name="Unknown" offset="0x4" visible="false" />
@@ -422,8 +421,6 @@
     </enum8>
     <int8 name="Unknown" offset="0x231" visible="false" />
     <int16 name="Unknown" offset="0x232" visible="false" />
-    <!-- TODO (Dragon): test this -->
-    <comment title="NEEDS TESTING">Attached Super Detonation Damage might be in here somewhere</comment>
 	<undefined name="Unknown" offset="0x234" visible="true" />
 	<undefined name="Unknown" offset="0x238" visible="true" />
 	<undefined name="Unknown" offset="0x23C" visible="true" />
@@ -516,26 +513,27 @@
 		<ranged name="Between Angle" offset="0x2C" visible="true" />
 		<rangef name="And Velocity" offset="0x34" visible="true" />
 		<tagRef name="DO NOT USE (OLD Effect)" offset="0x3C" visible="true" tooltip="don't use" />
-        <!-- TODO (Dragon): test this -->
-        <comment title="NEEDS TESTING">might have Scale Effects By enum in here</comment>
 		<undefined name="Unknown" offset="0x4C" visible="true" />
 		<undefined name="Unknown" offset="0x50" visible="true" />
 		<undefined name="Unknown" offset="0x54" visible="true" />
 		<undefined name="Unknown" offset="0x58" visible="true" />
-		<undefined name="Unknown" offset="0x5C" visible="true" />
+		<enum16 name="Scale Effects By" offset="0x5C" visible="true">
+			<option name="Damage" value="0x0" />
+			<option name="Angle" value="0x1" />
+		</enum16>
+		<int16 name="Unknown" offset="0x5E" visible="false" />
 		<degree name="Angular Noise" offset="0x60" visible="true" tooltip="the angle of incidence is randomly perturbed by at most this amount to simulate irregularity." />
 		<float32 name="Velocity Noise" offset="0x64" visible="true" tooltip="the velocity is randomly perturbed by at most this amount to simulate irregularity." />
 		<tagRef name="DO NOT USE (OLD Effect)" offset="0x68" visible="true" tooltip="don't use" />
-        <!-- TODO (Dragon): test this -->
-        <comment title="NEEDS TESTING">might have penetration Initial Friction and Maximum Distance in here</comment>
 		<undefined name="Unknown" offset="0x78" visible="true" />
 		<undefined name="Unknown" offset="0x7C" visible="true" />
 		<undefined name="Unknown" offset="0x80" visible="true" />
 		<undefined name="Unknown" offset="0x84" visible="true" />
 		<undefined name="Unknown" offset="0x88" visible="true" />
 		<undefined name="Unknown" offset="0x8C" visible="true" />
-		<undefined name="Unknown" offset="0x90" visible="true" />
-		<undefined name="Unknown" offset="0x94" visible="true" />
+		<comment title="Penetration" />
+		<float32 name="Initial Friction" offset="0x90" visible="true" tooltip="the fraction of the projectile's velocity lost on penetration" />
+		<float32 name="Maximum Distance" offset="0x94" visible="true" tooltip="the maximum distance the projectile can travel through an object of this material" />
         <comment title="Reflection" />
 		<float32 name="Parallel Friction" offset="0x98" visible="true" tooltip="the fraction of the projectile's velocity parallel to the surface lost on impact" />
 		<float32 name="Perpendicular Friction" offset="0x9C" visible="true" tooltip="the fraction of the projectile's velocity perpendicular to the surface lost on impact" />

@@ -238,7 +238,6 @@
         <undefined name="Unknown" offset="0x18" visible="false" />
         <undefined name="Unknown" offset="0x1C" visible="false" />
     </tagblock>
-    <!-- unused -->
     <tagblock name="Old Functions" offset="0x158" visible="false" elementSize="0x50">
         <undefined name="Unknown" offset="0x0" visible="false" />
         <undefined name="Unknown" offset="0x4" visible="false" />
@@ -383,8 +382,6 @@
     <undefined name="Unknown" offset="0x244" visible="false" />
     <tagRef name="Unknown" offset="0x248" visible="true" />
     <tagRef name="Collision Sound" offset="0x258" visible="true" />
-    <!-- TODO (Dragon): test this big ol block-->
-    <comment title="NEEDS TESTING">probably has Predicted Bitmaps block and Detonation Delay. might not have Detonation Damage Effect</comment>
     <undefined name="Unknown" offset="0x268" visible="true" />
     <undefined name="Unknown" offset="0x26C" visible="true" />
     <undefined name="Unknown" offset="0x270" visible="true" />
@@ -452,8 +449,6 @@ Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
         <bit name="Primary Trigger Melee Attacks" index="28" />
         <bit name="Cannot Be Used By Player" index="29" />
     </flags32>
-    <!-- TODO (Dragon): test stuff-->
-    <comment title="NEEDS TESTING">some stuff is probably in here like Secondary Trigger Mode, Maximum Alternate Shots Loaded, Turn On Time, and Ready Time</comment>
 	<undefined name="Unknown" offset="0x30C" visible="true" />
 	<undefined name="Unknown" offset="0x310" visible="true" />
 	<undefined name="Unknown" offset="0x314" visible="true" />
@@ -465,7 +460,8 @@ Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
 	<undefined name="Unknown" offset="0x32C" visible="true" />
 	<undefined name="Unknown" offset="0x330" visible="true" />
 	<undefined name="Unknown" offset="0x334" visible="true" />
-	<undefined name="Unknown" offset="0x338" visible="true" />
+	<comment title="Old obsolete export to functions" />
+	<float32 name="Ready Time" offset="0x338" visible="true" />
 	<tagRef name="Ready Effect" offset="0x33C" visible="true" />
 	<tagRef name="Ready Damage Effect" offset="0x34C" visible="true" />
     <comment title="Heat" />
@@ -496,8 +492,7 @@ Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
 	<undefined name="Unknown" offset="0x400" visible="false" />
     <comment title="Melee Damage Parameters">
 Damage Pyramid Angles: Defines the frustrum from the camera that the melee-attack uses to find targets
-Damage Pyramid Depth: How far the melee attack searches for a target
-    </comment>
+Damage Pyramid Depth: How far the melee attack searches for a target</comment>
 	<degree2 name="Damage Pyramid Angles" offset="0x404" visible="true" />
 	<float32 name="Damage Pyramid Depth" offset="0x40C" visible="true" />
     <comment title="Melee Combo Damage" />
@@ -568,8 +563,6 @@ Damage Pyramid Depth: How far the melee attack searches for a target
 	<degree name="Magnetism Angle" offset="0x4AC" visible="true" tooltip="the maximum angle that magnetism works at full strength" />
 	<float32 name="Magnetism Range" offset="0x4B0" visible="true" tooltip="the maximum distance that magnetism works at full strength" />
 	<degree name="Deviation Angle" offset="0x4B4" visible="true" tooltip="the maximum angle that a projectile is allowed to deviate from the gun barrel" />
-    <!-- TODO (Dragon): test -->
-    <comment title="NEEDS TESTING">theres a few movement penalty things that are probably in here</comment>
 	<undefined name="Unknown" offset="0x4B8" visible="true" />
 	<undefined name="Unknown" offset="0x4BC" visible="true" />
 	<undefined name="Unknown" offset="0x4C0" visible="true" />
@@ -587,8 +580,6 @@ Damage Pyramid Depth: How far the melee attack searches for a target
 	<float32 name="Weapon Power-Off Time" offset="0x4E8" visible="true" />
 	<tagRef name="Weapon Power-On Effect" offset="0x4EC" visible="true" />
 	<tagRef name="Weapon Power-Off Effect" offset="0x4FC" visible="true" />
-    <!-- TODO (Dragon): test -->
-    <comment title="NEEDS TESTING">Age Heat Recovery Penalty and Age Rate Of Fire Penalty are probably in here somewhere</comment>
 	<undefined name="Unknown" offset="0x50C" visible="true" />
 	<undefined name="Unknown" offset="0x510" visible="true" />
 	<undefined name="Unknown" offset="0x514" visible="true" />
@@ -790,8 +781,7 @@ Damage Pyramid Depth: How far the melee attack searches for a target
 		<int16 name="Minimum Rounds Loaded" offset="0x28" visible="true" tooltip="the minimum number of rounds necessary to fire the weapon" />
         <int16 name="Rounds Between Tracers" offset="0x2A" visible="true" tooltip="the number of non-tracer rounds fired between tracers" />
 		<stringid name="Optional Barrel Marker Name" offset="0x2C" visible="true" />
-        <comment title="Prediction Properties">What the behavior of this barrel is in a predicted network game
-        </comment>
+        <comment title="Prediction Properties">What the behavior of this barrel is in a predicted network game</comment>
         <enum16 name="Prediction Type" offset="0x30" visible="true">
             <option name="None" value="0x0" />
             <option name="Continuous" value="0x1" />
@@ -829,16 +819,59 @@ Damage Pyramid Depth: How far the melee attack searches for a target
             <option name="Horizontal Fan" value="0x1" />
         </enum16>
         <int16 name="Projectiles Per Shot" offset="0x82" visible="true" />
-        <comment title="NEEDS TESTING">one of these is probably Distribution Error</comment>
 		<undefined name="Unknown" offset="0x84" visible="true" />
 		<undefined name="Unknown" offset="0x88" visible="true" />
 		<degree name="Minimum Error" offset="0x8C" visible="true" />
 		<ranged name="Error Angle" offset="0x90" visible="true" />
-        <comment title="NEEDS TESTING">one of these is probably First Person Offset</comment>
-		<undefined name="Unknown" offset="0x98" visible="true" />
-		<undefined name="Unknown" offset="0x9C" visible="true" />
-		<undefined name="Unknown" offset="0xA0" visible="true" />
-		<undefined name="Unknown" offset="0xA4" visible="true" />
+		<point3 name="First Person Offset" offset="0x98" visible="true" tooltip="+x is forward, +z is up, +y is left" />
+		<enum8 name="Damage Reporting Type" offset="0xA4" visible="true">
+			<option name="Teh Guardians !!1!!1!" value="0x0" />
+			<option name="Falling Damage" value="0x1" />
+			<option name="Generic Collision Damage" value="0x2" />
+			<option name="Generic Melee Damage" value="0x3" />
+			<option name="Generic Explosion" value="0x4" />
+			<option name="Magnum Pistol" value="0x5" />
+			<option name="Plasma Pistol" value="0x6" />
+			<option name="Needler" value="0x7" />
+			<option name="SMG" value="0x8" />
+			<option name="Plasma Rifle" value="0x9" />
+			<option name="Battle Rifle" value="0xA" />
+			<option name="Carbine" value="0xB" />
+			<option name="Shotgun" value="0xC" />
+			<option name="Sniper Rifle" value="0xD" />
+			<option name="Beam Rifle" value="0xE" />
+			<option name="Rocket Launcher" value="0xF" />
+			<option name="Flak Cannon" value="0x10" />
+			<option name="Brute Shot" value="0x11" />
+			<option name="Disintegrator" value="0x12" />
+			<option name="Brute Plasma Rifle" value="0x13" />
+			<option name="Energy Sword" value="0x14" />
+			<option name="Frag Grenade" value="0x15" />
+			<option name="Plasma Grenade" value="0x16" />
+			<option name="Flag Melee Damage" value="0x17" />
+			<option name="Bomb Melee Damage" value="0x18" />
+			<option name="Bomb Explosion Damage" value="0x19" />
+			<option name="Ball Melee Damage" value="0x1A" />
+			<option name="Human Turret" value="0x1B" />
+			<option name="Plasma Turret" value="0x1C" />
+			<option name="Banshee" value="0x1D" />
+			<option name="Ghost" value="0x1E" />
+			<option name="Mongoose" value="0x1F" />
+			<option name="Scorpion" value="0x20" />
+			<option name="Spectre Driver" value="0x21" />
+			<option name="Spectre Gunner" value="0x22" />
+			<option name="Warthog Driver" value="0x23" />
+			<option name="Warthog Gunner" value="0x24" />
+			<option name="Wraith" value="0x25" />
+			<option name="Tank" value="0x26" />
+			<option name="Sentinel Beam" value="0x27" />
+			<option name="Sentinel RPG" value="0x28" />
+			<option name="Teleporter" value="0x29" />
+			<option name="Warthog Gunner Gauss" value="0x2A" />
+			<option name="Warthog Gunner Rocket" value="0x2B" />
+		</enum8>
+		<int8 name="Unknown" offset="0xA5" visible="false" />
+		<int16 name="Unknown" offset="0xA6" visible="false" />
 		<tagRef name="Projectile" offset="0xA8" visible="true" />
 		<tagRef name="Damage Effect" offset="0xB8" visible="true" />
         <comment title="Misc" />
@@ -849,14 +882,12 @@ Damage Pyramid Depth: How far the melee attack searches for a target
 		<undefined name="Unknown" offset="0xD8" visible="false" />
 		<float32 name="Heat Generated Per Round" offset="0xDC" visible="true" tooltip="the amount of heat generated each time the trigger is fired" />
 		<float32 name="Age Generated Per Round" offset="0xE0" visible="true" tooltip="the amount the weapon ages each time the trigger is fired" />
-        <!-- TODO (Dragon): figure out if theres any recoil angle change-->
-        <comment title="NEEDS TESTING">something in here might be Angle Change Per Shot and Overload Time but beta also might not implement that for recoil</comment>
 		<undefined name="Unknown" offset="0xE4" visible="true" />
 		<undefined name="Unknown" offset="0xE8" visible="true" />
 		<undefined name="Unknown" offset="0xEC" visible="true" />
 		<undefined name="Unknown" offset="0xF0" visible="true" />
-		<undefined name="Unknown" offset="0xF4" visible="true" />
-		<undefined name="Unknown" offset="0xF8" visible="true" />
+		<comment title="Angle Change (Recoil)" />
+		<ranged name="Angle Change Per Shot" offset="0xF4" visible="true" tooltip="angle change per shot of the weapon during firing" />
 		<float32 name="Angle Change Acceleration Time" offset="0xFC" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve its final angle per shot" />
 		<float32 name="Angle Change Deceleration Time" offset="0x100" visible="true" tooltip="the continuous idle time it takes for the weapon to return its initial angle per shot" />
         <enum16 name="Angle Change Function" offset="0x104" visible="true" tooltip="function used to scale between initial and final angle change per shot">
@@ -900,8 +931,6 @@ Damage Pyramid Depth: How far the melee attack searches for a target
 	</tagblock>
 	<float32 name="Weapon Power On Velocity" offset="0x5FC" visible="true" />
 	<float32 name="Weapon Power Off Velocity" offset="0x600" visible="true" />
-    <!-- TODO (Dragon): theres a chunk at the bottom of the release weap that might match here-->
-    <comment title="NEEDS TESTING">some could match release, needs some testing though</comment>
 	<undefined name="Unknown" offset="0x604" visible="true" />
 	<undefined name="Unknown" offset="0x608" visible="true" />
 	<undefined name="Unknown" offset="0x60C" visible="true" />

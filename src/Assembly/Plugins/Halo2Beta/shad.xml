@@ -18,9 +18,7 @@
 		<tagRef name="Alpha Test Map" offset="0x3C" visible="true" />
 		<tagRef name="Translucent Map" offset="0x4C" visible="true" />
 		<colorf name="Lightmap Transparent Color" offset="0x5C" alpha="false" visible="true" />
-        <!-- TODO (Dragon): test this -->
-        <comment title="NEEDS TESTING">not sure if this is lightmap transparent alpha or foliage scale</comment>
-		<float32 name="Unknown" offset="0x68" visible="true" />
+        <float32 name="Lightmap Transparent Alpha" offset="0x68" visible="true" />
 	</tagblock>
     <int16 name="type?" offset="0x20" visible="true" />
     <flags16 name="Flags" offset="0x22" visible="true">
@@ -106,18 +104,15 @@
             </tagblock>
 		</tagblock>
 	</tagblock>
-    <!-- TODO (Dragon): test this -->
-    <comment title="NEEDS TESTING">another postprocess block that needs work</comment>
 	<tagblock name="Postprocess Definition" offset="0x30" visible="true" elementSize="0xD4">
-		<undefined name="Unknown" offset="0x0" visible="true" />
+		<float32 name="Projected Height Percentage" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x4" visible="true" />
-		<tagblock name="Unknown" offset="0x8" visible="true" elementSize="0x2">
-			<int16 name="Unknown" offset="0x0" visible="true" />
+		<tagblock name="Layers" offset="0x8" visible="true" elementSize="0x2">
+			<int16 name="Indices Block Index Data" offset="0x0" visible="true" />
 		</tagblock>
-		<tagblock name="Unknown" offset="0x14" visible="true" elementSize="0x12">
-			<tagref name="Unknown" offset="0x0" visible="true" />
-			<int8 name="Unknown" offset="0x10" visible="true" />
-			<int8 name="Unknown" offset="0x11" visible="true" />
+		<tagblock name="Passes" offset="0x14" visible="true" elementSize="0x12">
+			<tagRef name="Pass" offset="0x0" visible="true" />
+			<int16 name="Implementation Block Index Data" offset="0x10" visible="true" />
 		</tagblock>
 		<tagblock name="Unknown" offset="0x20" visible="true" elementSize="0x2A">
 			<undefined name="Unknown" offset="0x0" visible="true" />

@@ -30,9 +30,20 @@
 	<undefined name="Unknown" offset="0x24" visible="false" />
 	<undefined name="Unknown" offset="0x28" visible="false" />
 	<undefined name="Unknown" offset="0x2C" visible="false" />
-	<tagblock name="Unknown" offset="0x30" visible="true" elementSize="0x8">
-		<undefined name="Unknown" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="true" />
+	<tagblock name="Predicted Resource" offset="0x30" visible="true" elementSize="0x8">
+		<enum16 name="Type" offset="0x0" visible="true">
+			<option name="Bitmap" value="0x0" />
+			<option name="Sound" value="0x1" />
+			<option name="Render Model Geometry" value="0x2" />
+			<option name="Cluster Geometry" value="0x3" />
+			<option name="Cluster Instanced Geometry" value="0x4" />
+			<option name="Lightmap Geometry Object Buckets" value="0x5" />
+			<option name="Lightmap Geometry Instance Buckets" value="0x6" />
+			<option name="Lightmap Cluster Bitmaps" value="0x7" />
+			<option name="Lightmap Instance Bitmaps" value="0x8" />
+		</enum16>
+		<int16 name="Resource Index" offset="0x2" visible="true" />
+		<tagref name="Tag Index" offset="0x4" withGroup="false" visible="true" />
 	</tagblock>
 	<undefined name="Unknown" offset="0x3C" visible="false" />
 	<undefined name="Unknown" offset="0x40" visible="false" />
@@ -137,13 +148,17 @@
         <int8 name="Unknown" offset="0x31" visible="true" />
         <int16 name="Editor Folder Index" offset="0x32" visible="true" />
         <comment title="Permutation Data" />
-        <!-- TODO (Dragon): test these -->
-        <comment title="NEEDS TESTING">permutation data needs some work</comment>false<undefined name="Unknown" offset="0x34" visible="true" />
-		<undefined name="Unknown" offset="0x38" visible="true" />
-		<undefined name="Unknown" offset="0x3C" visible="true" />
-		<undefined name="Unknown" offset="0x40" visible="true" />
-		<undefined name="Unknown" offset="0x44" visible="true" />
-		<undefined name="Unknown" offset="0x48" visible="true" />
+		<stringId name="Variant Name" offset="0x34" visible="true" />
+		<flags32 name="Active Change Colors" offset="0x38" visible="true">
+			<bit name="Primary" index="0" />
+			<bit name="Secondary" index="1" />
+			<bit name="Tertiary" index="2" />
+			<bit name="Quaternary" index="3" />
+		</flags32>
+		<color32 name="Primary Color" offset="0x3C" alpha="false" visible="true" />
+		<color32 name="Secondary Color" offset="0x40" alpha="false" visible="true" />
+		<color32 name="Tertiary Color" offset="0x44" alpha="false" visible="true" />
+		<color32 name="Quaternary Color" offset="0x48" alpha="false" visible="true" />
 		<undefined name="Unknown" offset="0x4C" visible="true" />
 		<undefined name="Unknown" offset="0x50" visible="true" />
 		<undefined name="Unknown" offset="0x54" visible="true" />
@@ -243,14 +258,17 @@
         <int8 name="Unknown" offset="0x31" visible="true" />
         <int16 name="Editor Folder Index" offset="0x32" visible="true" />
         <comment title="Permutation Data" />
-        <!-- TODO (Dragon): test these -->
-        <comment title="NEEDS TESTING">permutation data needs some work</comment>
-		<undefined name="Unknown" offset="0x34" visible="true" />
-		<undefined name="Unknown" offset="0x38" visible="true" />
-		<undefined name="Unknown" offset="0x3C" visible="true" />
-		<undefined name="Unknown" offset="0x40" visible="true" />
-		<undefined name="Unknown" offset="0x44" visible="true" />
-		<undefined name="Unknown" offset="0x48" visible="true" />
+		<stringId name="Variant Name" offset="0x34" visible="true" />
+		<flags32 name="Active Change Colors" offset="0x38" visible="true">
+			<bit name="Primary" index="0" />
+			<bit name="Secondary" index="1" />
+			<bit name="Tertiary" index="2" />
+			<bit name="Quaternary" index="3" />
+		</flags32>
+		<color32 name="Primary Color" offset="0x3C" alpha="false" visible="true" />
+		<color32 name="Secondary Color" offset="0x40" alpha="false" visible="true" />
+		<color32 name="Tertiary Color" offset="0x44" alpha="false" visible="true" />
+		<color32 name="Quaternary Color" offset="0x48" alpha="false" visible="true" />
 		<undefined name="Unknown" offset="0x4C" visible="true" />
 		<undefined name="Unknown" offset="0x50" visible="true" />
 		<undefined name="Unknown" offset="0x54" visible="true" />
@@ -338,14 +356,17 @@
         <int8 name="Unknown" offset="0x31" visible="false" />
         <int16 name="Editor Folder Index" offset="0x32" visible="true" />
         <comment title="Permutation Data" />
-        <!-- TODO (Dragon): test these -->
-        <comment title="NEEDS TESTING">permutation data needs some work</comment>
-		<undefined name="Unknown" offset="0x34" visible="true" />
-		<undefined name="Unknown" offset="0x38" visible="true" />
-		<undefined name="Unknown" offset="0x3C" visible="true" />
-		<undefined name="Unknown" offset="0x40" visible="true" />
-		<undefined name="Unknown" offset="0x44" visible="true" />
-		<undefined name="Unknown" offset="0x48" visible="true" />
+		<stringId name="Variant Name" offset="0x34" visible="true" />
+		<flags32 name="Active Change Colors" offset="0x38" visible="true">
+			<bit name="Primary" index="0" />
+			<bit name="Secondary" index="1" />
+			<bit name="Tertiary" index="2" />
+			<bit name="Quaternary" index="3" />
+		</flags32>
+		<color32 name="Primary Color" offset="0x3C" alpha="false" visible="true" />
+		<color32 name="Secondary Color" offset="0x40" alpha="false" visible="true" />
+		<color32 name="Tertiary Color" offset="0x44" alpha="false" visible="true" />
+		<color32 name="Quaternary Color" offset="0x48" alpha="false" visible="true" />
 		<undefined name="Unknown" offset="0x4C" visible="true" />
 		<undefined name="Unknown" offset="0x50" visible="true" />
 		<undefined name="Unknown" offset="0x54" visible="true" />
@@ -519,14 +540,17 @@
         <int8 name="Unknown" offset="0x31" visible="false" />
         <int16 name="Editor Folder Index" offset="0x32" visible="true" />
         <comment title="Permutation Data" />
-        <!-- TODO (Dragon): test these -->
-        <comment title="NEEDS TESTING">permutation data needs some work</comment>
-		<undefined name="Unknown" offset="0x34" visible="true" />
-		<undefined name="Unknown" offset="0x38" visible="true" />
-		<undefined name="Unknown" offset="0x3C" visible="true" />
-		<undefined name="Unknown" offset="0x40" visible="true" />
-		<undefined name="Unknown" offset="0x44" visible="true" />
-		<undefined name="Unknown" offset="0x48" visible="true" />
+		<stringId name="Variant Name" offset="0x34" visible="true" />
+		<flags32 name="Active Change Colors" offset="0x38" visible="true">
+			<bit name="Primary" index="0" />
+			<bit name="Secondary" index="1" />
+			<bit name="Tertiary" index="2" />
+			<bit name="Quaternary" index="3" />
+		</flags32>
+		<color32 name="Primary Color" offset="0x3C" alpha="false" visible="true" />
+		<color32 name="Secondary Color" offset="0x40" alpha="false" visible="true" />
+		<color32 name="Tertiary Color" offset="0x44" alpha="false" visible="true" />
+		<color32 name="Quaternary Color" offset="0x48" alpha="false" visible="true" />
 		<undefined name="Unknown" offset="0x4C" visible="true" />
 		<undefined name="Unknown" offset="0x50" visible="true" />
 		<undefined name="Unknown" offset="0x54" visible="true" />
@@ -1037,10 +1061,8 @@
         <flags16 name="Lightmap Flags" offset="0x42" visible="true">
             <bit name="Bit 0" index="0" />
         </flags16>
-        <!-- TODO (Dragon): test these -->
-        <comment title="NEEDS TESTING">lightmap half life and light scale are probably in here</comment>
-		<undefined name="Unknown" offset="0x44" visible="true" />
-		<undefined name="Unknown" offset="0x48" visible="true" />
+		<float32 name="Lightmap Half Life" offset="0x44" visible="true" />
+		<float32 name="Lightmap Light Scale" offset="0x48" visible="true" />
 		<undefined name="Unknown" offset="0x4C" visible="true" />
 		<undefined name="Unknown" offset="0x50" visible="true" />
 		<undefined name="Unknown" offset="0x54" visible="true" />
@@ -1121,8 +1143,6 @@
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-    <!-- TODO (Dragon): test this -->
-    <comment title="NEEDS TESTING">this is definitely player starting profile block but unused so unknown element size</comment>
 	<undefined name="Unknown" offset="0x17C" visible="true" />
 	<undefined name="Unknown" offset="0x180" visible="true" />
 	<undefined name="Unknown" offset="0x184" visible="true" />
@@ -1239,8 +1259,6 @@
 	<tagblock name="Kill Trigger Volumes" offset="0x194" visible="true" elementSize="0x64">
 		<int32 name="Unknown" offset="0x0" visible="true" />
 		<ascii name="Name" offset="0x4" length="0x20" visible="true" />
-        <!-- TODO (Dragon): test these -->
-        <comment title="NEEDS TESTING">might be more name indexes and stuff</comment>
 		<undefined name="Unknown" offset="0x24" visible="true" />
 		<undefined name="Unknown" offset="0x28" visible="true" />
 		<undefined name="Unknown" offset="0x2C" visible="true" />
@@ -1250,8 +1268,6 @@
 		<point3 name="Extents" offset="0x54" visible="true" />
 		<float32 name="Unknown" offset="0x60" visible="true" />
 	</tagblock>
-    <!-- TODO (Dragon): test this -->
-    <comment title="NEEDS TESTING">this is definitely recorded animations block but unused so unknown element size</comment>
 	<undefined name="Unknown" offset="0x1A0" visible="true" />
 	<undefined name="Unknown" offset="0x1A4" visible="true" />
 	<undefined name="Unknown" offset="0x1A8" visible="true" />
@@ -1516,8 +1532,6 @@
 		<undefined name="Unknown" offset="0xC4" visible="false" />
 		<undefined name="Unknown" offset="0xC8" visible="false" />
 	</tagblock>
-    <!-- TODO (Dragon): test this -->
-    <comment title="NEEDS TESTING">this is definitely bsp switch trigger volumes block but unused so unknown element size</comment>
 	<undefined name="Unknown" offset="0x1D0" visible="true" />
 	<undefined name="Unknown" offset="0x1D4" visible="true" />
 	<undefined name="Unknown" offset="0x1D8" visible="true" />
@@ -1530,8 +1544,6 @@
 	<tagblock name="Decal Palette" offset="0x1E8" visible="true" elementSize="0x10">
         <tagRef name="Decal" offset="0x0" visible="true" />
 	</tagblock>
-    <!-- TODO (Dragon): test these -->
-    <comment title="NEEDS TESTING">might be a bunch of blocks for campaign stuff here like h2final</comment>
 	<undefined name="Unknown" offset="0x1F4" visible="true" />
 	<undefined name="Unknown" offset="0x1F8" visible="true" />
 	<undefined name="Unknown" offset="0x1FC" visible="true" />
@@ -1726,8 +1738,6 @@
 		<undefined name="Unknown" offset="0x54" visible="false" />
 		<undefined name="Unknown" offset="0x58" visible="false" />
 	</tagblock>
-    <!-- TODO (Dragon): test this -->
-    <comment title="NEEDS TESTING">these are definitely references and source files block but unused so unknown element size</comment>
 	<undefined name="Unknown" offset="0x2C4" visible="true" />
 	<undefined name="Unknown" offset="0x2C8" visible="true" />
 	<undefined name="Unknown" offset="0x2CC" visible="true" />
@@ -1735,8 +1745,6 @@
 	<undefined name="Unknown" offset="0x2D4" visible="true" />
 	<undefined name="Unknown" offset="0x2D8" visible="true" />
 	<tagblock name="Scripting Data" offset="0x2DC" visible="true" elementSize="0x84">
-        <!-- TODO (Dragon): test these -->
-        <comment title="NEEDS TESTING">someone with script experience will need to look at these closer</comment>
 		<undefined name="Unknown" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x4" visible="true" />
 		<undefined name="Unknown" offset="0x8" visible="true" />
@@ -1787,17 +1795,8 @@
 		<undefined name="Unknown" offset="0x58" visible="false" />
 	</tagblock>
 	<tagblock name="Cutscene Camera Points" offset="0x2F4" visible="true" elementSize="0x68">
-        <!-- TODO (Dragon): test this -->
-        <comment title="NEEDS TESTING">this is probably similar to release but offset by 0x4, hard to tell with 0s</comment>
         <undefined name="Unknown" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="true" />
-		<undefined name="Unknown" offset="0x8" visible="true" />
-		<undefined name="Unknown" offset="0xC" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="true" />
-		<undefined name="Unknown" offset="0x14" visible="true" />
-		<undefined name="Unknown" offset="0x18" visible="true" />
-		<undefined name="Unknown" offset="0x1C" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="true" />
+		<ascii name="Name" offset="0x4" visible="true" length="0x20" />
 		<undefined name="Unknown" offset="0x24" visible="true" />
 		<undefined name="Unknown" offset="0x28" visible="true" />
         <point3 name="Position" offset="0x2C" visible="true" />
@@ -1814,8 +1813,6 @@
 		<undefined name="Unknown" offset="0x60" visible="true" />
 		<undefined name="Unknown" offset="0x64" visible="true" />
 	</tagblock>
-    <!-- TODO (Dragon): test this -->
-    <comment title="NEEDS TESTING">this is definitely cutscene titles block but unused so unknown element size</comment>
 	<undefined name="Unknown" offset="0x300" visible="true" />
 	<undefined name="Unknown" offset="0x304" visible="true" />
 	<undefined name="Unknown" offset="0x308" visible="true" />
@@ -1881,12 +1878,9 @@
                 <option name="Legacy" value="0x3" />
             </enum8>
         </tagblock>
-        <!--these next 2 might not be in the block, hard to tell-->
         <undefined name="Unknown" offset="0x20" visible="true" />
         <undefined name="Unknown" offset="0x24" visible="true" />
     </tagblock>
-    <!-- TODO (Dragon): test this -->
-    <comment title="NEEDS TESTING">these are definitely unit seats mapping and scenario kill triggers blocks but unused so unknown element size</comment>
 	<undefined name="Unknown" offset="0x360" visible="true" />
 	<undefined name="Unknown" offset="0x364" visible="true" />
 	<undefined name="Unknown" offset="0x368" visible="true" />
@@ -1979,8 +1973,6 @@
         <int8 name="Value 02 Byte" offset="0x12" visible="true" />
         <int8 name="Value 03 (MSB)" offset="0x13" visible="true" />
 	</tagblock>
-    <!-- TODO (Dragon): test this -->
-    <comment title="NEEDS TESTING">these are definitely some blocks but unused so unknown element size</comment>
 	<undefined name="Unknown" offset="0x384" visible="true" />
 	<undefined name="Unknown" offset="0x388" visible="true" />
 	<undefined name="Unknown" offset="0x38C" visible="true" />
@@ -2022,8 +2014,6 @@
         <undefined name="Unknown" offset="0x48" visible="false" />
         <undefined name="Unknown" offset="0x4C" visible="false" />
 	</tagblock>
-    <!-- TODO (Dragon): test this -->
-    <comment title="NEEDS TESTING">this is definitely weather palette block but unused so unknown element size</comment>
 	<undefined name="Unknown" offset="0x3B4" visible="true" />
 	<undefined name="Unknown" offset="0x3B8" visible="true" />
 	<undefined name="Unknown" offset="0x3BC" visible="true" />
@@ -2279,14 +2269,17 @@
         <int8 name="Unknown" offset="0x31" visible="false" />
         <int16 name="Editor Folder Index" offset="0x32" visible="true" />
         <comment title="Permutation Data" />
-        <!-- TODO (Dragon): test this -->
-        <comment title="NEEDS TESTING">permutation data needs some work</comment>
-		<undefined name="Unknown" offset="0x34" visible="true" />
-		<undefined name="Unknown" offset="0x38" visible="true" />
-		<undefined name="Unknown" offset="0x3C" visible="true" />
-		<undefined name="Unknown" offset="0x40" visible="true" />
-		<undefined name="Unknown" offset="0x44" visible="true" />
-		<undefined name="Unknown" offset="0x48" visible="true" />
+		<stringId name="Variant Name" offset="0x34" visible="true" />
+		<flags32 name="Active Change Colors" offset="0x38" visible="true">
+			<bit name="Primary" index="0" />
+			<bit name="Secondary" index="1" />
+			<bit name="Tertiary" index="2" />
+			<bit name="Quaternary" index="3" />
+		</flags32>
+		<color32 name="Primary Color" offset="0x3C" alpha="false" visible="true" />
+		<color32 name="Secondary Color" offset="0x40" alpha="false" visible="true" />
+		<color32 name="Tertiary Color" offset="0x44" alpha="false" visible="true" />
+		<color32 name="Quaternary Color" offset="0x48" alpha="false" visible="true" />
 		<undefined name="Unknown" offset="0x4C" visible="true" />
 		<undefined name="Unknown" offset="0x50" visible="true" />
 		<undefined name="Unknown" offset="0x54" visible="true" />
@@ -2304,8 +2297,6 @@
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagRef name="Global Lighting" offset="0x4BC" visible="true" />
-    <!-- TODO (Dragon): test this -->
-    <comment title="NEEDS TESTING">this is definitely atmospheric fog palette block but unused so unknown element size</comment>
 	<undefined name="Unknown" offset="0x4CC" visible="true" />
 	<undefined name="Unknown" offset="0x4D0" visible="true" />
 	<undefined name="Unknown" offset="0x4D4" visible="true" />
@@ -2313,8 +2304,6 @@
         <stringId name="Name" offset="0x0" visible="true" />
         <tagRef name="Planar Fog" offset="0x4" visible="true" />
 	</tagblock>
-    <!-- TODO (Dragon): test this -->
-    <comment title="NEEDS TESTING">this is definitely flocks block but unused so unknown element size</comment>
 	<undefined name="Unknown" offset="0x4E4" visible="true" />
 	<undefined name="Unknown" offset="0x4E8" visible="true" />
 	<undefined name="Unknown" offset="0x4EC" visible="true" />
@@ -2353,8 +2342,6 @@
                     <int32 name="Compressed Light Direction" offset="0x10" visible="true" />
                     <int32 name="Compressed Light 2 Direction" offset="0x14" visible="true" />
 				</tagblock>
-                <!-- TODO (Dragon): test this -->
-                <comment title="NEEDS TESTING">likely more blocks but unused so unknown element size</comment>
 				<undefined name="Unknown" offset="0xC" visible="true" />
 				<undefined name="Unknown" offset="0x10" visible="true" />
 				<undefined name="Unknown" offset="0x14" visible="true" />
@@ -2428,14 +2415,10 @@
             <int16 name="Group Count" offset="0x12" visible="true" />
             <int32 name="Group Start Index" offset="0x14" visible="true" />
 		</tagblock>
-        <!-- TODO (Dragon): test this -->
-        <comment title="NEEDS TESTING">this is definitely decals block but unused so unknown element size</comment>
 		<undefined name="Unknown" offset="0x34" visible="true" />
 		<undefined name="Unknown" offset="0x38" visible="true" />
 		<undefined name="Unknown" offset="0x3C" visible="true" />
 	</tagblock>
-    <!-- TODO (Dragon): test this -->
-    <comment title="NEEDS TESTING">these are definitely creatures and creature palette blocks but unused so unknown element size</comment>
 	<undefined name="Unknown" offset="0x50C" visible="true" />
 	<undefined name="Unknown" offset="0x510" visible="true" />
 	<undefined name="Unknown" offset="0x514" visible="true" />
@@ -2445,8 +2428,6 @@
 	<tagblock name="Decorator Palette" offset="0x524" visible="true" elementSize="0x10">
         <tagRef name="Decorator Set" offset="0x0" visible="true" />
 	</tagblock>
-    <!-- TODO (Dragon): test this -->
-    <comment title="NEEDS TESTING">this is definitely bsp transition volumes block but unused so unknown element size</comment>
 	<undefined name="Unknown" offset="0x530" visible="true" />
 	<undefined name="Unknown" offset="0x534" visible="true" />
 	<undefined name="Unknown" offset="0x538" visible="true" />
@@ -2456,8 +2437,6 @@
             <point3 name="Position" offset="0x0" visible="true" />
 		</tagblock>
 	</tagblock>
-    <!-- TODO (Dragon): test this -->
-    <comment title="NEEDS TESTING">this is definitely editor folders block but unused so unknown element size</comment>
 	<undefined name="Unknown" offset="0x548" visible="true" />
 	<undefined name="Unknown" offset="0x54C" visible="true" />
 	<undefined name="Unknown" offset="0x550" visible="true" />
@@ -2532,8 +2511,6 @@
 			<int8 name="Max Teams Stub 15" offset="0xC6B" visible="true" />
 		</tagblock>
 	</tagblock>
-    <!-- TODO (Dragon): test this -->
-    <comment title="NEEDS TESTING">unsure about the order of these final fields</comment>
 	<undefined name="Unknown" offset="0x560" visible="true" />
 	<undefined name="Unknown" offset="0x564" visible="true" />
 	<undefined name="Unknown" offset="0x568" visible="true" />

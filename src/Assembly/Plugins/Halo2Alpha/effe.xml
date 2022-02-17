@@ -102,8 +102,6 @@ The location of a havok impact.</comment>
                 <bit name="Type-Specific Scale" index="5" />
             </flags32>
         </tagblock>
-        <!-- TODO (Dragon): test these -->
-        <comment title="NEEDS TESTING">beams and accelerations tagblocks might be here</comment>
 		<undefined name="Unknown" offset="0x24" visible="true" />
 		<undefined name="Unknown" offset="0x28" visible="true" />
 		<undefined name="Unknown" offset="0x2C" visible="true" />
@@ -115,12 +113,43 @@ The location of a havok impact.</comment>
 		<undefined name="Unknown" offset="0x44" visible="true" />
 		<tagblock name="Particle Systems" offset="0x48" visible="true" elementSize="0x2C">
             <tagref name="Particle" offset="0x0" visible="true" />
-            <!-- TODO (Dragon): test these -->
-            <comment title="NEEDS TESTING">not sure what these are</comment>
-			<undefined name="Unknown" offset="0x10" visible="true" />
-			<undefined name="Unknown" offset="0x14" visible="true" />
-			<undefined name="Unknown" offset="0x18" visible="true" />
-			<undefined name="Unknown" offset="0x1C" visible="true" />
+			<int16 name="Location" offset="0x10" visible="true" />
+			<int16 name="Unknown" offset="0x12" visible="false" />
+			<enum16 name="Coordinate System" offset="0x14" visible="true">
+				<option name="World" value="0x0" />
+				<option name="Local" value="0x1" />
+				<option name="Parent" value="0x2" />
+			</enum16>
+			<enum16 name="Environment" offset="0x16" visible="true">
+				<option name="Any Environment" value="0x0" />
+				<option name="Air Only" value="0x1" />
+				<option name="Water Only" value="0x2" />
+				<option name="Space Only" value="0x3" />
+			</enum16>
+			<enum16 name="Disposition" offset="0x18" visible="true">
+				<option name="Either Mode" value="0x0" />
+				<option name="Violent Mode Only" value="0x1" />
+				<option name="NonViolent Mode Only" value="0x2" />
+			</enum16>
+			<enum16 name="Camera Mode" offset="0x1A" visible="true">
+				<option name="Independent Of Camera Mode" value="0x0" />
+				<option name="Only In 1st Person" value="0x1" />
+				<option name="Only In 3rd Person" value="0x2" />
+				<option name="Both 1st And 3rd" value="0x3" />
+			</enum16>
+			<int16 name="Sort Bias" offset="0x1C" visible="true" tooltip="Use values between -10 and 10 to move closer and farther from camera (positive is closer)" />
+			<flags16 name="Flags" offset="0x1E" visible="true">
+				<bit name="Glow" index="0" />
+				<bit name="Cinematics" index="1" />
+				<bit name="Looping Particle" index="2" />
+				<bit name="Disabled For Debugging" index="3" />
+				<bit name="Inherit Effect Velocity" index="4" />
+				<bit name="Don't Render System" index="5" />
+				<bit name="Render When Zoomed" index="6" />
+				<bit name="Spread Between Ticks" index="7" />
+				<bit name="Persistent Particle" index="8" />
+				<bit name="Expensive Visibility" index="9" />
+			</flags16>
 			<tagblock name="Emitters" offset="0x20" visible="true" elementSize="0x198">
                 <tagRef name="Particle Physics" offset="0x0" visible="true" />
                 <comment title="Particle Emission Rate (particles/tick)" />
@@ -1097,8 +1126,6 @@ The location of a havok impact.</comment>
 			</tagblock>
 		</tagblock>
 	</tagblock>
-    <!-- TODO (Dragon): test these-->
-    <comment title="NEEDS TESTING">probably has the location index and play distances</comment>
 	<undefined name="Unknown" offset="0x24" visible="true" />
 	<undefined name="Unknown" offset="0x28" visible="true" />
 	<undefined name="Unknown" offset="0x2C" visible="true" />

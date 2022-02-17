@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Halo2Alpha" baseSize="0xD0">
 	<!-- Automatically generated plugin -->
 	<revisions>
@@ -15,44 +15,46 @@
         <bit name="Fog Only Affects Containing Clusters" index="4" />
         <bit name="Use Clear Color" index="5" />
     </flags32>
-    <float32 name="Render model Scale" offset="0x24" visible="true" />
+    <float32 name="Render Model Scale" offset="0x24" visible="true" />
     <float32 name="Movement Scale" offset="0x28" visible="true" />
     <tagblock name="Cube Map" offset="0x2C" visible="true" elementSize="0x14">
         <tagref name="Cube Map Reference" offset="0x0" visible="true" />
         <float32 name="Power Scale" offset="0x10" visible="true" />
     </tagblock>
-    <!-- TODO (Dragon): test these -->
-    <comment title="NEEDS TESTING">this is probably similar to firstgen but not positive how much is still used</comment>
-	<undefined name="Unknown" offset="0x38" visible="true" />
-	<undefined name="Unknown" offset="0x3C" visible="true" />
-	<undefined name="Unknown" offset="0x40" visible="true" />
-	<undefined name="Unknown" offset="0x44" visible="true" />
-	<undefined name="Unknown" offset="0x48" visible="true" />
-	<undefined name="Unknown" offset="0x4C" visible="true" />
-	<undefined name="Unknown" offset="0x50" visible="true" />
-	<undefined name="Unknown" offset="0x54" visible="true" />
+	<colorf name="Indoor Ambient Radiosity Color" offset="0x38" alpha="false" visible="true" tooltip="the indoor ambient light color" />
+	<float32 name="Indoor Ambient Radiosity Power" offset="0x44" visible="true" tooltip="the indoor ambient light power from 0 to infinity" />
+	<colorf name="Outdoor Ambient Radiosity Color" offset="0x48" alpha="false" visible="true" tooltip="the outdoor ambient light color" />
+	<float32 name="Outdoor Ambient Radiosity Power" offset="0x54" visible="true" tooltip="the outdoor ambient light power from 0 to infinity" />
     <colorf name="Outdoor Fog Color" offset="0x58" alpha="false" visible="true" />
 	<undefined name="Unknown" offset="0x64" visible="true" />
 	<undefined name="Unknown" offset="0x68" visible="true" />
-	<undefined name="Unknown" offset="0x6C" visible="true" />
-	<undefined name="Unknown" offset="0x70" visible="true" />
-	<undefined name="Unknown" offset="0x74" visible="true" />
-	<undefined name="Unknown" offset="0x78" visible="true" />
-	<undefined name="Unknown" offset="0x7C" visible="true" />
-	<undefined name="Unknown" offset="0x80" visible="true" />
-	<undefined name="Unknown" offset="0x84" visible="true" />
-	<undefined name="Unknown" offset="0x88" visible="true" />
-	<undefined name="Unknown" offset="0x8C" visible="true" />
-	<undefined name="Unknown" offset="0x90" visible="true" />
-	<undefined name="Unknown" offset="0x94" visible="true" />
+	<float32 name="Outdoor Fog Maximum Density" offset="0x6C" visible="true" tooltip="density at opaque distance - 0 defaults to 1" />
+	<float32 name="Outdoor Fog Start Distance" offset="0x70" visible="true" tooltip="below this distance there is no fog" />
+	<float32 name="Outdoor Fog Opaque Distance" offset="0x74" visible="true" tooltip="beyond this distance surfaces are completely fogged" />
+	<colorf name="Indoor Fog Color" offset="0x78" alpha="false" visible="true" />
+	<undefined name="Unknown" offset="0x84" visible="false" />
+	<undefined name="Unknown" offset="0x88" visible="false" />
+	<float32 name="Indoor Fog Maximum Density" offset="0x8C" visible="true" tooltip="density at opaque distance - 0 defaults to 1" />
+	<float32 name="Indoor Fog Start Distance" offset="0x90" visible="true" tooltip="below this distance there is no fog" />
+	<float32 name="Indoor Fog Opaque Distance" offset="0x94" visible="true" tooltip="beyond this distance surfaces are completely fogged" />
     <tagRef name="Indoor Fog Screen" offset="0x98" visible="true" tooltip="used for FOG SCREEN only; not used for planar fog" />
 	<undefined name="Unknown" offset="0xA8" visible="true" />
-	<undefined name="Unknown" offset="0xAC" visible="true" />
-	<undefined name="Unknown" offset="0xB0" visible="true" />
-	<undefined name="Unknown" offset="0xB4" visible="true" />
-	<undefined name="Unknown" offset="0xB8" visible="true" />
-	<undefined name="Unknown" offset="0xBC" visible="true" />
-	<undefined name="Unknown" offset="0xC0" visible="true" />
+	<tagblock name="Shader Functions" offset="0xAC" visible="true" elementSize="0x24">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<ascii name="Global Function Name" offset="0x4" length="0x20" visible="true" tooltip="the global function that controls this shader value" />
+	</tagblock>
+	<tagblock name="Animations" offset="0xB8" visible="true" elementSize="0x24">
+		<int16 name="Animation Index" offset="0x0" visible="true" tooltip="the index of the animation in the animation graph" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<float32 name="Period" offset="0x4" visible="true" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+	</tagblock>
     <tagblock name="Lights" offset="0xC4" visible="true" elementSize="0x74">
         <comment title="LENS FLARE" />
         <tagRef name="Lens Flare" offset="0x0" visible="true" />
