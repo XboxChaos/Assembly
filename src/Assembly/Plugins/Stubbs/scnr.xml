@@ -1,0 +1,2183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Stubbs" baseSize="0x5B0">
+	<revisions>
+		<revision author="Lord Zedd" version="1">ayy lmao</revision>
+	</revisions>
+	<tagRef name="Don't Use" offset="0x0" visible="true" />
+	<tagRef name="Won't Use" offset="0x10" visible="true" />
+	<tagRef name="Can't Use" offset="0x20" visible="true" />
+	<tagblock name="Skies" offset="0x30" visible="true" elementSize="0x10">
+		<tagRef name="Sky" offset="0x0" visible="true" />
+	</tagblock>
+	<enum16 name="Type" offset="0x3C" visible="true">
+		<option name="Solo" value="0x0" />
+		<option name="Multiplayer" value="0x1" />
+		<option name="Main Menu" value="0x2" />
+	</enum16>
+	<flags16 name="Flags" offset="0x3E" visible="true">
+		<bit name="Cortana Hack" index="0" tooltip="sort cortana in front of other transparent geometry" />
+		<bit name="Use Demo UI" index="1" tooltip="uses alternate UI collection for demo" />
+		<bit name="Disable Color Correction" index="2" tooltip="disable ntsc to srgb color space conversion for content authored for srgb" />
+	</flags16>
+	<tagblock name="Child Scenarios" offset="0x40" visible="true" elementSize="0x20">
+		<tagRef name="Child Scenario" offset="0x0" visible="true" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+	</tagblock>
+	<degree name="Local North" offset="0x4C" visible="true" />
+	<undefined name="Unknown" offset="0x50" visible="false" />
+	<undefined name="Unknown" offset="0x54" visible="false" />
+	<undefined name="Unknown" offset="0x58" visible="false" />
+	<undefined name="Unknown" offset="0x5C" visible="false" />
+	<undefined name="Unknown" offset="0x60" visible="false" />
+	<undefined name="Unknown" offset="0x64" visible="false" />
+	<undefined name="Unknown" offset="0x68" visible="false" />
+	<undefined name="Unknown" offset="0x6C" visible="false" />
+	<undefined name="Unknown" offset="0x70" visible="false" />
+	<undefined name="Unknown" offset="0x74" visible="false" />
+	<undefined name="Unknown" offset="0x78" visible="false" />
+	<undefined name="Unknown" offset="0x7C" visible="false" />
+	<undefined name="Unknown" offset="0x80" visible="false" />
+	<undefined name="Unknown" offset="0x84" visible="false" />
+	<undefined name="Unknown" offset="0x88" visible="false" />
+	<undefined name="Unknown" offset="0x8C" visible="false" />
+	<undefined name="Unknown" offset="0x90" visible="false" />
+	<undefined name="Unknown" offset="0x94" visible="false" />
+	<undefined name="Unknown" offset="0x98" visible="false" />
+	<undefined name="Unknown" offset="0x9C" visible="false" />
+	<undefined name="Unknown" offset="0xA0" visible="false" />
+	<undefined name="Unknown" offset="0xA4" visible="false" />
+	<undefined name="Unknown" offset="0xA8" visible="false" />
+	<undefined name="Unknown" offset="0xAC" visible="false" />
+	<undefined name="Unknown" offset="0xB0" visible="false" />
+	<undefined name="Unknown" offset="0xB4" visible="false" />
+	<undefined name="Unknown" offset="0xB8" visible="false" />
+	<undefined name="Unknown" offset="0xBC" visible="false" />
+	<undefined name="Unknown" offset="0xC0" visible="false" />
+	<undefined name="Unknown" offset="0xC4" visible="false" />
+	<undefined name="Unknown" offset="0xC8" visible="false" />
+	<undefined name="Unknown" offset="0xCC" visible="false" />
+	<undefined name="Unknown" offset="0xD0" visible="false" />
+	<undefined name="Unknown" offset="0xD4" visible="false" />
+	<undefined name="Unknown" offset="0xD8" visible="false" />
+	<undefined name="Unknown" offset="0xDC" visible="false" />
+	<undefined name="Unknown" offset="0xE0" visible="false" />
+	<undefined name="Unknown" offset="0xE4" visible="false" />
+	<undefined name="Unknown" offset="0xE8" visible="false" />
+	<tagblock name="Predicted Resources" offset="0xEC" visible="true" elementSize="0x8">
+		<enum16 name="Type" offset="0x0" visible="true">
+			<option name="Bitmap" value="0x0" />
+			<option name="Sound" value="0x1" />
+		</enum16>
+		<int16 name="Resource Index" offset="0x2" visible="true" />
+		<tagref name="Tag Index" offset="0x4" withGroup="false" visible="true" />
+	</tagblock>
+	<tagblock name="Functions" offset="0xF8" visible="true" elementSize="0x78">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="Scripted" index="0" tooltip="the level script will set this value; the other settings here will be ignored." />
+			<bit name="Invert" index="1" tooltip="result of function is one minus actual result" />
+			<bit name="Additive" index="2" />
+			<bit name="Always Active" index="3" tooltip="function does not deactivate when at or below lower bound" />
+		</flags32>
+		<ascii name="Name" offset="0x4" length="0x20" visible="true" />
+		<float32 name="Period" offset="0x24" visible="true" tooltip="this is the period for the above function (lower values make the function oscillate quickly, higher values make it oscillate slowly)" />
+		<int16 name="Scale Period By Index" offset="0x28" visible="true" tooltip="multiply this function by the above period" />
+		<enum16 name="Function" offset="0x2A" visible="true">
+			<option name="One" value="0x0" />
+			<option name="Zero" value="0x1" />
+			<option name="Cosine" value="0x2" />
+			<option name="Cosine (Variable Period)" value="0x3" />
+			<option name="Diagonal Wave" value="0x4" />
+			<option name="Diagonal Wave (Variable Period)" value="0x5" />
+			<option name="Slide" value="0x6" />
+			<option name="Slide (Variable Period)" value="0x7" />
+			<option name="Noise" value="0x8" />
+			<option name="Jitter" value="0x9" />
+			<option name="Wander" value="0xA" />
+			<option name="Spark" value="0xB" />
+		</enum16>
+		<int16 name="Scale Function By Index" offset="0x2C" visible="true" tooltip="multiply this function by the result of the above function" />
+		<enum16 name="Wobble Function" offset="0x2E" visible="true" tooltip="the curve used for the wobble">
+			<option name="One" value="0x0" />
+			<option name="Zero" value="0x1" />
+			<option name="Cosine" value="0x2" />
+			<option name="Cosine (Variable Period)" value="0x3" />
+			<option name="Diagonal Wave" value="0x4" />
+			<option name="Diagonal Wave (Variable Period)" value="0x5" />
+			<option name="Slide" value="0x6" />
+			<option name="Slide (Variable Period)" value="0x7" />
+			<option name="Noise" value="0x8" />
+			<option name="Jitter" value="0x9" />
+			<option name="Wander" value="0xA" />
+			<option name="Spark" value="0xB" />
+		</enum16>
+		<float32 name="Wobble Period" offset="0x30" visible="true" tooltip="the length of time it takes for the magnitude of this function to complete a wobble" />
+		<float32 name="Wobble Magnitude" offset="0x34" visible="true" tooltip="the amount of random wobble in the magnitude" />
+		<float32 name="Square Wave Threshold" offset="0x38" visible="true" tooltip="if non-zero, all values above the square wave threshold are snapped to 1.0, and all values below it are snapped to 0.0 to create a square wave." />
+		<int16 name="Step Count" offset="0x3C" visible="true" tooltip="the number of discrete values to snap to (e.g., a step count of 5 would snap the function to 0.00,0.25,0.50,0.75 or 1.00)" />
+		<enum16 name="Map To" offset="0x3E" visible="true">
+			<option name="Linear" value="0x0" />
+			<option name="Early" value="0x1" />
+			<option name="Very Early" value="0x2" />
+			<option name="Late" value="0x3" />
+			<option name="Very Late" value="0x4" />
+			<option name="Cosine" value="0x5" />
+		</enum16>
+		<int16 name="Sawtooth Count" offset="0x40" visible="true" tooltip="the number of times this function should repeat (e.g., a sawtooth count of 5 would give the function a value of 1.0 at each of 0.25,0.50,0.75 as well as at 1.0" />
+		<int16 name="Unknown" offset="0x42" visible="false" />
+		<int16 name="Scale Result By Index" offset="0x44" visible="true" tooltip="multiply this function (from a weapon, vehicle, etc.) final result of all of the above math" />
+		<enum16 name="Bounds Mode" offset="0x46" visible="true" tooltip="controls how the bounds, below, are used">
+			<option name="Clip" value="0x0" />
+			<option name="Clip And Normalize" value="0x1" />
+			<option name="Scale To Fit" value="0x2" />
+		</enum16>
+		<rangef name="Bounds" offset="0x48" visible="true" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<int16 name="Unknown" offset="0x54" visible="false" />
+		<int16 name="Turn Off With Index" offset="0x56" visible="true" tooltip="if the specified function is off, so is this function" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
+		<undefined name="Unknown" offset="0x5C" visible="false" />
+		<undefined name="Unknown" offset="0x60" visible="false" />
+		<undefined name="Unknown" offset="0x64" visible="false" />
+		<undefined name="Unknown" offset="0x68" visible="false" />
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+	</tagblock>
+	<dataref name="Editor Scenario Data" offset="0x104" visible="true" />
+	<tagblock name="Comments" offset="0x118" visible="true" elementSize="0x30">
+		<point3 name="Position" offset="0x0" visible="true" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<dataref name="Comment" offset="0x1C" visible="true" />
+	</tagblock>
+	<undefined name="Unknown" offset="0x124" visible="false" />
+	<undefined name="Unknown" offset="0x128" visible="false" />
+	<undefined name="Unknown" offset="0x12C" visible="false" />
+	<undefined name="Unknown" offset="0x130" visible="false" />
+	<undefined name="Unknown" offset="0x134" visible="false" />
+	<undefined name="Unknown" offset="0x138" visible="false" />
+	<undefined name="Unknown" offset="0x13C" visible="false" />
+	<undefined name="Unknown" offset="0x140" visible="false" />
+	<undefined name="Unknown" offset="0x144" visible="false" />
+	<undefined name="Unknown" offset="0x148" visible="false" />
+	<undefined name="Unknown" offset="0x14C" visible="false" />
+	<undefined name="Unknown" offset="0x150" visible="false" />
+	<undefined name="Unknown" offset="0x154" visible="false" />
+	<undefined name="Unknown" offset="0x158" visible="false" />
+	<undefined name="Unknown" offset="0x15C" visible="false" />
+	<undefined name="Unknown" offset="0x160" visible="false" />
+	<undefined name="Unknown" offset="0x164" visible="false" />
+	<undefined name="Unknown" offset="0x168" visible="false" />
+	<undefined name="Unknown" offset="0x16C" visible="false" />
+	<undefined name="Unknown" offset="0x170" visible="false" />
+	<undefined name="Unknown" offset="0x174" visible="false" />
+	<undefined name="Unknown" offset="0x178" visible="false" />
+	<undefined name="Unknown" offset="0x17C" visible="false" />
+	<undefined name="Unknown" offset="0x180" visible="false" />
+	<undefined name="Unknown" offset="0x184" visible="false" />
+	<undefined name="Unknown" offset="0x188" visible="false" />
+	<undefined name="Unknown" offset="0x18C" visible="false" />
+	<undefined name="Unknown" offset="0x190" visible="false" />
+	<undefined name="Unknown" offset="0x194" visible="false" />
+	<undefined name="Unknown" offset="0x198" visible="false" />
+	<undefined name="Unknown" offset="0x19C" visible="false" />
+	<undefined name="Unknown" offset="0x1A0" visible="false" />
+	<undefined name="Unknown" offset="0x1A4" visible="false" />
+	<undefined name="Unknown" offset="0x1A8" visible="false" />
+	<undefined name="Unknown" offset="0x1AC" visible="false" />
+	<undefined name="Unknown" offset="0x1B0" visible="false" />
+	<undefined name="Unknown" offset="0x1B4" visible="false" />
+	<undefined name="Unknown" offset="0x1B8" visible="false" />
+	<undefined name="Unknown" offset="0x1BC" visible="false" />
+	<undefined name="Unknown" offset="0x1C0" visible="false" />
+	<undefined name="Unknown" offset="0x1C4" visible="false" />
+	<undefined name="Unknown" offset="0x1C8" visible="false" />
+	<undefined name="Unknown" offset="0x1CC" visible="false" />
+	<undefined name="Unknown" offset="0x1D0" visible="false" />
+	<undefined name="Unknown" offset="0x1D4" visible="false" />
+	<undefined name="Unknown" offset="0x1D8" visible="false" />
+	<undefined name="Unknown" offset="0x1DC" visible="false" />
+	<undefined name="Unknown" offset="0x1E0" visible="false" />
+	<undefined name="Unknown" offset="0x1E4" visible="false" />
+	<undefined name="Unknown" offset="0x1E8" visible="false" />
+	<undefined name="Unknown" offset="0x1EC" visible="false" />
+	<undefined name="Unknown" offset="0x1F0" visible="false" />
+	<undefined name="Unknown" offset="0x1F4" visible="false" />
+	<undefined name="Unknown" offset="0x1F8" visible="false" />
+	<undefined name="Unknown" offset="0x1FC" visible="false" />
+	<undefined name="Unknown" offset="0x200" visible="false" />
+	<tagblock name="Object Names" offset="0x204" visible="true" elementSize="0x24">
+		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<enum16 name="Type" offset="0x20" visible="true">
+			<option name="Null" value="0xFFFF" />
+			<option name="Biped" value="0x0" />
+			<option name="Vehicle" value="0x1" />
+			<option name="Weapon" value="0x2" />
+			<option name="Equipment" value="0x3" />
+			<option name="Garbage" value="0x4" />
+			<option name="Projectile" value="0x5" />
+			<option name="Scenery" value="0x6" />
+			<option name="Machine" value="0x7" />
+			<option name="Control" value="0x8" />
+			<option name="Light Fixture" value="0x9" />
+			<option name="Placeholder" value="0xA" />
+			<option name="Sound Scenery" value="0xB" />
+		</enum16>
+		<int16 name="Placement Index" offset="0x22" visible="true" />
+	</tagblock>
+	<tagblock name="Scenery" offset="0x210" visible="true" elementSize="0x48">
+		<int16 name="Palette Index" offset="0x0" visible="true" />
+		<int16 name="Name Index" offset="0x2" visible="true" />
+		<flags16 name="Placement Flags" offset="0x4" visible="true">
+			<bit name="Not Automatically" index="0" />
+			<bit name="Not On Easy" index="1" />
+			<bit name="Not On Normal" index="2" />
+			<bit name="Not On Hard" index="3" />
+		</flags16>
+		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
+		<int16 name="Unknown" offset="0x20" visible="true" />
+		<int16 name="Unknown" offset="0x22" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+	</tagblock>
+	<tagblock name="Scenery Palette" offset="0x21C" visible="true" elementSize="0x30">
+		<tagRef name="Name" offset="0x0" visible="true" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+	</tagblock>
+	<tagblock name="Bipeds" offset="0x228" visible="true" elementSize="0x78">
+		<int16 name="Palette Index" offset="0x0" visible="true" />
+		<int16 name="Name Index" offset="0x2" visible="true" />
+		<flags16 name="Placement Flags" offset="0x4" visible="true">
+			<bit name="Not Automatically" index="0" />
+			<bit name="Not On Easy" index="1" />
+			<bit name="Not On Normal" index="2" />
+			<bit name="Not On Hard" index="3" />
+		</flags16>
+		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<float32 name="Body Vitality Percentage" offset="0x48" visible="true" />
+		<flags32 name="Flags" offset="0x4C" visible="true">
+			<bit name="Dead" index="0" />
+		</flags32>
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
+		<undefined name="Unknown" offset="0x5C" visible="false" />
+		<undefined name="Unknown" offset="0x60" visible="false" />
+		<undefined name="Unknown" offset="0x64" visible="false" />
+		<undefined name="Unknown" offset="0x68" visible="false" />
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+	</tagblock>
+	<tagblock name="Biped Palette" offset="0x234" visible="true" elementSize="0x30">
+		<tagRef name="Name" offset="0x0" visible="true" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+	</tagblock>
+	<tagblock name="Vehicles" offset="0x240" visible="true" elementSize="0x78">
+		<int16 name="Palette Index" offset="0x0" visible="true" />
+		<int16 name="Name Index" offset="0x2" visible="true" />
+		<flags16 name="Placement Flags" offset="0x4" visible="true">
+			<bit name="Not Automatically" index="0" />
+			<bit name="Not On Easy" index="1" />
+			<bit name="Not On Normal" index="2" />
+			<bit name="Not On Hard" index="3" />
+		</flags16>
+		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<float32 name="Body Vitality Percentage" offset="0x48" visible="true" />
+		<flags32 name="Flags" offset="0x4C" visible="true">
+			<bit name="Dead" index="0" />
+		</flags32>
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
+		<int8 name="Multiplayer Team Index" offset="0x58" visible="true" tooltip="on a multiplayer map, this determines which team the vehicle belongs to for custom vehicle sets." />
+		<int8 name="Unknown" offset="0x59" visible="false" />
+		<flags16 name="Multiplayer Spawn Flags" offset="0x5A" visible="true">
+			<bit name="Slayer Default" index="0" tooltip="vehicle will spawn when default vehicle set is used in a slayer game" />
+			<bit name="CTF Default" index="1" tooltip="vehicle will spawn when default vehicle set is used in a ctf game" />
+			<bit name="King Default" index="2" tooltip="vehicle will spawn when default vehicle set is used in a king game" />
+			<bit name="Oddball Default" index="3" tooltip="vehicle will spawn when default vehicle set is used in a oddball game" />
+			<bit name="Bit 4" index="4" tooltip="unused" />
+			<bit name="Bit 5" index="5" tooltip="unused" />
+			<bit name="Bit 6" index="6" tooltip="unused" />
+			<bit name="Bit 7" index="7" tooltip="unused" />
+			<bit name="Slayer Allowed" index="8" tooltip="vehicle can spawn in a slayer game" />
+			<bit name="CTF Allowed" index="9" tooltip="vehicle can spawn in a ctf game" />
+			<bit name="King Allowed" index="10" tooltip="vehicle can spawn in a king game" />
+			<bit name="Oddball Allowed" index="11" tooltip="vehicle can spawn in a oddball game" />
+			<bit name="Bit 12" index="12" tooltip="unused" />
+			<bit name="Bit 13" index="13" tooltip="unused" />
+			<bit name="Bit 14" index="14" tooltip="unused" />
+			<bit name="Bit 15" index="15" tooltip="unused" />
+		</flags16>
+		<undefined name="Unknown" offset="0x5C" visible="false" />
+		<undefined name="Unknown" offset="0x60" visible="false" />
+		<undefined name="Unknown" offset="0x64" visible="false" />
+		<undefined name="Unknown" offset="0x68" visible="false" />
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+	</tagblock>
+	<tagblock name="Vehicle Palette" offset="0x24C" visible="true" elementSize="0x30">
+		<tagRef name="Name" offset="0x0" visible="true" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+	</tagblock>
+	<tagblock name="Equipment" offset="0x258" visible="true" elementSize="0x28">
+		<int16 name="Palette Index" offset="0x0" visible="true" />
+		<int16 name="Name Index" offset="0x2" visible="true" />
+		<flags16 name="Placement Flags" offset="0x4" visible="true">
+			<bit name="Not Automatically" index="0" />
+			<bit name="Not On Easy" index="1" />
+			<bit name="Not On Normal" index="2" />
+			<bit name="Not On Hard" index="3" />
+		</flags16>
+		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
+		<int16 name="Unknown" offset="0x20" visible="false" />
+		<flags16 name="Misc Flags" offset="0x22" visible="true">
+			<bit name="Initially At Rest (Doesn't Fall)" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Does Accelerate (Moves Due To Explosions)" index="2" />
+		</flags16>
+		<undefined name="Unknown" offset="0x24" visible="false" />
+	</tagblock>
+	<tagblock name="Equipment Palette" offset="0x264" visible="true" elementSize="0x30">
+		<tagRef name="Name" offset="0x0" visible="true" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+	</tagblock>
+	<tagblock name="Weapons" offset="0x270" visible="true" elementSize="0x5C">
+		<int16 name="Palette Index" offset="0x0" visible="true" />
+		<int16 name="Name Index" offset="0x2" visible="true" />
+		<flags16 name="Placement Flags" offset="0x4" visible="true">
+			<bit name="Not Automatically" index="0" />
+			<bit name="Not On Easy" index="1" />
+			<bit name="Not On Normal" index="2" />
+			<bit name="Not On Hard" index="3" />
+		</flags16>
+		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<int16 name="Rounds Left" offset="0x48" visible="true" />
+		<int16 name="Rounds Loaded" offset="0x4A" visible="true" />
+		<flags16 name="Weapon Flags" offset="0x4C" visible="true">
+			<bit name="Initially At Rest (Doesn't Fall)" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Does Accelerate (Moves Due To Explosions)" index="2" />
+		</flags16>
+		<int16 name="Unknown" offset="0x4E" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
+	</tagblock>
+	<tagblock name="Weapon Palette" offset="0x27C" visible="true" elementSize="0x30">
+		<tagRef name="Name" offset="0x0" visible="true" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+	</tagblock>
+	<tagblock name="Device Groups" offset="0x288" visible="true" elementSize="0x34">
+		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<float32 name="Initial Value" offset="0x20" visible="true" />
+		<flags32 name="Flags" offset="0x24" visible="true">
+			<bit name="Can Change Only Once" index="0" />
+		</flags32>
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+	</tagblock>
+	<tagblock name="Machines" offset="0x294" visible="true" elementSize="0x40">
+		<int16 name="Palette Index" offset="0x0" visible="true" />
+		<int16 name="Name Index" offset="0x2" visible="true" />
+		<flags16 name="Placement Flags" offset="0x4" visible="true">
+			<bit name="Not Automatically" index="0" />
+			<bit name="Not On Easy" index="1" />
+			<bit name="Not On Normal" index="2" />
+			<bit name="Not On Hard" index="3" />
+		</flags16>
+		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<int16 name="Power Group Index" offset="0x28" visible="true" />
+		<int16 name="Position Group Index" offset="0x2A" visible="true" />
+		<flags32 name="Device Flags" offset="0x2C" visible="true">
+			<bit name="Initially Open (1.0)" index="0" />
+			<bit name="Initially Off (0.0)" index="1" />
+			<bit name="Can Change Only Once" index="2" />
+			<bit name="Position Reversed" index="3" />
+			<bit name="Not Usable From Any Side" index="4" />
+		</flags32>
+		<flags32 name="Machine Flags" offset="0x30" visible="true">
+			<bit name="Does Not Operate Automatically" index="0" />
+			<bit name="One-Sided" index="1" />
+			<bit name="Never Appears Locked" index="2" />
+			<bit name="Opened By Melee Attack" index="3" />
+		</flags32>
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+	</tagblock>
+	<tagblock name="Machine Palette" offset="0x2A0" visible="true" elementSize="0x30">
+		<tagRef name="Name" offset="0x0" visible="true" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+	</tagblock>
+	<tagblock name="Controls" offset="0x2AC" visible="true" elementSize="0x40">
+		<int16 name="Palette Index" offset="0x0" visible="true" />
+		<int16 name="Name Index" offset="0x2" visible="true" />
+		<flags16 name="Placement Flags" offset="0x4" visible="true">
+			<bit name="Not Automatically" index="0" />
+			<bit name="Not On Easy" index="1" />
+			<bit name="Not On Normal" index="2" />
+			<bit name="Not On Hard" index="3" />
+		</flags16>
+		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<int16 name="Power Group Index" offset="0x28" visible="true" />
+		<int16 name="Position Group Index" offset="0x2A" visible="true" />
+		<flags32 name="Device Flags" offset="0x2C" visible="true">
+			<bit name="Initially Open (1.0)" index="0" />
+			<bit name="Initially Off (0.0)" index="1" />
+			<bit name="Can Change Only Once" index="2" />
+			<bit name="Position Reversed" index="3" />
+			<bit name="Not Usable From Any Side" index="4" />
+		</flags32>
+		<flags32 name="Control Flags" offset="0x30" visible="true">
+			<bit name="Usable From Both Sides" index="0" />
+		</flags32>
+		<int16 name="Unknown" offset="0x34" visible="true" />
+		<int16 name="Unknown" offset="0x36" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+	</tagblock>
+	<tagblock name="Control Palette" offset="0x2B8" visible="true" elementSize="0x30">
+		<tagRef name="Name" offset="0x0" visible="true" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+	</tagblock>
+	<tagblock name="Light Fixtures" offset="0x2C4" visible="true" elementSize="0x58">
+		<int16 name="Palette Index" offset="0x0" visible="true" />
+		<int16 name="Name Index" offset="0x2" visible="true" />
+		<flags16 name="Placement Flags" offset="0x4" visible="true">
+			<bit name="Not Automatically" index="0" />
+			<bit name="Not On Easy" index="1" />
+			<bit name="Not On Normal" index="2" />
+			<bit name="Not On Hard" index="3" />
+		</flags16>
+		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<int16 name="Power Group Index" offset="0x28" visible="true" />
+		<int16 name="Position Group Index" offset="0x2A" visible="true" />
+		<flags32 name="Device Flags" offset="0x2C" visible="true">
+			<bit name="Initially Open (1.0)" index="0" />
+			<bit name="Initially Off (0.0)" index="1" />
+			<bit name="Can Change Only Once" index="2" />
+			<bit name="Position Reversed" index="3" />
+			<bit name="Not Usable From Any Side" index="4" />
+		</flags32>
+		<colorf name="Color" offset="0x30" alpha="false" visible="true" />
+		<float32 name="Intensity" offset="0x3C" visible="true" />
+		<degree name="Falloff Angle" offset="0x40" visible="true" />
+		<degree name="Cutoff Angle" offset="0x44" visible="true" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
+	</tagblock>
+	<tagblock name="Light Fixtures Palette" offset="0x2D0" visible="true" elementSize="0x30">
+		<tagRef name="Name" offset="0x0" visible="true" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+	</tagblock>
+	<tagblock name="Sound Scenery" offset="0x2DC" visible="true" elementSize="0x28">
+		<int16 name="Palette Index" offset="0x0" visible="true" />
+		<int16 name="Name Index" offset="0x2" visible="true" />
+		<flags16 name="Placement Flags" offset="0x4" visible="true">
+			<bit name="Not Automatically" index="0" />
+			<bit name="Not On Easy" index="1" />
+			<bit name="Not On Normal" index="2" />
+			<bit name="Not On Hard" index="3" />
+		</flags16>
+		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
+		<point3 name="Position" offset="0x8" visible="true" />
+		<degree3 name="Rotation" offset="0x14" visible="true" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+	</tagblock>
+	<tagblock name="Sound Scenery Palette" offset="0x2E8" visible="true" elementSize="0x30">
+		<tagRef name="Name" offset="0x0" visible="true" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+	</tagblock>
+	<undefined name="Unknown" offset="0x2F4" visible="false" />
+	<undefined name="Unknown" offset="0x2F8" visible="false" />
+	<undefined name="Unknown" offset="0x2FC" visible="false" />
+	<undefined name="Unknown" offset="0x300" visible="false" />
+	<undefined name="Unknown" offset="0x304" visible="false" />
+	<undefined name="Unknown" offset="0x308" visible="false" />
+	<undefined name="Unknown" offset="0x30C" visible="false" />
+	<undefined name="Unknown" offset="0x310" visible="false" />
+	<undefined name="Unknown" offset="0x314" visible="false" />
+	<undefined name="Unknown" offset="0x318" visible="false" />
+	<undefined name="Unknown" offset="0x31C" visible="false" />
+	<undefined name="Unknown" offset="0x320" visible="false" />
+	<undefined name="Unknown" offset="0x324" visible="false" />
+	<undefined name="Unknown" offset="0x328" visible="false" />
+	<undefined name="Unknown" offset="0x32C" visible="false" />
+	<undefined name="Unknown" offset="0x330" visible="false" />
+	<undefined name="Unknown" offset="0x334" visible="false" />
+	<undefined name="Unknown" offset="0x338" visible="false" />
+	<undefined name="Unknown" offset="0x33C" visible="false" />
+	<undefined name="Unknown" offset="0x340" visible="false" />
+	<undefined name="Unknown" offset="0x344" visible="false" />
+	<tagblock name="Player Starting Profile" offset="0x348" visible="true" elementSize="0x68">
+		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<float32 name="Starting Health Modifier" offset="0x20" visible="true" />
+		<float32 name="Starting Shield Modifier" offset="0x24" visible="true" />
+		<tagRef name="Primary Weapon" offset="0x28" visible="true" />
+		<int16 name="Primary Rounds Loaded" offset="0x38" visible="true" tooltip="-1 = weapon default" />
+		<int16 name="Primary Rounds Total" offset="0x3A" visible="true" tooltip="-1 = weapon default" />
+		<tagRef name="Secondary Weapon" offset="0x3C" visible="true" />
+		<int16 name="Secondary Rounds Loaded" offset="0x4C" visible="true" tooltip="-1 = weapon default" />
+		<int16 name="Secondary Rounds Total" offset="0x4E" visible="true" tooltip="-1 = weapon default" />
+		<int8 name="Starting Fart Attack Count" offset="0x50" visible="true" />
+		<int8 name="Starting Gut Grenade Attack Count" offset="0x51" visible="true" />
+		<int8 name="Starting Hand Attack Count" offset="0x52" visible="true" />
+		<int8 name="Starting Head Attack Count" offset="0x53" visible="true" />
+		<int8 name="Unknown" offset="0x54" visible="true" />
+		<int8 name="Hide Everything Except Fart" offset="0x55" visible="true" />
+		<int8 name="Unknown" offset="0x56" visible="true" />
+		<int8 name="Unknown" offset="0x57" visible="true" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
+		<undefined name="Unknown" offset="0x5C" visible="false" />
+		<undefined name="Unknown" offset="0x60" visible="false" />
+		<undefined name="Unknown" offset="0x64" visible="false" />
+	</tagblock>
+	<tagblock name="Player Starting Locations" offset="0x354" visible="true" elementSize="0x34">
+		<point3 name="Position" offset="0x0" visible="true" />
+		<degree name="Facing" offset="0xC" visible="true" />
+		<int16 name="Team Index" offset="0x10" visible="true" />
+		<int16 name="BSP Index" offset="0x12" visible="true" />
+		<enum16 name="Type 0" offset="0x14" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Ctf" value="0x1" />
+			<option name="Slayer" value="0x2" />
+			<option name="Oddball" value="0x3" />
+			<option name="King Of The Hill" value="0x4" />
+			<option name="Race" value="0x5" />
+			<option name="Terminator" value="0x6" />
+			<option name="Stub" value="0x7" />
+			<option name="Ignored1" value="0x8" />
+			<option name="Ignored2" value="0x9" />
+			<option name="Ignored3" value="0xA" />
+			<option name="Ignored4" value="0xB" />
+			<option name="All Games" value="0xC" />
+			<option name="All Except Ctf" value="0xD" />
+			<option name="All Except Race &amp; Ctf" value="0xE" />
+		</enum16>
+		<enum16 name="Type 1" offset="0x16" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Ctf" value="0x1" />
+			<option name="Slayer" value="0x2" />
+			<option name="Oddball" value="0x3" />
+			<option name="King Of The Hill" value="0x4" />
+			<option name="Race" value="0x5" />
+			<option name="Terminator" value="0x6" />
+			<option name="Stub" value="0x7" />
+			<option name="Ignored1" value="0x8" />
+			<option name="Ignored2" value="0x9" />
+			<option name="Ignored3" value="0xA" />
+			<option name="Ignored4" value="0xB" />
+			<option name="All Games" value="0xC" />
+			<option name="All Except Ctf" value="0xD" />
+			<option name="All Except Race &amp; Ctf" value="0xE" />
+		</enum16>
+		<enum16 name="Type 2" offset="0x18" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Ctf" value="0x1" />
+			<option name="Slayer" value="0x2" />
+			<option name="Oddball" value="0x3" />
+			<option name="King Of The Hill" value="0x4" />
+			<option name="Race" value="0x5" />
+			<option name="Terminator" value="0x6" />
+			<option name="Stub" value="0x7" />
+			<option name="Ignored1" value="0x8" />
+			<option name="Ignored2" value="0x9" />
+			<option name="Ignored3" value="0xA" />
+			<option name="Ignored4" value="0xB" />
+			<option name="All Games" value="0xC" />
+			<option name="All Except Ctf" value="0xD" />
+			<option name="All Except Race &amp; Ctf" value="0xE" />
+		</enum16>
+		<enum16 name="Type 3" offset="0x1A" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Ctf" value="0x1" />
+			<option name="Slayer" value="0x2" />
+			<option name="Oddball" value="0x3" />
+			<option name="King Of The Hill" value="0x4" />
+			<option name="Race" value="0x5" />
+			<option name="Terminator" value="0x6" />
+			<option name="Stub" value="0x7" />
+			<option name="Ignored1" value="0x8" />
+			<option name="Ignored2" value="0x9" />
+			<option name="Ignored3" value="0xA" />
+			<option name="Ignored4" value="0xB" />
+			<option name="All Games" value="0xC" />
+			<option name="All Except Ctf" value="0xD" />
+			<option name="All Except Race &amp; Ctf" value="0xE" />
+		</enum16>
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+	</tagblock>
+	<tagblock name="Trigger Volumes" offset="0x360" visible="true" elementSize="0x60">
+		<int32 name="Unknown" offset="0x0" visible="false" />
+		<ascii name="Name" offset="0x4" length="0x20" visible="true" />
+		<float32 name="Unknown" offset="0x24" visible="true" />
+		<float32 name="Unknown" offset="0x28" visible="true" />
+		<float32 name="Unknown" offset="0x2C" visible="true" />
+		<float32 name="Unknown" offset="0x30" visible="true" />
+		<float32 name="Unknown" offset="0x34" visible="true" />
+		<float32 name="Unknown" offset="0x38" visible="true" />
+		<float32 name="Unknown" offset="0x3C" visible="true" />
+		<float32 name="Unknown" offset="0x40" visible="true" />
+		<float32 name="Unknown" offset="0x44" visible="true" />
+		<point3 name="Position" offset="0x48" visible="true" />
+		<point3 name="Extents" offset="0x54" visible="true" />
+	</tagblock>
+	<tagblock name="Recorded Animations" offset="0x36C" visible="true" elementSize="0x40">
+		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<int8 name="Version" offset="0x20" visible="true" />
+		<int8 name="Raw Animation Data" offset="0x21" visible="true" />
+		<int8 name="Unit Control Data Version" offset="0x22" visible="true" />
+		<int8 name="Unknown" offset="0x23" visible="false" />
+		<int16 name="Length Of Animation" offset="0x24" visible="true" />
+		<int16 name="Unknown" offset="0x26" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<dataref name="Recorded Animation Event Stream" offset="0x2C" visible="true" />
+	</tagblock>
+	<tagblock name="Netgame Flags" offset="0x378" visible="true" elementSize="0x94">
+		<point3 name="Position" offset="0x0" visible="true" />
+		<degree name="Facing" offset="0xC" visible="true" />
+		<enum16 name="Type" offset="0x10" visible="true">
+			<option name="Ctf - Flag" value="0x0" />
+			<option name="Ctf - Vehicle" value="0x1" tooltip="unused" />
+			<option name="Oddball - Ball Spawn" value="0x2" />
+			<option name="Race - Track" value="0x3" />
+			<option name="Race - Vehicle" value="0x4" />
+			<option name="Vegas - Bank" value="0x5" tooltip="unused" />
+			<option name="Teleport From" value="0x6" />
+			<option name="Teleport To" value="0x7" />
+			<option name="Hill - Flag" value="0x8" />
+		</enum16>
+		<comment title="Usages">* Team index, 0=red, 1=blue
+* Player index, 0 through 15
+* Race track index, 0 through 31
+* Teleporter channel index
+* Hill index</comment>
+		<int16 name="Usage ID" offset="0x12" visible="true" />
+		<tagRef name="Weapon Group" offset="0x14" visible="true" />
+		<comment title="Ctf - Flag">Place one flag for each team (usage id)</comment>
+		<comment title="Oddball - Ball Spawn">Begin with player index (usage id) set to 0, which will be the first spawn, incrementing up to 15.
+They will be spawned incrementally as well.
+For best results, 0 should be in a team-neutral location, with each ball located on the opposite side of the map from the previous ball</comment>
+		<comment title="Race - Track">These represent the rally points for a lap in race
+Begin with track index (usage id) set to 0, incrementing up to 31, leaving no graps in numbers
+In rally *MODE*, tracks will be selected at random
+For best results, 0 should be in a team-neutral location</comment>
+		<comment title="Race - Vehicle">Place up to 16 vehicles (usage id is unused)</comment>
+		<comment title="Teleport From">Teleporter entry node. Usage id is used to link entry and exit nodes.</comment>
+		<comment title="Teleport To">Teleporter exit node. Usage id is used to link entry and exit nodes.
+These *DIFFERENCE* between the &lt;facing&gt; value for the entry and exit nodes is added to the player's yaw for their final facing direction upon exit
+E.g., assume entry's facing is -90, and exit is 0. That's a difference of +90 (exit minus entry)
+The player entrying the teleporter facing north would exit then facing east</comment>
+		<comment title="Hill - Flag">Set hill index (usage id) to designate this flag as part that hill. There can only be up to 64 total hills for a map
+A hill can consist of up to 12 flags
+If a hill consists of only 1 point, it will be 1wu wide in each cardinal direction around the position
+The hill represented by index 0 is the default in non-moving hill mode</comment>
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
+		<undefined name="Unknown" offset="0x5C" visible="false" />
+		<undefined name="Unknown" offset="0x60" visible="false" />
+		<undefined name="Unknown" offset="0x64" visible="false" />
+		<undefined name="Unknown" offset="0x68" visible="false" />
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+		<undefined name="Unknown" offset="0x78" visible="false" />
+		<undefined name="Unknown" offset="0x7C" visible="false" />
+		<undefined name="Unknown" offset="0x80" visible="false" />
+		<undefined name="Unknown" offset="0x84" visible="false" />
+		<undefined name="Unknown" offset="0x88" visible="false" />
+		<undefined name="Unknown" offset="0x8C" visible="false" />
+		<undefined name="Unknown" offset="0x90" visible="false" />
+	</tagblock>
+	<tagblock name="Netgame Equipment" offset="0x384" visible="true" elementSize="0x90">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="Levitate" index="0" />
+		</flags32>
+		<enum16 name="Type 0" offset="0x4" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Ctf" value="0x1" />
+			<option name="Slayer" value="0x2" />
+			<option name="Oddball" value="0x3" />
+			<option name="King Of The Hill" value="0x4" />
+			<option name="Race" value="0x5" />
+			<option name="Terminator" value="0x6" />
+			<option name="Stub" value="0x7" />
+			<option name="Ignored1" value="0x8" />
+			<option name="Ignored2" value="0x9" />
+			<option name="Ignored3" value="0xA" />
+			<option name="Ignored4" value="0xB" />
+			<option name="All Games" value="0xC" />
+			<option name="All Except Ctf" value="0xD" />
+			<option name="All Except Race &amp; Ctf" value="0xE" />
+		</enum16>
+		<enum16 name="Type 1" offset="0x6" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Ctf" value="0x1" />
+			<option name="Slayer" value="0x2" />
+			<option name="Oddball" value="0x3" />
+			<option name="King Of The Hill" value="0x4" />
+			<option name="Race" value="0x5" />
+			<option name="Terminator" value="0x6" />
+			<option name="Stub" value="0x7" />
+			<option name="Ignored1" value="0x8" />
+			<option name="Ignored2" value="0x9" />
+			<option name="Ignored3" value="0xA" />
+			<option name="Ignored4" value="0xB" />
+			<option name="All Games" value="0xC" />
+			<option name="All Except Ctf" value="0xD" />
+			<option name="All Except Race &amp; Ctf" value="0xE" />
+		</enum16>
+		<enum16 name="Type 2" offset="0x8" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Ctf" value="0x1" />
+			<option name="Slayer" value="0x2" />
+			<option name="Oddball" value="0x3" />
+			<option name="King Of The Hill" value="0x4" />
+			<option name="Race" value="0x5" />
+			<option name="Terminator" value="0x6" />
+			<option name="Stub" value="0x7" />
+			<option name="Ignored1" value="0x8" />
+			<option name="Ignored2" value="0x9" />
+			<option name="Ignored3" value="0xA" />
+			<option name="Ignored4" value="0xB" />
+			<option name="All Games" value="0xC" />
+			<option name="All Except Ctf" value="0xD" />
+			<option name="All Except Race &amp; Ctf" value="0xE" />
+		</enum16>
+		<enum16 name="Type 3" offset="0xA" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Ctf" value="0x1" />
+			<option name="Slayer" value="0x2" />
+			<option name="Oddball" value="0x3" />
+			<option name="King Of The Hill" value="0x4" />
+			<option name="Race" value="0x5" />
+			<option name="Terminator" value="0x6" />
+			<option name="Stub" value="0x7" />
+			<option name="Ignored1" value="0x8" />
+			<option name="Ignored2" value="0x9" />
+			<option name="Ignored3" value="0xA" />
+			<option name="Ignored4" value="0xB" />
+			<option name="All Games" value="0xC" />
+			<option name="All Except Ctf" value="0xD" />
+			<option name="All Except Race &amp; Ctf" value="0xE" />
+		</enum16>
+		<int16 name="Team Index" offset="0xC" visible="true" tooltip="0=red, 1=blue" />
+		<int16 name="Spawn Time" offset="0xE" visible="true" tooltip="0 means default to item collection time" />
+		<int32 name="Unknown" offset="0x10" visible="true" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<point3 name="Position" offset="0x40" visible="true" />
+		<degree name="Facing" offset="0x4C" visible="true" />
+		<tagRef name="Item Collection" offset="0x50" visible="true" />
+		<undefined name="Unknown" offset="0x60" visible="false" />
+		<undefined name="Unknown" offset="0x64" visible="false" />
+		<undefined name="Unknown" offset="0x68" visible="false" />
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+		<undefined name="Unknown" offset="0x78" visible="false" />
+		<undefined name="Unknown" offset="0x7C" visible="false" />
+		<undefined name="Unknown" offset="0x80" visible="false" />
+		<undefined name="Unknown" offset="0x84" visible="false" />
+		<undefined name="Unknown" offset="0x88" visible="false" />
+		<undefined name="Unknown" offset="0x8C" visible="false" />
+	</tagblock>
+	<tagblock name="Starting Equipment" offset="0x390" visible="true" elementSize="0xCC">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="No Grenades" index="0" />
+			<bit name="Plasma Grenades" index="1" />
+		</flags32>
+		<enum16 name="Type 0" offset="0x4" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Ctf" value="0x1" />
+			<option name="Slayer" value="0x2" />
+			<option name="Oddball" value="0x3" />
+			<option name="King Of The Hill" value="0x4" />
+			<option name="Race" value="0x5" />
+			<option name="Terminator" value="0x6" />
+			<option name="Stub" value="0x7" />
+			<option name="Ignored1" value="0x8" />
+			<option name="Ignored2" value="0x9" />
+			<option name="Ignored3" value="0xA" />
+			<option name="Ignored4" value="0xB" />
+			<option name="All Games" value="0xC" />
+			<option name="All Except Ctf" value="0xD" />
+			<option name="All Except Race &amp; Ctf" value="0xE" />
+		</enum16>
+		<enum16 name="Type 1" offset="0x6" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Ctf" value="0x1" />
+			<option name="Slayer" value="0x2" />
+			<option name="Oddball" value="0x3" />
+			<option name="King Of The Hill" value="0x4" />
+			<option name="Race" value="0x5" />
+			<option name="Terminator" value="0x6" />
+			<option name="Stub" value="0x7" />
+			<option name="Ignored1" value="0x8" />
+			<option name="Ignored2" value="0x9" />
+			<option name="Ignored3" value="0xA" />
+			<option name="Ignored4" value="0xB" />
+			<option name="All Games" value="0xC" />
+			<option name="All Except Ctf" value="0xD" />
+			<option name="All Except Race &amp; Ctf" value="0xE" />
+		</enum16>
+		<enum16 name="Type 2" offset="0x8" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Ctf" value="0x1" />
+			<option name="Slayer" value="0x2" />
+			<option name="Oddball" value="0x3" />
+			<option name="King Of The Hill" value="0x4" />
+			<option name="Race" value="0x5" />
+			<option name="Terminator" value="0x6" />
+			<option name="Stub" value="0x7" />
+			<option name="Ignored1" value="0x8" />
+			<option name="Ignored2" value="0x9" />
+			<option name="Ignored3" value="0xA" />
+			<option name="Ignored4" value="0xB" />
+			<option name="All Games" value="0xC" />
+			<option name="All Except Ctf" value="0xD" />
+			<option name="All Except Race &amp; Ctf" value="0xE" />
+		</enum16>
+		<enum16 name="Type 3" offset="0xA" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Ctf" value="0x1" />
+			<option name="Slayer" value="0x2" />
+			<option name="Oddball" value="0x3" />
+			<option name="King Of The Hill" value="0x4" />
+			<option name="Race" value="0x5" />
+			<option name="Terminator" value="0x6" />
+			<option name="Stub" value="0x7" />
+			<option name="Ignored1" value="0x8" />
+			<option name="Ignored2" value="0x9" />
+			<option name="Ignored3" value="0xA" />
+			<option name="Ignored4" value="0xB" />
+			<option name="All Games" value="0xC" />
+			<option name="All Except Ctf" value="0xD" />
+			<option name="All Except Race &amp; Ctf" value="0xE" />
+		</enum16>
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<tagRef name="Item Collection 1" offset="0x3C" visible="true" />
+		<tagRef name="Item Collection 2" offset="0x4C" visible="true" />
+		<tagRef name="Item Collection 3" offset="0x5C" visible="true" />
+		<tagRef name="Item Collection 4" offset="0x6C" visible="true" />
+		<tagRef name="Item Collection 5" offset="0x7C" visible="true" />
+		<tagRef name="Item Collection 6" offset="0x8C" visible="true" />
+		<undefined name="Unknown" offset="0x9C" visible="false" />
+		<undefined name="Unknown" offset="0xA0" visible="false" />
+		<undefined name="Unknown" offset="0xA4" visible="false" />
+		<undefined name="Unknown" offset="0xA8" visible="false" />
+		<undefined name="Unknown" offset="0xAC" visible="false" />
+		<undefined name="Unknown" offset="0xB0" visible="false" />
+		<undefined name="Unknown" offset="0xB4" visible="false" />
+		<undefined name="Unknown" offset="0xB8" visible="false" />
+		<undefined name="Unknown" offset="0xBC" visible="false" />
+		<undefined name="Unknown" offset="0xC0" visible="false" />
+		<undefined name="Unknown" offset="0xC4" visible="false" />
+		<undefined name="Unknown" offset="0xC8" visible="false" />
+	</tagblock>
+	<tagblock name="BSP Switch Trigger Volumes" offset="0x39C" visible="true" elementSize="0x8">
+		<int16 name="Trigger Volume Index" offset="0x0" visible="true" />
+		<int16 name="Source" offset="0x2" visible="true" />
+		<int16 name="Destination" offset="0x4" visible="true" />
+		<int16 name="Unknown" offset="0x6" visible="false" />
+	</tagblock>
+	<tagblock name="Decals" offset="0x3A8" visible="true" elementSize="0x10">
+		<int16 name="Decal Type Index" offset="0x0" visible="true" />
+		<int8 name="Yaw[-127,127]" offset="0x2" visible="true" />
+		<int8 name="Pitch[-127,127]" offset="0x3" visible="true" />
+		<point3 name="Position" offset="0x4" visible="true" />
+	</tagblock>
+	<tagblock name="Decal Palette" offset="0x3B4" visible="true" elementSize="0x10">
+		<tagRef name="Reference" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Detail Object Collection Palette" offset="0x3C0" visible="true" elementSize="0x30">
+		<tagRef name="Name" offset="0x0" visible="true" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+	</tagblock>
+	<undefined name="Unknown" offset="0x3CC" visible="false" />
+	<undefined name="Unknown" offset="0x3D0" visible="false" />
+	<undefined name="Unknown" offset="0x3D4" visible="false" />
+	<undefined name="Unknown" offset="0x3D8" visible="false" />
+	<undefined name="Unknown" offset="0x3DC" visible="false" />
+	<undefined name="Unknown" offset="0x3E0" visible="false" />
+	<undefined name="Unknown" offset="0x3E4" visible="false" />
+	<undefined name="Unknown" offset="0x3E8" visible="false" />
+	<undefined name="Unknown" offset="0x3EC" visible="false" />
+	<undefined name="Unknown" offset="0x3F0" visible="false" />
+	<undefined name="Unknown" offset="0x3F4" visible="false" />
+	<undefined name="Unknown" offset="0x3F8" visible="false" />
+	<undefined name="Unknown" offset="0x3FC" visible="false" />
+	<undefined name="Unknown" offset="0x400" visible="false" />
+	<undefined name="Unknown" offset="0x404" visible="false" />
+	<undefined name="Unknown" offset="0x408" visible="false" />
+	<undefined name="Unknown" offset="0x40C" visible="false" />
+	<undefined name="Unknown" offset="0x410" visible="false" />
+	<undefined name="Unknown" offset="0x414" visible="false" />
+	<undefined name="Unknown" offset="0x418" visible="false" />
+	<undefined name="Unknown" offset="0x41C" visible="false" />
+	<tagblock name="Actor Palette" offset="0x420" visible="true" elementSize="0x10">
+		<tagRef name="Reference" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Encounters" offset="0x42C" visible="true" elementSize="0xB0">
+		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<flags32 name="Flags" offset="0x20" visible="true">
+			<bit name="Not Initially Created" index="0" />
+			<bit name="Respawn Enabled" index="1" />
+			<bit name="Initially Blind" index="2" />
+			<bit name="Initially Deaf" index="3" />
+			<bit name="Initially Braindead" index="4" />
+			<bit name="3D Firing Positions" index="5" />
+			<bit name="Manual BSP Index Specified" index="6" />
+		</flags32>
+		<enum16 name="Team Index" offset="0x24" visible="true">
+			<option name="0 / Default By Unit" value="0x0" />
+			<option name="1 / Player" value="0x1" />
+			<option name="2 / Human" value="0x2" />
+			<option name="3 / Covenant" value="0x3" />
+			<option name="4 / Flood" value="0x4" />
+			<option name="5 / Sentinel" value="0x5" />
+			<option name="6 / Unused6" value="0x6" />
+			<option name="7 / Unused7" value="0x7" />
+			<option name="8 / Unused8" value="0x8" />
+			<option name="9 / Unused9" value="0x9" />
+		</enum16>
+		<int8 name="Unknown" offset="0x26" visible="false" />
+		<int8 name="Unknown" offset="0x27" visible="false" />
+		<enum16 name="Search Behavior" offset="0x28" visible="true">
+			<option name="Normal" value="0x0" />
+			<option name="Never" value="0x1" />
+			<option name="Tenacious" value="0x2" />
+		</enum16>
+		<int16 name="Manual BSP Index" offset="0x2A" visible="true" tooltip="structure bsp index that this encounter belongs to... ignored unless 'manual bsp index' flag is checked. if this flag is not checked, the structure bsp is found automatically (may fail in areas of overlapping geometry)" />
+		<rangef name="Respawn Delay" offset="0x2C" visible="true" tooltip="delay between respawning actors in this encounter" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
+		<undefined name="Unknown" offset="0x5C" visible="false" />
+		<undefined name="Unknown" offset="0x60" visible="false" />
+		<undefined name="Unknown" offset="0x64" visible="false" />
+		<undefined name="Unknown" offset="0x68" visible="false" />
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+		<undefined name="Unknown" offset="0x78" visible="false" />
+		<int16 name="Unknown" offset="0x7C" visible="false" />
+		<int16 name="Unknown" offset="0x7E" visible="false" />
+		<tagblock name="Squads" offset="0x80" visible="true" elementSize="0xE8">
+			<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+			<int16 name="Actor Type Index" offset="0x20" visible="true" />
+			<int16 name="Platoon Index" offset="0x22" visible="true" />
+			<enum16 name="Initial State" offset="0x24" visible="true" tooltip="state that this actor starts in">
+				<option name="None" value="0x0" />
+				<option name="Sleeping" value="0x1" />
+				<option name="Alert" value="0x2" />
+				<option name="Moving - Repeat Same Position" value="0x3" />
+				<option name="Moving - Loop" value="0x4" />
+				<option name="Moving - Loop Back And Forth" value="0x5" />
+				<option name="Moving - Loop Randomly" value="0x6" />
+				<option name="Moving - Randomly" value="0x7" />
+				<option name="Guarding" value="0x8" />
+				<option name="Guarding At Guard Position" value="0x9" />
+				<option name="Searching" value="0xA" />
+				<option name="Fleeing" value="0xB" />
+			</enum16>
+			<enum16 name="Return State" offset="0x26" visible="true" tooltip="state that this actor will return to when it has nothing to do">
+				<option name="None" value="0x0" />
+				<option name="Sleeping" value="0x1" />
+				<option name="Alert" value="0x2" />
+				<option name="Moving - Repeat Same Position" value="0x3" />
+				<option name="Moving - Loop" value="0x4" />
+				<option name="Moving - Loop Back And Forth" value="0x5" />
+				<option name="Moving - Loop Randomly" value="0x6" />
+				<option name="Moving - Randomly" value="0x7" />
+				<option name="Guarding" value="0x8" />
+				<option name="Guarding At Guard Position" value="0x9" />
+				<option name="Searching" value="0xA" />
+				<option name="Fleeing" value="0xB" />
+			</enum16>
+			<flags32 name="Flags" offset="0x28" visible="true">
+				<bit name="Unused" index="0" />
+				<bit name="Never Search" index="1" />
+				<bit name="Start Timer Immediately" index="2" />
+				<bit name="No Timer, Delay Forever" index="3" />
+				<bit name="Magic Sight After Timer" index="4" />
+				<bit name="Automatic Migration" index="5" />
+			</flags32>
+			<enum16 name="Unique Leader Type" offset="0x2C" visible="true" tooltip="what kind of leader this squad has (e.g. a sarge for marines) - 'normal' is based on the size of the squad, 'random' always creates a leader, or you can specify an individual type">
+				<option name="Normal" value="0x0" />
+				<option name="None" value="0x1" />
+				<option name="Random" value="0x2" />
+				<option name="Sgt Johnson" value="0x3" />
+				<option name="Sgt Lehto" value="0x4" />
+			</enum16>
+			<int16 name="Unknown" offset="0x2E" visible="false" />
+			<undefined name="Unknown" offset="0x30" visible="false" />
+			<undefined name="Unknown" offset="0x34" visible="false" />
+			<undefined name="Unknown" offset="0x38" visible="false" />
+			<undefined name="Unknown" offset="0x3C" visible="false" />
+			<undefined name="Unknown" offset="0x40" visible="false" />
+			<undefined name="Unknown" offset="0x44" visible="false" />
+			<undefined name="Unknown" offset="0x48" visible="false" />
+			<int16 name="Unknown" offset="0x4C" visible="false" />
+			<int16 name="Maneuver To Squad Index" offset="0x4E" visible="true" />
+			<float32 name="Squad Delay Time" offset="0x50" visible="true" />
+			<flags32 name="Attacking" offset="0x54" visible="true">
+				<bit name="A" index="0" />
+				<bit name="B" index="1" />
+				<bit name="C" index="2" />
+				<bit name="D" index="3" />
+				<bit name="E" index="4" />
+				<bit name="F" index="5" />
+				<bit name="G" index="6" />
+				<bit name="H" index="7" />
+				<bit name="I" index="8" />
+				<bit name="J" index="9" />
+				<bit name="K" index="10" />
+				<bit name="L" index="11" />
+				<bit name="M" index="12" />
+				<bit name="N" index="13" />
+				<bit name="O" index="14" />
+				<bit name="P" index="15" />
+				<bit name="Q" index="16" />
+				<bit name="R" index="17" />
+				<bit name="S" index="18" />
+				<bit name="T" index="19" />
+				<bit name="U" index="20" />
+				<bit name="V" index="21" />
+				<bit name="W" index="22" />
+				<bit name="X" index="23" />
+				<bit name="Y" index="24" />
+				<bit name="Z" index="25" />
+			</flags32>
+			<flags32 name="Attacking Search" offset="0x58" visible="true">
+				<bit name="A" index="0" />
+				<bit name="B" index="1" />
+				<bit name="C" index="2" />
+				<bit name="D" index="3" />
+				<bit name="E" index="4" />
+				<bit name="F" index="5" />
+				<bit name="G" index="6" />
+				<bit name="H" index="7" />
+				<bit name="I" index="8" />
+				<bit name="J" index="9" />
+				<bit name="K" index="10" />
+				<bit name="L" index="11" />
+				<bit name="M" index="12" />
+				<bit name="N" index="13" />
+				<bit name="O" index="14" />
+				<bit name="P" index="15" />
+				<bit name="Q" index="16" />
+				<bit name="R" index="17" />
+				<bit name="S" index="18" />
+				<bit name="T" index="19" />
+				<bit name="U" index="20" />
+				<bit name="V" index="21" />
+				<bit name="W" index="22" />
+				<bit name="X" index="23" />
+				<bit name="Y" index="24" />
+				<bit name="Z" index="25" />
+			</flags32>
+			<flags32 name="Attacking Guard" offset="0x5C" visible="true">
+				<bit name="A" index="0" />
+				<bit name="B" index="1" />
+				<bit name="C" index="2" />
+				<bit name="D" index="3" />
+				<bit name="E" index="4" />
+				<bit name="F" index="5" />
+				<bit name="G" index="6" />
+				<bit name="H" index="7" />
+				<bit name="I" index="8" />
+				<bit name="J" index="9" />
+				<bit name="K" index="10" />
+				<bit name="L" index="11" />
+				<bit name="M" index="12" />
+				<bit name="N" index="13" />
+				<bit name="O" index="14" />
+				<bit name="P" index="15" />
+				<bit name="Q" index="16" />
+				<bit name="R" index="17" />
+				<bit name="S" index="18" />
+				<bit name="T" index="19" />
+				<bit name="U" index="20" />
+				<bit name="V" index="21" />
+				<bit name="W" index="22" />
+				<bit name="X" index="23" />
+				<bit name="Y" index="24" />
+				<bit name="Z" index="25" />
+			</flags32>
+			<flags32 name="Defending" offset="0x60" visible="true">
+				<bit name="A" index="0" />
+				<bit name="B" index="1" />
+				<bit name="C" index="2" />
+				<bit name="D" index="3" />
+				<bit name="E" index="4" />
+				<bit name="F" index="5" />
+				<bit name="G" index="6" />
+				<bit name="H" index="7" />
+				<bit name="I" index="8" />
+				<bit name="J" index="9" />
+				<bit name="K" index="10" />
+				<bit name="L" index="11" />
+				<bit name="M" index="12" />
+				<bit name="N" index="13" />
+				<bit name="O" index="14" />
+				<bit name="P" index="15" />
+				<bit name="Q" index="16" />
+				<bit name="R" index="17" />
+				<bit name="S" index="18" />
+				<bit name="T" index="19" />
+				<bit name="U" index="20" />
+				<bit name="V" index="21" />
+				<bit name="W" index="22" />
+				<bit name="X" index="23" />
+				<bit name="Y" index="24" />
+				<bit name="Z" index="25" />
+			</flags32>
+			<flags32 name="Defending Search" offset="0x64" visible="true">
+				<bit name="A" index="0" />
+				<bit name="B" index="1" />
+				<bit name="C" index="2" />
+				<bit name="D" index="3" />
+				<bit name="E" index="4" />
+				<bit name="F" index="5" />
+				<bit name="G" index="6" />
+				<bit name="H" index="7" />
+				<bit name="I" index="8" />
+				<bit name="J" index="9" />
+				<bit name="K" index="10" />
+				<bit name="L" index="11" />
+				<bit name="M" index="12" />
+				<bit name="N" index="13" />
+				<bit name="O" index="14" />
+				<bit name="P" index="15" />
+				<bit name="Q" index="16" />
+				<bit name="R" index="17" />
+				<bit name="S" index="18" />
+				<bit name="T" index="19" />
+				<bit name="U" index="20" />
+				<bit name="V" index="21" />
+				<bit name="W" index="22" />
+				<bit name="X" index="23" />
+				<bit name="Y" index="24" />
+				<bit name="Z" index="25" />
+			</flags32>
+			<flags32 name="Defending Guard" offset="0x68" visible="true">
+				<bit name="A" index="0" />
+				<bit name="B" index="1" />
+				<bit name="C" index="2" />
+				<bit name="D" index="3" />
+				<bit name="E" index="4" />
+				<bit name="F" index="5" />
+				<bit name="G" index="6" />
+				<bit name="H" index="7" />
+				<bit name="I" index="8" />
+				<bit name="J" index="9" />
+				<bit name="K" index="10" />
+				<bit name="L" index="11" />
+				<bit name="M" index="12" />
+				<bit name="N" index="13" />
+				<bit name="O" index="14" />
+				<bit name="P" index="15" />
+				<bit name="Q" index="16" />
+				<bit name="R" index="17" />
+				<bit name="S" index="18" />
+				<bit name="T" index="19" />
+				<bit name="U" index="20" />
+				<bit name="V" index="21" />
+				<bit name="W" index="22" />
+				<bit name="X" index="23" />
+				<bit name="Y" index="24" />
+				<bit name="Z" index="25" />
+			</flags32>
+			<flags32 name="Pursuing" offset="0x6C" visible="true">
+				<bit name="A" index="0" />
+				<bit name="B" index="1" />
+				<bit name="C" index="2" />
+				<bit name="D" index="3" />
+				<bit name="E" index="4" />
+				<bit name="F" index="5" />
+				<bit name="G" index="6" />
+				<bit name="H" index="7" />
+				<bit name="I" index="8" />
+				<bit name="J" index="9" />
+				<bit name="K" index="10" />
+				<bit name="L" index="11" />
+				<bit name="M" index="12" />
+				<bit name="N" index="13" />
+				<bit name="O" index="14" />
+				<bit name="P" index="15" />
+				<bit name="Q" index="16" />
+				<bit name="R" index="17" />
+				<bit name="S" index="18" />
+				<bit name="T" index="19" />
+				<bit name="U" index="20" />
+				<bit name="V" index="21" />
+				<bit name="W" index="22" />
+				<bit name="X" index="23" />
+				<bit name="Y" index="24" />
+				<bit name="Z" index="25" />
+			</flags32>
+			<undefined name="Unknown" offset="0x70" visible="false" />
+			<undefined name="Unknown" offset="0x74" visible="false" />
+			<undefined name="Unknown" offset="0x78" visible="false" />
+			<int16 name="Normal Difficulty Count" offset="0x7C" visible="true" tooltip="initial number of actors on normal difficulty" />
+			<int16 name="Insane Difficulty Count" offset="0x7E" visible="true" tooltip="initial number of actors on insane difficulty (hard difficulty is midway between normal and insane)" />
+			<enum16 name="Major Upgrade" offset="0x80" visible="true">
+				<option name="Normal" value="0x0" />
+				<option name="Few" value="0x1" />
+				<option name="Many" value="0x2" />
+				<option name="None" value="0x3" />
+				<option name="All" value="0x4" />
+			</enum16>
+			<int16 name="Unknown" offset="0x82" visible="false" />
+			<int16 name="Respawn Minimum Actors" offset="0x84" visible="true" tooltip="minimum number of actors alive at once (will spawn instantly if less than this number)" />
+			<int16 name="Respawn Maximum Actors" offset="0x86" visible="true" tooltip="maximum number of actors alive at once (never spawns above this number)" />
+			<int16 name="Respawn Total" offset="0x88" visible="true" tooltip="total number to respawn (zero = infinite)" />
+			<int16 name="Unknown" offset="0x8A" visible="false" />
+			<rangef name="Respawn Delay" offset="0x8C" visible="true" tooltip="delay between respawning actors in this squad" />
+			<undefined name="Unknown" offset="0x94" visible="false" />
+			<undefined name="Unknown" offset="0x98" visible="false" />
+			<undefined name="Unknown" offset="0x9C" visible="false" />
+			<undefined name="Unknown" offset="0xA0" visible="false" />
+			<undefined name="Unknown" offset="0xA4" visible="false" />
+			<undefined name="Unknown" offset="0xA8" visible="false" />
+			<undefined name="Unknown" offset="0xAC" visible="false" />
+			<undefined name="Unknown" offset="0xB0" visible="false" />
+			<undefined name="Unknown" offset="0xB4" visible="false" />
+			<undefined name="Unknown" offset="0xB8" visible="false" />
+			<undefined name="Unknown" offset="0xBC" visible="false" />
+			<undefined name="Unknown" offset="0xC0" visible="false" />
+			<tagblock name="Move Positions" offset="0xC4" visible="true" elementSize="0x50">
+				<point3 name="Position" offset="0x0" visible="true" />
+				<degree name="Facing" offset="0xC" visible="true" />
+				<float32 name="Weight" offset="0x10" visible="true" />
+				<rangef name="Time" offset="0x14" visible="true" />
+				<int16 name="Animation Index" offset="0x1C" visible="true" />
+				<int8 name="Sequence ID" offset="0x1E" visible="true" tooltip="identifies this move position as belonging to a sequence, only actors whose starting locations match this sequence ID can use it (zero = no sequence)" />
+				<int8 name="Unknown" offset="0x1F" visible="false" />
+				<undefined name="Unknown" offset="0x20" visible="false" />
+				<undefined name="Unknown" offset="0x24" visible="false" />
+				<undefined name="Unknown" offset="0x28" visible="false" />
+				<undefined name="Unknown" offset="0x2C" visible="false" />
+				<undefined name="Unknown" offset="0x30" visible="false" />
+				<undefined name="Unknown" offset="0x34" visible="false" />
+				<undefined name="Unknown" offset="0x38" visible="false" />
+				<undefined name="Unknown" offset="0x3C" visible="false" />
+				<undefined name="Unknown" offset="0x40" visible="false" />
+				<undefined name="Unknown" offset="0x44" visible="false" />
+				<undefined name="Unknown" offset="0x48" visible="false" />
+				<int32 name="Surface Index" offset="0x4C" visible="true" />
+			</tagblock>
+			<tagblock name="Starting Locations" offset="0xD0" visible="true" elementSize="0x1C">
+				<point3 name="Position" offset="0x0" visible="true" />
+				<degree name="Facing" offset="0xC" visible="true" />
+				<int16 name="Unknown" offset="0x10" visible="false" />
+				<int8 name="Sequence ID" offset="0x12" visible="true" tooltip="which move position sequence we can use (zero = no specific sequences)" />
+				<flags8 name="Flags" offset="0x13" visible="true">
+					<bit name="Required" index="0" />
+				</flags8>
+				<enum16 name="Return State" offset="0x14" visible="true" tooltip="state that this actor will return to when it has nothing to do">
+					<option name="None" value="0x0" />
+					<option name="Sleeping" value="0x1" />
+					<option name="Alert" value="0x2" />
+					<option name="Moving - Repeat Same Position" value="0x3" />
+					<option name="Moving - Loop" value="0x4" />
+					<option name="Moving - Loop Back And Forth" value="0x5" />
+					<option name="Moving - Loop Randomly" value="0x6" />
+					<option name="Moving - Randomly" value="0x7" />
+					<option name="Guarding" value="0x8" />
+					<option name="Guarding At Guard Position" value="0x9" />
+					<option name="Searching" value="0xA" />
+					<option name="Fleeing" value="0xB" />
+				</enum16>
+				<enum16 name="Initial State" offset="0x16" visible="true" tooltip="state that this actor starts in">
+					<option name="None" value="0x0" />
+					<option name="Sleeping" value="0x1" />
+					<option name="Alert" value="0x2" />
+					<option name="Moving - Repeat Same Position" value="0x3" />
+					<option name="Moving - Loop" value="0x4" />
+					<option name="Moving - Loop Back And Forth" value="0x5" />
+					<option name="Moving - Loop Randomly" value="0x6" />
+					<option name="Moving - Randomly" value="0x7" />
+					<option name="Guarding" value="0x8" />
+					<option name="Guarding At Guard Position" value="0x9" />
+					<option name="Searching" value="0xA" />
+					<option name="Fleeing" value="0xB" />
+				</enum16>
+				<int16 name="Actor Type Index" offset="0x18" visible="true" />
+				<int16 name="Command List Index" offset="0x1A" visible="true" />
+			</tagblock>
+			<undefined name="Unknown" offset="0xDC" visible="false" />
+			<undefined name="Unknown" offset="0xE0" visible="false" />
+			<undefined name="Unknown" offset="0xE4" visible="false" />
+		</tagblock>
+		<tagblock name="Platoons" offset="0x8C" visible="true" elementSize="0xAC">
+			<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+			<flags32 name="Flags" offset="0x20" visible="true">
+				<bit name="Flee When Maneuvering" index="0" />
+				<bit name="Say 'Advancing' When Maneuver" index="1" />
+				<bit name="Start In Defending State" index="2" />
+			</flags32>
+			<undefined name="Unknown" offset="0x24" visible="false" />
+			<undefined name="Unknown" offset="0x28" visible="false" />
+			<undefined name="Unknown" offset="0x2C" visible="false" />
+			<enum16 name="Change Attacking/Defending State When" offset="0x30" visible="true">
+				<option name="(Never)" value="0x0" />
+				<option name="&lt; 75% Strength" value="0x1" />
+				<option name="&lt; 50% Strength" value="0x2" />
+				<option name="&lt; 25% Strength" value="0x3" />
+				<option name="Anybody Dead" value="0x4" />
+				<option name="25% Dead" value="0x5" />
+				<option name="50% Dead" value="0x6" />
+				<option name="75% Dead" value="0x7" />
+				<option name="All But One Dead" value="0x8" />
+				<option name="All Dead" value="0x9" />
+			</enum16>
+			<int16 name="Happens To Index" offset="0x32" visible="true" />
+			<undefined name="Unknown" offset="0x34" visible="false" />
+			<undefined name="Unknown" offset="0x38" visible="false" />
+			<enum16 name="Maneuver When" offset="0x3C" visible="true">
+				<option name="(Never)" value="0x0" />
+				<option name="&lt; 75% Strength" value="0x1" />
+				<option name="&lt; 50% Strength" value="0x2" />
+				<option name="&lt; 25% Strength" value="0x3" />
+				<option name="Anybody Dead" value="0x4" />
+				<option name="25% Dead" value="0x5" />
+				<option name="50% Dead" value="0x6" />
+				<option name="75% Dead" value="0x7" />
+				<option name="All But One Dead" value="0x8" />
+				<option name="All Dead" value="0x9" />
+			</enum16>
+			<int16 name="Happens To Index" offset="0x3E" visible="true" />
+			<undefined name="Unknown" offset="0x40" visible="false" />
+			<undefined name="Unknown" offset="0x44" visible="false" />
+			<undefined name="Unknown" offset="0x48" visible="false" />
+			<undefined name="Unknown" offset="0x4C" visible="false" />
+			<undefined name="Unknown" offset="0x50" visible="false" />
+			<undefined name="Unknown" offset="0x54" visible="false" />
+			<undefined name="Unknown" offset="0x58" visible="false" />
+			<undefined name="Unknown" offset="0x5C" visible="false" />
+			<undefined name="Unknown" offset="0x60" visible="false" />
+			<undefined name="Unknown" offset="0x64" visible="false" />
+			<undefined name="Unknown" offset="0x68" visible="false" />
+			<undefined name="Unknown" offset="0x6C" visible="false" />
+			<undefined name="Unknown" offset="0x70" visible="false" />
+			<undefined name="Unknown" offset="0x74" visible="false" />
+			<undefined name="Unknown" offset="0x78" visible="false" />
+			<undefined name="Unknown" offset="0x7C" visible="false" />
+			<undefined name="Unknown" offset="0x80" visible="false" />
+			<undefined name="Unknown" offset="0x84" visible="false" />
+			<undefined name="Unknown" offset="0x88" visible="false" />
+			<undefined name="Unknown" offset="0x8C" visible="false" />
+			<undefined name="Unknown" offset="0x90" visible="false" />
+			<undefined name="Unknown" offset="0x94" visible="false" />
+			<undefined name="Unknown" offset="0x98" visible="false" />
+			<undefined name="Unknown" offset="0x9C" visible="false" />
+			<undefined name="Unknown" offset="0xA0" visible="false" />
+			<undefined name="Unknown" offset="0xA4" visible="false" />
+			<undefined name="Unknown" offset="0xA8" visible="false" />
+		</tagblock>
+		<tagblock name="Firing Positions" offset="0x98" visible="true" elementSize="0x18">
+			<point3 name="Position" offset="0x0" visible="true" />
+			<enum16 name="Group Index" offset="0xC" visible="true">
+				<option name="A" value="0x0" />
+				<option name="B" value="0x1" />
+				<option name="C" value="0x2" />
+				<option name="D" value="0x3" />
+				<option name="E" value="0x4" />
+				<option name="F" value="0x5" />
+				<option name="G" value="0x6" />
+				<option name="H" value="0x7" />
+				<option name="I" value="0x8" />
+				<option name="J" value="0x9" />
+				<option name="K" value="0xA" />
+				<option name="L" value="0xB" />
+				<option name="M" value="0xC" />
+				<option name="N" value="0xD" />
+				<option name="O" value="0xE" />
+				<option name="P" value="0xF" />
+				<option name="Q" value="0x10" />
+				<option name="R" value="0x11" />
+				<option name="S" value="0x12" />
+				<option name="T" value="0x13" />
+				<option name="U" value="0x14" />
+				<option name="V" value="0x15" />
+				<option name="W" value="0x16" />
+				<option name="X" value="0x17" />
+				<option name="Y" value="0x18" />
+				<option name="Z" value="0x19" />
+			</enum16>
+			<int16 name="Unknown" offset="0xE" visible="false" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
+			<int16 name="Unknown" offset="0x14" visible="false" />
+			<int16 name="Unknown" offset="0x16" visible="false" />
+		</tagblock>
+		<tagblock name="Player Starting Locations" offset="0xA4" visible="true" elementSize="0x34">
+			<point3 name="Position" offset="0x0" visible="true" />
+			<degree name="Facing" offset="0xC" visible="true" />
+			<int16 name="Team Index" offset="0x10" visible="true" />
+			<int16 name="BSP Index" offset="0x12" visible="true" />
+			<enum16 name="Type 0" offset="0x14" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Ctf" value="0x1" />
+				<option name="Slayer" value="0x2" />
+				<option name="Oddball" value="0x3" />
+				<option name="King Of The Hill" value="0x4" />
+				<option name="Race" value="0x5" />
+				<option name="Terminator" value="0x6" />
+				<option name="Stub" value="0x7" />
+				<option name="Ignored1" value="0x8" />
+				<option name="Ignored2" value="0x9" />
+				<option name="Ignored3" value="0xA" />
+				<option name="Ignored4" value="0xB" />
+				<option name="All Games" value="0xC" />
+				<option name="All Except Ctf" value="0xD" />
+				<option name="All Except Race &amp; Ctf" value="0xE" />
+			</enum16>
+			<enum16 name="Type 1" offset="0x16" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Ctf" value="0x1" />
+				<option name="Slayer" value="0x2" />
+				<option name="Oddball" value="0x3" />
+				<option name="King Of The Hill" value="0x4" />
+				<option name="Race" value="0x5" />
+				<option name="Terminator" value="0x6" />
+				<option name="Stub" value="0x7" />
+				<option name="Ignored1" value="0x8" />
+				<option name="Ignored2" value="0x9" />
+				<option name="Ignored3" value="0xA" />
+				<option name="Ignored4" value="0xB" />
+				<option name="All Games" value="0xC" />
+				<option name="All Except Ctf" value="0xD" />
+				<option name="All Except Race &amp; Ctf" value="0xE" />
+			</enum16>
+			<enum16 name="Type 2" offset="0x18" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Ctf" value="0x1" />
+				<option name="Slayer" value="0x2" />
+				<option name="Oddball" value="0x3" />
+				<option name="King Of The Hill" value="0x4" />
+				<option name="Race" value="0x5" />
+				<option name="Terminator" value="0x6" />
+				<option name="Stub" value="0x7" />
+				<option name="Ignored1" value="0x8" />
+				<option name="Ignored2" value="0x9" />
+				<option name="Ignored3" value="0xA" />
+				<option name="Ignored4" value="0xB" />
+				<option name="All Games" value="0xC" />
+				<option name="All Except Ctf" value="0xD" />
+				<option name="All Except Race &amp; Ctf" value="0xE" />
+			</enum16>
+			<enum16 name="Type 3" offset="0x1A" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Ctf" value="0x1" />
+				<option name="Slayer" value="0x2" />
+				<option name="Oddball" value="0x3" />
+				<option name="King Of The Hill" value="0x4" />
+				<option name="Race" value="0x5" />
+				<option name="Terminator" value="0x6" />
+				<option name="Stub" value="0x7" />
+				<option name="Ignored1" value="0x8" />
+				<option name="Ignored2" value="0x9" />
+				<option name="Ignored3" value="0xA" />
+				<option name="Ignored4" value="0xB" />
+				<option name="All Games" value="0xC" />
+				<option name="All Except Ctf" value="0xD" />
+				<option name="All Except Race &amp; Ctf" value="0xE" />
+			</enum16>
+			<undefined name="Unknown" offset="0x1C" visible="false" />
+			<undefined name="Unknown" offset="0x20" visible="false" />
+			<undefined name="Unknown" offset="0x24" visible="false" />
+			<undefined name="Unknown" offset="0x28" visible="false" />
+			<undefined name="Unknown" offset="0x2C" visible="false" />
+			<undefined name="Unknown" offset="0x30" visible="false" />
+		</tagblock>
+	</tagblock>
+	<tagblock name="Command Lists" offset="0x438" visible="true" elementSize="0x60">
+		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<flags32 name="Flags" offset="0x20" visible="true">
+			<bit name="Allow Initiative" index="0" tooltip="lets an actor decide to stop following its commands and attack an enemy" />
+			<bit name="Allow Targeting" index="1" tooltip="lets an actor shoot at enemies while following its commands" />
+			<bit name="Disable Looking" index="2" tooltip="stops an actor from turning, stopping or looking around in response to stimuli received while following its commands" />
+			<bit name="Disable Communication" index="3" tooltip="stops an actor from communicating while following its commands" />
+			<bit name="Disable Falling Damage" index="4" tooltip="makes an actor not take any damage from falling while following its commands" />
+			<bit name="Manual BSP Index" index="5" tooltip="set if the command list is manually attached to a specific bsp" />
+		</flags32>
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<int16 name="Manual BSP Index" offset="0x2C" visible="true" tooltip="structure bsp index that this encounter belongs to... ignored unless 'manual bsp index' flag is checked. if this flag is not checked, the structure bsp is found automatically (may fail in areas of overlapping geometry)" />
+		<int16 name="Unknown" offset="0x2E" visible="false" />
+		<tagblock name="Commands" offset="0x30" visible="true" elementSize="0x20">
+			<enum16 name="Atom Type" offset="0x0" visible="true">
+				<option name="Pause" value="0x0" />
+				<option name="Go To" value="0x1" />
+				<option name="Go To And Face" value="0x2" />
+				<option name="Move In Direction" value="0x3" />
+				<option name="Look" value="0x4" />
+				<option name="Animation Mode" value="0x5" />
+				<option name="Crouch" value="0x6" />
+				<option name="Shoot" value="0x7" />
+				<option name="Grenade" value="0x8" />
+				<option name="Vehicle" value="0x9" />
+				<option name="Running Jump" value="0xA" />
+				<option name="Targeted Jump" value="0xB" />
+				<option name="Script" value="0xC" />
+				<option name="Animate" value="0xD" />
+				<option name="Recording" value="0xE" />
+				<option name="Action" value="0xF" />
+				<option name="Vocalize" value="0x10" />
+				<option name="Targeting" value="0x11" />
+				<option name="Initiative" value="0x12" />
+				<option name="Wait" value="0x13" />
+				<option name="Loop" value="0x14" />
+				<option name="Die" value="0x15" />
+				<option name="Move Immediate" value="0x16" />
+				<option name="Look Random" value="0x17" />
+				<option name="Look Player" value="0x18" />
+				<option name="Look Object" value="0x19" />
+				<option name="Set Radius" value="0x1A" />
+				<option name="Teleport" value="0x1B" />
+			</enum16>
+			<int16 name="Atom Modifier" offset="0x2" visible="true" />
+			<float32 name="Parameter1" offset="0x4" visible="true" />
+			<float32 name="Parameter2" offset="0x8" visible="true" />
+			<int16 name="Point 1 Index" offset="0xC" visible="true" />
+			<int16 name="Point 2 Index" offset="0xE" visible="true" />
+			<int16 name="Animation Index" offset="0x10" visible="true" />
+			<int16 name="Script Index" offset="0x12" visible="true" />
+			<int16 name="Recording Index" offset="0x14" visible="true" />
+			<int16 name="Command Index" offset="0x16" visible="true" />
+			<int16 name="Object Name Index" offset="0x18" visible="true" />
+			<int16 name="Unknown" offset="0x1A" visible="false" />
+			<undefined name="Unknown" offset="0x1C" visible="false" />
+		</tagblock>
+		<tagblock name="Points" offset="0x3C" visible="true" elementSize="0x14">
+			<point3 name="Position" offset="0x0" visible="true" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
+		</tagblock>
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
+		<undefined name="Unknown" offset="0x5C" visible="false" />
+	</tagblock>
+	<tagblock name="AI Animation References" offset="0x444" visible="true" elementSize="0x3C">
+		<ascii name="Animation Name" offset="0x0" length="0x20" visible="true" />
+		<tagRef name="Animation Graph" offset="0x20" visible="true" tooltip="leave this blank to use the unit's normal animation graph" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+	</tagblock>
+	<tagblock name="AI Script References" offset="0x450" visible="true" elementSize="0x28">
+		<ascii name="Script Name" offset="0x0" length="0x20" visible="true" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+	</tagblock>
+	<tagblock name="AI Recording References" offset="0x45C" visible="true" elementSize="0x28">
+		<ascii name="Recording Name" offset="0x0" length="0x20" visible="true" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+	</tagblock>
+	<tagblock name="AI Conversations" offset="0x468" visible="true" elementSize="0x74">
+		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<flags16 name="Flags" offset="0x20" visible="true">
+			<bit name="Stop If Death" index="0" tooltip="this conversation will be aborted if any participant dies" />
+			<bit name="Stop If Damaged" index="1" tooltip="an actor will abort this conversation if they are damaged" />
+			<bit name="Stop If Visible Enemy" index="2" tooltip="an actor will abort this conversation if they see an enemy" />
+			<bit name="Stop If Alerted To Enemy" index="3" tooltip="an actor will abort this conversation if they suspect an enemy" />
+			<bit name="Player Must Be Visible" index="4" tooltip="this conversation cannot take place unless the participants can _see_ a nearby player" />
+			<bit name="Stop Other Actions" index="5" tooltip="participants stop doing whatever they were doing in order to perform this conversation" />
+			<bit name="Keep Trying To Play" index="6" tooltip="if this conversation fails initially, it will keep testing to see when it can play" />
+			<bit name="Player Must Be Looking" index="7" tooltip="this conversation will not start until the player is looking at one of the participants" />
+		</flags16>
+		<int16 name="Unknown" offset="0x22" visible="false" />
+		<float32 name="Trigger Distance" offset="0x24" visible="true" tooltip="distance the player must enter before the conversation can trigger" />
+		<float32 name="Run-To-Player Distance" offset="0x28" visible="true" tooltip="if the 'involves player' flag is set, when triggered the conversation's participant(s) will run to within this distance of the player" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<tagblock name="Participants" offset="0x50" visible="true" elementSize="0x54">
+			<int16 name="Unknown" offset="0x0" visible="false" />
+			<flags16 name="Flags" offset="0x2" visible="true">
+				<bit name="Optional" index="0" tooltip="the conversation can continue even if nobody for this participant was found" />
+				<bit name="Has Alternate" index="1" tooltip="if nobody for this participant can be found, we use a participant marked as 'is alternate' instead, e.g. someone from over the radio" />
+				<bit name="Is Alternate" index="2" tooltip="this participant is only used if some participant in this conversation was marked as 'has alternate' could not be found" />
+			</flags16>
+			<enum16 name="Selection Type" offset="0x4" visible="true">
+				<option name="Friendly Actor" value="0x0" />
+				<option name="Disembodied" value="0x1" />
+				<option name="In Player's Vehicle" value="0x2" />
+				<option name="Not In A Vehicle" value="0x3" />
+				<option name="Prefer Sergeant" value="0x4" />
+				<option name="Any Actor" value="0x5" />
+				<option name="Radio Unit" value="0x6" />
+				<option name="Radio Sergeant" value="0x7" />
+			</enum16>
+			<enum16 name="Actor Type" offset="0x6" visible="true">
+				<option name="Elite" value="0x0" />
+				<option name="Jackal" value="0x1" />
+				<option name="Grunt" value="0x2" />
+				<option name="Hunter" value="0x3" />
+				<option name="Engineer" value="0x4" />
+				<option name="Assassin" value="0x5" />
+				<option name="Player" value="0x6" />
+				<option name="Marine" value="0x7" />
+				<option name="Crew" value="0x8" />
+				<option name="Combat Form" value="0x9" />
+				<option name="Infection Form" value="0xA" />
+				<option name="Carrier Form" value="0xB" />
+				<option name="Monitor" value="0xC" />
+				<option name="Sentinel" value="0xD" />
+				<option name="None" value="0xE" />
+				<option name="Mounted Weapon" value="0xF" />
+			</enum16>
+			<int16 name="Use This Object Index" offset="0x8" visible="true" tooltip="if a unit with this name exists, we try to pick them to start the conversation" />
+			<int16 name="Set New Name Index" offset="0xA" visible="true" tooltip="once we pick a unit, we name it this" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
+			<undefined name="Unknown" offset="0x14" visible="false" />
+			<int16 name="Unknown" offset="0x18" visible="false" />
+			<int16 name="Unknown" offset="0x1A" visible="false" />
+			<int16 name="Unknown" offset="0x1C" visible="false" />
+			<int16 name="Unknown" offset="0x1E" visible="false" />
+			<int16 name="Unknown" offset="0x20" visible="false" />
+			<int16 name="Unknown" offset="0x22" visible="false" />
+			<ascii name="Encounter Name" offset="0x24" length="0x20" visible="true" />
+			<int16 name="Unknown" offset="0x44" visible="false" />
+			<int16 name="Unknown" offset="0x46" visible="false" />
+			<undefined name="Unknown" offset="0x48" visible="false" />
+			<undefined name="Unknown" offset="0x4C" visible="false" />
+			<undefined name="Unknown" offset="0x50" visible="false" />
+		</tagblock>
+		<tagblock name="Lines" offset="0x5C" visible="true" elementSize="0x7C">
+			<flags16 name="Flags" offset="0x0" visible="true">
+				<bit name="Addressee Look At Speaker" index="0" />
+				<bit name="Everyone Look At Speaker" index="1" />
+				<bit name="Everyone Look At Addressee" index="2" />
+				<bit name="Wait After Until Told To Advance" index="3" />
+				<bit name="Wait Until Speaker Nearby" index="4" />
+				<bit name="Wait Until Everyone Nearby" index="5" />
+			</flags16>
+			<int16 name="Participant Index" offset="0x2" visible="true" />
+			<enum16 name="Addressee" offset="0x4" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Player" value="0x1" />
+				<option name="Participant" value="0x2" />
+			</enum16>
+			<int16 name="Addressee Participant Index" offset="0x6" visible="true" tooltip="this field is only used if the addressee type is 'participant'" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<float32 name="Line Delay Time" offset="0xC" visible="true" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
+			<undefined name="Unknown" offset="0x14" visible="false" />
+			<undefined name="Unknown" offset="0x18" visible="false" />
+			<tagRef name="Variant 1" offset="0x1C" visible="true" />
+			<tagRef name="Variant 2" offset="0x2C" visible="true" />
+			<tagRef name="Variant 3" offset="0x3C" visible="true" />
+			<tagRef name="Variant 4" offset="0x4C" visible="true" />
+			<tagRef name="Variant 5" offset="0x5C" visible="true" />
+			<tagRef name="Variant 6" offset="0x6C" visible="true" />
+		</tagblock>
+		<undefined name="Unknown" offset="0x68" visible="false" />
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+	</tagblock>
+	<dataref name="Script Syntax Data" offset="0x474" visible="true" />
+	<dataref name="Script String Data" offset="0x488" visible="true" />
+	<tagblock name="Scripts" offset="0x49C" visible="true" elementSize="0x5C">
+		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<enum16 name="Script Type" offset="0x20" visible="true">
+			<option name="Startup" value="0x0" />
+			<option name="Dormant" value="0x1" />
+			<option name="Continuous" value="0x2" />
+			<option name="Static" value="0x3" />
+			<option name="Stub" value="0x4" />
+		</enum16>
+		<enum16 name="Return Type" offset="0x22" visible="true">
+			<option name="unparsed" value="0x0" />
+			<option name="special_form" value="0x1" />
+			<option name="function_name" value="0x2" />
+			<option name="passthrough" value="0x3" />
+			<option name="void" value="0x4" />
+			<option name="boolean" value="0x5" />
+			<option name="real" value="0x6" />
+			<option name="short" value="0x7" />
+			<option name="long" value="0x8" />
+			<option name="string" value="0x9" />
+			<option name="script" value="0xA" />
+			<option name="trigger_volume" value="0xB" />
+			<option name="cutscene_flag" value="0xC" />
+			<option name="cutscene_camera_point" value="0xD" />
+			<option name="cutscene_title" value="0xE" />
+			<option name="cutscene_recording" value="0xF" />
+			<option name="device_group" value="0x10" />
+			<option name="ai" value="0x11" />
+			<option name="ai_command_list" value="0x12" />
+			<option name="starting_profile" value="0x13" />
+			<option name="conversation" value="0x14" />
+			<option name="navpoint" value="0x15" />
+			<option name="hud_message" value="0x16" />
+			<option name="object_list" value="0x17" />
+			<option name="sound" value="0x18" />
+			<option name="effect" value="0x19" />
+			<option name="damage" value="0x1A" />
+			<option name="looping_sound" value="0x1B" />
+			<option name="animation_graph" value="0x1C" />
+			<option name="actor_variant" value="0x1D" />
+			<option name="damage_effect" value="0x1E" />
+			<option name="object_definition" value="0x1F" />
+			<option name="game_difficulty" value="0x20" />
+			<option name="team" value="0x21" />
+			<option name="ai_default_state" value="0x22" />
+			<option name="actor_type" value="0x23" />
+			<option name="hud_corner" value="0x24" />
+			<option name="object" value="0x25" />
+			<option name="unit" value="0x26" />
+			<option name="vehicle" value="0x27" />
+			<option name="weapon" value="0x28" />
+			<option name="device" value="0x29" />
+			<option name="scenery" value="0x2A" />
+			<option name="object_name" value="0x2B" />
+			<option name="unit_name" value="0x2C" />
+			<option name="vehicle_name" value="0x2D" />
+			<option name="weapon_name" value="0x2E" />
+			<option name="device_name" value="0x2F" />
+			<option name="scenery_name" value="0x30" />
+		</enum16>
+		<datum name="Root Expression Index" offset="0x24" visible="true" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
+	</tagblock>
+	<tagblock name="Globals" offset="0x4A8" visible="true" elementSize="0x5C">
+		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<enum16 name="Type" offset="0x20" visible="true">
+			<option name="unparsed" value="0x0" />
+			<option name="special_form" value="0x1" />
+			<option name="function_name" value="0x2" />
+			<option name="passthrough" value="0x3" />
+			<option name="void" value="0x4" />
+			<option name="boolean" value="0x5" />
+			<option name="real" value="0x6" />
+			<option name="short" value="0x7" />
+			<option name="long" value="0x8" />
+			<option name="string" value="0x9" />
+			<option name="script" value="0xA" />
+			<option name="trigger_volume" value="0xB" />
+			<option name="cutscene_flag" value="0xC" />
+			<option name="cutscene_camera_point" value="0xD" />
+			<option name="cutscene_title" value="0xE" />
+			<option name="cutscene_recording" value="0xF" />
+			<option name="device_group" value="0x10" />
+			<option name="ai" value="0x11" />
+			<option name="ai_command_list" value="0x12" />
+			<option name="starting_profile" value="0x13" />
+			<option name="conversation" value="0x14" />
+			<option name="navpoint" value="0x15" />
+			<option name="hud_message" value="0x16" />
+			<option name="object_list" value="0x17" />
+			<option name="sound" value="0x18" />
+			<option name="effect" value="0x19" />
+			<option name="damage" value="0x1A" />
+			<option name="looping_sound" value="0x1B" />
+			<option name="animation_graph" value="0x1C" />
+			<option name="actor_variant" value="0x1D" />
+			<option name="damage_effect" value="0x1E" />
+			<option name="object_definition" value="0x1F" />
+			<option name="game_difficulty" value="0x20" />
+			<option name="team" value="0x21" />
+			<option name="ai_default_state" value="0x22" />
+			<option name="actor_type" value="0x23" />
+			<option name="hud_corner" value="0x24" />
+			<option name="object" value="0x25" />
+			<option name="unit" value="0x26" />
+			<option name="vehicle" value="0x27" />
+			<option name="weapon" value="0x28" />
+			<option name="device" value="0x29" />
+			<option name="scenery" value="0x2A" />
+			<option name="object_name" value="0x2B" />
+			<option name="unit_name" value="0x2C" />
+			<option name="vehicle_name" value="0x2D" />
+			<option name="weapon_name" value="0x2E" />
+			<option name="device_name" value="0x2F" />
+			<option name="scenery_name" value="0x30" />
+		</enum16>
+		<int16 name="Unknown" offset="0x22" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<datum name="Initialization Expression Index" offset="0x28" visible="true" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
+	</tagblock>
+	<tagblock name="References" offset="0x4B4" visible="true" elementSize="0x28">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<tagRef name="Reference" offset="0x18" visible="true" />
+	</tagblock>
+	<tagblock name="Source Files" offset="0x4C0" visible="true" elementSize="0x34">
+		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<dataref name="Source" offset="0x20" visible="true" />
+	</tagblock>
+	<undefined name="Unknown" offset="0x4CC" visible="false" />
+	<undefined name="Unknown" offset="0x4D0" visible="false" />
+	<undefined name="Unknown" offset="0x4D4" visible="false" />
+	<undefined name="Unknown" offset="0x4D8" visible="false" />
+	<undefined name="Unknown" offset="0x4DC" visible="false" />
+	<undefined name="Unknown" offset="0x4E0" visible="false" />
+	<tagblock name="Cutscene Flags" offset="0x4E4" visible="true" elementSize="0x5C">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<ascii name="Name" offset="0x4" length="0x20" visible="true" />
+		<point3 name="Position" offset="0x24" visible="true" />
+		<degree2 name="Facing" offset="0x30" visible="true" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
+	</tagblock>
+	<tagblock name="Cutscene Camera Points" offset="0x4F0" visible="true" elementSize="0x68">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<ascii name="Name" offset="0x4" length="0x20" visible="true" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<point3 name="Position" offset="0x28" visible="true" />
+		<degree3 name="Orientation" offset="0x34" visible="true" />
+		<degree name="Field Of View" offset="0x40" visible="true" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
+		<undefined name="Unknown" offset="0x5C" visible="false" />
+		<undefined name="Unknown" offset="0x60" visible="false" />
+		<undefined name="Unknown" offset="0x64" visible="false" />
+	</tagblock>
+	<tagblock name="Cutscene Titles" offset="0x4FC" visible="true" elementSize="0x104">
+		<int32 name="Unknown" offset="0x0" visible="false" />
+		<ascii name="Name" offset="0x4" length="0x20" visible="true" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<rect16 name="Text Bounds (On Screen)" offset="0x28" visible="true" />
+		<int16 name="String Index" offset="0x30" visible="true" />
+		<enum16 name="Style" offset="0x32" visible="true">
+			<option name="Plain" value="0x0" />
+			<option name="Bold" value="0x1" />
+			<option name="Italics" value="0x2" />
+			<option name="Condensed" value="0x3" />
+			<option name="Underlined" value="0x4" />
+		</enum16>
+		<enum16 name="Justification" offset="0x34" visible="true">
+			<option name="Left" value="0x0" />
+			<option name="Right" value="0x1" />
+			<option name="Center" value="0x2" />
+		</enum16>
+		<int16 name="Unknown" offset="0x36" visible="false" />
+		<flags32 name="Text Flags" offset="0x38" visible="true">
+			<bit name="Wrap Horizontally" index="0" />
+			<bit name="Wrap Vertically" index="1" />
+			<bit name="Center Vertically" index="2" />
+			<bit name="Bottom Justify" index="3" />
+		</flags32>
+		<color32 name="Text Color" offset="0x3C" alpha="true" visible="true" />
+		<color32 name="Shadow Color" offset="0x40" alpha="true" visible="true" />
+		<float32 name="Fade In Time" offset="0x44" visible="true" />
+		<float32 name="Up Time" offset="0x48" visible="true" />
+		<float32 name="Fade Out Time" offset="0x4C" visible="true" />
+		<tagRef name="Unknown" offset="0x50" visible="true" />
+		<undefined name="Unknown" offset="0x60" visible="false" />
+		<undefined name="Unknown" offset="0x64" visible="false" />
+		<undefined name="Unknown" offset="0x68" visible="false" />
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+		<undefined name="Unknown" offset="0x78" visible="false" />
+		<undefined name="Unknown" offset="0x7C" visible="false" />
+		<undefined name="Unknown" offset="0x80" visible="false" />
+		<undefined name="Unknown" offset="0x84" visible="false" />
+		<undefined name="Unknown" offset="0x88" visible="false" />
+		<undefined name="Unknown" offset="0x8C" visible="false" />
+		<undefined name="Unknown" offset="0x90" visible="false" />
+		<undefined name="Unknown" offset="0x94" visible="false" />
+		<undefined name="Unknown" offset="0x98" visible="false" />
+		<undefined name="Unknown" offset="0x9C" visible="false" />
+		<undefined name="Unknown" offset="0xA0" visible="false" />
+		<undefined name="Unknown" offset="0xA4" visible="false" />
+		<undefined name="Unknown" offset="0xA8" visible="false" />
+		<undefined name="Unknown" offset="0xAC" visible="false" />
+		<undefined name="Unknown" offset="0xB0" visible="false" />
+		<undefined name="Unknown" offset="0xB4" visible="false" />
+		<undefined name="Unknown" offset="0xB8" visible="false" />
+		<undefined name="Unknown" offset="0xBC" visible="false" />
+		<undefined name="Unknown" offset="0xC0" visible="false" />
+		<undefined name="Unknown" offset="0xC4" visible="false" />
+		<undefined name="Unknown" offset="0xC8" visible="false" />
+		<undefined name="Unknown" offset="0xCC" visible="false" />
+		<undefined name="Unknown" offset="0xD0" visible="false" />
+		<undefined name="Unknown" offset="0xD4" visible="false" />
+		<undefined name="Unknown" offset="0xD8" visible="false" />
+		<undefined name="Unknown" offset="0xDC" visible="false" />
+		<undefined name="Unknown" offset="0xE0" visible="false" />
+		<undefined name="Unknown" offset="0xE4" visible="false" />
+		<undefined name="Unknown" offset="0xE8" visible="false" />
+		<undefined name="Unknown" offset="0xEC" visible="false" />
+		<undefined name="Unknown" offset="0xF0" visible="false" />
+		<undefined name="Unknown" offset="0xF4" visible="false" />
+		<undefined name="Unknown" offset="0xF8" visible="false" />
+		<undefined name="Unknown" offset="0xFC" visible="false" />
+		<undefined name="Unknown" offset="0x100" visible="false" />
+	</tagblock>
+	<undefined name="Unknown" offset="0x508" visible="false" />
+	<undefined name="Unknown" offset="0x50C" visible="false" />
+	<undefined name="Unknown" offset="0x510" visible="false" />
+	<undefined name="Unknown" offset="0x514" visible="false" />
+	<undefined name="Unknown" offset="0x518" visible="false" />
+	<undefined name="Unknown" offset="0x51C" visible="false" />
+	<undefined name="Unknown" offset="0x520" visible="false" />
+	<undefined name="Unknown" offset="0x524" visible="false" />
+	<undefined name="Unknown" offset="0x528" visible="false" />
+	<undefined name="Unknown" offset="0x52C" visible="false" />
+	<undefined name="Unknown" offset="0x530" visible="false" />
+	<undefined name="Unknown" offset="0x534" visible="false" />
+	<undefined name="Unknown" offset="0x538" visible="false" />
+	<undefined name="Unknown" offset="0x53C" visible="false" />
+	<undefined name="Unknown" offset="0x540" visible="false" />
+	<undefined name="Unknown" offset="0x544" visible="false" />
+	<undefined name="Unknown" offset="0x548" visible="false" />
+	<undefined name="Unknown" offset="0x54C" visible="false" />
+	<undefined name="Unknown" offset="0x550" visible="false" />
+	<undefined name="Unknown" offset="0x554" visible="false" />
+	<undefined name="Unknown" offset="0x558" visible="false" />
+	<undefined name="Unknown" offset="0x55C" visible="false" />
+	<undefined name="Unknown" offset="0x560" visible="false" />
+	<undefined name="Unknown" offset="0x564" visible="false" />
+	<undefined name="Unknown" offset="0x568" visible="false" />
+	<undefined name="Unknown" offset="0x56C" visible="false" />
+	<undefined name="Unknown" offset="0x570" visible="false" />
+	<tagRef name="Custom Object Names" offset="0x574" visible="true" />
+	<tagRef name="Ingame Help Text" offset="0x584" visible="true" />
+	<tagRef name="HUD Messages" offset="0x594" visible="true" />
+	<tagblock name="Structure BSPs" offset="0x5A4" visible="true" elementSize="0x20">
+		<uint32 name="Unknown" offset="0x0" visible="true" />
+		<uint32 name="Unknown" offset="0x4" visible="true" />
+		<uint32 name="Unknown" offset="0x8" visible="true" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<tagRef name="Structure BSP" offset="0x10" visible="true" />
+	</tagblock>
+</plugin>

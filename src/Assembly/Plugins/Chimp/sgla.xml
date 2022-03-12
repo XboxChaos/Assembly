@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="HTTC" baseSize="0x1E0">
+	<revisions>
+		<revision author="Lord Zedd" version="1">ayy lmao</revision>
+	</revisions>
+	<comment title="Radiosity Properties" />
+	<flags16 name="Flags" offset="0x0" visible="true">
+		<bit name="Simple Parameterization" index="0" tooltip="lightmap texture parametrization should correspond to diffuse texture parametrization" />
+		<bit name="Ignore Normals" index="1" tooltip="light independent of normals (trees)" />
+		<bit name="Transparent Lit" index="2" />
+	</flags16>
+	<enum16 name="Detail Level" offset="0x2" visible="true" tooltip="affects the density of tesselation (high means slow).">
+		<option name="High" value="0x0" />
+		<option name="Medium" value="0x1" />
+		<option name="Low" value="0x2" />
+		<option name="Turd" value="0x3" />
+	</enum16>
+	<float32 name="Power" offset="0x4" visible="true" tooltip="power of emitted light from 0 to infinity" />
+	<colorf name="Color Of Emitted Light" offset="0x8" alpha="false" visible="true" />
+	<colorf name="Tint Color" offset="0x14" alpha="false" visible="true" tooltip="light passing through this surface (if it's transparent) will be tinted this color." />
+	<comment title="Physics Properties">only relevant in structure bsp uses</comment>
+	<flags16 name="Flags" offset="0x20" visible="true">
+	</flags16>
+	<enum16 name="Material Type" offset="0x22" visible="true">
+		<option name="Dirt" value="0x0" />
+		<option name="Sand" value="0x1" />
+		<option name="Stone" value="0x2" />
+		<option name="Concrete" value="0x3" />
+		<option name="Brick" value="0x4" />
+		<option name="Tile" value="0x5" />
+		<option name="Plaster" value="0x6" />
+		<option name="Metal (Hollow)" value="0x7" />
+		<option name="Metal (Thin)" value="0x8" />
+		<option name="Metal (Thick)" value="0x9" />
+		<option name="Glass" value="0xA" />
+		<option name="Plastic" value="0xB" />
+		<option name="Rubber" value="0xC" />
+		<option name="Vinyl" value="0xD" />
+		<option name="Cloth" value="0xE" />
+		<option name="Carpet" value="0xF" />
+		<option name="Wood" value="0x10" />
+		<option name="Leaves" value="0x11" />
+		<option name="Corn" value="0x12" />
+		<option name="Grass" value="0x13" />
+		<option name="Water" value="0x14" />
+		<option name="Sewage" value="0x15" />
+		<option name="Mud" value="0x16" />
+		<option name="Force Field" value="0x17" />
+		<option name="German Rip-Start Nylon" value="0x18" />
+		<option name="Sturdy Glass" value="0x19" />
+		<option name="Unused3" value="0x1A" />
+		<option name="Unused4" value="0x1B" />
+		<option name="Hippo" value="0x1C" />
+		<option name="Monkey" value="0x1D" />
+	</enum16>
+	<int16 name="Unknown" offset="0x24" visible="false" />
+	<int16 name="Unknown" offset="0x26" visible="false" />
+	<comment title="Glass Shader" />
+	<flags16 name="Flags" offset="0x28" visible="true">
+		<bit name="Alpha-Tested" index="0" />
+		<bit name="Decal" index="1" />
+		<bit name="Two-Sided" index="2" />
+		<bit name="Bump Map Is Specular Mask" index="3" />
+	</flags16>
+	<int16 name="Unknown" offset="0x2A" visible="false" />
+	<comment title="Background Tint Properties">Background pixels are multiplied by the tint map and constant tint color.</comment>
+	<undefined name="Unknown" offset="0x2C" visible="false" />
+	<undefined name="Unknown" offset="0x30" visible="false" />
+	<undefined name="Unknown" offset="0x34" visible="false" />
+	<undefined name="Unknown" offset="0x38" visible="false" />
+	<undefined name="Unknown" offset="0x3C" visible="false" />
+	<undefined name="Unknown" offset="0x40" visible="false" />
+	<undefined name="Unknown" offset="0x44" visible="false" />
+	<undefined name="Unknown" offset="0x48" visible="false" />
+	<undefined name="Unknown" offset="0x4C" visible="false" />
+	<undefined name="Unknown" offset="0x50" visible="false" />
+	<colorf name="Background Tint Color" offset="0x54" alpha="false" visible="true" />
+	<float32 name="Background Tint Map Scale" offset="0x60" visible="true" tooltip="0 defaults to 1" />
+	<tagRef name="Background Tint Map" offset="0x64" visible="true" />
+	<undefined name="Unknown" offset="0x74" visible="false" />
+	<undefined name="Unknown" offset="0x78" visible="false" />
+	<undefined name="Unknown" offset="0x7C" visible="false" />
+	<undefined name="Unknown" offset="0x80" visible="false" />
+	<undefined name="Unknown" offset="0x84" visible="false" />
+	<comment title="Reflection Properties">Reflection maps are multiplied by fresnel terms (glancing angles cause reflections to disappear) and then added to the background. The primary reflection map is textured normally, while the secondary reflection map is magnified.</comment>
+	<int16 name="Unknown" offset="0x88" visible="false" />
+	<enum16 name="Reflection Type" offset="0x8A" visible="true">
+		<option name="Bumped Cube-Map" value="0x0" />
+		<option name="Flat Cube-Map" value="0x1" />
+		<option name="Dynamic Mirror" value="0x2" />
+	</enum16>
+	<float32 name="Perpendicular Brightness" offset="0x8C" visible="true" />
+	<colorf name="Perpendicular Tint Color" offset="0x90" alpha="false" visible="true" />
+	<float32 name="Parallel Brightness" offset="0x9C" visible="true" />
+	<colorf name="Parallel Tint Color" offset="0xA0" alpha="false" visible="true" />
+	<tagRef name="Reflection Map" offset="0xAC" visible="true" />
+	<float32 name="Bump Map Scale" offset="0xBC" visible="true" />
+	<tagRef name="Bump Map" offset="0xC0" visible="true" />
+	<undefined name="Unknown" offset="0xD0" visible="false" />
+	<undefined name="Unknown" offset="0xD4" visible="false" />
+	<undefined name="Unknown" offset="0xD8" visible="false" />
+	<undefined name="Unknown" offset="0xDC" visible="false" />
+	<undefined name="Unknown" offset="0xE0" visible="false" />
+	<undefined name="Unknown" offset="0xE4" visible="false" />
+	<undefined name="Unknown" offset="0xE8" visible="false" />
+	<undefined name="Unknown" offset="0xEC" visible="false" />
+	<undefined name="Unknown" offset="0xF0" visible="false" />
+	<undefined name="Unknown" offset="0xF4" visible="false" />
+	<undefined name="Unknown" offset="0xF8" visible="false" />
+	<undefined name="Unknown" offset="0xFC" visible="false" />
+	<undefined name="Unknown" offset="0x100" visible="false" />
+	<undefined name="Unknown" offset="0x104" visible="false" />
+	<undefined name="Unknown" offset="0x108" visible="false" />
+	<undefined name="Unknown" offset="0x10C" visible="false" />
+	<undefined name="Unknown" offset="0x110" visible="false" />
+	<undefined name="Unknown" offset="0x114" visible="false" />
+	<undefined name="Unknown" offset="0x118" visible="false" />
+	<undefined name="Unknown" offset="0x11C" visible="false" />
+	<undefined name="Unknown" offset="0x120" visible="false" />
+	<undefined name="Unknown" offset="0x124" visible="false" />
+	<undefined name="Unknown" offset="0x128" visible="false" />
+	<undefined name="Unknown" offset="0x12C" visible="false" />
+	<undefined name="Unknown" offset="0x130" visible="false" />
+	<undefined name="Unknown" offset="0x134" visible="false" />
+	<undefined name="Unknown" offset="0x138" visible="false" />
+	<undefined name="Unknown" offset="0x13C" visible="false" />
+	<undefined name="Unknown" offset="0x140" visible="false" />
+	<undefined name="Unknown" offset="0x144" visible="false" />
+	<undefined name="Unknown" offset="0x148" visible="false" />
+	<undefined name="Unknown" offset="0x14C" visible="false" />
+	<comment title="Diffuse Properties">Diffuse lights are accumulated in monochrome and then alpha-blended with diffuse map and diffuse detail map. The color is determined by double-multiplying both maps and multiplying with the accumulated light, the result being alpha-blended into the framebuffer. The opacity is determined by multiplying both map's alpha channels. Since this effect is alpha-blended, it covers up tinting and reflection on pixels with high opacity.</comment>
+	<undefined name="Unknown" offset="0x150" visible="false" />
+	<float32 name="Diffuse Map Scale" offset="0x154" visible="true" tooltip="0 defaults to 1" />
+	<tagRef name="Diffuse Map" offset="0x158" visible="true" />
+	<float32 name="Diffuse Detail Map Scale" offset="0x168" visible="true" tooltip="0 defaults to 1" />
+	<tagRef name="Diffuse Detail Map" offset="0x16C" visible="true" />
+	<undefined name="Unknown" offset="0x17C" visible="false" />
+	<undefined name="Unknown" offset="0x180" visible="false" />
+	<undefined name="Unknown" offset="0x184" visible="false" />
+	<undefined name="Unknown" offset="0x188" visible="false" />
+	<undefined name="Unknown" offset="0x18C" visible="false" />
+	<undefined name="Unknown" offset="0x190" visible="false" />
+	<undefined name="Unknown" offset="0x194" visible="false" />
+	<comment title="Specular Properties">Specular lights are accumulated in monochrome and then alpha-blended with diffuse map and diffuse detail map. The color is determined by double-multiplying both maps and multiplying with the accumulated light, the result being alpha-blended into the framebuffer. The opacity is determined by multiplying both map's alpha channels. Since this effect is alpha-blended, it covers up tinting, reflection and diffuse texture on pixels with high opacity.</comment>
+	<undefined name="Unknown" offset="0x198" visible="false" />
+	<float32 name="Specular Map Scale" offset="0x19C" visible="true" tooltip="0 defaults to 1" />
+	<tagRef name="Specular Map" offset="0x1A0" visible="true" />
+	<float32 name="Specular Detail Map Scale" offset="0x1B0" visible="true" tooltip="0 defaults to 1" />
+	<tagRef name="Specular Detail Map" offset="0x1B4" visible="true" />
+	<undefined name="Unknown" offset="0x1C4" visible="false" />
+	<undefined name="Unknown" offset="0x1C8" visible="false" />
+	<undefined name="Unknown" offset="0x1CC" visible="false" />
+	<undefined name="Unknown" offset="0x1D0" visible="false" />
+	<undefined name="Unknown" offset="0x1D4" visible="false" />
+	<undefined name="Unknown" offset="0x1D8" visible="false" />
+	<undefined name="Unknown" offset="0x1DC" visible="false" />
+</plugin>

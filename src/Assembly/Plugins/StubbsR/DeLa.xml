@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin game="Halo1" baseSize="0x3EC">
+<plugin game="StubbsR" baseSize="0x42C">
+	<!-- Automatically generated plugin -->
 	<revisions>
-		<revision author="Lord Zedd" version="1">ayy lmao</revision>
+		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
 	<enum16 name="Widget Type" offset="0x0" visible="true">
 		<option name="Container" value="0x0" />
@@ -43,7 +44,7 @@
 	<int32 name="Milliseconds Auto Close Fade Time" offset="0x34" visible="true" tooltip="&lt;= 0 for immediate close" />
 	<tagRef name="Background Bitmap" offset="0x38" visible="true" />
 	<comment title="Game Data Input Fxns">These functions use current game data to modify the appearance of the widget. These functions are called every time the widget is rendered.</comment>
-	<tagblock name="Game Data Inputs" offset="0x48" visible="true" elementSize="0x24">
+	<tagblock name="Game Data Inputs" offset="0x4C" visible="true" elementSize="0x24">
 		<enum16 name="Function" offset="0x0" visible="true">
 			<option name="NULL" value="0x0" />
 			<option name="Player Settings Menu Update Desc" value="0x1" />
@@ -118,7 +119,7 @@
 	<comment title="Event Handlers">These allow actions to be tied to certain ui events.
 The event handler is run every time the widget receives the specified event.
 By default, the 'back' and 'B' buttons will take you to the previous screen.</comment>
-	<tagblock name="Event Handlers" offset="0x54" visible="true" elementSize="0x48">
+	<tagblock name="Event Handlers" offset="0x60" visible="true" elementSize="0x50">
 		<flags32 name="Flags" offset="0x0" visible="true">
 			<bit name="Close Current Widget" index="0" />
 			<bit name="Close Other Widget" index="1" />
@@ -360,13 +361,32 @@ By default, the 'back' and 'B' buttons will take you to the previous screen.</co
 			<option name="network settings defaults" value="0xBB" />
 			<option name="load game menu delete request" value="0xBC" />
 			<option name="load game menu delete finish" value="0xBD" />
+			<option name="disable on console" value="0xBE" />
+			<option name="disable on pc" value="0xBF" />
+			<option name="video audio screen init" value="0xC0" />
+			<option name="video audio screen dispose" value="0xC1" />
+			<option name="video audio screen defaults" value="0xC2" />
+			<option name="open aspyr web page" value="0xC3" />
+			<option name="unused" value="0xC4" />
+			<option name="init_controller_layout" value="0xC5" />
+			<option name="controller_layout_store_settings" value="0xC6" />
+			<option name="engagement allow switching" value="0xC7" />
+			<option name="engagement disallow switching" value="0xC8" />
+			<option name="pause game save" value="0xC9" />
+			<option name="pause game save and quit to main menu" value="0xCA" />
+			<option name="pause game load" value="0xCB" />
+			<option name="new campaign forced" value="0xCC" />
+			<option name="init coop engagement" value="0xCD" />
+			<option name="coop engagement engage player" value="0xCE" />
+			<option name="coop engagement reset" value="0xCF" />
+			<option name="enable on ps4" value="0xD0" />
 		</enum16>
 		<tagRef name="Widget Tag" offset="0x8" visible="true" />
-		<tagRef name="Sound Effect" offset="0x18" visible="true" />
-		<ascii name="Script" offset="0x28" length="0x20" visible="true" />
+		<tagRef name="Sound Effect" offset="0x1C" visible="true" />
+		<ascii name="Script" offset="0x30" length="0x20" visible="true" />
 	</tagblock>
 	<comment title="Search-And-Replace">These are used to run a search-and-replace on the specified word in the text-box text, replacing all occurrences of the word with the output of the replace-function. These are invoked each time the text box is rendered (after any game data input functions have been run). The searching is case-sensitive.</comment>
-	<tagblock name="Search And Replace Functions" offset="0x60" visible="true" elementSize="0x22">
+	<tagblock name="Search And Replace Functions" offset="0x74" visible="true" elementSize="0x22">
 		<ascii name="Search String" offset="0x0" length="0x20" visible="true" />
 		<enum16 name="Replace Function" offset="0x20" visible="true">
 			<option name="NULL" value="0x0" />
@@ -375,13 +395,6 @@ By default, the 'back' and 'B' buttons will take you to the previous screen.</co
 			<option name="Pid" value="0x3" />
 		</enum16>
 	</tagblock>
-	<undefined name="Unknown" offset="0x6C" visible="false" />
-	<undefined name="Unknown" offset="0x70" visible="false" />
-	<undefined name="Unknown" offset="0x74" visible="false" />
-	<undefined name="Unknown" offset="0x78" visible="false" />
-	<undefined name="Unknown" offset="0x7C" visible="false" />
-	<undefined name="Unknown" offset="0x80" visible="false" />
-	<undefined name="Unknown" offset="0x84" visible="false" />
 	<undefined name="Unknown" offset="0x88" visible="false" />
 	<undefined name="Unknown" offset="0x8C" visible="false" />
 	<undefined name="Unknown" offset="0x90" visible="false" />
@@ -407,42 +420,49 @@ By default, the 'back' and 'B' buttons will take you to the previous screen.</co
 	<undefined name="Unknown" offset="0xE0" visible="false" />
 	<undefined name="Unknown" offset="0xE4" visible="false" />
 	<undefined name="Unknown" offset="0xE8" visible="false" />
+	<undefined name="Unknown" offset="0xEC" visible="false" />
+	<undefined name="Unknown" offset="0xF0" visible="false" />
+	<undefined name="Unknown" offset="0xF4" visible="false" />
+	<undefined name="Unknown" offset="0xF8" visible="false" />
+	<undefined name="Unknown" offset="0xFC" visible="false" />
+	<undefined name="Unknown" offset="0x100" visible="false" />
+	<undefined name="Unknown" offset="0x104" visible="false" />
 	<comment title="Text Box">parameters specific to text box widgets
 NOTE: the string list tag can also be used for lists whose items come from a string list tag</comment>
-	<tagRef name="Text Label Unicode Strings List" offset="0xEC" visible="true" />
-	<tagRef name="Text Font" offset="0xFC" visible="true" />
-	<colorf name="Text Color" offset="0x10C" alpha="true" visible="true" />
-	<enum16 name="Justification" offset="0x11C" visible="true">
+	<tagRef name="Text Label Unicode Strings List" offset="0x108" visible="true" />
+	<tagRef name="Text Font" offset="0x11C" visible="true" />
+	<colorf name="Text Color" offset="0x130" alpha="true" visible="true" />
+	<enum16 name="Justification" offset="0x140" visible="true">
 		<option name="Left Justify" value="0x0" />
 		<option name="Right Justify" value="0x1" />
 		<option name="Center Justify" value="0x2" />
 	</enum16>
-	<flags32 name="Flags" offset="0x11E" visible="true">
+	<flags32 name="Flags" offset="0x142" visible="true">
 		<bit name="Editable" index="0" />
 		<bit name="Password" index="1" />
 		<bit name="Flashing" index="2" />
 		<bit name="Don't Do That Weird Focus Test" index="3" />
 	</flags32>
-	<undefined name="Unknown" offset="0x122" visible="false" />
-	<undefined name="Unknown" offset="0x126" visible="false" />
-	<undefined name="Unknown" offset="0x12A" visible="false" />
+	<undefined name="Unknown" offset="0x146" visible="false" />
+	<undefined name="Unknown" offset="0x14A" visible="false" />
+	<undefined name="Unknown" offset="0x14E" visible="false" />
 	<comment title="More Text Box Parameters">blah blah blah</comment>
-	<int16 name="String List Index" offset="0x12E" visible="true" tooltip="default is 0" />
-	<int16 name="Horizontal Offset" offset="0x130" visible="true" tooltip="offsets text position in its bounding area" />
-	<int16 name="Vertical Offset" offset="0x132" visible="true" tooltip="offsets the text position in its bounding area" />
-	<undefined name="Unknown" offset="0x134" visible="false" />
-	<undefined name="Unknown" offset="0x138" visible="false" />
-	<undefined name="Unknown" offset="0x13C" visible="false" />
-	<undefined name="Unknown" offset="0x140" visible="false" />
-	<undefined name="Unknown" offset="0x144" visible="false" />
-	<undefined name="Unknown" offset="0x148" visible="false" />
-	<int16 name="Unknown" offset="0x14C" visible="false" />
+	<int16 name="String List Index" offset="0x152" visible="true" tooltip="default is 0" />
+	<int16 name="Horizontal Offset" offset="0x154" visible="true" tooltip="offsets text position in its bounding area" />
+	<int16 name="Vertical Offset" offset="0x156" visible="true" tooltip="offsets the text position in its bounding area" />
+	<undefined name="Unknown" offset="0x158" visible="false" />
+	<undefined name="Unknown" offset="0x15C" visible="false" />
+	<undefined name="Unknown" offset="0x160" visible="false" />
+	<undefined name="Unknown" offset="0x164" visible="false" />
+	<undefined name="Unknown" offset="0x168" visible="false" />
+	<undefined name="Unknown" offset="0x16C" visible="false" />
+	<int16 name="Unknown" offset="0x170" visible="false" />
 	<comment title="List Items">These options affect list items for both spinner and column lists
 * child widgets are used to define the visible list items
 * for lists with code-generated list items, the child widgets are used as templated for visible list item placement
 IMPORTANT: for list widgets, the ONLY thing you can have as child widgets are the list item widgets!</comment>
-	<int16 name="Unknown" offset="0x14E" visible="false" />
-	<flags32 name="Flags" offset="0x150" visible="true">
+	<int16 name="Unknown" offset="0x172" visible="false" />
+	<flags32 name="Flags" offset="0x174" visible="true">
 		<bit name="List Items Generated In Code" index="0" />
 		<bit name="List Items From String List Tag" index="1" />
 		<bit name="List Items Only One Tooltip" index="2" />
@@ -450,21 +470,11 @@ IMPORTANT: for list widgets, the ONLY thing you can have as child widgets are th
 	</flags32>
 	<comment title="Spinner List">parameters specific to spinner list widgets
 child widgets are the list items</comment>
-	<tagRef name="List Header Bitmap" offset="0x154" visible="true" />
-	<tagRef name="List Footer Bitmap" offset="0x164" visible="true" />
-	<rect16 name="Header Bounds" offset="0x174" visible="true" />
-	<rect16 name="Footer Bounds" offset="0x17C" visible="true" />
-	<undefined name="Unknown" offset="0x184" visible="false" />
-	<undefined name="Unknown" offset="0x188" visible="false" />
-	<undefined name="Unknown" offset="0x18C" visible="false" />
-	<undefined name="Unknown" offset="0x190" visible="false" />
-	<undefined name="Unknown" offset="0x194" visible="false" />
-	<undefined name="Unknown" offset="0x198" visible="false" />
-	<undefined name="Unknown" offset="0x19C" visible="false" />
-	<undefined name="Unknown" offset="0x1A0" visible="false" />
-	<comment title="Column List">parameters specific to column list widgets
-child widgets are the list items</comment>
-	<tagRef name="Extended Description Widget" offset="0x1A4" visible="true" />
+	<tagRef name="List Header Bitmap" offset="0x178" visible="true" />
+	<tagRef name="List Footer Bitmap" offset="0x18C" visible="true" />
+	<rect16 name="Header Bounds" offset="0x1A0" visible="true" />
+	<rect16 name="Footer Bounds" offset="0x1A8" visible="true" />
+	<undefined name="Unknown" offset="0x1B0" visible="false" />
 	<undefined name="Unknown" offset="0x1B4" visible="false" />
 	<undefined name="Unknown" offset="0x1B8" visible="false" />
 	<undefined name="Unknown" offset="0x1BC" visible="false" />
@@ -472,11 +482,9 @@ child widgets are the list items</comment>
 	<undefined name="Unknown" offset="0x1C4" visible="false" />
 	<undefined name="Unknown" offset="0x1C8" visible="false" />
 	<undefined name="Unknown" offset="0x1CC" visible="false" />
-	<undefined name="Unknown" offset="0x1D0" visible="false" />
-	<undefined name="Unknown" offset="0x1D4" visible="false" />
-	<undefined name="Unknown" offset="0x1D8" visible="false" />
-	<undefined name="Unknown" offset="0x1DC" visible="false" />
-	<undefined name="Unknown" offset="0x1E0" visible="false" />
+	<comment title="Column List">parameters specific to column list widgets
+child widgets are the list items</comment>
+	<tagRef name="Extended Description Widget" offset="0x1D0" visible="true" />
 	<undefined name="Unknown" offset="0x1E4" visible="false" />
 	<undefined name="Unknown" offset="0x1E8" visible="false" />
 	<undefined name="Unknown" offset="0x1EC" visible="false" />
@@ -537,22 +545,9 @@ child widgets are the list items</comment>
 	<undefined name="Unknown" offset="0x2C8" visible="false" />
 	<undefined name="Unknown" offset="0x2CC" visible="false" />
 	<undefined name="Unknown" offset="0x2D0" visible="false" />
-	<comment title="Conditional Widgets">use this to attach widgets that are loaded only if some internal criteria is met while processing a widget event</comment>
-	<tagblock name="Conditional Widgets" offset="0x2D4" visible="true" elementSize="0x50">
-		<tagRef name="Widget Tag" offset="0x0" visible="true" />
-		<ascii name="Name (Unused)" offset="0x10" length="0x20" visible="true" />
-		<flags32 name="Flags" offset="0x30" visible="true">
-			<bit name="Load If Event Handler Function Fails" index="0" />
-		</flags32>
-		<int16 name="Custom Controller Index (Unused)" offset="0x34" visible="true" />
-		<int16 name="Unknown" offset="0x36" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
-	</tagblock>
+	<undefined name="Unknown" offset="0x2D4" visible="false" />
+	<undefined name="Unknown" offset="0x2D8" visible="false" />
+	<undefined name="Unknown" offset="0x2DC" visible="false" />
 	<undefined name="Unknown" offset="0x2E0" visible="false" />
 	<undefined name="Unknown" offset="0x2E4" visible="false" />
 	<undefined name="Unknown" offset="0x2E8" visible="false" />
@@ -562,11 +557,22 @@ child widgets are the list items</comment>
 	<undefined name="Unknown" offset="0x2F8" visible="false" />
 	<undefined name="Unknown" offset="0x2FC" visible="false" />
 	<undefined name="Unknown" offset="0x300" visible="false" />
-	<undefined name="Unknown" offset="0x304" visible="false" />
-	<undefined name="Unknown" offset="0x308" visible="false" />
-	<undefined name="Unknown" offset="0x30C" visible="false" />
-	<undefined name="Unknown" offset="0x310" visible="false" />
-	<undefined name="Unknown" offset="0x314" visible="false" />
+	<comment title="Conditional Widgets">use this to attach widgets that are loaded only if some internal criteria is met while processing a widget event</comment>
+	<tagblock name="Conditional Widgets" offset="0x304" visible="true" elementSize="0x54">
+		<tagRef name="Widget Tag" offset="0x0" visible="true" />
+		<ascii name="Name (Unused)" offset="0x14" length="0x20" visible="true" />
+		<flags32 name="Flags" offset="0x34" visible="true">
+			<bit name="Load If Event Handler Function Fails" index="0" />
+		</flags32>
+		<int16 name="Custom Controller Index (Unused)" offset="0x38" visible="true" />
+		<int16 name="Unknown" offset="0x3A" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+	</tagblock>
 	<undefined name="Unknown" offset="0x318" visible="false" />
 	<undefined name="Unknown" offset="0x31C" visible="false" />
 	<undefined name="Unknown" offset="0x320" visible="false" />
@@ -617,21 +623,35 @@ child widgets are the list items</comment>
 	<undefined name="Unknown" offset="0x3D4" visible="false" />
 	<undefined name="Unknown" offset="0x3D8" visible="false" />
 	<undefined name="Unknown" offset="0x3DC" visible="false" />
+	<undefined name="Unknown" offset="0x3E0" visible="false" />
+	<undefined name="Unknown" offset="0x3E4" visible="false" />
+	<undefined name="Unknown" offset="0x3E8" visible="false" />
+	<undefined name="Unknown" offset="0x3EC" visible="false" />
+	<undefined name="Unknown" offset="0x3F0" visible="false" />
+	<undefined name="Unknown" offset="0x3F4" visible="false" />
+	<undefined name="Unknown" offset="0x3F8" visible="false" />
+	<undefined name="Unknown" offset="0x3FC" visible="false" />
+	<undefined name="Unknown" offset="0x400" visible="false" />
+	<undefined name="Unknown" offset="0x404" visible="false" />
+	<undefined name="Unknown" offset="0x408" visible="false" />
+	<undefined name="Unknown" offset="0x40C" visible="false" />
+	<undefined name="Unknown" offset="0x410" visible="false" />
+	<undefined name="Unknown" offset="0x414" visible="false" />
 	<comment title="Child Widgets">use this to attach widgets that are loaded as 'children' of this widget (children are always loaded as part of the parent widget)</comment>
-	<tagblock name="Child Widgets" offset="0x3E0" visible="true" elementSize="0x50">
+	<tagblock name="Child Widgets" offset="0x418" visible="true" elementSize="0x54">
 		<tagRef name="Widget Tag" offset="0x0" visible="true" />
-		<ascii name="Name (Unused)" offset="0x10" length="0x20" visible="true" />
-		<flags32 name="Flags" offset="0x30" visible="true">
+		<ascii name="Name (Unused)" offset="0x14" length="0x20" visible="true" />
+		<flags32 name="Flags" offset="0x34" visible="true">
 			<bit name="Use Custom Controller Index" index="0" />
 		</flags32>
-		<int16 name="Custom Controller Index" offset="0x34" visible="true" />
-		<int16 name="Vertical Offset" offset="0x36" visible="true" />
-		<int16 name="Horizontal Offset" offset="0x38" visible="true" />
-		<int16 name="Unknown" offset="0x3A" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<int16 name="Custom Controller Index" offset="0x38" visible="true" />
+		<int16 name="Vertical Offset" offset="0x3A" visible="true" />
+		<int16 name="Horizontal Offset" offset="0x3C" visible="true" />
+		<int16 name="Unknown" offset="0x3E" visible="false" />
 		<undefined name="Unknown" offset="0x40" visible="false" />
 		<undefined name="Unknown" offset="0x44" visible="false" />
 		<undefined name="Unknown" offset="0x48" visible="false" />
 		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
 	</tagblock>
 </plugin>

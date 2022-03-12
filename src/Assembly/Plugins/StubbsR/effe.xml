@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="StubbsR" baseSize="0x50">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+	</revisions>
+	<flags32 name="Flags" offset="0x0" visible="true">
+		<bit name="Deleted When Attachment Deactivates" index="0" />
+		<bit name="Required For Gameplay (Cannot Optimize Out)" index="1" />
+	</flags32>
+	<int16 name="Loop Start Event Index" offset="0x4" visible="true" />
+	<int16 name="Loop Stop Event Index" offset="0x6" visible="true" />
+	<undefined name="Unknown" offset="0x8" visible="false" />
+	<undefined name="Unknown" offset="0xC" visible="false" />
+	<undefined name="Unknown" offset="0x10" visible="false" />
+	<undefined name="Unknown" offset="0x14" visible="false" />
+	<undefined name="Unknown" offset="0x18" visible="false" />
+	<undefined name="Unknown" offset="0x1C" visible="false" />
+	<undefined name="Unknown" offset="0x20" visible="false" />
+	<undefined name="Unknown" offset="0x24" visible="false" />
+	<tagblock name="Locations" offset="0x28" visible="true" elementSize="0x20">
+		<ascii name="Marker Name" offset="0x0" length="0x20" visible="true" />
+	</tagblock>
+	<tagblock name="Events" offset="0x3C" visible="true" elementSize="0x54">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<float32 name="Skip Fraction" offset="0x4" visible="true" tooltip="chance that this event will be skipped entirely" />
+		<rangef name="Delay Bounds" offset="0x8" visible="true" tooltip="delay before this event takes place" />
+		<rangef name="Duration Bounds" offset="0x10" visible="true" tooltip="duration of this event" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<tagblock name="Parts" offset="0x2C" visible="true" elementSize="0x6C">
+			<enum16 name="Create In" offset="0x0" visible="true">
+				<option name="Any Environment" value="0x0" />
+				<option name="Air Only" value="0x1" />
+				<option name="Water Only" value="0x2" />
+				<option name="Space Only" value="0x3" />
+			</enum16>
+			<enum16 name="Violence Mode" offset="0x2" visible="true">
+				<option name="Either Mode" value="0x0" />
+				<option name="Violent Mode Only" value="0x1" />
+				<option name="Nonviolent Mode Only" value="0x2" />
+			</enum16>
+			<int16 name="Location Index" offset="0x4" visible="true" />
+			<flags16 name="Flags" offset="0x6" visible="true">
+				<bit name="Face Down Regardless Of Location (Decals)" index="0" />
+			</flags16>
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
+			<enum32 name="Runtime Base Group Tag" offset="0x14" visible="true" tooltip="This should be set to match the below &quot;Type&quot; tag reference, any object should use &quot;object&quot;.">
+				<option name="deca - decal" value="0x64656361" />
+				<option name="jpt! - damage_effect" value="0x6A707421" />
+				<option name="ligh - light" value="0x6C696768" />
+				<option name="obje - object" value="0x6F626A65" />
+				<option name="snd! - sound" value="0x736E6421" />
+			</enum32>
+			<tagRef name="Type" offset="0x18" visible="true" tooltip="The above &quot;Runtime Base Group Tag&quot; field should match this reference." />
+			<undefined name="Unknown" offset="0x2C" visible="false" />
+			<undefined name="Unknown" offset="0x30" visible="false" />
+			<undefined name="Unknown" offset="0x34" visible="false" />
+			<undefined name="Unknown" offset="0x38" visible="false" />
+			<undefined name="Unknown" offset="0x3C" visible="false" />
+			<undefined name="Unknown" offset="0x40" visible="false" />
+			<rangef name="Velocity Bounds" offset="0x44" visible="true" tooltip="initial velocity along the location's forward" />
+			<degree name="Velocity Cone Angle" offset="0x4C" visible="true" tooltip="initial velocity will be inside the cone defined by this angle." />
+			<ranged name="Angular Velocity Bounds" offset="0x50" visible="true" />
+			<rangef name="Radius Modifier Bounds" offset="0x58" visible="true" />
+			<undefined name="Unknown" offset="0x60" visible="false" />
+			<comment title="SCALE MODIFIERS" />
+			<flags32 name="A Scales Values" offset="0x64" visible="true">
+				<bit name="Velocity" index="0" />
+				<bit name="Velocity Delta" index="1" />
+				<bit name="Velocity Cone Angle" index="2" />
+				<bit name="Angular Velocity" index="3" />
+				<bit name="Angular Velocity Delta" index="4" />
+				<bit name="Type-Specific Scale" index="5" />
+			</flags32>
+			<flags32 name="B Scales Values" offset="0x68" visible="true">
+				<bit name="Velocity" index="0" />
+				<bit name="Velocity Delta" index="1" />
+				<bit name="Velocity Cone Angle" index="2" />
+				<bit name="Angular Velocity" index="3" />
+				<bit name="Angular Velocity Delta" index="4" />
+				<bit name="Type-Specific Scale" index="5" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Particles" offset="0x40" visible="true" elementSize="0xEC">
+			<enum16 name="Create In" offset="0x0" visible="true">
+				<option name="Any Environment" value="0x0" />
+				<option name="Air Only" value="0x1" />
+				<option name="Water Only" value="0x2" />
+				<option name="Space Only" value="0x3" />
+			</enum16>
+			<enum16 name="Violence Mode" offset="0x2" visible="true">
+				<option name="Either Mode" value="0x0" />
+				<option name="Violent Mode Only" value="0x1" />
+				<option name="Nonviolent Mode Only" value="0x2" />
+			</enum16>
+			<enum16 name="Create" offset="0x4" visible="true">
+				<option name="Independent Of Camera Mode" value="0x0" />
+				<option name="Only In First Person" value="0x1" />
+				<option name="Only In Third Person" value="0x2" />
+				<option name="In First Person If Possible" value="0x3" />
+			</enum16>
+			<int16 name="Unknown" offset="0x6" visible="false" />
+			<int16 name="Location Index" offset="0x8" visible="true" />
+			<int16 name="Unknown" offset="0xA" visible="false" />
+			<degree2 name="Relative Direction" offset="0xC" visible="true" tooltip="particle initial velocity direction relative to the location's forward" />
+			<vector3 name="Relative Offset" offset="0x14" visible="true" tooltip="particle initial position offset relative to the locatin's forward" />
+			<undefined name="Unknown" offset="0x20" visible="false" />
+			<undefined name="Unknown" offset="0x24" visible="false" />
+			<undefined name="Unknown" offset="0x28" visible="false" />
+			<undefined name="Unknown" offset="0x2C" visible="false" />
+			<undefined name="Unknown" offset="0x30" visible="false" />
+			<undefined name="Unknown" offset="0x34" visible="false" />
+			<undefined name="Unknown" offset="0x38" visible="false" />
+			<undefined name="Unknown" offset="0x3C" visible="false" />
+			<undefined name="Unknown" offset="0x40" visible="false" />
+			<undefined name="Unknown" offset="0x44" visible="false" />
+			<undefined name="Unknown" offset="0x48" visible="false" />
+			<undefined name="Unknown" offset="0x4C" visible="false" />
+			<undefined name="Unknown" offset="0x50" visible="false" />
+			<tagRef name="Particle Type" offset="0x54" visible="true" />
+			<flags32 name="Flags" offset="0x68" visible="true">
+				<bit name="Stay Attached To Marker" index="0" />
+				<bit name="Random Initial Angle" index="1" />
+				<bit name="Tint From Object Color" index="2" />
+				<bit name="Interpolate Tint As HSV" index="3" />
+				<bit name="... Across The Long Hue Path" index="4" />
+			</flags32>
+			<enum16 name="Distribution Function" offset="0x6C" visible="true" tooltip="describes how the part creations are distributed over the event duration">
+				<option name="Start" value="0x0" />
+				<option name="End" value="0x1" />
+				<option name="Constant" value="0x2" />
+				<option name="Buildup" value="0x3" />
+				<option name="Falloff" value="0x4" />
+				<option name="Buildup And Falloff" value="0x5" />
+			</enum16>
+			<int16 name="Unknown" offset="0x6E" visible="false" />
+			<range16 name="Count" offset="0x70" visible="true" tooltip="number of particles created" />
+			<rangef name="Distribution Radius" offset="0x74" visible="true" tooltip="initial distance from the location's origin" />
+			<undefined name="Unknown" offset="0x7C" visible="false" />
+			<undefined name="Unknown" offset="0x80" visible="false" />
+			<undefined name="Unknown" offset="0x84" visible="false" />
+			<rangef name="Velocity" offset="0x88" visible="true" tooltip="initial velocity along the specified direction" />
+			<degree name="Velocity Cone Angle" offset="0x90" visible="true" tooltip="particle initial velocities will be inside the cone defined by this angle and the specified direction" />
+			<ranged name="Angular Velocity" offset="0x94" visible="true" />
+			<undefined name="Unknown" offset="0x9C" visible="false" />
+			<undefined name="Unknown" offset="0xA0" visible="false" />
+			<rangef name="Radius" offset="0xA4" visible="true" tooltip="particle radius" />
+			<undefined name="Unknown" offset="0xAC" visible="false" />
+			<undefined name="Unknown" offset="0xB0" visible="false" />
+			<colorf name="Tint Lower Bound" offset="0xB4" alpha="true" visible="true" />
+			<colorf name="Tint Upper Bound" offset="0xC4" alpha="true" visible="true" />
+			<undefined name="Unknown" offset="0xD4" visible="false" />
+			<undefined name="Unknown" offset="0xD8" visible="false" />
+			<undefined name="Unknown" offset="0xDC" visible="false" />
+			<undefined name="Unknown" offset="0xE0" visible="false" />
+			<comment title="SCALE MODIFIERS" />
+			<flags32 name="A Scales Values" offset="0xE4" visible="true">
+				<bit name="Velocity" index="0" />
+				<bit name="Velocity Delta" index="1" />
+				<bit name="Velocity Cone Angle" index="2" />
+				<bit name="Angular Velocity" index="3" />
+				<bit name="Angular Velocity Delta" index="4" />
+				<bit name="Count" index="5" />
+				<bit name="Count Delta" index="6" />
+				<bit name="Distribution Radius" index="7" />
+				<bit name="Distribution Radius Delta" index="8" />
+				<bit name="Particle Radius" index="9" />
+				<bit name="Particle Radius Delta" index="10" />
+				<bit name="Tint" index="11" />
+			</flags32>
+			<flags32 name="B Scales Values" offset="0xE8" visible="true">
+				<bit name="Velocity" index="0" />
+				<bit name="Velocity Delta" index="1" />
+				<bit name="Velocity Cone Angle" index="2" />
+				<bit name="Angular Velocity" index="3" />
+				<bit name="Angular Velocity Delta" index="4" />
+				<bit name="Count" index="5" />
+				<bit name="Count Delta" index="6" />
+				<bit name="Distribution Radius" index="7" />
+				<bit name="Distribution Radius Delta" index="8" />
+				<bit name="Particle Radius" index="9" />
+				<bit name="Particle Radius Delta" index="10" />
+				<bit name="Tint" index="11" />
+			</flags32>
+		</tagblock>
+	</tagblock>
+</plugin>
