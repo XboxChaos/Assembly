@@ -20,19 +20,17 @@ namespace Blamite.Blam.SecondGen.Structures
 		private List<ITagGroup> _groups;
 		private Dictionary<int, ITagGroup> _groupsById;
 		private List<ITag> _tags;
+		private Dictionary<int, ITag> _globalTags;
 
-		public SecondGenTagTable()
-		{
-			_tags = new List<ITag>();
-			_groups = new List<ITagGroup>();
-			_groupsById = new Dictionary<int, ITagGroup>();
-		}
+		private StructureLayout _metaHeaderLayout;
 
 		public SecondGenTagTable(IReader reader, FileSegmentGroup metaArea, MetaAllocator allocator, EngineDescription buildInfo)
 		{
 			_metaArea = metaArea;
 			_allocator = allocator;
 			_buildInfo = buildInfo;
+
+			_metaHeaderLayout = _buildInfo.Layouts.GetLayout("meta header");
 
 			Load(reader);
 		}
@@ -46,6 +44,14 @@ namespace Blamite.Blam.SecondGen.Structures
 		public IList<ITagGroup> Groups
 		{
 			get { return _groups; }
+		}
+
+		public override ITag GetGlobalTag(int magic)
+		{
+			if (_globalTags.ContainsKey(magic))
+				return _globalTags[magic];
+			else
+				return null;
 		}
 
 		/// <summary>
@@ -97,18 +103,17 @@ namespace Blamite.Blam.SecondGen.Structures
 		/// <param name="stream">The stream to write changes to.</param>
 		public void SaveChanges(IStream stream)
 		{
-			StructureLayout headerLayout = _buildInfo.Layouts.GetLayout("meta header");
-			StructureValueCollection headerValues = LoadHeader(headerLayout, stream);
+			StructureValueCollection headerValues = LoadHeader(stream);
 			if (headerValues == null)
 				return;
 
-			int groupStart = headerLayout.Size; //always follows header
+			int groupStart = _metaHeaderLayout.Size; //always follows header
 			int groupSize = SaveGroups(headerValues, groupStart, stream);
 
 			int tagStart = groupStart + groupSize; //always follows groups
 			SaveTags(headerValues, tagStart, stream);
 
-			SaveHeader(headerValues, headerLayout, stream);
+			SaveHeader(headerValues, stream);
 		}
 
 		private int SaveGroups(StructureValueCollection headerValues, int offset, IStream stream)
@@ -119,8 +124,12 @@ namespace Blamite.Blam.SecondGen.Structures
 
 			TagBlockWriter.WriteTagBlock(entries, addr, layout, _metaArea, stream);
 
+			uint adjustedOffset = (uint)offset;
+			if (headerValues.HasInteger("meta header mask"))
+				adjustedOffset += (uint)headerValues.GetInteger("meta header mask");
+
 			headerValues.SetInteger("number of tag groups", (uint)_groups.Count);
-			headerValues.SetInteger("tag group table offset", (uint)offset);
+			headerValues.SetInteger("tag group table offset", adjustedOffset);
 
 			return Groups.Count * layout.Size;
 		}
@@ -133,50 +142,75 @@ namespace Blamite.Blam.SecondGen.Structures
 
 			TagBlockWriter.WriteTagBlock(entries, addr, layout, _metaArea, stream);
 
+			uint adjustedOffset = (uint)offset;
+			if (headerValues.HasInteger("meta header mask"))
+				adjustedOffset += (uint)headerValues.GetInteger("meta header mask");
+
 			headerValues.SetInteger("number of tags", (uint)_tags.Count);
-			headerValues.SetInteger("tag table offset", (uint)offset);
+			headerValues.SetInteger("tag table offset", adjustedOffset);
 		}
 
 		private void Load(IReader reader)
 		{
-			StructureLayout headerLayout = _buildInfo.Layouts.GetLayout("meta header");
-			StructureValueCollection headerValues = LoadHeader(headerLayout, reader);
+			StructureValueCollection headerValues = LoadHeader(reader);
 			if (headerValues == null)
 				return;
 
-			// Groups
 			var numGroups = (int) headerValues.GetInteger("number of tag groups");
-			var groupTableOffset = (uint) (_metaArea.Offset + (uint)headerValues.GetInteger("tag group table offset"));
-			// Offset is relative to the header
+			uint groupTableOffset;
+
+			uint tagTableOffset;
+			var numTags = (int)headerValues.GetInteger("number of tags");
+
+			// xbox hax
+			if (headerValues.HasInteger("meta header mask"))
+			{
+				groupTableOffset = (uint)headerValues.GetInteger("tag group table offset") - (uint)headerValues.GetInteger("meta header mask") + (uint)_metaArea.Offset;
+				tagTableOffset = (uint)(_metaArea.Offset + (uint)headerValues.GetInteger("tag table offset")) - (uint)headerValues.GetInteger("meta header mask");
+			}
+			else
+			{
+				groupTableOffset = (uint)(_metaArea.Offset + (uint)headerValues.GetInteger("tag group table offset"));
+				tagTableOffset = (uint)(_metaArea.Offset + (uint)headerValues.GetInteger("tag table offset"));
+			}
+
+			// offsets are relative to the header
 			_groups = LoadGroups(reader, groupTableOffset, numGroups, _buildInfo);
 			_groupsById = BuildGroupLookup(_groups);
 
-			// Tags
-			var numTags = (int) headerValues.GetInteger("number of tags");
-			var tagTableOffset = (uint) (_metaArea.Offset + (uint)headerValues.GetInteger("tag table offset"));
-			// Offset is relative to the header
 			_tags = LoadTags(reader, tagTableOffset, numTags, _buildInfo, _metaArea);
+
+			_globalTags = new Dictionary<int, ITag>();
+			//store global tags
+			_globalTags[CharConstant.FromString("scnr")] = _tags[(int)headerValues.GetInteger("scenario datum index") & 0xFFFF];
+			if (headerValues.HasInteger("map globals datum index"))
+				_globalTags[CharConstant.FromString("matg")] = _tags[(int)headerValues.GetInteger("map globals datum index") & 0xFFFF];
 		}
 
-		private StructureValueCollection LoadHeader(StructureLayout headerLayout, IReader reader)
+		private StructureValueCollection LoadHeader(IReader reader)
 		{
 			if (_metaArea == null)
 				return null;
 
 			reader.SeekTo(_metaArea.Offset);
-			StructureValueCollection result = StructureReader.ReadStructure(reader, headerLayout);
+			StructureValueCollection result = StructureReader.ReadStructure(reader, _metaHeaderLayout);
 			if ((uint)result.GetInteger("magic") != CharConstant.FromString("tags"))
 				throw new ArgumentException("Invalid index table header magic. This map could be compressed, try the Compressor in the Tools menu before reporting.");
+
+			//see if header values are memory (xbox) or local (everything after) and store the result if needed
+			uint metaMask = (uint)result.GetInteger("tag group table offset") - (uint)_metaHeaderLayout.Size;
+			if (metaMask > 0)
+				result.SetInteger("meta header mask", metaMask);
 
 			return result;
 		}
 
-		private void SaveHeader(StructureValueCollection headerValues, StructureLayout headerLayout, IWriter writer)
+		private void SaveHeader(StructureValueCollection headerValues, IWriter writer)
 		{
 			if (_metaArea != null)
 			{
 				writer.SeekTo(_metaArea.Offset);
-				StructureWriter.WriteStructure(headerValues, headerLayout, writer);
+				StructureWriter.WriteStructure(headerValues, _metaHeaderLayout, writer);
 			}
 		}
 
