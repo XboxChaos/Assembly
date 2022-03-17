@@ -1,0 +1,60 @@
+﻿<Window x:Class="Assembly.Metro.Dialogs.ControlDialogs.EnginePicker"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:n="clr-namespace:Assembly.Helpers.Native"
+        AllowsTransparency="True" ResizeMode="NoResize" WindowStyle="None" WindowStartupLocation="CenterOwner"
+        SnapsToDevicePixels="True" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:blam="clr-namespace:Blamite.Serialization;assembly=Blamite"
+        ShowInTaskbar="False"
+        SizeToContent="Height"
+        Width="480" MinHeight="250"
+        n:WindowMovement.IsDraggable="True">
+	<Border Background="#FF2E2E31" BorderThickness="1,1,1,5" BorderBrush="{DynamicResource ExtryzeAccentBrush}">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="60px" />
+				<RowDefinition Height="*" />
+				<RowDefinition Height="36px" />
+			</Grid.RowDefinitions>
+
+			<Path Style="{StaticResource AsmLogo}" Margin="6,6,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="34" Width="34" />
+			<TextBlock Grid.Row="0" x:Name="lblTitle" Text="Engine Picker - Assembly" Foreground="#989898"
+			           VerticalAlignment="Top" HorizontalAlignment="Stretch" FontSize="15" Margin="45,12,141,0"
+			           FontFamily="{DynamicResource MetroFontLight}" TextTrimming="CharacterEllipsis" />
+
+			<Grid
+				Grid.Row="0"
+				x:Name="headerThumb"
+				Opacity="0"
+				Background="Transparent"
+				Margin="0,0,0,0" Height="53.5" VerticalAlignment="Top"
+				n:WindowMovement.DragsWindow="True" />
+
+			<StackPanel Grid.Row="1" Margin="33,0,33,6" CanVerticallyScroll="True">
+				<TextBlock TextWrapping="Wrap" FontSize="12" Foreground="White" HorizontalAlignment="Left"
+				           Text="Assembly can not determine an exact match for an engine definition for your cache file. Most likely because there is a blank build string in the cache header. A single engine must be chosen in order to load your map as intended and display the correct plugins." FontFamily="{DynamicResource MetroFontRegular}" />
+				
+				<TextBlock TextWrapping="Wrap" FontSize="12" Foreground="White" HorizontalAlignment="Left" Margin="0,10,0,0"
+                           Text="Please select (or double-click) the engine that best matches your cache file:"/>
+				<TextBlock x:Name="txtMapName" TextWrapping="Wrap" FontSize="12" Foreground="White" FontStyle="Italic" HorizontalAlignment="Left" Margin="16,4,0,0"
+                           Text="my_annoying_map.map"/>
+
+				<ListBox x:Name="listbox" Margin="0,12,0,12" MaxHeight="250" Background="Transparent" SelectionChanged="listbox_SelectionChanged" ScrollViewer.VerticalScrollBarVisibility="Auto">
+					<ListBox.ItemTemplate>
+						<DataTemplate DataType="{x:Type blam:EngineDescription}">
+							<TextBlock Text="{Binding Path=Name}" Foreground="White" Background="Transparent" MouseDown="TextBlock_MouseDown" />
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</StackPanel>
+
+			<Grid Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="36" Background="#FF424244" />
+			<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,20,5"
+			            VerticalAlignment="Bottom">
+				<Button x:Name="btnContinue" Padding="10,0,10,0" Margin="10,0,10,0" Click="BtnContinue_OnClick" IsEnabled="False">Continue</Button>
+				<Button x:Name="btnCancel" Padding="10,0,10,0" Margin="0" Click="BtnCancel_OnClick">Cancel</Button>
+			</StackPanel>
+		</Grid>
+	</Border>
+</Window>

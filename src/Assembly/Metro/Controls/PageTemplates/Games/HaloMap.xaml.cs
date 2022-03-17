@@ -155,14 +155,28 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			using (FileStream fileStream = File.OpenRead(_cacheLocation))
 			{
 				var reader = new EndianReader(fileStream, Endian.BigEndian);
-		#if DEBUG
-				_cacheFile = CacheFileLoader.LoadCacheFile(reader, _cacheLocation, App.AssemblyStorage.AssemblySettings.DefaultDatabase,
-					out _buildInfo);
-		#else
+
+				var matches = CacheFileLoader.FindEngineDescriptions(reader, App.AssemblyStorage.AssemblySettings.DefaultDatabase);
+
+				if (matches.Count > 1)
+				{
+					Dispatcher.Invoke(new Action(delegate
+					{
+						_buildInfo = MetroEnginePicker.Show(_cacheLocation, matches);
+					}));
+
+				}
+				else if (matches.Count > 0)
+				{
+					_buildInfo = matches[0];
+				}
+
+#if DEBUG
+				_cacheFile = CacheFileLoader.LoadCacheFileWithEngineDescription(reader, _cacheLocation, _buildInfo);
+#else
 				try
 				{
-					_cacheFile = CacheFileLoader.LoadCacheFile(reader, Path.GetFileName(_cacheLocation), App.AssemblyStorage.AssemblySettings.DefaultDatabase,
-						out _buildInfo);
+					_cacheFile = CacheFileLoader.LoadCacheFileWithEngineDescription(reader, _cacheLocation, _buildInfo);
 				}
 				catch (Exception ex)
 				{
@@ -200,7 +214,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					}));
 					return;
 				}
-		#endif
+#endif
 
 				_mapManager = new FileStreamManager(_cacheLocation, reader.Endianness);
 
