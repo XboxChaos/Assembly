@@ -427,6 +427,8 @@ namespace Blamite.Blam.ThirdGen
 		{
 			if (_tags != null)
 			{
+				ScriptFiles = new IScriptFile[0];
+
 				if (_buildInfo.Layouts.HasLayout("hsdt"))
 				{
 					ScriptFiles = _tags.FindTagsByGroup("hsdt").Select(t => new HsdtScriptFile(t, _fileNames.GetTagName(t.Index), MetaArea, _buildInfo, StringIDs, _expander)).ToArray();
@@ -435,12 +437,11 @@ namespace Blamite.Blam.ThirdGen
 				{
 					//caches are intended for 1 scenario, so only load the *real* one
 					ITag hs = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
-					ScriptFiles = new IScriptFile[1];
-					ScriptFiles[0] = new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, _buildInfo, StringIDs, _expander, Allocator);
-				}
-				else
-                {
-					ScriptFiles = new IScriptFile[0];
+					if (hs != null)
+					{
+						ScriptFiles = new IScriptFile[1];
+						ScriptFiles[0] = new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, _buildInfo, StringIDs, _expander, Allocator);
+					}
 				}
 			}
 		}

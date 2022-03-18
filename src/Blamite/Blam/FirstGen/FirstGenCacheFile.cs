@@ -301,24 +301,20 @@ namespace Blamite.Blam.FirstGen
 
 		private void LoadScriptFiles()
 		{
-			ScriptFiles = new IScriptFile[0];
-
 			if (_tags != null)
 			{
-				List<IScriptFile> l_scriptfiles = new List<IScriptFile>();
+				ScriptFiles = new IScriptFile[0];
 
 				if (_buildInfo.Layouts.HasLayout("scnr"))
 				{
 					//caches are intended for 1 scenario, so only load the *real* one
 					ITag hs = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
-					l_scriptfiles.Add(new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, _buildInfo, StringIDs, _expander, Allocator));
+					if (hs != null)
+					{
+						ScriptFiles = new IScriptFile[1];
+						ScriptFiles[0] = new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, _buildInfo, StringIDs, _expander, Allocator);
+					}
 				}
-				else
-				{
-					return;
-				}
-
-				ScriptFiles = l_scriptfiles.ToArray();
 			}
 		}
 
