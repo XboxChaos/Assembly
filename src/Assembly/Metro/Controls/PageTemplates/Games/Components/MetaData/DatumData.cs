@@ -44,5 +44,10 @@
 		{
 			return new DatumData(Name, Offset, FieldAddress, Salt, Index, PluginLine, ToolTip);
 		}
+
+		public override string AsString()
+		{
+			return string.Format("datum | {0} | {1} {2}", Name, Salt, Index);
+		}
 	}
 }

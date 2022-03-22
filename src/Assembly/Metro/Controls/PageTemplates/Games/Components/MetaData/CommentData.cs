@@ -45,5 +45,10 @@
 		{
 			return new CommentData(_name, _text, PluginLine);
 		}
+
+		public override string AsString()
+		{
+			return string.Format("comment | {0} ", Name);
+		}
 	}
 }

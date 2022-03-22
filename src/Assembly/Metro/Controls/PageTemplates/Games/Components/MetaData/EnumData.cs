@@ -80,6 +80,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 			return result;
 		}
+
+		public override string AsString()
+		{
+			return string.Format("{0} | {1} | {2} ({3})", TypeStr, Name, Value, SelectedValue.Name);
+		}
 	}
 
 	public class EnumValue : PropertyChangeNotifier

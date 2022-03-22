@@ -112,5 +112,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			return new RawData(Name, Offset, FieldAddress, _value, _length, PluginLine, ToolTip, _metaArea);
 		}
+
+		public override string AsString()
+		{
+			return string.Format("{0} | {1} | hash = {2}", Type, Name, Value.GetHashCode());
+		}
 	}
 }

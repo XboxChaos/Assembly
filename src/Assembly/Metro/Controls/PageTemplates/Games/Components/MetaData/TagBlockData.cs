@@ -242,6 +242,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			return result;
 		}
 
+		public override string AsString()
+		{
+			//have to iterate children via metaeditor as that contains the flattener and other such things that allow elements to be read
+			return string.Format("block | {0} | [{1}]", Name, Length);
+		}
+
 		/// <summary>
 		///     Changes the size of the block, adding or removing pages as necessary.
 		/// </summary>
