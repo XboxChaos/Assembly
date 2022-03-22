@@ -52,7 +52,7 @@ namespace Assembly.Metro.Dialogs
 		/// <param name="message">The message to be displayed in the Message Box</param>
 		public static void Show(string message)
 		{
-			Show("Assembly - Message Box", message);
+			Show("Assembly - Information", message);
 		}
 
 		/// <summary>
