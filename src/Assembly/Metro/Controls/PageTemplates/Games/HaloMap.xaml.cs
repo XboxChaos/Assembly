@@ -73,6 +73,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private List<TagEntry> _tagEntries = new List<TagEntry>();
 		private Settings.TagOpenMode _tagOpenMode;
 		private TagHierarchy _visibleTags = new TagHierarchy();
+		public List<string> _weaponList = new List<string>();
 
 		public static RoutedCommand DeleteBatchCommand = new RoutedCommand();
 
@@ -2221,9 +2222,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			string groupName = CharConstant.ToString(tag.Group.Magic);
 			string name = _cacheFile.FileNames.GetTagName(tag);
-
+			addWeaponToList(name);
 			return new TagEntry(tag, groupName, name);
 		}
+		private void addWeaponToList(string weapon)
+        {
+			_weaponList.Add(weapon);
+        }
 
 		private void txtTagSearch_TextChanged(object sender = null, TextChangedEventArgs e = null)
 		{

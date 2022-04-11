@@ -36,6 +36,7 @@ namespace Assembly.Windows
 	/// </summary>
 	public partial class Home
 	{
+		private LynikUI.lynik_main _lynik_mainForm;
 		public Home()
 		{
 			InitializeComponent();
@@ -302,8 +303,8 @@ namespace Assembly.Windows
 
 		private void ShowCheatingDialog()
 		{
-			MetroMessageBox.Show("Assembly",
-				"Assembly is not a cheating tool. While you will never be prevented from using it to give yourself an unfair advantage on Xbox Live, do not expect to receive help if you ask how to do so.\n\nThis dialog will only show once.");
+			MetroMessageBox.Show("Lynik's Addon",
+				"Welcome to Lynik's version of Assembly.");
 		}
 
 		#region Waste of Space, idk man
@@ -949,5 +950,13 @@ namespace Assembly.Windows
 				App.AssemblyStorage.AssemblySettings.ShownCheatingDialog = true;
 			}
 		}
-	}
+
+        private void customInterface_Click(object sender, RoutedEventArgs e)
+        {
+			_lynik_mainForm = new LynikUI.lynik_main();
+			_lynik_mainForm.initializeValues(this);
+			_lynik_mainForm.Show();
+        }
+
+    }
 }
