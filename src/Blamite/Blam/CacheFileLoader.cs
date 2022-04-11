@@ -126,8 +126,12 @@ namespace Blamite.Blam
 				if (offsetCache.ContainsKey(engine.BuildStringOffset))
 				{
 					if (offsetCache[engine.BuildStringOffset] == engine.BuildVersion)
+					{
 						matches.Add(engine);
-
+						if (!string.IsNullOrEmpty(engine.BuildVersion))
+							break;
+					}
+						
 					continue;
 				}
 
@@ -135,7 +139,11 @@ namespace Blamite.Blam
 				string buildString = reader.ReadAscii(0x20);
 
 				if (buildString == engine.BuildVersion)
+				{
 					matches.Add(engine);
+					if (!string.IsNullOrEmpty(engine.BuildVersion))
+						break;
+				}
 
 				offsetCache[engine.BuildStringOffset] = buildString;
 			}
