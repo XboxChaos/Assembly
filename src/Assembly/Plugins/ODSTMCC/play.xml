@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<plugin game="ODSTMCC" baseSize="0x50">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+		<revision author="-DeToX-" version="2">Labelled some tagblocks related to raw.</revision>
+		<revision author="-DeToX-" version="3">Labelled raw size for sounds.</revision>
+		<revision author="Lord Zedd" version="4">Copypasta</revision>
+	</revisions>
+	<tagblock name="Compression Codecs" offset="0x0" visible="true" elementSize="0x10">
+		<raw name="GUID" offset="0x0" size="0x10" visible="true" />
+	</tagblock>
+	<tagblock name="External Cache References" offset="0xC" visible="true" elementSize="0x108" align="0x10">
+		<ascii name="Map Path" offset="0x0" visible="true" length="0x100" />
+		<int16 name="Unknown" offset="0x100" visible="false" />
+		<int16 name="Unknown" offset="0x102" visible="false" />
+		<undefined name="Unknown" offset="0x104" visible="false" />
+	</tagblock>
+	<tagblock name="Raw Pages" offset="0x18" visible="true" elementSize="0x58" align="0x8">
+		<int16 name="Salt" offset="0x0" visible="true" />
+		<int8 name="Flags" offset="0x2" visible="true" />
+		<int8 name="Compression Codec Index" offset="0x3" visible="true" />
+		<int16 name="Shared Cache Index" offset="0x4" visible="true" />
+		<int16 name="Precache Index" offset="0x6" visible="true" />
+		<comment title="Blocks">Blocks are stored in the raw table, at the beginning of the map, and compressed using deflate. The decompressed data is hashed.</comment>
+		<uint32 name="Block Offset" offset="0x8" visible="true" />
+		<uint32 name="Compressed Block Size" offset="0xC" visible="true" />
+		<uint32 name="Uncompressed Block Size" offset="0x10" visible="true" />
+		<int32 name="CRC Checksum" offset="0x14" visible="true" />
+		<raw name="Entire Buffer Hash" offset="0x18" size="0x14" visible="true" />
+		<raw name="First Chunk Hash" offset="0x2C" size="0x14" visible="true" />
+		<raw name="Last Chunk Hash" offset="0x40" size="0x14" visible="true" />
+		<int16 name="Block Asset Count" offset="0x54" visible="true" />
+		<int16 name="Unknown Index" offset="0x56" visible="true" />
+	</tagblock>
+	<tagblock name="Sizes" offset="0x24" visible="true" elementSize="0x10" align="0x8">
+		<int32 name="Overall Size" offset="0x0" visible="true" />
+		<tagblock name="Parts" offset="0x4" visible="true" elementSize="0x8" align="0x8">
+			<int32 name="Offset" offset="0x0" visible="true" />
+			<int32 name="Size" offset="0x4" visible="true" />
+		</tagblock>
+	</tagblock>
+	<tagblock name="File Locations Patch Lookup" offset="0x30" visible="true" elementSize="0xC">
+		<int32 name="Patch Index" offset="0x0" visible="true" />
+		<int32 name="Pageable File Location Index" offset="0x4" visible="true" />
+		<int32 name="Resource Index" offset="0x8" visible="true" />
+	</tagblock>
+	<tagblock name="Segments" offset="0x3C" visible="true" elementSize="0x10" align="0x8">
+		<int16 name="Primary Page Index" offset="0x0" visible="true" />
+		<int16 name="Secondary Page Index" offset="0x2" visible="true" />
+		<int32 name="Primary Segment Offset" offset="0x4" visible="true" />
+		<int32 name="Secondary Segment Offset" offset="0x8" visible="true" />
+		<int16 name="Primary Size Index" offset="0xC" visible="true" />
+		<int16 name="Secondary Size Index" offset="0xE" visible="true" />
+	</tagblock>
+	<int32 name="Header Precache Count" offset="0x48" visible="true" />
+	<undefined name="Unknown" offset="0x4C" visible="false" />
+</plugin>
