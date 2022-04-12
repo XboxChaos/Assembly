@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layouts>
+	<layout for="header" size="0x800">
+		<uint32 name="file size" offset="0x8" />
+		<uint32 name="meta offset" offset="0x10" />
+		<uint32 name="tag data offset" offset="0x14" />
+		<int32 name="tag data size" offset="0x18" />
+		<int32 name="meta size" offset="0x1C" />
+
+		<asciiz name="internal name" offset="0x20" />
+		<asciiz name="build string" offset="0x40" />
+
+		<uint16 name="type" offset="0x60" />
+		<uint32 name="checksum" offset="0x64" />
+
+		<int32 name="string block offset" offset="0x80" />
+		<int32 name="string table count" offset="0x84" />
+		<int32 name="string table size" offset="0x88" />
+		<uint32 name="string index table offset" offset="0x8C" />
+		<uint32 name="string table offset" offset="0x90" />
+	</layout>
+
+	<layout for="meta header" size="0x14">
+		<int32 name="tag table offset" offset="0x0" />
+		<int32 name="scenario datum index" offset="0x4" />
+		<int32 name="checksum" offset="0x8" />
+		<int32 name="number of tags" offset="0xC" />
+		<int32 name="magic" offset="0x10" />
+	</layout>
+
+	<layout for="tag element" size="0x20">
+		<int32 name="tag group magic" offset="0x0" />
+		<int32 name="parent group magic" offset="0x4" />
+		<int32 name="grandparent group magic" offset="0x8" />
+		<int32 name="datum index" offset="0xC" />
+		<int32 name="name offset" offset="0x10" />
+		<int32 name="offset" offset="0x14" />
+		<int32 name="is in data file" offset="0x18" />
+		<int32 name="pad_2" offset="0x1C" />
+	</layout>
+
+	<layout for="bsp header" size="0x10">
+		<int32 name="size" offset="0x0" />
+		<int32 name="bsp address" offset="0x4" />
+		<int32 name="lightmap address" offset="0x8" />
+		<int32 name="magic" offset="0xC" />
+	</layout>
+
+	<layout for="tag block" size="0xC">
+		<int32 name="entry count" offset="0x0" />
+		<uint32 name="pointer" offset="0x4" />
+		<uint32 name="block definition" offset="0x8" />
+	</layout>
+
+	<layout for="tag reference" size="0x10">
+		<int32 name="tag group magic" offset="0x0" />
+		<uint32 name="name" offset="0x4" />
+		<uint32 name="name length" offset="0x8" />
+		<uint32 name="datum index" offset="0xC" />
+	</layout>
+
+	<layout for="data reference" size="0x14">
+		<int32 name="size" offset="0x0" />
+		<uint32 name="flags" offset="0x4" />
+		<uint32 name="stream position" offset="0x8" />
+		<uint32 name="pointer" offset="0xC" />
+	</layout>
+</layouts>

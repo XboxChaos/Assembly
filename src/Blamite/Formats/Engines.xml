@@ -81,14 +81,17 @@
 	<!-- Halo 1 Misc Builds -->
 	<engine name="Shadowrun Prototype" version="5" build="01.12.07.0132" inherits="Halo 1">
 		<shortName>Shadow</shortName>
+		<plugins>Shadow</plugins>
+		<fallbackPlugins>Halo1</fallbackPlugins>
 		<databases>
 			<scripting type="scripting" path="Formats/Halo1/Shadow_Scripting.xml" />
 		</databases>
 	</engine>
-	
+
 	<engine name="Stubbs The Zombie Xbox" version="5" build="400">
 		<shortName>StubbsX</shortName>
-		<plugins>Halo1</plugins>
+		<plugins>Stubbs</plugins>
+		<fallbackPlugins>Halo1</fallbackPlugins>
 		<engineInfo>
 			<generation>first</generation>
 			<endian>little</endian>
@@ -102,14 +105,26 @@
 		</databases>
 	</engine>
 
+	<engine name="Stubbs The Zombie Xbox Demo" version="5" build="425" inherits="Stubbs The Zombie Xbox">
+		<shortName>StubbsXDemo</shortName>
+	</engine>
+
+	<engine name="Hail To The Chimp Xbox Prototype" version="5" build="" inherits="Stubbs The Zombie Xbox">
+		<shortName>HTTC</shortName>
+		<plugins>Chimp</plugins>
+		<databases>
+			<scripting type="scripting" path="Formats/Stubbs/HTTC_Scripting.xml" />
+		</databases>
+	</engine>
+
 	<engine name="Stubbs The Zombie PC" version="5" build="">
 		<shortName>StubbsPC</shortName>
-		<plugins>Halo1</plugins>
+		<plugins>Stubbs</plugins>
+		<fallbackPlugins>Halo1</fallbackPlugins>
 		<engineInfo>
 			<generation>first</generation>
 			<endian>little</endian>
 			<segmentAlignment>0x4</segmentAlignment>
-			<usesCompression>true</usesCompression>
 		</engineInfo>
 		<databases>
 			<layouts type="layouts" path="Formats/Stubbs/LayoutsPC" />
@@ -117,22 +132,23 @@
 			<scripting type="scripting" path="Formats/Stubbs/SPC_Scripting.xml" />
 		</databases>
 	</engine>
-	
-	<!-- todo: need more code to distinguish this from original PC version, also needs all new plugins due to x64
-	<engine name="Stubbs The Zombie Rerelease" version="5" build="">
+
+	<engine name="Stubbs The Zombie Remastered" version="5" build="">
 		<shortName>StubbsR</shortName>
-		<plugins>Halo1</plugins>
+		<plugins>StubbsR</plugins>
+		<fallbackPlugins>Halo1</fallbackPlugins>
 		<engineInfo>
 			<generation>first</generation>
 			<endian>little</endian>
 			<segmentAlignment>0x4</segmentAlignment>
-			<usesCompression>true</usesCompression>
+			<gameExecutable>stubbsthezombiesub</gameExecutable>
 		</engineInfo>
 		<databases>
 			<layouts type="layouts" path="Formats/Stubbs/LayoutsRerelease" />
 			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
+			<scripting type="scripting" path="Formats/Stubbs/SR_Scripting.xml" />
 		</databases>
-	</engine>-->
+	</engine>
 
 	<!-- Halo 1 PC Builds -->
 	<engine name="Halo 1 PC" version="7" build="01.00.00.0564">
@@ -218,6 +234,57 @@
 
 	<engine name="Halo 2 Vista Custom 1" version="8" build="11091.07.05.11.1104.main" inherits="Halo 2 Vista" />
 	<engine name="Halo 2 Vista Custom 2" version="8" build="11122.07.08.24.1808.main" inherits="Halo 2 Vista" />
+
+	<engine name="Halo 2" version="8" build="02.09.27.09809">
+		<shortName>Halo2</shortName>
+		<plugins>Halo2Xbox</plugins>
+		<fallbackPlugins>Halo2</fallbackPlugins>
+			<engineInfo>
+				<generation>second</generation>
+				<endian>little</endian>
+				<!-- TODO: this might not be accurate -->
+				<segmentAlignment>0x4</segmentAlignment>
+			</engineInfo>
+			<databases>
+				<layouts type="layouts" path="Formats/Halo2Xbox/Layouts" />
+				<groupNames type="groupNames" path="Formats/Halo2Vista/H2V_GroupNames.xml" />
+				<localeSymbols type="localeSymbols" path="Formats/Halo2Xbox/H2X_LocaleSymbols.xml" />
+				<scripting type="scripting" path="Formats/Halo2Xbox/H2X_Scripting.xml" />
+			</databases>
+	</engine>
+
+	<engine name="Halo 2 Alpha" version="7" build="02.01.07.4998">
+		<shortName>Halo2Alpha</shortName>
+		<plugins>Halo2Alpha</plugins>
+		<engineInfo>
+			<generation>first</generation>
+			<endian>little</endian>
+			<!-- TODO: this might not be accurate -->
+			<segmentAlignment>0x4</segmentAlignment>
+		</engineInfo>
+		<databases>
+			<layouts type="layouts" path="Formats/Halo2Alpha/Layouts" />
+			<groupNames type="groupNames" path="Formats/Halo2Vista/H2V_GroupNames.xml" />
+			<scripting type="scripting" path="Formats/Halo2Alpha/H2Alpha_Scripting.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 2 Beta" version="8" build="02.06.28.07902">
+		<shortName>Halo2Beta</shortName>
+		<plugins>Halo2Beta</plugins>
+		<engineInfo>
+			<generation>second</generation>
+			<endian>little</endian>
+			<!-- TODO: this might not be accurate -->
+			<segmentAlignment>0x4</segmentAlignment>
+		</engineInfo>
+		<databases>
+			<layouts type="layouts" path="Formats/Halo2Beta/Layouts" />
+			<groupNames type="groupNames" path="Formats/Halo2Vista/H2V_GroupNames.xml" />
+			<localeSymbols type="localeSymbols" path="Formats/Halo2Beta/H2Beta_LocaleSymbols.xml" />
+			<scripting type="scripting" path="Formats/Halo2Beta/H2Beta_Scripting.xml" />
+		</databases>
+	</engine>
 
 	<!-- Halo 3 Beta Builds -->
 	<engine name="Halo 3 Beta" version="9" build="09699.07.05.01.1534.delta">
@@ -400,6 +467,12 @@
 		</databases>
 	</engine>
 
+	<engine name="Halo 4 07831" version="12" build="07831.11.10.03.0231.main" inherits="Halo 4 07556">
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo4_2011/H4Oct2011a_StringIDs.xml" />
+		</databases>
+	</engine>
+	
 	<engine name="Halo 4 07866" version="12" build="07866.11.10.04.1335.horse" inherits="Halo 4 07556">
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo4_2011/H4Oct2011_StringIDs.xml" />
@@ -418,10 +491,23 @@
 		</databases>
 	</engine>
 
+	<engine name="Halo 4 08257" version="12" build="08257.11.10.20.0230.main" inherits="Halo 4 07556">
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo4_2011/H4Oct2011b_StringIDs.xml" />
+		</databases>
+	</engine>
+
 	<engine name="Halo 4 08912" version="12" build="08912.11.11.14.2334.jmalbert" inherits="Halo 4 07556">
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo4_2011/H4Nov2011_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo4_2011/LayoutsNov2011" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 4 09550" version="12" build="09550.11.12.21.0300.main" inherits="Halo 4 07556">
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo4_2011/H4Dec2011_StringIDs.xml" />
+			<layouts type="layouts" path="Formats/Halo4_2011/LayoutsDec2011" />
 		</databases>
 	</engine>
 
@@ -648,6 +734,13 @@
 		</databases>
 	</engine>
 
+	<engine name="Halo: Reach MCC Update 10" version="13" build="Jan 13 2022 00:54:50" inherits="Halo: Reach MCC">
+		<databases>
+			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" />
+		</databases>
+	</engine>
+
 	<!-- Halo 1 MCC -->
 	<!-- NOTE: CEA 360 and MCC have the same build strings, this makes things harder -->
 	<engine name="Halo 1 Anniversary MCC" version="7" build="01.00.01.0563">
@@ -785,6 +878,16 @@
 		</engineInfo>
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo2AMCC/H2AMCC_U6_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 2 Anniversary MCC Update 8" version="13" build="Feb 14 2022 19:18:28" inherits="Halo 2 Anniversary MCC Flight">
+		<engineInfo>
+			<usesStringHashes>true</usesStringHashes>
+		</engineInfo>
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo2AMCC/H2AMCC_U6_StringIDs.xml" />
+			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU8" />
 		</databases>
 	</engine>
 
@@ -980,6 +1083,39 @@
 		</databases>
 	</engine>
 
+	<engine name="Halo 3 MCC Update 9" version="13" build="Feb 15 2022 01:35:34" inherits="Halo 3 MCC Flight">
+		<engineInfo>
+			<usesStringHashes>true</usesStringHashes>
+			<usesRawHashes>true</usesRawHashes>
+		</engineInfo>
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU6" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 3 MCC Toolset Update 2" version="13" build="Apr  6 2022 10:48:27" inherits="Halo 3 MCC Flight">
+		<engineInfo>
+			<usesStringHashes>true</usesStringHashes>
+			<usesRawHashes>true</usesRawHashes>
+		</engineInfo>
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU6" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 3 MCC Toolset Update 2 Fast" version="13" build="Apr  6 2022 10:48:46" inherits="Halo 3 MCC Flight">
+		<engineInfo>
+			<usesStringHashes>true</usesStringHashes>
+			<usesRawHashes>true</usesRawHashes>
+		</engineInfo>
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU6" />
+		</databases>
+	</engine>
+
 	<!-- ODST MCC -->
 	<engine name="Halo ODST MCC Flight" version="11" build="Aug 11 2020 06:58:27">
 		<shortName>ODSTMCC</shortName>
@@ -1022,6 +1158,24 @@
 	</engine>
 
 	<engine name="Halo ODST MCC Update 3" version="13" build="Sep 18 2021 21:15:55" inherits="Halo ODST MCC Flight">
+		<databases>
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU3" />
+		</databases>
+	</engine>
+
+	<engine name="Halo ODST MCC Update 4" version="13" build="Feb 15 2022 01:59:47" inherits="Halo ODST MCC Flight">
+		<databases>
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU3" />
+		</databases>
+	</engine>
+
+	<engine name="Halo ODST MCC Toolset" version="13" build="Apr  5 2022 14:16:52" inherits="Halo ODST MCC Flight">
+		<databases>
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU3" />
+		</databases>
+	</engine>
+
+	<engine name="Halo ODST MCC Toolset Fast" version="13" build="Apr  5 2022 14:16:35" inherits="Halo ODST MCC Flight">
 		<databases>
 			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU3" />
 		</databases>
@@ -1086,6 +1240,17 @@
 		</engineInfo>
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo4MCC/H4MCC_U3_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 4 MCC Update 4" version="13" build="Feb  3 2022 19:02:31" inherits="Halo 4 MCC Flight">
+		<engineInfo>
+			<usesStringHashes>true</usesStringHashes>
+			<usesRawHashes>true</usesRawHashes>
+		</engineInfo>
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo4MCC/H4MCC_U3_StringIDs.xml" />
+			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU4" />
 		</databases>
 	</engine>
 </engines>

@@ -117,8 +117,23 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			List<MapEntry> generatorMaps = GeneratorMaps.Where(m => m.IsSelected).ToList();
 			string outputPath = txtOutputFolder.Text;
 
+			EngineDescription picked = null;
+			string firstMap = generatorMaps.First().LocalMapPath;
+			using (FileStream fs = File.OpenRead(firstMap))
+			{
+				using (EndianReader reader = new EndianReader(fs, Endian.BigEndian))
+				{
+					var matches = CacheFileLoader.FindEngineDescriptions(reader, App.AssemblyStorage.AssemblySettings.DefaultDatabase);
+
+					if (matches.Count > 1)
+					{
+						picked = MetroEnginePicker.Show(firstMap, matches);
+					}
+				}
+			}
+
 			var worker = new BackgroundWorker();
-			worker.DoWork += (o, args) => worker_DoWork(o, args, generatorMaps, outputPath, worker);
+			worker.DoWork += (o, args) => worker_DoWork(o, args, generatorMaps, outputPath, worker, picked);
 			worker.WorkerReportsProgress = true;
 			worker.ProgressChanged += worker_ProgressChanged;
 			worker.RunWorkerCompleted += worker_RunWorkerCompleted;
@@ -153,7 +168,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		}
 
 		private void worker_DoWork(object sender, DoWorkEventArgs e, IList<MapEntry> generatorMaps, string outputPath,
-			BackgroundWorker worker)
+			BackgroundWorker worker, EngineDescription pickedEngine)
 		{
 			var globalMaps = new Dictionary<string, MetaMap>();
 			DateTime startTime = DateTime.Now;
@@ -165,7 +180,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				var tagMaps = new Dictionary<ITag, MetaMap>();
 
 				IReader reader;
-				KeyValuePair<ICacheFile, EngineDescription> cacheData = LoadMap(generatorMaps[i].LocalMapPath, out reader);
+				KeyValuePair<ICacheFile, EngineDescription> cacheData = LoadMap(generatorMaps[i].LocalMapPath, pickedEngine, out reader);
 				ICacheFile cacheFile = cacheData.Key;
 
 				if (cacheFile.MetaArea == null || cacheFile.Tags.Count == 0)
@@ -372,14 +387,23 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
-		private KeyValuePair<ICacheFile, EngineDescription> LoadMap(string path, out IReader reader)
+		private KeyValuePair<ICacheFile, EngineDescription> LoadMap(string path, EngineDescription pickedEngine, out IReader reader)
 		{
 			reader = new EndianReader(File.OpenRead(path), Endian.BigEndian);
 
-			var cacheFile = CacheFileLoader.LoadCacheFile(reader, path, App.AssemblyStorage.AssemblySettings.DefaultDatabase, out EngineDescription buildInfo);
+			if (pickedEngine != null)
+			{
+				var cacheFile = CacheFileLoader.LoadCacheFileWithEngineDescription(reader, path, pickedEngine);
+				return
+					new KeyValuePair<ICacheFile, EngineDescription>(cacheFile, pickedEngine);
+			}
+			else
+			{
+				var cacheFile = CacheFileLoader.LoadCacheFile(reader, path, App.AssemblyStorage.AssemblySettings.DefaultDatabase, out EngineDescription buildInfo);
+				return
+					new KeyValuePair<ICacheFile, EngineDescription>(cacheFile, buildInfo);
+			}
 
-			return
-				new KeyValuePair<ICacheFile, EngineDescription>(cacheFile, buildInfo);
 		}
 
 		public class MapEntry

@@ -367,26 +367,26 @@ namespace Blamite.Blam.ThirdGen
 			// Check for a PATG tag, and if one isn't found, then use MATG
 			if (_buildInfo.Layouts.HasLayout("patg"))
 			{
-				tag = _tags.FindTagByGroup("patg");
+				tag = _tags.GetGlobalTag(CharConstant.FromString("patg"));
 				layout = _buildInfo.Layouts.GetLayout("patg");
 			}
 			if (tag == null && _buildInfo.Layouts.HasLayout("matg"))
 			{
-				tag = _tags.FindTagByGroup("matg");
+				tag = _tags.GetGlobalTag(CharConstant.FromString("matg"));
 				layout = _buildInfo.Layouts.GetLayout("matg");
 			}
-			return (tag != null && layout != null);
+			return tag != null && layout != null;
 		}
 
 		private void LoadResourceManager(IReader reader)
 		{
-			ITag zoneTag = _tags.FindTagByGroup("zone");
-			ITag playTag = _tags.FindTagByGroup("play");
+			ITag zoneTag = _tags.GetGlobalTag(CharConstant.FromString("zone"));
+			ITag playTag = _tags.GetGlobalTag(CharConstant.FromString("play"));
 			bool haveZoneLayout = _buildInfo.Layouts.HasLayout("resource gestalt");
 			bool havePlayLayout = _buildInfo.Layouts.HasLayout("resource layout table");
 			bool haveAltPlayLayout = _buildInfo.Layouts.HasLayout("resource layout table alt");
-			bool canLoadZone = (zoneTag != null && zoneTag.MetaLocation != null && haveZoneLayout);
-			bool canLoadPlay = (playTag != null && playTag.MetaLocation != null && havePlayLayout);
+			bool canLoadZone = zoneTag != null && zoneTag.MetaLocation != null && haveZoneLayout;
+			bool canLoadPlay = playTag != null && playTag.MetaLocation != null && havePlayLayout;
 			if (canLoadZone || canLoadPlay)
 			{
 				ThirdGenResourceGestalt gestalt = null;
@@ -409,9 +409,9 @@ namespace Blamite.Blam.ThirdGen
 
 		private void LoadSoundResourceManager(IReader reader)
 		{
-			ITag ughTag = _tags.FindTagByGroup("ugh!");
+			ITag ughTag = _tags.GetGlobalTag(CharConstant.FromString("ugh!"));
 			bool haveUghLayout = _buildInfo.Layouts.HasLayout("sound resource gestalt");
-			bool canLoadUgh = (ughTag != null && ughTag.MetaLocation != null && haveUghLayout);
+			bool canLoadUgh = ughTag != null && ughTag.MetaLocation != null && haveUghLayout;
 
 			if (ughTag != null && ughTag.MetaLocation != null && haveUghLayout)
 			{
@@ -427,17 +427,21 @@ namespace Blamite.Blam.ThirdGen
 		{
 			if (_tags != null)
 			{
+				ScriptFiles = new IScriptFile[0];
+
 				if (_buildInfo.Layouts.HasLayout("hsdt"))
 				{
 					ScriptFiles = _tags.FindTagsByGroup("hsdt").Select(t => new HsdtScriptFile(t, _fileNames.GetTagName(t.Index), MetaArea, _buildInfo, StringIDs, _expander)).ToArray();
 				}
 				else if (_buildInfo.Layouts.HasLayout("scnr"))
 				{
-					ScriptFiles = _tags.FindTagsByGroup("scnr").Select(t => new ScnrScriptFile(t, _fileNames.GetTagName(t.Index), MetaArea, _buildInfo, StringIDs, _expander, Allocator)).ToArray();
-				}
-				else
-                {
-					ScriptFiles = new IScriptFile[0];
+					//caches are intended for 1 scenario, so only load the *real* one
+					ITag hs = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
+					if (hs != null)
+					{
+						ScriptFiles = new IScriptFile[1];
+						ScriptFiles[0] = new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, _buildInfo, StringIDs, _expander, Allocator);
+					}
 				}
 			}
 		}
@@ -446,7 +450,7 @@ namespace Blamite.Blam.ThirdGen
 		{
 			if (_tags != null && _buildInfo.Layouts.HasLayout("scnr") && _buildInfo.Layouts.HasLayout("simulation definition table element"))
 			{
-				ITag scnr = _tags.FindTagByGroup("scnr");
+				ITag scnr = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
 				if (scnr != null)
 					_simulationDefinitions = new ThirdGenSimulationDefinitionTable(scnr, _tags, reader, MetaArea, Allocator, _buildInfo, _expander);
 			}

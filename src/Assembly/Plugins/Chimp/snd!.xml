@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="HTTC" baseSize="0xA4">
+	<revisions>
+		<revision author="Lord Zedd" version="1">ayy lmao</revision>
+	</revisions>
+	<flags32 name="Flags" offset="0x0" visible="true">
+		<bit name="Fit To ADPCM Blocksize" index="0" />
+		<bit name="Split Long Sound Into Permutations" index="1" />
+	</flags32>
+	<enum16 name="Class" offset="0x4" visible="true">
+		<option name="projectile_impact" value="0x0" />
+		<option name="projectile_detonation" value="0x1" />
+		<option name="unused" value="0x2" />
+		<option name="unused" value="0x3" />
+		<option name="weapon_fire" value="0x4" />
+		<option name="weapon_ready" value="0x5" />
+		<option name="weapon_reload" value="0x6" />
+		<option name="weapon_empty" value="0x7" />
+		<option name="weapon_charge" value="0x8" />
+		<option name="weapon_overheat" value="0x9" />
+		<option name="weapon_idle" value="0xA" />
+		<option name="unused" value="0xB" />
+		<option name="unused" value="0xC" />
+		<option name="object_impacts" value="0xD" />
+		<option name="particle_impacts" value="0xE" />
+		<option name="slow_particle_impacts" value="0xF" />
+		<option name="unused" value="0x10" />
+		<option name="unused" value="0x11" />
+		<option name="unit_footsteps" value="0x12" />
+		<option name="unit_dialog" value="0x13" />
+		<option name="unit_animation" value="0x14" />
+		<option name="unused" value="0x15" />
+		<option name="vehicle_collision" value="0x16" />
+		<option name="vehicle_engine" value="0x17" />
+		<option name="unused" value="0x18" />
+		<option name="unused" value="0x19" />
+		<option name="device_door" value="0x1A" />
+		<option name="device_force_field" value="0x1B" />
+		<option name="device_machinery" value="0x1C" />
+		<option name="device_nature" value="0x1D" />
+		<option name="device_computers" value="0x1E" />
+		<option name="unused" value="0x1F" />
+		<option name="music" value="0x20" />
+		<option name="ambient_nature" value="0x21" />
+		<option name="ambient_machinery" value="0x22" />
+		<option name="ambient_computers" value="0x23" />
+		<option name="unused" value="0x24" />
+		<option name="unused" value="0x25" />
+		<option name="unused" value="0x26" />
+		<option name="first_person_damage" value="0x27" />
+		<option name="unused" value="0x28" />
+		<option name="unused" value="0x29" />
+		<option name="unused" value="0x2A" />
+		<option name="unused" value="0x2B" />
+		<option name="scripted_dialog_player" value="0x2C" />
+		<option name="scripted_effect" value="0x2D" />
+		<option name="scripted_dialog_other" value="0x2E" />
+		<option name="scripted_dialog_force_unspatialized" value="0x2F" />
+		<option name="an intimate look at the game development process" value="0x30" />
+		<option name="unused" value="0x31" />
+		<option name="game_event" value="0x32" />
+	</enum16>
+	<enum16 name="Sample Rate" offset="0x6" visible="true">
+		<option name="22kHz" value="0x0" />
+		<option name="44kHz" value="0x1" />
+	</enum16>
+	<float32 name="Minimum Distance" offset="0x8" visible="true" tooltip="the distance below which this sound no longer gets louder" />
+	<float32 name="Maximum Distance" offset="0xC" visible="true" tooltip="the distance beyond which this sound is no longer audible" />
+	<float32 name="Skip Fraction" offset="0x10" visible="true" tooltip="fraction of requests to play this sound that will be ignored (0 means always play.)" />
+	<comment title="Randomization">these settings control random variation of volume and pitch.</comment>
+	<rangef name="Random Pitch Bounds" offset="0x14" visible="true" tooltip="the sound's pitch will be randomly selected and will be in this range. (1.0 is the recorded pitch.)" />
+	<degree name="Inner Cone Angle" offset="0x1C" visible="true" tooltip="within the cone defined by this angle and the sound's direction, the sound plays with a gain of 1.0." />
+	<degree name="Outer Cone Angle" offset="0x20" visible="true" tooltip="outside the cone defined by this angle and the sound's direction, the sound plays with a gain of OUTER CONE GAIN. (0 means the sound does not attenuate with direction.)" />
+	<float32 name="Outer Cone Gain" offset="0x24" visible="true" tooltip="the gain to use when the sound is directed away from the listener" />
+	<float32 name="Gain Modifier" offset="0x28" visible="true" />
+	<float32 name="Maximum Bend Per Second" offset="0x2C" visible="true" />
+	<undefined name="Unknown" offset="0x30" visible="false" />
+	<undefined name="Unknown" offset="0x34" visible="false" />
+	<undefined name="Unknown" offset="0x38" visible="false" />
+	<comment title="When Scale Is ZERO">as the sound's input scale changes from zero to one, these modifiers move between the two values specified here. the sound will play using the current scale modifier multiplied by the value specified above. (0 values are ignored.)</comment>
+	<float32 name="Skip Fraction Modifier" offset="0x3C" visible="true" />
+	<float32 name="Gain Modifier" offset="0x40" visible="true" />
+	<float32 name="Pitch Modifier" offset="0x44" visible="true" />
+	<undefined name="Unknown" offset="0x48" visible="false" />
+	<undefined name="Unknown" offset="0x4C" visible="false" />
+	<undefined name="Unknown" offset="0x50" visible="false" />
+	<comment title="When Scale Is ONE">as the sound's input scale changes from zero to one, these modifiers move between the two values specified here. the sound will play using the current scale modifier multiplied by the value specified above. (0 values are ignored.)</comment>
+	<float32 name="Skip Fraction Modifier" offset="0x54" visible="true" />
+	<float32 name="Gain Modifier" offset="0x58" visible="true" />
+	<float32 name="Pitch Modifier" offset="0x5C" visible="true" />
+	<undefined name="Unknown" offset="0x60" visible="false" />
+	<undefined name="Unknown" offset="0x64" visible="false" />
+	<undefined name="Unknown" offset="0x68" visible="false" />
+	<comment title="Import Properties" />
+	<enum16 name="Encoding" offset="0x6C" visible="true">
+		<option name="Mono" value="0x0" />
+		<option name="Stereo" value="0x1" />
+	</enum16>
+	<enum16 name="Compression" offset="0x6E" visible="true">
+		<option name="None" value="0x0" />
+		<option name="Xbox ADPCM" value="0x1" />
+		<option name="IMA ADPCM" value="0x2" />
+		<option name="OGG" value="0x3" />
+	</enum16>
+	<tagRef name="Promotion Sound" offset="0x70" visible="true" />
+	<int16 name="Promotion Count" offset="0x80" visible="true" tooltip="when there are this many instances of the sound, promote to the new sound." />
+	<int16 name="Unknown" offset="0x82" visible="false" />
+	<int32 name="Unknown" offset="0x84" visible="false" />
+	<undefined name="Unknown" offset="0x88" visible="false" />
+	<undefined name="Unknown" offset="0x8C" visible="false" />
+	<undefined name="Unknown" offset="0x90" visible="false" />
+	<undefined name="Unknown" offset="0x94" visible="false" />
+	<tagblock name="Pitch Ranges" offset="0x98" visible="true" elementSize="0x48" tooltip="pitch ranges allow multiple samples to represent the same sound at different pitches">
+		<ascii name="Name" offset="0x0" length="0x20" visible="true" tooltip="the name of the imported pitch range directory" />
+		<comment title="Pitch Control">these settings control what pitches this set of samples represents. if there is only one pitch range, all three values are ignored.</comment>
+		<float32 name="Natural Pitch" offset="0x20" visible="true" tooltip="the apparent pitch when these samples are played at their recorded pitch." />
+		<rangef name="Bend Bounds" offset="0x24" visible="true" tooltip="the range of pitches that will be represented using this sample. this should always contain the natural pitch." />
+		<int16 name="Actual Permutation Count" offset="0x2C" visible="true" />
+		<int16 name="Unknown" offset="0x2E" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<tagblock name="Permutations" offset="0x3C" visible="true" elementSize="0x7C" tooltip="permutations represent equivalent variations of this sound.">
+			<ascii name="Name" offset="0x0" length="0x20" visible="true" tooltip="name of the file from which this sample was imported" />
+			<float32 name="Skip Fraction" offset="0x20" visible="true" tooltip="fraction of requests to play this permutation that are ignored (a different permutation is selected.)" />
+			<float32 name="Gain" offset="0x24" visible="true" tooltip="fraction of recorded volume to play at." />
+			<enum16 name="Compression" offset="0x28" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Xbox ADPCM" value="0x1" />
+				<option name="IMA ADPCM" value="0x2" />
+				<option name="OGG" value="0x3" />
+			</enum16>
+			<int16 name="Next Permutation Index" offset="0x2A" visible="true" />
+			<undefined name="Unknown" offset="0x2C" visible="false" />
+			<undefined name="Unknown" offset="0x30" visible="false" />
+			<tagref name="Tag" offset="0x34" withGroup="false" visible="true" />
+			<undefined name="Unknown" offset="0x38" visible="false" />
+			<tagref name="Tag" offset="0x3C" withGroup="false" visible="true" />
+			<int32 name="Sample Size" offset="0x40" visible="true" />
+			<undefined name="Unknown" offset="0x44" visible="false" />
+			<uint32 name="Sample Offset" offset="0x48" visible="true" />
+			<undefined name="Unknown" offset="0x4C" visible="false" />
+			<undefined name="Unknown" offset="0x50" visible="false" />
+			<dataref name="Mouth Data" offset="0x54" visible="true" />
+			<dataref name="Unknown" offset="0x68" visible="true" />
+		</tagblock>
+	</tagblock>
+</plugin>

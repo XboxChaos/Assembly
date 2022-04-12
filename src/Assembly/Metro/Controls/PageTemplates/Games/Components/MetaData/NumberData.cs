@@ -37,6 +37,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				NotifyPropertyChanged("Value");
 			}
 		}
+
+		public override string AsString()
+		{
+			return string.Format("{0} | {1} | {2}", Type, Name, Value);
+		}
 	}
 
 	/// <summary>

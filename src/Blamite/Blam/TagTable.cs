@@ -58,6 +58,13 @@ namespace Blamite.Blam
 		}
 
 		/// <summary>
+		/// Tries to retrieve a global tag instance by its group id.
+		/// </summary>
+		/// <param name="magic">The magic number (ID) of the tag's group.</param>
+		/// <returns></returns>
+		public abstract ITag GetGlobalTag(int magic);
+
+		/// <summary>
 		///     Adds a tag to the table and allocates space for its base data.
 		/// </summary>
 		/// <param name="groupMagic">The magic number (ID) of the tag's group.</param>

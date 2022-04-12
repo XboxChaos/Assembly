@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo2Alpha" baseSize="0x1F0">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+	</revisions>
+	<uint32 name="Import Info" offset="0x0" visible="false" />
+	<uint32 name="Import Info" offset="0x4" visible="false" />
+	<uint32 name="Import Info" offset="0x8" visible="false" />
+	<int32 name="BSP Checksum" offset="0xC" visible="true" />
+	<tagblock name="Collision Materials" offset="0x10" visible="true" elementSize="0x24">
+		<tagRef name="Old Shader" offset="0x0" visible="true" />
+		<int16 name="Global Material Index" offset="0x10" visible="true" />
+		<int16 name="Conveyor Surface Index" offset="0x12" visible="true" />
+		<tagRef name="New Shader" offset="0x14" visible="true" />
+	</tagblock>
+	<tagblock name="Collision BSP" offset="0x1C" visible="true" elementSize="0x64">
+		<tagblock name="BSP 3D Nodes" offset="0x0" visible="true" elementSize="0x8">
+			<int16 name="Plane" offset="0x0" visible="true" />
+			<uint8 name="Front Child Lower" offset="0x2" visible="true" />
+			<uint8 name="Front Child Mid" offset="0x3" visible="true" />
+			<uint8 name="Front Child Upper" offset="0x4" visible="true" />
+			<uint8 name="Back Child Lower" offset="0x5" visible="true" />
+			<uint8 name="Back Child Mid" offset="0x6" visible="true" />
+			<uint8 name="Back Child Upper" offset="0x7" visible="true" />
+		</tagblock>
+		<tagblock name="Planes" offset="0xC" visible="true" elementSize="0x10">
+			<plane3 name="Plane" offset="0x0" visible="true" />
+		</tagblock>
+		<tagblock name="Leaves" offset="0x18" visible="true" elementSize="0x4">
+			<flags8 name="Flags" offset="0x0" visible="true">
+				<bit name="Contains Double-Sided Surfaces" index="0" />
+			</flags8>
+			<uint8 name="BSP 2D Reference Count" offset="0x1" visible="true" />
+			<int16 name="First BSP 2D Reference" offset="0x2" visible="true" />
+		</tagblock>
+		<tagblock name="BSP 2D References" offset="0x24" visible="true" elementSize="0x4">
+			<int16 name="Plane" offset="0x0" visible="true" />
+			<int16 name="BSP 2D Node" offset="0x2" visible="true" />
+		</tagblock>
+		<tagblock name="BSP 2D Nodes" offset="0x30" visible="true" elementSize="0x10">
+			<plane2 name="Plane" offset="0x0" visible="true" />
+			<int16 name="Left Child" offset="0xC" visible="true" />
+			<int16 name="Right Child" offset="0xE" visible="true" />
+		</tagblock>
+		<tagblock name="Surfaces" offset="0x3C" visible="true" elementSize="0x8">
+			<int16 name="Plane" offset="0x0" visible="true" />
+			<int16 name="First Edge" offset="0x2" visible="true" />
+			<flags8 name="Flags" offset="0x4" visible="true">
+				<bit name="Two-Sided" index="0" />
+				<bit name="Invisible" index="1" />
+				<bit name="Climbable" index="2" />
+				<bit name="Breakable" index="3" />
+				<bit name="Invalid" index="4" />
+				<bit name="Conveyor" index="5" />
+			</flags8>
+			<uint8 name="Breakable Surface" offset="0x5" visible="true" />
+			<int16 name="Material" offset="0x6" visible="true" />
+		</tagblock>
+		<tagblock name="Edges" offset="0x48" visible="true" elementSize="0x10">
+			<int16 name="Start Vertex" offset="0x0" visible="true" />
+			<int16 name="End Vertex" offset="0x2" visible="true" />
+			<int16 name="Forward Edge" offset="0x4" visible="true" />
+			<int16 name="Reverse Edge" offset="0x6" visible="true" />
+			<int16 name="Left Surface" offset="0x8" visible="true" />
+			<int16 name="Right Surface" offset="0xA" visible="true" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+		</tagblock>
+		<tagblock name="Vertices" offset="0x54" visible="true" elementSize="0x10">
+			<point3 name="Point" offset="0x0" visible="true" />
+			<int16 name="First Edge" offset="0xC" visible="true" />
+			<int16 name="Unknown" offset="0xE" visible="true" />
+		</tagblock>
+		<int32 name="Unknown" offset="0x60" visible="false" />
+	</tagblock>
+	<float32 name="Vehicle Floor" offset="0x28" visible="true" />
+	<float32 name="Vehicle Ceiling" offset="0x2C" visible="true" />
+	<uint32 name="Nodes" offset="0x30" visible="false" />
+	<uint32 name="Nodes" offset="0x34" visible="false" />
+	<uint32 name="Nodes" offset="0x38" visible="false" />
+	<tagblock name="Leaves" offset="0x3C" visible="true" elementSize="0x8">
+		<int16 name="Cluster" offset="0x0" visible="true" />
+		<int16 name="Surface Reference Count" offset="0x2" visible="true" />
+		<int32 name="First Surface Reference Index" offset="0x4" visible="true" />
+	</tagblock>
+	<rangef name="World Bounds x" offset="0x48" visible="true" />
+	<rangef name="World Bounds y" offset="0x50" visible="true" />
+	<rangef name="World Bounds z" offset="0x58" visible="true" />
+	<tagblock name="Surface References" offset="0x60" visible="true" elementSize="0x8">
+		<int16 name="Strip Index" offset="0x0" visible="true" />
+		<int16 name="Lightmap Triangle Index" offset="0x2" visible="true" />
+		<int32 name="BSP Node Index" offset="0x4" visible="true" />
+	</tagblock>
+	<dataref name="Cluster Data" offset="0x6C" visible="true" />
+	<tagblock name="Cluster Portals" offset="0x80" visible="true" elementSize="0x28">
+		<int16 name="Back Cluster" offset="0x0" visible="true" />
+		<int16 name="Front Cluster" offset="0x2" visible="true" />
+		<int32 name="Plane Index" offset="0x4" visible="true" />
+		<point3 name="Centroid" offset="0x8" visible="true" />
+		<float32 name="Bounding Radius" offset="0x14" visible="true" />
+		<flags32 name="Flags" offset="0x18" visible="true">
+			<bit name="AI Cannot Hear Through This" index="0" />
+			<bit name="One-Way" index="1" />
+			<bit name="Door" index="2" />
+			<bit name="No-Way" index="3" />
+			<bit name="One-Way Reversed" index="4" />
+			<bit name="No One Can Hear Through This" index="5" />
+		</flags32>
+		<tagblock name="Vertices" offset="0x1C" visible="true" elementSize="0xC">
+			<point3 name="Point" offset="0x0" visible="true" />
+		</tagblock>
+	</tagblock>
+	<undefined name="Unknown" offset="0x8C" visible="false" />
+	<undefined name="Unknown" offset="0x90" visible="false" />
+	<undefined name="Unknown" offset="0x94" visible="false" />
+	<undefined name="Unknown" offset="0x98" visible="false" />
+	<undefined name="Unknown" offset="0x9C" visible="false" />
+	<undefined name="Unknown" offset="0xA0" visible="false" />
+	<undefined name="Unknown" offset="0xA4" visible="false" />
+	<undefined name="Unknown" offset="0xA8" visible="false" />
+	<undefined name="Unknown" offset="0xAC" visible="false" />
+	<undefined name="Unknown" offset="0xB0" visible="false" />
+	<undefined name="Unknown" offset="0xB4" visible="false" />
+	<undefined name="Unknown" offset="0xB8" visible="false" />
+	<undefined name="Unknown" offset="0xBC" visible="false" />
+	<undefined name="Unknown" offset="0xC0" visible="false" />
+	<undefined name="Unknown" offset="0xC4" visible="false" />
+	<tagblock name="Detail Objects" offset="0xC8" visible="false" elementSize="0x34">
+		<uint32 name="Cells" offset="0x0" visible="false" />
+		<uint32 name="Cells" offset="0x4" visible="false" />
+		<uint32 name="Cells" offset="0x8" visible="false" />
+		<uint32 name="Instances" offset="0xC" visible="false" />
+		<uint32 name="Instances" offset="0x10" visible="false" />
+		<uint32 name="Instances" offset="0x14" visible="false" />
+		<uint32 name="Counts" offset="0x18" visible="false" />
+		<uint32 name="Counts" offset="0x1C" visible="false" />
+		<uint32 name="Counts" offset="0x20" visible="false" />
+		<uint32 name="Z Reference Vectors" offset="0x24" visible="false" />
+		<uint32 name="Z Reference Vectors" offset="0x28" visible="false" />
+		<uint32 name="Z Reference Vectors" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+	</tagblock>
+	<tagblock name="Clusters" offset="0xD4" visible="true" elementSize="0x110">
+		<uint16 name="Total Vertex Count" offset="0x0" visible="true" />
+		<uint16 name="Total Triangle Count" offset="0x2" visible="true" />
+		<uint16 name="Total Part Count" offset="0x4" visible="true" />
+		<uint16 name="Shadow-Casting Triangle Count" offset="0x6" visible="true" />
+		<uint16 name="Shadow-Casting Part Count" offset="0x8" visible="true" />
+		<uint16 name="Opaque Point Count" offset="0xA" visible="true" />
+		<uint16 name="Opaque Vertex Count" offset="0xC" visible="true" />
+		<uint16 name="Opaque Part Count" offset="0xE" visible="true" />
+		<uint16 name="Opaque Maximum Nodes/Vertex" offset="0x10" visible="true" />
+		<uint16 name="Shadow-Casting Rigid Triangle Count" offset="0x12" visible="true" />
+		<enum16 name="Geometry Classification" offset="0x14" visible="true">
+			<option name="Worldspace" value="0x0" />
+			<option name="Rigid" value="0x1" />
+			<option name="Rigid Boned" value="0x2" />
+			<option name="Skinned" value="0x3" />
+			<option name="Unsupported (Reimport)" value="0x4" />
+		</enum16>
+		<flags16 name="Geometry Compression Flags" offset="0x16" visible="true">
+			<bit name="Compressed Position" index="0" />
+			<bit name="Compressed Texcoord" index="1" />
+			<bit name="Compressed Secondary Texcoord" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+		</flags16>
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<int32 name="Unknown" offset="0x28" visible="false" />
+		<int32 name="Unknown" offset="0x2C" visible="false" />
+		<int32 name="Unknown" offset="0x30" visible="false" />
+		<int32 name="Unknown" offset="0x34" visible="false" />
+		<tagref name="Owner Tag" offset="0x38" visible="true" />
+		<int16 name="Owner Tag Section Offset" offset="0x48" visible="true" />
+		<int16 name="Unknown" offset="0x4A" visible="false" />
+		<int32 name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
+		<rangef name="Bounds x" offset="0x5C" visible="true" />
+		<rangef name="Bounds y" offset="0x64" visible="true" />
+		<rangef name="Bounds z" offset="0x6C" visible="true" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+		<undefined name="Unknown" offset="0x78" visible="false" />
+		<undefined name="Unknown" offset="0x7C" visible="false" />
+		<undefined name="Unknown" offset="0x80" visible="false" />
+		<undefined name="Unknown" offset="0x84" visible="false" />
+		<undefined name="Unknown" offset="0x88" visible="false" />
+		<tagblock name="Unknown" offset="0x8C" visible="false" elementSize="0x4">
+			<float32 name="Unknown" offset="0x0" visible="false" />
+		</tagblock>
+		<tagblock name="Predicted Resources" offset="0x98" visible="true" elementSize="0x8">
+			<enum16 name="Type" offset="0x0" visible="true">
+				<option name="Bitmap" value="0x0" />
+				<option name="Sound" value="0x1" />
+				<option name="Render Model Geometry" value="0x2" />
+				<option name="Cluster Geometry" value="0x3" />
+				<option name="Cluster Instanced Geometry" value="0x4" />
+				<option name="Lightmap Geometry Object Buckets" value="0x5" />
+				<option name="Lightmap Geometry Instance Buckets" value="0x6" />
+				<option name="Lightmap Cluster Bitmaps" value="0x7" />
+				<option name="Lightmap Instance Bitmaps" value="0x8" />
+			</enum16>
+			<int16 name="Resource Index" offset="0x2" visible="true" />
+			<tagref name="Tag Index" offset="0x4" withGroup="false" visible="true" />
+		</tagblock>
+		<tagblock name="Portals" offset="0xA4" visible="true" elementSize="0x2">
+			<int16 name="Portal Index" offset="0x0" visible="true" />
+		</tagblock>
+		<int32 name="Checksum From Structure" offset="0xB0" visible="true" />
+		<undefined name="Unknown" offset="0xB4" visible="false" />
+		<undefined name="Unknown" offset="0xB8" visible="false" />
+		<undefined name="Unknown" offset="0xBC" visible="false" />
+		<undefined name="Unknown" offset="0xC0" visible="false" />
+		<undefined name="Unknown" offset="0xC4" visible="false" />
+		<undefined name="Unknown" offset="0xC8" visible="false" />
+		<undefined name="Unknown" offset="0xCC" visible="false" />
+		<undefined name="Unknown" offset="0xD0" visible="false" />
+		<undefined name="Unknown" offset="0xD4" visible="false" />
+		<undefined name="Unknown" offset="0xD8" visible="false" />
+		<undefined name="Unknown" offset="0xDC" visible="false" />
+		<undefined name="Unknown" offset="0xE0" visible="false" />
+		<undefined name="Unknown" offset="0xE4" visible="false" />
+		<undefined name="Unknown" offset="0xE8" visible="false" />
+		<undefined name="Unknown" offset="0xEC" visible="false" />
+		<undefined name="Unknown" offset="0xF0" visible="false" />
+		<undefined name="Unknown" offset="0xF4" visible="false" />
+		<undefined name="Unknown" offset="0xF8" visible="false" />
+		<undefined name="Unknown" offset="0xFC" visible="false" />
+		<undefined name="Unknown" offset="0x100" visible="false" />
+		<undefined name="Unknown" offset="0x104" visible="false" />
+		<undefined name="Unknown" offset="0x108" visible="false" />
+		<undefined name="Unknown" offset="0x10C" visible="false" />
+	</tagblock>
+	<tagblock name="Materials" offset="0xE0" visible="true" elementSize="0x30">
+		<tagRef name="Old Shader" offset="0x0" visible="true" />
+		<tagRef name="Shader" offset="0x10" visible="true" />
+		<tagblock name="Properties" offset="0x20" visible="true" elementSize="0x8">
+			<enum16 name="Type" offset="0x0" visible="true">
+				<option name="Lightmap Resolution" value="0x0" />
+				<option name="Lightmap Power" value="0x1" />
+				<option name="Lightmap Half Life" value="0x2" />
+				<option name="Lightmap Diffuse Scale" value="0x3" />
+			</enum16>
+			<int16 name="Integer Value" offset="0x2" visible="true" />
+			<float32 name="Real Value" offset="0x4" visible="true" />
+		</tagblock>
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+	</tagblock>
+	<undefined name="Unknown" offset="0xEC" visible="false" />
+	<undefined name="Unknown" offset="0xF0" visible="false" />
+	<undefined name="Unknown" offset="0xF4" visible="false" />
+	<undefined name="Unknown" offset="0xF8" visible="false" />
+	<undefined name="Unknown" offset="0xFC" visible="false" />
+	<undefined name="Unknown" offset="0x100" visible="false" />
+	<undefined name="Unknown" offset="0x104" visible="false" />
+	<undefined name="Unknown" offset="0x108" visible="false" />
+	<undefined name="Unknown" offset="0x10C" visible="false" />
+	<undefined name="Unknown" offset="0x110" visible="false" />
+	<undefined name="Unknown" offset="0x114" visible="false" />
+	<undefined name="Unknown" offset="0x118" visible="false" />
+	<undefined name="Unknown" offset="0x11C" visible="false" />
+	<undefined name="Unknown" offset="0x120" visible="false" />
+	<undefined name="Unknown" offset="0x124" visible="false" />
+	<tagblock name="Background Sound Palette" offset="0x128" visible="true" elementSize="0x74">
+		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+		<tagRef name="Background Sound" offset="0x20" visible="true" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<ascii name="Scale Function" offset="0x34" length="0x20" visible="true" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
+		<undefined name="Unknown" offset="0x5C" visible="false" />
+		<undefined name="Unknown" offset="0x60" visible="false" />
+		<undefined name="Unknown" offset="0x64" visible="false" />
+		<undefined name="Unknown" offset="0x68" visible="false" />
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+	</tagblock>
+	<tagblock name="Sound Environment Palette" offset="0x134" visible="true" elementSize="0x50">
+		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+		<tagRef name="Sound Environment" offset="0x20" visible="true" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+	</tagblock>
+	<dataref name="Sound PAS Data" offset="0x140" visible="true" />
+	<undefined name="Unknown" offset="0x154" visible="false" />
+	<undefined name="Unknown" offset="0x158" visible="false" />
+	<undefined name="Unknown" offset="0x15C" visible="false" />
+	<tagblock name="Runtime Decals" offset="0x160" visible="true" elementSize="0x10">
+		<float32 name="Unknown" offset="0x0" visible="true" />
+		<float32 name="Unknown" offset="0x4" visible="true" />
+		<float32 name="Unknown" offset="0x8" visible="true" />
+		<int16 name="Unknown" offset="0xC" visible="false" />
+		<int16 name="Unknown" offset="0xE" visible="false" />
+	</tagblock>
+	<tagblock name="Environment Object Palette" offset="0x16C" visible="true" elementSize="0x24">
+		<tagRef name="Definition" offset="0x0" visible="true" />
+		<tagRef name="Model" offset="0x10" visible="true" />
+		<flags32 name="Object Type" offset="0x20" visible="true">
+			<bit name="Biped" index="0" />
+			<bit name="Vehicle" index="1" />
+			<bit name="Weapon" index="2" />
+			<bit name="Equipment" index="3" />
+			<bit name="Garbage" index="4" />
+			<bit name="Projectile" index="5" />
+			<bit name="Scenery" index="6" />
+			<bit name="Machine" index="7" />
+			<bit name="Control" index="8" />
+			<bit name="Light Fixture" index="9" />
+			<bit name="Sound Scenery" index="10" />
+			<bit name="Crate" index="11" />
+			<bit name="Creature" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
+		</flags32>
+	</tagblock>
+	<tagblock name="Environment Objects" offset="0x178" visible="true" elementSize="0x68">
+		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+		<vector4 name="Rotation" offset="0x20" visible="true" />
+		<point3 name="Translation" offset="0x30" visible="true" />
+		<int16 name="Palette Index" offset="0x3C" visible="true" />
+		<int16 name="Unknown" offset="0x3E" visible="false" />
+		<int32 name="Unique ID" offset="0x40" visible="true" />
+		<ascii name="Exported Object Type" offset="0x44" length="0x4" />
+		<ascii name="Scenario Object Name" offset="0x48" length="0x20" visible="true" />
+	</tagblock>
+	<undefined name="Unknown" offset="0x184" visible="false" />
+	<undefined name="Unknown" offset="0x188" visible="false" />
+	<undefined name="Unknown" offset="0x18C" visible="false" />
+	<undefined name="Unknown" offset="0x190" visible="false" />
+	<undefined name="Unknown" offset="0x194" visible="false" />
+	<undefined name="Unknown" offset="0x198" visible="false" />
+	<undefined name="Unknown" offset="0x19C" visible="false" />
+	<undefined name="Unknown" offset="0x1A0" visible="false" />
+	<undefined name="Unknown" offset="0x1A4" visible="false" />
+	<undefined name="Unknown" offset="0x1A8" visible="false" />
+	<undefined name="Unknown" offset="0x1AC" visible="false" />
+	<undefined name="Unknown" offset="0x1B0" visible="false" />
+	<undefined name="Unknown" offset="0x1B4" visible="false" />
+	<undefined name="Unknown" offset="0x1B8" visible="false" />
+	<undefined name="Unknown" offset="0x1BC" visible="false" />
+	<undefined name="Unknown" offset="0x1C0" visible="false" />
+	<undefined name="Unknown" offset="0x1C4" visible="false" />
+	<undefined name="Unknown" offset="0x1C8" visible="false" />
+	<undefined name="Unknown" offset="0x1CC" visible="false" />
+	<undefined name="Unknown" offset="0x1D0" visible="false" />
+	<undefined name="Unknown" offset="0x1D4" visible="false" />
+	<undefined name="Unknown" offset="0x1D8" visible="false" />
+	<undefined name="Unknown" offset="0x1DC" visible="false" />
+	<undefined name="Unknown" offset="0x1E0" visible="false" />
+	<undefined name="Unknown" offset="0x1E4" visible="false" />
+	<undefined name="Unknown" offset="0x1E8" visible="false" />
+	<undefined name="Unknown" offset="0x1EC" visible="false" />
+</plugin>

@@ -595,6 +595,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 						byte[] data = _reader.ReadBlock(field.Length);
 						field.Value = FunctionHelpers.BytesToHexString(data);
 						break;
+					case "utf16":
+						field.Value = _reader.ReadUTF16(field.Length);
+						break;
 					case "asciiz":
 						field.Value = _reader.ReadAscii(field.Length);
 						break;

@@ -9,6 +9,7 @@ using Blamite.Blam.Shaders;
 using Blamite.Blam.Util;
 using Blamite.IO;
 using Blamite.Serialization;
+using Blamite.Util;
 
 namespace Blamite.Blam.FirstGen
 {
@@ -219,45 +220,67 @@ namespace Blamite.Blam.FirstGen
 
 		private void Load(IReader reader)
 		{
-			_header = LoadHeader(reader);
-			_tags = LoadTagTable(reader);
+			_header = LoadHeader(reader, out uint mask);
+			_tags = LoadTagTable(reader, mask);
 			_fileNames = LoadFileNames(reader);
 			
-			// firstgen has no StringIDs
 			_stringIDs = LoadStringIDs(reader);
 
-			// hack to get scenario name
-			reader.SeekTo(MetaArea.Offset);
-			StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("meta header"));
-			
-			// TODO (Dragon): idk if we should mask this like this
-			var scenarioIndex = (int)values.GetInteger("scenario datum index") & 0xFFFF;
-			_header.ScenarioName = _fileNames.GetTagName(scenarioIndex);
+			//header doesn't contain a scenario path, but later engines do so might as well grab it
+			ITag scenario = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
+			_header.ScenarioName = _fileNames.GetTagName(scenario.Index);
 
 			LoadScriptFiles();
 		}
 
-		private FirstGenHeader LoadHeader(IReader reader)
+		private FirstGenHeader LoadHeader(IReader reader, out uint mask)
 		{
+			mask = 0;
 			reader.SeekTo(0);
 			StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("header"));
 
-
 			// hack to pack meta header size for metaOffsetMask calculation
 			var oldReadPos = reader.Position;
-			reader.SeekTo((long)values.GetInteger("meta offset"));
-			var tagTableOffset = reader.ReadUInt32();
-			values.SetInteger("meta header size", (ulong)_buildInfo.Layouts.GetLayout("meta header").Size);
-			values.SetInteger("tag table offset", (ulong)tagTableOffset);
-			reader.SeekTo(oldReadPos);
+
+			if (values.HasInteger("tag data offset"))
+			{
+				//oh boy
+				StructureLayout indexHeaderLayout = _buildInfo.Layouts.GetLayout("meta header");
+				StructureLayout tagElementLayout = _buildInfo.Layouts.GetLayout("tag element");
+
+				uint indexHeaderOffset = (uint)values.GetInteger("meta offset");
+				reader.SeekTo(indexHeaderOffset);
+				uint firstVal = reader.ReadUInt32();
+				reader.SeekTo(indexHeaderOffset + indexHeaderLayout.GetFieldOffset("tag table offset"));
+				uint tagTableAddress = reader.ReadUInt32();
+				mask = firstVal - (uint)indexHeaderLayout.Size;
+				uint tagTableOffset = tagTableAddress - mask + indexHeaderOffset;
+
+				reader.SeekTo(tagTableOffset + tagElementLayout.GetFieldOffset("offset"));
+				uint firstTagAddress = reader.ReadUInt32();
+
+				values.SetInteger("xbox meta offset mask", firstTagAddress - (uint)values.GetInteger("tag data offset"));
+			}
+			else
+			{
+				reader.SeekTo((long)values.GetInteger("meta offset"));
+				var tagTableOffset = reader.ReadUInt32();
+				values.SetInteger("meta header size", (ulong)_buildInfo.Layouts.GetLayout("meta header").Size);
+				values.SetInteger("tag table offset", (ulong)tagTableOffset);
+			}
+			
 
 			return new FirstGenHeader(values, _buildInfo, _segmenter);
 		}
 
-		private FirstGenTagTable LoadTagTable(IReader reader)
+		private FirstGenTagTable LoadTagTable(IReader reader, uint mask)
 		{
 			reader.SeekTo(MetaArea.Offset);
 			StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("meta header"));
+
+			if (mask > 0)
+				values.SetInteger("meta header mask", mask);
+			
 			return new FirstGenTagTable(reader, values, MetaArea, _buildInfo);
 		}
 
@@ -278,25 +301,20 @@ namespace Blamite.Blam.FirstGen
 
 		private void LoadScriptFiles()
 		{
-			ScriptFiles = new IScriptFile[0];
-
 			if (_tags != null)
 			{
-				List<IScriptFile> l_scriptfiles = new List<IScriptFile>();
+				ScriptFiles = new IScriptFile[0];
 
 				if (_buildInfo.Layouts.HasLayout("scnr"))
 				{
-					foreach (ITag hs in _tags.FindTagsByGroup("scnr"))
+					//caches are intended for 1 scenario, so only load the *real* one
+					ITag hs = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
+					if (hs != null)
 					{
-						l_scriptfiles.Add(new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, _buildInfo, StringIDs, _expander, Allocator));
+						ScriptFiles = new IScriptFile[1];
+						ScriptFiles[0] = new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, _buildInfo, StringIDs, _expander, Allocator);
 					}
 				}
-				else
-				{
-					return;
-				}
-
-				ScriptFiles = l_scriptfiles.ToArray();
 			}
 		}
 

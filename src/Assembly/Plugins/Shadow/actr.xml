@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Shadow" baseSize="0x4F8">
+	<revisions>
+		<revision author="Lord Zedd" version="1">ayy lmao</revision>
+	</revisions>
+	<flags32 name="Flags" offset="0x0" visible="true">
+		<bit name="Can See In Darkness" index="0" />
+		<bit name="Sneak Uncovering Target" index="1" />
+		<bit name="Sneak Uncovering Pursuit Position" index="2" />
+		<bit name="Unused" index="3" />
+		<bit name="Shoot At Target's Last Location" index="4" />
+		<bit name="Try To Stay Still When Crouched" index="5" />
+		<bit name="Crouch When Not In Combat" index="6" />
+		<bit name="Crouch When Guarding" index="7" />
+		<bit name="Unused" index="8" />
+		<bit name="Must Crouch To Shoot" index="9" />
+		<bit name="Panic When Surprised" index="10" />
+		<bit name="Always Charge At Enemies" index="11" />
+		<bit name="Gets In Vehicles With Player" index="12" />
+		<bit name="Start Firing Before Aligned" index="13" />
+		<bit name="Standing Must Move Forward" index="14" />
+		<bit name="Crouching Must Move Forward" index="15" />
+		<bit name="Defensive Crouch While Charging" index="16" />
+		<bit name="Use Stalking Behavior" index="17" />
+		<bit name="Stalking Freeze If Exposed" index="18" />
+		<bit name="Always Berserk In Attacking Mode" index="19" />
+		<bit name="Berserking Uses Panicked Movement" index="20" />
+		<bit name="Flying" index="21" />
+		<bit name="Panicked By Unopposable Enemy" index="22" />
+		<bit name="Crouch When Hiding From Unopposable" index="23" />
+		<bit name="Always Charge In 'Attacking' Mode" index="24" />
+		<bit name="Dive Off Ledges" index="25" />
+		<bit name="Swarm" index="26" />
+		<bit name="Suicidal Melee Attack" index="27" />
+		<bit name="Cannot Move While Crouching" index="28" />
+		<bit name="Fixed Crouch Facing" index="29" />
+		<bit name="Crouch When In Line Of Fire" index="30" />
+		<bit name="Avoid Friends' Line Of Fire" index="31" />
+	</flags32>
+	<flags32 name="More Flags" offset="0x4" visible="true">
+		<bit name="Avoid All Enemy Attack Vectors" index="0" />
+		<bit name="Must Stand To Fire" index="1" />
+		<bit name="Must Stop To Fire" index="2" />
+		<bit name="Disallow Vehicle Combat" index="3" />
+		<bit name="Pathfinding Ignores Danger" index="4" />
+		<bit name="Panic In Groups" index="5" />
+		<bit name="No Corpse Shooting" index="6" />
+	</flags32>
+	<undefined name="Unknown" offset="0x8" visible="false" />
+	<undefined name="Unknown" offset="0xC" visible="false" />
+	<undefined name="Unknown" offset="0x10" visible="false" />
+	<enum16 name="Type" offset="0x14" visible="true">
+		<option name="Elite" value="0x0" />
+		<option name="Jackal" value="0x1" />
+		<option name="Grunt" value="0x2" />
+		<option name="Hunter" value="0x3" />
+		<option name="Engineer" value="0x4" />
+		<option name="Assassin" value="0x5" />
+		<option name="Player" value="0x6" />
+		<option name="Marine" value="0x7" />
+		<option name="Crew" value="0x8" />
+		<option name="Combat Form" value="0x9" />
+		<option name="Infection Form" value="0xA" />
+		<option name="Carrier Form" value="0xB" />
+		<option name="Monitor" value="0xC" />
+		<option name="Sentinel" value="0xD" />
+		<option name="None" value="0xE" />
+		<option name="Mounted Weapon" value="0xF" />
+		<option name="Hologram" value="0x10" />
+		<option name="Dog" value="0x11" />
+		<option name="Ninja" value="0x12" />
+		<option name="Mook" value="0x13" />
+		<option name="Guard" value="0x14" />
+		<option name="Necro" value="0x15" />
+		<option name="Dwarf" value="0x16" />
+	</enum16>
+	<int16 name="Unknown" offset="0x16" visible="false" />
+	<comment title="Perception" />
+	<float32 name="Maximum Vision Distance" offset="0x18" visible="true" tooltip="maximum range of sight" />
+	<degree name="Central Vision Angle" offset="0x1C" visible="true" tooltip="horizontal angle within which we see targets out to our maximum range" />
+	<degree name="Maximum Vision Angle" offset="0x20" visible="true" tooltip="maximum horizontal angle within which we see targets at range" />
+	<undefined name="Unknown" offset="0x24" visible="false" />
+	<degree name="Peripheral Vision Angle" offset="0x28" visible="true" tooltip="maximum horizontal angle within which we can see targets out of the corner of our eye" />
+	<float32 name="Peripheral Distance" offset="0x2C" visible="true" tooltip="maximum range at which we can see targets our of the corner of our eye" />
+	<undefined name="Unknown" offset="0x30" visible="false" />
+	<vector3 name="Standing Gun Offset" offset="0x34" visible="true" tooltip="offset of gun from feet when standing (x=forward, y=left, z=up)" />
+	<vector3 name="Crouching Gun Offset" offset="0x40" visible="true" tooltip="offset of gun from feet when crouch (x=forward, y=left, z=up)" />
+	<float32 name="Hearing Distance" offset="0x4C" visible="true" tooltip="maximum range at which sounds can be heard" />
+	<float32 name="Notice Projectile Chance" offset="0x50" visible="true" tooltip="random chance of noticing a dangerous enemy projectile (e.g. grenade)" />
+	<float32 name="Notice Vehicle Chance" offset="0x54" visible="true" tooltip="random chance of noticing a dangerous vehicle" />
+	<undefined name="Unknown" offset="0x58" visible="false" />
+	<undefined name="Unknown" offset="0x5C" visible="false" />
+	<float32 name="Combat Perception Time" offset="0x60" visible="true" tooltip="time required to acknowledge a visible enemy when we are already in combat or searching for them" />
+	<float32 name="Guard Perception Time" offset="0x64" visible="true" tooltip="time required to acknowledge a visible enemy when we have been alerted" />
+	<float32 name="Non-Combat Perception Time" offset="0x68" visible="true" tooltip="time required to acknowledge a visible enemy when we are not alerted" />
+	<undefined name="Unknown" offset="0x6C" visible="false" />
+	<undefined name="Unknown" offset="0x70" visible="false" />
+	<undefined name="Unknown" offset="0x74" visible="false" />
+	<undefined name="Unknown" offset="0x78" visible="false" />
+	<undefined name="Unknown" offset="0x7C" visible="false" />
+	<comment title="Movement" />
+	<float32 name="Dive Into Cover Chance" offset="0x80" visible="true" tooltip="chance of running a dive animation when moving into cover" />
+	<float32 name="Emerge From Cover Chance" offset="0x84" visible="true" tooltip="chance of running an emerge animation when uncovering a target" />
+	<float32 name="Dive From Grenade Chance" offset="0x88" visible="true" tooltip="chance of running a dive animation when moving away from a grenade" />
+	<float32 name="Pathfinding Radius" offset="0x8C" visible="true" />
+	<float32 name="Glass Ignorance Chance" offset="0x90" visible="true" tooltip="chance of not noticing that breakable surfaces have been destroyed" />
+	<float32 name="Stationary Movement Distance" offset="0x94" visible="true" tooltip="movement distance which is considered 'stationary' for considering whether we crouch" />
+	<float32 name="Free-Flying Sidestep" offset="0x98" visible="true" tooltip="distance which we allow sidestepping for flying units" />
+	<degree name="Begin Moving Angle" offset="0x9C" visible="true" tooltip="we must be facing this close to our target before we start applying the throttle (default" />
+	<undefined name="Unknown" offset="0xA0" visible="false" />
+	<comment title="Looking" />
+	<degree2 name="Maximum Aiming Deviation" offset="0xA4" visible="true" tooltip="how far we can turn our weapon" />
+	<degree2 name="Maximum Looking Deviation" offset="0xAC" visible="true" tooltip="how far we can turn our head" />
+	<degree name="Noncombat Look Delta Left" offset="0xB4" visible="true" tooltip="how far we can turn our head left away from our aiming vector when not in combat" />
+	<degree name="Noncombat Look Delta Right" offset="0xB8" visible="true" tooltip="how far we can turn our head right away from our aiming vector when not in combat" />
+	<degree name="Combat Look Delta Left" offset="0xBC" visible="true" tooltip="how far we can turn our head left away from our aiming vector when in combat" />
+	<degree name="Combat Look Delta Right" offset="0xC0" visible="true" tooltip="how far we can turn our head right away from our aiming vector when in combat" />
+	<degree2 name="Idle Aiming Range" offset="0xC4" visible="true" tooltip="range in which we select random directions to aim in" />
+	<degree2 name="Idle Looking Range" offset="0xCC" visible="true" tooltip="range in which we select random directions to look at" />
+	<rangef name="Event Look Time Modifier" offset="0xD4" visible="true" tooltip="multiplier for how long we look at interesting events (zero = unchanged)" />
+	<rangef name="Noncombat Idle Facing" offset="0xDC" visible="true" tooltip="rate at which we change facing when looking around randomly when not in combat" />
+	<rangef name="Noncombat Idle Aiming" offset="0xE4" visible="true" tooltip="rate at which we change aiming directions when looking around randomly when not in combat" />
+	<rangef name="Noncombat Idle Looking" offset="0xEC" visible="true" tooltip="rate at which we change look around randomly when not in combat" />
+	<rangef name="Guard Idle Facing" offset="0xF4" visible="true" tooltip="rate at which we change facing when looking around randomly when guarding" />
+	<rangef name="Guard Idle Aiming" offset="0xFC" visible="true" tooltip="rate at which we change aiming directions when looking around randomly when guarding" />
+	<rangef name="Guard Idle Looking" offset="0x104" visible="true" tooltip="rate at which we change look around randomly when guarding" />
+	<rangef name="Combat Idle Facing" offset="0x10C" visible="true" tooltip="rate at which we change facing when looking around randomly when searching or in combat" />
+	<rangef name="Combat Idle Aiming" offset="0x114" visible="true" tooltip="rate at which we change aiming directions when looking around randomly when searching or in combat" />
+	<rangef name="Combat Idle Looking" offset="0x11C" visible="true" tooltip="rate at which we change look around randomly when searching or in combat" />
+	<undefined name="Unknown" offset="0x124" visible="false" />
+	<undefined name="Unknown" offset="0x128" visible="false" />
+	<undefined name="Unknown" offset="0x12C" visible="false" />
+	<undefined name="Unknown" offset="0x130" visible="false" />
+	<undefined name="Unknown" offset="0x134" visible="false" />
+	<undefined name="Unknown" offset="0x138" visible="false" />
+	<tagRef name="DO NOT USE" offset="0x13C" visible="true" />
+	<undefined name="Unknown" offset="0x14C" visible="false" />
+	<undefined name="Unknown" offset="0x150" visible="false" />
+	<undefined name="Unknown" offset="0x154" visible="false" />
+	<undefined name="Unknown" offset="0x158" visible="false" />
+	<undefined name="Unknown" offset="0x15C" visible="false" />
+	<undefined name="Unknown" offset="0x160" visible="false" />
+	<undefined name="Unknown" offset="0x164" visible="false" />
+	<undefined name="Unknown" offset="0x168" visible="false" />
+	<undefined name="Unknown" offset="0x16C" visible="false" />
+	<undefined name="Unknown" offset="0x170" visible="false" />
+	<undefined name="Unknown" offset="0x174" visible="false" />
+	<undefined name="Unknown" offset="0x178" visible="false" />
+	<undefined name="Unknown" offset="0x17C" visible="false" />
+	<undefined name="Unknown" offset="0x180" visible="false" />
+	<undefined name="Unknown" offset="0x184" visible="false" />
+	<undefined name="Unknown" offset="0x188" visible="false" />
+	<undefined name="Unknown" offset="0x18C" visible="false" />
+	<undefined name="Unknown" offset="0x190" visible="false" />
+	<undefined name="Unknown" offset="0x194" visible="false" />
+	<undefined name="Unknown" offset="0x198" visible="false" />
+	<undefined name="Unknown" offset="0x19C" visible="false" />
+	<undefined name="Unknown" offset="0x1A0" visible="false" />
+	<undefined name="Unknown" offset="0x1A4" visible="false" />
+	<undefined name="Unknown" offset="0x1A8" visible="false" />
+	<undefined name="Unknown" offset="0x1AC" visible="false" />
+	<undefined name="Unknown" offset="0x1B0" visible="false" />
+	<undefined name="Unknown" offset="0x1B4" visible="false" />
+	<undefined name="Unknown" offset="0x1B8" visible="false" />
+	<undefined name="Unknown" offset="0x1BC" visible="false" />
+	<undefined name="Unknown" offset="0x1C0" visible="false" />
+	<undefined name="Unknown" offset="0x1C4" visible="false" />
+	<undefined name="Unknown" offset="0x1C8" visible="false" />
+	<undefined name="Unknown" offset="0x1CC" visible="false" />
+	<undefined name="Unknown" offset="0x1D0" visible="false" />
+	<undefined name="Unknown" offset="0x1D4" visible="false" />
+	<undefined name="Unknown" offset="0x1D8" visible="false" />
+	<undefined name="Unknown" offset="0x1DC" visible="false" />
+	<undefined name="Unknown" offset="0x1E0" visible="false" />
+	<undefined name="Unknown" offset="0x1E4" visible="false" />
+	<undefined name="Unknown" offset="0x1E8" visible="false" />
+	<undefined name="Unknown" offset="0x1EC" visible="false" />
+	<undefined name="Unknown" offset="0x1F0" visible="false" />
+	<undefined name="Unknown" offset="0x1F4" visible="false" />
+	<undefined name="Unknown" offset="0x1F8" visible="false" />
+	<undefined name="Unknown" offset="0x1FC" visible="false" />
+	<undefined name="Unknown" offset="0x200" visible="false" />
+	<undefined name="Unknown" offset="0x204" visible="false" />
+	<undefined name="Unknown" offset="0x208" visible="false" />
+	<undefined name="Unknown" offset="0x20C" visible="false" />
+	<undefined name="Unknown" offset="0x210" visible="false" />
+	<undefined name="Unknown" offset="0x214" visible="false" />
+	<undefined name="Unknown" offset="0x218" visible="false" />
+	<undefined name="Unknown" offset="0x21C" visible="false" />
+	<undefined name="Unknown" offset="0x220" visible="false" />
+	<undefined name="Unknown" offset="0x224" visible="false" />
+	<undefined name="Unknown" offset="0x228" visible="false" />
+	<undefined name="Unknown" offset="0x22C" visible="false" />
+	<undefined name="Unknown" offset="0x230" visible="false" />
+	<undefined name="Unknown" offset="0x234" visible="false" />
+	<undefined name="Unknown" offset="0x238" visible="false" />
+	<undefined name="Unknown" offset="0x23C" visible="false" />
+	<undefined name="Unknown" offset="0x240" visible="false" />
+	<undefined name="Unknown" offset="0x244" visible="false" />
+	<undefined name="Unknown" offset="0x248" visible="false" />
+	<undefined name="Unknown" offset="0x24C" visible="false" />
+	<undefined name="Unknown" offset="0x250" visible="false" />
+	<undefined name="Unknown" offset="0x254" visible="false" />
+	<tagRef name="DO NOT USE" offset="0x258" visible="true" />
+	<comment title="Unopposable" />
+	<enum16 name="Unreachable Danger Trigger" offset="0x268" visible="true" tooltip="danger level of an unreachable enemy which will trigger a retreat if it continues over time">
+		<option name="Never" value="0x0" />
+		<option name="Visible" value="0x1" />
+		<option name="Shooting" value="0x2" />
+		<option name="Shooting Near Us" value="0x3" />
+		<option name="Damaging Us" value="0x4" />
+		<option name="Unused" value="0x5" />
+		<option name="Unused" value="0x6" />
+		<option name="Unused" value="0x7" />
+		<option name="Unused" value="0x8" />
+		<option name="Unused" value="0x9" />
+	</enum16>
+	<enum16 name="Vehicle Danger Trigger" offset="0x26A" visible="true" tooltip="danger level of a vehicle-based enemy which will trigger a retreat if it continues over time">
+		<option name="Never" value="0x0" />
+		<option name="Visible" value="0x1" />
+		<option name="Shooting" value="0x2" />
+		<option name="Shooting Near Us" value="0x3" />
+		<option name="Damaging Us" value="0x4" />
+		<option name="Unused" value="0x5" />
+		<option name="Unused" value="0x6" />
+		<option name="Unused" value="0x7" />
+		<option name="Unused" value="0x8" />
+		<option name="Unused" value="0x9" />
+	</enum16>
+	<enum16 name="Player Danger Trigger" offset="0x26C" visible="true" tooltip="danger level of an enemy player which will trigger a retreat if it continues over time">
+		<option name="Never" value="0x0" />
+		<option name="Visible" value="0x1" />
+		<option name="Shooting" value="0x2" />
+		<option name="Shooting Near Us" value="0x3" />
+		<option name="Damaging Us" value="0x4" />
+		<option name="Unused" value="0x5" />
+		<option name="Unused" value="0x6" />
+		<option name="Unused" value="0x7" />
+		<option name="Unused" value="0x8" />
+		<option name="Unused" value="0x9" />
+	</enum16>
+	<int16 name="Unknown" offset="0x26E" visible="false" />
+	<rangef name="Danger Trigger Time" offset="0x270" visible="true" tooltip="how long it takes for an unopposable enemy that has the above danger level to trigger a retreat" />
+	<int16 name="Friends Killed Trigger" offset="0x278" visible="true" tooltip="if this many of our friends are killed by an unopposable enemy, we trigger a retreat (zero = never use this as a retreat condition)" />
+	<int16 name="Friends Retreating Trigger" offset="0x27A" visible="true" tooltip="if this many of our friends are retreating from an unopposable enemy, we retreat as well (zero = never use this as a retreat condition)" />
+	<undefined name="Unknown" offset="0x27C" visible="false" />
+	<undefined name="Unknown" offset="0x280" visible="false" />
+	<undefined name="Unknown" offset="0x284" visible="false" />
+	<rangef name="Retreat Time" offset="0x288" visible="true" tooltip="how long we retreat from an unopposable enemy for" />
+	<undefined name="Unknown" offset="0x290" visible="false" />
+	<undefined name="Unknown" offset="0x294" visible="false" />
+	<comment title="Panic" />
+	<rangef name="Cowering Time" offset="0x298" visible="true" tooltip="how long we hide in cover after being panicked" />
+	<float32 name="Friend Killed Panic Chance" offset="0x2A0" visible="true" tooltip="chance of panicking when we see a friend killed near us and the enemy is looking at us too" />
+	<enum16 name="Leader Type" offset="0x2A4" visible="true" tooltip="if we see a friend of this type killed we have a chance of panicking">
+		<option name="Elite" value="0x0" />
+		<option name="Jackal" value="0x1" />
+		<option name="Grunt" value="0x2" />
+		<option name="Hunter" value="0x3" />
+		<option name="Engineer" value="0x4" />
+		<option name="Assassin" value="0x5" />
+		<option name="Player" value="0x6" />
+		<option name="Marine" value="0x7" />
+		<option name="Crew" value="0x8" />
+		<option name="Combat Form" value="0x9" />
+		<option name="Infection Form" value="0xA" />
+		<option name="Carrier Form" value="0xB" />
+		<option name="Monitor" value="0xC" />
+		<option name="Sentinel" value="0xD" />
+		<option name="None" value="0xE" />
+		<option name="Mounted Weapon" value="0xF" />
+	</enum16>
+	<int16 name="Unknown" offset="0x2A6" visible="false" />
+	<float32 name="Leader Killed Panic Chance" offset="0x2A8" visible="true" tooltip="chance of panicking when we see a leader killed" />
+	<float32 name="Panic Damage Threshold" offset="0x2AC" visible="true" tooltip="panic if we take this much body damage in a short period of time" />
+	<float32 name="Surprise Distance" offset="0x2B0" visible="true" tooltip="the distance at which newly acknowledged props or weapon impacts are considered 'close' for surprise purposes" />
+	<undefined name="Unknown" offset="0x2B4" visible="false" />
+	<undefined name="Unknown" offset="0x2B8" visible="false" />
+	<undefined name="Unknown" offset="0x2BC" visible="false" />
+	<undefined name="Unknown" offset="0x2C0" visible="false" />
+	<undefined name="Unknown" offset="0x2C4" visible="false" />
+	<undefined name="Unknown" offset="0x2C8" visible="false" />
+	<undefined name="Unknown" offset="0x2CC" visible="false" />
+	<comment title="Defensive">danger values: being aimed at: 0.7
+an enemy shooting in our general direction: 1.2
+an enemy shooting directly at us: 1.6
+an enemy damaging us: 2.0</comment>
+	<rangef name="Hide Behind Cover Time" offset="0x2D0" visible="true" tooltip="how long we stay behind cover after seeking cover" />
+	<float32 name="Hide Target-Not-Visible Time" offset="0x2D8" visible="true" tooltip="if this is non-zero then we will only seek cover if our target has not been visible recently" />
+	<float32 name="Hide Shield Fraction" offset="0x2DC" visible="true" tooltip="elites and jackals only seek cover if their shield falls below this value" />
+	<float32 name="Attack Shield Fraction" offset="0x2E0" visible="true" tooltip="elites and jackals only come out from cover to attack if they have this much shields" />
+	<float32 name="Pursue Shield Fraction" offset="0x2E4" visible="true" tooltip="elites and jackals only come out from cover to pursue if they have this much shields" />
+	<undefined name="Unknown" offset="0x2E8" visible="false" />
+	<undefined name="Unknown" offset="0x2EC" visible="false" />
+	<undefined name="Unknown" offset="0x2F0" visible="false" />
+	<undefined name="Unknown" offset="0x2F4" visible="false" />
+	<enum16 name="Defensive Crouch Type" offset="0x2F8" visible="true">
+		<option name="Never" value="0x0" />
+		<option name="Danger" value="0x1" />
+		<option name="Low Shields" value="0x2" />
+		<option name="Hide Behind Shield" value="0x3" />
+		<option name="Any Target" value="0x4" />
+		<option name="Flood Shamble" value="0x5" />
+	</enum16>
+	<int16 name="Unknown" offset="0x2FA" visible="false" />
+	<float32 name="Attacking Crouch Threshold" offset="0x2FC" visible="true" tooltip="when in attacking mode, if our crouch type is based on shields, we crouch when our shields are below this number; if our crouch type is based on danger, we crouch when our danger is above this number" />
+	<float32 name="Defending Crouch Threshold" offset="0x300" visible="true" tooltip="when in defending mode, if our crouch type is based on shields, we crouch when our shields are below this number; if our crouch type is based on danger, we crouch when our danger is above this number" />
+	<float32 name="Minimum Stand Time" offset="0x304" visible="true" tooltip="minimum time to remain standing (zero = default)" />
+	<float32 name="Minimum Crouch Time" offset="0x308" visible="true" tooltip="minimum time to remain crouching (zero = default)" />
+	<float32 name="Defending Hide Time Modifier" offset="0x30C" visible="true" tooltip="how much longer we hide behind cover for when in the defending state (zero = unchanged)" />
+	<float32 name="Attacking Evasion Threshold" offset="0x310" visible="true" tooltip="when in attacking mode, we consider seeking cover or evading when our danger gets this high" />
+	<float32 name="Defending Evasion Threshold" offset="0x314" visible="true" tooltip="when in defending mode, we consider seeking cover or evading when our danger gets this high" />
+	<float32 name="Evasion Seek-Cover Chance" offset="0x318" visible="true" tooltip="chance of seeking cover (otherwise we just evade)" />
+	<float32 name="Evasion Delay Time" offset="0x31C" visible="true" tooltip="minimum time period between evasion moves" />
+	<float32 name="Maximum Seek-Cover Distance" offset="0x320" visible="true" tooltip="maximum distance we will consider going to find cover (zero = default)" />
+	<float32 name="Cover Damage Threshold" offset="0x324" visible="true" tooltip="how much damage we must take before we are allowed to seek cover (zero = always allowed to)" />
+	<float32 name="Stalking Discovery Time" offset="0x328" visible="true" tooltip="if our target sees us for this long while we are stalking them, our cover is blown and we do something else (zero = never stop stalking)" />
+	<float32 name="Stalking Maximum Distance" offset="0x32C" visible="true" tooltip="distance outside of which we don't bother stalking" />
+	<degree name="Stationary Facing Angle" offset="0x330" visible="true" tooltip="angle outside of which we must abandon a stationary facing direction and suffer any penalties" />
+	<float32 name="Change-Facing Stand Time" offset="0x334" visible="true" tooltip="how long we must stand up for after changing our fixed stationary facing" />
+	<undefined name="Unknown" offset="0x338" visible="false" />
+	<comment title="Pursuit" />
+	<rangef name="Uncover Delay Time" offset="0x33C" visible="true" tooltip="time to look at target's position after it becomes visible" />
+	<rangef name="Target Search Time" offset="0x344" visible="true" tooltip="time we search at target's position" />
+	<rangef name="Pursuit-Position Time" offset="0x34C" visible="true" tooltip="time we search at a pursuit position" />
+	<int16 name="Number Of Positions (Coord)" offset="0x354" visible="true" tooltip="number of pursuit positions to check when in coordinated group search mode" />
+	<int16 name="Number Of Positions (Normal)" offset="0x356" visible="true" tooltip="number of pursuit positions to check when in normal search mode" />
+	<undefined name="Unknown" offset="0x358" visible="false" />
+	<undefined name="Unknown" offset="0x35C" visible="false" />
+	<undefined name="Unknown" offset="0x360" visible="false" />
+	<undefined name="Unknown" offset="0x364" visible="false" />
+	<undefined name="Unknown" offset="0x368" visible="false" />
+	<undefined name="Unknown" offset="0x36C" visible="false" />
+	<undefined name="Unknown" offset="0x370" visible="false" />
+	<undefined name="Unknown" offset="0x374" visible="false" />
+	<comment title="Berserk" />
+	<float32 name="Melee Attack Delay" offset="0x378" visible="true" tooltip="how long we must wait between attempting melee attacks" />
+	<float32 name="Melee Fudge Factor" offset="0x37C" visible="true" tooltip="fudge factor that offsets how far in front of the target we start our attack (negative = we try to time our attack so that we go _through_ the target). this should be close to zero, but might be bigger for suiciding units" />
+	<float32 name="Melee Charge Time" offset="0x380" visible="true" tooltip="how long we can stay in the charging state trying to reach our target before we give up" />
+	<rangef name="Melee Leap Range" offset="0x384" visible="true" tooltip="we can launch leaping melee attacks at targets within these ranges (zero = can't leap)" />
+	<float32 name="Melee Leap Velocity" offset="0x38C" visible="true" tooltip="how fast we spring at targets when launching a leaping melee attack" />
+	<float32 name="Melee Leap Chance" offset="0x390" visible="true" tooltip="chance of launching a leaping melee attack at a ground-based target (we always leap at flying targets)" />
+	<float32 name="Melee Leap Ballistic" offset="0x394" visible="true" tooltip="fraction that controls how ballistic our leaping melee trajectory is" />
+	<float32 name="Berserk Damage Amount" offset="0x398" visible="true" tooltip="amount of body damage in a short time that makes us berserk" />
+	<float32 name="Berserk Damage Threshold" offset="0x39C" visible="true" tooltip="how low our body health must get before we will consider berserking" />
+	<float32 name="Berserk Proximity" offset="0x3A0" visible="true" tooltip="if we ever get this close to a target, we berserk" />
+	<float32 name="Suicide Sensing Distance" offset="0x3A4" visible="true" tooltip="when we are this close to a target, we check to see if they're getting away and if so blow up" />
+	<float32 name="Berserk Grenade Chance" offset="0x3A8" visible="true" tooltip="chance of berserking when we have a dangerous projectile stuck to us" />
+	<undefined name="Unknown" offset="0x3AC" visible="false" />
+	<undefined name="Unknown" offset="0x3B0" visible="false" />
+	<undefined name="Unknown" offset="0x3B4" visible="false" />
+	<comment title="Firing Positions" />
+	<rangef name="Guard Position Time" offset="0x3B8" visible="true" tooltip="time after which we decide to change guard positions (zero = never)" />
+	<rangef name="Combat Position Time" offset="0x3C0" visible="true" tooltip="time after which we change combat firing positions" />
+	<float32 name="Old Position Avoid Distance" offset="0x3C8" visible="true" tooltip="distance we try and stay from our last discarded firing position" />
+	<float32 name="Friend Avoid Distance" offset="0x3CC" visible="true" tooltip="distance we try and stay from any friends" />
+	<undefined name="Unknown" offset="0x3D0" visible="false" />
+	<undefined name="Unknown" offset="0x3D4" visible="false" />
+	<undefined name="Unknown" offset="0x3D8" visible="false" />
+	<undefined name="Unknown" offset="0x3DC" visible="false" />
+	<undefined name="Unknown" offset="0x3E0" visible="false" />
+	<undefined name="Unknown" offset="0x3E4" visible="false" />
+	<undefined name="Unknown" offset="0x3E8" visible="false" />
+	<undefined name="Unknown" offset="0x3EC" visible="false" />
+	<undefined name="Unknown" offset="0x3F0" visible="false" />
+	<undefined name="Unknown" offset="0x3F4" visible="false" />
+	<comment title="Communication" />
+	<rangef name="Noncombat Idle Speech Time" offset="0x3F8" visible="true" tooltip="time between idle vocalizations when we are not in combat" />
+	<rangef name="Combat Idle Speech Time" offset="0x400" visible="true" tooltip="time between idle vocalizations when we are in combat or searching" />
+	<undefined name="Unknown" offset="0x408" visible="false" />
+	<undefined name="Unknown" offset="0x40C" visible="false" />
+	<undefined name="Unknown" offset="0x410" visible="false" />
+	<undefined name="Unknown" offset="0x414" visible="false" />
+	<undefined name="Unknown" offset="0x418" visible="false" />
+	<undefined name="Unknown" offset="0x41C" visible="false" />
+	<undefined name="Unknown" offset="0x420" visible="false" />
+	<undefined name="Unknown" offset="0x424" visible="false" />
+	<undefined name="Unknown" offset="0x428" visible="false" />
+	<undefined name="Unknown" offset="0x42C" visible="false" />
+	<undefined name="Unknown" offset="0x430" visible="false" />
+	<undefined name="Unknown" offset="0x434" visible="false" />
+	<undefined name="Unknown" offset="0x438" visible="false" />
+	<undefined name="Unknown" offset="0x43C" visible="false" />
+	<undefined name="Unknown" offset="0x440" visible="false" />
+	<undefined name="Unknown" offset="0x444" visible="false" />
+	<undefined name="Unknown" offset="0x448" visible="false" />
+	<undefined name="Unknown" offset="0x44C" visible="false" />
+	<undefined name="Unknown" offset="0x450" visible="false" />
+	<undefined name="Unknown" offset="0x454" visible="false" />
+	<undefined name="Unknown" offset="0x458" visible="false" />
+	<undefined name="Unknown" offset="0x45C" visible="false" />
+	<undefined name="Unknown" offset="0x460" visible="false" />
+	<undefined name="Unknown" offset="0x464" visible="false" />
+	<undefined name="Unknown" offset="0x468" visible="false" />
+	<undefined name="Unknown" offset="0x46C" visible="false" />
+	<undefined name="Unknown" offset="0x470" visible="false" />
+	<undefined name="Unknown" offset="0x474" visible="false" />
+	<undefined name="Unknown" offset="0x478" visible="false" />
+	<undefined name="Unknown" offset="0x47C" visible="false" />
+	<undefined name="Unknown" offset="0x480" visible="false" />
+	<undefined name="Unknown" offset="0x484" visible="false" />
+	<undefined name="Unknown" offset="0x488" visible="false" />
+	<undefined name="Unknown" offset="0x48C" visible="false" />
+	<undefined name="Unknown" offset="0x490" visible="false" />
+	<undefined name="Unknown" offset="0x494" visible="false" />
+	<undefined name="Unknown" offset="0x498" visible="false" />
+	<undefined name="Unknown" offset="0x49C" visible="false" />
+	<undefined name="Unknown" offset="0x4A0" visible="false" />
+	<undefined name="Unknown" offset="0x4A4" visible="false" />
+	<undefined name="Unknown" offset="0x4A8" visible="false" />
+	<undefined name="Unknown" offset="0x4AC" visible="false" />
+	<undefined name="Unknown" offset="0x4B0" visible="false" />
+	<undefined name="Unknown" offset="0x4B4" visible="false" />
+	<tagRef name="DO NOT USE" offset="0x4B8" visible="true" />
+	<undefined name="Unknown" offset="0x4C8" visible="false" />
+	<undefined name="Unknown" offset="0x4CC" visible="false" />
+	<undefined name="Unknown" offset="0x4D0" visible="false" />
+	<undefined name="Unknown" offset="0x4D4" visible="false" />
+	<undefined name="Unknown" offset="0x4D8" visible="false" />
+	<undefined name="Unknown" offset="0x4DC" visible="false" />
+	<undefined name="Unknown" offset="0x4E0" visible="false" />
+	<undefined name="Unknown" offset="0x4E4" visible="false" />
+	<undefined name="Unknown" offset="0x4E8" visible="false" />
+	<undefined name="Unknown" offset="0x4EC" visible="false" />
+	<undefined name="Unknown" offset="0x4F0" visible="false" />
+	<undefined name="Unknown" offset="0x4F4" visible="false" />
+</plugin>

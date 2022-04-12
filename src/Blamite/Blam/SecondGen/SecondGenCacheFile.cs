@@ -10,6 +10,7 @@ using Blamite.Blam.Shaders;
 using Blamite.Blam.Util;
 using Blamite.Serialization;
 using Blamite.IO;
+using Blamite.Util;
 
 namespace Blamite.Blam.SecondGen
 {
@@ -22,7 +23,14 @@ namespace Blamite.Blam.SecondGen
 		private SecondGenLanguageGlobals _languageInfo;
 		private SecondGenLanguagePackLoader _languageLoader;
 		private IndexedStringIDSource _stringIDs;
-		private SecondGenTagTable _tags;
+
+		// NOTE (Dragon): this may cause problems in the future, but since the beta uses a first gen style tag table
+		//				  we need to be able to use one here. we *DO* cast to a SecondGenTagTable for other builds though
+		//				  (see SaveChanges() and the TagGroups property)
+		//private SecondGenTagTable _tags;
+		private TagTable _tags;				
+		
+		
 		private DummyPointerExpander _expander;
 		private Endian _endianness;
 		private SoundResourceManager _soundGestalt;
@@ -41,9 +49,15 @@ namespace Blamite.Blam.SecondGen
 
 		public void SaveChanges(IStream stream)
 		{
-			_tags.SaveChanges(stream);
+			//only save tag header if its actually secondgen
+			if (_tags is SecondGenTagTable)
+			{
+				((SecondGenTagTable)_tags).SaveChanges(stream);
+				_fileNames.SaveChanges(stream);
+			}
+			
 			WriteStringBlock(stream);
-			_fileNames.SaveChanges(stream);
+			
 			_stringIDs.SaveChanges(stream);
 			if (_simulationDefinitions != null)
 				_simulationDefinitions.SaveChanges(stream);
@@ -142,7 +156,13 @@ namespace Blamite.Blam.SecondGen
 
 		public IList<ITagGroup> TagGroups
 		{
-			get { return _tags.Groups; }
+			//get { return _tags.Groups; }
+			get {
+				if (_tags is FirstGen.Structures.FirstGenTagTable)
+					return ((FirstGen.Structures.FirstGenTagTable)_tags).Groups;
+				else
+					return ((SecondGenTagTable)_tags).Groups;
+			}
 		}
 
 		public TagTable Tags
@@ -241,32 +261,92 @@ namespace Blamite.Blam.SecondGen
 
 		private void Load(IReader reader)
 		{
-			_header = LoadHeader(reader);
-			_tags = LoadTagTable(reader);
+			_header = LoadHeader(reader, out uint primaryMask);
+			_tags = LoadTagTable(reader, primaryMask);
 			_fileNames = LoadFileNames(reader);
 			_stringIDs = LoadStringIDs(reader);
 
 			LoadLanguageGlobals(reader);
 			LoadScriptFiles();
 			LoadSimulationDefinitions(reader);
+
+			if (string.IsNullOrEmpty(_header.ScenarioName))
+			{
+				//header didn't contain a scenario path yet, but later engines do so might as well grab it
+				ITag scenario = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
+				_header.ScenarioName = _fileNames.GetTagName(scenario.Index);
+			}
 		}
 
-		private SecondGenHeader LoadHeader(IReader reader)
+		private SecondGenHeader LoadHeader(IReader reader, out uint primaryMask)
 		{
+			primaryMask = 0;
 			reader.SeekTo(0);
 			StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("header"));
+
+			//set up a mask for xbox if needed
+			if (!values.HasInteger("meta offset mask"))
+			{
+				//oh boy
+				StructureLayout indexHeaderLayout = _buildInfo.Layouts.GetLayout("meta header");
+				StructureLayout tagElementLayout = _buildInfo.Layouts.GetLayout("tag element");
+
+				uint indexHeaderOffset = (uint)values.GetInteger("meta offset");
+				
+				reader.SeekTo(indexHeaderOffset + indexHeaderLayout.GetFieldOffset("tag table offset"));
+				uint tagTableAddress = reader.ReadUInt32();
+
+				uint maskReference;
+				if (indexHeaderLayout.HasField("tag group table offset"))
+				{
+					reader.SeekTo(indexHeaderOffset + indexHeaderLayout.GetFieldOffset("tag group table offset"));
+					maskReference = reader.ReadUInt32();
+				}
+				else
+					maskReference = tagTableAddress;
+
+				primaryMask = maskReference - (uint)indexHeaderLayout.Size;
+				uint tagTableOffset = tagTableAddress - primaryMask + indexHeaderOffset;
+
+				reader.SeekTo(tagTableOffset + tagElementLayout.GetFieldOffset("offset"));
+				uint firstTagAddress = reader.ReadUInt32();
+
+				values.SetInteger("xbox meta offset mask", firstTagAddress - (uint)values.GetInteger("tag data offset"));
+			}
+
 			return new SecondGenHeader(values, _buildInfo, _segmenter);
 		}
 
-		private SecondGenTagTable LoadTagTable(IReader reader)
+		private TagTable LoadTagTable(IReader reader, uint primaryMask)
 		{
+			// h2 beta still uses a first gen tag table so need more dumb checks
+			StructureLayout metaHeaderLayout = _buildInfo.Layouts.GetLayout("meta header");
+			if (!metaHeaderLayout.HasField("tag group table offset"))
+			{
+				reader.SeekTo(MetaArea.Offset);
+				StructureValueCollection values = StructureReader.ReadStructure(reader, metaHeaderLayout);
+
+				if (primaryMask > 0)
+					values.SetInteger("meta header mask", primaryMask);
+
+				return new FirstGen.Structures.FirstGenTagTable(reader, values, MetaArea, _buildInfo);
+			}
+				
 			return new SecondGenTagTable(reader, MetaArea, Allocator, _buildInfo);
 		}
 
 		private IndexedFileNameSource LoadFileNames(IReader reader)
 		{
-			var strings = new IndexedStringTable(reader, _header.FileNameCount, _header.FileNameIndexTable, _header.FileNameData,
+			IndexedStringTable strings;
+			if (_tags is FirstGen.Structures.FirstGenTagTable)
+			{
+				strings = new FirstGenIndexedStringTable(reader, (FirstGen.Structures.FirstGenTagTable)_tags);
+			}
+			else
+			{
+				strings = new IndexedStringTable(reader, _header.FileNameCount, _header.FileNameIndexTable, _header.FileNameData,
 				_buildInfo.TagNameKey);
+			}
 			return new IndexedFileNameSource(strings);
 		}
 
@@ -304,33 +384,30 @@ namespace Blamite.Blam.SecondGen
 			if (_tags == null)
 				return false;
 
-			tag = _tags.FindTagByGroup("matg");
-			layout = _buildInfo.Layouts.GetLayout("matg");
-
+			if (_buildInfo.Layouts.HasLayout("matg"))
+			{
+				tag = _tags.GetGlobalTag(CharConstant.FromString("matg"));
+				layout = _buildInfo.Layouts.GetLayout("matg");
+			}
 			return (tag != null && layout != null && tag.MetaLocation != null);
 		}
 
 		private void LoadScriptFiles()
 		{
-			ScriptFiles = new IScriptFile[0];
-
 			if (_tags != null)
 			{
-				List<IScriptFile> l_scriptfiles = new List<IScriptFile>();
+				ScriptFiles = new IScriptFile[0];
 
 				if (_buildInfo.Layouts.HasLayout("scnr"))
 				{
-					foreach (ITag hs in _tags.FindTagsByGroup("scnr"))
-                    {
-						l_scriptfiles.Add(new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, _buildInfo, StringIDs, _expander, Allocator));
+					//caches are intended for 1 scenario, so only load the *real* one
+					ITag hs = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
+					if (hs != null)
+					{
+						ScriptFiles = new IScriptFile[1];
+						ScriptFiles[0] = new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, _buildInfo, StringIDs, _expander, Allocator);
 					}
 				}
-				else
-                {
-					return;
-				}
-
-				ScriptFiles = l_scriptfiles.ToArray();
 			}
 		}
 
@@ -338,7 +415,7 @@ namespace Blamite.Blam.SecondGen
 		{
 			if (_tags != null && _buildInfo.Layouts.HasLayout("scnr") && _buildInfo.Layouts.HasLayout("simulation definition table element"))
 			{
-				ITag scnr = _tags.FindTagByGroup("scnr");
+				ITag scnr = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
 				if (scnr != null)
 					_simulationDefinitions = new SecondGenSimulationDefinitionTable(scnr, _tags, reader, MetaArea, Allocator, _buildInfo);
 			}
@@ -346,6 +423,10 @@ namespace Blamite.Blam.SecondGen
 
 		private void WriteStringBlock(IStream stream)
 		{
+			StructureLayout headerLayout = _buildInfo.Layouts.GetLayout("header");
+			if (!headerLayout.HasField("string block offset"))
+				return;
+
 			var segment = StringArea.Segments[0];
 
 			int newSize = _stringIDs.Count * 0x80;

@@ -33,5 +33,10 @@
 		/// </summary>
 		/// <returns>The cloned field with a value identical to the source field.</returns>
 		public abstract MetaField CloneValue();
+
+		/// <summary>
+		/// Gets a string representation of this field and its data.
+		/// </summary>
+		public abstract string AsString();
 	}
 }

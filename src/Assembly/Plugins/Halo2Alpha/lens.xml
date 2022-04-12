@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo2Alpha" baseSize="0xF0">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+		<revision author="Dragon" version="2">named some fields</revision>
+	</revisions>
+	<comment title="Lens Flare" />
+	<degree name="Falloff Angle" offset="0x0" visible="true" />
+	<degree name="Cutoff Angle" offset="0x4" visible="true" />
+	<undefined name="Unknown" offset="0x8" visible="false" />
+	<undefined name="Unknown" offset="0xC" visible="false" />
+	<comment title="Occlusion">Occlusion factor affects overall lens flare brightness and can also affect scale. Occlusion never affects rotation.</comment>
+	<float32 name="Occlusion Radius" offset="0x10" visible="true" tooltip="radius of the square used to test occlusion" />
+	<enum16 name="Occlusion Offset Direction" offset="0x14" visible="true">
+		<option name="Toward Viewer" value="0x0" />
+		<option name="Marker Forward" value="0x1" />
+		<option name="None" value="0x2" />
+	</enum16>
+	<enum16 name="Occlusion Inner Radius Scale" offset="0x16" visible="true">
+		<option name="None" value="0x0" />
+		<option name="1/2" value="0x1" />
+		<option name="1/4" value="0x2" />
+		<option name="1/8" value="0x3" />
+		<option name="1/16" value="0x4" />
+		<option name="1/32" value="0x5" />
+		<option name="1/64" value="0x6" />
+	</enum16>
+	<float32 name="Near Fade Distance" offset="0x18" visible="true" tooltip="distance at which the lens flare brightness is maximum" />
+	<float32 name="Far Fade Distance" offset="0x1C" visible="true" tooltip="distance at which the lens flare brightness is minimum; set to zero to disable distance fading" />
+	<comment title="Bitmaps" />
+	<tagRef name="Bitmap" offset="0x20" visible="true" tooltip="used by reflections" />
+	<flags16 name="Flags" offset="0x30" visible="true">
+		<bit name="Sun" index="0" />
+		<bit name="No Occlusion Test" index="1" />
+		<bit name="Only Render In First Person" index="2" />
+		<bit name="Only Render In Third Person" index="3" />
+		<bit name="Fade In More Quickly" index="4" tooltip="not supported" />
+		<bit name="Fade Out More Quickly" index="5" tooltip="not supported" />
+		<bit name="Scale By Marker" index="6" />
+	</flags16>
+	<int16 name="Unknown" offset="0x32" visible="false" />
+	<undefined name="Unknown" offset="0x34" visible="false" />
+	<undefined name="Unknown" offset="0x38" visible="false" />
+	<undefined name="Unknown" offset="0x3C" visible="false" />
+	<undefined name="Unknown" offset="0x40" visible="false" />
+	<undefined name="Unknown" offset="0x44" visible="false" />
+	<undefined name="Unknown" offset="0x48" visible="false" />
+	<undefined name="Unknown" offset="0x4C" visible="false" />
+	<undefined name="Unknown" offset="0x50" visible="false" />
+	<undefined name="Unknown" offset="0x54" visible="false" />
+	<undefined name="Unknown" offset="0x58" visible="false" />
+	<undefined name="Unknown" offset="0x5C" visible="false" />
+	<undefined name="Unknown" offset="0x60" visible="false" />
+	<undefined name="Unknown" offset="0x64" visible="false" />
+	<undefined name="Unknown" offset="0x68" visible="false" />
+	<undefined name="Unknown" offset="0x6C" visible="false" />
+	<undefined name="Unknown" offset="0x70" visible="false" />
+	<undefined name="Unknown" offset="0x74" visible="false" />
+	<undefined name="Unknown" offset="0x78" visible="false" />
+	<undefined name="Unknown" offset="0x7C" visible="false" />
+	<comment title="Corona Rotation">Controls how corona rotation is affected by viewer and light angles.</comment>
+	<enum16 name="Rotation Function" offset="0x80" visible="true">
+		<option name="None" value="0x0" />
+		<option name="Rotation A" value="0x1" />
+		<option name="Rotation B" value="0x2" />
+		<option name="Rotation-Translation" value="0x3" />
+		<option name="Translation" value="0x4" />
+	</enum16>
+	<int16 name="Unknown" offset="0x82" visible="false" />
+	<degree name="Rotation Function Scale" offset="0x84" visible="true" />
+	<undefined name="Unknown" offset="0x88" visible="false" />
+	<undefined name="Unknown" offset="0x8C" visible="false" />
+	<undefined name="Unknown" offset="0x90" visible="false" />
+	<undefined name="Unknown" offset="0x94" visible="false" />
+	<undefined name="Unknown" offset="0x98" visible="false" />
+	<undefined name="Unknown" offset="0x9C" visible="false" />
+	<comment title="Corona Radius Scale" />
+	<float32 name="Horizontal Scale" offset="0xA0" visible="true" tooltip="amount to stretch the corona along the horizontal axis; 0 defaults to 1" />
+	<float32 name="Vertical Scale" offset="0xA4" visible="true" tooltip="amount to stretch the corona along the vertical axis; 0 defaults to 1" />
+	<undefined name="Unknown" offset="0xA8" visible="false" />
+	<undefined name="Unknown" offset="0xAC" visible="false" />
+	<undefined name="Unknown" offset="0xB0" visible="false" />
+	<undefined name="Unknown" offset="0xB4" visible="false" />
+	<undefined name="Unknown" offset="0xB8" visible="false" />
+	<undefined name="Unknown" offset="0xBC" visible="false" />
+	<undefined name="Unknown" offset="0xC0" visible="false" />
+	<tagblock name="Reflections" offset="0xC4" visible="true" elementSize="0x80">
+		<flags16 name="Flags" offset="0x0" visible="true">
+			<bit name="Align Rotation With Screen Center" index="0" />
+			<bit name="Radius NOT Scaled By Distance" index="1" />
+			<bit name="Radius Scaled By Occlusion Factor" index="2" tooltip="scales radius by 1/2 to 1 as occlusion goes from 0 to 1" />
+			<bit name="Occluded By Solid Objects" index="3" tooltip="reflection will be drawn with the zbuffer enabled (it will be drawn 'behind' solid geometry)" />
+		</flags16>
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<int16 name="Bitmap Index" offset="0x4" visible="true" />
+		<int16 name="Unknown" offset="0x6" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<float32 name="Position" offset="0x1C" visible="true" tooltip="0 is on top of light, 1 is opposite light, 0.5 is the center of the screen, etc." />
+		<float32 name="Rotation Offset" offset="0x20" visible="true" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<rangef name="Radius" offset="0x28" visible="true" tooltip="interpolated by light scale" />
+		<enum16 name="Radius Scaled By" offset="0x30" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Rotation" value="0x1" />
+			<option name="Rotation And Strafing" value="0x2" />
+			<option name="Distance From Center" value="0x3" />
+		</enum16>
+		<int16 name="Unknown" offset="0x32" visible="false" />
+		<rangef name="Brightness" offset="0x34" visible="true" tooltip="interpolated by light scale" />
+		<enum16 name="Brightness Scaled By" offset="0x3C" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Rotation" value="0x1" />
+			<option name="Rotation And Strafing" value="0x2" />
+			<option name="Distance From Center" value="0x3" />
+		</enum16>
+		<int16 name="Unknown" offset="0x3E" visible="false" />
+		<comment title="Tint Color">Tinting and modulating are not the same; 'tinting' a reflection will color the darker regions but leave the white highlights, while 'modulating' will color everything uniformly (as in most games). The tint alpha controls how much the reflection is tinted as opposed to modulated (0 is modulated, 1 is tinted). If all components are zero, the reflection is fully tinted by the light color.</comment>
+		<colorf name="Tint Color" offset="0x40" alpha="true" visible="true" tooltip="if a=r=g=b=0 use light color instead; alpha blends between modulation and tinting" />
+		<comment title="Animation">Causes lens flare reflection to flicker, pulse, or whatever. Animated color modulates tint color, above, while animated alpha modulates brightness. Animation is ignored if tint color is BLACK or the animation function is ONE or ZERO.</comment>
+		<colorf name="Color Lower Bound" offset="0x50" alpha="true" visible="true" tooltip="if a=r=g=b=0, default to a=r=g=b=1" />
+		<colorf name="Color Upper Bound" offset="0x60" alpha="true" visible="true" tooltip="if a=r=g=b=0, default to a=r=g=b=1" />
+		<flags16 name="Flags" offset="0x70" visible="true">
+			<bit name="Interpolate Color In Hsv" index="0" />
+			<bit name="...More Colors" index="1" />
+		</flags16>
+		<enum16 name="Animation Function" offset="0x72" visible="true">
+			<option name="One" value="0x0" />
+			<option name="Zero" value="0x1" />
+			<option name="Cosine" value="0x2" />
+			<option name="Cosine (Variable Period)" value="0x3" />
+			<option name="Diagonal Wave" value="0x4" />
+			<option name="Diagonal Wave (Variable Period)" value="0x5" />
+			<option name="Slide" value="0x6" />
+			<option name="Slide (Variable Period)" value="0x7" />
+			<option name="Noise" value="0x8" />
+			<option name="Jitter" value="0x9" />
+			<option name="Wander" value="0xA" />
+			<option name="Spark" value="0xB" />
+		</enum16>
+		<float32 name="Animation Period" offset="0x74" visible="true" tooltip="0 defaults to 1" />
+		<float32 name="Animation Phase" offset="0x78" visible="true" />
+		<undefined name="Unknown" offset="0x7C" visible="false" />
+	</tagblock>
+	<undefined name="Unknown" offset="0xD0" visible="true" />
+	<tagblock name="Brightness Function" offset="0xD4" visible="true" elementSize="0x20">
+		<enum8 name="Graph Type" offset="0x0" visible="true">
+			<option name="Unknown 0" value="0x0" />
+			<option name="Unknown 1" value="0x1" />
+			<option name="Unknown 2" value="0x2" />
+			<option name="Unknown 3" value="0x3" />
+			<option name="Unknown 4" value="0x4" />
+			<option name="Unknown 5" value="0x5" />
+			<option name="Unknown 6" value="0x6" />
+			<option name="Unknown 7" value="0x7" />
+		</enum8>
+		<flags8 name="Unknown Color" offset="0x1" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Enum Bit 0" index="4" />
+			<bit name="Enum Bit 1" index="5" />
+			<bit name="Enum Bit 2" index="6" />
+			<bit name="Enum Bit 3" index="7" />
+		</flags8>
+		<enum8 name="Unknown" offset="0x2" visible="true">
+			<option name="Unknown 0" value="0x0" />
+			<option name="Unknown 1" value="0x1" />
+			<option name="Unknown 2" value="0x2" />
+			<option name="Unknown 3" value="0x3" />
+			<option name="Unknown 4" value="0x4" />
+			<option name="Unknown 5" value="0x5" />
+		</enum8>
+		<enum8 name="Unknown" offset="0x3" visible="true">
+			<option name="Unknown 0" value="0x0" />
+			<option name="Unknown 1" value="0x1" />
+			<option name="Unknown 2" value="0x2" />
+			<option name="Unknown 3" value="0x3" />
+			<option name="Unknown 4" value="0x4" />
+			<option name="Unknown 5" value="0x5" />
+		</enum8>
+		<float32 name="A" offset="0x4" visible="true" tooltip="context dependent based on enums above" />
+		<float32 name="B" offset="0x8" visible="true" tooltip="context dependent based on enums above" />
+		<float32 name="C" offset="0xC" visible="true" tooltip="context dependent based on enums above" />
+		<float32 name="D" offset="0x10" visible="true" tooltip="context dependent based on enums above" />
+		<tagblock name="Function Values" offset="0x14" visible="true" elementSize="0x4">
+			<float32 name="Value" offset="0x0" visible="true" />
+		</tagblock>
+	</tagblock>
+	<tagblock name="Color Function" offset="0xE0" visible="true" elementSize="0x20">
+		<enum8 name="Graph Type" offset="0x0" visible="true">
+			<option name="Unknown 0" value="0x0" />
+			<option name="Unknown 1" value="0x1" />
+			<option name="Unknown 2" value="0x2" />
+			<option name="Unknown 3" value="0x3" />
+			<option name="Unknown 4" value="0x4" />
+			<option name="Unknown 5" value="0x5" />
+			<option name="Unknown 6" value="0x6" />
+			<option name="Unknown 7" value="0x7" />
+		</enum8>
+		<flags8 name="Unknown Color" offset="0x1" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Enum Bit 0" index="4" />
+			<bit name="Enum Bit 1" index="5" />
+			<bit name="Enum Bit 2" index="6" />
+			<bit name="Enum Bit 3" index="7" />
+		</flags8>
+		<enum8 name="Unknown" offset="0x2" visible="true">
+			<option name="Unknown 0" value="0x0" />
+			<option name="Unknown 1" value="0x1" />
+			<option name="Unknown 2" value="0x2" />
+			<option name="Unknown 3" value="0x3" />
+			<option name="Unknown 4" value="0x4" />
+			<option name="Unknown 5" value="0x5" />
+		</enum8>
+		<enum8 name="Unknown" offset="0x3" visible="true">
+			<option name="Unknown 0" value="0x0" />
+			<option name="Unknown 1" value="0x1" />
+			<option name="Unknown 2" value="0x2" />
+			<option name="Unknown 3" value="0x3" />
+			<option name="Unknown 4" value="0x4" />
+			<option name="Unknown 5" value="0x5" />
+		</enum8>
+		<float32 name="A" offset="0x4" visible="true" tooltip="context dependent based on enums above" />
+		<float32 name="B" offset="0x8" visible="true" tooltip="context dependent based on enums above" />
+		<float32 name="C" offset="0xC" visible="true" tooltip="context dependent based on enums above" />
+		<float32 name="D" offset="0x10" visible="true" tooltip="context dependent based on enums above" />
+		<tagblock name="Function Values" offset="0x14" visible="true" elementSize="0x4">
+			<float32 name="Value" offset="0x0" visible="true" />
+		</tagblock>
+	</tagblock>
+	<undefined name="Unknown" offset="0xEC" visible="true" />
+</plugin>

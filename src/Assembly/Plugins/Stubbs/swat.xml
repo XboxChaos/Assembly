@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Stubbs" baseSize="0x140">
+	<revisions>
+		<revision author="Lord Zedd" version="1">ayy lmao</revision>
+	</revisions>
+	<comment title="Radiosity Properties" />
+	<flags16 name="Flags" offset="0x0" visible="true">
+		<bit name="Simple Parameterization" index="0" tooltip="lightmap texture parametrization should correspond to diffuse texture parametrization" />
+		<bit name="Ignore Normals" index="1" tooltip="light independent of normals (trees)" />
+		<bit name="Transparent Lit" index="2" />
+	</flags16>
+	<enum16 name="Detail Level" offset="0x2" visible="true" tooltip="affects the density of tesselation (high means slow).">
+		<option name="High" value="0x0" />
+		<option name="Medium" value="0x1" />
+		<option name="Low" value="0x2" />
+		<option name="Turd" value="0x3" />
+	</enum16>
+	<float32 name="Power" offset="0x4" visible="true" tooltip="power of emitted light from 0 to infinity" />
+	<colorf name="Color Of Emitted Light" offset="0x8" alpha="false" visible="true" />
+	<colorf name="Tint Color" offset="0x14" alpha="false" visible="true" tooltip="light passing through this surface (if it's transparent) will be tinted this color." />
+	<comment title="Physics Properties">only relevant in structure bsp uses</comment>
+	<flags16 name="Flags" offset="0x20" visible="true">
+	</flags16>
+	<enum16 name="Material Type" offset="0x22" visible="true">
+		<option name="Dirt" value="0x0" />
+		<option name="Sand" value="0x1" />
+		<option name="Stone" value="0x2" />
+		<option name="Concrete" value="0x3" />
+		<option name="Brick" value="0x4" />
+		<option name="Tile" value="0x5" />
+		<option name="Plaster" value="0x6" />
+		<option name="Metal (Hollow)" value="0x7" />
+		<option name="Metal (Thin)" value="0x8" />
+		<option name="Metal (Thick)" value="0x9" />
+		<option name="Glass" value="0xA" />
+		<option name="Plastic" value="0xB" />
+		<option name="Rubber" value="0xC" />
+		<option name="Vinyl" value="0xD" />
+		<option name="Cloth" value="0xE" />
+		<option name="Carpet" value="0xF" />
+		<option name="Wood" value="0x10" />
+		<option name="Leaves" value="0x11" />
+		<option name="Corn" value="0x12" />
+		<option name="Grass" value="0x13" />
+		<option name="Water" value="0x14" />
+		<option name="Sewage" value="0x15" />
+		<option name="Mud" value="0x16" />
+		<option name="Force Field" value="0x17" />
+		<option name="German Rip-Start Nylon" value="0x18" />
+		<option name="Sturdy Glass" value="0x19" />
+		<option name="Unused3" value="0x1A" />
+		<option name="Unused4" value="0x1B" />
+		<option name="Stubbs Skin" value="0x1C" />
+		<option name="Zombie Skin" value="0x1D" />
+		<option name="Human Skin" value="0x1E" />
+		<option name="Cop Armor" value="0x1F" />
+		<option name="Cop Shield" value="0x20" />
+		<option name="Army Armor" value="0x21" />
+		<option name="Fur" value="0x22" />
+		<option name="Pee Battle" value="0x23" />
+	</enum16>
+	<int16 name="Unknown" offset="0x24" visible="false" />
+	<int16 name="Unknown" offset="0x26" visible="false" />
+	<comment title="Water Shader">Base map color modulates the background, while base map alpha modulates reflection brightness. Both of these effects can be independently enables and disabled. Note that if the &lt;base map alpha modulates reflection&gt; flag is not set, then the perpendicular/parallel brightness has no effect (but the perpendicular/parallel tint color DOES has an effect).</comment>
+	<flags16 name="Flags" offset="0x28" visible="true">
+		<bit name="Base Map Alpha Modulates Reflection" index="0" />
+		<bit name="Base Map Color Modulates Background" index="1" />
+		<bit name="Atmospheric Fog" index="2" />
+		<bit name="Draw Before Fog" index="3" />
+	</flags16>
+	<int16 name="Unknown" offset="0x2A" visible="false" />
+	<undefined name="Unknown" offset="0x2C" visible="false" />
+	<undefined name="Unknown" offset="0x30" visible="false" />
+	<undefined name="Unknown" offset="0x34" visible="false" />
+	<undefined name="Unknown" offset="0x38" visible="false" />
+	<undefined name="Unknown" offset="0x3C" visible="false" />
+	<undefined name="Unknown" offset="0x40" visible="false" />
+	<undefined name="Unknown" offset="0x44" visible="false" />
+	<undefined name="Unknown" offset="0x48" visible="false" />
+	<tagRef name="Base Map" offset="0x4C" visible="true" tooltip="controls reflection brightness and background tint" />
+	<undefined name="Unknown" offset="0x5C" visible="false" />
+	<undefined name="Unknown" offset="0x60" visible="false" />
+	<undefined name="Unknown" offset="0x64" visible="false" />
+	<undefined name="Unknown" offset="0x68" visible="false" />
+	<float32 name="View Perpendicular Brightness" offset="0x6C" visible="true" />
+	<colorf name="View Perpendicular Tint Color" offset="0x70" alpha="false" visible="true" />
+	<float32 name="View Parallel Brightness" offset="0x7C" visible="true" tooltip="0 defaults to 1" />
+	<colorf name="View Parallel Tint Color" offset="0x80" alpha="false" visible="true" />
+	<undefined name="Unknown" offset="0x8C" visible="false" />
+	<undefined name="Unknown" offset="0x90" visible="false" />
+	<undefined name="Unknown" offset="0x94" visible="false" />
+	<undefined name="Unknown" offset="0x98" visible="false" />
+	<tagRef name="Reflection Map" offset="0x9C" visible="true" />
+	<undefined name="Unknown" offset="0xAC" visible="false" />
+	<undefined name="Unknown" offset="0xB0" visible="false" />
+	<undefined name="Unknown" offset="0xB4" visible="false" />
+	<undefined name="Unknown" offset="0xB8" visible="false" />
+	<degree name="Ripple Animation Angle" offset="0xBC" visible="true" />
+	<float32 name="Ripple Animation Velocity" offset="0xC0" visible="true" />
+	<float32 name="Ripple Scale" offset="0xC4" visible="true" tooltip="0 defaults to 1" />
+	<tagRef name="Ripple Maps" offset="0xC8" visible="true" />
+	<int16 name="Ripple Mipmap Levels" offset="0xD8" visible="true" tooltip="0 defaults to 1" />
+	<int16 name="Unknown" offset="0xDA" visible="false" />
+	<float32 name="Ripple Mipmap Fade Factor" offset="0xDC" visible="true" tooltip="flatness of last mipmap" />
+	<float32 name="Ripple Mipmap Detail Bias" offset="0xE0" visible="true" />
+	<undefined name="Unknown" offset="0xE4" visible="false" />
+	<undefined name="Unknown" offset="0xE8" visible="false" />
+	<undefined name="Unknown" offset="0xEC" visible="false" />
+	<undefined name="Unknown" offset="0xF0" visible="false" />
+	<undefined name="Unknown" offset="0xF4" visible="false" />
+	<undefined name="Unknown" offset="0xF8" visible="false" />
+	<undefined name="Unknown" offset="0xFC" visible="false" />
+	<undefined name="Unknown" offset="0x100" visible="false" />
+	<undefined name="Unknown" offset="0x104" visible="false" />
+	<undefined name="Unknown" offset="0x108" visible="false" />
+	<undefined name="Unknown" offset="0x10C" visible="false" />
+	<undefined name="Unknown" offset="0x110" visible="false" />
+	<undefined name="Unknown" offset="0x114" visible="false" />
+	<undefined name="Unknown" offset="0x118" visible="false" />
+	<undefined name="Unknown" offset="0x11C" visible="false" />
+	<undefined name="Unknown" offset="0x120" visible="false" />
+	<tagblock name="Ripples" offset="0x124" visible="true" elementSize="0x4C">
+		<int16 name="Unknown" offset="0x0" visible="false" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<float32 name="Contribution Factor" offset="0x4" visible="true" tooltip="0 defaults to 1" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<degree name="Animation Angle" offset="0x28" visible="true" />
+		<float32 name="Animation Velocity" offset="0x2C" visible="true" />
+		<vector2 name="Map Offset" offset="0x30" visible="true" />
+		<int16 name="Map Repeats" offset="0x38" visible="true" tooltip="0 defaults to 1" />
+		<int16 name="Map Index" offset="0x3A" visible="true" tooltip="index into ripple maps" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+	</tagblock>
+	<undefined name="Unknown" offset="0x130" visible="false" />
+	<undefined name="Unknown" offset="0x134" visible="false" />
+	<undefined name="Unknown" offset="0x138" visible="false" />
+	<undefined name="Unknown" offset="0x13C" visible="false" />
+</plugin>

@@ -30,7 +30,10 @@ namespace Blamite.Blam.SecondGen
 
 		public long OffsetToPointer(int offset, int areaStartOffset)
 		{
-			return (int)(offset - areaStartOffset + _mask);
+			// NOTE: this *was* casting as an int, which was causing arithmetic problems
+			//		 while loading tags from ogbox cache files. it should probably be tested
+			//		 to make sure it doesnt break something else by casting it as unsigned
+			return (uint)(offset - areaStartOffset + _mask);
 		}
 	}
 }

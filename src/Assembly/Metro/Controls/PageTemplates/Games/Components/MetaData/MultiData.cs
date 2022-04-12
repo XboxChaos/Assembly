@@ -45,6 +45,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
+		public override string AsString()
+		{
+			return string.Format("{0} | {1} | {2} {3}", Type, Name, A, B);
+		}
 	}
 
 	public abstract class Multi3Data<T> : ValueField
@@ -101,6 +105,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
+		public override string AsString()
+		{
+			return string.Format("{0} | {1} | {2} {3} {4}", Type, Name, A, B, C);
+		}
 	}
 
 	public abstract class Multi4Data<T> : ValueField
@@ -168,6 +176,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
+		public override string AsString()
+		{
+			return string.Format("{0} | {1} | {2} {3} {4} {5}", Type, Name, A, B, C, D);
+		}
 	}
 
 	public class Degree2Data : Multi2Data<float>

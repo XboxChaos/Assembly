@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="StubbsR" baseSize="0x8C">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+	</revisions>
+	<comment title="Type">Type controls bitmap 'geometry'. All dimensions must be a power of two except for SPRITES and INTERFACE BITMAPS:
+
+* 2D TEXTURES: Ordinary, 2D textures will be generated.
+* 3D TEXTURES: Volume textures will be generated from each sequence of 2D texture 'slices'.
+* CUBE MAPS: Cube maps will be generated from each consecutive set of six 2D textures in each sequence, all faces of a cube map must be square and the same size.
+* SPRITES: Sprite texture pages will be generated.
+* INTERFACE BITMAPS: Similar to 2D TEXTURES, but without mipmaps and without the power of two restriction.</comment>
+	<enum16 name="Type" offset="0x0" visible="true">
+		<option name="2D Textures" value="0x0" />
+		<option name="3D Textures" value="0x1" />
+		<option name="Cube Maps" value="0x2" />
+		<option name="Sprites" value="0x3" />
+		<option name="Interface Bitmaps" value="0x4" />
+	</enum16>
+	<comment title="Format">Format controls how pixels will be stored internally:
+
+* COMPRESSED WITH COLOR-KEY TRANSPARENCY: DXT1 compression, uses 4 bits per pixel. 4x4 blocks of pixels are reduced to 2 colors and interpolated, alpha channel uses color-key transparency instead of alpha from the plate (all zero-alpha pixels also have zero-color).
+* COMPRESSED WITH EXPLICIT ALPHA: DXT2/3 compression, uses 8 bits per pixel. Same as DXT1 without the color key transparency, alpha channel uses alpha from plate quantized down to 4 bits per pixel.
+* COMPRESSED WITH INTERPOLATED ALPHA: DXT4/5 compression, uses 8 bits per pixel. Same as DXT2/3, except alpha is smoother. Better for smooth alpha gradients, worse for noisy alpha.
+* 16-BIT COLOR: Uses 16 bits per pixel. Depending on the alpha channel, bitmaps are quantized to either r5g6b5 (no alpha), a1r5g5b5 (1-bit alpha), or a4r4g4b4 (&gt;1-bit alpha).
+* 32-BIT COLOR: Uses 32 bits per pixel. Very high quality, can have alpha at no added cost. This format takes up the most memory, however. Bitmap formats are x8r8g8b8 and a8r8g8b.
+* MONOCHROME: Uses either 8 or 16 bits per pixel. Bitmap formats are a8 (alpha), y8 (intensity), ay8 (combined alpha-intensity) and a8y8 (separate alpha-intensity).
+
+Note: Height maps (a.k.a. bump maps) should use 32-bit color; this is internally converted to a palettized format which takes less memory.</comment>
+	<enum16 name="Format" offset="0x2" visible="true">
+		<option name="Compressed With Color-Key Transparency" value="0x0" />
+		<option name="Compressed With Explicit Alpha" value="0x1" />
+		<option name="Compressed With Interpolated Alpha" value="0x2" />
+		<option name="16-Bit Color" value="0x3" />
+		<option name="32-Bit Color" value="0x4" />
+		<option name="Monochrome" value="0x5" />
+	</enum16>
+	<comment title="Usage">Usage controls how mipmaps are generated:
+
+* ALPHA BLEND: Pixels with zero alpha are ignored in mipmaps, to prevent bleeding the transparent color.
+* DEFAULT: Downsampling works normally, as in Photoshop.
+* HEIGHT MAP: The bitmap (normally grayscale) is a height map which gets converted to a bump map. Uses &lt;bump height&gt; below. Alpha is passed through unmodified.
+* DETAIL MAP: Mipmap color fades to gray, controlled by &lt;detail fade factor&gt; below. Alpha fades to white.
+* LIGHT MAP: Generates no mipmaps. Do not use!
+* VECTOR MAP: Used mostly for special effects; pixels are treated as XYZ vectors and normalized after downsampling. Alpha is passed through unmodified.</comment>
+	<enum16 name="Usage" offset="0x4" visible="true">
+		<option name="Alpha-Blend" value="0x0" />
+		<option name="Default" value="0x1" />
+		<option name="Height Map" value="0x2" />
+		<option name="Detail Map" value="0x3" />
+		<option name="Light Map" value="0x4" />
+		<option name="Vector Map" value="0x5" />
+	</enum16>
+	<flags16 name="Flags" offset="0x6" visible="true">
+		<bit name="Enable Diffusion Dithering" index="0" />
+		<bit name="Disable Height Map Compression" index="1" />
+		<bit name="Uniform Sprite Sequences" index="2" />
+		<bit name="Filthy Sprite Bug Fix" index="3" />
+	</flags16>
+	<comment title="Post-Processing">These properties control how mipmaps are post-processed.</comment>
+	<float32 name="Detail Fade Factor" offset="0x8" visible="true" tooltip="0 means fade to gray by last mipmap, 1 means fade to gray by first mipmap" />
+	<float32 name="Sharpen Amount" offset="0xC" visible="true" tooltip="sharpens mipmap after downsampling" />
+	<float32 name="Bump Height" offset="0x10" visible="true" tooltip="the apparent height of the bump map above the triangle it is textured onto, in texture repeats (i.e., 1.0 would be as high as the texture is wide)" />
+	<comment title="Sprite Processing">When creating a sprite group, specify the number and size of textures that the group is allowed to occupy. During importing, you'll receive feedback about how well the alloted space was used.</comment>
+	<enum16 name="Sprite Budget Size" offset="0x14" visible="true">
+		<option name="32x32" value="0x0" />
+		<option name="64x64" value="0x1" />
+		<option name="128x128" value="0x2" />
+		<option name="256x256" value="0x3" />
+		<option name="512x512" value="0x4" />
+	</enum16>
+	<int16 name="Sprite Budget Count" offset="0x16" visible="true" />
+	<comment title="Color Plate">The original TIFF file used to import the bitmap group.</comment>
+	<int16 name="Color Plate Width" offset="0x18" visible="true" />
+	<int16 name="Color Plate Height" offset="0x1A" visible="true" />
+	<dataref name="Compressed Color Plate Data" offset="0x1C" visible="true" />
+	<comment title="Processed Pixel Data">Pixel data after being processed by the tool.</comment>
+	<dataref name="Processed Pixel Data" offset="0x38" visible="true" />
+	<comment title="Miscellaneous" />
+	<float32 name="Blur Filter Size" offset="0x54" visible="true" tooltip="blurs the bitmap before generating mipmaps" />
+	<float32 name="Alpha Bias" offset="0x58" visible="true" tooltip="affects alpha mipmap generation" />
+	<int16 name="Mipmap Count" offset="0x5C" visible="true" tooltip="0 defaults to all levels" />
+	<comment title="...More Sprite Processing">Sprite usage controls the background color of sprite plates.</comment>
+	<enum16 name="Sprite Usage" offset="0x5E" visible="true">
+		<option name="Blend/Add/Subtract/Max" value="0x0" />
+		<option name="Multiply/Min" value="0x1" />
+		<option name="Double Multiply" value="0x2" />
+	</enum16>
+	<int16 name="Sprite Spacing" offset="0x60" visible="true" />
+	<int16 name="Unknown" offset="0x62" visible="false" />
+	<tagblock name="Sequences" offset="0x64" visible="true" elementSize="0x48">
+		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<int16 name="First Bitmap Index" offset="0x20" visible="true" />
+		<int16 name="Bitmap Count" offset="0x22" visible="true" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<tagblock name="Sprites" offset="0x34" visible="true" elementSize="0x20">
+			<int16 name="Bitmap Index" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<float32 name="Left" offset="0x8" visible="true" />
+			<float32 name="Right" offset="0xC" visible="true" />
+			<float32 name="Top" offset="0x10" visible="true" />
+			<float32 name="Bottom" offset="0x14" visible="true" />
+			<point2 name="Registration Point" offset="0x18" visible="true" />
+		</tagblock>
+	</tagblock>
+	<tagblock name="Bitmaps" offset="0x78" visible="true" elementSize="0x38">
+		<ascii name="Signature" offset="0x0" length="0x4" />
+		<int16 name="Width" offset="0x4" visible="true" />
+		<int16 name="Height" offset="0x6" visible="true" />
+		<int16 name="Depth" offset="0x8" visible="true" tooltip="depth is 1 for 2D textures and cube maps" />
+		<enum16 name="Type" offset="0xA" visible="true" tooltip="determines bitmap 'geometry'">
+			<option name="2D Texture" value="0x0" />
+			<option name="3D Texture" value="0x1" />
+			<option name="Cube Map" value="0x2" />
+			<option name="White" value="0x3" />
+		</enum16>
+		<enum16 name="Format" offset="0xC" visible="true" tooltip="determines how pixels are represented internally">
+			<option name="A8" value="0x0" />
+			<option name="Y8" value="0x1" />
+			<option name="AY8" value="0x2" />
+			<option name="A8Y8" value="0x3" />
+			<option name="Unused1" value="0x4" />
+			<option name="Unused2" value="0x5" />
+			<option name="R5G6B5" value="0x6" />
+			<option name="Unused3" value="0x7" />
+			<option name="A1R5G5B5" value="0x8" />
+			<option name="A4R4G4B4" value="0x9" />
+			<option name="X8R8G8B8" value="0xA" />
+			<option name="A8R8G8B8" value="0xB" />
+			<option name="Unused4" value="0xC" />
+			<option name="Unused5" value="0xD" />
+			<option name="DXT1" value="0xE" />
+			<option name="DXT3" value="0xF" />
+			<option name="DXT5" value="0x10" />
+			<option name="P8-Bump" value="0x11" />
+		</enum16>
+		<flags16 name="Flags" offset="0xE" visible="true">
+			<bit name="Power Of Two Dimensions" index="0" />
+			<bit name="Compressed" index="1" />
+			<bit name="Palettized" index="2" />
+			<bit name="Swizzled" index="3" />
+			<bit name="Linear" index="4" />
+			<bit name="V16U16" index="5" />
+		</flags16>
+		<point16 name="Registration Point" offset="0x10" visible="true" />
+		<int16 name="Mipmap Count" offset="0x14" visible="true" />
+		<int16 name="Unknown" offset="0x16" visible="false" />
+		<uint32 name="Pixels Offset" offset="0x18" visible="true" />
+		<uint32 name="Pixels Size" offset="0x1C" visible="true" />
+		<tagref name="Datum" offset="0x20" withGroup="false" visible="true" />
+		<int32 name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+	</tagblock>
+</plugin>

@@ -63,5 +63,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			return new WrappedTagBlockEntry(_visibleItems, _index, _width, _last);
 		}
+
+		public override string AsString()
+		{
+			return WrappedField.AsString();
+		}
 	}
 }

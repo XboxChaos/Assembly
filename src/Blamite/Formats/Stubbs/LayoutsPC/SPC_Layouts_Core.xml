@@ -21,11 +21,11 @@
 		<int32 name="vertices offset" offset="0x14" />
 		<int32 name="number of indices" offset="0x18" />
 		<int32 name="indices offset" offset="0x1C" />
-		<!--<int32 name="unknown offset" offset="0x20" />-->
+		<int32 name="model data size" offset="0x20" />
 		<int32 name="magic" offset="0x24" />
 	</layout>
 
-	<layout for="tag element">
+	<layout for="tag element" size="0x20">
 		<int32 name="tag group magic" offset="0x0" />
 		<int32 name="parent group magic" offset="0x4" />
 		<int32 name="grandparent group magic" offset="0x8" />
@@ -36,20 +36,25 @@
 		<int32 name="pad_2" offset="0x1C" />
 	</layout>
 
-	<layout for="tag block">
+	<layout for="bsp header" size="0x18">
+		<int32 name="bsp address" offset="0x0" />
+		<int32 name="magic" offset="0x14" />
+	</layout>
+
+	<layout for="tag block" size="0xC">
 		<int32 name="entry count" offset="0x0" />
 		<uint32 name="pointer" offset="0x4" />
-		<uint32 name="block definition" offset="0xC" />
+		<uint32 name="block definition" offset="0x8" />
 	</layout>
 
-	<layout for="tag reference">
+	<layout for="tag reference" size="0x10">
 		<int32 name="tag group magic" offset="0x0" />
 		<uint32 name="name" offset="0x4" />
-		<uint32 name="name length" offset="0xC" />
-		<uint32 name="datum index" offset="0x10" />
+		<uint32 name="name length" offset="0x8" />
+		<uint32 name="datum index" offset="0xC" />
 	</layout>
 
-	<layout for="data reference">
+	<layout for="data reference" size="0x14">
 		<int32 name="size" offset="0x0" />
 		<uint32 name="flags" offset="0x4" />
 		<uint32 name="stream position" offset="0x8" />

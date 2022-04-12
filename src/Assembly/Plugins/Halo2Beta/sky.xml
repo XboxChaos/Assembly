@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo2Beta" baseSize="0xD0">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+		<revision author="Dragon" version="2">named some fields</revision>
+	</revisions>
+	<tagref name="Render Model" offset="0x0" visible="true" />
+	<tagRef name="Animation Graph" offset="0x10" visible="true" />
+	<flags32 name="Flags" offset="0x20" visible="true">
+		<bit name="Fixed In World Space" index="0" />
+		<bit name="Depricated" index="1" />
+		<bit name="Sky Casts Light from Below" index="2" />
+		<bit name="Disable Sky from Lightmaps" index="3" />
+		<bit name="Fog Only Affects Containing Clusters" index="4" />
+		<bit name="Use Clear Color" index="5" />
+	</flags32>
+	<float32 name="Render model Scale" offset="0x24" visible="true" />
+	<float32 name="Movement Scale" offset="0x28" visible="true" />
+	<tagblock name="Cube Map" offset="0x2C" visible="true" elementSize="0x14">
+		<tagref name="Cube Map Reference" offset="0x0" visible="true" />
+		<float32 name="Power Scale" offset="0x10" visible="true" />
+	</tagblock>
+	<colorf name="Indoor Ambient Color" offset="0x38" alpha="false" visible="true" tooltip="Indoor ambient light color." />
+	<undefined name="Unknown" offset="0x44" visible="false" />
+	<colorf name="Outdoor Ambient Color" offset="0x48" alpha="false" visible="true" tooltip="Indoor ambient light color." />
+	<undefined name="Unknown" offset="0x54" visible="false" />
+	<float32 name="Fog Spread Distance" offset="0x58" visible="true" />
+	<tagblock name="Atmospheric Fog" offset="0x5C" visible="true" elementSize="0x18">
+		<colorf name="Color" offset="0x0" alpha="false" visible="true" />
+		<float32 name="Maximum Density" offset="0xC" visible="true" />
+		<float32 name="Start Distance" offset="0x10" visible="true" />
+		<float32 name="Opaque Distance" offset="0x14" visible="true" />
+	</tagblock>
+	<tagblock name="Secondary Fog" offset="0x68" visible="true" elementSize="0x18">
+		<colorf name="Color" offset="0x0" alpha="false" visible="true" />
+		<float32 name="Maximum Density" offset="0xC" visible="true" />
+		<float32 name="Start Distance" offset="0x10" visible="true" />
+		<float32 name="Opaque Distance" offset="0x14" visible="true" />
+	</tagblock>
+	<tagblock name="Sky Fog" offset="0x74" visible="true" elementSize="0x10">
+		<colorf name="Color" offset="0x0" alpha="false" visible="true" />
+		<float32 name="Density" offset="0xC" visible="true" />
+	</tagblock>
+	<tagblock name="Patchy Fog" offset="0x80" visible="true" elementSize="0x58">
+		<colorf name="Color" offset="0x0" alpha="false" visible="true" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<rangef name="Density" offset="0x18" visible="true" />
+		<rangef name="Distance" offset="0x20" visible="true" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<tagRef name="Patchy Fog" offset="0x48" visible="true" />
+	</tagblock>
+	<float32 name="Bloom Override Amount" offset="0x8C" visible="true" />
+	<float32 name="Bloom Override Threshold" offset="0x90" visible="true" />
+	<float32 name="Bloom Override Brightness" offset="0x94" visible="true" />
+	<float32 name="Bloom Override Gamma Power" offset="0x98" visible="true" />
+	<tagblock name="Lights" offset="0x9C" visible="true" elementSize="0x48">
+		<vector3 name="Direction Vector" offset="0x0" visible="true" />
+		<degree2 name="Direction" offset="0xC" visible="true" />
+		<tagRef name="Lens Flare" offset="0x14" visible="true" />
+		<tagblock name="Fog" offset="0x24" visible="true" elementSize="0x2C">
+			<colorf name="Color" offset="0x0" alpha="false" visible="true" />
+			<float32 name="Maximum Density" offset="0xC" visible="true" />
+			<float32 name="Start Distance" offset="0x10" visible="true" />
+			<float32 name="Opaque Distance" offset="0x14" visible="true" />
+			<ranged name="Cone" offset="0x18" visible="true" />
+			<float32 name="Atmospheroc Fog Influence" offset="0x20" visible="true" />
+			<float32 name="Secondary Fog Influence" offset="0x24" visible="true" />
+			<float32 name="Sky Fog Influence" offset="0x28" visible="true" />
+		</tagblock>
+		<tagblock name="Fog Opposite" offset="0x30" visible="true" elementSize="0x2C">
+			<colorf name="Color" offset="0x0" alpha="false" visible="true" />
+			<float32 name="Maximum Density" offset="0xC" visible="true" />
+			<float32 name="Start Distance" offset="0x10" visible="true" />
+			<float32 name="Opaque Distance" offset="0x14" visible="true" />
+			<ranged name="Cone" offset="0x18" visible="true" />
+			<float32 name="Atmospheroc Fog Influence" offset="0x20" visible="true" />
+			<float32 name="Secondary Fog Influence" offset="0x24" visible="true" />
+			<float32 name="Sky Fog Influence" offset="0x28" visible="true" />
+		</tagblock>
+		<tagblock name="Radiosity" offset="0x3C" visible="true" elementSize="0x28">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Affects Exteriors" index="0" />
+				<bit name="Affects Interiors" index="1" />
+				<bit name="Direct Illumination in Lightmaps" index="2" />
+				<bit name="Indirect Illumination in Lightmaps" index="3" />
+			</flags32>
+			<colorf name="Color" offset="0x4" alpha="false" visible="true" tooltip="Light color." />
+			<float32 name="Power" offset="0x10" visible="true" />
+			<float32 name="Test Distance" offset="0x14" visible="true" />
+			<undefined name="Unknown" offset="0x18" visible="false" />
+			<undefined name="Unknown" offset="0x1C" visible="false" />
+			<undefined name="Unknown" offset="0x20" visible="false" />
+			<degree name="Diameter" offset="0x24" visible="true" />
+		</tagblock>
+	</tagblock>
+	<degree name="Global Sky Rotation" offset="0xA8" visible="true" />
+	<tagblock name="Shader Functions" offset="0xAC" visible="true" elementSize="0x24">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<ascii name="Global Functions Name" offset="0x4" length="0x20" visible="true" />
+	</tagblock>
+	<tagblock name="Animations" offset="0xB8" visible="true" elementSize="0x24">
+		<int16 name="Animation Index" offset="0x0" visible="true" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<float32 name="Period" offset="0x4" visible="true" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+	</tagblock>
+	<undefined name="Unknown" offset="0xC4" visible="false" />
+	<undefined name="Unknown" offset="0xC8" visible="false" />
+	<undefined name="Unknown" offset="0xCC" visible="false" />
+</plugin>

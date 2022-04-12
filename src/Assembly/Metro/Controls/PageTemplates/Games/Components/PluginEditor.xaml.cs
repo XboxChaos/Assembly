@@ -227,6 +227,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			var format = new CompletableXMLAttribute("format", "The format of the data in the dataref (optional, default=bytes)");
 			format.RegisterValue(new CompletableXMLValue("bytes", "Raw byte data (default)"));
 			format.RegisterValue(new CompletableXMLValue("asciiz", "Null-terminated ASCII string"));
+			format.RegisterValue(new CompletableXMLValue("utf16", "Null-terminated UTF-16 string"));
 			dataRef.RegisterAttribute(format);
 
 			CompletableXMLTag tagblock = RegisterMetaTag("tagblock", "Tagblock pointer");

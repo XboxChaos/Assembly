@@ -11,6 +11,7 @@ namespace Blamite.Blam.FirstGen.Structures
 		private List<ITagGroup> _groups;
 		private Dictionary<int, ITagGroup> _groupsById;
 		private List<ITag> _tags;
+		private Dictionary<int, ITag> _globalTags;
 
 		public FirstGenTagTable(IReader reader, StructureValueCollection headerValues, FileSegmentGroup metaArea,
 			EngineDescription buildInfo)
@@ -18,10 +19,17 @@ namespace Blamite.Blam.FirstGen.Structures
 			Load(reader, headerValues, metaArea, buildInfo);
 		}
 
+		public override ITag GetGlobalTag(int magic)
+		{
+			if (_globalTags.ContainsKey(magic))
+				return _globalTags[magic];
+			else
+				return null;
+		}
+
 		public IList<ITagGroup> Groups
 		{
 			get { return _groups; }
-			//private set { _groups = value; }
 		}
 
 		public override ITag this[int index]
@@ -48,29 +56,27 @@ namespace Blamite.Blam.FirstGen.Structures
 			EngineDescription buildInfo)
 		{
 			if ((uint)headerValues.GetInteger("magic") != CharConstant.FromString("tags"))
-				throw new ArgumentException("Invalid index table header magic");
+				throw new ArgumentException("Invalid index table header magic. This map could be compressed, try the Compressor in the Tools menu before reporting.");
 
 			// Tags
 			var numTags = (int)headerValues.GetInteger("number of tags");
 
-			// TODO (Dragon): idk if this is acceptable
 			uint tagTableOffset;
-			if (buildInfo.BuildVersion == "02.01.07.4998" || buildInfo.BuildVersion == "02.06.28.07902")
-			{
-				//tagTableOffset = (uint)(metaArea.Offset + (uint)headerValues.GetInteger("tag table offset") - metaArea.BasePointer);
+			if (headerValues.HasInteger("meta header mask"))
 				tagTableOffset = (uint)(metaArea.Offset + (uint)headerValues.GetInteger("tag table offset") - (uint)headerValues.GetInteger("meta header mask"));
-			}
 			else
-			{
 				tagTableOffset = (uint)(metaArea.Offset + (uint)headerValues.GetInteger("tag table offset") - metaArea.BasePointer);
-			}
 
 			// Offset is relative to the header
 			// hack to "spoof" a group table since firstgen has none
 			_groups = ReadGroups(reader, tagTableOffset, numTags, buildInfo);
 			_groupsById = BuildGroupLookup(_groups);
 
-			_tags = ReadTags(reader, tagTableOffset, numTags, buildInfo, metaArea);
+			_tags = ReadTags(reader, tagTableOffset, numTags, buildInfo, metaArea, headerValues);
+
+			_globalTags = new Dictionary<int, ITag>();
+			//store global tag
+			_globalTags[CharConstant.FromString("scnr")] = _tags[(int)headerValues.GetInteger("scenario datum index") & 0xFFFF];
 		}
 
 		private static List<ITagGroup> ReadGroups(IReader reader, uint groupTableOffset, int numTags, EngineDescription buildInfo)
@@ -101,31 +107,26 @@ namespace Blamite.Blam.FirstGen.Structures
 		}
 
 		private List<ITag> ReadTags(IReader reader, uint tagTableOffset, int numTags, EngineDescription buildInfo,
-			FileSegmentGroup metaArea)
+			FileSegmentGroup metaArea, StructureValueCollection headerValues)
 		{
 			StructureLayout layout = buildInfo.Layouts.GetLayout("tag element");
 
 			var result = new List<ITag>();
 			reader.SeekTo(tagTableOffset);
 
-			// TODO (Dragon): DUDE
-			long oldpos = reader.Position;
-			reader.SeekTo(metaArea.Offset);
-			uint metaOffset = reader.ReadUInt32();
-			metaOffset -= (uint)(tagTableOffset - metaArea.Offset);
-			reader.SeekTo(oldpos);
+			ulong metaOffset = 0;
+			if (headerValues.HasInteger("meta header mask"))
+				metaOffset = (ulong)metaArea.BasePointer - headerValues.GetInteger("meta header mask");
 
 			for (int i = 0; i < numTags; i++)
 			{
 				StructureValueCollection values = StructureReader.ReadStructure(reader, layout);
-				
-				// TODO (Dragon): SERIOUSLY
-				// JUST FUCKING FIX THE FILE SEGMENTS OH MY GOD
-				if (buildInfo.BuildVersion == "02.01.07.4998" || buildInfo.BuildVersion == "02.06.28.07902")
+
+				//h2 alpha/beta store names differently, convert it to something expected
+				if (metaOffset > 0)
 				{
 					ulong nameOffset = values.GetInteger("name offset");
-					//nameOffset += ((ulong)metaArea.BasePointer - metaOffset) - (ulong)metaArea.BasePointer + (ulong)metaArea.Offset;
-					nameOffset += (ulong)metaArea.BasePointer - metaOffset;
+					nameOffset += metaOffset;
 					values.SetInteger("name offset", nameOffset);
 				}
 				result.Add(new FirstGenTag(values, metaArea, _groupsById));

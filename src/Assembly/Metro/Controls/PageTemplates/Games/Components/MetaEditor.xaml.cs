@@ -18,6 +18,8 @@ using Blamite.IO;
 using Blamite.Plugins;
 using Blamite.RTE;
 using Blamite.Util;
+using System.CodeDom.Compiler;
+using Microsoft.Win32;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 {
@@ -439,6 +441,64 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			}
 
 			e.Handled = true;
+		}
+
+		private void btnDumpTag_Click(object sender, RoutedEventArgs e)
+		{
+			var sfd = new SaveFileDialog
+			{
+				Title = "Save Tag Dump",
+				Filter = "Text Files|*.txt"
+			};
+			bool? result = sfd.ShowDialog();
+			if (!result.Value)
+				return;
+
+			using (StringWriter sw = new StringWriter())
+			{
+				IndentedTextWriter itw = new IndentedTextWriter(sw);
+				itw.WriteLine(_tag.TagFileName);
+				itw.WriteLine();
+				MetaField[] fields = new MetaField[panelMetaComponents.Items.Count];
+				panelMetaComponents.Items.CopyTo(fields, 0);
+				DumpFieldsToText(itw, fields);
+
+				File.WriteAllText(sfd.FileName, sw.ToString());
+
+				MetroMessageBox.Show("Tag dumped!");
+			}
+		}
+
+		private void DumpFieldsToText(IndentedTextWriter itw, MetaField[] fields)
+		{
+			foreach (MetaField field in fields)
+			{
+				//have to handle blocks here
+				if (field is TagBlockData)
+				{
+					TagBlockData block = field as TagBlockData;
+
+					itw.WriteLine(field.AsString());
+					itw.Indent++;
+					itw.WriteLine("{");
+					int oldIndex = block.CurrentIndex;
+					for (int i = 0; i < block.Length; i++)
+					{
+						itw.WriteLine("[element " + i + "]");
+						block.CurrentIndex = i;
+
+						MetaField[] subFields = new MetaField[block.Template.Count];
+						block.Template.CopyTo(subFields, 0);
+						DumpFieldsToText(itw, subFields);
+						itw.WriteLineNoTabs("");
+					}
+					block.CurrentIndex = oldIndex;
+					itw.WriteLine("}");
+					itw.Indent--;
+				}
+				else if (!(field is WrappedTagBlockEntry))
+					itw.WriteLine(field.AsString());
+			}
 		}
 
 		private void ViewValueAsCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
