@@ -487,7 +487,7 @@ namespace Blamite.Injection
 
 		private static ExtractedSoundPitchRange ReadSoundPitchRange(IReader reader, byte version)
 		{
-			if (version > 0)
+			if (version > 1)
 				throw new InvalidOperationException("Unrecognized \"snpr\" block version");
 
 			int originalIndex = reader.ReadInt32();
@@ -547,7 +547,12 @@ namespace Blamite.Injection
 					chunk.XMA2BufferEnd = reader.ReadInt32();
 					chunk.Unknown = reader.ReadInt32();
 					chunk.Unknown1 = reader.ReadInt32();
-					perm.Chunks.Add(new ExtractedSoundChunk(chunk));
+
+					string bankSuffix = null;
+					if (version >= 1)
+						bankSuffix = reader.ReadAscii();
+
+					perm.Chunks.Add(new ExtractedSoundChunk(chunk, bankSuffix));
 				}
 
 				int langcount = reader.ReadInt32();
@@ -570,7 +575,12 @@ namespace Blamite.Injection
 						chunk.XMA2BufferEnd = reader.ReadInt32();
 						chunk.Unknown = reader.ReadInt32();
 						chunk.Unknown1 = reader.ReadInt32();
-						lang.Chunks.Add(new ExtractedSoundChunk(chunk));
+
+						string bankSuffix = null;
+						if (version >= 1)
+							bankSuffix = reader.ReadAscii();
+
+						lang.Chunks.Add(new ExtractedSoundChunk(chunk, bankSuffix));
 					}
 
 					perm.Languages.Add(lang);
@@ -929,6 +939,13 @@ namespace Blamite.Injection
 
 							unk3.Unknown = reader.ReadInt32();
 							unk3.Unknown1 = reader.ReadInt32();
+
+							if (version >= 1)
+							{
+								unk3.Unknown2 = reader.ReadInt32();
+								unk3.Unknown3 = reader.ReadInt32();
+							}
+
 							unk5s.Add(unk3);
 						}
 

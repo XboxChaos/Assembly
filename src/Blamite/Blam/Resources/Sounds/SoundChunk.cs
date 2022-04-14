@@ -18,6 +18,8 @@ namespace Blamite.Blam.Resources.Sounds
 
 		public int Unknown1 { get; set; }
 
+		public StringID FModBankSuffix { get; set; }
+
 		/// <summary>
 		/// Get or set the chunk size inside <see cref="EncodedSizeAndFlags"/>.
 		/// </summary>
@@ -36,6 +38,7 @@ namespace Blamite.Blam.Resources.Sounds
 			result = result * 8171 + XMA2BufferEnd;
 			result = result * 8171 + Unknown;
 			result = result * 8171 + Unknown1;
+			result = result * 8171 + (int)FModBankSuffix.Value;
 			return result;
 		}
 

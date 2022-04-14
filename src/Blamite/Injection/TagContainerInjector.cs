@@ -638,6 +638,15 @@ namespace Blamite.Injection
 			}
 		}
 
+		private StringID InjectSoundStringID(string str)
+		{
+			// the main datablock already filters out empty string ids, but this isnt the case with sound blocks
+			if (string.IsNullOrEmpty(str))
+				return StringID.Null;
+
+			return InjectSoundStringID(str);
+		}
+
 		private StringID InjectStringID(string str)
 		{
 			// Try to find the string, and if it's not found, inject it
@@ -825,7 +834,7 @@ namespace Blamite.Injection
 
 					SoundPitchRange newPRange = new SoundPitchRange();
 
-					newPRange.Name = InjectStringID(pRange.Name);
+					newPRange.Name = InjectSoundStringID(pRange.Name);
 
 					newPRange.Parameter = pRange.Parameter;
 
@@ -837,7 +846,7 @@ namespace Blamite.Injection
 					{
 						SoundPermutation newPerm = new SoundPermutation();
 
-						newPerm.Name = InjectStringID(perm.Name);
+						newPerm.Name = InjectSoundStringID(perm.Name);
 
 						newPerm.EncodedSkipFraction = perm.EncodedSkipFraction;
 						newPerm.EncodedGain = perm.EncodedGain;
@@ -849,7 +858,12 @@ namespace Blamite.Injection
 						var chunks = new List<SoundChunk>();
 
 						foreach (var chunk in perm.Chunks)
-							chunks.Add(chunk.Source);
+						{
+							SoundChunk src = chunk.Source;
+							src.FModBankSuffix = InjectSoundStringID(chunk.FModBankSuffix);
+							chunks.Add(src);
+						}
+							
 
 						if (perm.Languages != null)
 						{
@@ -867,7 +881,11 @@ namespace Blamite.Injection
 									var lChunks = new List<SoundChunk>();
 
 									foreach (var chunk in lang.Chunks)
-										lChunks.Add(chunk.Source);
+									{
+										SoundChunk src = chunk.Source;
+										src.FModBankSuffix = InjectSoundStringID(chunk.FModBankSuffix);
+										lChunks.Add(src);
+									}
 
 									newPL.Chunks = lChunks.ToArray();
 								}

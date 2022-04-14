@@ -44,7 +44,8 @@
 		<int32 name="number of permutations" offset="0x58" />
 		<uint32 name="permutation table address" offset="0x5C" />
 
-		<!--unused block-->
+		<int32 name="number of language permutations" offset="0x64" />
+		<uint32 name="language permutation table address" offset="0x68" />
 		
 		<int32 name="number of custom playbacks" offset="0x70" />
 		<uint32 name="custom playback table address" offset="0x74" />
@@ -140,6 +141,16 @@
 		<byte name="encoded gain" offset="0xE" />
 		<byte name="encoded info index" offset="0xF" />
 		<uint32 name="fsb info" offset="0x10" />
+	</layout>
+
+	<layout for="sound language permutation" size="0x94">
+		<int32 name="parent permutation index" offset="0x0" />
+
+		<array name="languages" offset="0x4" count="12" entrySize="0xC">
+			<int32 name="sample size" offset="0x0" />
+			<int32 name="first chunk" offset="0x4" />
+			<int32 name="chunk count" offset="0x8" />
+		</array>
 	</layout>
 
 	<layout for="sound custom playback" size="0x48">
@@ -241,7 +252,7 @@
 		<byte name="flags" offset="0x0" />
 	</layout>
 
-	<layout for="sound chunk" size="0x1C">
+	<layout for="sound chunk" size="0x20">
 		<uint32 name="offset" offset="0x0" />
 		<uint32 name="encoded size" offset="0x4" />
 		<int32 name="cache index" offset="0x8" />
@@ -249,6 +260,7 @@
 		<int32 name="xma buffer end" offset="0x10" />
 		<int32 name="unknown1" offset="0x14" />
 		<int32 name="unknown2" offset="0x18" />
+		<int32 name="fmod bank suffix string id" offset="0x1C" />
 	</layout>
 
 	<layout for="sound promotion" size="0x24">

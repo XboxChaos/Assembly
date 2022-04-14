@@ -89,9 +89,13 @@ namespace Blamite.Injection
 	{
 		public SoundChunk Source { get; set; }
 
-		public ExtractedSoundChunk(SoundChunk src)
+		public string FModBankSuffix { get; set; }
+
+		public ExtractedSoundChunk(SoundChunk src, string bankSuffix)
 		{
 			Source = src;
+
+			FModBankSuffix = bankSuffix == null ? "" : bankSuffix;
 		}
 	}
 
