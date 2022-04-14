@@ -781,6 +781,8 @@ namespace Blamite.Blam.Resources.Sounds
 			{
 				Unknown = (int)values.GetInteger("unknown1"),
 				Unknown1 = (int)values.GetInteger("unknown2"),
+				Unknown2 = (int)values.GetInteger("unknown3"),
+				Unknown3 = (int)values.GetInteger("unknown4"),
 			};
 		}
 
@@ -929,6 +931,8 @@ namespace Blamite.Blam.Resources.Sounds
 			var result = new StructureValueCollection();
 			result.SetInteger("unknown1", (uint)unk.Unknown);
 			result.SetInteger("unknown2", (uint)unk.Unknown1);
+			result.SetInteger("unknown3", (uint)unk.Unknown2);
+			result.SetInteger("unknown4", (uint)unk.Unknown3);
 			return result;
 		}
 
@@ -1150,6 +1154,10 @@ namespace Blamite.Blam.Resources.Sounds
 				pc.Unknown = (int)entry.GetIntegerOrDefault("unknown1", 0);
 				pc.Unknown1 = (int)entry.GetIntegerOrDefault("unknown2", 0);
 
+				pc.FModBankSuffix =
+					entry.HasInteger("fmod bank suffix string id") ?
+					new StringID(entry.GetInteger("fmod bank suffix string id")) : StringID.Null;
+
 				result.Add(pc);
 			}
 			return result.ToArray();
@@ -1166,6 +1174,7 @@ namespace Blamite.Blam.Resources.Sounds
 			result.SetInteger("xma buffer end", (uint)chunk.XMA2BufferEnd);
 			result.SetInteger("unknown1", (uint)chunk.Unknown);
 			result.SetInteger("unknown2", (uint)chunk.Unknown1);
+			result.SetInteger("fmod bank suffix string id", chunk.FModBankSuffix.Value);
 
 			return result;
 		}

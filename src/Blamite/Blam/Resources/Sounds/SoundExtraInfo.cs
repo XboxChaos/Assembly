@@ -86,6 +86,10 @@ namespace Blamite.Blam.Resources.Sounds
 		public int Unknown { get; set; }
 
 		public int Unknown1 { get; set; }
+
+		public int Unknown2 { get; set; }
+
+		public int Unknown3 { get; set; }
 	}
 
 	public class SoundExtraInfoUnknown4

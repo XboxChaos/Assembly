@@ -1015,7 +1015,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						exP.Chunks = new List<ExtractedSoundChunk>();
 
 						foreach (var chunk in p.Chunks)
-							exP.Chunks.Add(new ExtractedSoundChunk(chunk));
+						{
+							string bankSuffix = _cacheFile.StringIDs.GetString(chunk.FModBankSuffix);
+							exP.Chunks.Add(new ExtractedSoundChunk(chunk, bankSuffix));
+						}
 
 						if (p.Languages != null)
 						{
@@ -1031,7 +1034,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 								exLP.Chunks = new List<ExtractedSoundChunk>();
 
 								foreach (var chunk in p.Chunks)
-									exLP.Chunks.Add(new ExtractedSoundChunk(chunk));
+								{
+									string bankSuffix = _cacheFile.StringIDs.GetString(chunk.FModBankSuffix);
+									exLP.Chunks.Add(new ExtractedSoundChunk(chunk, bankSuffix));
+								}
 
 								exP.Languages.Add(exLP);
 							}

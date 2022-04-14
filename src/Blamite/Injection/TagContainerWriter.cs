@@ -352,7 +352,7 @@ namespace Blamite.Injection
 		{
 			foreach (var pRange in tags.SoundPitchRanges)
 			{
-				container.StartBlock("snpr", 0);
+				container.StartBlock("snpr", 1);
 
 				writer.WriteInt32(pRange.OriginalIndex);
 
@@ -410,6 +410,7 @@ namespace Blamite.Injection
 							writer.WriteInt32(chunk.Source.XMA2BufferEnd);
 							writer.WriteInt32(chunk.Source.Unknown);
 							writer.WriteInt32(chunk.Source.Unknown1);
+							writer.WriteAscii(chunk.FModBankSuffix);
 						}
 					}
 					else
@@ -435,6 +436,7 @@ namespace Blamite.Injection
 									writer.WriteInt32(chunk.Source.XMA2BufferEnd);
 									writer.WriteInt32(chunk.Source.Unknown);
 									writer.WriteInt32(chunk.Source.Unknown1);
+									writer.WriteAscii(chunk.FModBankSuffix);
 								}
 							}
 							else
@@ -775,6 +777,8 @@ namespace Blamite.Injection
 											{
 												writer.WriteInt32(unk3.Unknown);
 												writer.WriteInt32(unk3.Unknown1);
+												writer.WriteInt32(unk3.Unknown2);
+												writer.WriteInt32(unk3.Unknown3);
 											}
 										}
 										else
