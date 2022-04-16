@@ -644,7 +644,7 @@ namespace Blamite.Injection
 			if (string.IsNullOrEmpty(str))
 				return StringID.Null;
 
-			return InjectSoundStringID(str);
+			return InjectStringID(str);
 		}
 
 		private StringID InjectStringID(string str)
