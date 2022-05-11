@@ -109,10 +109,26 @@ namespace Blamite.Blam
 			// Set the reader's endianness based upon the file's header magic
 			reader.SeekTo(0);
 			byte[] headerMagic = reader.ReadBlock(4);
-			reader.Endianness = DetermineCacheFileEndianness(headerMagic);
+			var endian = DetermineCacheFileEndianness(headerMagic);
+			int fileVersion;
 
-			reader.SeekTo(0x4);
-			int fileVersion = reader.ReadInt32();
+			if (endian != null)
+			{
+				reader.Endianness = endian.Value;
+				reader.SeekTo(0x4);
+				fileVersion = reader.ReadInt32();
+			}
+			else
+			{
+				//halo trial lol
+				reader.SeekTo(0x2C0);
+				headerMagic = reader.ReadBlock(4);
+				var trialendian = DetermineTrialCacheFileEndianness(headerMagic);
+
+				reader.Endianness = trialendian;
+				reader.SeekTo(0x588);
+				fileVersion = reader.ReadInt32();
+			}
 
 			var possibleEngines = engineDb.FindEnginesByVersion(fileVersion, reader.Endianness);
 
@@ -151,11 +167,22 @@ namespace Blamite.Blam
 			return matches;
 		}
 
-		public static Endian DetermineCacheFileEndianness(byte[] headerMagic)
+		public static Endian? DetermineCacheFileEndianness(byte[] headerMagic)
 		{
 			if (headerMagic[0] == 'h' && headerMagic[1] == 'e' && headerMagic[2] == 'a' && headerMagic[3] == 'd')
 				return Endian.BigEndian;
 			if (headerMagic[0] == 'd' && headerMagic[1] == 'a' && headerMagic[2] == 'e' && headerMagic[3] == 'h')
+				return Endian.LittleEndian;
+
+			return null;
+			//throw new ArgumentException("Invalid cache file header magic");
+		}
+
+		public static Endian DetermineTrialCacheFileEndianness(byte[] headerMagic)
+		{
+			if (headerMagic[0] == 'E' && headerMagic[1] == 'h' && headerMagic[2] == 'e' && headerMagic[3] == 'd')
+				return Endian.BigEndian;
+			if (headerMagic[0] == 'd' && headerMagic[1] == 'e' && headerMagic[2] == 'h' && headerMagic[3] == 'E')
 				return Endian.LittleEndian;
 
 			throw new ArgumentException("Invalid cache file header magic");
