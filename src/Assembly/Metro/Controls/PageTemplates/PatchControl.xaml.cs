@@ -457,7 +457,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 						? null
 						: File.ReadAllBytes(previewImage),
 					BuildString = _buildInfo.BuildVersion,
-					PC = String.IsNullOrEmpty(_buildInfo.GameExecutable)
+					PC = String.IsNullOrEmpty(_buildInfo.PokingExecutable)
 						? false
 						: true
 				};
@@ -911,14 +911,14 @@ namespace Assembly.Metro.Controls.PageTemplates
 					return;
 				}
 
-				if (pokeInfo.Name.Contains("Vista"))
+				if (pokeInfo.Engine != EngineType.ThirdGeneration)
 				{
 					MetroMessageBox.Show("Unsupported Build",
-						"This patch is for Halo 2 Vista which cannot be poked at this time.");
+						"Only Third Generation engine patches can be poked at this time.");
 					return;
 				}
 
-				if (string.IsNullOrEmpty(pokeInfo.GameExecutable) || string.IsNullOrEmpty(pokeInfo.GameModule) || pokeInfo.Poking == null)
+				if (string.IsNullOrEmpty(pokeInfo.PokingExecutable) || string.IsNullOrEmpty(pokeInfo.PokingModule) || pokeInfo.Poking == null)
 				{
 					MetroMessageBox.Show("Unsupported Build",
 						"This patch is for a build (" + pokeInfo.Version + ") that this installation of Assembly does not have enough information for to poke patches.\r\n" +
@@ -926,8 +926,6 @@ namespace Assembly.Metro.Controls.PageTemplates
 						"Make sure you are up to date or add a definition manually.");
 					return;
 				}
-
-				
 
 				var gameRTE = new ThirdGenMCCRTEProvider(pokeInfo);
 				var gameStream = gameRTE.GetMetaStream();

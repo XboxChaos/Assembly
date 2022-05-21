@@ -37,7 +37,7 @@ namespace Blamite.RTE.FirstGen
 			if (!info.MagicAddress.HasValue)
 				throw new NotImplementedException("First Generation poking requires a MagicAddress value.");
 
-			var gameMemory = new ProcessModuleMemoryStream(gameProcess, _buildInfo.GameModule);
+			var gameMemory = new ProcessModuleMemoryStream(gameProcess, _buildInfo.PokingModule);
 			var mapInfo = new FirstGenMapPointerReader(gameMemory, _buildInfo, info);
 
 			long metaAddress = mapInfo.CurrentCacheAddress;

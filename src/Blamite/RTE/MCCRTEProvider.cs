@@ -22,16 +22,16 @@ namespace Blamite.RTE
 		/// </summary>
 		public RTEConnectionType ConnectionType
 		{
-			get { return RTEConnectionType.LocalProcess; }
+			get { return RTEConnectionType.LocalProcess64; }
 		}
 
 		public abstract IStream GetMetaStream(ICacheFile cacheFile = null);
 
 		protected bool CheckBuildInfo()
 		{
-			if (string.IsNullOrEmpty(_buildInfo.GameExecutable))
+			if (string.IsNullOrEmpty(_buildInfo.PokingExecutable))
 				throw new InvalidOperationException("No gameExecutable value found in Engines.xml for engine " + _buildInfo.Name + ".");
-			if (string.IsNullOrEmpty(_buildInfo.GameModule))
+			if (string.IsNullOrEmpty(_buildInfo.PokingModule))
 				throw new InvalidOperationException("No gameModule value found in Engines.xml for engine " + _buildInfo.Name + ".");
 			if (_buildInfo.Poking == null)
 				throw new InvalidOperationException("No poking definitions found in Engines.xml for engine " + _buildInfo.Name + ".");
@@ -71,14 +71,14 @@ namespace Blamite.RTE
 
 		protected Process FindGameProcess()
 		{
-			Process[] processes = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(_buildInfo.GameExecutable));
+			Process[] processes = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(_buildInfo.PokingExecutable));
 
 			if (processes.Length > 0)
 				return processes[0];
 
-			if (!string.IsNullOrEmpty(_buildInfo.GameExecutableAlt))
+			if (!string.IsNullOrEmpty(_buildInfo.PokingExecutableAlt))
 			{
-				processes = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(_buildInfo.GameExecutableAlt));
+				processes = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(_buildInfo.PokingExecutableAlt));
 				return processes.Length > 0 ? processes[0] : null;
 			}
 			else

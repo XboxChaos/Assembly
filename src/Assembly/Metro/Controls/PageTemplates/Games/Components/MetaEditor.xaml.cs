@@ -285,12 +285,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			switch (_rteProvider.ConnectionType)
 			{
-				case RTEConnectionType.ConsoleX360:
+				case RTEConnectionType.ConsoleXbox:
+					MetroMessageBox.Show("Connection Error",
+						"Poking to an Xbox console is not currently supported.");
+						//"Unable to connect to your Xbox console. Make sure that XBDM is enabled and that your console's IP has been set correctly.");
+					break;
+
+				case RTEConnectionType.ConsoleXbox360:
 					MetroMessageBox.Show("Connection Error",
 						"Unable to connect to your Xbox 360 console. Make sure that XBDM is enabled, you have the Xbox 360 SDK installed, and that your console's IP has been set correctly.");
 					break;
 
-				case RTEConnectionType.LocalProcess:
+				case RTEConnectionType.LocalProcess32:
+				case RTEConnectionType.LocalProcess64:
 					MetroMessageBox.Show("Connection Error",
 						"Unable to connect to the game. Make sure that it is running on your computer and that the map you are poking to is currently loaded.");
 					break;

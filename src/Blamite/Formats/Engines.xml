@@ -2,49 +2,54 @@
 <engines>
 	<!-- Blamite Engine Information Database -->
 	<!-- Only edit this if you know what you're doing! -->
-	
+
 	<!-- Supported Options:
 	<engine
 		name="{engine name}" - Name of the engine.
 		version="{version number}" - The number located at offset 0x4.
 		versionAlt="{version number}" - An alternate version number used by the engine, see above.
 		build="{build string}" - The full build string.
-		inherits="{name of another defined engine}" - Uses the given engine as a base, anything else defined in this new engine overwrites the inherited value. You cannot chain multiple inherits.
+		inherits="{name of another defined engine}" - Uses the given engine as a base, anything else defined in this new engine overwrites the inherited value. You cannot chain multiple inherits. Any engine using this attribute should be placed AFTER the engine you wish to inherit.
 		>
-		
-		<shortname>{short name}</shortname> - A shorthand name for the engine.
+
+		<shortname>{short name}</shortname> - A shorthand name for the engine, displayed on the recent files list. Will also get used as the "game" attribute in Assembly's plugin generator.
 		<plugins>{plugin directory}</plugins> - The name of the directory relative to {Assembly Install}\Plugins\ where plugins are located.
 		<fallbackPlugins>{plugin directory}</fallbackPlugins> - The name of the directory relative to {Assembly Install}\Plugins\ where plugins are located. If a plugin is not found in the above directory, this directory is checked next (used mainly to reduce MCC redundancy)
-		
+
 		<engineInfo>
 			<generation>{"first", "second", "third"}</generation> - The engine generation of the cache file.
 			<endian>{"little", "big"}</endian> - The endianness of the cache file.
 			<segmentAlignment>{number}</segmentAlignment> - The alignment that sections of the cache file stick to.
 			<expandMagic>{number}</expandMagic> - The number used by MCC in compacting various addresses. {compressedAddr << 2 + expandMagic}
-			<gameExecutable>{executable name without extension}</gameExecutable> - The primary process name of the game to attach to for poking.
-			<gameExecutableAlt>{executable name without extension}</gameExecutableAlt> - The secondary process name of the game to attach to for poking, mainly for MCC WinStore support.
-			<gameModule>{module name without extension}M/moduleName> - The name of the DLL used by MCC for the individual game.
-			<pokingOffset>{number}</pokingOffset> - The offset into the pointer defined in a "_Poking.xml" that leads to the value used to convert addresses to runtime ones.
-			<tagNameKey>{key}</tagNameKey> - Used to decrypt tag names in engines where they are encrypted.
-			<stringIdKey>{key}</stringIdKey> - Used to decrypt string ID strings in engines where they are encrypted.
-			<localeKey>{key}</localeKey> - Used to decrypt localization strings in engines where they are encrypted.
+			<encryption>
+				<tagNameKey>{key}</tagNameKey> - Used to decrypt tag names in engines where they are encrypted.
+				<stringIdKey>{key}</stringIdKey> - Used to decrypt string ID strings in engines where they are encrypted.
+				<localeKey>{key}</localeKey> - Used to decrypt localization strings in engines where they are encrypted.
+			</encryption>
 			<usesCompression>{"true", "false"}</usesCompression> - Whether the cache files for this engine have some sort of overall compression. (H1X, H2MCC, etc)
 			<usesStringHashes>{"true", "false"}</usesStringHashes> - Whether hashes inside the globals tag should be updated upon modification to localizations. Because for some reason giving hashes when they shipped as 0's can crash.
 			<usesRawHashes>{"true", "false"}</usesRawHashes> - Whether hashes inside the play or zone tags are fully implemented or some/all are 0'd. This aids in making sure the relevant option in the Import dialog is checked/unchecked by default as tag injection optimizations use hashes to reduce redundant pages.
 			<optimizedShaders>{"true", "false"}</optimizedShaders> - Whether the shaders in each map are stripped down to only shaders used by that specific cache file. This aids in making sure the relevant option in the Import dialog is checked/unchecked by default as if shaders are optimized then you can't trust the existing shader during tag injection and must rename/inject the new shader to prevent ingame issues.
 		</engineInfo>
-		
-		<databases> (refer to the individual xmls for more information on their formatting)
-			<layouts>{layouts directory}</layouts> - The directory relative to {Assembly Install}\ (so include "Formats\") where xml layouts for this engine are located. XML names in the path are arbitrary but there is an existing pattern.
-			
+
+		<pokingInfo>
+			<platform>{"xbox", "xbox360", "pc32", "pc64"}</platform> - The intended platform for the game so that we know where we need to connect to.
+			<executable>{executable name without extension}</executable> - The primary process name of the game to attach to for poking. (PC)
+			<executableAlt>{executable name without extension}</executableAlt> - The secondary process name of the game to attach to for poking, mainly for MCC WinStore support. (PC)
+			<module>{module name without extension}</module> - The name of the DLL used by MCC for the individual game. (PC)
+		</pokingInfo>
+
+		<databases> - refer to the individual xmls for more information on their formatting. All paths are relative to Assembly.exe (or Blamite.dll), so include "Formats\".
+			<layouts>{layouts directory}</layouts> - The directory where xml layouts for this engine are located. XML names in the path are arbitrary but there is an existing pattern.
+
 			!However there MUST be a layout defined for "header" somewhere in the directory WITH a valid size and field inside named "build string" containing the offset of the build string!
-			
-			<stringIds>{file path}</stringIds> - The xml file relative to {Assembly Install}\ (so include "Formats\") which defines namespace information for the engine's string IDs.
-			<scripting>{file path}</scripting> - The xml relative to {Assembly Install}\ (so include "Formats\") file which defines scripting information (opcodes, types, globals) for the engine.
-			<localeSymbols>{file path}</localeSymbols> - The xml file relative to {Assembly Install}\ (so include "Formats\") which defines unicode characters used by localization for the engine. This allows for a more readible locale strings like <_a_button/> to be displayed instead of a bunch of "unsupported" squares.
-			<vertexLayouts>{file path}</vertexLayouts> - (Unused) The xml file relative to {Assembly Install}\ (so include "Formats\") which defines vertex layouts for the engine, for scrapped model extraction support.
-			<groupNames>{file path}</groupNames> - The xml file relative to {Assembly Install}\ (so include "Formats\") which defines the full names of tag groups if the cache file does not already suppy them. If no group names are available, you will see a bunch of "unknown_description"s in the tag tree.
-			<poking>{file path}</poking> - The xml file relative to {Assembly Install}\ (so include "Formats\") which defines the poking information for the engine.
+
+			<stringIds>{file path}</stringIds> - The xml file which defines namespace information for the engine's string IDs, if the engine uses namespaces. (Third Generation)
+			<scripting>{file path}</scripting> - The xml file which defines scripting information (opcodes, types, globals) for the engine.
+			<localeSymbols>{file path}</localeSymbols> - The xml file which defines unicode characters used by localization for the engine. This allows for a more readible locale strings like <_a_button/> to be displayed instead of a bunch of "unsupported" squares.
+			<vertexLayouts>{file path}</vertexLayouts> - (Unused) The xml file which defines vertex layouts for the engine, for scrapped model extraction support.
+			<groupNames>{file path}</groupNames> - The xml file which defines the full names of tag groups if the cache file does not already suppy them. If no group names are available, you will see a bunch of "unknown_description"s in the tag tree.
+			<poking>{file path}</poking> - The xml file which defines the poking addresses and offsets for the engine. (PC)
 		</databases>
 	</engine>-->
 
@@ -58,13 +63,16 @@
 			<segmentAlignment>0x4</segmentAlignment>
 			<usesCompression>true</usesCompression>
 		</engineInfo>
+		<pokingInfo>
+			<platform>xbox</platform>
+		</pokingInfo>
 		<databases>
 			<layouts type="layouts" path="Formats/Halo1/LayoutsXbox" />
 			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
 			<scripting type="scripting" path="Formats/Halo1/H1X_Scripting.xml" />
 		</databases>
 	</engine>
-	
+
 	<engine name="Halo 1 Xbox Demo" version="5" build="" inherits="Halo 1">
 		<shortName>H1D</shortName>
 	</engine>
@@ -77,7 +85,7 @@
 	<engine name="Halo 1 Beta 2247" version="5" build="01.09.25.2247" inherits="Halo 1">
 		<shortName>H1B_2247</shortName>
 	</engine>
-	
+
 	<!-- Halo 1 Misc Builds -->
 	<engine name="Shadowrun Prototype" version="5" build="01.12.07.0132" inherits="Halo 1">
 		<shortName>Shadow</shortName>
@@ -98,6 +106,9 @@
 			<segmentAlignment>0x4</segmentAlignment>
 			<usesCompression>true</usesCompression>
 		</engineInfo>
+		<pokingInfo>
+			<platform>xbox</platform>
+		</pokingInfo>
 		<databases>
 			<layouts type="layouts" path="Formats/Stubbs/LayoutsXbox" />
 			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
@@ -126,6 +137,10 @@
 			<endian>little</endian>
 			<segmentAlignment>0x4</segmentAlignment>
 		</engineInfo>
+		<pokingInfo>
+			<platform>pc32</platform>
+			<executable>stubbsthezombie</executable>
+		</pokingInfo>
 		<databases>
 			<layouts type="layouts" path="Formats/Stubbs/LayoutsPC" />
 			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
@@ -141,8 +156,11 @@
 			<generation>first</generation>
 			<endian>little</endian>
 			<segmentAlignment>0x4</segmentAlignment>
-			<gameExecutable>stubbsthezombiesub</gameExecutable>
 		</engineInfo>
+		<pokingInfo>
+			<platform>pc64</platform>
+			<executable>stubbsthezombiesub</executable>
+		</pokingInfo>
 		<databases>
 			<layouts type="layouts" path="Formats/Stubbs/LayoutsRerelease" />
 			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
@@ -158,8 +176,11 @@
 			<generation>first</generation>
 			<endian>little</endian>
 			<segmentAlignment>0x4</segmentAlignment>
-			<gameExecutable>halo</gameExecutable>
 		</engineInfo>
+		<pokingInfo>
+			<platform>pc32</platform>
+			<executable>halo</executable>
+		</pokingInfo>
 		<databases>
 			<layouts type="layouts" path="Formats/Halo1/Layouts" />
 			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
@@ -167,22 +188,26 @@
 			<poking type="poking" path="Formats/Halo1/H1_Poking.xml" />
 		</databases>
 	</engine>
-	
+
 	<engine name="Halo 1 PC Trial" version="6" build="01.00.00.0576" inherits="Halo 1 PC" >
 		<shortName>H1PCTrial</shortName>
 		<databases>
 			<layouts type="layouts" path="Formats/Halo1/LayoutsTrial" />
-		<poking type="poking" path="Formats/Halo1/H1T_Poking.xml" />
+			<poking type="poking" path="Formats/Halo1/H1T_Poking.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 1 PC Beta" version="6" build="01.05.22.0268" inherits="Halo 1 PC" >
 		<shortName>H1PCBeta</shortName>
+		<pokingInfo>
+			<platform>pc32</platform>
+			<executable>halocache</executable>
+		</pokingInfo>
 		<databases>
 			<layouts type="layouts" path="Formats/Halo1/LayoutsBeta" />
 		</databases>
 	</engine>
-	
+
 	<engine name="Halo 1 PC v10" version="7" build="01.00.10.0621" inherits="Halo 1 PC" />
 
 	<engine name="Halo 1 PC Invader" version="7" build="Invader 0.44.0.r3320" inherits="Halo 1 PC" />
@@ -195,8 +220,11 @@
 			<endian>little</endian>
 			<!-- NOTE: custom edition apparently doesnt care if things are aligned at ALL -->
 			<segmentAlignment>0x1</segmentAlignment>
-			<gameExecutable>haloce</gameExecutable>
 		</engineInfo>
+		<pokingInfo>
+			<platform>pc32</platform>
+			<executable>haloce</executable>
+		</pokingInfo>
 		<databases>
 			<layouts type="layouts" path="Formats/Halo1/Layouts" />
 			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
@@ -209,7 +237,7 @@
 
 	<engine name="Halo 1 Custom Edition Invader" version="609" versionAlt="343" build="Invader 0.44.0.r3320" inherits="Halo 1 Custom Edition" />
 
-	<!-- NOTE: CEA 360 and MCC have the same build strings, this makes things harder -->
+	<!-- NOTE: CEA 360 and early MCC have the same build strings, this makes things harder -->
 	<engine name="Halo 1 Anniversary" version="7" build="01.00.01.0563">
 		<shortName>H1A</shortName>
 		<plugins>Halo1</plugins>
@@ -219,55 +247,17 @@
 			<segmentAlignment>0x4</segmentAlignment>
 			<usesCompression>true</usesCompression>
 		</engineInfo>
+		<pokingInfo>
+			<platform>xbox360</platform>
+		</pokingInfo>
 		<databases>
 			<layouts type="layouts" path="Formats/Halo1/Layouts" />
 			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
 			<scripting type="scripting" path="Formats/Halo1/H1A_Scripting.xml" />
-			<!-- TODO (Dragon): 360 poking is different so we hardcoded an address when we make the  -->
-			<!--                RTE provider. should probably set that up to support poking xmls -->
 		</databases>
 	</engine>
 
-	<!-- Halo 2 Builds -->
-	<engine name="Halo 2 Vista" version="8" build="11081.07.04.30.0934.main">
-		<shortName>H2Vista</shortName>
-		<plugins>Halo2</plugins>
-		<engineInfo>
-			<generation>second</generation>
-			<endian>little</endian>
-			<segmentAlignment>0x200</segmentAlignment>
-			<gameExecutable>halo2</gameExecutable>
-		</engineInfo>
-		<databases>
-			<layouts type="layouts" path="Formats/Halo2Vista/Layouts" />
-			<groupNames type="groupNames" path="Formats/Halo2Vista/H2V_GroupNames.xml" />
-			<localeSymbols type="localeSymbols" path="Formats/Halo2Vista/H2V_LocaleSymbols.xml" />
-			<scripting type="scripting" path="Formats/Halo2Vista/H2V_Scripting.xml" />
-			<poking type="poking" path="Formats/Halo2Vista/H2V_Poking.xml" />
-		</databases>
-	</engine>
-
-	<engine name="Halo 2 Vista Custom 1" version="8" build="11091.07.05.11.1104.main" inherits="Halo 2 Vista" />
-	<engine name="Halo 2 Vista Custom 2" version="8" build="11122.07.08.24.1808.main" inherits="Halo 2 Vista" />
-
-	<engine name="Halo 2" version="8" build="02.09.27.09809">
-		<shortName>Halo2</shortName>
-		<plugins>Halo2Xbox</plugins>
-		<fallbackPlugins>Halo2</fallbackPlugins>
-			<engineInfo>
-				<generation>second</generation>
-				<endian>little</endian>
-				<!-- TODO: this might not be accurate -->
-				<segmentAlignment>0x4</segmentAlignment>
-			</engineInfo>
-			<databases>
-				<layouts type="layouts" path="Formats/Halo2Xbox/Layouts" />
-				<groupNames type="groupNames" path="Formats/Halo2Vista/H2V_GroupNames.xml" />
-				<localeSymbols type="localeSymbols" path="Formats/Halo2Xbox/H2X_LocaleSymbols.xml" />
-				<scripting type="scripting" path="Formats/Halo2Xbox/H2X_Scripting.xml" />
-			</databases>
-	</engine>
-
+	<!-- Halo 2 Prerelease Builds -->
 	<engine name="Halo 2 Alpha" version="7" build="02.01.07.4998">
 		<shortName>Halo2Alpha</shortName>
 		<plugins>Halo2Alpha</plugins>
@@ -277,6 +267,9 @@
 			<!-- TODO: this might not be accurate -->
 			<segmentAlignment>0x4</segmentAlignment>
 		</engineInfo>
+		<pokingInfo>
+			<platform>xbox</platform>
+		</pokingInfo>
 		<databases>
 			<layouts type="layouts" path="Formats/Halo2Alpha/Layouts" />
 			<groupNames type="groupNames" path="Formats/Halo2Vista/H2V_GroupNames.xml" />
@@ -293,6 +286,9 @@
 			<!-- TODO: this might not be accurate -->
 			<segmentAlignment>0x4</segmentAlignment>
 		</engineInfo>
+		<pokingInfo>
+			<platform>xbox</platform>
+		</pokingInfo>
 		<databases>
 			<layouts type="layouts" path="Formats/Halo2Beta/Layouts" />
 			<groupNames type="groupNames" path="Formats/Halo2Vista/H2V_GroupNames.xml" />
@@ -300,6 +296,52 @@
 			<scripting type="scripting" path="Formats/Halo2Beta/H2Beta_Scripting.xml" />
 		</databases>
 	</engine>
+
+	<!-- Halo 2 Builds -->
+	<engine name="Halo 2" version="8" build="02.09.27.09809">
+		<shortName>Halo2</shortName>
+		<plugins>Halo2Xbox</plugins>
+		<fallbackPlugins>Halo2</fallbackPlugins>
+		<engineInfo>
+			<generation>second</generation>
+			<endian>little</endian>
+			<!-- TODO: this might not be accurate -->
+			<segmentAlignment>0x4</segmentAlignment>
+		</engineInfo>
+		<pokingInfo>
+			<platform>xbox</platform>
+		</pokingInfo>
+		<databases>
+			<layouts type="layouts" path="Formats/Halo2Xbox/Layouts" />
+			<groupNames type="groupNames" path="Formats/Halo2Vista/H2V_GroupNames.xml" />
+			<localeSymbols type="localeSymbols" path="Formats/Halo2Xbox/H2X_LocaleSymbols.xml" />
+			<scripting type="scripting" path="Formats/Halo2Xbox/H2X_Scripting.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 2 Vista" version="8" build="11081.07.04.30.0934.main">
+		<shortName>H2Vista</shortName>
+		<plugins>Halo2</plugins>
+		<engineInfo>
+			<generation>second</generation>
+			<endian>little</endian>
+			<segmentAlignment>0x200</segmentAlignment>
+		</engineInfo>
+		<pokingInfo>
+			<platform>pc32</platform>
+			<executable>halo2</executable>
+		</pokingInfo>
+		<databases>
+			<layouts type="layouts" path="Formats/Halo2Vista/Layouts" />
+			<groupNames type="groupNames" path="Formats/Halo2Vista/H2V_GroupNames.xml" />
+			<localeSymbols type="localeSymbols" path="Formats/Halo2Vista/H2V_LocaleSymbols.xml" />
+			<scripting type="scripting" path="Formats/Halo2Vista/H2V_Scripting.xml" />
+			<poking type="poking" path="Formats/Halo2Vista/H2V_Poking.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 2 Vista Custom 1" version="8" build="11091.07.05.11.1104.main" inherits="Halo 2 Vista" />
+	<engine name="Halo 2 Vista Custom 2" version="8" build="11122.07.08.24.1808.main" inherits="Halo 2 Vista" />
 
 	<!-- Halo 3 Beta Builds -->
 	<engine name="Halo 3 Beta" version="9" build="09699.07.05.01.1534.delta">
@@ -310,6 +352,9 @@
 			<endian>big</endian>
 			<segmentAlignment>0x800</segmentAlignment>
 		</engineInfo>
+		<pokingInfo>
+			<platform>xbox360</platform>
+		</pokingInfo>
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo3Beta/H3B_StringIDs.xml" />
 			<localeSymbols type="localeSymbols" path="Formats/Halo3Beta/H3B_LocaleSymbols.xml" />
@@ -367,6 +412,9 @@
 			<endian>big</endian>
 			<segmentAlignment>0x1000</segmentAlignment>
 		</engineInfo>
+		<pokingInfo>
+			<platform>xbox360</platform>
+		</pokingInfo>
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/Halo3/H3_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/Halo3/H3_StringIDs.xml" />
@@ -394,6 +442,9 @@
 			<endian>big</endian>
 			<segmentAlignment>0x1000</segmentAlignment>
 		</engineInfo>
+		<pokingInfo>
+			<platform>xbox360</platform>
+		</pokingInfo>
 		<databases>
 			<stringIds type="stringIds" path="Formats/ODST/ODST_StringIDs.xml" />
 			<scripting type="scripting" path="Formats/ODST/ODST_Scripting.xml" />
@@ -417,6 +468,9 @@
 			</encryption>
 			<optimizedShaders>true</optimizedShaders>
 		</engineInfo>
+		<pokingInfo>
+			<platform>xbox360</platform>
+		</pokingInfo>
 		<databases>
 			<stringIds type="stringIds" path="Formats/ReachBeta/ReachBeta_StringIDs.xml" />
 			<scripting type="scripting" path="Formats/ReachBeta/ReachBeta_Scripting.xml" />
@@ -444,6 +498,9 @@
 			</encryption>
 			<optimizedShaders>true</optimizedShaders>
 		</engineInfo>
+		<pokingInfo>
+			<platform>xbox360</platform>
+		</pokingInfo>
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/Reach/Reach_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/Reach/Reach_StringIDs.xml" />
@@ -475,6 +532,9 @@
 			</encryption>
 			<optimizedShaders>true</optimizedShaders>
 		</engineInfo>
+		<pokingInfo>
+			<platform>xbox360</platform>
+		</pokingInfo>
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/Halo4NetTest/H4Net_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/Halo4_2011/H4Sept2011_StringIDs.xml" />
@@ -487,7 +547,7 @@
 			<stringIds type="stringIds" path="Formats/Halo4_2011/H4Oct2011a_StringIDs.xml" />
 		</databases>
 	</engine>
-	
+
 	<engine name="Halo 4 07866" version="12" build="07866.11.10.04.1335.horse" inherits="Halo 4 07556">
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo4_2011/H4Oct2011_StringIDs.xml" />
@@ -541,6 +601,9 @@
 			</encryption>
 			<optimizedShaders>true</optimizedShaders>
 		</engineInfo>
+		<pokingInfo>
+			<platform>xbox360</platform>
+		</pokingInfo>
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/Halo4NetTest/H4Net_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/Halo4NetTest/H4Net_StringIDs.xml" />
@@ -564,6 +627,9 @@
 				<localeKey>BungieHaloReach!</localeKey>
 			</encryption>
 		</engineInfo>
+		<pokingInfo>
+			<platform>xbox360</platform>
+		</pokingInfo>
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/Halo4NetTest/H4Net_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/Halo4E3/H4Keynote_StringIDs.xml" />
@@ -600,6 +666,9 @@
 			<sortLocalesByStringId>true</sortLocalesByStringId>
 			<optimizedShaders>true</optimizedShaders>
 		</engineInfo>
+		<pokingInfo>
+			<platform>xbox360</platform>
+		</pokingInfo>
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/Halo4/H4_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/Halo4/H4_StringIDs.xml" />
@@ -634,11 +703,13 @@
 			<endian>little</endian>
 			<segmentAlignment>0x1000</segmentAlignment>
 			<expandMagic>0x10000000</expandMagic>
-			<gameExecutable>MCC-Win64-Shipping</gameExecutable>
-			<gameExecutableAlt>MCCWinStore-Win64-Shipping</gameExecutableAlt>
-			<gameModule>haloreach</gameModule>
-			<pokingOffset>0xA0</pokingOffset>
 		</engineInfo>
+		<pokingInfo>
+			<platform>pc64</platform>
+			<executable>MCC-Win64-Shipping</executable>
+			<executableAlt>MCCWinStore-Win64-Shipping</executableAlt>
+			<module>haloreach</module>
+		</pokingInfo>
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/ReachMCC/ReachMCC_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_StringIDs.xml" />
@@ -660,11 +731,13 @@
 			<endian>little</endian>
 			<segmentAlignment>0x1000</segmentAlignment>
 			<expandMagic>0x50000000</expandMagic>
-			<gameExecutable>MCC-Win64-Shipping</gameExecutable>
-			<gameExecutableAlt>MCCWinStore-Win64-Shipping</gameExecutableAlt>
-			<gameModule>haloreach</gameModule>
-			<pokingOffset>0xA0</pokingOffset>
 		</engineInfo>
+		<pokingInfo>
+			<platform>pc64</platform>
+			<executable>MCC-Win64-Shipping</executable>
+			<executableAlt>MCCWinStore-Win64-Shipping</executableAlt>
+			<module>haloreach</module>
+		</pokingInfo>
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/ReachMCC/ReachMCC_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_StringIDs.xml" />
@@ -713,7 +786,7 @@
 			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU3" />
 		</databases>
 	</engine>
-	
+
 	<engine name="Halo: Reach MCC Update 6" version="13" build="Mar  4 2021 13:14:28" inherits="Halo: Reach MCC">
 		<databases>
 			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
@@ -757,7 +830,7 @@
 	</engine>
 
 	<!-- Halo 1 MCC -->
-	<!-- NOTE: CEA 360 and MCC have the same build strings, this makes things harder -->
+	<!-- NOTE: CEA 360 and early MCC have the same build strings, this makes things harder -->
 	<engine name="Halo 1 Anniversary MCC" version="7" build="01.00.01.0563">
 		<shortName>H1AMCC</shortName>
 		<plugins>Halo1</plugins>
@@ -765,11 +838,14 @@
 			<generation>first</generation>
 			<endian>little</endian>
 			<segmentAlignment>0x4</segmentAlignment>
-			<gameExecutable>MCC-Win64-Shipping</gameExecutable>
-			<gameExecutableAlt>MCCWinStore-Win64-Shipping</gameExecutableAlt>
-			<gameModule>halo1</gameModule>
 			<usesCompression>true</usesCompression>
 		</engineInfo>
+		<pokingInfo>
+			<platform>pc64</platform>
+			<executable>MCC-Win64-Shipping</executable>
+			<executableAlt>MCCWinStore-Win64-Shipping</executableAlt>
+			<module>halo1</module>
+		</pokingInfo>
 		<databases>
 			<layouts type="layouts" path="Formats/Halo1/Layouts" />
 			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
@@ -781,6 +857,7 @@
 	<engine name="Halo 1 Anniversary MCC Update 1" version="13" build="01.03.43.0000" inherits="Halo 1 Anniversary MCC">
 		<engineInfo>
 			<segmentAlignment>0x1</segmentAlignment>
+			<usesCompression>false</usesCompression>
 		</engineInfo>
 		<databases>
 			<scripting type="scripting" path="Formats/Halo1/H1AMCC_U1_Scripting.xml" />
@@ -796,11 +873,14 @@
 			<generation>second</generation>
 			<endian>little</endian>
 			<segmentAlignment>0x80</segmentAlignment>
-			<gameExecutable>MCC-Win64-Shipping</gameExecutable>
-			<gameExecutableAlt>MCCWinStore-Win64-Shipping</gameExecutableAlt>
-			<gameModule>halo2</gameModule>
 			<usesCompression>true</usesCompression>
 		</engineInfo>
+		<pokingInfo>
+			<platform>pc64</platform>
+			<executable>MCC-Win64-Shipping</executable>
+			<executableAlt>MCCWinStore-Win64-Shipping</executableAlt>
+			<module>halo2</module>
+		</pokingInfo>
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/Halo2MCC/H2MCC_LocaleSymbols.xml" />
 			<layouts type="layouts" path="Formats/Halo2MCC/Layouts" />
@@ -826,14 +906,16 @@
 			<endian>little</endian>
 			<segmentAlignment>0x1000</segmentAlignment>
 			<expandMagic>0x7AC00000</expandMagic>
-			<gameExecutable>MCC-Win64-Shipping</gameExecutable>
-			<gameExecutableAlt>MCCWinStore-Win64-Shipping</gameExecutableAlt>
-			<gameModule>groundhog</gameModule>
 			<sortLocalesByStringId>true</sortLocalesByStringId>
-			<pokingOffset>0xA8</pokingOffset>
 			<usesStringHashes>false</usesStringHashes>
 			<optimizedShaders>true</optimizedShaders>
 		</engineInfo>
+		<pokingInfo>
+			<platform>pc64</platform>
+			<executable>MCC-Win64-Shipping</executable>
+			<executableAlt>MCCWinStore-Win64-Shipping</executableAlt>
+			<module>groundhog</module>
+		</pokingInfo>
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/Halo2AMCC/H2AMCC_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/Halo2AMCC/H2AMCC_StringIDs.xml" />
@@ -842,7 +924,7 @@
 			<layouts type="layouts" path="Formats/Halo2AMCC/Layouts" />
 		</databases>
 	</engine>
-	
+
 	<engine name="Halo 2 Anniversary MCC" version="12" build="Apr 13 2020 02:24:30" inherits="Halo 2 Anniversary MCC Flight" />
 
 	<engine name="Halo 2 Anniversary MCC Update 1" version="12" build="May 10 2020 21:14:00" inherits="Halo 2 Anniversary MCC Flight">
@@ -916,12 +998,15 @@
 			<endian>little</endian>
 			<segmentAlignment>0x1000</segmentAlignment>
 			<expandMagic>0</expandMagic>
-			<gameExecutable>MCC-Win64-Shipping</gameExecutable>
-			<gameExecutableAlt>MCCWinStore-Win64-Shipping</gameExecutableAlt>
-			<gameModule>halo3</gameModule>
 			<usesStringHashes>false</usesStringHashes>
 			<usesRawHashes>false</usesRawHashes>
 		</engineInfo>
+		<pokingInfo>
+			<platform>pc64</platform>
+			<executable>MCC-Win64-Shipping</executable>
+			<executableAlt>MCCWinStore-Win64-Shipping</executableAlt>
+			<module>halo3</module>
+		</pokingInfo>
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/Halo3MCC/H3MCC_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_StringIDs.xml" />
@@ -1163,12 +1248,15 @@
 			<endian>little</endian>
 			<segmentAlignment>0x1000</segmentAlignment>
 			<expandMagic>0</expandMagic>
-			<gameExecutable>MCC-Win64-Shipping</gameExecutable>
-			<gameExecutableAlt>MCCWinStore-Win64-Shipping</gameExecutableAlt>
-			<gameModule>halo3odst</gameModule>
 			<usesStringHashes>true</usesStringHashes>
 			<usesRawHashes>false</usesRawHashes>
 		</engineInfo>
+		<pokingInfo>
+			<platform>pc64</platform>
+			<executable>MCC-Win64-Shipping</executable>
+			<executableAlt>MCCWinStore-Win64-Shipping</executableAlt>
+			<module>halo3odst</module>
+		</pokingInfo>
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/ODSTMCC/ODSTMCC_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC_StringIDs.xml" />
@@ -1282,15 +1370,17 @@
 			<endian>little</endian>
 			<segmentAlignment>0x1000</segmentAlignment>
 			<expandMagic>0x4FFF0000</expandMagic>
-			<gameExecutable>MCC-Win64-Shipping</gameExecutable>
-			<gameExecutableAlt>MCCWinStore-Win64-Shipping</gameExecutableAlt>
-			<gameModule>halo4</gameModule>
 			<sortLocalesByStringId>true</sortLocalesByStringId>
-			<pokingOffset>0xA8</pokingOffset>
 			<usesStringHashes>false</usesStringHashes>
 			<usesRawHashes>false</usesRawHashes>
 			<optimizedShaders>true</optimizedShaders>
 		</engineInfo>
+		<pokingInfo>
+			<platform>pc64</platform>
+			<executable>MCC-Win64-Shipping</executable>
+			<executableAlt>MCCWinStore-Win64-Shipping</executableAlt>
+			<module>halo4</module>
+		</pokingInfo>
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/Halo4MCC/H4MCC_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/Halo4MCC/H4MCC_StringIDs.xml" />
@@ -1307,7 +1397,7 @@
 			<stringIds type="stringIds" path="Formats/Halo4MCC/H4MCC_U1_StringIDs.xml" />
 		</databases>
 	</engine>
-	
+
 	<engine name="Halo 4 MCC Flight 2" version="12" build="May 16 2021 10:41:44" inherits="Halo 4 MCC Flight">
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo4MCC/H4MCC_U1_StringIDs.xml" />

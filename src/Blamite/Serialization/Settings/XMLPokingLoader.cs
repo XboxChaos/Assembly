@@ -31,8 +31,6 @@ namespace Blamite.Serialization.Settings
 			if (container == null)
 				throw new ArgumentException("Invalid poking document");
 
-			// Poking tags have the format:
-			// <version name="(the version string)" address="(the pointer in the game module to the cache header in memory)" />
 			var result = new PokingCollection();
 			foreach (XElement cl in container.Elements("version"))
 			{
@@ -42,11 +40,12 @@ namespace Blamite.Serialization.Settings
 
 				long headerAddress = XMLUtil.GetNumericAttribute(cl, "headerAddress", -1);
 				long magicAddress = XMLUtil.GetNumericAttribute(cl, "magicAddress", -1);
+				long magicOffset = XMLUtil.GetNumericAttribute(cl, "magicOffset", -1);
 				long sharedMagicAddress = XMLUtil.GetNumericAttribute(cl, "sharedMagicAddress", -1);
 
 				Version version = new Version(name);
 
-				result.AddName(version, new PokingInformation(headerPointer, headerAddress, magicAddress, sharedMagicAddress));
+				result.AddName(version, new PokingInformation(headerPointer, headerAddress, magicAddress, magicOffset, sharedMagicAddress));
 			}
 			return result;
 		}

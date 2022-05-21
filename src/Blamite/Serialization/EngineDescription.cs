@@ -2,6 +2,7 @@
 using Blamite.Blam.Scripting;
 using Blamite.Blam.Util;
 using Blamite.IO;
+using Blamite.RTE;
 using Blamite.Serialization.Settings;
 
 namespace Blamite.Serialization
@@ -126,30 +127,25 @@ namespace Blamite.Serialization
 		///     Gets the name of the game executable for poking purposes.
 		///     Can be <c>null</c> if not present.
 		/// </summary>
-		public string GameExecutable { get; private set; }
+		public string PokingExecutable { get; private set; }
 
 		/// <summary>
 		///     Gets the name of the alternate game executable for poking purposes. (win store)
 		///     Can be <c>null</c> if not present.
 		/// </summary>
-		public string GameExecutableAlt { get; private set; }
+		public string PokingExecutableAlt { get; private set; }
 
 		/// <summary>
 		///     Gets the name of the engine's module for poking purposes.
 		///     Can be <c>null</c> if not present.
 		/// </summary>
-		public string GameModule { get; private set; }
+		public string PokingModule { get; private set; }
 
 		/// <summary>
 		///     Gets the collection of pointers to allow for poking on PC.
 		///     Can be <c>null</c> if not present.
 		/// </summary>
 		public PokingCollection Poking { get; private set; }
-
-		/// <summary>
-		///		The offset past the header from a poking xml pointer to the value to add for address conversion.
-		/// </summary>
-		public int PokingOffset { get; private set; }
 
 		/// <summary>
 		///		Whether the cache file itself uses compression.
@@ -186,9 +182,15 @@ namespace Blamite.Serialization
 		/// </summary>
 		public EngineType Engine { get; set; }
 
+		/// <summary>
+		///     Gets the platform of the game for poking purposes.
+		/// </summary>
+		public RTEConnectionType PokingPlatform { get; private set; }
+
 		private void LoadSettings()
 		{
 			LoadEngineSettings();
+			LoadPokingSettings();
 			LoadDatabases();
 			LoadCrucialLayoutInfo();
 		}
@@ -223,21 +225,37 @@ namespace Blamite.Serialization
 			else
 				throw new System.Exception("Invalid generation type \"" + generation + "\" for build " + Name + "in engines.xml. Only \"first\", \"second\", and \"third\" are valid.");
 
-			if (Settings.PathExists("engineInfo/pokingOffset"))
-				PokingOffset = Settings.GetSettingOrDefault("engineInfo/pokingOffset", 0);
-
-			if (Settings.PathExists("engineInfo/gameExecutable"))
-				GameExecutable = Settings.GetSetting<string>("engineInfo/gameExecutable");
-			if (Settings.PathExists("engineInfo/gameExecutableAlt"))
-				GameExecutableAlt = Settings.GetSetting<string>("engineInfo/gameExecutableAlt");
-			if (Settings.PathExists("engineInfo/gameModule"))
-				GameModule = Settings.GetSetting<string>("engineInfo/gameModule");
 			if (Settings.PathExists("engineInfo/encryption/tagNameKey"))
 				TagNameKey = new AESKey(Settings.GetSettingOrDefault<string>("engineInfo/encryption/tagNameKey", null));
 			if (Settings.PathExists("engineInfo/encryption/stringIdKey"))
 				StringIDKey = new AESKey(Settings.GetSettingOrDefault<string>("engineInfo/encryption/stringIdKey", null));
 			if (Settings.PathExists("engineInfo/encryption/localeKey"))
 				LocaleKey = new AESKey(Settings.GetSettingOrDefault<string>("engineInfo/encryption/localeKey", null));
+		}
+
+		private void LoadPokingSettings()
+		{
+			string platform = Settings.GetSettingOrDefault("pokingInfo/platform", "undefined");
+
+			if (platform.Contains("xbox360"))
+				PokingPlatform = RTEConnectionType.ConsoleXbox360;
+			else if (platform.Contains("xbox"))
+				PokingPlatform = RTEConnectionType.ConsoleXbox;
+			else if (platform.Contains("pc32"))
+				PokingPlatform = RTEConnectionType.LocalProcess32;
+			else if (platform.Contains("pc64"))
+				PokingPlatform = RTEConnectionType.LocalProcess64;
+			else if (platform.Contains("undefined"))
+				PokingPlatform = RTEConnectionType.None;
+			else
+				throw new System.Exception("Invalid platform type \"" + platform + "\" for build " + Name + "in engines.xml. Only \"xbox\", \"xbox360\", \"pc32\", and \"pc64\" are valid.");
+
+			if (Settings.PathExists("pokingInfo/executable"))
+				PokingExecutable = Settings.GetSetting<string>("pokingInfo/executable");
+			if (Settings.PathExists("pokingInfo/executableAlt"))
+				PokingExecutableAlt = Settings.GetSetting<string>("pokingInfo/executableAlt");
+			if (Settings.PathExists("pokingInfo/module"))
+				PokingModule = Settings.GetSetting<string>("pokingInfo/module");
 		}
 
 		private void LoadDatabases()

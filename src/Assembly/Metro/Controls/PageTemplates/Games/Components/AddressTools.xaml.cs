@@ -26,23 +26,32 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			_cache = cache;
 
-			switch (_cache.Engine)
+			if (buildInfo.PokingPlatform == RTEConnectionType.LocalProcess32 ||
+				buildInfo.PokingPlatform == RTEConnectionType.LocalProcess64)
 			{
-				case EngineType.ThirdGeneration when !string.IsNullOrEmpty(buildInfo.GameModule):
-					realtime = new ThirdGenMCCRTEProvider(buildInfo);
-					break;
-				case EngineType.SecondGeneration when !string.IsNullOrEmpty(buildInfo.GameModule):
-					realtime = new SecondGenMCCRTEProvider(buildInfo);
-					break;
-				case EngineType.SecondGeneration:
-					realtime = new SecondGenRTEProvider(buildInfo);
-					break;
-				case EngineType.FirstGeneration when !string.IsNullOrEmpty(buildInfo.GameModule):
-					realtime = new FirstGenMCCRTEProvider(buildInfo);
-					break;
-				case EngineType.FirstGeneration:
-					realtime = new FirstGenRTEProvider(buildInfo);
-					break;
+				switch (_cache.Engine)
+				{
+					case EngineType.ThirdGeneration when !string.IsNullOrEmpty(buildInfo.PokingModule):
+						realtime = new ThirdGenMCCRTEProvider(buildInfo);
+						break;
+					case EngineType.SecondGeneration when !string.IsNullOrEmpty(buildInfo.PokingModule):
+						realtime = new SecondGenMCCRTEProvider(buildInfo);
+						break;
+					case EngineType.SecondGeneration:
+						realtime = new SecondGenRTEProvider(buildInfo);
+						break;
+					case EngineType.FirstGeneration when !string.IsNullOrEmpty(buildInfo.PokingModule):
+						realtime = new FirstGenMCCRTEProvider(buildInfo);
+						break;
+					case EngineType.FirstGeneration:
+						realtime = new FirstGenRTEProvider(buildInfo);
+						break;
+				}
+			}
+			else
+			{
+				inputRuntime.IsEnabled = false;
+				outputRuntime.IsEnabled = false;
 			}
 		}
 
