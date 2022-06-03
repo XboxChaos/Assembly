@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
@@ -80,6 +81,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public override string AsString()
 		{
 			return string.Format("tagref | {0} | {1} {2}", Name, Value?.GroupName ?? "null", Value?.TagFileName ?? "null");
+		}
+
+		public override object GetAsJson()
+		{
+			Dictionary<string, object> dict = new Dictionary<string, object>();
+			dict["GroupName"] = Value?.GroupName ?? "NONE";
+			dict["Path"] = Value?.TagFileName ?? "";
+
+			return dict;
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
@@ -48,6 +49,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public override string AsString()
 		{
 			return string.Format("{0} | {1} | {2} {3}", Type, Name, A, B);
+		}
+
+		public override object GetAsJson()
+		{
+			List<object> dict = new List<object>(3)
+			{
+				A,
+				B
+			};
+
+			return dict;
 		}
 	}
 
@@ -108,6 +120,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public override string AsString()
 		{
 			return string.Format("{0} | {1} | {2} {3} {4}", Type, Name, A, B, C);
+		}
+
+		public override object GetAsJson()
+		{
+			List<object> dict = new List<object>(3)
+			{
+				A,
+				B,
+				C
+			};
+
+			return dict;
 		}
 	}
 
@@ -179,6 +203,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public override string AsString()
 		{
 			return string.Format("{0} | {1} | {2} {3} {4} {5}", Type, Name, A, B, C, D);
+		}
+
+		public override object GetAsJson()
+		{
+			List<object> dict = new List<object>(4)
+			{
+				A,
+				B,
+				C,
+				D
+			};
+
+			return dict;
 		}
 	}
 

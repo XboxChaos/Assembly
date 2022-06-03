@@ -89,6 +89,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			return string.Format("{0} | {1} | {2}", TypeStr, Name, Value);
 		}
 
+		public override object GetAsJson()
+		{
+			return Value;
+		}
+
 		private void RefreshBits()
 		{
 			foreach (BitData bit in Bits)

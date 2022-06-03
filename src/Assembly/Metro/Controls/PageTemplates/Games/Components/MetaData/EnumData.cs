@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
@@ -84,6 +85,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public override string AsString()
 		{
 			return string.Format("{0} | {1} | {2} ({3})", TypeStr, Name, Value, SelectedValue.Name);
+		}
+
+		public override object GetAsJson()
+		{
+			Dictionary<string, object> dict = new Dictionary<string, object>();
+			dict["Type"] = TypeStr;
+			dict["Value"] = Value;
+			dict["ValueName"] = SelectedValue.Name;
+
+			return dict;
 		}
 	}
 

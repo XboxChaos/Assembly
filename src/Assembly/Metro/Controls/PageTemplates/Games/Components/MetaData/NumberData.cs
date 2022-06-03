@@ -42,6 +42,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			return string.Format("{0} | {1} | {2}", Type, Name, Value);
 		}
+
+		public override object GetAsJson()
+		{
+			return Value;
+		}
 	}
 
 	/// <summary>

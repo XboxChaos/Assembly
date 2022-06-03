@@ -78,6 +78,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
+		/// <summary>
+		/// Used when dumping to json, needs to return a type that JSON supports
+		/// </summary>
+		/// <returns></returns>
+		public virtual object GetAsJson()
+		{
+			return this.AsString();
+		}
+
 		public bool ToolTipExists
 		{
 			get { return !string.IsNullOrEmpty(_tooltip); }

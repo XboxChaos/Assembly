@@ -20,6 +20,7 @@ using Blamite.RTE;
 using Blamite.Util;
 using System.CodeDom.Compiler;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 {
@@ -455,7 +456,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			var sfd = new SaveFileDialog
 			{
 				Title = "Save Tag Dump",
-				Filter = "Text Files|*.txt"
+				Filter = "JSON Files|*.json|Text Files|*.txt"
 			};
 			bool? result = sfd.ShowDialog();
 			if (!result.Value)
@@ -463,17 +464,102 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			using (StringWriter sw = new StringWriter())
 			{
-				IndentedTextWriter itw = new IndentedTextWriter(sw);
-				itw.WriteLine(_tag.TagFileName);
-				itw.WriteLine();
 				MetaField[] fields = new MetaField[panelMetaComponents.Items.Count];
 				panelMetaComponents.Items.CopyTo(fields, 0);
-				DumpFieldsToText(itw, fields);
+
+				if (sfd.FilterIndex == 1)
+				{
+					using (JsonWriter writer = new JsonTextWriter(sw))
+					{
+						writer.Formatting = Newtonsoft.Json.Formatting.Indented;
+						writer.WriteStartObject();
+						writer.WritePropertyName("TagName");
+						writer.WriteValue(_tag.TagFileName);
+
+						writer.WritePropertyName("Data");
+						DumpFieldsToJSON(writer, fields);
+
+						writer.WriteEndObject();
+					}
+				}
+				else if (sfd.FilterIndex == 2)
+				{
+					IndentedTextWriter itw = new IndentedTextWriter(sw);
+					itw.WriteLine(_tag.TagFileName);
+					itw.WriteLine();
+
+					DumpFieldsToText(itw, fields);
+				}
+				else return;
 
 				File.WriteAllText(sfd.FileName, sw.ToString());
 
 				MetroMessageBox.Show("Tag dumped!");
 			}
+		}
+
+		private void WriteJSONContent(JsonWriter writer, object content)
+		{
+			if (content is IDictionary<string, object>)
+			{
+				writer.WriteStartObject();
+				foreach (KeyValuePair<string, object> entry in content as IDictionary<string, object>)
+				{
+					writer.WritePropertyName(entry.Key);
+					WriteJSONContent(writer, entry.Value);
+				}
+				writer.WriteEndObject();
+			}
+			else if (content is IList<string>)
+			{
+				writer.WriteStartArray();
+				foreach (string str in content as List<string>)
+					writer.WriteValue(str);
+				writer.WriteEndArray();
+			}
+			else if (content is IList<object>)
+			{
+				writer.WriteStartArray();
+				foreach (object val in content as List<object>)
+					WriteJSONContent(writer, val);
+				writer.WriteEndArray();
+			}
+			else
+				writer.WriteValue(content);
+		}
+
+		private void DumpFieldsToJSON(JsonWriter writer, MetaField[] fields)
+		{
+			writer.WriteStartObject();
+			foreach (MetaField field in fields)
+			{
+				if (field is TagBlockData)
+				{
+					TagBlockData block = field as TagBlockData;
+					int oldIndex = block.CurrentIndex;
+					writer.WritePropertyName(block.Name);
+					writer.WriteStartArray();
+					for (int i = 0; i < block.Length; i++)
+					{
+						block.CurrentIndex = i;
+
+						MetaField[] subFields = new MetaField[block.Template.Count];
+						block.Template.CopyTo(subFields, 0);
+						DumpFieldsToJSON(writer, subFields);
+
+					}
+					block.CurrentIndex = oldIndex;
+					writer.WriteEnd();
+				}
+				else if (field is ValueField)
+				{
+					ValueField valueField = field as ValueField;
+					writer.WritePropertyName(valueField.Name);
+					WriteJSONContent(writer, valueField.GetAsJson());
+
+				}
+			}
+			writer.WriteEndObject();
 		}
 
 		private void DumpFieldsToText(IndentedTextWriter itw, MetaField[] fields)

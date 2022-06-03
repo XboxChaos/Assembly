@@ -1,4 +1,5 @@
-﻿using System.Windows.Media;
+﻿using System.Collections.Generic;
+using System.Windows.Media;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
@@ -78,6 +79,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public override string AsString()
 		{
 			return string.Format("{0} | {1} | {2} {3} {4}", DataType, Name, Value.R, Value.G, Value.B);
+		}
+
+		public override object GetAsJson()
+		{
+			Dictionary<string, object> dict = new Dictionary<string, object>();
+			dict["R"] = Value.R;
+			dict["G"] = Value.G;
+			dict["B"] = Value.B;
+
+			return dict;
 		}
 	}
 }
