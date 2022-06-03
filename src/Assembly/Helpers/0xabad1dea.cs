@@ -20,19 +20,6 @@ namespace Assembly.Helpers
 			}
 		}
 
-		public class GodOfAllThingsHolyAndModdy
-		{
-			public static Visibility ShowGod()
-			{
-				return App.AssemblyStorage.AssemblySettings.ApplicationEasterEggs ? Visibility.Visible : Visibility.Collapsed;
-			}
-
-			public static string ShowGodsRealName()
-			{
-				return App.AssemblyStorage.AssemblySettings.ApplicationEasterEggs ? "Morgan Freeman" : "Lord Zedd";
-			}
-		}
-
 		public class IWff
 		{
 			public static bool Play()

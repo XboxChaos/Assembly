@@ -24,11 +24,5 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		{
 			Close();
 		}
-
-		private void lblZedd_MouseDown(object sender, MouseButtonEventArgs e)
-		{
-			imageOfGodOfAllThingsHolyAndModdy.Visibility = _0xabad1dea.GodOfAllThingsHolyAndModdy.ShowGod();
-			lblZedd.Text = _0xabad1dea.GodOfAllThingsHolyAndModdy.ShowGodsRealName();
-		}
 	}
 }
