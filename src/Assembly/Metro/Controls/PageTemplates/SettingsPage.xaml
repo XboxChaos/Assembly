@@ -285,6 +285,26 @@
 						</Grid.ColumnDefinitions>
 
 						<StackPanel Grid.Column="0">
+							<TextBlock Text="Easter Eggs:" Style="{DynamicResource SettingName}" />
+							<TextBlock TextWrapping="Wrap" Style="{DynamicResource SettingDescription}">
+								Assembly has some tricks hidden away. You can opt-out if you are no fun.
+							</TextBlock>
+						</StackPanel>
+						<Grid Grid.Column="2">
+							<CheckBox VerticalAlignment="Top"
+									  IsChecked="{Binding Path=ApplicationEasterEggs, Mode=TwoWay}"
+									  Content="Enable easter eggs." />
+						</Grid>
+					</Grid>
+					
+					<Grid Style="{DynamicResource SettingEntry}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="200" />
+							<ColumnDefinition Width="20" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+
+						<StackPanel Grid.Column="0">
 							<TextBlock Text="Automatic Updates:" Style="{DynamicResource SettingName}" />
 							<TextBlock TextWrapping="Wrap" Style="{DynamicResource SettingDescription}">
 								Keep up-to-date and have Assembly automatically check for updates every time you start it.
@@ -571,45 +591,6 @@
 						</StackPanel>
 					</Grid>
 				</StackPanel>
-			</Grid>
-
-			<Grid x:Name="PluginsSettingsPanel" Visibility="Collapsed">
-				<StackPanel Margin="25,40,0,0">
-					<TextBlock Text="plugins" Style="{DynamicResource SettingPageTitle}" />
-
-					<Grid Style="{DynamicResource SettingEntry}">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="200" />
-							<ColumnDefinition Width="20" />
-							<ColumnDefinition Width="*" />
-						</Grid.ColumnDefinitions>
-
-						<StackPanel Grid.Column="0">
-							<TextBlock Text="Show Special Types:" Style="{DynamicResource SettingName}" />
-							<TextBlock TextWrapping="Wrap" Style="{DynamicResource SettingDescription}">
-								Shows the special types that assembly has in plugins, and weather or how you want to see them in the tag data editor.
-							</TextBlock>
-						</StackPanel>
-						<StackPanel Grid.Column="2">
-							<CheckBox VerticalAlignment="Center" HorizontalAlignment="Left"
-								  IsChecked="{Binding Path=PluginsShowComments, Mode=TwoWay}" Width="400"
-								  Content="Comments" />
-
-							<CheckBox VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,4,0,0"
-								  IsChecked="{Binding Path=PluginsShowInvisibles, Mode=TwoWay}" Width="400"
-								  Content="Invisibles" />
-
-							<CheckBox VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,4,0,0"
-								  IsChecked="{Binding Path=PluginsShowEnumIndex, Mode=TwoWay}" Width="400"
-								  Content="Enum Indicies" />
-
-							<CheckBox VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,4,0,0"
-								  IsChecked="{Binding Path=PluginsShowInformation, Mode=TwoWay}" Width="400"
-								  Content="Tag Data Block Information" />
-						</StackPanel>
-					</Grid>
-				</StackPanel>
-
 			</Grid>
 
 			<Grid x:Name="StartPageSettingsPanel" Visibility="Collapsed">
