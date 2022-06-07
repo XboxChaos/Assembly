@@ -20,7 +20,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private readonly ICacheFile _cache;
 		private readonly MetaEditor _metaEditor;
 		private PluginEditor _pluginEditor;
-		private IRTEProvider _rteProvider;
+		private BaseRTEProvider _rteProvider;
 		private IStreamManager _streamManager;
 		private string _cacheLocation;
 		private Trie _stringIDTrie;
@@ -38,7 +38,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		#endregion
 
 		public MetaContainer(EngineDescription buildInfo, string cacheLocation, TagEntry tag, TagHierarchy tags, ICacheFile cache,
-			IStreamManager streamManager, IRTEProvider rteProvider, Trie stringIDTrie)
+			IStreamManager streamManager, BaseRTEProvider rteProvider, Trie stringIDTrie)
 		{
 			InitializeComponent();
 

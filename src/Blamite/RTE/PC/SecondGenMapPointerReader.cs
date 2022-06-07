@@ -1,14 +1,11 @@
-﻿using Blamite.Blam;
-using Blamite.IO;
-using Blamite.Native;
+﻿using Blamite.IO;
+using Blamite.RTE.PC.Native;
 using Blamite.Serialization;
-using Blamite.Util;
 using System;
-using System.IO;
 
-namespace Blamite.RTE.SecondGen
+namespace Blamite.RTE.PC
 {
-	public class SecondGenMapPointerReader : MapPointerReader
+	public class SecondGenMapPointerReader : BaseMapPointerReader
 	{
 		private long _mapSharedMagicAddress;
 
@@ -19,12 +16,8 @@ namespace Blamite.RTE.SecondGen
 			_mapMagicAddress = _baseAddress + info.MagicAddress.Value;
 			_mapSharedMagicAddress = _baseAddress + info.SharedMagicAddress.Value;
 
-			GetLayoutConstants(engineInfo);
-
 			var reader = new EndianReader(processStream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
-			ReadMapPointers32(reader);
-			ReadMapHeader(reader);
-			ProcessMapHeader();
+			ReadInformation(reader, engineInfo);
 		}
 
 		public SecondGenMapPointerReader(ProcessModuleMemoryStream moduleStream, EngineDescription engineInfo, PokingInformation info)
@@ -44,11 +37,7 @@ namespace Blamite.RTE.SecondGen
 			_mapMagicAddress = _baseAddress + info.MagicAddress.Value;
 			_mapSharedMagicAddress = _baseAddress + info.SharedMagicAddress.Value;
 
-			GetLayoutConstants(engineInfo);
-
-			ReadMapPointers64(reader);
-			ReadMapHeader(reader);
-			ProcessMapHeader();
+			ReadInformation(reader, engineInfo);
 		}
 
 		/// <summary>

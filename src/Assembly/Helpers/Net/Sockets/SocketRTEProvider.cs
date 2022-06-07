@@ -4,19 +4,19 @@ using Blamite.RTE;
 
 namespace Assembly.Helpers.Net.Sockets
 {
-    public class SocketRTEProvider : IRTEProvider
+    public class SocketRTEProvider : BaseRTEProvider
     {
         private IPokeSessionManager _sessionManager;
         public string ExeName { get; set; }
 
-        public SocketRTEProvider(IPokeSessionManager starter)
+        public SocketRTEProvider(IPokeSessionManager starter) : base(null)
         {
             _sessionManager = starter;
         }
 
-        public RTEConnectionType ConnectionType { get; private set; }
+        public new RTEConnectionType ConnectionType { get; private set; }
 
-        public IStream GetMetaStream(ICacheFile cacheFile)
+        public override IStream GetCacheStream(ICacheFile cacheFile)
         {
             return new EndianStream(new SocketStream(_sessionManager, cacheFile.BuildString, cacheFile.InternalName), cacheFile.Endianness);
         }

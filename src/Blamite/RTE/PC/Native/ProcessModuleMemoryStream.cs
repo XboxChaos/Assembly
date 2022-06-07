@@ -1,27 +1,31 @@
-﻿#if NET45
-
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Blamite.Native
+namespace Blamite.RTE.PC.Native
 {
 	/// <summary>
 	///     A Stream which reads/writes another process's memory.
 	/// </summary>
-	public class ProcessMemoryStream : Stream
+	public class ProcessModuleMemoryStream : Stream
 	{
 		private readonly Process _process;
+		private readonly ProcessModule _processModule;
 
 		/// <summary>
 		///     Constructs a new ProcessMemoryStream that accesses the memory of a specified process.
 		/// </summary>
 		/// <param name="process">The process to access the memory of.</param>
-		public ProcessMemoryStream(Process process)
+		public ProcessModuleMemoryStream(Process process, string module)
 		{
 			_process = process;
-			Position = (long) process.MainModule.BaseAddress;
+
+			foreach (ProcessModule m in process.Modules)
+				if (Path.GetFileNameWithoutExtension(m.FileName) == module)
+					_processModule = m;
+
+			Position = (long)_processModule.BaseAddress;
 		}
 
 		/// <summary>
@@ -30,6 +34,11 @@ namespace Blamite.Native
 		public Process BaseProcess
 		{
 			get { return _process; }
+		}
+
+		public ProcessModule BaseModule
+		{
+			get { return _processModule; }
 		}
 
 		public override bool CanRead
@@ -128,5 +137,3 @@ namespace Blamite.Native
 		#endregion Native Functions
 	}
 }
-
-#endif

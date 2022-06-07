@@ -247,7 +247,7 @@
 				<ToggleButton x:Name="ButtonSelectGeneral" Content="General" Margin="0,25,0,0" HorizontalAlignment="Left"
 							  Style="{DynamicResource ToggleTabChoser}"
 							  Tag="General" Click="ButtonTabSelection_OnClick" />
-				<ToggleButton x:Name="ButtonSelectXbox360Dev" Content="Xbox 360 Development" Margin="0,0,0,0" HorizontalAlignment="Left"
+				<ToggleButton x:Name="ButtonSelectXbox360Dev" Content="Xbox Development" Margin="0,0,0,0" HorizontalAlignment="Left"
 							  Style="{DynamicResource ToggleTabChoser}"
 							  Tag="XboxDev" Click="ButtonTabSelection_OnClick" />
 				<ToggleButton x:Name="ButtonSelectMapEdit" Content="Map Editor" Margin="0,0,0,0" HorizontalAlignment="Left"
@@ -382,7 +382,28 @@
 
 			<Grid x:Name="Xbox360DevSettingsPanel" Visibility="Collapsed">
 				<StackPanel Margin="25,40,0,0">
-					<TextBlock Text="xbox 360 development kit" Style="{DynamicResource SettingPageTitle}" />
+					<TextBlock Text="xbox development kits" Style="{DynamicResource SettingPageTitle}" />
+
+					<TextBlock Text="Support for Xbox consoles requires that some form of dev/debug kernel or equivalent is running on your console(s)." Style="{DynamicResource SettingDescription}" />
+
+					<Grid Style="{DynamicResource SettingEntry}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="200" />
+							<ColumnDefinition Width="20" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+
+						<StackPanel Grid.Column="0">
+							<TextBlock Text="Xbox 360 Name/IP:" Style="{DynamicResource SettingName}" />
+							<TextBlock TextWrapping="Wrap" Style="{DynamicResource SettingDescription}">
+								The Name or IP address of your Xbox 360 Development kit.
+							</TextBlock>
+
+						</StackPanel>
+						<StackPanel Grid.Column="2" Orientation="Horizontal">
+							<TextBox x:Name="xeConsoleTextbox" VerticalAlignment="Top" HorizontalAlignment="Left" Width="250" Text="{Binding Path=XeConsoleNameIp, Mode=TwoWay}" />
+						</StackPanel>
+					</Grid>
 
 					<Grid Style="{DynamicResource SettingEntry}">
 						<Grid.ColumnDefinitions>
@@ -394,12 +415,12 @@
 						<StackPanel Grid.Column="0">
 							<TextBlock Text="Xbox Name/IP:" Style="{DynamicResource SettingName}" />
 							<TextBlock TextWrapping="Wrap" Style="{DynamicResource SettingDescription}">
-								The IP address of your Xbox 360 Development kit. You can use names if your xbdm plugin supports it.
+								The Name or IP address of your Xbox Development kit.
 							</TextBlock>
 						</StackPanel>
-						<Grid Grid.Column="2">
-							<TextBox VerticalAlignment="Top" HorizontalAlignment="Left" Width="250" Text="{Binding Path=XdkNameIp, Mode=TwoWay}" />
-						</Grid>
+						<StackPanel Grid.Column="2" Orientation="Horizontal">
+							<TextBox x:Name="xbConsoleTextbox" VerticalAlignment="Top" HorizontalAlignment="Left" Width="250" Text="{Binding Path=XbConsoleNameIp, Mode=TwoWay}" />
+						</StackPanel>
 					</Grid>
 
 					<Grid Style="{DynamicResource SettingEntry}">
@@ -412,22 +433,19 @@
 						<StackPanel Grid.Column="0">
 							<TextBlock Text="Screenshot Events:" Style="{DynamicResource SettingName}" />
 							<TextBlock TextWrapping="Wrap" Style="{DynamicResource SettingDescription}">
-								Events that happen when assembly takes screenshots from the xbox 360 devkit.
+								Events that happen when assembly takes screenshots from the xbox console.
 							</TextBlock>
 						</StackPanel>
 						<StackPanel Grid.Column="2">
 							<CheckBox VerticalAlignment="Top" HorizontalAlignment="Left"
 									  Width="400" IsChecked="{Binding Path=XdkScreenshotFreeze, Mode=TwoWay}"
-									  Content="Freeze Console (Makes screenshots more crisp)" />
+									  Content="Freeze Console During Capture (Makes screenshots more crisp)" />
+							<CheckBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,4,0,0" 
+									  Width="400" IsChecked="{Binding Path=XdkResizeImages, Mode=TwoWay}"
+									  Content="Resize Screenshots To Console Resolution (360 only)" ToolTip="Screenshots start at the console's framebuffer size. This resolution may appear more crisp but for Reach the image will appear squished without resizing." />
 							<CheckBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,4,0,0" 
 									  Width="400" IsChecked="{Binding Path=XdkAutoSave, Mode=TwoWay}"
 									  Content="Auto Save Screenshots (Choose the path below)" />
-							<CheckBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,4,0,0" 
-									  Width="400" IsChecked="{Binding Path=XdkResizeImages, Mode=TwoWay}"
-									  Content="Resize Screenshots (Choose the size below)" />
-							<CheckBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,4,0,0" 
-									  Width="400" IsChecked="{Binding Path=XdkScreenshotGammaCorrect, Mode=TwoWay}"
-									  Content="Gamma Correct Screenshots (Choose the modifier below)" />
 						</StackPanel>
 					</Grid>
 
@@ -447,55 +465,6 @@
 						<StackPanel Grid.Column="2" VerticalAlignment="Top" Orientation="Horizontal">
 							<TextBox x:Name="TextBoxAutoSaveDirectory" Width="250" Text="{Binding Path=XdkScreenshotPath, Mode=TwoWay}" />
 							<Button Margin="10,0,0,0" Width="75" Content="Browse..." Click="TextBoxAutoSaveDirectory_OnClick" />
-						</StackPanel>
-					</Grid>
-
-					<Grid Style="{DynamicResource SettingEntry}" IsEnabled="{Binding Path=XdkResizeImages}">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="200" />
-							<ColumnDefinition Width="20" />
-							<ColumnDefinition Width="*" />
-						</Grid.ColumnDefinitions>
-
-						<StackPanel Grid.Column="0">
-							<TextBlock Text="Image Resizing:" Style="{DynamicResource SettingName}" />
-							<TextBlock TextWrapping="Wrap" Style="{DynamicResource SettingDescription}">
-								The size to resize screenshots to after they are taken. (This feature is only used if the setting above is set to true)
-							</TextBlock>
-						</StackPanel>
-						<StackPanel Grid.Column="2" VerticalAlignment="Top">
-							<StackPanel Orientation="Horizontal">
-								<TextBlock Text="Width:" Foreground="White" VerticalAlignment="Center" Width="50" FontFamily="{DynamicResource MetroFontRegular}" />
-								<TextBox Text="{Binding Path=XdkResizeScreenshotWidth, Mode=TwoWay}" Width="100" />
-							</StackPanel>
-
-							<StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-								<TextBlock Text="Height:" Foreground="White" VerticalAlignment="Center" Width="50" FontFamily="{DynamicResource MetroFontRegular}" />
-								<TextBox Text="{Binding Path=XdkResizeScreenshotHeight, Mode=TwoWay}" Width="100" />
-							</StackPanel>
-						</StackPanel>
-					</Grid>
-
-					<Grid Style="{DynamicResource SettingEntry}" IsEnabled="{Binding Path=XdkScreenshotGammaCorrect}">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="200" />
-							<ColumnDefinition Width="20" />
-							<ColumnDefinition Width="*" />
-						</Grid.ColumnDefinitions>
-
-						<StackPanel Grid.Column="0">
-							<TextBlock Text="Gamma Adjustment:" Style="{DynamicResource SettingName}" />
-							<TextBlock TextWrapping="Wrap" Style="{DynamicResource SettingDescription}">
-								Adjusts the gamma of screenshots after they are taken. (This feature is only used if the setting above is set to true)
-							</TextBlock>
-						</StackPanel>
-						<StackPanel Grid.Column="2" VerticalAlignment="Top" Orientation="Horizontal">
-							<TextBlock Text="Modifier: " Foreground="White" FontFamily="{DynamicResource MetroFontRegular}" />
-							<TextBlock Text="{Binding Path=Value, ElementName=SliderGammaCorrectionXbox360, FallbackValue=0.5}" Foreground="White" FontFamily="{DynamicResource MetroFontRegular}" Width="24"/>
-							<Slider x:Name="SliderGammaCorrectionXbox360" Margin="10,0,0,0"
-									TickFrequency=".01" IsSnapToTickEnabled="true" TickPlacement="None"
-									Value="{Binding Path=XdkScreenshotGammaModifier, Mode=TwoWay, FallbackValue=0.5}"
-									Maximum="1" Minimum="0" Width="150" />
 						</StackPanel>
 					</Grid>
 				</StackPanel>

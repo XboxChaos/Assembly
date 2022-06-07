@@ -1,28 +1,20 @@
-﻿using Blamite.Blam;
-using Blamite.IO;
-using Blamite.Native;
+﻿using Blamite.IO;
+using Blamite.RTE.PC.Native;
 using Blamite.Serialization;
-using Blamite.Util;
 using System;
-using System.IO;
 
-namespace Blamite.RTE.FirstGen
+namespace Blamite.RTE.PC
 {
-	public class FirstGenMapPointerReader : MapPointerReader
+	public class FirstGenMapPointerReader : BaseMapPointerReader
 	{
-
 		public FirstGenMapPointerReader(ProcessMemoryStream processStream, EngineDescription engineInfo, PokingInformation info)
 		{
 			_baseAddress = (long)processStream.BaseProcess.MainModule.BaseAddress;
 			_mapHeaderAddress = _baseAddress + info.HeaderAddress.Value;
 			_mapMagicAddress = _baseAddress + info.MagicAddress.Value;
 
-			GetLayoutConstants(engineInfo);
-
 			var reader = new EndianReader(processStream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
-			ReadMapPointers32(reader);
-			ReadMapHeader(reader);
-			ProcessMapHeader();
+			ReadInformation(reader, engineInfo);
 		}
 
 		public FirstGenMapPointerReader(ProcessModuleMemoryStream moduleStream, EngineDescription engineInfo, PokingInformation info)
@@ -31,12 +23,8 @@ namespace Blamite.RTE.FirstGen
 			_mapHeaderAddress = _baseAddress + info.HeaderAddress.Value;
 			_mapMagicAddress = _baseAddress + info.MagicAddress.Value;
 
-			GetLayoutConstants(engineInfo);
-
 			var reader = new EndianReader(moduleStream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
-			ReadMapPointers64(reader);
-			ReadMapHeader(reader);
-			ProcessMapHeader();
+			ReadInformation(reader, engineInfo);
 		}
 
 		protected override void ReadMapPointers32(IReader reader)

@@ -59,7 +59,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private readonly IStreamManager _fileManager;
 		private readonly MetaContainer _parentMetaContainer;
 		private readonly Dictionary<MetaField, int> _resultIndices = new Dictionary<MetaField, int>();
-		private readonly IRTEProvider _rteProvider;
+		private readonly BaseRTEProvider _rteProvider;
 		private readonly Timer _searchTimer;
 		private readonly Trie _stringIdTrie;
 		private readonly TagHierarchy _tags;
@@ -75,7 +75,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private TagEntry _tag;
 
 		public MetaEditor(EngineDescription buildInfo, TagEntry tag, MetaContainer parentContainer, TagHierarchy tags,
-			ICacheFile cache, IStreamManager streamManager, IRTEProvider rteProvider, Trie stringIDTrie)
+			ICacheFile cache, IStreamManager streamManager, BaseRTEProvider rteProvider, Trie stringIDTrie)
 		{
 			InitializeComponent();
 
@@ -129,7 +129,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					if (_rteProvider == null)
 						goto default;
 
-					if (_rteProvider.GetMetaStream(_cache) == null)
+					if (_rteProvider.GetCacheStream(_cache) == null)
 					{
 						ShowConnectionError();
 						return;
@@ -257,7 +257,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					rteProvider = App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider;
 				}
 
-				using (IStream metaStream = rteProvider.GetMetaStream(_cache))
+				using (IStream metaStream = rteProvider.GetCacheStream(_cache))
 				{
 					if (metaStream != null)
 					{
@@ -288,8 +288,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			{
 				case RTEConnectionType.ConsoleXbox:
 					MetroMessageBox.Show("Connection Error",
-						"Poking to an Xbox console is not currently supported.");
-						//"Unable to connect to your Xbox console. Make sure that XBDM is enabled and that your console's IP has been set correctly.");
+						"Unable to connect to your Xbox console. Make sure that XBDM is enabled and that your console's IP has been set correctly.");
 					break;
 
 				case RTEConnectionType.ConsoleXbox360:
@@ -300,7 +299,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				case RTEConnectionType.LocalProcess32:
 				case RTEConnectionType.LocalProcess64:
 					MetroMessageBox.Show("Connection Error",
-						"Unable to connect to the game. Make sure that it is running on your computer and that the map you are poking to is currently loaded.");
+						_rteProvider.ErrorMessage);
 					break;
 			}
 		}

@@ -9,9 +9,9 @@ namespace Blamite.RTE
 	public class RTEStreamManager : IStreamManager
 	{
 		private readonly ICacheFile _cacheFile;
-		private readonly IRTEProvider _provider;
+		private readonly BaseRTEProvider _provider;
 
-		public RTEStreamManager(IRTEProvider provider, ICacheFile cacheFile)
+		public RTEStreamManager(BaseRTEProvider provider, ICacheFile cacheFile)
 		{
 			_provider = provider;
 			_cacheFile = cacheFile;
@@ -19,17 +19,17 @@ namespace Blamite.RTE
 
 		public IReader OpenRead()
 		{
-			return _provider.GetMetaStream(_cacheFile);
+			return _provider.GetCacheStream(_cacheFile);
 		}
 
 		public IWriter OpenWrite()
 		{
-			return _provider.GetMetaStream(_cacheFile);
+			return _provider.GetCacheStream(_cacheFile);
 		}
 
 		public IStream OpenReadWrite()
 		{
-			return _provider.GetMetaStream(_cacheFile);
+			return _provider.GetCacheStream(_cacheFile);
 		}
 	}
 }

@@ -2,16 +2,11 @@
 using Blamite.IO;
 using Blamite.Serialization;
 using Blamite.Util;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Blamite.RTE
 {
-	public abstract class MapPointerReader
+	public abstract class BaseMapPointerReader
 	{
 		protected long _baseAddress;
 		protected long _mapHeaderAddress;
@@ -53,6 +48,19 @@ namespace Blamite.RTE
 			var layout = engineInfo.Layouts.GetLayout("header");
 			MapTypeOffset = layout.GetFieldOffset("type");
 			MapNameOffset = layout.GetFieldOffset("internal name");
+		}
+
+		protected void ReadInformation(EndianReader reader, EngineDescription engineInfo)
+		{
+			GetLayoutConstants(engineInfo);
+
+			if (engineInfo.PokingPlatform == RTEConnectionType.LocalProcess32)
+				ReadMapPointers32(reader);
+			else
+				ReadMapPointers64(reader);
+
+			ReadMapHeader(reader);
+			ProcessMapHeader();
 		}
 
 		protected abstract void ReadMapPointers32(IReader reader);

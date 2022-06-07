@@ -13,10 +13,10 @@ using Assembly.Metro.Dialogs;
 using Assembly.Windows;
 using Blamite.Blam;
 using Blamite.RTE;
+using Blamite.RTE.Console;
 using Blamite.Serialization;
 using Blamite.Serialization.Settings;
 using Newtonsoft.Json;
-using XBDMCommunicator;
 
 namespace Assembly.Helpers
 {
@@ -166,15 +166,13 @@ namespace Assembly.Helpers
 		private bool _startpageShowRecentsMap = true;
 		private bool _startpageShowRecentsMapInfo = true;
 		private bool _startpageShowRecentsCampaign = true;
-		private Xbdm _xbdm;
+		private XEConsole _xeConsole;
+		private XBConsole _xbConsole;
 		private bool _xdkAutoSave;
-		private string _xdkNameIp = "192.168.0.1";
+		private string _xeConsoleNameIp = "192.168.0.1";
+		private string _xbConsoleNameIp = "192.168.0.1";
 		private bool _xdkResizeImages;
-		private int _xdkResizeScreenshotHeight = 1080;
-		private int _xdkResizeScreenshotWidth = 1920;
 		private bool _xdkScreenshotFreeze = true;
-		private bool _xdkScreenshotGammaCorrect = true;
-		private double _xdkScreenshotGammaModifier = 0.5;
 		private string _xdkScreenshotPath = "";
 		private ObservableCollection<ImgurHistoryEntry> _imgurHistory = new ObservableCollection<ImgurHistoryEntry>();
 		private UpdateSource _updateChannel = UpdateSource.Stable;
@@ -438,15 +436,15 @@ namespace Assembly.Helpers
 
 		/// <summary>
 		/// </summary>
-		public string XdkNameIp
+		public string XeConsoleNameIp
 		{
-			get { return _xdkNameIp; }
+			get { return _xeConsoleNameIp; }
 			set
 			{
-				SetField(ref _xdkNameIp, value, "XdkNameIp");
+				SetField(ref _xeConsoleNameIp, value, "XeConsoleNameIp");
 
-				if (Xbdm != null)
-					Xbdm.UpdateDeviceIdent(value);
+				if (XeConsole != null)
+					XeConsole.UpdateIdentifier(value);
 			}
 		}
 
@@ -476,34 +474,16 @@ namespace Assembly.Helpers
 
 		/// <summary>
 		/// </summary>
-		public int XdkResizeScreenshotHeight
+		public string XbConsoleNameIp
 		{
-			get { return _xdkResizeScreenshotHeight; }
-			set { SetField(ref _xdkResizeScreenshotHeight, value, "XdkResizeScreenshotHeight"); }
-		}
+			get { return _xbConsoleNameIp; }
+			set
+			{
+				SetField(ref _xbConsoleNameIp, value, "XbConsoleNameIp");
 
-		/// <summary>
-		/// </summary>
-		public int XdkResizeScreenshotWidth
-		{
-			get { return _xdkResizeScreenshotWidth; }
-			set { SetField(ref _xdkResizeScreenshotWidth, value, "XdkResizeScreenshotWidth"); }
-		}
-
-		/// <summary>
-		/// </summary>
-		public bool XdkScreenshotGammaCorrect
-		{
-			get { return _xdkScreenshotGammaCorrect; }
-			set { SetField(ref _xdkScreenshotGammaCorrect, value, "XdkScreenshotGammaCorrect"); }
-		}
-
-		/// <summary>
-		/// </summary>
-		public double XdkScreenshotGammaModifier
-		{
-			get { return _xdkScreenshotGammaModifier; }
-			set { SetField(ref _xdkScreenshotGammaModifier, value, "XdkScreenshotGammaModifier"); }
+				if (XbConsole != null)
+					XbConsole.UpdateIdentifier(value);
+			}
 		}
 
 		/// <summary>
@@ -721,10 +701,19 @@ namespace Assembly.Helpers
 		/// <summary>
 		/// </summary>
 		[JsonIgnore]
-		public Xbdm Xbdm
+		public XEConsole XeConsole
 		{
-			get { return _xbdm; }
-			set { SetField(ref _xbdm, value, "Xbdm"); }
+			get { return _xeConsole; }
+			set { SetField(ref _xeConsole, value, "XeConsole"); }
+		}
+
+		/// <summary>
+		/// </summary>
+		[JsonIgnore]
+		public XBConsole XbConsole
+		{
+			get { return _xbConsole; }
+			set { SetField(ref _xbConsole, value, "XbConsole"); }
 		}
 
 		/// <summary>
@@ -897,7 +886,7 @@ namespace Assembly.Helpers
 	{
 		private bool _isConnected;
 		private bool _isServer;
-		private List<Tuple<ICacheFile, IRTEProvider>> _maps = new List<Tuple<ICacheFile, IRTEProvider>>();
+		private List<Tuple<ICacheFile, BaseRTEProvider>> _maps = new List<Tuple<ICacheFile, BaseRTEProvider>>();
 		private IPokeSessionManager _pokeSessionManager = null;
 		private SocketRTEProvider _networkProvider = null;
 		private ObservableCollection<string> _clients = new ObservableCollection<string>();
@@ -918,7 +907,7 @@ namespace Assembly.Helpers
 			set { SetField(ref _isServer, value, "IsServer");  }
 		}
 
-		public List<Tuple<ICacheFile, IRTEProvider>> Maps
+		public List<Tuple<ICacheFile, BaseRTEProvider>> Maps
 		{
 			get { return _maps; }
 			set { SetField(ref _maps, value, "Maps"); }

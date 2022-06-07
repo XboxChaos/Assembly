@@ -25,18 +25,15 @@ using Blamite.Injection;
 using Blamite.IO;
 using Blamite.Plugins;
 using Blamite.RTE;
-using Blamite.RTE.SecondGen;
+using Blamite.RTE.Console;
+using Blamite.RTE.PC;
 using Blamite.Util;
 using CloseableTabItemDemo;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using XBDMCommunicator;
-using Blamite.Blam.SecondGen;
 using Blamite.Blam.ThirdGen;
-using Blamite.RTE.ThirdGen;
 using Blamite.Blam.Resources.Sounds;
 using System.Reflection;
-using Blamite.RTE.FirstGen;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -68,7 +65,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private Settings.MapInfoDockSide _dockSide;
 		private ObservableCollection<HeaderValue> _headerDetails = new ObservableCollection<HeaderValue>();
 		private IStreamManager _mapManager;
-		private IRTEProvider _rteProvider;
+		private BaseRTEProvider _rteProvider;
 		private Trie _stringIdTrie;
 		private List<TagEntry> _tagEntries = new List<TagEntry>();
 		private Settings.TagOpenMode _tagOpenMode;
@@ -232,38 +229,31 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				// Set up RTE
 				switch (_buildInfo.PokingPlatform)
 				{
-					default:
-					case RTEConnectionType.None:
 					case RTEConnectionType.ConsoleXbox:
+						_rteProvider = new ConsoleRTEProvider(App.AssemblyStorage.AssemblySettings.XbConsole);
 						break;
 					case RTEConnectionType.ConsoleXbox360:
-						_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm);
+						_rteProvider = new ConsoleRTEProvider(App.AssemblyStorage.AssemblySettings.XeConsole);
 						break;
 					case RTEConnectionType.LocalProcess32:
 					case RTEConnectionType.LocalProcess64:
 						{
-							if (_cacheFile.Engine == EngineType.FirstGeneration)
+							switch (_cacheFile.Engine)
 							{
-								if (!string.IsNullOrEmpty(_buildInfo.PokingModule)) // CEA MCC
-									_rteProvider = new FirstGenMCCRTEProvider(_buildInfo);
-								else // PC or Custom
-									_rteProvider = new FirstGenRTEProvider(_buildInfo);
-							}
-							else if (_cacheFile.Engine == EngineType.SecondGeneration)
-							{
-								if (!string.IsNullOrEmpty(_buildInfo.PokingModule))
-									_rteProvider = new SecondGenMCCRTEProvider(_buildInfo);
-								else
-									_rteProvider = new SecondGenRTEProvider(_buildInfo);
-							}
-							else if (_cacheFile.Engine == EngineType.ThirdGeneration)
-							{
-								if (!string.IsNullOrEmpty(_buildInfo.PokingModule))
-									_rteProvider = new ThirdGenMCCRTEProvider(_buildInfo);
+								case EngineType.FirstGeneration:
+									_rteProvider = new PCFirstGenRTEProvider(_buildInfo);
+									break;
+								case EngineType.SecondGeneration:
+									_rteProvider = new PCSecondGenRTEProvider(_buildInfo);
+									break;
+								case EngineType.ThirdGeneration:
+									_rteProvider = new PCThirdGenRTEProvider(_buildInfo);
+									break;
 							}
 							break;
 						}
 				}
+
 
 				Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Cache File")));
 
@@ -275,7 +265,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					StatusUpdater.Update("Added To Recents");
 				}));
 
-				App.AssemblyStorage.AssemblyNetworkPoke.Maps.Add(new Tuple<ICacheFile, IRTEProvider>(_cacheFile, _rteProvider));
+				App.AssemblyStorage.AssemblyNetworkPoke.Maps.Add(new Tuple<ICacheFile, BaseRTEProvider>(_cacheFile, _rteProvider));
 
 				/*ITag dice = _cacheFile.Tags[0x0102];
 				IRenderModel diceModel = _cacheFile.ResourceMetaLoader.LoadRenderModelMeta(dice, reader);
@@ -2493,7 +2483,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			List<TabItem> tabs = contentTabs.Items.OfType<TabItem>().ToList();
 
-			App.AssemblyStorage.AssemblyNetworkPoke.Maps.Remove(new Tuple<ICacheFile, IRTEProvider>(_cacheFile, _rteProvider));
+			App.AssemblyStorage.AssemblyNetworkPoke.Maps.Remove(new Tuple<ICacheFile, BaseRTEProvider>(_cacheFile, _rteProvider));
 
 			ExternalTabsClose(tabs, false);
 

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using Assembly.Helpers;
+using Assembly.Helpers.Native;
 using Assembly.Helpers.Net;
 using Assembly.Metro.Dialogs;
 using Xceed.Wpf.AvalonDock.Layout;
@@ -22,12 +24,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private readonly string _datetime_shrt;
 		private string _imageID;
 
-		public HaloScreenshot(string tempImageLocation, LayoutDocument tabItem)
+		public HaloScreenshot(Bitmap bitmap, LayoutDocument tabItem, string source)
 		{
 			InitializeComponent();
 
 			// Convert DDS to BitmapImage
-			_bitmapImage = DDSConversion.Deswizzle(tempImageLocation);
+			_bitmapImage = ScreenshotHelper.CreateBitmapSource(bitmap);
 
 			// DateTime Creation
 			DateTime date = DateTime.Now;
@@ -35,7 +37,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			_datetime_shrt = date.ToString("hh:mm.ss");
 
 			// Set Tab Header
-			tabItem.Title = "Screenshot {" + _datetime_shrt + "}";
+			tabItem.Title = source + " Screenshot {" + _datetime_shrt + "}";
 
 			// Set Image Name
 			lblImageName.Text = _datetime_long + ".png";

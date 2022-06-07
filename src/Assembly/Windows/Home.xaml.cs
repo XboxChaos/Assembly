@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -10,6 +11,8 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Resources;
 using System.Windows.Threading;
 using Assembly.Helpers;
@@ -23,9 +26,10 @@ using Assembly.Metro.Dialogs;
 using Xceed.Wpf.AvalonDock.Layout;
 using Blamite.Blam.ThirdGen;
 using Blamite.IO;
+using Blamite.RTE.Console.Helpers;
+using Blamite.RTE.Console;
 using Microsoft.Win32;
 using XboxChaos.Models;
-using XBDMCommunicator;
 using Xceed.Wpf.AvalonDock.Controls;
 using Assembly.Helpers.Net.Sockets;
 
@@ -241,41 +245,102 @@ namespace Assembly.Windows
 			AddTabModule(TabGenre.NetworkPoking);
 		}
 
-		//xbdm
-		private void menuScreenshot_Click(object sender, RoutedEventArgs e)
+		//og console
+		private void menuOGScreenshot_Click(object sender, RoutedEventArgs e)
 		{
-			var screenshotFileName = Path.GetTempFileName();
+			Bitmap image;
 			try
 			{
-				if (App.AssemblyStorage.AssemblySettings.Xbdm.GetScreenshot(screenshotFileName))
-					App.AssemblyStorage.AssemblySettings.HomeWindow.AddScrenTabModule(screenshotFileName);
+				ConsoleScreenshot shot = App.AssemblyStorage.AssemblySettings.XbConsole.GetScreenshot(App.AssemblyStorage.AssemblySettings.XdkScreenshotFreeze);
+
+				if (shot != null)
+				{
+					image = shot.ConvertToBitmap(false);
+					App.AssemblyStorage.AssemblySettings.HomeWindow.AddScreenTabModule(image, "Xbox");
+				}
+				else
+					MetroMessageBox.Show("Not Connected", "You are not connected to a debug Xbox.");
+			}
+			catch { }
+		}
+
+		private void menuOGStop_Click(object sender, RoutedEventArgs e)
+		{
+			App.AssemblyStorage.AssemblySettings.XbConsole.Stop();
+		}
+
+
+		private void menuOGGo_Click(object sender, RoutedEventArgs e)
+		{
+			App.AssemblyStorage.AssemblySettings.XbConsole.Go();
+		}
+
+		private void menuOGRebootCold_Click(object sender, RoutedEventArgs e)
+		{
+			App.AssemblyStorage.AssemblySettings.XbConsole.Reboot(RebootType.Cold);
+		}
+
+		private void menuOGRebootSoft_Click(object sender, RoutedEventArgs e)
+		{
+			App.AssemblyStorage.AssemblySettings.XbConsole.Reboot(RebootType.Soft);
+		}
+
+		private void menuOGRebootTitle_Click(object sender, RoutedEventArgs e)
+		{
+			App.AssemblyStorage.AssemblySettings.XbConsole.Reboot(RebootType.Title);
+		}
+
+		private void menuOGSyncTime_Click(object sender, RoutedEventArgs e)
+		{
+			App.AssemblyStorage.AssemblySettings.XbConsole.SetSystemTime();
+		}
+
+		//360 console
+		private void menu360Screenshot_Click(object sender, RoutedEventArgs e)
+		{
+			Bitmap image;
+			try
+			{
+				ConsoleScreenshot shot = App.AssemblyStorage.AssemblySettings.XeConsole.GetScreenshot(App.AssemblyStorage.AssemblySettings.XdkScreenshotFreeze);
+				if (shot != null)
+				{
+					image = shot.ConvertToBitmap(App.AssemblyStorage.AssemblySettings.XdkResizeImages);
+					App.AssemblyStorage.AssemblySettings.HomeWindow.AddScreenTabModule(image, "Xbox 360");
+				}
 				else
 					MetroMessageBox.Show("Not Connected", "You are not connected to a debug Xbox 360.");
 			}
-			finally
-			{
-				File.Delete(screenshotFileName);
-			}
+			catch { }
 		}
 
-		private void menuFreeze_Click(object sender, RoutedEventArgs e)
+		private void menu360Stop_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.Xbdm.Freeze();
+			App.AssemblyStorage.AssemblySettings.XeConsole.Stop();
 		}
 
-		private void menuUnfreeze_Click(object sender, RoutedEventArgs e)
+		private void menu360Go_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.Xbdm.Unfreeze();
+			App.AssemblyStorage.AssemblySettings.XeConsole.Go();
 		}
 
-		private void menuRebootTitle_Click(object sender, RoutedEventArgs e)
+		private void menu360RebootCold_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.Xbdm.Reboot(Xbdm.RebootType.Title);
+			App.AssemblyStorage.AssemblySettings.XeConsole.Reboot(RebootType.Cold);
 		}
 
-		private void menuRebootCold_Click(object sender, RoutedEventArgs e)
+		private void menu360RebootSoft_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.Xbdm.Reboot(Xbdm.RebootType.Cold);
+			App.AssemblyStorage.AssemblySettings.XeConsole.Reboot(RebootType.Soft);
+		}
+
+		private void menu360RebootTitle_Click(object sender, RoutedEventArgs e)
+		{
+			App.AssemblyStorage.AssemblySettings.XeConsole.Reboot(RebootType.Title);
+		}
+
+		private void menu360SyncTime_Click(object sender, RoutedEventArgs e)
+		{
+			App.AssemblyStorage.AssemblySettings.XeConsole.SetSystemTime();
 		}
 
 		// Help
@@ -586,16 +651,16 @@ namespace Assembly.Windows
 		/// <summary>
 		///     Add a new XBox Screenshot Editor Container
 		/// </summary>
-		/// <param name="tempImageLocation">Path to the temporary location of the image</param>
-		public void AddScrenTabModule(string tempImageLocation)
+		/// <param name="bitmap">The image</param>
+		/// <param name="source">The console type that took the image, for tab title and tooltip</param>
+		public void AddScreenTabModule(Bitmap bitmap, string source)
 		{
 			var newScreenshotTab = new LayoutDocument
 			{
-				ContentId = tempImageLocation,
-				Title = "Screenshot",
-				ToolTip = tempImageLocation
+				ContentId = DateTime.Now.ToString(),
+				ToolTip = source + " Screenshot",
 			};
-			newScreenshotTab.Content = new HaloScreenshot(tempImageLocation, newScreenshotTab);
+			newScreenshotTab.Content = new HaloScreenshot(bitmap, newScreenshotTab, source);
 			documentManager.Children.Add(newScreenshotTab);
 			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newScreenshotTab);
 		}

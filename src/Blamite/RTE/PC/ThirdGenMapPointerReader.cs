@@ -1,19 +1,15 @@
-﻿using Blamite.Blam;
-using Blamite.IO;
-using Blamite.Native;
+﻿using Blamite.IO;
+using Blamite.RTE.PC.Native;
 using Blamite.Serialization;
-using Blamite.Util;
 using System;
-using System.IO;
 
-namespace Blamite.RTE.ThirdGen
+namespace Blamite.RTE.PC
 {
-	public class ThirdGenMapPointerReader : MapPointerReader
+	public class ThirdGenMapPointerReader : BaseMapPointerReader
 	{
 		public ThirdGenMapPointerReader(ProcessMemoryStream processStream, EngineDescription engineInfo, PokingInformation info)
 		{
 			_baseAddress = (long)processStream.BaseProcess.MainModule.BaseAddress;
-			GetLayoutConstants(engineInfo);
 
 			var reader = new EndianReader(processStream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
 
@@ -30,15 +26,12 @@ namespace Blamite.RTE.ThirdGen
 				_mapMagicAddress = _baseAddress + info.MagicAddress.Value;
 			}
 
-			ReadMapPointers32(reader);
-			ReadMapHeader(reader);
-			ProcessMapHeader();
+			ReadInformation(reader, engineInfo);
 		}
 
 		public ThirdGenMapPointerReader(ProcessModuleMemoryStream moduleStream, EngineDescription engineInfo, PokingInformation info)
 		{
 			_baseAddress = (long)moduleStream.BaseModule.BaseAddress;
-			GetLayoutConstants(engineInfo);
 
 			var reader = new EndianReader(moduleStream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
 
@@ -55,9 +48,7 @@ namespace Blamite.RTE.ThirdGen
 				_mapMagicAddress = _baseAddress + info.MagicAddress.Value;
 			}
 
-			ReadMapPointers64(reader);
-			ReadMapHeader(reader);
-			ProcessMapHeader();
+			ReadInformation(reader, engineInfo);
 		}
 
 		protected override void ReadMapPointers32(IReader reader)

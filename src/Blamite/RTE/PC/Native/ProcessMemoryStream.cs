@@ -3,29 +3,23 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Blamite.Native
+namespace Blamite.RTE.PC.Native
 {
 	/// <summary>
 	///     A Stream which reads/writes another process's memory.
 	/// </summary>
-	public class ProcessModuleMemoryStream : Stream
+	public class ProcessMemoryStream : Stream
 	{
 		private readonly Process _process;
-		private readonly ProcessModule _processModule;
 
 		/// <summary>
 		///     Constructs a new ProcessMemoryStream that accesses the memory of a specified process.
 		/// </summary>
 		/// <param name="process">The process to access the memory of.</param>
-		public ProcessModuleMemoryStream(Process process, string module)
+		public ProcessMemoryStream(Process process)
 		{
 			_process = process;
-
-			foreach (ProcessModule m in process.Modules)
-				if (Path.GetFileNameWithoutExtension(m.FileName) == module)
-					_processModule = m;
-
-			Position = (long)_processModule.BaseAddress;
+			Position = (long) process.MainModule.BaseAddress;
 		}
 
 		/// <summary>
@@ -34,11 +28,6 @@ namespace Blamite.Native
 		public Process BaseProcess
 		{
 			get { return _process; }
-		}
-
-		public ProcessModule BaseModule
-		{
-			get { return _processModule; }
 		}
 
 		public override bool CanRead
