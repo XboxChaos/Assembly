@@ -3,6 +3,7 @@
 ### Multi-Generation Blam Engine Research Tool ###
 
 __An Xbox/Xbox 360 console capable of running unsigned code is required, for console-based games, in order to use modifications created with Assembly. Flashed disc drives will not work.__
+
 __An Xbox/Xbox 360 console capable of running a dev kernel is required, for console-based games on their intended platform, in order to modify or interact with a game or console in real time (poking) with Assembly.__
 
 __This repository does not support files belonging to Halo Online. For Halo Online support, the most recent and active fork as of this writing can be found [here](https://github.com/Lord-Zedd/Assembly)__
