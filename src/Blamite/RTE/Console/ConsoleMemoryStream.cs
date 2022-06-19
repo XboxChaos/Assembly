@@ -55,6 +55,8 @@ namespace Blamite.RTE.Console
 		{
 			//now with caching to match xdevkit/xbdm and avoid excess commands being sent
 
+			count = Math.Min(count, buffer.Length - offset); // Make sure we don't overflow the buffer
+
 			if (count == 0)
 				return 0;
 
@@ -133,6 +135,8 @@ namespace Blamite.RTE.Console
 
 		public override void Write(byte[] buffer, int offset, int count)
 		{
+			count = Math.Min(count, buffer.Length - offset); // Make sure we don't read beyond the buffer
+
 			if (count == 0 || !_console.Connect())
 				return;
 
@@ -145,7 +149,7 @@ namespace Blamite.RTE.Console
 			}
 		
 			uint bytesWritten;
-			_console.WriteMemoryInternal((uint)Position, pokeArray, out bytesWritten);
+			_console.WriteMemoryInternal((uint)Position, count, pokeArray, out bytesWritten);
 			Position += bytesWritten;
 
 			_console.Disconnect();

@@ -164,12 +164,12 @@ namespace Blamite.RTE.Console
 		/// <param name="address">The location to write to</param>
 		/// <param name="data">The bytes to write</param>
 		/// <returns>If the write was successful</returns>
-		public bool WriteMemory(uint address, byte[] data)
+		public bool WriteMemory(uint address, int length, byte[] data)
 		{
 			if (!Connect())
 				return false;
 		
-			bool result = WriteMemoryInternal(address, data, out uint bytesWritten);
+			bool result = WriteMemoryInternal(address, length, data, out uint bytesWritten);
 		
 			Disconnect();
 		
@@ -244,14 +244,14 @@ namespace Blamite.RTE.Console
 
 		internal abstract byte[] ReadMemoryInternal(uint address, uint length, out uint bytesRead);
 
-		internal bool WriteMemoryInternal(uint address, byte[] data, out uint bytesWritten)
+		internal bool WriteMemoryInternal(uint address, int length, byte[] data, out uint bytesWritten)
 		{
 			int bufferMax = 240;
 			bytesWritten = 0;
 
-			while (bytesWritten < data.Length)
+			while (bytesWritten < length)
 			{
-				int remainderTest = data.Length - (int)bytesWritten;
+				int remainderTest = length - (int)bytesWritten;
 
 				byte[] buffer = new byte[((remainderTest < bufferMax) ? remainderTest : bufferMax)];
 				Array.Copy(data, bytesWritten, buffer, 0, (remainderTest < bufferMax) ? remainderTest : bufferMax);
