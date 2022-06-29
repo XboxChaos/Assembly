@@ -230,30 +230,39 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				}));
 
 				// Set up RTE
-				switch (_cacheFile.Engine)
+				switch (_buildInfo.PokingPlatform)
 				{
-					case EngineType.FirstGeneration:
-						if (_buildInfo.Endian == Endian.BigEndian) // CEA 360
-							_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm, 0xC226CC54);
-						else if (!string.IsNullOrEmpty(_buildInfo.GameModule)) // CEA MCC
-							_rteProvider = new FirstGenMCCRTEProvider(_buildInfo);
-						else // PC or Custom
-							_rteProvider = new FirstGenRTEProvider(_buildInfo);
+					default:
+					case RTEConnectionType.None:
+					case RTEConnectionType.ConsoleXbox:
 						break;
-
-					case EngineType.SecondGeneration:
-						if (!string.IsNullOrEmpty(_buildInfo.GameModule))
-							_rteProvider = new SecondGenMCCRTEProvider(_buildInfo);
-						else
-							_rteProvider = new SecondGenRTEProvider(_buildInfo);
+					case RTEConnectionType.ConsoleXbox360:
+						_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm);
 						break;
-
-					case EngineType.ThirdGeneration:
-						if (!string.IsNullOrEmpty(_buildInfo.GameModule))
-							_rteProvider = new ThirdGenMCCRTEProvider(_buildInfo);
-						else
-							_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm);
-						break;
+					case RTEConnectionType.LocalProcess32:
+					case RTEConnectionType.LocalProcess64:
+						{
+							if (_cacheFile.Engine == EngineType.FirstGeneration)
+							{
+								if (!string.IsNullOrEmpty(_buildInfo.PokingModule)) // CEA MCC
+									_rteProvider = new FirstGenMCCRTEProvider(_buildInfo);
+								else // PC or Custom
+									_rteProvider = new FirstGenRTEProvider(_buildInfo);
+							}
+							else if (_cacheFile.Engine == EngineType.SecondGeneration)
+							{
+								if (!string.IsNullOrEmpty(_buildInfo.PokingModule))
+									_rteProvider = new SecondGenMCCRTEProvider(_buildInfo);
+								else
+									_rteProvider = new SecondGenRTEProvider(_buildInfo);
+							}
+							else if (_cacheFile.Engine == EngineType.ThirdGeneration)
+							{
+								if (!string.IsNullOrEmpty(_buildInfo.PokingModule))
+									_rteProvider = new ThirdGenMCCRTEProvider(_buildInfo);
+							}
+							break;
+						}
 				}
 
 				Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Cache File")));

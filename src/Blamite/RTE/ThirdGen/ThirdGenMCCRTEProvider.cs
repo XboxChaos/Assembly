@@ -36,7 +36,7 @@ namespace Blamite.RTE.ThirdGen
 			if (!info.HeaderPointer.HasValue && (!info.HeaderAddress.HasValue || !info.MagicAddress.HasValue))
 				throw new NotImplementedException("Poking information is missing required values.");
 
-			var gameMemory = new ProcessModuleMemoryStream(gameProcess, _buildInfo.GameModule);
+			var gameMemory = new ProcessModuleMemoryStream(gameProcess, _buildInfo.PokingModule);
 			var mapInfo = new ThirdGenMapPointerReader(gameMemory, _buildInfo, info);
 
 			long metaMagic = mapInfo.CurrentCacheAddress;

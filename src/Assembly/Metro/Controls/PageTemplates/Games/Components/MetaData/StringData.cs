@@ -87,5 +87,10 @@
 		{
 			return string.Format("{0} | {1} | {2}", TypeStr, Name, Value);
 		}
+
+		public override object GetAsJson()
+		{
+			return Value;
+		}
 	}
 }

@@ -241,11 +241,11 @@
 	<comment title="Applying Collision Damage">for things that want to cause more or less collision damage</comment>
 	<float32 name="Apply Collision Damage Scale" offset="0x118" visible="true" tooltip="0 means 1. 1 is standard scale. Some things may want to apply more damage" />
 	<comment title="Game Collision Damage Parameters">0 - means take default value from globals.globals</comment>
-	<rangef name="Game Acceleration (default)" offset="0x11C" visible="true" tooltip="0-oo" />
-	<rangef name="Game Scale (default)" offset="0x124" visible="true" tooltip="0-1" />
+	<rangef name="Game Acceleration" offset="0x11C" visible="true" tooltip="0-oo" />
+	<rangef name="Game Scale" offset="0x124" visible="true" tooltip="0-1" />
 	<comment title="Absolute Collision Damage Parameters">0 - means take default value from globals.globals</comment>
-	<rangef name="Absolute Acceleration (default)" offset="0x12C" visible="true" tooltip="0-oo" />
-	<rangef name="Absolute Scale (default)" offset="0x134" visible="true" tooltip="0-1" />
+	<rangef name="Absolute Acceleration" offset="0x12C" visible="true" tooltip="0-oo" />
+	<rangef name="Absolute Scale" offset="0x134" visible="true" tooltip="0-1" />
 	<int16 name="HUD Text Message Index" offset="0x13C" visible="true" />
 	<int16 name="Unknown" offset="0x13E" visible="false" />
 	<tagblock name="Attachments" offset="0x140" visible="true" elementSize="0x48">
@@ -535,10 +535,10 @@
 		<option name="When At Rest" value="0x2" />
 	</enum16>
 	<enum16 name="Impact Noise" offset="0x182" visible="true">
-		<option name="Silent" value="0x0" />
+		<option name="Silent" value="0x0" tooltip="ai will not respond to this sound" />
 		<option name="Medium" value="0x1" />
 		<option name="Loud" value="0x2" />
-		<option name="Shout" value="0x3" />
+		<option name="Shout" value="0x3" tooltip="ai can hear this sound at any range" />
 		<option name="Quiet" value="0x4" />
 	</enum16>
 	<enum16 name="A In" offset="0x184" visible="true">
@@ -584,10 +584,10 @@
 	<float32 name="Final Velocity" offset="0x1E8" visible="true" tooltip="bullet's velocity when inflicting minimum damage" />
 	<degree name="Guided Angular Velocity" offset="0x1EC" visible="true" />
 	<enum16 name="Detonation Noise" offset="0x1F0" visible="true">
-		<option name="Silent" value="0x0" />
+		<option name="Silent" value="0x0" tooltip="ai will not respond to this sound" />
 		<option name="Medium" value="0x1" />
 		<option name="Loud" value="0x2" />
-		<option name="Shout" value="0x3" />
+		<option name="Shout" value="0x3" tooltip="ai can hear this sound at any range" />
 		<option name="Quiet" value="0x4" />
 	</enum16>
 	<int16 name="Unknown" offset="0x1F2" visible="false" />
@@ -617,20 +617,20 @@
 		<undefined name="Unknown" offset="0x1C" visible="false" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<comment title="Potential Result" />
-		<enum16 name="Response" offset="0x24" visible="true">
+		<enum16 name="Potential Response" offset="0x24" visible="true">
 			<option name="Disappear" value="0x0" />
 			<option name="Detonate" value="0x1" />
 			<option name="Reflect" value="0x2" />
 			<option name="Overpenetrate" value="0x3" />
 			<option name="Attach" value="0x4" />
 		</enum16>
-		<flags16 name="Flags" offset="0x26" visible="true">
+		<flags16 name="Response Flags" offset="0x26" visible="true">
 			<bit name="Only Against Units" index="0" />
 			<bit name="Never Against Units" index="1" />
 		</flags16>
-		<float32 name="Skip Fraction" offset="0x28" visible="true" />
-		<ranged name="Between" offset="0x2C" visible="true" />
-		<rangef name="And" offset="0x34" visible="true" />
+		<float32 name="Chance Fraction" offset="0x28" visible="true" />
+		<ranged name="Between Angle" offset="0x2C" visible="true" />
+		<rangef name="And Velocity" offset="0x34" visible="true" />
 		<tagRef name="Effect" offset="0x3C" visible="true" />
 		<undefined name="Unknown" offset="0x4C" visible="false" />
 		<undefined name="Unknown" offset="0x50" visible="false" />
@@ -653,7 +653,7 @@
 		<undefined name="Unknown" offset="0x8C" visible="false" />
 		<comment title="Penetration" />
 		<float32 name="Initial Friction" offset="0x90" visible="true" tooltip="the fraction of the projectile's velocity lost on penetration" />
-		<float32 name="Maximum Distance" offset="0x94" visible="true" tooltip="the maximum distance the projectile can travel through on object of this material" />
+		<float32 name="Maximum Distance" offset="0x94" visible="true" tooltip="the maximum distance the projectile can travel through an object of this material" />
 		<comment title="Reflection" />
 		<float32 name="Parallel Friction" offset="0x98" visible="true" tooltip="the fraction of the projectile's velocity parallel to the surface lost on impact" />
 		<float32 name="Perpendicular Friction" offset="0x9C" visible="true" tooltip="the fraction of the projectile's velocity perpendicular to the surface lost on impact" />

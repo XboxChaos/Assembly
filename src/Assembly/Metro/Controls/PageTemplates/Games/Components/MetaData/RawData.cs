@@ -1,5 +1,7 @@
 ﻿using Blamite.IO;
+using Blamite.Util;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
@@ -98,9 +100,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
+		private bool IsBinary
+		{
+			get { return _format == "bytes"; }
+		}
 		public int MaxLength
 		{
-			get { return _format == "bytes" ? _length * 2 : _length; }
+			get { return IsBinary ? _length * 2 : _length; }
 		}
 
 		public override void Accept(IMetaFieldVisitor visitor)
@@ -116,6 +122,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public override string AsString()
 		{
 			return string.Format("{0} | {1} | hash = {2}", Type, Name, Value.GetHashCode());
+		}
+
+		public override object GetAsJson()
+		{
+			Dictionary<string, object> dict = new Dictionary<string, object>();
+			dict["Offset"] = Offset;
+			dict["FieldAddress"] = FieldAddress;
+			dict["Length"] = _length;
+			dict["Hash"] = Value.GetHashCode();
+			if (IsBinary)
+				dict["Encoded"] = Convert.ToBase64String(FunctionHelpers.HexStringToBytes(Value));
+			else
+				dict["Data"] = Value;
+
+			return dict;
 		}
 	}
 }

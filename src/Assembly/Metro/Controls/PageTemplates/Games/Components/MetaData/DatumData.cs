@@ -1,4 +1,6 @@
-﻿namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
+﻿using System.Collections.Generic;
+
+namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
 	/// <summary>
 	///     32-bit datum, split into an index and salt
@@ -48,6 +50,16 @@
 		public override string AsString()
 		{
 			return string.Format("datum | {0} | {1} {2}", Name, Salt, Index);
+		}
+
+		public override object GetAsJson()
+		{
+			Dictionary<string, object> dict = new Dictionary<string, object>();
+			dict["Salt"] = Salt;
+			dict["Index"] = Index;
+			dict["FullInteger"] = Salt << 16 | Index;
+
+			return dict;
 		}
 	}
 }

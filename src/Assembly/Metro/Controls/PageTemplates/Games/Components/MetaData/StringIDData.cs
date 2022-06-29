@@ -48,5 +48,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			return string.Format("stringid | {0} | {1}", Name, Value);
 		}
+
+		public override object GetAsJson()
+		{
+			return Value;
+		}
 	}
 }

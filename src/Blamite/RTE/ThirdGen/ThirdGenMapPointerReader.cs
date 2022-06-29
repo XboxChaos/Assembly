@@ -22,7 +22,7 @@ namespace Blamite.RTE.ThirdGen
 				reader.SeekTo(_baseAddress + info.HeaderPointer.Value);
 				long address = reader.ReadUInt32();
 				_mapHeaderAddress = address + 0x8;
-				_mapMagicAddress = address + engineInfo.HeaderSize + engineInfo.PokingOffset;
+				_mapMagicAddress = address + engineInfo.HeaderSize + info.MagicOffset.Value;
 			}
 			else
 			{
@@ -47,7 +47,7 @@ namespace Blamite.RTE.ThirdGen
 				reader.SeekTo(_baseAddress + info.HeaderPointer.Value);
 				long address = reader.ReadInt64();
 				_mapHeaderAddress = address + 0x10;
-				_mapMagicAddress = address + engineInfo.HeaderSize + engineInfo.PokingOffset;
+				_mapMagicAddress = address + engineInfo.HeaderSize + info.MagicOffset.Value;
 			}
 			else
 			{

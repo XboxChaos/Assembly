@@ -27,7 +27,7 @@ namespace Blamite.RTE.FirstGen
 		/// </summary>
 		public RTEConnectionType ConnectionType
 		{
-			get { return RTEConnectionType.LocalProcess; }
+			get { return RTEConnectionType.LocalProcess32; }
 		}
 
 		/// <summary>
@@ -38,7 +38,7 @@ namespace Blamite.RTE.FirstGen
 		/// <returns>The stream if it was opened successfully, or null otherwise.</returns>
 		public IStream GetMetaStream(ICacheFile cacheFile)
 		{
-			if (string.IsNullOrEmpty(_buildInfo.GameExecutable))
+			if (string.IsNullOrEmpty(_buildInfo.PokingExecutable))
 				throw new InvalidOperationException("No gameExecutable value found in Engines.xml for engine " + _buildInfo.Name + ".");
 			if (_buildInfo.Poking == null)
 				throw new InvalidOperationException("No poking definitions found in Engines.xml for engine " + _buildInfo.Name + ".");
@@ -74,7 +74,7 @@ namespace Blamite.RTE.FirstGen
 
 		private Process FindGameProcess()
 		{
-			Process[] processes = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(_buildInfo.GameExecutable));
+			Process[] processes = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(_buildInfo.PokingExecutable));
 			return processes.Length > 0 ? processes[0] : null;
 		}
 	}
