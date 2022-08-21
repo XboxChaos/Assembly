@@ -19,7 +19,7 @@ namespace Blamite.RTE.Console
 			Position = 0;
 
 			_staleTimer = new Timer();
-			_staleTimer.Interval = 10000;//10 seconds
+			_staleTimer.Interval = 5000;//5 seconds
 			_staleTimer.Elapsed += StaleTimer_Elapsed;
 			_staleTimer.AutoReset = true;
 		}
