@@ -77,7 +77,7 @@ namespace Blamite.RTE.PC
 
 			if (memoryAddress == 0)
 			{
-				ErrorMessage = "Map file base memory address is 0. Check your poking definition." + GuessError;
+				ErrorMessage = "Map file base memory address is reading as 0. Check your poking definition." + GuessError;
 				return null;
 			}
 

@@ -39,7 +39,7 @@ namespace Blamite.RTE
 			get
 			{
 				return _hadToGuessVersion ?
-				"\r\nThe game version could not be confirmed and fell back to the latest entry so this error could be the result of outdated poking definitions." :
+				"\r\n\r\nNOTE: The game version could not be confirmed and fell back to the latest entry so this error could be the result of outdated poking definitions." :
 				string.Empty;
 			}
 		}
@@ -111,7 +111,7 @@ namespace Blamite.RTE
 			}
 			catch (System.ComponentModel.Win32Exception e)
 			{
-				ErrorMessage = "Cannot access game process.\r\n" + e.Message + "\r\n\r\nThis could be due to Anti-Cheat or lack of admin privileges.";
+				ErrorMessage = "Cannot access game process. The following exception occured:\r\n\"" + e.Message + "\"\r\n\r\nThis could be due to Anti-Cheat or lack of admin privileges.";
 				return null;
 			}
 
