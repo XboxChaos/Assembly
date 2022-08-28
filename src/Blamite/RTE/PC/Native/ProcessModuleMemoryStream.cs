@@ -17,13 +17,12 @@ namespace Blamite.RTE.PC.Native
 		///     Constructs a new ProcessMemoryStream that accesses the memory of a specified process.
 		/// </summary>
 		/// <param name="process">The process to access the memory of.</param>
-		public ProcessModuleMemoryStream(Process process, string module)
+		/// <param name="module">The process module to access the memory of (from the given process)</param>
+		public ProcessModuleMemoryStream(Process process, ProcessModule module)
 		{
 			_process = process;
 
-			foreach (ProcessModule m in process.Modules)
-				if (Path.GetFileNameWithoutExtension(m.FileName) == module)
-					_processModule = m;
+			_processModule = module;
 
 			Position = (long)_processModule.BaseAddress;
 		}

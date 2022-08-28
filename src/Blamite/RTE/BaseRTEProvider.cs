@@ -82,8 +82,9 @@ namespace Blamite.RTE
 		///		Gets the version of the game process and looks for a poking definition for it.
 		/// </summary>
 		/// <param name="gameProcess">The game process to check.</param>
+		/// <param name="gameModule">Optional. The game module (from the given process) to check. Can be null.</param>
 		/// <returns>The poking definition for the version if found, null if not, with <seealso cref="ErrorMessage"/> containing the reason.</returns>
-		protected PokingInformation RetrieveInformation(Process gameProcess)
+		protected PokingInformation RetrieveInformation(Process gameProcess, ProcessModule gameModule = null)
 		{
 			//verify version, and check for anticheat at the same time
 			string version = "";
@@ -92,7 +93,13 @@ namespace Blamite.RTE
 			try
 			{
 				//TODO: make winstore support not horrible; have user set their modifiablewindowsapps dir so fileversioninfo can actually be read? trying to read it from the process memory sounds like a pain in the ass
-				version = gameProcess.MainModule.FileVersionInfo.FileVersion;
+				//then again touching \Program Files will probably want admin or something and thats gross.
+
+				//check against module version if applicable in case there is a mismatch by the user for some reason
+				if (gameModule != null)
+					version = gameModule.FileVersionInfo.FileVersion;
+				else
+					version = gameProcess.MainModule.FileVersionInfo.FileVersion;
 
 				info = _buildInfo.Poking.RetrieveInformation(version);
 
@@ -119,7 +126,7 @@ namespace Blamite.RTE
 		}
 
 		/// <summary>
-		///		Tries to find a running game process using <seealso cref="EngineDescription.GameExecutable"/> and/or <seealso cref="EngineDescription.GameExecutableAlt"/>.
+		///		Tries to find a running game process using <seealso cref="EngineDescription.PokingExecutable"/> and/or <seealso cref="EngineDescription.PokingExecutableAlt"/>.
 		/// </summary>
 		/// <returns>The first instance of the found process, otherwise null, with <seealso cref="ErrorMessage"/> containing the reason.</returns>
 		protected Process FindGameProcess()
@@ -152,6 +159,28 @@ namespace Blamite.RTE
 
 			if (processes.Length > 0)
 				return processes[0];
+
+			return null;
+		}
+
+		/// <summary>
+		///		Tries to find a running game module using <seealso cref="EngineDescription.PokingModule"/>.
+		/// </summary>
+		/// <param name="process">The process to search.</param>
+		/// <param name="errorOccured">Indicates that <seealso cref="EngineDescription.PokingModule"/> was defined but was not found in the process, and that <seealso cref="ErrorMessage"/> was written to.</param>
+		/// <returns>The first instance of the found module if applicable. Returns null if <seealso cref="EngineDescription.PokingModule"/> is undefined, or if it was defined but not found, in which case <paramref name="errorOccured"/> will be true and <seealso cref="ErrorMessage"/> contains the reason.</returns>
+		protected ProcessModule FindGameModule(Process process, out bool errorOccured)
+		{
+			errorOccured = false;
+			if (!string.IsNullOrEmpty(_buildInfo.PokingModule))
+			{
+				foreach (ProcessModule m in process.Modules)
+					if (Path.GetFileNameWithoutExtension(m.FileName) == _buildInfo.PokingModule)
+						return m;
+
+				ErrorMessage = "Game process \"" + _buildInfo.PokingExecutable + "\" does not appear to be running any module named \"" + _buildInfo.PokingModule + "\".";
+				errorOccured = true;
+			}
 
 			return null;
 		}

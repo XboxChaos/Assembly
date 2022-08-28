@@ -40,7 +40,11 @@ namespace Blamite.RTE.PC
 			if (gameProcess == null)
 				return null; //ErrorMessage was handled by above.
 
-			PokingInformation info = RetrieveInformation(gameProcess);
+			ProcessModule gameModule = FindGameModule(gameProcess, out bool moduleError);
+			if (moduleError)
+				return null; //ErrorMessage was handled by above.
+
+			PokingInformation info = RetrieveInformation(gameProcess, gameModule);
 			if (info == null)
 				return null; //ErrorMessage was handled by above.
 
@@ -63,9 +67,9 @@ namespace Blamite.RTE.PC
 			Stream gameMemory;
 			SecondGenMapPointerReader mapInfo;
 
-			if (!string.IsNullOrEmpty(_buildInfo.PokingModule))
+			if (gameModule != null)
 			{
-				gameMemory = new ProcessModuleMemoryStream(gameProcess, _buildInfo.PokingModule);
+				gameMemory = new ProcessModuleMemoryStream(gameProcess, gameModule);
 				mapInfo = new SecondGenMapPointerReader((ProcessModuleMemoryStream)gameMemory, _buildInfo, info);
 			}
 			else
