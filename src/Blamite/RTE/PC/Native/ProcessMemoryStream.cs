@@ -11,15 +11,34 @@ namespace Blamite.RTE.PC.Native
 	public class ProcessMemoryStream : Stream
 	{
 		private readonly Process _process;
+		private readonly ProcessModule _processModule;
 
 		/// <summary>
-		///     Constructs a new ProcessMemoryStream that accesses the memory of a specified process.
+		///     Constructs a new ProcessMemoryStream that accesses the memory of a specified process. Uses <seealso cref="Process.MainModule"/> for <seealso cref="BaseModule"/>
 		/// </summary>
 		/// <param name="process">The process to access the memory of.</param>
 		public ProcessMemoryStream(Process process)
 		{
 			_process = process;
-			Position = (long) process.MainModule.BaseAddress;
+			_processModule = process.MainModule;
+
+			Position = (long)_processModule.BaseAddress;
+		}
+
+		/// <summary>
+		///     Constructs a new ProcessMemoryStream that accesses the memory of a specified process. Uses <paramref name="module"/> for <seealso cref="BaseModule"/> unless null, then uses <seealso cref="Process.MainModule"/>
+		/// </summary>
+		/// <param name="process">The process to access the memory of.</param>
+		/// <param name="module">The process module to access the memory of (from the given process). Can be null, where <seealso cref="Process.MainModule"/> will be used for <seealso cref="BaseModule"/></param>
+		public ProcessMemoryStream(Process process, ProcessModule module)
+		{
+			_process = process;
+			if (module != null)
+				_processModule = module;
+			else
+				_processModule = process.MainModule;
+
+			Position = (long)_processModule.BaseAddress;
 		}
 
 		/// <summary>
@@ -28,6 +47,14 @@ namespace Blamite.RTE.PC.Native
 		public Process BaseProcess
 		{
 			get { return _process; }
+		}
+
+		/// <summary>
+		///		Gets the module in the process that the stream operates on.
+		/// </summary>
+		public ProcessModule BaseModule
+		{
+			get { return _processModule; }
 		}
 
 		public override bool CanRead
@@ -47,7 +74,7 @@ namespace Blamite.RTE.PC.Native
 
 		public override long Length
 		{
-			get { return uint.MaxValue; /* FIXME: This is really hackish... */ }
+			get { return BaseModule.ModuleMemorySize; }
 		}
 
 		public override long Position { get; set; }
@@ -69,7 +96,7 @@ namespace Blamite.RTE.PC.Native
 					break;
 
 				case SeekOrigin.End:
-					Position = uint.MaxValue - offset;
+					Position = (long)BaseModule.BaseAddress + BaseModule.ModuleMemorySize - offset;
 					break;
 			}
 			return Position;

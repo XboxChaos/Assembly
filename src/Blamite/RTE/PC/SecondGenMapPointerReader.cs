@@ -11,20 +11,9 @@ namespace Blamite.RTE.PC
 
 		public SecondGenMapPointerReader(ProcessMemoryStream processStream, EngineDescription engineInfo, PokingInformation info)
 		{
-			_baseAddress = (long)processStream.BaseProcess.MainModule.BaseAddress;
-			_mapHeaderAddress = _baseAddress + info.HeaderAddress.Value;
-			_mapMagicAddress = _baseAddress + info.MagicAddress.Value;
-			_mapSharedMagicAddress = _baseAddress + info.SharedMagicAddress.Value;
+			_baseAddress = (long)processStream.BaseModule.BaseAddress;
 
 			var reader = new EndianReader(processStream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
-			ReadInformation(reader, engineInfo);
-		}
-
-		public SecondGenMapPointerReader(ProcessModuleMemoryStream moduleStream, EngineDescription engineInfo, PokingInformation info)
-		{
-			_baseAddress = (long)moduleStream.BaseModule.BaseAddress;
-
-			var reader = new EndianReader(moduleStream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
 
 			if (info.HeaderPointer.HasValue)
 			{

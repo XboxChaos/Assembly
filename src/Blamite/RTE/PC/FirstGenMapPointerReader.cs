@@ -9,21 +9,11 @@ namespace Blamite.RTE.PC
 	{
 		public FirstGenMapPointerReader(ProcessMemoryStream processStream, EngineDescription engineInfo, PokingInformation info)
 		{
-			_baseAddress = (long)processStream.BaseProcess.MainModule.BaseAddress;
+			_baseAddress = (long)processStream.BaseModule.BaseAddress;
 			_mapHeaderAddress = _baseAddress + info.HeaderAddress.Value;
 			_mapMagicAddress = _baseAddress + info.MagicAddress.Value;
 
 			var reader = new EndianReader(processStream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
-			ReadInformation(reader, engineInfo);
-		}
-
-		public FirstGenMapPointerReader(ProcessModuleMemoryStream moduleStream, EngineDescription engineInfo, PokingInformation info)
-		{
-			_baseAddress = (long)moduleStream.BaseModule.BaseAddress;
-			_mapHeaderAddress = _baseAddress + info.HeaderAddress.Value;
-			_mapMagicAddress = _baseAddress + info.MagicAddress.Value;
-
-			var reader = new EndianReader(moduleStream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
 			ReadInformation(reader, engineInfo);
 		}
 

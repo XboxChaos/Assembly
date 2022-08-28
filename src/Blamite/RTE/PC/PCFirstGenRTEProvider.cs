@@ -59,19 +59,8 @@ namespace Blamite.RTE.PC
 				return null;
 			}
 
-			Stream gameMemory;
-			FirstGenMapPointerReader mapInfo;
-
-			if (gameModule != null)
-			{
-				gameMemory = new ProcessModuleMemoryStream(gameProcess, gameModule);
-				mapInfo = new FirstGenMapPointerReader((ProcessModuleMemoryStream)gameMemory, _buildInfo, info);
-			}
-			else
-			{
-				gameMemory = new ProcessMemoryStream(gameProcess);
-				mapInfo = new FirstGenMapPointerReader((ProcessMemoryStream)gameMemory, _buildInfo, info);
-			}
+			ProcessMemoryStream gameMemory = new ProcessMemoryStream(gameProcess, gameModule);
+			FirstGenMapPointerReader mapInfo = new FirstGenMapPointerReader(gameMemory, _buildInfo, info);
 
 			long memoryAddress = mapInfo.CurrentCacheAddress;
 			if (mapInfo.MapName != cacheFile.InternalName)
