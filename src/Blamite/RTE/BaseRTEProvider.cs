@@ -174,12 +174,22 @@ namespace Blamite.RTE
 			errorOccured = false;
 			if (!string.IsNullOrEmpty(_buildInfo.PokingModule))
 			{
-				foreach (ProcessModule m in process.Modules)
-					if (Path.GetFileNameWithoutExtension(m.FileName) == _buildInfo.PokingModule)
-						return m;
+				try
+				{
+					foreach (ProcessModule m in process.Modules)
+						if (Path.GetFileNameWithoutExtension(m.FileName) == _buildInfo.PokingModule)
+							return m;
 
-				ErrorMessage = "Game process \"" + _buildInfo.PokingExecutable + "\" does not appear to be running any module named \"" + _buildInfo.PokingModule + "\".";
-				errorOccured = true;
+					ErrorMessage = "Game process \"" + _buildInfo.PokingExecutable + "\" does not appear to be running any module named \"" + _buildInfo.PokingModule + "\".";
+					errorOccured = true;
+				}
+				catch (System.ComponentModel.Win32Exception e)
+				{
+					ErrorMessage = "Cannot access game process. The following exception occured:\r\n\"" + e.Message + "\"\r\n\r\nThis could be due to Anti-Cheat or lack of admin privileges.";
+					errorOccured = true;
+
+					return null;
+				}
 			}
 
 			return null;
