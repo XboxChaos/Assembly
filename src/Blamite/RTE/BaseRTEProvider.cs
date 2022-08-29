@@ -45,7 +45,7 @@ namespace Blamite.RTE
 		}
 
 		/// <summary>
-		/// If GetGameStream returns null, this should explain why.
+		/// If GetCacheStream returns null, this should explain why.
 		/// </summary>
 		public string ErrorMessage { get; protected set; }
 
@@ -60,7 +60,6 @@ namespace Blamite.RTE
 		/// <summary>
 		///		Verifies if necessary information is present in Engines.xml for the engine to allow for poking.
 		/// </summary>
-		/// <param name="checkModule"></param>
 		/// <returns>Whether required data is present. If not, <seealso cref="ErrorMessage"/> will contain the reason.</returns>
 		protected bool CheckBuildInfo()
 		{
