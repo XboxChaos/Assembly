@@ -38,7 +38,7 @@ namespace Blamite.RTE.SecondGen
 		/// <returns>The stream if it was opened successfully, or null otherwise.</returns>
 		public IStream GetMetaStream(ICacheFile cacheFile)
 		{
-			if (string.IsNullOrEmpty(_buildInfo.PokingModule))
+			if (string.IsNullOrEmpty(_buildInfo.PokingExecutable))
 				throw new InvalidOperationException("No gameExecutable value found in Engines.xml for engine " + _buildInfo.Name + ".");
 			if (_buildInfo.Poking == null)
 				throw new InvalidOperationException("No poking definitions found in Engines.xml for engine " + _buildInfo.Name + ".");
