@@ -7,7 +7,7 @@
 		<revision author="Lehvak" version="3">Mapped Bit 7</revision>
 	</revisions>
 	<flags32 name="Flags" offset="0x0" visible="true">
-		<bit name="Allow Shadows And Gels" index="0" />
+		<bit name="Allow Shadows And Gels" index="0" tooltip="CPU lights can have shadows and gels" />
 		<bit name="Shadow Casting" index="1" tooltip="turns on shadow casting" />
 		<bit name="Render First Person Only" index="2" tooltip="only render when camera is 1st person" />
 		<bit name="Render Third Person Only" index="3" tooltip="don't render when camera is 3rd person" />
@@ -17,41 +17,17 @@
 		<bit name="Move To Camera In First Person" index="7" tooltip="moves the light to match the camera" />
 		<bit name="Never Priority Cull" index="8" tooltip="never cull this light because of low priority" />
 		<bit name="Affected By Game Can Use Flashlights" index="9" />
-		<bit name="Screenspace Specular Lighting" index="10" tooltip="uses expensive specular lighting on screenspace lights" />
-		<bit name="Always On For Weapon" index="11" tooltip="even it is dropped" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
-		<bit name="Bit 16" index="16" />
-		<bit name="Bit 17" index="17" />
-		<bit name="Bit 18" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Bit 20" index="20" />
-		<bit name="Bit 21" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Bit 25" index="25" />
-		<bit name="Bit 26" index="26" />
-		<bit name="Bit 27" index="27" />
-		<bit name="Bit 28" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Bit 31" index="31" />
 	</flags32>
 	<enum16 name="Type" offset="0x4" visible="true">
 		<option name="Sphere" value="0x0" />
-		<option name="Projective" value="0x1" />
+		<option name="Frustum" value="0x1" />
 	</enum16>
 	<int16 name="Unknown" offset="0x6" visible="false" />
-	<comment title="Sphere Light">default shape parameters for spherical lights</comment>
-	<float32 name="Radius" offset="0x8" visible="true" tooltip="the radius at which illumination falls off to zero" />
-	<comment title="Frustum Light">default shape parameters for frustum lights (orthogonal, projective or pyramid types)</comment>
-	<float32 name="Near Width" offset="0xC" visible="true" tooltip="width of the frustum light at its near plane" />
-	<float32 name="Height Stretch" offset="0x10" visible="true" tooltip="how much the gel is stretched vertically (0.0 or 1.0 = aspect ratio same as gel)" />
-	<float32 name="Field Of View" offset="0x14" visible="true" tooltip="horizontal angle that the frustum light covers (0.0 = no spread, a parallel beam)" />
-	<comment title="Color Change" />
+	<float32 name="Maximum Distance" offset="0x8" visible="true" tooltip="maximum distance the light reaches (the light can become very dark well before this distance if you set your distance diffusion low)" />
+	<float32 name="Frustum Near Width" offset="0xC" visible="true" tooltip="width of the frustum at the near plane" />
+	<float32 name="Frustum Height Scale" offset="0x10" visible="true" tooltip="how much the gel is stretched vertically (0.0 or 1.0 = aspect ratio same as gel)" />
+	<float32 name="Frustum Field Of View" offset="0x14" visible="true" tooltip="horizontal angle that the frustum light covers (0.0 = no spread, a straight beam of light)" />
+	<comment title="Color">color and intensity of the light</comment>
 	<stringid name="Input Variable" offset="0x18" visible="true" />
 	<stringid name="Range Variable" offset="0x1C" visible="true" />
 	<enum16 name="Output Modifier" offset="0x20" visible="true">
@@ -74,14 +50,52 @@
 	<stringid name="Output Modifier Input" offset="0x48" visible="true" />
 	<dataref name="Function" offset="0x4C" visible="true" />
 	<comment title="Gel" />
-	<tagRef name="Gel Map" offset="0x60" visible="true" />
-	<float32 name="Unknown" offset="0x70" visible="false" />
-	<float32 name="Unknown" offset="0x74" visible="false" />
-	<float32 name="Unknown" offset="0x78" visible="false" />
-	<float32 name="Unknown" offset="0x7C" visible="false" />
-	<int8 name="Unknown" offset="0x80" visible="false" />
-	<int8 name="Unknown" offset="0x81" visible="false" />
-	<int8 name="Unknown" offset="0x82" visible="false" />
+	<tagRef name="Gel Bitmap" offset="0x60" visible="true" />
+	<comment title="FALLOFF">falloff of the light</comment>
+	<float32 name="Distance Diffusion" offset="0x70" visible="true" tooltip="approximately the physical size in world units of the light source itself. small values cause the light to become very bright close to the light source, but quickly die off as you move away" />
+	<float32 name="Angular Smoothness" offset="0x74" visible="true" tooltip="less than 1.0 for sharp edges, greater than 1.0 for smooth edges" />
+	<float32 name="Percent Spherical" offset="0x78" visible="true" tooltip="percentage of ambient (spherical) light" />
+	<comment title="LIFETIME">controls the lifetime of unattached lights</comment>
+	<float32 name="Destroy Light After" offset="0x7C" visible="true" tooltip="automatically destroys the light after it has existed this long (0 to disable)" />
+	<comment title="LIGHT PRIORITY PARAMETERS">Sets priorities on lights, to identify the best ones to render with
+You can choose priorities for near and far, as well as what distance it transitions between the two</comment>
+	<enum8 name="Near Priority" offset="0x80" visible="true" tooltip="priority when the light is fullscreen in size">
+		<option name="Default" value="0x0" />
+		<option name="Insanely High" value="0x1" />
+		<option name="1 --- Very High" value="0x2" />
+		<option name="2" value="0x3" />
+		<option name="3 --- High" value="0x4" />
+		<option name="4" value="0x5" />
+		<option name="5 --- Default" value="0x6" />
+		<option name="6" value="0x7" />
+		<option name="7 --- Low" value="0x8" />
+		<option name="8" value="0x9" />
+		<option name="9 --- Very Low" value="0xA" />
+		<option name="Next To Nothing" value="0xB" />
+	</enum8>
+	<enum8 name="Far Priority" offset="0x81" visible="true" tooltip="priority when the light is very far away">
+		<option name="Default" value="0x0" />
+		<option name="Insanely High" value="0x1" />
+		<option name="1 --- Very High" value="0x2" />
+		<option name="2" value="0x3" />
+		<option name="3 --- High" value="0x4" />
+		<option name="4" value="0x5" />
+		<option name="5 --- Default" value="0x6" />
+		<option name="6" value="0x7" />
+		<option name="7 --- Low" value="0x8" />
+		<option name="8" value="0x9" />
+		<option name="9 --- Very Low" value="0xA" />
+		<option name="Next To Nothing" value="0xB" />
+	</enum8>
+	<enum8 name="Transition Distance" offset="0x82" visible="true" tooltip="specifies where the transition occurs between near and far priority">
+		<option name="Default" value="0x0" />
+		<option name="Very Close" value="0x1" />
+		<option name="Close" value="0x2" />
+		<option name="Middle" value="0x3" />
+		<option name="Far" value="0x4" />
+		<option name="Very Far" value="0x5" />
+	</enum8>
 	<int8 name="Unknown" offset="0x83" visible="false" />
+	<comment title="ATTACHMENTS">Everything you can attach to a light</comment>
 	<tagRef name="Lens Flare" offset="0x84" visible="true" />
 </plugin>

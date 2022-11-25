@@ -89,11 +89,7 @@
 			<option name="Brute Claymore" value="0x3" />
 			<option name="Firebomb" value="0x4" />
 		</enum16>
-		<enum16 name="Behavior Tree Root" offset="0x1A" visible="true">
-			<option name="Default" value="0x0" />
-			<option name="Scarab" value="0x1" />
-			<option name="Flying" value="0x2" />
-		</enum16>
+		<int16 name="Unknown" offset="0x1A" visible="false" />
 	</tagblock>
 	<tagblock name="Vitality Properties" offset="0x78" visible="true" elementSize="0x80">
 		<flags32 name="Vitality Flags" offset="0x0" visible="true">
@@ -179,7 +175,7 @@
 			<bit name="No Side-Step" index="1" />
 			<bit name="Prefer To Combat Near Friends" index="2" />
 			<bit name="Hop (To Cover Path Segments)" index="3" />
-			<bit name="Allow Jump to Firing Position" index="4" />
+			<bit name="Hop (To End Of Path)" index="4" />
 			<bit name="Allow Boosted Jump" index="5" />
 			<bit name="Perch" index="6" />
 			<bit name="Climb" index="7" />
@@ -190,23 +186,6 @@
 			<bit name="Always Use Search Points" index="12" />
 			<bit name="Keep Moving" index="13" />
 			<bit name="Cure Isolation Jump" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
 		</flags32>
 		<float32 name="Pathfinding Radius" offset="0x4" visible="true" />
 		<float32 name="Destination Radius" offset="0x8" visible="true" />
@@ -276,9 +255,9 @@
 			<bit name="Bit 14" index="14" />
 			<bit name="Bit 15" index="15" />
 		</flags32>
-		<float32 name="Unknown" offset="0x20" visible="true" />
-		<float32 name="Unknown" offset="0x24" visible="true" />
-		<float32 name="Unknown" offset="0x28" visible="true" />
+		<float32 name="Throttle Scale" offset="0x20" visible="true" />
+		<float32 name="Throttle Dampening" offset="0x24" visible="true" tooltip="0 = slow change in throttle, 1 = fast change in throttle" />
+		<float32 name="Walk Distance" offset="0x28" visible="true" tooltip="Under this distance, actors will walk instead of run" />
 	</tagblock>
 	<tagblock name="Flocking Properties" offset="0xB4" visible="true" elementSize="0x18">
 		<float32 name="Deceleration Distance" offset="0x0" visible="true" />
@@ -309,6 +288,8 @@
 			<bit name="Engage Perch" index="0" />
 			<bit name="Fight Constant Movement" index="1" />
 			<bit name="Flight Fight Constant Movement" index="2" />
+			<bit name="Disallow Combat Crouching" index="3" />
+			<bit name="Disallow Crouch Shooting" index="4" />
 		</flags32>
 		<rangef name="Reposition Bounds" offset="0x4" visible="true" tooltip="How long should I remain at a firing position before moving? (0 values will use the default values of 6 and 7 seconds)" />
 		<float32 name="Crouch Danger Threshold" offset="0xC" visible="true" tooltip="When danger rises above the threshold, the actor crouches" />
@@ -332,9 +313,9 @@
 		<float32 name="Melee Leap Chance" offset="0x24" visible="true" />
 		<float32 name="Ideal Leap Velocity" offset="0x28" visible="true" />
 		<float32 name="Maximum Leap Velocity" offset="0x2C" visible="true" />
-		<float32 name="Melee Leap Ballistic" offset="0x30" visible="true" tooltip="min ballistic fraction" />
+		<float32 name="Melee Leap Ballistic" offset="0x30" visible="true" />
 		<float32 name="Melee Delay Timer" offset="0x34" visible="true" tooltip="time between melee leaps" />
-		<float32 name="Melee Leap Prediction Time" offset="0x38" visible="true" tooltip="how far ahead (seconds) do we look at target for translational prediction?" />
+		<float32 name="Leader Abandoned Berserk Chance" offset="0x38" visible="true" tooltip="chance for a leader to berserk when all his followers die (actually charge, NOT berserk, but I'm not changing the name of the variable)" />
 		<rangef name="Shield-Down Berserk Chance" offset="0x3C" visible="true" tooltip="lower bound is chance to berserk at max range, upper bound is chance to berserk at min range, requires shield depleted berserk impulse" />
 		<rangef name="Shield-Down Berserk Ranges" offset="0x44" visible="true" />
 		<tagRef name="Berserk Weapon" offset="0x4C" visible="true" tooltip="when I berserk, I pull out a ..." />
@@ -363,28 +344,30 @@
 			<bit name="Bit 0" index="0" />
 		</flags32>
 		<rangef name="Hide Behind Cover Time" offset="0x4" visible="true" tooltip="how long we stay behind cover after seeking cover" />
-		<float32 name="Cover Vitality Threshold" offset="0xC" visible="true" tooltip="When vitality drops below this level, possibly trigger a cover" />
-		<float32 name="Cover Shield Fraction" offset="0x10" visible="true" tooltip="trigger cover when shield drops below this fraction (low shield cover impulse must be enabled)" />
-		<float32 name="Cover Check Delay" offset="0x14" visible="true" tooltip="amount of time I will wait before trying again after covering" />
-		<float32 name="Cover Danger Threshold" offset="0x18" visible="true" tooltip="Danger must be this high to cover. At danger level of 'danger threshold', the chance of seeking cover is the cover chance lower bound (below)" />
+		<comment title="Cover Conditions">The following fields dictate the conditions under which we will go into cover.</comment>
+		<float32 name="Cover Shield Fraction" offset="0xC" visible="true" tooltip="Only cover when shield falls below this level" />
+		<float32 name="Cover Vitality Threshold" offset="0x10" visible="true" tooltip="Only cover when vitality falls below this level" />
+		<float32 name="Disallow Cover Distance" offset="0x14" visible="true" tooltip="Disallow covering from visible target closer than this distance" />
+		<float32 name="Cover Danger Threshold" offset="0x18" visible="true" tooltip="Danger must be this high to cover. At a danger level of 'danger threshold', the chance of seeking cover is the cover chance lower bound (below)" />
 		<float32 name="Danger Upper Threshold" offset="0x1C" visible="true" tooltip="At or above danger level of upper threshold, the chance of seeking cover is the cover chance upper bound (below)" />
-		<comment title="Cover Chance">The bounds on the chance of seeking cover.
-The lower bound is valid when the danger is at 'danger threshold'
+		<comment title="Cover Bounds">The bounds on the chance of seeking cover.
+The lower bound is valid when the danger is at 'cover danger threshold'.
 The upper bound is valid when the danger is at or above 'danger upper threshold'.
 It is interpolated linearly everywhere in between.
 All chances are expressed as 'chance of triggering cover in a 1 second period'.</comment>
-		<rangef name="Cover Chance Time" offset="0x20" visible="true" tooltip="Bounds on the chances of seeking cover." />
-		<float32 name="Cover Check Delay" offset="0x28" visible="true" tooltip="Amount of time I will wait before trying again after covering (0 value defaults to 2 seconds)" />
-		<float32 name="Cover Pinned Down Check Delay" offset="0x2C" visible="true" tooltip="Amount of time I will wait before issuing a pinned down message (0 value defaults to 2 seconds)" />
-		<float32 name="Emerge From Cover When Shield Fraction Reaches Threshold" offset="0x30" visible="true" tooltip="Emerge from cover when shield fraction reaches threshold" />
-		<float32 name="Proximity Self-Preserve" offset="0x34" visible="true" tooltip="When the proximity_self_preservation impulse is enabled, triggers self-preservation when target within this distance" />
-		<float32 name="Disallow Cover Distance" offset="0x38" visible="true" tooltip="Disallow covering from visible target under the given distance away" />
+		<rangef name="Cover Chance" offset="0x20" visible="true" tooltip="Bounds on the chances of seeking cover, given the above conditions are valid." />
+		<comment title="Shielded Cover Bounds">Same as above, but when shielded. If both values are 0 (which is the default for all existing character tags), then the normal values, above, will be used. If you don't want a character to cover when shielded, then set 'cover shield fraction' to 0 instead.</comment>
+		<rangef name="Shielded Cover Chance" offset="0x28" visible="true" tooltip="Bounds on the chances of seeking cover when shielded, given the above conditions are valid." />
+		<comment title="Other" />
+		<float32 name="Cover Check Delay" offset="0x30" visible="true" tooltip="Amount of time I will wait before trying again after covering (0 value defaults to 2 seconds)" />
+		<float32 name="Emerge From Cover When Shield Fraction Reaches Threshold" offset="0x34" visible="true" tooltip="Emerge from cover when shield fraction reaches threshold" />
+		<float32 name="Proximity Self-Preserve" offset="0x38" visible="true" tooltip="Triggers self-preservation when target within this distance (assuming proximity_self_preserve_impulse is enabled)" />
 		<float32 name="Proximity Melee Distance" offset="0x3C" visible="true" tooltip="When self preserving from a target less than given distance, causes melee attack (assuming proximity_melee_impulse is enabled)" />
 		<float32 name="Unreachable Enemy Danger Threshold" offset="0x40" visible="true" tooltip="When danger from an unreachable enemy surpasses threshold, actor cover (assuming unreachable_enemy_cover impulse is enabled)" />
-		<float32 name="Scary Target Threshold" offset="0x44" visible="true" tooltip="When target is aware of me and surpasses the given scariness, self-preserve (scary_target_cover_impulse)" />
-		<float32 name="Vitality Fraction Bubbleshield" offset="0x48" visible="true" tooltip="Fraction of vitality below which an equipped bubbleshield equipment will be activated (once damage has died down)" />
-		<float32 name="Recent Damage Shield Equipment" offset="0x4C" visible="true" tooltip="Must have less than this amount of recent body damage before we can deploy our equipped shield equipment." />
-		<undefined name="Unknown" offset="0x50" visible="true" />
+		<float32 name="Scary Target Threshold" offset="0x44" visible="true" tooltip="When target is aware of me and surpasses the given scariness, self-preserve (assuming scary_target_cover_impulse is enabled)" />
+		<float32 name="Shield Depleted Cover Chance" offset="0x48" visible="true" tooltip="Probability of going straight into cover when shield is depleted (assuming shield_depleted_cover_impulse is enabled)" />
+		<float32 name="Vitality Fraction Shield Equipment" offset="0x4C" visible="true" tooltip="Fraction of vitality below which an equipped shield equipment (instant cover/bubbleshield) will be activated (once damage has died down, and assuming shield_equipment_impulse is enabled)" />
+		<float32 name="Recent Damage Shield Equipment" offset="0x50" visible="true" tooltip="Must have less than this amount of recent body damage before we can deploy our equipped shield equipment." />
 	</tagblock>
 	<tagblock name="Retreat Properties" offset="0x108" visible="true" elementSize="0x58">
 		<flags32 name="Retreat Flags" offset="0x0" visible="true">
@@ -418,7 +401,8 @@ All chances are expressed as 'chance of triggering cover in a 1 second period'.<
 		<rangef name="Search Time" offset="0x4" visible="true" />
 		<float32 name="Search Distance" offset="0xC" visible="true" tooltip="Maximum distance away from our firing positions that we are happy to search (0 value will default to 3wu). Does not affect vehicle search distance (see maxd if you want that value too)." />
 		<rangef name="Uncover Distance Bounds" offset="0x10" visible="true" tooltip="Distance of uncover point from target. Hard lower limit, soft upper limit." />
-		<rangef name="Vocalization Time" offset="0x18" visible="true" />
+		<float32 name="Orphan Offset" offset="0x18" visible="true" tooltip="(0 value will default to 1.8wu)" />
+		<float32 name="Minimum Offset" offset="0x1C" visible="true" tooltip="Minimum offset from the target point to investigate, otherwise we just use the target point itself. Not entirely sure about the justification for this one..." />
 	</tagblock>
 	<tagblock name="Pre-Search Properties" offset="0x120" visible="true" elementSize="0x28">
 		<flags32 name="Pre-Search Flags" offset="0x0" visible="true">
@@ -429,7 +413,7 @@ All chances are expressed as 'chance of triggering cover in a 1 second period'.<
 		<float32 name="Minimum Certainty Radius" offset="0x14" visible="true" />
 		<float32 name="Unknown" offset="0x18" visible="true" />
 		<rangef name="Minimum Suppressing Time" offset="0x1C" visible="true" tooltip="if the min suppressing time expires and the target is outside min-certainty radius, suppressing fire turns off" />
-		<int16 name="Unknown" offset="0x24" visible="false" />
+		<int16 name="Max Suppress Count" offset="0x24" visible="true" tooltip="the maximum number of guys allowed to be suppressing at one time" />
 		<int16 name="Unknown" offset="0x26" visible="false" />
 	</tagblock>
 	<tagblock name="Idle Properties" offset="0x12C" visible="true" elementSize="0xC">
@@ -440,7 +424,7 @@ All chances are expressed as 'chance of triggering cover in a 1 second period'.<
 		<comment title="Skip Fraction">For vocalization with priority &lt; react, multiplies the skip fraction in the dialogue globals tag.
 For priorities &gt; react, multiplies the vocalization WEIGHT (i.e. the desire of that character to vocalize RELATIVE to other characters in the scene).
 Thus if you hurt the arbiter, say, he's still going to yell at you, no matter what, and if you kill somebody and nobody else is there to witness it, he will yell at you.
-As always, 0 means speak normally, 1 means skip everything (don't say shit)</comment>
+As always, 0 means speak normally, 1 means skip everything (don't say anything)</comment>
 		<float32 name="Character Skip Fraction" offset="0x0" visible="true" />
 		<float32 name="Look Comment Time" offset="0x4" visible="true" tooltip="How long does the player look at an AI before the AI responds?" />
 		<float32 name="Look Long Comment Time" offset="0x8" visible="true" tooltip="How long does the player look at the AI before he responds with his 'long look' comment?" />
@@ -712,7 +696,7 @@ for example if the burst origin angle and the burst return angle were both zero,
 		<comment title="Equipment">Create one of these for each equipment type that you would like a character to be able to use. If you specify a relative drop chance of greater than zero then the character will use and drop this type of equipment with that (relative) chance. If you leave the equipment field empty, then there will be that (relative) chance of using and dropping no equipment at all.</comment>
 		<tagRef name="Equipment" offset="0x0" visible="true" tooltip="The equipment item that is to be usable" />
 		<flags32 name="Flags" offset="0x10" visible="true">
-			<bit name="Stop If No Energy" index="0" />
+			<bit name="Default Equipment" index="0" />
 		</flags32>
 		<float32 name="Relative Drop Chance" offset="0x14" visible="true" tooltip="The relative chance of this equipment being dropped with respect to the other pieces of equipment specified in this block" />
 		<tagblock name="Equipment Use" offset="0x18" visible="true" elementSize="0xC">
@@ -731,7 +715,6 @@ for example if the burst origin angle and the burst return angle were both zero,
 				<option name="Throw At Enemy" value="0x1" />
 				<option name="Throw At Feet" value="0x2" />
 				<option name="Use On Self" value="0x3" />
-				<option name="Stop Using On Self" value="0x4" />
 			</enum16>
 			<comment title="Skip Fraction">Given that we have decided to use this equipment, should we do so? (0= always use it, 1= never use it). Heroic skip fraction is the average of normal and legendary chances.</comment>
 			<float32 name="Easy/Normal" offset="0x4" visible="true" />

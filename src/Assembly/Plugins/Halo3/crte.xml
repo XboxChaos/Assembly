@@ -4,308 +4,242 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
-	<stringid name="Name" offset="0x0" visible="true" />
-	<int32 name="Frame Count" offset="0x4" visible="true" />
+	<comment title="Cortana/Gravemind Effect">effect length controls all code-side behavior
+everything except script stops after ticks elapse
+
+for each effect, source/dest mix control how the rgb channels are combined into the single effect value and how that single value gets written out
+
+the optional animations are relative to the default</comment>
+	<stringid name="Activation Name" offset="0x0" visible="true" />
+	<int32 name="Effect Length Ticks" offset="0x4" visible="true" />
 	<tagblock name="Sounds" offset="0x8" visible="true" elementSize="0x14">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<tagref name="Sound" offset="0x4" visible="true" />
+		<int32 name="Start Tick" offset="0x0" visible="true" />
+		<tagRef name="Sound Reference" offset="0x4" visible="true" />
 	</tagblock>
-	<dataref name="Unknown" format="asciiz" offset="0x14" visible="false" />
-	<dataref name="Unknown" format="asciiz" offset="0x28" visible="false" />
+	<dataref name="Header Script" format="asciiz" offset="0x14" visible="true" tooltip="leftover import data, editing won't do anything" />
+	<dataref name="Footer Script" format="asciiz" offset="0x28" visible="true" tooltip="leftover import data, editing won't do anything" />
 	<tagRef name="Cinematic Scene" offset="0x3C" visible="true" />
-	<stringid name="Anchor Name" offset="0x4C" visible="true" />
-	<tagblock name="Unknown" offset="0x50" visible="true" elementSize="0x48">
-		<tagblock name="Unknown 2val fov?" offset="0x0" visible="true" elementSize="0x30">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int16 name="Unknown" offset="0x2" visible="false" />
-			<float32 name="Unknown" offset="0x4" visible="false" />
-			<float32 name="Unknown" offset="0x8" visible="false" />
-			<float32 name="Unknown" offset="0xC" visible="false" />
-			<float32 name="Value 1" offset="0x10" visible="true" />
-			<float32 name="Value 2" offset="0x14" visible="true" />
-			<tagblock name="Dynamic Values" offset="0x18" visible="true" elementSize="0x20">
-				<tagblock name="Frames" offset="0x0" visible="true" elementSize="0xC">
-					<int32 name="Frame" offset="0x0" visible="true" />
-					<float32 name="Value 1" offset="0x4" visible="true" />
-					<float32 name="Value 2" offset="0x8" visible="true" />
+	<stringid name="Cinematic Anchor Name" offset="0x4C" visible="true" />
+	<tagblock name="Background Effect Parameters" offset="0x50" visible="true" elementSize="0x48">
+		<tagblock name="FOV Animation" offset="0x0" visible="true" elementSize="0x30" tooltip="applies a scale to the camera FOV">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Smooth Keyframe Interpolation" index="0" />
+			</flags32>
+			<point3 name="Source Mix" offset="0x4" visible="true" tooltip="not used" />
+			<point2 name="Default" offset="0x10" visible="true" />
+			<tagblock name="Animation" offset="0x18" visible="true" elementSize="0x20">
+				<tagblock name="Keyframes" offset="0x0" visible="true" elementSize="0xC">
+					<int32 name="Frame Index" offset="0x0" visible="true" />
+					<float32 name="FOV Scale" offset="0x4" visible="true" />
+					<float32 name="Unused" offset="0x8" visible="true" />
 				</tagblock>
-				<dataRef name="Frame Function" offset="0xC" visible="true" />
+				<dataRef name="Default Function" offset="0xC" visible="true" />
 			</tagblock>
-			<float32 name="Unknown" offset="0x24" visible="false" />
-			<float32 name="Unknown" offset="0x28" visible="false" />
-			<float32 name="Unknown" offset="0x2C" visible="false" />
+			<point3 name="Destination Mix" offset="0x24" visible="true" tooltip="not used" />
 		</tagblock>
-		<tagblock name="Unknown 3val saturation?" offset="0xC" visible="true" elementSize="0x34">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int16 name="Unknown" offset="0x2" visible="false" />
-			<float32 name="Unknown" offset="0x4" visible="false" />
-			<float32 name="Unknown" offset="0x8" visible="false" />
-			<float32 name="Unknown" offset="0xC" visible="false" />
-			<float32 name="Value 1" offset="0x10" visible="true" />
-			<float32 name="Value 2" offset="0x14" visible="true" />
-			<float32 name="Value 3" offset="0x18" visible="true" />
-			<tagblock name="Dynamic Values" offset="0x1C" visible="true" elementSize="0x20">
-				<tagblock name="Frames" offset="0x0" visible="true" elementSize="0x10">
-					<int32 name="Frame" offset="0x0" visible="true" />
-					<float32 name="Value 1" offset="0x4" visible="true" />
-					<float32 name="Value 2" offset="0x8" visible="true" />
-					<float32 name="Value 3" offset="0xC" visible="true" />
+		<tagblock name="Hue/Saturation/Contrast Animation" offset="0xC" visible="true" elementSize="0x34">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Smooth Keyframe Interpolation" index="0" />
+			</flags32>
+			<point3 name="Source Mix" offset="0x4" visible="true" tooltip="not used" />
+			<point3 name="Default" offset="0x10" visible="true" />
+			<tagblock name="Animation" offset="0x1C" visible="true" elementSize="0x20">
+				<tagblock name="Keyframes" offset="0x0" visible="true" elementSize="0x10">
+					<int32 name="Frame Index" offset="0x0" visible="true" />
+					<float32 name="Hue Bias" offset="0x4" visible="true" tooltip="-10, 10" />
+					<float32 name="Saturation Bias" offset="0x8" visible="true" tooltip="-1, 1" />
+					<float32 name="Contrast Enhance" offset="0xC" visible="true" tooltip="-1, 1" />
 				</tagblock>
-				<dataRef name="Frame Function" offset="0xC" visible="true" />
+				<dataRef name="Default Function" offset="0xC" visible="true" />
 			</tagblock>
-			<float32 name="Unknown" offset="0x28" visible="false" />
-			<float32 name="Unknown" offset="0x2C" visible="false" />
-			<float32 name="Unknown" offset="0x30" visible="false" />
+			<point3 name="Destination Mix" offset="0x28" visible="true" tooltip="not used" />
 		</tagblock>
-		<tagblock name="Unknown 3val color?" offset="0x18" visible="true" elementSize="0x34">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int16 name="Unknown" offset="0x2" visible="false" />
-			<float32 name="Unknown" offset="0x4" visible="false" />
-			<float32 name="Unknown" offset="0x8" visible="false" />
-			<float32 name="Unknown" offset="0xC" visible="false" />
-			<float32 name="Value 1" offset="0x10" visible="true" />
-			<float32 name="Value 2" offset="0x14" visible="true" />
-			<float32 name="Value 3" offset="0x18" visible="true" />
-			<tagblock name="Dynamic Values" offset="0x1C" visible="true" elementSize="0x20">
-				<tagblock name="Frames" offset="0x0" visible="true" elementSize="0x10">
-					<int32 name="Frame" offset="0x0" visible="true" />
-					<float32 name="Value 1" offset="0x4" visible="true" />
-					<float32 name="Value 2" offset="0x8" visible="true" />
-					<float32 name="Value 3" offset="0xC" visible="true" />
+		<tagblock name="Color Animation" offset="0x18" visible="true" elementSize="0x34" tooltip="applies a per-channel scale to background">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Smooth Keyframe Interpolation" index="0" />
+			</flags32>
+			<point3 name="Source Mix" offset="0x4" visible="true" tooltip="not used" />
+			<point3 name="Default" offset="0x10" visible="true" />
+			<tagblock name="Animation" offset="0x1C" visible="true" elementSize="0x20">
+				<tagblock name="Keyframes" offset="0x0" visible="true" elementSize="0x10">
+					<int32 name="Frame Index" offset="0x0" visible="true" />
+					<float32 name="Red Scale" offset="0x4" visible="true" />
+					<float32 name="Green Scale" offset="0x8" visible="true" />
+					<float32 name="Blue Scale" offset="0xC" visible="true" />
 				</tagblock>
-				<dataRef name="Frame Function" offset="0xC" visible="true" />
+				<dataRef name="Default Function" offset="0xC" visible="true" />
 			</tagblock>
-			<float32 name="Unknown" offset="0x28" visible="false" />
-			<float32 name="Unknown" offset="0x2C" visible="false" />
-			<float32 name="Unknown" offset="0x30" visible="false" />
+			<point3 name="Destination Mix" offset="0x28" visible="true" tooltip="not used" />
 		</tagblock>
-		<tagblock name="Unknown 2val" offset="0x24" visible="true" elementSize="0x30">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int16 name="Unknown" offset="0x2" visible="false" />
-			<float32 name="Unknown" offset="0x4" visible="false" />
-			<float32 name="Unknown" offset="0x8" visible="false" />
-			<float32 name="Unknown" offset="0xC" visible="false" />
-			<float32 name="Value 1" offset="0x10" visible="true" />
-			<float32 name="Value 2" offset="0x14" visible="true" />
-			<tagblock name="Dynamic Values" offset="0x18" visible="true" elementSize="0x20">
-				<tagblock name="Frames" offset="0x0" visible="true" elementSize="0xC">
-					<int32 name="Frame" offset="0x0" visible="true" />
-					<float32 name="Value 1" offset="0x4" visible="true" />
-					<float32 name="Value 2" offset="0x8" visible="true" />
+		<tagblock name="Rumble Animation" offset="0x24" visible="true" elementSize="0x30" tooltip="directly sets rumble motors">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Smooth Keyframe Interpolation" index="0" />
+			</flags32>
+			<point3 name="Source Mix" offset="0x4" visible="true" tooltip="not used" />
+			<point2 name="Default" offset="0x10" visible="true" />
+			<tagblock name="Animation" offset="0x18" visible="true" elementSize="0x20">
+				<tagblock name="Keyframes" offset="0x0" visible="true" elementSize="0xC">
+					<int32 name="Frame Index" offset="0x0" visible="true" />
+					<float32 name="Low Frequency Rumble" offset="0x4" visible="true" />
+					<float32 name="High Frequency Rumble" offset="0x8" visible="true" />
 				</tagblock>
-				<dataRef name="Frame Function" offset="0xC" visible="true" />
+				<dataRef name="Default Function" offset="0xC" visible="true" />
 			</tagblock>
-			<float32 name="Unknown" offset="0x24" visible="false" />
-			<float32 name="Unknown" offset="0x28" visible="false" />
-			<float32 name="Unknown" offset="0x2C" visible="false" />
+			<point3 name="Destination Mix" offset="0x24" visible="true" tooltip="not used" />
 		</tagblock>
-		<tagblock name="Unknown 2val hud?" offset="0x30" visible="true" elementSize="0x30">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int16 name="Unknown" offset="0x2" visible="false" />
-			<float32 name="Unknown" offset="0x4" visible="false" />
-			<float32 name="Unknown" offset="0x8" visible="false" />
-			<float32 name="Unknown" offset="0xC" visible="false" />
-			<float32 name="Value 1" offset="0x10" visible="true" />
-			<float32 name="Value 2" offset="0x14" visible="true" />
-			<tagblock name="Dynamic Values" offset="0x18" visible="true" elementSize="0x20">
-				<tagblock name="Frames" offset="0x0" visible="true" elementSize="0xC">
-					<int32 name="Frame" offset="0x0" visible="true" />
-					<float32 name="Value 1" offset="0x4" visible="true" />
-					<float32 name="Value 2" offset="0x8" visible="true" />
+		<tagblock name="CHUD Alpha Animation" offset="0x30" visible="true" elementSize="0x30" tooltip="fades out chud">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Smooth Keyframe Interpolation" index="0" />
+			</flags32>
+			<point3 name="Source Mix" offset="0x4" visible="true" tooltip="not used" />
+			<point2 name="Default" offset="0x10" visible="true" />
+			<tagblock name="Animation" offset="0x18" visible="true" elementSize="0x20">
+				<tagblock name="Keyframes" offset="0x0" visible="true" elementSize="0xC">
+					<int32 name="Frame Index" offset="0x0" visible="true" />
+					<float32 name="CHUD Alpha" offset="0x4" visible="true" />
+					<float32 name="Unused" offset="0x8" visible="true" />
 				</tagblock>
-				<dataRef name="Frame Function" offset="0xC" visible="true" />
+				<dataRef name="Default Function" offset="0xC" visible="true" />
 			</tagblock>
-			<float32 name="Unknown" offset="0x24" visible="false" />
-			<float32 name="Unknown" offset="0x28" visible="false" />
-			<float32 name="Unknown" offset="0x2C" visible="false" />
+			<point3 name="Destination Mix" offset="0x24" visible="true" tooltip="not used" />
 		</tagblock>
-		<tagblock name="Unknown 2val shake?" offset="0x3C" visible="true" elementSize="0x30">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int16 name="Unknown" offset="0x2" visible="false" />
-			<float32 name="Unknown" offset="0x4" visible="false" />
-			<float32 name="Unknown" offset="0x8" visible="false" />
-			<float32 name="Unknown" offset="0xC" visible="false" />
-			<float32 name="Value 1" offset="0x10" visible="true" />
-			<float32 name="Value 2" offset="0x14" visible="true" />
-			<tagblock name="Dynamic Values" offset="0x18" visible="true" elementSize="0x20">
-				<tagblock name="Frames" offset="0x0" visible="true" elementSize="0xC">
-					<int32 name="Frame" offset="0x0" visible="true" />
-					<float32 name="Value 1" offset="0x4" visible="true" />
-					<float32 name="Value 2" offset="0x8" visible="true" />
+		<tagblock name="Shake Animation" offset="0x3C" visible="true" elementSize="0x30" tooltip="directly sets camera shake">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Smooth Keyframe Interpolation" index="0" />
+			</flags32>
+			<point3 name="Source Mix" offset="0x4" visible="true" tooltip="not used" />
+			<point2 name="Default" offset="0x10" visible="true" />
+			<tagblock name="Animation" offset="0x18" visible="true" elementSize="0x20">
+				<tagblock name="Keyframes" offset="0x0" visible="true" elementSize="0xC">
+					<int32 name="Frame Index" offset="0x0" visible="true" />
+					<float32 name="Translation Scale" offset="0x4" visible="true" />
+					<float32 name="Rotation Scale" offset="0x8" visible="true" />
 				</tagblock>
-				<dataRef name="Frame Function" offset="0xC" visible="true" />
+				<dataRef name="Default Function" offset="0xC" visible="true" />
 			</tagblock>
-			<float32 name="Unknown" offset="0x24" visible="false" />
-			<float32 name="Unknown" offset="0x28" visible="false" />
-			<float32 name="Unknown" offset="0x2C" visible="false" />
+			<point3 name="Destination Mix" offset="0x24" visible="true" tooltip="not used" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Pass" offset="0x5C" visible="true" elementSize="0x30">
-		<tagblock name="Unknown 3val" offset="0x0" visible="true" elementSize="0x34">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int16 name="Unknown" offset="0x2" visible="false" />
-			<float32 name="Unknown" offset="0x4" visible="false" />
-			<float32 name="Unknown" offset="0x8" visible="false" />
-			<float32 name="Unknown" offset="0xC" visible="false" />
-			<float32 name="Value 1" offset="0x10" visible="true" />
-			<float32 name="Value 2" offset="0x14" visible="true" />
-			<float32 name="Value 3" offset="0x18" visible="true" />
-			<tagblock name="Dynamic Values" offset="0x1C" visible="true" elementSize="0x20">
-				<tagblock name="Frames" offset="0x0" visible="true" elementSize="0x10">
-					<int32 name="Frame" offset="0x0" visible="true" />
-					<float32 name="Value 1" offset="0x4" visible="true" />
-					<float32 name="Value 2" offset="0x8" visible="true" />
-					<float32 name="Value 3" offset="0xC" visible="true" />
+	<tagblock name="Texture Camera Effect Parameters" offset="0x5C" visible="true" elementSize="0x30">
+		<tagblock name="Color Animation" offset="0x0" visible="true" elementSize="0x34" tooltip="applies a per-channel scale to tex-cam">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Smooth Keyframe Interpolation" index="0" />
+			</flags32>
+			<point3 name="Source Mix" offset="0x4" visible="true" tooltip="not used" />
+			<point3 name="Default" offset="0x10" visible="true" />
+			<tagblock name="Animation" offset="0x1C" visible="true" elementSize="0x20">
+				<tagblock name="Keyframes" offset="0x0" visible="true" elementSize="0x10">
+					<int32 name="Frame Index" offset="0x0" visible="true" />
+					<float32 name="Red Scale" offset="0x4" visible="true" />
+					<float32 name="Green Scale" offset="0x8" visible="true" />
+					<float32 name="Blue Scale" offset="0xC" visible="true" />
 				</tagblock>
-				<dataRef name="Frame Function" offset="0xC" visible="true" />
+				<dataRef name="Default Function" offset="0xC" visible="true" />
 			</tagblock>
-			<float32 name="Unknown" offset="0x28" visible="false" />
-			<float32 name="Unknown" offset="0x2C" visible="false" />
-			<float32 name="Unknown" offset="0x30" visible="false" />
+			<point3 name="Destination Mix" offset="0x28" visible="true" tooltip="not used" />
 		</tagblock>
-		<tagblock name="Unknown 3val" offset="0xC" visible="true" elementSize="0x34">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int16 name="Unknown" offset="0x2" visible="false" />
-			<float32 name="Unknown" offset="0x4" visible="false" />
-			<float32 name="Unknown" offset="0x8" visible="false" />
-			<float32 name="Unknown" offset="0xC" visible="false" />
-			<float32 name="Value 1" offset="0x10" visible="true" />
-			<float32 name="Value 2" offset="0x14" visible="true" />
-			<float32 name="Value 3" offset="0x18" visible="true" />
-			<tagblock name="Dynamic Values" offset="0x1C" visible="true" elementSize="0x20">
-				<tagblock name="Frames" offset="0x0" visible="true" elementSize="0x10">
-					<int32 name="Frame" offset="0x0" visible="true" />
-					<float32 name="Value 1" offset="0x4" visible="true" />
-					<float32 name="Value 2" offset="0x8" visible="true" />
-					<float32 name="Value 3" offset="0xC" visible="true" />
+		<tagblock name="Bloom Animation" offset="0xC" visible="true" elementSize="0x34" tooltip="blooms out the texture camera">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Smooth Keyframe Interpolation" index="0" />
+			</flags32>
+			<point3 name="Source Mix" offset="0x4" visible="true" />
+			<point3 name="Default" offset="0x10" visible="true" />
+			<tagblock name="Animation" offset="0x1C" visible="true" elementSize="0x20">
+				<tagblock name="Keyframes" offset="0x0" visible="true" elementSize="0x10">
+					<int32 name="Frame Index" offset="0x0" visible="true" />
+					<float32 name="Bloom Width" offset="0x4" visible="true" />
+					<float32 name="Bloom Power" offset="0x8" visible="true" />
+					<float32 name="Bloom Scale" offset="0xC" visible="true" />
 				</tagblock>
-				<dataRef name="Frame Function" offset="0xC" visible="true" />
+				<dataRef name="Default Function" offset="0xC" visible="true" />
 			</tagblock>
-			<float32 name="Unknown" offset="0x28" visible="false" />
-			<float32 name="Unknown" offset="0x2C" visible="false" />
-			<float32 name="Unknown" offset="0x30" visible="false" />
+			<point3 name="Destination Mix" offset="0x28" visible="true" />
 		</tagblock>
-		<tagblock name="Unknown 2val" offset="0x18" visible="true" elementSize="0x30">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int16 name="Unknown" offset="0x2" visible="false" />
-			<float32 name="Unknown" offset="0x4" visible="false" />
-			<float32 name="Unknown" offset="0x8" visible="false" />
-			<float32 name="Unknown" offset="0xC" visible="false" />
-			<float32 name="Value 1" offset="0x10" visible="true" />
-			<float32 name="Value 2" offset="0x14" visible="true" />
-			<tagblock name="Dynamic Values" offset="0x18" visible="true" elementSize="0x20">
-				<tagblock name="Frames" offset="0x0" visible="true" elementSize="0xC">
-					<int32 name="Frame" offset="0x0" visible="true" />
-					<float32 name="Value 1" offset="0x4" visible="true" />
-					<float32 name="Value 2" offset="0x8" visible="true" />
+		<tagblock name="Tentacle Control Animation" offset="0x18" visible="true" elementSize="0x30">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Smooth Keyframe Interpolation" index="0" />
+			</flags32>
+			<point3 name="Source Mix" offset="0x4" visible="true" tooltip="not used" />
+			<point2 name="Default" offset="0x10" visible="true" />
+			<tagblock name="Animation" offset="0x18" visible="true" elementSize="0x20">
+				<tagblock name="Keyframes" offset="0x0" visible="true" elementSize="0xC">
+					<int32 name="Frame Index" offset="0x0" visible="true" />
+					<float32 name="Offset" offset="0x4" visible="true" tooltip="0 is nothing, 1 is good default" />
+					<float32 name="Scale" offset="0x8" visible="true" tooltip="0 is nothing, 1 is good default" />
 				</tagblock>
-				<dataRef name="Frame Function" offset="0xC" visible="true" />
+				<dataRef name="Default Function" offset="0xC" visible="true" />
 			</tagblock>
-			<float32 name="Unknown" offset="0x24" visible="false" />
-			<float32 name="Unknown" offset="0x28" visible="false" />
-			<float32 name="Unknown" offset="0x2C" visible="false" />
+			<point3 name="Destination Mix" offset="0x24" visible="true" tooltip="not used" />
 		</tagblock>
-		<tagblock name="Unknown 3val flood mask?" offset="0x24" visible="true" elementSize="0x34">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int16 name="Unknown" offset="0x2" visible="false" />
-			<float32 name="Unknown" offset="0x4" visible="false" />
-			<float32 name="Unknown" offset="0x8" visible="false" />
-			<float32 name="Unknown" offset="0xC" visible="false" />
-			<float32 name="Value 1" offset="0x10" visible="true" />
-			<float32 name="Value 2" offset="0x14" visible="true" />
-			<float32 name="Value 3" offset="0x18" visible="true" />
-			<tagblock name="Dynamic Values" offset="0x1C" visible="true" elementSize="0x20">
-				<tagblock name="Frames" offset="0x0" visible="true" elementSize="0x10">
-					<int32 name="Frame" offset="0x0" visible="true" />
-					<float32 name="Value 1" offset="0x4" visible="true" />
-					<float32 name="Value 2" offset="0x8" visible="true" />
-					<float32 name="Value 3" offset="0xC" visible="true" />
+		<tagblock name="Tentacle Vignette Animation" offset="0x24" visible="true" elementSize="0x34" tooltip="handles vignette around edges.">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Smooth Keyframe Interpolation" index="0" />
+			</flags32>
+			<point3 name="Source Mix" offset="0x4" visible="true" tooltip="not used" />
+			<point3 name="Default" offset="0x10" visible="true" />
+			<tagblock name="Animation" offset="0x1C" visible="true" elementSize="0x20">
+				<tagblock name="Keyframes" offset="0x0" visible="true" elementSize="0x10">
+					<int32 name="Frame Index" offset="0x0" visible="true" />
+					<rangef name="Vignette" offset="0x4" visible="true" tooltip="[1,1]= nothing; [0.4, 0.7] is a good default" />
+					<float32 name="Unused" offset="0xC" visible="true" />
 				</tagblock>
-				<dataRef name="Frame Function" offset="0xC" visible="true" />
+				<dataRef name="Default Function" offset="0xC" visible="true" />
 			</tagblock>
-			<float32 name="Unknown" offset="0x28" visible="false" />
-			<float32 name="Unknown" offset="0x2C" visible="false" />
-			<float32 name="Unknown" offset="0x30" visible="false" />
+			<point3 name="Destination Mix" offset="0x28" visible="true" tooltip="not used" />
 		</tagblock>
 	</tagblock>
-	<undefined name="Unknown" offset="0x68" visible="false" />
-	<undefined name="Unknown" offset="0x6C" visible="false" />
-	<undefined name="Unknown" offset="0x70" visible="false" />
-	<tagblock name="Unknown" offset="0x74" visible="true" elementSize="0x24">
-		<tagblock name="Unknown 2val" offset="0x0" visible="true" elementSize="0x30">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int16 name="Unknown" offset="0x2" visible="false" />
-			<float32 name="Unknown" offset="0x4" visible="false" />
-			<float32 name="Unknown" offset="0x8" visible="false" />
-			<float32 name="Unknown" offset="0xC" visible="false" />
-			<float32 name="Value 1" offset="0x10" visible="true" />
-			<float32 name="Value 2" offset="0x14" visible="true" />
-			<tagblock name="Dynamic Values" offset="0x18" visible="true" elementSize="0x20">
-				<tagblock name="Frames" offset="0x0" visible="true" elementSize="0xC">
-					<int32 name="Frame" offset="0x0" visible="true" />
-					<float32 name="Value 1" offset="0x4" visible="true" />
-					<float32 name="Value 2" offset="0x8" visible="true" />
+	<uint32 name="Widgets Block Here" offset="0x68" visible="false" />
+	<uint32 name="Widgets Block Here" offset="0x6C" visible="false" />
+	<uint32 name="Widgets Block Here" offset="0x70" visible="false" />
+	<tagblock name="Composite Effect Parameters" offset="0x74" visible="true" elementSize="0x24">
+		<tagblock name="Solarize Effect" offset="0x0" visible="true" elementSize="0x30" tooltip="result is scaled to be contents above threshold. bent by the power">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Smooth Keyframe Interpolation" index="0" />
+			</flags32>
+			<point3 name="Source Mix" offset="0x4" visible="true" />
+			<point2 name="Default" offset="0x10" visible="true" />
+			<tagblock name="Animation" offset="0x18" visible="true" elementSize="0x20">
+				<tagblock name="Keyframes" offset="0x0" visible="true" elementSize="0xC">
+					<int32 name="Frame Index" offset="0x0" visible="true" />
+					<float32 name="Threshold" offset="0x4" visible="true" />
+					<float32 name="Power" offset="0x8" visible="true" />
 				</tagblock>
-				<dataRef name="Frame Function" offset="0xC" visible="true" />
+				<dataRef name="Default Function" offset="0xC" visible="true" />
 			</tagblock>
-			<float32 name="Unknown" offset="0x24" visible="false" />
-			<float32 name="Unknown" offset="0x28" visible="false" />
-			<float32 name="Unknown" offset="0x2C" visible="false" />
+			<point3 name="Destination Mix" offset="0x24" visible="true" />
 		</tagblock>
-		<tagblock name="Unknown 3val" offset="0xC" visible="true" elementSize="0x34">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int16 name="Unknown" offset="0x2" visible="false" />
-			<float32 name="Unknown" offset="0x4" visible="false" />
-			<float32 name="Unknown" offset="0x8" visible="false" />
-			<float32 name="Unknown" offset="0xC" visible="false" />
-			<float32 name="Value 1" offset="0x10" visible="true" />
-			<float32 name="Value 2" offset="0x14" visible="true" />
-			<float32 name="Value 3" offset="0x18" visible="true" />
-			<tagblock name="Dynamic Values" offset="0x1C" visible="true" elementSize="0x20">
-				<tagblock name="Frames" offset="0x0" visible="true" elementSize="0x10">
-					<int32 name="Frame" offset="0x0" visible="true" />
-					<float32 name="Value 1" offset="0x4" visible="true" />
-					<float32 name="Value 2" offset="0x8" visible="true" />
-					<float32 name="Value 3" offset="0xC" visible="true" />
+		<tagblock name="Doubling Effect" offset="0xC" visible="true" elementSize="0x34" tooltip="image is repeated out repeat times with distance. based on scale and intensity based on power">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Smooth Keyframe Interpolation" index="0" />
+			</flags32>
+			<point3 name="Source Mix" offset="0x4" visible="true" />
+			<point3 name="Default" offset="0x10" visible="true" />
+			<tagblock name="Animation" offset="0x1C" visible="true" elementSize="0x20">
+				<tagblock name="Keyframes" offset="0x0" visible="true" elementSize="0x10">
+					<int32 name="Frame Index" offset="0x0" visible="true" />
+					<float32 name="Alpha" offset="0x4" visible="true" tooltip="logical default is 0" />
+					<float32 name="Power" offset="0x8" visible="true" tooltip="logical default is 1" />
+					<float32 name="Scale" offset="0xC" visible="true" tooltip="logical default is 1" />
 				</tagblock>
-				<dataRef name="Frame Function" offset="0xC" visible="true" />
+				<dataRef name="Default Function" offset="0xC" visible="true" />
 			</tagblock>
-			<float32 name="Unknown" offset="0x28" visible="false" />
-			<float32 name="Unknown" offset="0x2C" visible="false" />
-			<float32 name="Unknown" offset="0x30" visible="false" />
+			<point3 name="Destination Mix" offset="0x28" visible="true" />
 		</tagblock>
-		<tagblock name="Unknown 2val" offset="0x18" visible="true" elementSize="0x30">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int16 name="Unknown" offset="0x2" visible="false" />
-			<float32 name="Unknown" offset="0x4" visible="false" />
-			<float32 name="Unknown" offset="0x8" visible="false" />
-			<float32 name="Unknown" offset="0xC" visible="false" />
-			<float32 name="Value 1" offset="0x10" visible="true" />
-			<float32 name="Value 2" offset="0x14" visible="true" />
-			<tagblock name="Dynamic Values" offset="0x18" visible="true" elementSize="0x20">
-				<tagblock name="Frames" offset="0x0" visible="true" elementSize="0xC">
-					<int32 name="Frame" offset="0x0" visible="true" />
-					<float32 name="Value 1" offset="0x4" visible="true" />
-					<float32 name="Value 2" offset="0x8" visible="true" />
+		<tagblock name="Colorize Effect" offset="0x18" visible="true" elementSize="0x30" tooltip="result of source-combine becomes value. this takes hue and saturation and makes that HSV color">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Smooth Keyframe Interpolation" index="0" />
+			</flags32>
+			<point3 name="Source Mix" offset="0x4" visible="true" />
+			<point2 name="Default" offset="0x10" visible="true" />
+			<tagblock name="Animation" offset="0x18" visible="true" elementSize="0x20">
+				<tagblock name="Keyframes" offset="0x0" visible="true" elementSize="0xC">
+					<int32 name="Frame Index" offset="0x0" visible="true" />
+					<float32 name="Hue" offset="0x4" visible="true" tooltip="212 is a good default" />
+					<float32 name="Saturation" offset="0x8" visible="true" tooltip="65 is a good default" />
 				</tagblock>
-				<dataRef name="Frame Function" offset="0xC" visible="true" />
+				<dataRef name="Default Function" offset="0xC" visible="true" />
 			</tagblock>
-			<float32 name="Unknown" offset="0x24" visible="false" />
-			<float32 name="Unknown" offset="0x28" visible="false" />
-			<float32 name="Unknown" offset="0x2C" visible="false" />
+			<point3 name="Destination Mix" offset="0x24" visible="true" />
 		</tagblock>
 	</tagblock>
 </plugin>

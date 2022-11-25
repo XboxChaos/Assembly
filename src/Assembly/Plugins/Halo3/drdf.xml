@@ -12,20 +12,60 @@
 			<option name="Unshielded" value="0x1" />
 			<option name="All" value="0x2" />
 		</enum16>
-		<int16 name="Unknown" offset="0x2" visible="true" />
-		<int16 name="Unknown" offset="0x4" visible="true" />
-		<int16 name="Unknown" offset="0x6" visible="true" />
-		<undefined name="Unknown" offset="0x8" visible="true" />
-		<undefined name="Unknown" offset="0xC" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="true" />
-		<colorf name="Color" offset="0x14" alpha="true" visible="true" />
-		<float32 name="Unknown" offset="0x24" visible="true" />
-		<int16 name="Unknown" offset="0x28" visible="true" />
-		<int16 name="Unknown" offset="0x2A" visible="true" />
-		<float32 name="Unknown" offset="0x2C" visible="true" />
-		<float32 name="Unknown" offset="0x30" visible="true" />
-		<float32 name="Unknown" offset="0x34" visible="true" />
-		<float32 name="Flash Duration" offset="0x38" visible="true" />
+		<flags16 name="Flags" offset="0x2" visible="true">
+			<bit name="Ignore On No Damage" index="0" />
+		</flags16>
+		<comment title="Screen Flash" />
+		<enum16 name="Type" offset="0x4" visible="true">
+			<option name="Add" value="0x0" />
+			<option name="Multiply" value="0x1" />
+			<option name="Alpha Blend" value="0x2" />
+			<option name="Double Multiply" value="0x3" />
+			<option name="Max" value="0x4" />
+			<option name="Multiply Add" value="0x5" />
+			<option name="Inv. Alpha Blend" value="0x6" />
+		</enum16>
+		<enum16 name="Priority" offset="0x6" visible="true">
+			<option name="Low" value="0x0" />
+			<option name="Medium" value="0x1" />
+			<option name="High" value="0x2" />
+		</enum16>
+		<float32 name="Duration" offset="0x8" visible="true" />
+		<enum16 name="Fade Function" offset="0xC" visible="true">
+			<option name="Linear" value="0x0" />
+			<option name="Late" value="0x1" />
+			<option name="Very Late" value="0x2" />
+			<option name="Early" value="0x3" />
+			<option name="Very Early" value="0x4" />
+			<option name="Cosine" value="0x5" />
+			<option name="Zero" value="0x6" />
+			<option name="One" value="0x7" />
+		</enum16>
+		<int16 name="Unknown" offset="0xE" visible="false" />
+		<float32 name="Maximum Intensity" offset="0x10" visible="true" />
+		<colorf name="Flash Color" offset="0x14" alpha="true" visible="true" />
+		<comment title="Motion Blur" />
+		<float32 name="Duration" offset="0x24" visible="true" />
+		<enum16 name="Priority" offset="0x28" visible="true">
+			<option name="Low" value="0x0" />
+			<option name="Medium" value="0x1" />
+			<option name="High" value="0x2" />
+		</enum16>
+		<enum16 name="Fade Function" offset="0x2A" visible="true">
+			<option name="Linear" value="0x0" />
+			<option name="Late" value="0x1" />
+			<option name="Very Late" value="0x2" />
+			<option name="Early" value="0x3" />
+			<option name="Very Early" value="0x4" />
+			<option name="Cosine" value="0x5" />
+			<option name="Zero" value="0x6" />
+			<option name="One" value="0x7" />
+		</enum16>
+		<float32 name="Motion Blur Effect Scale" offset="0x2C" visible="true" />
+		<float32 name="Motion Blur Cap Scale" offset="0x30" visible="true" />
+		<float32 name="Motion Blur Center Falloff Scale" offset="0x34" visible="true" />
+		<comment title="Directional Flash" />
+		<float32 name="Duration" offset="0x38" visible="true" />
 		<enum16 name="Fade Function" offset="0x3C" visible="true">
 			<option name="Linear" value="0x0" />
 			<option name="Late" value="0x1" />
@@ -38,15 +78,15 @@
 		</enum16>
 		<int16 name="Unknown" offset="0x3E" visible="false" />
 		<float32 name="Size" offset="0x40" visible="true" />
-		<float32 name="Inner Alpha" offset="0x44" visible="true" />
-		<float32 name="Outer Alpha" offset="0x48" visible="true" />
-		<colorf name="Color" offset="0x4C" alpha="true" visible="true" />
-		<comment title="Vibration" />
+		<float32 name="Inner Scale" offset="0x44" visible="true" />
+		<float32 name="Outer Scale" offset="0x48" visible="true" />
+		<colorf name="Flash Color" offset="0x4C" alpha="true" visible="true" />
+		<comment title="Rumble" />
 		<float32 name="Low Frequency Vibration Duration" offset="0x5C" visible="true" />
 		<dataRef name="Low Frequency Vibration Function" offset="0x60" visible="true" />
 		<float32 name="High Frequency Vibration Duration" offset="0x74" visible="true" />
 		<dataRef name="High Frequency Vibration Function" offset="0x78" visible="true" />
-		<comment title="Temporary Camera Impulse" />
+		<comment title="Camera Impulse" />
 		<float32 name="Duration" offset="0x8C" visible="true" />
 		<enum16 name="Fade Function" offset="0x90" visible="true">
 			<option name="Linear" value="0x0" />
@@ -62,9 +102,9 @@
 		<degree name="Rotation" offset="0x94" visible="true" />
 		<float32 name="Pushback" offset="0x98" visible="true" />
 		<rangef name="Jitter" offset="0x9C" visible="true" />
-		<comment title="Camera Shaking" />
-		<float32 name="Duration" offset="0xA4" visible="true" />
-		<enum16 name="Falloff Function" offset="0xA8" visible="true">
+		<comment title="Camera Shake" />
+		<float32 name="Shake Duration" offset="0xA4" visible="true" tooltip="the effect will last for this duration." />
+		<enum16 name="Falloff Function" offset="0xA8" visible="true" tooltip="a function to envelope the effect's magnitude over time">
 			<option name="Linear" value="0x0" />
 			<option name="Late" value="0x1" />
 			<option name="Very Late" value="0x2" />
@@ -75,9 +115,9 @@
 			<option name="One" value="0x7" />
 		</enum16>
 		<int16 name="Unknown" offset="0xAA" visible="false" />
-		<float32 name="Random Translation" offset="0xAC" visible="true" />
-		<degree name="Random Rotation" offset="0xB0" visible="true" />
-		<enum16 name="Wobble Function" offset="0xB4" visible="true">
+		<float32 name="Random Translation" offset="0xAC" visible="true" tooltip="random translation in all directions" />
+		<degree name="Random Rotation" offset="0xB0" visible="true" tooltip="random rotation in all directions" />
+		<enum16 name="Wobble Function" offset="0xB4" visible="true" tooltip="a function to perturb the effect's behavior over time">
 			<option name="One" value="0x0" />
 			<option name="Zero" value="0x1" />
 			<option name="Cosine" value="0x2" />
@@ -93,6 +133,6 @@
 		</enum16>
 		<int16 name="Unknown" offset="0xB6" visible="false" />
 		<float32 name="Wobble Function Period" offset="0xB8" visible="true" />
-		<float32 name="Wobble Weight" offset="0xBC" visible="true" />
+		<float32 name="Wobble Weight" offset="0xBC" visible="true" tooltip="a value of 0.0 signifies that the wobble function has no effect; a value of 1.0 signifies that the effect will not be felt when the wobble function's value is zero." />
 	</tagblock>
 </plugin>

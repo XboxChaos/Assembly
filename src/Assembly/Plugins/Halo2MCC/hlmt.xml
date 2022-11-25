@@ -1,0 +1,1119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo2MCC" baseSize="0xFC">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="Iron_Forge" version="1">Added basic layout of plugin...</revision>
+		<revision author="Iron_Forge" version="2">Added some basic stuff...</revision>
+		<revision author="XZodia" version="3">Name a load of stuff</revision>
+		<revision author="XZodia" version="4">Finished Targets tagblock</revision>
+		<revision author="XZodia" version="5">Completed</revision>
+	</revisions>
+	<tagRef name="Render Model" offset="0x0" visible="true" />
+	<tagRef name="Collision Model" offset="0x8" visible="true" />
+	<tagRef name="Animation" offset="0x10" visible="true" />
+	<tagRef name="Physics" offset="0x18" visible="true" />
+	<tagRef name="Physics Model" offset="0x20" visible="true" />
+	<comment title="Level of Detail">If a model is further away than the LOD reduction distance, it will be reduced to that LOD.
+So the L1 reduction distance should be really long and the L5 reduction distance should be really short.
+This means distances should be in descending order, e.g. 5 4 3 2 1.
+
+Note that if we run out of memory or too many models are on screen at once, the engine may reduce models to a lower LOD BEFORE they reach the reduction distance for that LOD.
+
+If a model has a begin fade distance and disappear distance, it will begin fading out at that distance, reaching zero alpha and disappearing at the disappear distance. These distances should be greater than all of the LOD reduction distances.</comment>
+	<float32 name="Disappear Distance" offset="0x28" visible="true" />
+	<float32 name="Begin Fade Distance" offset="0x2C" visible="true" />
+	<undefined name="Unknown" offset="0x30" visible="false" />
+	<float32 name="Reduce To L1" offset="0x34" visible="true" />
+	<float32 name="Reduce To L2" offset="0x38" visible="true" />
+	<float32 name="Reduce To L3" offset="0x3C" visible="true" />
+	<float32 name="Reduce To L4" offset="0x40" visible="true" />
+	<float32 name="Reduce To L5" offset="0x44" visible="true" />
+	<undefined name="Unknown" offset="0x48" visible="false" />
+	<enum16 name="Shadow Fade Distance" offset="0x4C" visible="true">
+		<option name="Fade At Super High Detail Level" value="0x0" />
+		<option name="Fade At High Detail Level" value="0x1" />
+		<option name="Fade At Medium Detail Level" value="0x2" />
+		<option name="Fade At Low Detail Level" value="0x3" />
+		<option name="Fade At Super Low Detail Level" value="0x4" />
+		<option name="Fade Never" value="0x5" />
+	</enum16>
+	<int16 name="Unknown" offset="0x4E" visible="false" />
+	<tagblock name="Variants" offset="0x50" visible="true" elementSize="0x38">
+		<stringId name="Name" offset="0x0" visible="true" />
+		<comment title="Runtime Model Regions">Each index here points to a region in the render model, and each region in the below Regions block points to an index here instead. You want to point to the runtime index containing your actual index.</comment>
+		<int8 name="Runtime Model Region 0 Index" offset="0x4" visible="true" />
+		<int8 name="Runtime Model Region 1 Index" offset="0x5" visible="true" />
+		<int8 name="Runtime Model Region 2 Index" offset="0x6" visible="true" />
+		<int8 name="Runtime Model Region 3 Index" offset="0x7" visible="true" />
+		<int8 name="Runtime Model Region 4 Index" offset="0x8" visible="true" />
+		<int8 name="Runtime Model Region 5 Index" offset="0x9" visible="true" />
+		<int8 name="Runtime Model Region 6 Index" offset="0xA" visible="true" />
+		<int8 name="Runtime Model Region 7 Index" offset="0xB" visible="true" />
+		<int8 name="Runtime Model Region 8 Index" offset="0xC" visible="true" />
+		<int8 name="Runtime Model Region 9 Index" offset="0xD" visible="true" />
+		<int8 name="Runtime Model Region 10 Index" offset="0xE" visible="true" />
+		<int8 name="Runtime Model Region 11 Index" offset="0xF" visible="true" />
+		<int8 name="Runtime Model Region 12 Index" offset="0x10" visible="true" />
+		<int8 name="Runtime Model Region 13 Index" offset="0x11" visible="true" />
+		<int8 name="Runtime Model Region 14 Index" offset="0x12" visible="true" />
+		<int8 name="Runtime Model Region 15 Index" offset="0x13" visible="true" />
+		<tagblock name="Regions" offset="0x14" visible="true" elementSize="0x14">
+			<stringid name="Region Name" offset="0x0" visible="true" />
+			<int8 name="Runtime Model Region Index" offset="0x4" visible="true" />
+			<flags8 name="Runtime Flags" offset="0x5" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+			</flags8>
+			<int16 name="Parent Variant Index" offset="0x6" visible="true" />
+			<tagblock name="Permutations" offset="0x8" visible="true" elementSize="0x20">
+				<stringid name="Permutation Name" offset="0x0" visible="true" />
+				<int8 name="Runtime Model Permutation Index" offset="0x4" visible="true" />
+				<flags8 name="Flags" offset="0x5" visible="true">
+					<bit name="Copy States To All Permutations" index="0" />
+				</flags8>
+				<int16 name="Unknown" offset="0x6" visible="false" />
+				<float32 name="Probability" offset="0x8" visible="true" />
+				<tagblock name="States" offset="0xC" visible="true" elementSize="0x18">
+					<stringId name="Permutation Name" offset="0x0" visible="true" />
+					<int8 name="Runtime Model Permutation Index" offset="0x4" visible="true" />
+					<flags8 name="Property Flags" offset="0x5" visible="true">
+						<bit name="Blurred" index="0" />
+						<bit name="Hella Blurred" index="1" />
+						<bit name="Shielded" index="2" />
+						<bit name="Battery Depleted" index="3" />
+					</flags8>
+					<enum16 name="State" offset="0x6" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Minor Damage" value="0x1" />
+						<option name="Medium Damage" value="0x2" />
+						<option name="Major Damage" value="0x3" />
+						<option name="Destroyed" value="0x4" />
+					</enum16>
+					<tagRef name="Looping Effect" offset="0x8" visible="true" tooltip="played while the model is in this state" />
+					<stringId name="Looping Effect Marker Name" offset="0x10" visible="true" />
+					<float32 name="Initial Probability" offset="0x14" visible="true" />
+				</tagblock>
+				<int8 name="Runtime State Permutation Index 0" offset="0x14" visible="true" />
+				<int8 name="Runtime State Permutation Index 1" offset="0x15" visible="true" />
+				<int8 name="Runtime State Permutation Index 2" offset="0x16" visible="true" />
+				<int8 name="Runtime State Permutation Index 3" offset="0x17" visible="true" />
+				<int8 name="Runtime State Permutation Index 4" offset="0x18" visible="true" />
+				<int8 name="Unknown" offset="0x19" visible="false" />
+				<int16 name="Unknown" offset="0x1A" visible="false" />
+				<undefined name="Unknown" offset="0x1C" visible="false" />
+			</tagblock>
+			<enum16 name="Sort Order" offset="0x10" visible="true" tooltip="negative values mean closer to the camera">
+				<option name="No Sorting" value="0x0" />
+				<option name="-5 (Closest)" value="0x1" />
+				<option name="-4" value="0x2" />
+				<option name="-3" value="0x3" />
+				<option name="-2" value="0x4" />
+				<option name="-1" value="0x5" />
+				<option name="0 (Same As Model)" value="0x6" />
+				<option name="1" value="0x7" />
+				<option name="2" value="0x8" />
+				<option name="3" value="0x9" />
+				<option name="4" value="0xA" />
+				<option name="5 (Farthest)" value="0xB" />
+			</enum16>
+			<int16 name="Unknown" offset="0x12" visible="false" />
+		</tagblock>
+		<tagblock name="Objects" offset="0x1C" visible="true" elementSize="0x10">
+			<stringId name="Parent Marker" offset="0x0" visible="true" />
+			<stringId name="Child Marker" offset="0x4" visible="true" />
+			<tagRef name="Child Object" offset="0x8" visible="true" />
+		</tagblock>
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<stringId name="Dialogue Sound Effect" offset="0x2C" visible="true" />
+		<tagRef name="Dialogue" offset="0x30" visible="true" />
+	</tagblock>
+	<tagblock name="Materials" offset="0x58" visible="true" elementSize="0x14">
+		<stringId name="Material Name" offset="0x0" visible="true" />
+		<enum16 name="Material Type" offset="0x4" visible="true">
+			<option name="Dirt" value="0x0" />
+			<option name="Sand" value="0x1" />
+			<option name="Stone" value="0x2" />
+			<option name="Snow" value="0x3" />
+			<option name="Wood" value="0x4" />
+			<option name="Metal (Hollow)" value="0x5" />
+			<option name="Metal (Thin)" value="0x6" />
+			<option name="Metal (Thick)" value="0x7" />
+			<option name="Rubber" value="0x8" />
+			<option name="Glass" value="0x9" />
+			<option name="Force Field" value="0xA" />
+			<option name="Grunt" value="0xB" />
+			<option name="Hunter Armor" value="0xC" />
+			<option name="Hunter Skin" value="0xD" />
+			<option name="Elite" value="0xE" />
+			<option name="Jackal" value="0xF" />
+			<option name="Jackal Energy Shield" value="0x10" />
+			<option name="Engineer Skin" value="0x11" />
+			<option name="Engineer Force Field" value="0x12" />
+			<option name="Flood Combat Form" value="0x13" />
+			<option name="Flood Carrier Form" value="0x14" />
+			<option name="Cyborg Armor" value="0x15" />
+			<option name="Cyborg Energy Shield" value="0x16" />
+			<option name="Human Armor" value="0x17" />
+			<option name="Human Skin" value="0x18" />
+			<option name="Sentinel" value="0x19" />
+			<option name="Monitor" value="0x1A" />
+			<option name="Plastic" value="0x1B" />
+			<option name="Water" value="0x1C" />
+			<option name="Leaves" value="0x1D" />
+			<option name="Elite Energy Shield" value="0x1E" />
+			<option name="Ice" value="0x1F" />
+			<option name="Hunter Shield" value="0x20" />
+		</enum16>
+		<int16 name="Damage Section Index" offset="0x6" visible="true" />
+		<int16 name="Collision Global Material Index" offset="0x8" visible="true" />
+		<int16 name="Damage Global Material Index" offset="0xA" visible="true" />
+		<stringid name="Global Material Name" offset="0xC" visible="true" />
+		<int16 name="Global Material Index" offset="0x10" visible="true" />
+		<int16 name="Unknown" offset="0x12" visible="false" />
+	</tagblock>
+	<tagblock name="New Damage Info" offset="0x60" visible="true" elementSize="0xF8">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="Takes Shield Damage For Children" index="0" />
+			<bit name="Takes Body Damage For Children" index="1" />
+			<bit name="Always Shields Friendly Damage" index="2" />
+			<bit name="Passes Area Damage To Children" index="3" />
+			<bit name="Parent Never Takes Body Damage For Us" index="4" />
+			<bit name="Only Damaged By Explosives" index="5" />
+			<bit name="Parent Never Takes Shield Damage For Us" index="6" />
+			<bit name="Cannot Die From Damage" index="7" />
+			<bit name="Passes Attached Damage To Riders" index="8" />
+		</flags32>
+		<stringId name="Indirect Global Material Name" offset="0x4" visible="true" tooltip="absorbes AOE or child damage" />
+		<int16 name="Indirect Damage Section Index" offset="0x8" visible="true" tooltip="absorbes AOE or child damage" />
+		<int16 name="Unknown" offset="0xA" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<enum8 name="Collision Damage Reporting Type" offset="0x10" visible="true">
+			<option name="Guardians" value="0x0" />
+			<option name="Falling Damage" value="0x1" />
+			<option name="Generic Collision Damage" value="0x2" />
+			<option name="Generic Melee Damage" value="0x3" />
+			<option name="Generic Explosion" value="0x4" />
+			<option name="Magnum Pistol" value="0x5" />
+			<option name="Plasma Pistol" value="0x6" />
+			<option name="Needler" value="0x7" />
+			<option name="Smg" value="0x8" />
+			<option name="Plasma Rifle" value="0x9" />
+			<option name="Battle Rifle" value="0xA" />
+			<option name="Carbine" value="0xB" />
+			<option name="Shotgun" value="0xC" />
+			<option name="Sniper Rifle" value="0xD" />
+			<option name="Beam Rifle" value="0xE" />
+			<option name="Rocket Launcher" value="0xF" />
+			<option name="Flak Cannon" value="0x10" />
+			<option name="Brute Shot" value="0x11" />
+			<option name="Disintegrator" value="0x12" />
+			<option name="Brute Plasma Rifle" value="0x13" />
+			<option name="Energy Sword" value="0x14" />
+			<option name="Frag Grenade" value="0x15" />
+			<option name="Plasma Grenade" value="0x16" />
+			<option name="Flag Melee Damage" value="0x17" />
+			<option name="Bomb Melee Damage" value="0x18" />
+			<option name="Bomb Explosion Damage" value="0x19" />
+			<option name="Ball Melee Damage" value="0x1A" />
+			<option name="Human Turret" value="0x1B" />
+			<option name="Plasma Turret" value="0x1C" />
+			<option name="Banshee" value="0x1D" />
+			<option name="Ghost" value="0x1E" />
+			<option name="Mongoose" value="0x1F" />
+			<option name="Scorpion" value="0x20" />
+			<option name="Spectre Driver" value="0x21" />
+			<option name="Spectre Gunner" value="0x22" />
+			<option name="Warthog Driver" value="0x23" />
+			<option name="Warthog Gunner" value="0x24" />
+			<option name="Wraith" value="0x25" />
+			<option name="Tank" value="0x26" />
+			<option name="Sentinel Beam" value="0x27" />
+			<option name="Sentinel Rpg" value="0x28" />
+			<option name="Teleporter" value="0x29" />
+			<option name="Warthog Gunner Gauss" value="0x2A" />
+			<option name="Warthog Gunner Rocket" value="0x2B" />
+		</enum8>
+		<enum8 name="Response Damage Reporting Type" offset="0x11" visible="true">
+			<option name="Guardians" value="0x0" />
+			<option name="Falling Damage" value="0x1" />
+			<option name="Generic Collision Damage" value="0x2" />
+			<option name="Generic Melee Damage" value="0x3" />
+			<option name="Generic Explosion" value="0x4" />
+			<option name="Magnum Pistol" value="0x5" />
+			<option name="Plasma Pistol" value="0x6" />
+			<option name="Needler" value="0x7" />
+			<option name="Smg" value="0x8" />
+			<option name="Plasma Rifle" value="0x9" />
+			<option name="Battle Rifle" value="0xA" />
+			<option name="Carbine" value="0xB" />
+			<option name="Shotgun" value="0xC" />
+			<option name="Sniper Rifle" value="0xD" />
+			<option name="Beam Rifle" value="0xE" />
+			<option name="Rocket Launcher" value="0xF" />
+			<option name="Flak Cannon" value="0x10" />
+			<option name="Brute Shot" value="0x11" />
+			<option name="Disintegrator" value="0x12" />
+			<option name="Brute Plasma Rifle" value="0x13" />
+			<option name="Energy Sword" value="0x14" />
+			<option name="Frag Grenade" value="0x15" />
+			<option name="Plasma Grenade" value="0x16" />
+			<option name="Flag Melee Damage" value="0x17" />
+			<option name="Bomb Melee Damage" value="0x18" />
+			<option name="Bomb Explosion Damage" value="0x19" />
+			<option name="Ball Melee Damage" value="0x1A" />
+			<option name="Human Turret" value="0x1B" />
+			<option name="Plasma Turret" value="0x1C" />
+			<option name="Banshee" value="0x1D" />
+			<option name="Ghost" value="0x1E" />
+			<option name="Mongoose" value="0x1F" />
+			<option name="Scorpion" value="0x20" />
+			<option name="Spectre Driver" value="0x21" />
+			<option name="Spectre Gunner" value="0x22" />
+			<option name="Warthog Driver" value="0x23" />
+			<option name="Warthog Gunner" value="0x24" />
+			<option name="Wraith" value="0x25" />
+			<option name="Tank" value="0x26" />
+			<option name="Sentinel Beam" value="0x27" />
+			<option name="Sentinel Rpg" value="0x28" />
+			<option name="Teleporter" value="0x29" />
+			<option name="Warthog Gunner Gauss" value="0x2A" />
+			<option name="Warthog Gunner Rocket" value="0x2B" />
+		</enum8>
+		<int16 name="Unknown" offset="0x12" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<comment title="Body" />
+		<float32 name="Maximum Vitality" offset="0x28" visible="true" />
+		<float32 name="Minimum Stun Damage" offset="0x2C" visible="true" tooltip="the minimum damage required to stun this object's health" />
+		<float32 name="Stun Time" offset="0x30" visible="true" tooltip="the length of time the health stay stunned (do not recharge) after taking damage" />
+		<float32 name="Recharge Time" offset="0x34" visible="true" tooltip="the length of time it would take for the shields to fully recharge after being completely depleted" />
+		<float32 name="Recharge Fraction" offset="0x38" visible="true" tooltip="0 defaults to 1 - to what maximum level the body health will be allowed to recharge" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
+		<undefined name="Unknown" offset="0x5C" visible="false" />
+		<undefined name="Unknown" offset="0x60" visible="false" />
+		<undefined name="Unknown" offset="0x64" visible="false" />
+		<undefined name="Unknown" offset="0x68" visible="false" />
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+		<undefined name="Unknown" offset="0x78" visible="false" />
+		<comment title="Shield" />
+		<tagRef name="Shield Damaged First Person Shader" offset="0x7C" visible="true" />
+		<tagRef name="Shield Damaged Shader" offset="0x84" visible="true" />
+		<float32 name="Maximum Shield Vitality" offset="0x8C" visible="true" tooltip="the default initial and maximum shield vitality of this object" />
+		<stringid name="Shield Global Material Name" offset="0x90" visible="true" />
+		<float32 name="Minimum Stun Damage" offset="0x94" visible="true" tooltip="the minimum damage required to stun this object's shields" />
+		<float32 name="Stun Time" offset="0x98" visible="true" tooltip="the length of time the shields stay stunned (do not recharge) after taking damage" />
+		<float32 name="Recharge Time" offset="0x9C" visible="true" tooltip="the length of time it would take for the shields to fully recharge after being completely depleted" />
+		<float32 name="Shield Damaged Threshold" offset="0xA0" visible="true" />
+		<tagRef name="Shield Damaged Effect" offset="0xA4" visible="true" />
+		<tagRef name="Shield Depleted Effect" offset="0xAC" visible="true" />
+		<tagRef name="Shield Recharging Effect" offset="0xB4" visible="true" />
+		<tagblock name="Damage Sections" offset="0xBC" visible="true" elementSize="0x38">
+			<stringid name="Name" offset="0x0" visible="true" />
+			<flags32 name="Flags" offset="0x4" visible="true">
+				<bit name="Absorbs Body Damage" index="0" tooltip="damage to this section does not count against body vitality" />
+				<bit name="Takes Full Damage When Object Dies" index="1" />
+				<bit name="Cannot Die With Riders" index="2" />
+				<bit name="Takes Full Damage When Object Destroyed" index="3" />
+				<bit name="Restored On Ressurection" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Headshotable" index="7" tooltip="takes extra headshot damage when shot" />
+				<bit name="Ignores Shields" index="8" tooltip="damage to this section bypasses shields" />
+			</flags32>
+			<float32 name="Vitality Percentage" offset="0x8" visible="true" tooltip="percentage of total object vitality" />
+			<tagblock name="Instant Responses" offset="0xC" visible="true" elementSize="0x50">
+				<enum16 name="Response Type" offset="0x0" visible="true">
+					<option name="Receives All Damage" value="0x0" />
+					<option name="Receives Area Effect Damage" value="0x1" />
+					<option name="Receives Local Damage" value="0x2" />
+				</enum16>
+				<comment title="Constraint Damage Type">* if you specify a constraint group name (see lower section of this block) you can specify a constraint damage
+* loosening a constraint takes it out of the rigid state - activates it
+* destroying a constraint sets the attached body free</comment>
+				<enum16 name="Constraint Damage Type" offset="0x2" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Destroy One Of Group" value="0x1" tooltip="sets the attached body of this constraint free" />
+					<option name="Destroy Entire Group" value="0x2" tooltip="sets the attached body of all constraints free" />
+					<option name="Loosen One Of Group" value="0x3" tooltip="takes this constraint out of the rigid state - activates it" />
+					<option name="Loosen Entire Group" value="0x4" tooltip="takes all constraints out of the rigid state - activates them" />
+				</enum16>
+				<flags32 name="Flags" offset="0x4" visible="true">
+					<bit name="Kills Object" index="0" tooltip="when the response fires the object dies regardless of its current health" />
+					<bit name="Inhibits Melee Attack" index="1" tooltip="from halo 1 - disallows melee for a unit" />
+					<bit name="Inhibits Weapon Attack" index="2" tooltip="from halo 1 - disallows weapon fire for a unit" />
+					<bit name="Inhibits Walking" index="3" tooltip="from halo 1 - disallows walking for a unit" />
+					<bit name="Forces Drop Weapon" index="4" tooltip="from halo 1 - makes the unit drop its current weapon" />
+					<bit name="Kills Weapon Primary Trigger" index="5" />
+					<bit name="Kills Weapon Secondary Trigger" index="6" />
+					<bit name="Destroys Object" index="7" tooltip="when the response fires the object is destroyed" />
+					<bit name="Damages Weapon Primary Trigger" index="8" tooltip="destroys the primary trigger on the unit's current weapon" />
+					<bit name="Damages Weapon Secondary Trigger" index="9" tooltip="destroys the secondary trigger on the unit's current weapon" />
+					<bit name="Light Damage Left Turn" index="10" />
+					<bit name="Major Damage Left Turn" index="11" />
+					<bit name="Light Damage Right Turn" index="12" />
+					<bit name="Major Damage Right Turn" index="13" />
+					<bit name="Light Damage Engine" index="14" />
+					<bit name="Major Damage Engine" index="15" />
+					<bit name="Kills Object (No Player Solo)" index="16" />
+					<bit name="Causes Detonation" index="17" />
+					<bit name="Destroy All Group Constraints" index="18" />
+					<bit name="Kills Variant Objects" index="19" />
+					<bit name="Force Unattached Effects" index="20" />
+					<bit name="Fires Under Threshold" index="21" />
+					<bit name="Triggers Special Death" index="22" />
+					<bit name="Only On Special Death" index="23" />
+					<bit name="Only Not On Special Death" index="24" />
+					<bit name="Forces Object To Loose Vitality" index="25" />
+				</flags32>
+				<float32 name="Damage Threshold" offset="0x8" visible="true" tooltip="response fires after crossing this threshold. 1=full health" />
+				<tagRef name="Transition Effect" offset="0xC" visible="true" />
+				<tagRef name="Transition Damage Effect" offset="0x14" visible="true" />
+				<stringId name="Region" offset="0x1C" visible="true" />
+				<enum16 name="New State" offset="0x20" visible="true">
+					<option name="Default" value="0x0" />
+					<option name="Minor Damage" value="0x1" />
+					<option name="Medium Damage" value="0x2" />
+					<option name="Major Damage" value="0x3" />
+					<option name="Destroyed" value="0x4" />
+				</enum16>
+				<int16 name="Runtime Region Index" offset="0x22" visible="true" />
+				<stringId name="Effect Marker Name" offset="0x24" visible="true" />
+				<stringId name="Damage Effect Marker Name" offset="0x28" visible="true" />
+				<comment title="Response Delay">If desired, you can specify a delay until the response fires.This delay is pre-empted if another timed response for the same section fires.The delay effect plays while the timer is counting down.If the damage threshold is taken in a single hit while counting down, it will prematurely fire.</comment>
+				<float32 name="Response Delay" offset="0x2C" visible="true" tooltip="in seconds" />
+				<tagRef name="Delay Effect" offset="0x30" visible="true" />
+				<stringId name="Delay Effect Marker Name" offset="0x38" visible="true" />
+				<comment title="Constraint Destruction">- a response can destroy a single constraint by naming it explicitly.
+- alternatively it can randomly destroy a single constraint from a specified group if the "destroy one group constraint" flag is set
+- also it can destroy all constraints in a specified group if the "destroy all group constraints" flag is set</comment>
+				<stringId name="Constraint/Group Name" offset="0x3C" visible="true" />
+				<stringId name="Ejecting Seat Label" offset="0x40" visible="true" />
+				<float32 name="Skip Fraction" offset="0x44" visible="true" tooltip="0.0 always fires, 1.0 never fires" />
+				<stringId name="Destroyed Child Object Marker Name" offset="0x48" visible="true" tooltip="when this response fires, any children objects created at the supplied marker name will be destroyed" />
+				<float32 name="Total Damage Threshold" offset="0x4C" visible="true" tooltip="scale on total damage section vitality" />
+			</tagblock>
+			<uint32 name="Null Block 1" offset="0x14" visible="false" />
+			<uint32 name="Null Block 1" offset="0x18" visible="false" />
+			<uint32 name="Null Block 2" offset="0x1C" visible="false" />
+			<uint32 name="Null Block 2" offset="0x20" visible="false" />
+			<float32 name="Stun Time" offset="0x24" visible="true" />
+			<float32 name="Recharge Time" offset="0x28" visible="true" />
+			<float32 name="Runtime Recharge Velocity" offset="0x2C" visible="true" />
+			<stringid name="Resurrection Restored Region Name" offset="0x30" visible="true" />
+			<int16 name="Ressurection Region Runtime Index" offset="0x34" visible="true" />
+			<int16 name="Unknown" offset="0x36" visible="false" />
+		</tagblock>
+		<tagblock name="Nodes" offset="0xC4" visible="true" elementSize="0x10">
+			<int16 name="Runtime Damage Part" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+		</tagblock>
+		<int16 name="Shield Global Material Index" offset="0xCC" visible="true" />
+		<int16 name="Indirect Global Material Index" offset="0xCE" visible="true" />
+		<float32 name="Shield Recharge Velocity" offset="0xD0" visible="true" />
+		<float32 name="Health Recharge Velocity" offset="0xD4" visible="true" />
+		<tagblock name="Damage Seats" offset="0xD8" visible="true" elementSize="0x14">
+			<stringid name="Seat Label" offset="0x0" visible="true" />
+			<float32 name="Direct Damage Scale" offset="0x4" visible="true" tooltip="0==no damage, 1==full damage" />
+			<float32 name="Damage Transfer Fall-Off Radius" offset="0x8" visible="true" />
+			<float32 name="Maximum Transfer Damage Scale" offset="0xC" visible="true" />
+			<float32 name="Minimum Transfer Damage Scale" offset="0x10" visible="true" />
+		</tagblock>
+		<tagblock name="Damage Constraints" offset="0xE0" visible="true" elementSize="0x14">
+			<stringId name="Physics Model Constraint Name" offset="0x0" visible="true" />
+			<stringId name="Damage Constraint Name" offset="0x4" visible="true" />
+			<stringId name="Damage Constraint Group Name" offset="0x8" visible="true" />
+			<float32 name="Group Probability Scale" offset="0xC" visible="true" />
+			<enum16 name="Constraint Type" offset="0x10" visible="true">
+				<option name="Hinge" value="0x0" />
+				<option name="Limited Hinge" value="0x1" />
+				<option name="Ragdoll" value="0x2" />
+				<option name="Stiff Spring" value="0x3" />
+				<option name="Ball and Socket" value="0x4" />
+				<option name="Prismatic" value="0x5" />
+			</enum16>
+			<int16 name="Constraint Index" offset="0x12" visible="true" />
+		</tagblock>
+		<tagRef name="Overshield First Person Shader" offset="0xE8" visible="true" />
+		<tagRef name="Overshield Shader" offset="0xF0" visible="true" />
+	</tagblock>
+	<tagblock name="Targets" offset="0x68" visible="true" elementSize="0x1C">
+		<stringid name="Marker Name" offset="0x0" visible="true" tooltip="multiple markers become multiple spheres of the same radius" />
+		<float32 name="Size" offset="0x4" visible="true" tooltip="sphere radius" />
+		<degree name="Cone Angle" offset="0x8" visible="true" tooltip="the target is only visible when viewed within this angle of the marker's x axis" />
+		<int16 name="Damage Section Index" offset="0xC" visible="true" tooltip="the target is associated with this damage section" />
+		<int16 name="Variant Index" offset="0xE" visible="true" tooltip="the target will only appear with this variant" />
+		<float32 name="Targeting Relevance" offset="0x10" visible="true" tooltip="higher relevances turn into stronger magnetisms" />
+		<flags32 name="Lock-On Flags" offset="0x14" visible="true">
+			<bit name="Locked By Human Tracking" index="0" />
+			<bit name="Locked By Plasma Tracking" index="1" />
+			<bit name="Headshot" index="2" />
+			<bit name="Vulnerable" index="3" />
+			<bit name="Always Locked By Plasma Tracking" index="4" />
+		</flags32>
+		<float32 name="Lock-On Distance" offset="0x18" visible="true" />
+	</tagblock>
+	<tagblock name="Collision Regions" offset="0x70" visible="true" elementSize="0x10">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int8 name="Collision Region Index" offset="0x4" visible="true" />
+		<int8 name="Physics Region Index" offset="0x5" visible="true" />
+		<int16 name="Unknown" offset="0x6" visible="false" />
+		<tagblock name="Permutations" offset="0x8" visible="true" elementSize="0x8">
+			<stringid name="Name" offset="0x0" visible="true" />
+			<flags8 name="Flags" offset="0x4" visible="true">
+				<bit name="Cannot Be Chosen Randomly" index="0" />
+			</flags8>
+			<int8 name="Collision Permutation Index" offset="0x5" visible="true" />
+			<int8 name="Physics Permutation Index" offset="0x6" visible="true" />
+			<int8 name="Unknown" offset="0x7" visible="false" />
+		</tagblock>
+	</tagblock>
+	<tagblock name="Nodes" offset="0x78" visible="true" elementSize="0x5C">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int16 name="Parent Node Index" offset="0x4" visible="true" />
+		<int16 name="First Child Node Index" offset="0x6" visible="true" />
+		<int16 name="Next Sibling Node Index" offset="0x8" visible="true" />
+		<int16 name="Unknown" offset="0xA" visible="false" />
+		<point3 name="Default Translation" offset="0xC" visible="true" />
+		<vector4 name="Default Rotation" offset="0x18" visible="true" />
+		<float32 name="Default Inverse Scale" offset="0x28" visible="true" />
+		<vector3 name="Default Inverse Forward" offset="0x2C" visible="true" />
+		<vector3 name="Default Inverse Left" offset="0x38" visible="true" />
+		<vector3 name="Default Inverse Up" offset="0x44" visible="true" />
+		<point3 name="Default Inverse Position" offset="0x50" visible="true" />
+	</tagblock>
+	<uint32 name="Node List Checksum" offset="0x80" visible="true" />
+	<tagblock name="Model Object Data" offset="0x84" visible="true" elementSize="0x14">
+		<enum16 name="Type" offset="0x0" visible="true">
+			<option name="Not Set" value="0x0" />
+			<option name="User Defined" value="0x1" />
+			<option name="Auto Generated" value="0x2" />
+		</enum16>
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<point3 name="Offset" offset="0x4" visible="true" />
+		<float32 name="Radius" offset="0x10" visible="true" />
+	</tagblock>
+	<tagRef name="Default Dialogue" offset="0x8C" visible="true" tooltip="The default dialogue tag for this model (overriden by variants)" />
+	<tagRef name="Active Camo Shader" offset="0x94" visible="true" />
+	<flags32 name="Flags" offset="0x9C" visible="true">
+		<bit name="Active Camo Always On" index="0" />
+		<bit name="Active Camo Always Merge" index="1" />
+		<bit name="Active Camo Never Merge" index="2" />
+		<bit name="Bit 3" index="3" />
+		<bit name="Bit 4" index="4" />
+		<bit name="Bit 5" index="5" />
+		<bit name="Bit 6" index="6" />
+		<bit name="Bit 7" index="7" />
+		<bit name="Bit 8" index="8" />
+		<bit name="Bit 9" index="9" />
+		<bit name="Bit 10" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
+		<bit name="Bit 16" index="16" />
+		<bit name="Bit 17" index="17" />
+		<bit name="Bit 18" index="18" />
+		<bit name="Bit 19" index="19" />
+		<bit name="Bit 20" index="20" />
+		<bit name="Bit 21" index="21" />
+		<bit name="Bit 22" index="22" />
+		<bit name="Bit 23" index="23" />
+		<bit name="Bit 24" index="24" />
+		<bit name="Bit 25" index="25" />
+		<bit name="Bit 26" index="26" />
+		<bit name="Bit 27" index="27" />
+		<bit name="Bit 28" index="28" />
+		<bit name="Bit 29" index="29" />
+		<bit name="Bit 30" index="30" />
+		<bit name="Bit 31" index="31" />
+	</flags32>
+	<stringId name="Default Dialogue Effect" offset="0xA0" visible="true" tooltip="The default dialogue tag for this model (overriden by variants)" />
+	<flags32 name="Render-Only Node Flags 1" offset="0xA4" visible="true">
+		<bit name="Node 0" index="0" />
+		<bit name="Node 1" index="1" />
+		<bit name="Node 2" index="2" />
+		<bit name="Node 3" index="3" />
+		<bit name="Node 4" index="4" />
+		<bit name="Node 5" index="5" />
+		<bit name="Node 6" index="6" />
+		<bit name="Node 7" index="7" />
+		<bit name="Node 8" index="8" />
+		<bit name="Node 9" index="9" />
+		<bit name="Node 10" index="10" />
+		<bit name="Node 11" index="11" />
+		<bit name="Node 12" index="12" />
+		<bit name="Node 13" index="13" />
+		<bit name="Node 14" index="14" />
+		<bit name="Node 15" index="15" />
+		<bit name="Node 16" index="16" />
+		<bit name="Node 17" index="17" />
+		<bit name="Node 18" index="18" />
+		<bit name="Node 19" index="19" />
+		<bit name="Node 20" index="20" />
+		<bit name="Node 21" index="21" />
+		<bit name="Node 22" index="22" />
+		<bit name="Node 23" index="23" />
+		<bit name="Node 24" index="24" />
+		<bit name="Node 25" index="25" />
+		<bit name="Node 26" index="26" />
+		<bit name="Node 27" index="27" />
+		<bit name="Node 28" index="28" />
+		<bit name="Node 29" index="29" />
+		<bit name="Node 30" index="30" />
+		<bit name="Node 31" index="31" />
+	</flags32>
+	<flags32 name="Render-Only Node Flags 2" offset="0xA8" visible="true">
+		<bit name="Node 32" index="0" />
+		<bit name="Node 33" index="1" />
+		<bit name="Node 34" index="2" />
+		<bit name="Node 35" index="3" />
+		<bit name="Node 36" index="4" />
+		<bit name="Node 37" index="5" />
+		<bit name="Node 38" index="6" />
+		<bit name="Node 39" index="7" />
+		<bit name="Node 40" index="8" />
+		<bit name="Node 41" index="9" />
+		<bit name="Node 42" index="10" />
+		<bit name="Node 43" index="11" />
+		<bit name="Node 44" index="12" />
+		<bit name="Node 45" index="13" />
+		<bit name="Node 46" index="14" />
+		<bit name="Node 47" index="15" />
+		<bit name="Node 48" index="16" />
+		<bit name="Node 49" index="17" />
+		<bit name="Node 50" index="18" />
+		<bit name="Node 51" index="19" />
+		<bit name="Node 52" index="20" />
+		<bit name="Node 53" index="21" />
+		<bit name="Node 54" index="22" />
+		<bit name="Node 55" index="23" />
+		<bit name="Node 56" index="24" />
+		<bit name="Node 57" index="25" />
+		<bit name="Node 58" index="26" />
+		<bit name="Node 59" index="27" />
+		<bit name="Node 60" index="28" />
+		<bit name="Node 61" index="29" />
+		<bit name="Node 62" index="30" />
+		<bit name="Node 63" index="31" />
+	</flags32>
+	<flags32 name="Render-Only Node Flags 3" offset="0xAC" visible="true">
+		<bit name="Node 64" index="0" />
+		<bit name="Node 65" index="1" />
+		<bit name="Node 66" index="2" />
+		<bit name="Node 67" index="3" />
+		<bit name="Node 68" index="4" />
+		<bit name="Node 69" index="5" />
+		<bit name="Node 70" index="6" />
+		<bit name="Node 71" index="7" />
+		<bit name="Node 72" index="8" />
+		<bit name="Node 73" index="9" />
+		<bit name="Node 74" index="10" />
+		<bit name="Node 75" index="11" />
+		<bit name="Node 76" index="12" />
+		<bit name="Node 77" index="13" />
+		<bit name="Node 78" index="14" />
+		<bit name="Node 79" index="15" />
+		<bit name="Node 80" index="16" />
+		<bit name="Node 81" index="17" />
+		<bit name="Node 82" index="18" />
+		<bit name="Node 83" index="19" />
+		<bit name="Node 84" index="20" />
+		<bit name="Node 85" index="21" />
+		<bit name="Node 86" index="22" />
+		<bit name="Node 87" index="23" />
+		<bit name="Node 88" index="24" />
+		<bit name="Node 89" index="25" />
+		<bit name="Node 90" index="26" />
+		<bit name="Node 91" index="27" />
+		<bit name="Node 92" index="28" />
+		<bit name="Node 93" index="29" />
+		<bit name="Node 94" index="30" />
+		<bit name="Node 95" index="31" />
+	</flags32>
+	<flags32 name="Render-Only Node Flags 4" offset="0xB0" visible="true">
+		<bit name="Node 96" index="0" />
+		<bit name="Node 97" index="1" />
+		<bit name="Node 98" index="2" />
+		<bit name="Node 99" index="3" />
+		<bit name="Node 100" index="4" />
+		<bit name="Node 101" index="5" />
+		<bit name="Node 102" index="6" />
+		<bit name="Node 103" index="7" />
+		<bit name="Node 104" index="8" />
+		<bit name="Node 105" index="9" />
+		<bit name="Node 106" index="10" />
+		<bit name="Node 107" index="11" />
+		<bit name="Node 108" index="12" />
+		<bit name="Node 109" index="13" />
+		<bit name="Node 110" index="14" />
+		<bit name="Node 111" index="15" />
+		<bit name="Node 112" index="16" />
+		<bit name="Node 113" index="17" />
+		<bit name="Node 114" index="18" />
+		<bit name="Node 115" index="19" />
+		<bit name="Node 116" index="20" />
+		<bit name="Node 117" index="21" />
+		<bit name="Node 118" index="22" />
+		<bit name="Node 119" index="23" />
+		<bit name="Node 120" index="24" />
+		<bit name="Node 121" index="25" />
+		<bit name="Node 122" index="26" />
+		<bit name="Node 123" index="27" />
+		<bit name="Node 124" index="28" />
+		<bit name="Node 125" index="29" />
+		<bit name="Node 126" index="30" />
+		<bit name="Node 127" index="31" />
+	</flags32>
+	<flags32 name="Render-Only Node Flags 5" offset="0xB4" visible="true">
+		<bit name="Node 128" index="0" />
+		<bit name="Node 129" index="1" />
+		<bit name="Node 130" index="2" />
+		<bit name="Node 131" index="3" />
+		<bit name="Node 132" index="4" />
+		<bit name="Node 133" index="5" />
+		<bit name="Node 134" index="6" />
+		<bit name="Node 135" index="7" />
+		<bit name="Node 136" index="8" />
+		<bit name="Node 137" index="9" />
+		<bit name="Node 138" index="10" />
+		<bit name="Node 139" index="11" />
+		<bit name="Node 140" index="12" />
+		<bit name="Node 141" index="13" />
+		<bit name="Node 142" index="14" />
+		<bit name="Node 143" index="15" />
+		<bit name="Node 144" index="16" />
+		<bit name="Node 145" index="17" />
+		<bit name="Node 146" index="18" />
+		<bit name="Node 147" index="19" />
+		<bit name="Node 148" index="20" />
+		<bit name="Node 149" index="21" />
+		<bit name="Node 150" index="22" />
+		<bit name="Node 151" index="23" />
+		<bit name="Node 152" index="24" />
+		<bit name="Node 153" index="25" />
+		<bit name="Node 154" index="26" />
+		<bit name="Node 155" index="27" />
+		<bit name="Node 156" index="28" />
+		<bit name="Node 157" index="29" />
+		<bit name="Node 158" index="30" />
+		<bit name="Node 159" index="31" />
+	</flags32>
+	<flags32 name="Render-Only Node Flags 6" offset="0xB8" visible="true">
+		<bit name="Node 160" index="0" />
+		<bit name="Node 161" index="1" />
+		<bit name="Node 162" index="2" />
+		<bit name="Node 163" index="3" />
+		<bit name="Node 164" index="4" />
+		<bit name="Node 165" index="5" />
+		<bit name="Node 166" index="6" />
+		<bit name="Node 167" index="7" />
+		<bit name="Node 168" index="8" />
+		<bit name="Node 169" index="9" />
+		<bit name="Node 170" index="10" />
+		<bit name="Node 171" index="11" />
+		<bit name="Node 172" index="12" />
+		<bit name="Node 173" index="13" />
+		<bit name="Node 174" index="14" />
+		<bit name="Node 175" index="15" />
+		<bit name="Node 176" index="16" />
+		<bit name="Node 177" index="17" />
+		<bit name="Node 178" index="18" />
+		<bit name="Node 179" index="19" />
+		<bit name="Node 180" index="20" />
+		<bit name="Node 181" index="21" />
+		<bit name="Node 182" index="22" />
+		<bit name="Node 183" index="23" />
+		<bit name="Node 184" index="24" />
+		<bit name="Node 185" index="25" />
+		<bit name="Node 186" index="26" />
+		<bit name="Node 187" index="27" />
+		<bit name="Node 188" index="28" />
+		<bit name="Node 189" index="29" />
+		<bit name="Node 190" index="30" />
+		<bit name="Node 191" index="31" />
+	</flags32>
+	<flags32 name="Render-Only Node Flags 7" offset="0xBC" visible="true">
+		<bit name="Node 192" index="0" />
+		<bit name="Node 193" index="1" />
+		<bit name="Node 194" index="2" />
+		<bit name="Node 195" index="3" />
+		<bit name="Node 196" index="4" />
+		<bit name="Node 197" index="5" />
+		<bit name="Node 198" index="6" />
+		<bit name="Node 199" index="7" />
+		<bit name="Node 200" index="8" />
+		<bit name="Node 201" index="9" />
+		<bit name="Node 202" index="10" />
+		<bit name="Node 203" index="11" />
+		<bit name="Node 204" index="12" />
+		<bit name="Node 205" index="13" />
+		<bit name="Node 206" index="14" />
+		<bit name="Node 207" index="15" />
+		<bit name="Node 208" index="16" />
+		<bit name="Node 209" index="17" />
+		<bit name="Node 210" index="18" />
+		<bit name="Node 211" index="19" />
+		<bit name="Node 212" index="20" />
+		<bit name="Node 213" index="21" />
+		<bit name="Node 214" index="22" />
+		<bit name="Node 215" index="23" />
+		<bit name="Node 216" index="24" />
+		<bit name="Node 217" index="25" />
+		<bit name="Node 218" index="26" />
+		<bit name="Node 219" index="27" />
+		<bit name="Node 220" index="28" />
+		<bit name="Node 221" index="29" />
+		<bit name="Node 222" index="30" />
+		<bit name="Node 223" index="31" />
+	</flags32>
+	<flags32 name="Render-Only Node Flags 8" offset="0xC0" visible="true">
+		<bit name="Node 224" index="0" />
+		<bit name="Node 225" index="1" />
+		<bit name="Node 226" index="2" />
+		<bit name="Node 227" index="3" />
+		<bit name="Node 228" index="4" />
+		<bit name="Node 229" index="5" />
+		<bit name="Node 230" index="6" />
+		<bit name="Node 231" index="7" />
+		<bit name="Node 232" index="8" />
+		<bit name="Node 233" index="9" />
+		<bit name="Node 234" index="10" />
+		<bit name="Node 235" index="11" />
+		<bit name="Node 236" index="12" />
+		<bit name="Node 237" index="13" />
+		<bit name="Node 238" index="14" />
+		<bit name="Node 239" index="15" />
+		<bit name="Node 240" index="16" />
+		<bit name="Node 241" index="17" />
+		<bit name="Node 242" index="18" />
+		<bit name="Node 243" index="19" />
+		<bit name="Node 244" index="20" />
+		<bit name="Node 245" index="21" />
+		<bit name="Node 246" index="22" />
+		<bit name="Node 247" index="23" />
+		<bit name="Node 248" index="24" />
+		<bit name="Node 249" index="25" />
+		<bit name="Node 250" index="26" />
+		<bit name="Node 251" index="27" />
+		<bit name="Node 252" index="28" />
+		<bit name="Node 253" index="29" />
+		<bit name="Node 254" index="30" />
+		<bit name="Node 255" index="31" />
+	</flags32>
+	<flags32 name="Render-Only Section Flags 1" offset="0xC4" visible="true">
+		<bit name="Section 0" index="0" />
+		<bit name="Section 1" index="1" />
+		<bit name="Section 2" index="2" />
+		<bit name="Section 3" index="3" />
+		<bit name="Section 4" index="4" />
+		<bit name="Section 5" index="5" />
+		<bit name="Section 6" index="6" />
+		<bit name="Section 7" index="7" />
+		<bit name="Section 8" index="8" />
+		<bit name="Section 9" index="9" />
+		<bit name="Section 10" index="10" />
+		<bit name="Section 11" index="11" />
+		<bit name="Section 12" index="12" />
+		<bit name="Section 13" index="13" />
+		<bit name="Section 14" index="14" />
+		<bit name="Section 15" index="15" />
+		<bit name="Section 16" index="16" />
+		<bit name="Section 17" index="17" />
+		<bit name="Section 18" index="18" />
+		<bit name="Section 19" index="19" />
+		<bit name="Section 20" index="20" />
+		<bit name="Section 21" index="21" />
+		<bit name="Section 22" index="22" />
+		<bit name="Section 23" index="23" />
+		<bit name="Section 24" index="24" />
+		<bit name="Section 25" index="25" />
+		<bit name="Section 26" index="26" />
+		<bit name="Section 27" index="27" />
+		<bit name="Section 28" index="28" />
+		<bit name="Section 29" index="29" />
+		<bit name="Section 30" index="30" />
+		<bit name="Section 31" index="31" />
+	</flags32>
+	<flags32 name="Render-Only Section Flags 2" offset="0xC8" visible="true">
+		<bit name="Section 32" index="0" />
+		<bit name="Section 33" index="1" />
+		<bit name="Section 34" index="2" />
+		<bit name="Section 35" index="3" />
+		<bit name="Section 36" index="4" />
+		<bit name="Section 37" index="5" />
+		<bit name="Section 38" index="6" />
+		<bit name="Section 39" index="7" />
+		<bit name="Section 40" index="8" />
+		<bit name="Section 41" index="9" />
+		<bit name="Section 42" index="10" />
+		<bit name="Section 43" index="11" />
+		<bit name="Section 44" index="12" />
+		<bit name="Section 45" index="13" />
+		<bit name="Section 46" index="14" />
+		<bit name="Section 47" index="15" />
+		<bit name="Section 48" index="16" />
+		<bit name="Section 49" index="17" />
+		<bit name="Section 50" index="18" />
+		<bit name="Section 51" index="19" />
+		<bit name="Section 52" index="20" />
+		<bit name="Section 53" index="21" />
+		<bit name="Section 54" index="22" />
+		<bit name="Section 55" index="23" />
+		<bit name="Section 56" index="24" />
+		<bit name="Section 57" index="25" />
+		<bit name="Section 58" index="26" />
+		<bit name="Section 59" index="27" />
+		<bit name="Section 60" index="28" />
+		<bit name="Section 61" index="29" />
+		<bit name="Section 62" index="30" />
+		<bit name="Section 63" index="31" />
+	</flags32>
+	<flags32 name="Render-Only Section Flags 3" offset="0xCC" visible="true">
+		<bit name="Section 64" index="0" />
+		<bit name="Section 65" index="1" />
+		<bit name="Section 66" index="2" />
+		<bit name="Section 67" index="3" />
+		<bit name="Section 68" index="4" />
+		<bit name="Section 69" index="5" />
+		<bit name="Section 70" index="6" />
+		<bit name="Section 71" index="7" />
+		<bit name="Section 72" index="8" />
+		<bit name="Section 73" index="9" />
+		<bit name="Section 74" index="10" />
+		<bit name="Section 75" index="11" />
+		<bit name="Section 76" index="12" />
+		<bit name="Section 77" index="13" />
+		<bit name="Section 78" index="14" />
+		<bit name="Section 79" index="15" />
+		<bit name="Section 80" index="16" />
+		<bit name="Section 81" index="17" />
+		<bit name="Section 82" index="18" />
+		<bit name="Section 83" index="19" />
+		<bit name="Section 84" index="20" />
+		<bit name="Section 85" index="21" />
+		<bit name="Section 86" index="22" />
+		<bit name="Section 87" index="23" />
+		<bit name="Section 88" index="24" />
+		<bit name="Section 89" index="25" />
+		<bit name="Section 90" index="26" />
+		<bit name="Section 91" index="27" />
+		<bit name="Section 92" index="28" />
+		<bit name="Section 93" index="29" />
+		<bit name="Section 94" index="30" />
+		<bit name="Section 95" index="31" />
+	</flags32>
+	<flags32 name="Render-Only Section Flags 4" offset="0xD0" visible="true">
+		<bit name="Section 96" index="0" />
+		<bit name="Section 97" index="1" />
+		<bit name="Section 98" index="2" />
+		<bit name="Section 99" index="3" />
+		<bit name="Section 100" index="4" />
+		<bit name="Section 101" index="5" />
+		<bit name="Section 102" index="6" />
+		<bit name="Section 103" index="7" />
+		<bit name="Section 104" index="8" />
+		<bit name="Section 105" index="9" />
+		<bit name="Section 106" index="10" />
+		<bit name="Section 107" index="11" />
+		<bit name="Section 108" index="12" />
+		<bit name="Section 109" index="13" />
+		<bit name="Section 110" index="14" />
+		<bit name="Section 111" index="15" />
+		<bit name="Section 112" index="16" />
+		<bit name="Section 113" index="17" />
+		<bit name="Section 114" index="18" />
+		<bit name="Section 115" index="19" />
+		<bit name="Section 116" index="20" />
+		<bit name="Section 117" index="21" />
+		<bit name="Section 118" index="22" />
+		<bit name="Section 119" index="23" />
+		<bit name="Section 120" index="24" />
+		<bit name="Section 121" index="25" />
+		<bit name="Section 122" index="26" />
+		<bit name="Section 123" index="27" />
+		<bit name="Section 124" index="28" />
+		<bit name="Section 125" index="29" />
+		<bit name="Section 126" index="30" />
+		<bit name="Section 127" index="31" />
+	</flags32>
+	<flags32 name="Render-Only Section Flags 5" offset="0xD4" visible="true">
+		<bit name="Section 128" index="0" />
+		<bit name="Section 129" index="1" />
+		<bit name="Section 130" index="2" />
+		<bit name="Section 131" index="3" />
+		<bit name="Section 132" index="4" />
+		<bit name="Section 133" index="5" />
+		<bit name="Section 134" index="6" />
+		<bit name="Section 135" index="7" />
+		<bit name="Section 136" index="8" />
+		<bit name="Section 137" index="9" />
+		<bit name="Section 138" index="10" />
+		<bit name="Section 139" index="11" />
+		<bit name="Section 140" index="12" />
+		<bit name="Section 141" index="13" />
+		<bit name="Section 142" index="14" />
+		<bit name="Section 143" index="15" />
+		<bit name="Section 144" index="16" />
+		<bit name="Section 145" index="17" />
+		<bit name="Section 146" index="18" />
+		<bit name="Section 147" index="19" />
+		<bit name="Section 148" index="20" />
+		<bit name="Section 149" index="21" />
+		<bit name="Section 150" index="22" />
+		<bit name="Section 151" index="23" />
+		<bit name="Section 152" index="24" />
+		<bit name="Section 153" index="25" />
+		<bit name="Section 154" index="26" />
+		<bit name="Section 155" index="27" />
+		<bit name="Section 156" index="28" />
+		<bit name="Section 157" index="29" />
+		<bit name="Section 158" index="30" />
+		<bit name="Section 159" index="31" />
+	</flags32>
+	<flags32 name="Render-Only Section Flags 6" offset="0xD8" visible="true">
+		<bit name="Section 160" index="0" />
+		<bit name="Section 161" index="1" />
+		<bit name="Section 162" index="2" />
+		<bit name="Section 163" index="3" />
+		<bit name="Section 164" index="4" />
+		<bit name="Section 165" index="5" />
+		<bit name="Section 166" index="6" />
+		<bit name="Section 167" index="7" />
+		<bit name="Section 168" index="8" />
+		<bit name="Section 169" index="9" />
+		<bit name="Section 170" index="10" />
+		<bit name="Section 171" index="11" />
+		<bit name="Section 172" index="12" />
+		<bit name="Section 173" index="13" />
+		<bit name="Section 174" index="14" />
+		<bit name="Section 175" index="15" />
+		<bit name="Section 176" index="16" />
+		<bit name="Section 177" index="17" />
+		<bit name="Section 178" index="18" />
+		<bit name="Section 179" index="19" />
+		<bit name="Section 180" index="20" />
+		<bit name="Section 181" index="21" />
+		<bit name="Section 182" index="22" />
+		<bit name="Section 183" index="23" />
+		<bit name="Section 184" index="24" />
+		<bit name="Section 185" index="25" />
+		<bit name="Section 186" index="26" />
+		<bit name="Section 187" index="27" />
+		<bit name="Section 188" index="28" />
+		<bit name="Section 189" index="29" />
+		<bit name="Section 190" index="30" />
+		<bit name="Section 191" index="31" />
+	</flags32>
+	<flags32 name="Render-Only Section Flags 7" offset="0xDC" visible="true">
+		<bit name="Section 192" index="0" />
+		<bit name="Section 193" index="1" />
+		<bit name="Section 194" index="2" />
+		<bit name="Section 195" index="3" />
+		<bit name="Section 196" index="4" />
+		<bit name="Section 197" index="5" />
+		<bit name="Section 198" index="6" />
+		<bit name="Section 199" index="7" />
+		<bit name="Section 200" index="8" />
+		<bit name="Section 201" index="9" />
+		<bit name="Section 202" index="10" />
+		<bit name="Section 203" index="11" />
+		<bit name="Section 204" index="12" />
+		<bit name="Section 205" index="13" />
+		<bit name="Section 206" index="14" />
+		<bit name="Section 207" index="15" />
+		<bit name="Section 208" index="16" />
+		<bit name="Section 209" index="17" />
+		<bit name="Section 210" index="18" />
+		<bit name="Section 211" index="19" />
+		<bit name="Section 212" index="20" />
+		<bit name="Section 213" index="21" />
+		<bit name="Section 214" index="22" />
+		<bit name="Section 215" index="23" />
+		<bit name="Section 216" index="24" />
+		<bit name="Section 217" index="25" />
+		<bit name="Section 218" index="26" />
+		<bit name="Section 219" index="27" />
+		<bit name="Section 220" index="28" />
+		<bit name="Section 221" index="29" />
+		<bit name="Section 222" index="30" />
+		<bit name="Section 223" index="31" />
+	</flags32>
+	<flags32 name="Render-Only Section Flags 8" offset="0xE0" visible="true">
+		<bit name="Section 224" index="0" />
+		<bit name="Section 225" index="1" />
+		<bit name="Section 226" index="2" />
+		<bit name="Section 227" index="3" />
+		<bit name="Section 228" index="4" />
+		<bit name="Section 229" index="5" />
+		<bit name="Section 230" index="6" />
+		<bit name="Section 231" index="7" />
+		<bit name="Section 232" index="8" />
+		<bit name="Section 233" index="9" />
+		<bit name="Section 234" index="10" />
+		<bit name="Section 235" index="11" />
+		<bit name="Section 236" index="12" />
+		<bit name="Section 237" index="13" />
+		<bit name="Section 238" index="14" />
+		<bit name="Section 239" index="15" />
+		<bit name="Section 240" index="16" />
+		<bit name="Section 241" index="17" />
+		<bit name="Section 242" index="18" />
+		<bit name="Section 243" index="19" />
+		<bit name="Section 244" index="20" />
+		<bit name="Section 245" index="21" />
+		<bit name="Section 246" index="22" />
+		<bit name="Section 247" index="23" />
+		<bit name="Section 248" index="24" />
+		<bit name="Section 249" index="25" />
+		<bit name="Section 250" index="26" />
+		<bit name="Section 251" index="27" />
+		<bit name="Section 252" index="28" />
+		<bit name="Section 253" index="29" />
+		<bit name="Section 254" index="30" />
+		<bit name="Section 255" index="31" />
+	</flags32>
+	<flags32 name="Runtime Flags" offset="0xE4" visible="true">
+		<bit name="Contains Runtime Nodes" index="0" />
+	</flags32>
+	<tagblock name="Scenario Load Parameters" offset="0xE8" visible="true" elementSize="0x30">
+		<comment title="SCENARIO LOAD PARAMETERS">strip-variant &lt;variant-name&gt;
+strips a given variant out of the model tag
+strip-dialogue
+strips all the dialogue for this model i.e. cinematic only</comment>
+		<tagRef name="Scenario" offset="0x0" visible="true" />
+		<dataref name="Parameters" offset="0x8" visible="true" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+	</tagblock>
+	<tagRef name="Hologram Shader" offset="0xF0" visible="true" tooltip="hologram shader is applied whenever the control function from it's object is non-zero" />
+	<stringId name="Hologram Control Function" offset="0xF8" visible="true" />
+</plugin>

@@ -107,12 +107,9 @@
 	<tagRef name="Collision Damage" offset="0x54" visible="true" tooltip="only set this tag if you want to override the default collision damage values in globals.globals" />
 	<tagblock name="Early Mover Oriented Bounding Box" offset="0x64" visible="true" elementSize="0x28">
 		<stringid name="Node Name" offset="0x0" visible="true" tooltip="empty means object space" />
-		<float32 name="X0" offset="0x4" visible="true" />
-		<float32 name="X1" offset="0x8" visible="true" />
-		<float32 name="Y0" offset="0xC" visible="true" />
-		<float32 name="Y1" offset="0x10" visible="true" />
-		<float32 name="Z0" offset="0x14" visible="true" />
-		<float32 name="Z1" offset="0x18" visible="true" />
+		<rangef name="x" offset="0x4" visible="true" />
+		<rangef name="y" offset="0xC" visible="true" />
+		<rangef name="z" offset="0x14" visible="true" />
 		<degree3 name="Angles" offset="0x1C" visible="true" />
 	</tagblock>
 	<tagRef name="Creation Effect" offset="0x70" visible="true" />
@@ -749,7 +746,7 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<tagRef name="Chambering Effect" offset="0x54" visible="true" />
 		<tagRef name="Chambering Damage Effect" offset="0x64" visible="true" />
 		<tagblock name="Magazines" offset="0x74" visible="true" elementSize="0x14">
-			<int16 name="Rounds" offset="0x0" visible="true" tooltip="0 for max" />
+			<int16 name="Rounds" offset="0x0" visible="true" tooltip="0 for maximum" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagRef name="Equipment" offset="0x4" visible="true" />
 		</tagblock>
@@ -896,7 +893,7 @@ Certain flags applicable only to certain object types, should be self evident</c
 			<option name="Quiet" value="0x4" />
 		</enum16>
 		<comment title="Error" />
-		<float32 name="Acceleration Time" offset="0x38" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve to its final error" />
+		<float32 name="Acceleration Time" offset="0x38" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve its final error" />
 		<float32 name="Deceleration Time" offset="0x3C" visible="true" tooltip="the continuous idle time it takes for the weapon to return to its initial error" />
 		<rangef name="Damage Error" offset="0x40" visible="true" tooltip="the range of angles (in degrees) that a damaged weapon will skew fire" />
 		<comment title="Turning" />
@@ -904,7 +901,7 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<degree name="Full Error Look Pitch Rate" offset="0x4C" visible="true" tooltip="yaw rate is doubled" />
 		<float32 name="Look Pitch Error Power" offset="0x50" visible="true" tooltip="use to soften or sharpen the rate ding" />
 		<comment title="Dual Weapon Error" />
-		<float32 name="Acceleration Time" offset="0x54" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve to its final error" />
+		<float32 name="Acceleration Time" offset="0x54" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve its final error" />
 		<float32 name="Deceleration Time" offset="0x58" visible="true" tooltip="the continuous idle time it takes for the weapon to return to its initial error" />
 		<float32 name="Acceleration Rate" offset="0x5C" visible="true" />
 		<float32 name="Deceleration Rate" offset="0x60" visible="true" />
@@ -923,7 +920,7 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<tagblock name="First Person Offset" offset="0x88" visible="true" elementSize="0xC">
 			<point3 name="First Person Offset" offset="0x0" visible="true" tooltip="+x is forward, +z is up, +y is left" />
 		</tagblock>
-		<enum8 name="Damage Reporting Type" offset="0x94" visible="true">
+		<enum8 name="Damage Effect Reporting Type" offset="0x94" visible="true">
 			<option name="Guardians" value="0x0" />
 			<option name="Falling Damage" value="0x1" />
 			<option name="Collision" value="0x2" />
@@ -1001,8 +998,8 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<float32 name="Campaign Age Generated Per Round" offset="0xEC" visible="true" tooltip="the amount the weapon ages each time the trigger is fired" />
 		<float32 name="Overload Time" offset="0xF0" visible="true" tooltip="the next trigger fires this often while holding down this trigger" />
 		<ranged name="Angle Change Per Shot" offset="0xF4" visible="true" tooltip="angle change per shot of the weapon during firing" />
-		<float32 name="Angle Change Acceleration Time" offset="0xFC" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve its final angle per shot" />
-		<float32 name="Angle Change Deceleration Time" offset="0x100" visible="true" tooltip="the continuous idle time it takes for the weapon to return its initial angle per shot" />
+		<float32 name="Angle Change Acceleration Time" offset="0xFC" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve its final angle change per shot" />
+		<float32 name="Angle Change Deceleration Time" offset="0x100" visible="true" tooltip="the continuous idle time it takes for the weapon to return to its initial angle change per shot" />
 		<enum16 name="Angle Change Function" offset="0x104" visible="true" tooltip="function used to scale between initial and final angle change per shot">
 			<option name="Linear" value="0x0" />
 			<option name="Early" value="0x1" />

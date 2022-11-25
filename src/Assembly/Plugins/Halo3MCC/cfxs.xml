@@ -8,13 +8,11 @@
 The actual exposure always blends towards the target exposure.
 With auto-exposure on, the target exposure is calculated relative to the brightness of what is on screen.</comment>
 	<flags16 name="Flags" offset="0x0" visible="true">
-		<bit name="Use Default" index="0" />
+		<bit name="Use Default (Ignore These Values)" index="0" />
 		<bit name="Maximum Change Is Relative" index="1" />
 		<bit name="Auto-Adjust Target" index="2" />
 		<bit name="Bit 3" index="3" />
 		<bit name="Fixed" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Fixed 2" index="6" />
 	</flags16>
 	<int16 name="Unknown" offset="0x2" visible="false" />
 	<float32 name="Exposure" offset="0x4" visible="true" tooltip="the target exposure (ONLY USED WHEN AUTO-EXPOSURE IS OFF)" />
@@ -25,7 +23,7 @@ With auto-exposure on, the target exposure is calculated relative to the brightn
 	<float32 name="Auto-Exposure Delay" offset="0x1C" visible="true" tooltip="how long to wait before auto-exposure kicks in to adjust the exposure" />
 	<comment title="AUTO EXPOSURE SENSITIVITY">How sensitive auto exposure is to small bright patches on the screen (like the sun)</comment>
 	<flags16 name="Flags" offset="0x20" visible="true">
-		<bit name="Use Default" index="0" />
+		<bit name="Use Default (Ignore These Values)" index="0" />
 		<bit name="Maximum Change Is Relative" index="1" />
 		<bit name="Auto-Adjust Target" index="2" />
 		<bit name="Bit 3" index="3" />
@@ -35,41 +33,36 @@ With auto-exposure on, the target exposure is calculated relative to the brightn
 	</flags16>
 	<int16 name="Unknown" offset="0x22" visible="false" />
 	<float32 name="Sensitivity" offset="0x24" visible="true" />
-	<comment title="Unknown Sensitivity"></comment>
+	<comment title="EXPOSURE ANTI BLOOM">Reduces overexposure bloom from things that don't bloom at exposure 0.0</comment>
 	<flags16 name="Flags" offset="0x28" visible="true">
-		<bit name="Use Default" index="0" />
+		<bit name="Use Default (Ignore These Values)" index="0" />
 		<bit name="Maximum Change Is Relative" index="1" />
 		<bit name="Auto-Adjust Target" index="2" />
 		<bit name="Bit 3" index="3" />
 		<bit name="Fixed" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Fixed 2" index="6" />
 	</flags16>
 	<int16 name="Unknown" offset="0x2A" visible="false" />
-	<float32 name="Sensitivity" offset="0x2C" visible="true" />
-	<comment title="HIGHLIGHT BLOOM">These parameters control bloom off the highlights (really bright stuff)</comment>
+	<float32 name="Anti-Bloom" offset="0x2C" visible="true" />
+	<comment title="BLOOM POINT">These parameters control the bloom point (the intensity at which things start blooming alot)
+Values are relative to the white point</comment>
 	<flags16 name="Flags" offset="0x30" visible="true">
-		<bit name="Use Default" index="0" />
+		<bit name="Use Default (Ignore These Values)" index="0" />
 		<bit name="Maximum Change Is Relative" index="1" />
 		<bit name="Auto-Adjust Target" index="2" />
 		<bit name="Bit 3" index="3" />
 		<bit name="Fixed" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Fixed 2" index="6" />
 	</flags16>
 	<int16 name="Unknown" offset="0x32" visible="false" />
-	<float32 name="Highlight Bloom" offset="0x34" visible="true" />
+	<float32 name="Bloom Point" offset="0x34" visible="true" />
 	<float32 name="Maximum Change" offset="0x38" visible="true" />
 	<float32 name="Blend Speed" offset="0x3C" visible="true" />
 	<comment title="INHERENT BLOOM">These parameters control bloom off everything (bright and dark)</comment>
 	<flags16 name="Flags" offset="0x40" visible="true">
-		<bit name="Use Default" index="0" />
+		<bit name="Use Default (Ignore These Values)" index="0" />
 		<bit name="Maximum Change Is Relative" index="1" />
 		<bit name="Auto-Adjust Target" index="2" />
 		<bit name="Bit 3" index="3" />
 		<bit name="Fixed" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Fixed 2" index="6" />
 	</flags16>
 	<int16 name="Unknown" offset="0x42" visible="false" />
 	<float32 name="Inherent Bloom" offset="0x44" visible="true" />
@@ -77,13 +70,11 @@ With auto-exposure on, the target exposure is calculated relative to the brightn
 	<float32 name="Blend Speed" offset="0x4C" visible="true" />
 	<comment title="BLOOM INTENSITY">These parameters control how bright the bloom is, relative to the underlying scene</comment>
 	<flags16 name="Flags" offset="0x50" visible="true">
-		<bit name="Use Default" index="0" />
+		<bit name="Use Default (Ignore These Values)" index="0" />
 		<bit name="Maximum Change Is Relative" index="1" />
 		<bit name="Auto-Adjust Target" index="2" />
 		<bit name="Bit 3" index="3" />
 		<bit name="Fixed" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Fixed 2" index="6" />
 	</flags16>
 	<int16 name="Unknown" offset="0x52" visible="false" />
 	<float32 name="Bloom Intensity" offset="0x54" visible="true" />
@@ -91,49 +82,41 @@ With auto-exposure on, the target exposure is calculated relative to the brightn
 	<float32 name="Blend Speed" offset="0x5C" visible="true" />
 	<comment title="BLOOM LARGE COLOR" />
 	<flags16 name="Flags" offset="0x60" visible="true">
-		<bit name="Use Default" index="0" />
+		<bit name="Use Default (Ignore These Values)" index="0" />
 		<bit name="Maximum Change Is Relative" index="1" />
 		<bit name="Auto-Adjust Target" index="2" />
 		<bit name="Bit 3" index="3" />
 		<bit name="Fixed" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Fixed 2" index="6" />
 	</flags16>
 	<int16 name="Unknown" offset="0x62" visible="false" />
 	<colorf name="Large Color" offset="0x64" alpha="false" visible="true" />
 	<comment title="BLOOM MEDIUM COLOR" />
 	<flags16 name="Flags" offset="0x70" visible="true">
-		<bit name="Use Default" index="0" />
+		<bit name="Use Default (Ignore These Values)" index="0" />
 		<bit name="Maximum Change Is Relative" index="1" />
 		<bit name="Auto-Adjust Target" index="2" />
 		<bit name="Bit 3" index="3" />
 		<bit name="Fixed" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Fixed 2" index="6" />
 	</flags16>
 	<int16 name="Unknown" offset="0x72" visible="false" />
 	<colorf name="Medium Color" offset="0x74" alpha="false" visible="true" />
 	<comment title="BLOOM SMALL COLOR" />
 	<flags16 name="Flags" offset="0x80" visible="true">
-		<bit name="Use Default" index="0" />
+		<bit name="Use Default (Ignore These Values)" index="0" />
 		<bit name="Maximum Change Is Relative" index="1" />
 		<bit name="Auto-Adjust Target" index="2" />
 		<bit name="Bit 3" index="3" />
 		<bit name="Fixed" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Fixed 2" index="6" />
 	</flags16>
 	<int16 name="Unknown" offset="0x82" visible="false" />
 	<colorf name="Small Color" offset="0x84" alpha="false" visible="true" />
 	<comment title="BLING INTENSITY" />
 	<flags16 name="Flags" offset="0x90" visible="true">
-		<bit name="Use Default" index="0" />
+		<bit name="Use Default (Ignore These Values)" index="0" />
 		<bit name="Maximum Change Is Relative" index="1" />
 		<bit name="Auto-Adjust Target" index="2" />
 		<bit name="Bit 3" index="3" />
 		<bit name="Fixed" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Fixed 2" index="6" />
 	</flags16>
 	<int16 name="Unknown" offset="0x92" visible="false" />
 	<float32 name="Bling Intensity" offset="0x94" visible="true" />
@@ -141,13 +124,11 @@ With auto-exposure on, the target exposure is calculated relative to the brightn
 	<float32 name="Blend Speed" offset="0x9C" visible="true" />
 	<comment title="BLING SIZE" />
 	<flags16 name="Flags" offset="0xA0" visible="true">
-		<bit name="Use Default" index="0" />
+		<bit name="Use Default (Ignore These Values)" index="0" />
 		<bit name="Maximum Change Is Relative" index="1" />
 		<bit name="Auto-Adjust Target" index="2" />
 		<bit name="Bit 3" index="3" />
 		<bit name="Fixed" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Fixed 2" index="6" />
 	</flags16>
 	<int16 name="Unknown" offset="0xA2" visible="false" />
 	<float32 name="Bling Length" offset="0xA4" visible="true" />
@@ -155,13 +136,11 @@ With auto-exposure on, the target exposure is calculated relative to the brightn
 	<float32 name="Blend Speed" offset="0xAC" visible="true" />
 	<comment title="BLING ANGLE" />
 	<flags16 name="Flags" offset="0xB0" visible="true">
-		<bit name="Use Default" index="0" />
+		<bit name="Use Default (Ignore These Values)" index="0" />
 		<bit name="Maximum Change Is Relative" index="1" />
 		<bit name="Auto-Adjust Target" index="2" />
 		<bit name="Bit 3" index="3" />
 		<bit name="Fixed" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Fixed 2" index="6" />
 	</flags16>
 	<int16 name="Unknown" offset="0xB2" visible="false" />
 	<float32 name="Bling Angle" offset="0xB4" visible="true" />
@@ -169,25 +148,21 @@ With auto-exposure on, the target exposure is calculated relative to the brightn
 	<float32 name="Blend Speed" offset="0xBC" visible="true" />
 	<comment title="BLING COUNT" />
 	<flags16 name="Flags" offset="0xC0" visible="true">
-		<bit name="Use Default" index="0" />
+		<bit name="Use Default (Ignore These Values)" index="0" />
 		<bit name="Maximum Change Is Relative" index="1" />
 		<bit name="Auto-Adjust Target" index="2" />
-		<bit name="Bit 3" index="3" />
+		<bit name="Double Sided Bling" index="3" />
 		<bit name="Fixed" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Fixed 2" index="6" />
 	</flags16>
 	<int16 name="Bling Spikes" offset="0xC2" visible="true" />
 	<comment title="SELF ILLUM EXPOSURE">These parameters control the self-illumination exposure
 preferred is the preferred exposure, and scale controls how much it varies from the preferred exposure</comment>
 	<flags16 name="Flags" offset="0xC4" visible="true">
-		<bit name="Use Default" index="0" />
+		<bit name="Use Default (Ignore These Values)" index="0" />
 		<bit name="Maximum Change Is Relative" index="1" />
 		<bit name="Auto-Adjust Target" index="2" />
 		<bit name="Bit 3" index="3" />
 		<bit name="Fixed" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Fixed 2" index="6" />
 	</flags16>
 	<int16 name="Unknown" offset="0xC6" visible="false" />
 	<float32 name="Preferred Exposure" offset="0xC8" visible="true" tooltip="the preferred exposure for self illum" />
@@ -196,85 +171,155 @@ preferred is the preferred exposure, and scale controls how much it varies from 
 	<comment title="SELF ILLUM CHANGE">How much self illum exposure is allowed to change
 0 means no change at all, 1 means it will equal the normal exposure</comment>
 	<flags16 name="Flags" offset="0xD4" visible="true">
-		<bit name="Use Default" index="0" />
+		<bit name="Use Default (Ignore These Values)" index="0" />
 		<bit name="Maximum Change Is Relative" index="1" />
 		<bit name="Auto-Adjust Target" index="2" />
 		<bit name="Bit 3" index="3" />
 		<bit name="Fixed" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Fixed 2" index="6" />
 	</flags16>
 	<int16 name="Unknown" offset="0xD6" visible="false" />
 	<float32 name="Exposure Change" offset="0xD8" visible="true" tooltip="how much the self illum is allowed to change, as a percentage of the normal exposure change" />
 	<float32 name="Maximum Change" offset="0xDC" visible="true" />
 	<float32 name="Blend Speed" offset="0xE0" visible="true" />
-	<comment title="Unknown" />
-	<flags16 name="Flags" offset="0xE4" visible="true">
-		<bit name="Use Default" index="0" />
-		<bit name="Maximum Change Is Relative" index="1" />
+	<comment title="SSAO" />
+	<flags32 name="Flags" offset="0xE4" visible="true">
+		<bit name="Use Default (Ignore These Values)" index="0" />
+		<bit name="Enable" index="1" />
 		<bit name="Auto-Adjust Target" index="2" />
 		<bit name="Bit 3" index="3" />
 		<bit name="Fixed" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Fixed 2" index="6" />
-	</flags16>
-	<int16 name="Unknown" offset="0xE6" visible="false" />
-	<float32 name="Unknown" offset="0xE8" visible="false" />
-	<float32 name="Unknown" offset="0xEC" visible="false" />
-	<float32 name="Unknown" offset="0xF0" visible="false" />
-	<comment title="Unknown" />
-	<flags16 name="Flags" offset="0xF4" visible="true">
-		<bit name="Use Default" index="0" />
-		<bit name="Maximum Change Is Relative" index="1" />
+	</flags32>
+	<float32 name="Intensity" offset="0xE8" visible="true" />
+	<float32 name="Radius" offset="0xEC" visible="true" />
+	<float32 name="Sample z Threshold" offset="0xF0" visible="true" />
+	<comment title="Color Grading" />
+	<flags32 name="Flags" offset="0xF4" visible="true">
+		<bit name="Use Default (Ignore These Values)" index="0" />
+		<bit name="Enable" index="1" />
 		<bit name="Auto-Adjust Target" index="2" />
 		<bit name="Bit 3" index="3" />
 		<bit name="Fixed" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Fixed 2" index="6" />
-	</flags16>
-	<int16 name="Unknown" offset="0xF6" visible="false" />
-	<float32 name="Unknown" offset="0xF8" visible="false" />
-	<undefined name="Unknown" offset="0xFC" visible="false" />
-	<undefined name="Unknown" offset="0x100" visible="false" />
-	<undefined name="Unknown" offset="0x104" visible="false" />
-	<undefined name="Unknown" offset="0x108" visible="false" />
-	<undefined name="Unknown" offset="0x10C" visible="false" />
-	<undefined name="Unknown" offset="0x110" visible="false" />
-	<tagblock name="Unknown" offset="0x114" visible="false" elementSize="0x14">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<float32 name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
+	</flags32>
+	<float32 name="Blend Time" offset="0xF8" visible="true" />
+	<tagblock name="Curves Editor" offset="0xFC" visible="true" elementSize="0x58">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="Enable" index="0" />
+		</flags32>
+		<enum32 name="Mode" offset="0x4" visible="true">
+			<option name="RGB" value="0x0" />
+			<option name="Brightness" value="0x1" />
+		</enum32>
+		<dataref name="Brightness Curve Function" offset="0x8" visible="true" />
+		<dataref name="Red Curve Function" offset="0x1C" visible="true" />
+		<dataref name="Green Curve Function" offset="0x30" visible="true" />
+		<dataref name="Blue Curve Function" offset="0x44" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x120" visible="false" />
-	<undefined name="Unknown" offset="0x124" visible="false" />
-	<undefined name="Unknown" offset="0x128" visible="false" />
-	<undefined name="Unknown" offset="0x12C" visible="false" />
-	<undefined name="Unknown" offset="0x130" visible="false" />
-	<undefined name="Unknown" offset="0x134" visible="false" />
-	<undefined name="Unknown" offset="0x138" visible="false" />
-	<undefined name="Unknown" offset="0x13C" visible="false" />
-	<undefined name="Unknown" offset="0x140" visible="false" />
-	<comment title="Unknown" />
-	<flags16 name="Flags" offset="0x144" visible="true">
-		<bit name="Use Default" index="0" />
-		<bit name="Maximum Change Is Relative" index="1" />
+	<tagblock name="Brightness, Contrast" offset="0x108" visible="true" elementSize="0xC">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="Enable" index="0" />
+		</flags32>
+		<float32 name="Brightness" offset="0x4" visible="true" />
+		<float32 name="Contrast" offset="0x8" visible="true" />
+	</tagblock>
+	<tagblock name="Hue, Saturation, Lightness, Vibrance" offset="0x114" visible="true" elementSize="0x14">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="Enable" index="0" />
+		</flags32>
+		<float32 name="Hue" offset="0x4" visible="true" />
+		<float32 name="Saturation" offset="0x8" visible="true" />
+		<float32 name="Lightness" offset="0xC" visible="true" />
+		<float32 name="Vibrance" offset="0x10" visible="true" />
+	</tagblock>
+	<tagblock name="Colorize Effect" offset="0x120" visible="true" elementSize="0x14">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="Enable" index="0" />
+		</flags32>
+		<float32 name="Blendfactor" offset="0x4" visible="true" />
+		<float32 name="Hue" offset="0x8" visible="true" />
+		<float32 name="Saturation" offset="0xC" visible="true" />
+		<float32 name="Lightness" offset="0x10" visible="true" />
+	</tagblock>
+	<tagblock name="Selective Color" offset="0x12C" visible="true" elementSize="0x94">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="Enable" index="0" />
+		</flags32>
+		<comment title="Reds" />
+		<float32 name="Cyan" offset="0x4" visible="true" />
+		<float32 name="Magenta" offset="0x8" visible="true" />
+		<float32 name="Yellow" offset="0xC" visible="true" />
+		<float32 name="Black" offset="0x10" visible="true" />
+		<comment title="Yellows" />
+		<float32 name="Cyan" offset="0x14" visible="true" />
+		<float32 name="Magenta" offset="0x18" visible="true" />
+		<float32 name="Yellow" offset="0x1C" visible="true" />
+		<float32 name="Black" offset="0x20" visible="true" />
+		<comment title="Greens" />
+		<float32 name="Cyan" offset="0x24" visible="true" />
+		<float32 name="Magenta" offset="0x28" visible="true" />
+		<float32 name="Yellow" offset="0x2C" visible="true" />
+		<float32 name="Black" offset="0x30" visible="true" />
+		<comment title="Cyans" />
+		<float32 name="Cyan" offset="0x34" visible="true" />
+		<float32 name="Magenta" offset="0x38" visible="true" />
+		<float32 name="Yellow" offset="0x3C" visible="true" />
+		<float32 name="Black" offset="0x40" visible="true" />
+		<comment title="Blues" />
+		<float32 name="Cyan" offset="0x44" visible="true" />
+		<float32 name="Magenta" offset="0x48" visible="true" />
+		<float32 name="Yellow" offset="0x4C" visible="true" />
+		<float32 name="Black" offset="0x50" visible="true" />
+		<comment title="Magentas" />
+		<float32 name="Cyan" offset="0x54" visible="true" />
+		<float32 name="Magenta" offset="0x58" visible="true" />
+		<float32 name="Yellow" offset="0x5C" visible="true" />
+		<float32 name="Black" offset="0x60" visible="true" />
+		<comment title="Whites" />
+		<float32 name="Cyan" offset="0x64" visible="true" />
+		<float32 name="Magenta" offset="0x68" visible="true" />
+		<float32 name="Yellow" offset="0x6C" visible="true" />
+		<float32 name="Black" offset="0x70" visible="true" />
+		<comment title="Neutrals" />
+		<float32 name="Cyan" offset="0x74" visible="true" />
+		<float32 name="Magenta" offset="0x78" visible="true" />
+		<float32 name="Yellow" offset="0x7C" visible="true" />
+		<float32 name="Black" offset="0x80" visible="true" />
+		<comment title="Blacks" />
+		<float32 name="Cyan" offset="0x84" visible="true" />
+		<float32 name="Magenta" offset="0x88" visible="true" />
+		<float32 name="Yellow" offset="0x8C" visible="true" />
+		<float32 name="Black" offset="0x90" visible="true" />
+	</tagblock>
+	<tagblock name="Color Balance" offset="0x138" visible="true" elementSize="0x28">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="Enable" index="0" />
+		</flags32>
+		<comment title="Shadows" />
+		<float32 name="Cyan - Red" offset="0x4" visible="true" />
+		<float32 name="Magenta - Green" offset="0x8" visible="true" />
+		<float32 name="Yellow - Blue" offset="0xC" visible="true" />
+		<comment title="Midtones" />
+		<float32 name="Cyan - Red" offset="0x10" visible="true" />
+		<float32 name="Magenta - Green" offset="0x14" visible="true" />
+		<float32 name="Yellow - Blue" offset="0x18" visible="true" />
+		<comment title="Highlights" />
+		<float32 name="Cyan - Red" offset="0x1C" visible="true" />
+		<float32 name="Magenta - Green" offset="0x20" visible="true" />
+		<float32 name="Yellow - Blue" offset="0x24" visible="true" />
+	</tagblock>
+	<comment title="Lightshafts" />
+	<flags32 name="Flags" offset="0x144" visible="true">
+		<bit name="Use Default (Ignore These Values)" index="0" />
+		<bit name="Enable" index="1" />
 		<bit name="Auto-Adjust Target" index="2" />
 		<bit name="Bit 3" index="3" />
 		<bit name="Fixed" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Fixed 2" index="6" />
-	</flags16>
-	<int16 name="Unknown" offset="0x146" visible="false" />
-	<float32 name="Unknown" offset="0x148" visible="false" />
-	<undefined name="Unknown" offset="0x14C" visible="false" />
-	<float32 name="Unknown" offset="0x150" visible="false" />
-	<float32 name="Unknown" offset="0x154" visible="false" />
-	<float32 name="Unknown" offset="0x158" visible="false" />
-	<float32 name="Unknown" offset="0x15C" visible="false" />
-	<undefined name="Unknown" offset="0x160" visible="false" />
-	<float32 name="Unknown" offset="0x164" visible="false" />
-	<float32 name="Unknown" offset="0x168" visible="false" />
-	<float32 name="Unknown" offset="0x16C" visible="false" />
+	</flags32>
+	<float32 name="Pitch" offset="0x148" visible="true" />
+	<float32 name="Heading" offset="0x14C" visible="true" />
+	<colorf name="Tint" offset="0x150" alpha="false" visible="true" />
+	<float32 name="Depth Clamp" offset="0x15C" visible="true" />
+	<float32 name="Intensity Clamp" offset="0x160" visible="true" />
+	<float32 name="Falloff Radius" offset="0x164" visible="true" />
+	<float32 name="Intensity" offset="0x168" visible="true" />
+	<float32 name="Blur Radius" offset="0x16C" visible="true" />
 </plugin>

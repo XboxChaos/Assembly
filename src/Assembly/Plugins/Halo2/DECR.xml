@@ -9,33 +9,37 @@
 	<tagblock name="Shaders" offset="0x0" visible="true" elementSize="0x8">
 		<tagRef name="Shader" offset="0x0" visible="true" />
 	</tagblock>
-	<rangef name="Lighting Scale" offset="0x8" visible="true" />
+	<rangef name="Lighting Scale" offset="0x8" visible="true" tooltip="min 0.0 defaults to 0.4; max 0.0 defaults to 2.0" />
 	<tagblock name="Classes" offset="0x10" visible="true" elementSize="0x14">
 		<stringId name="Name" offset="0x0" visible="true" />
-		<enum32 name="Type" offset="0x4" visible="true">
+		<enum8 name="Type" offset="0x4" visible="true">
 			<option name="Model" value="0x0" />
 			<option name="Floating Decal" value="0x1" />
 			<option name="Projected Decal" value="0x2" />
 			<option name="Screen Facing Quad" value="0x3" />
 			<option name="Axis Rotating Quad" value="0x4" />
 			<option name="Cross Quad" value="0x5" />
-		</enum32>
+		</enum8>
+		<int8 name="Unknown" offset="0x5" visible="false" />
+		<int16 name="Unknown" offset="0x6" visible="false" />
 		<float32 name="Scale" offset="0x8" visible="true" />
 		<tagblock name="Permutations" offset="0xC" visible="true" elementSize="0x28">
 			<stringId name="Name" offset="0x0" visible="true" />
-			<int16 name="Shader Index" offset="0x4" visible="true" />
-			<flags8 name="Flags" offset="0x6" visible="true">
+			<int8 name="Shader Index" offset="0x4" visible="true" />
+			<int8 name="Unknown" offset="0x5" visible="false" />
+			<int16 name="Unknown" offset="0x6" visible="false" />
+			<flags8 name="Flags" offset="0x8" visible="true">
 				<bit name="Align To Normal" index="0" />
 				<bit name="Only On Ground" index="1" />
 				<bit name="Upright" index="2" />
 			</flags8>
-			<enum8 name="Fade Distance" offset="0x7" visible="true">
+			<enum8 name="Fade Distance" offset="0x9" visible="true">
 				<option name="Close" value="0x0" />
 				<option name="Medium" value="0x1" />
 				<option name="Far" value="0x2" />
 			</enum8>
-			<int16 name="Index" offset="0x8" visible="true" />
-			<int16 name="Distribution Weight" offset="0xA" visible="true" />
+			<int8 name="Index" offset="0xA" visible="true" />
+			<int8 name="Distribution Weight" offset="0xB" visible="true" />
 			<rangef name="Scale" offset="0xC" visible="true" />
 			<color32 name="Tint 1" offset="0x14" alpha="false" visible="true" />
 			<color32 name="Tint 2" offset="0x18" alpha="false" visible="true" />
@@ -54,8 +58,7 @@
 		<vector3 name="Normal" offset="0xC" visible="true" />
 		<vector3 name="Tangent" offset="0x18" visible="true" />
 		<vector3 name="Binormal" offset="0x24" visible="true" />
-		<float32 name="u" offset="0x30" visible="true" />
-		<float32 name="v" offset="0x34" visible="true" />
+		<point2 name="Texcoord" offset="0x30" visible="true" />
 	</tagblock>
 	<tagblock name="Indices" offset="0x28" visible="true" elementSize="0x2">
 		<int16 name="Index" offset="0x0" visible="true" />

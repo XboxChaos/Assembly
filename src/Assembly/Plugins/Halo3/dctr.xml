@@ -4,29 +4,66 @@
 	<revisions>
 		<revision author="-DeToX-" version="1">Created layout of plugin</revision>
 	</revisions>
-	<tagRef name="Model" offset="0x0" visible="true" />
-	<undefined name="Unknown" offset="0x10" visible="false" />
-	<undefined name="Unknown" offset="0x14" visible="false" />
-	<undefined name="Unknown" offset="0x18" visible="false" />
-	<int32 name="Unknown" offset="0x1C" visible="false" />
+	<tagRef name="Render Model" offset="0x0" visible="true" />
+	<tagblock name="Render Model Instance Names" offset="0x10" visible="true" elementSize="0x4">
+		<stringid name="Name" offset="0x0" visible="true" />
+	</tagblock>
+	<int32 name="Render Model Instance Name Valid Count" offset="0x1C" visible="true" />
 	<tagRef name="Texture" offset="0x20" visible="true" />
-	<int16 name="Affects Visibility" offset="0x30" visible="true" />
-	<int16 name="Unknown" offset="0x32" visible="true" />
-	<colorf name="Color?" offset="0x34" visible="true" alpha="false" />
-	<undefined name="Unknown" offset="0x40" visible="false" />
-	<undefined name="Unknown" offset="0x44" visible="false" />
-	<undefined name="Unknown" offset="0x48" visible="false" />
-	<undefined name="Unknown" offset="0x4C" visible="false" />
-	<undefined name="Unknown" offset="0x50" visible="false" />
-	<float32 name="Brightness (Base)" offset="0x54" visible="true" />
-	<float32 name="Brightness (Shadow)" offset="0x58" visible="true" />
-	<undefined name="Unknown" offset="0x5C" visible="false" />
-	<undefined name="Unknown" offset="0x60" visible="false" />
-	<float32 name="Unknown" offset="0x64" visible="false" />
-	<float32 name="Unknown" offset="0x68" visible="false" />
-	<float32 name="Unknown" offset="0x6C" visible="false" />
-	<float32 name="Unknown" offset="0x70" visible="false" />
-	<undefined name="Unknown" offset="0x74" visible="false" />
-	<undefined name="Unknown" offset="0x78" visible="false" />
-	<undefined name="Unknown" offset="0x7C" visible="false" />
+	<comment title="RENDERING" />
+	<flags8 name="Render Flags" offset="0x30" visible="true">
+		<bit name="Render Two Sided" index="0" />
+		<bit name="Dont Sample Light Through Geometry" index="1" tooltip="takes twice as long to light" />
+	</flags8>
+	<enum8 name="Render Shader" offset="0x31" visible="true">
+		<option name="Wind + Dynamic Lights" value="0x0" />
+		<option name="Still + Dynamic Lights" value="0x1" />
+		<option name="Still + No Lights" value="0x2" />
+		<option name="Still + Sun Light Only" value="0x3" />
+		<option name="Wavy + Dynamic Lights" value="0x4" />
+		<option name="Shaded + Dynamic Lights" value="0x5" />
+	</enum8>
+	<enum8 name="Light Sampling Pattern" offset="0x32" visible="true">
+		<option name="Ground Default" value="0x0" />
+		<option name="Hanging" value="0x1" />
+	</enum8>
+	<int8 name="Unknown" offset="0x33" visible="false" />
+	<float32 name="Translucency A" offset="0x34" visible="true" tooltip="postprocessed value" />
+	<float32 name="Translucency B" offset="0x38" visible="true" tooltip="postprocessed value" />
+	<float32 name="Translucency C" offset="0x3C" visible="true" tooltip="postprocessed value" />
+	<float32 name="Translucency" offset="0x40" visible="true" tooltip="how translucent the material is (0 = opaque, 1 = both sides same intensity), only affects dynamic lights" />
+	<float32 name="Wavelength X" offset="0x44" visible="true" tooltip="direction and speed of wave through the world" />
+	<float32 name="Wavelength Y" offset="0x48" visible="true" tooltip="direction and speed of wave through the world" />
+	<float32 name="Wave Speed" offset="0x4C" visible="true" tooltip="waves per second through a point" />
+	<float32 name="Wave Frequency" offset="0x50" visible="true" tooltip="number of waves per world unit" />
+	<float32 name="Shaded Dark" offset="0x54" visible="true" tooltip="how dark is the dark side of a shaded decorator" />
+	<float32 name="Shaded Bright" offset="0x58" visible="true" tooltip="the bright side of a shaded decorator is this much brighter than the dark side" />
+	<float32 name="Unused1" offset="0x5C" visible="true" />
+	<float32 name="Unused2" offset="0x60" visible="true" />
+	<comment title="LOD FADE + CULL" />
+	<float32 name="Start Fade" offset="0x64" visible="true" tooltip="decorators will start to fade at this distance" />
+	<float32 name="End Fade" offset="0x68" visible="true" tooltip="decorators will fade completely and be culled at this distance" />
+	<float32 name="Early Cull" offset="0x6C" visible="true" tooltip="cull vertices this percentage sooner than end fade" />
+	<float32 name="Cull Block Size" offset="0x70" visible="true" tooltip="decorators are grouped into blocks to be culled in large batches, this determines how much ground each batch covers. Should be small if you expect to have very dense decorators, and large if you expect them to be sparse" />
+	<comment title="DECORATOR TYPES">These describe the randomized settings for your decorator meshes.</comment>
+	<tagblock name="Decorator Types" offset="0x74" visible="true" elementSize="0x5C">
+		<int32 name="Index" offset="0x0" visible="true" />
+		<int32 name="Mesh index" offset="0x4" visible="true" />
+		<flags32 name="Flags" offset="0x8" visible="true">
+			<bit name="Only On Ground" index="0" />
+			<bit name="Random Rotation" index="1" />
+			<bit name="Rotate X Axis Down" index="2" />
+			<bit name="Align To Normal" index="3" />
+			<bit name="Align Random" index="4" />
+		</flags32>
+		<rangef name="Scale" offset="0xC" visible="true" />
+		<rangef name="Tilt" offset="0x14" visible="true" />
+		<rangef name="Wind" offset="0x1C" visible="true" />
+		<colorf name="Color 0" offset="0x24" alpha="false" visible="true" />
+		<colorf name="Color 1" offset="0x30" alpha="false" visible="true" />
+		<colorf name="Color 2" offset="0x3C" alpha="false" visible="true" />
+		<rangef name="Ground Tint" offset="0x48" visible="true" />
+		<rangef name="Hover" offset="0x50" visible="true" />
+		<float32 name="Minimum Distance Between Decorators" offset="0x58" visible="true" />
+	</tagblock>
 </plugin>

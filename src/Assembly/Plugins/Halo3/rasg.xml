@@ -5,34 +5,161 @@
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="-DeToX-" version="2">Mapped out most of the tag</revision>
 	</revisions>
+	<comment title="Default Bitmaps">0:  ............... default 2D texture (white)
+1:  ............... default normal map (no bump)
+2:  ............... default cube map (error pattern)
+3:  ............... color bars
+4:  ............... black 2D texture
+5:  ............... transparent black 2D texture
+6:  ............... gray 2D texture
+7:  ............... auto exposure weight
+8:  ............... auto exposure weight (4x3)
+9:  ............... stencil dither pattern
+10: ............... smooth noise warp
+11: ............... ripple pattern</comment>
 	<tagblock name="Default Bitmaps" offset="0x0" visible="true" elementSize="0x14">
 		<flags32 name="Options" offset="0x0" visible="true">
 			<bit name="Don't Load Bitmap By Default" index="0" />
 		</flags32>
 		<tagRef name="Default Bitmaps" offset="0x4" visible="true" />
 	</tagblock>
+	<comment title="Material Textures">0: ............... SH Glossy CT CC0236
+1: ............... SH Glossy CT C78D78
+2: ............... SH Glossy CT DD0236
+3: ............... TBD
+4: ............... TBD
+5: ............... TBD</comment>
 	<tagblock name="Material Textures" offset="0xC" visible="true" elementSize="0x10">
 		<tagRef name="Material Textures" offset="0x0" visible="true" />
 	</tagblock>
-	<tagRef name="Vertex Shader Simple" offset="0x18" visible="true" />
-	<tagRef name="Pixel Shader Simple" offset="0x28" visible="true" />
+	<tagRef name="Default Vertex Shader" offset="0x18" visible="true" tooltip="Renderer uses this shader when a vertex shader is invalid" />
+	<tagRef name="Default Pixel Shader" offset="0x28" visible="true" tooltip="Renderer uses this shader when a pixel shader is invalid" />
+	<comment title="Debug Override Shader">When this shader is set, it overrides all shaders coming from geometry.
+However, if you leave a field as default in this shader, that field will not override the corresponding field in user shaders.
+For example, to render everything with a white albedo texture, select a white albedo texture in this shader
+and leave everything as defaults.</comment>
+	<comment title="Explicit Shaders">0: ............... debug
+1: ............... debug2d
+2: ............... copy w/scale
+3: ............... bloom: spike blur (vertical)
+4: ............... bloom: spike blur (horizontal)
+5: ............... bloom: downsample 4x4 (with bloom curve)
+6: ............... bloom: downsample 4x4
+7: ............... bloom: copy RGBE -&gt; RGB
+8: ............... bloom: update persistence
+9: ............... bloom: add downsampled
+10: ...............bloom: add
+11: .............. bloom: kernel blur (11 horizontal)
+12: .............. bloom: kernel blur (11 vertical)
+13: .............. cubemap: blur (phi)
+14: .............. cubemap: blur (theta)
+15: .............. cubemap: clamp
+16: .............. cubemap: divide
+17: .............. write depth
+18: .............. final composite
+19: .............. sky dome (simple)
+20: .............. transparent
+21: .............. (legacy) shield meter
+22: .............. (legacy) general meter
+23: .............. overhead map geometry
+24: .............. (legacy) hud bitmap
+25: .............. bloom: blend 3 textures
+26: .............. particle update
+27: .............. particle spawn
+28: .............. screenshot combine
+29: .............. downsample 2x2
+30: .............. rotate 2d
+31: .............. bspline resample
+32: .............. bloom; downsample 4x4 (with bloom curve + DOF)
+33: .............. final composite (with DOF)
+34: .............. convolve 5-tap kernel
+35: .............. exposure downsample
+36: .............. yuv to rgb
+37: .............. displacement
+38: .............. screenshot display
+39: .............. downsample 4x4 block
+40: .............. crop
+41: .............. screenshot combine (with DOF)
+42: .............. gamma correction
+43: .............. contrail spawn
+44: .............. contrail update
+45: .............. stencil 8x8 dither pattern
+46: .............. lens flare render
+47: .............. decorator render
+48: .............. bloom: NEW downsample 4x4 block (with bloom curve)
+49: .............. bloom: NEW downsample 4x4 gaussian
+50: .............. apply color matrix
+51: .............. copy
+52: .............. shadow geometry
+53: .............. shadow apply
+54: .............. gradient
+55: .............. alpha test
+56: .............. patchy fog
+57: .............. light volume
+58: .............. water ripple
+59: .............. double gradient
+60: .............. sniper scope
+61: .............. shield impact
+62: .............. player emblem-world
+63: .............. player emblem-screen
+64: .............. implicit hill
+65: .............. chud overlay blend
+66: .............. bloom add alpha1
+67: .............. bloom: NEW downsample 4x4 block (with bloom curve) LDR
+68: .............. restore LDR, HDR, and depth to EDRAM
+69: .............. beam
+70: .............. decorators no wind
+71: .............. decorators static
+72: .............. decorators sun only
+73: .............. decorators wavy
+74: .............. final composite zoom
+75: .............. final composite debug
+81: .............. displacement with motion blur
+83: .............. screenshot memexport
+84: .............. bloom: NEW downsample 4x4 gauss with curve LDR
+85: .............. decorators edit
+92: .............. smirnov test
+93: .............. fxaa
+94: .............. sniper scope stencil pc
+95: .............. ssao
+96: .............. ssao_blur
+97: .............. lightshafts
+98: .............. radial_blur
+99: .............. clear_letterbox
+100: ............. rigid world geometry
+101: ............. copy depth
+102: ............. FSR EASU with half-precision
+103: ............. FSR EASU without half-precision
+104: ............. FSR RCAS with half-precision
+105: ............. FSR RCAS without half-precision
+106: ............. FSR bilinear</comment>
 	<tagblock name="Explicit Shaders" offset="0x38" visible="true" elementSize="0x20">
 		<tagRef name="Explicit Vertex Shader" offset="0x0" visible="true" />
 		<tagRef name="Explicit Pixel Shader" offset="0x10" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x44" visible="false" />
-	<undefined name="Unknown" offset="0x48" visible="false" />
-	<undefined name="Unknown" offset="0x4C" visible="false" />
-	<int32 name="Unknown" offset="0x50" visible="false" />
-	<int32 name="Unknown" offset="0x54" visible="false" />
-	<tagRef name="Active Camo Distortion" offset="0x58" visible="true" />
+	<comment title="Atmosphere Lookup Tables">0: ............... 1D Neta Table
+1: ............... TBD
+2: ............... TBD
+3: ............... TBD
+4: ............... TBD
+5: ............... TBD</comment>
+	<tagblock name="Atmosphere Lookup Tables" offset="0x44" visible="true" elementSize="0x10">
+		<tagRef name="Atmosphere Tables" offset="0x0" visible="true" />
+	</tagblock>
+	<int32 name="Runtime M Max Vs Gprs" offset="0x50" visible="true" />
+	<int32 name="Runtime M Max Ps Gprs" offset="0x54" visible="true" />
+	<tagRef name="Active Camo Distortion Texture" offset="0x58" visible="true" />
 	<tagRef name="Default Performance Throttles" offset="0x68" visible="true" />
-	<tagRef name="Default Shield Impact" offset="0x78" visible="true" />
-	<int32 name="Unknown" offset="0x88" visible="false" />
-	<undefined name="Unknown" offset="0x8C" visible="false" />
-	<undefined name="Unknown" offset="0x90" visible="false" />
-	<undefined name="Unknown" offset="0x94" visible="false" />
-	<undefined name="Unknown" offset="0x98" visible="false" />
-	<undefined name="Unknown" offset="0x9C" visible="false" />
-	<undefined name="Unknown" offset="0xA0" visible="false" />
+	<tagRef name="Shield Impact Settings" offset="0x78" visible="true" />
+	<comment title="Motion Blur Parameters">num taps:............. # of taps to take; should be around 5, max is 20. impacts performance greatly!!
+max {x,y}:............ max amount to blur [good values are 0 - 0.2]
+scale {x,y}:.......... scale amount to blur based on motion [good values are 0 - 0.2]
+scale {x,y}:.......... scale amount to blur based on motion [good values are 0 - 0.2]
+center falloff:....... rate at which motion blur falls off towards the center of the screen [good values are 0.1 - 5.0]
+expected dt:.......... expected time per tick, in seconds (used to correct motion blur in fast/slow frames)</comment>
+	<int32 name="Number Of Taps" offset="0x88" visible="true" />
+	<point2 name="Maximum Blur" offset="0x8C" visible="true" />
+	<point2 name="Blur Scale" offset="0x94" visible="true" />
+	<float32 name="Center Falloff" offset="0x9C" visible="true" />
+	<float32 name="Expected Dt" offset="0xA0" visible="true" />
 </plugin>

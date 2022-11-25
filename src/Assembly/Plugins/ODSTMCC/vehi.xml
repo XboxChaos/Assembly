@@ -105,12 +105,9 @@
 	<tagRef name="Collision Damage" offset="0x54" visible="true" tooltip="only set this tag if you want to override the default collision damage values in globals.globals" />
 	<tagblock name="Early Mover Oriented Bounding Box" offset="0x64" visible="true" elementSize="0x28">
 		<stringid name="Node Name" offset="0x0" visible="true" tooltip="empty means object space" />
-		<float32 name="X0" offset="0x4" visible="true" />
-		<float32 name="X1" offset="0x8" visible="true" />
-		<float32 name="Y0" offset="0xC" visible="true" />
-		<float32 name="Y1" offset="0x10" visible="true" />
-		<float32 name="Z0" offset="0x14" visible="true" />
-		<float32 name="Z1" offset="0x18" visible="true" />
+		<rangef name="x" offset="0x4" visible="true" />
+		<rangef name="y" offset="0xC" visible="true" />
+		<rangef name="z" offset="0x14" visible="true" />
 		<degree3 name="Angles" offset="0x1C" visible="true" />
 	</tagblock>
 	<tagRef name="Creation Effect" offset="0x70" visible="true" />
@@ -423,11 +420,11 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<option name="Unused15" value="0xF" />
 	</enum16>
 	<enum16 name="Constant Sound Volume" offset="0x11A" visible="true">
-		<option name="Silent" value="0x0" tooltip="ai will not respond to this sound" />
+		<option name="Silent" value="0x0" />
 		<option name="Medium" value="0x1" />
 		<option name="Loud" value="0x2" />
 		<option name="Shout" value="0x3" />
-		<option name="Quiet" value="0x4" tooltip="ai can hear this sound at any range" />
+		<option name="Quiet" value="0x4" />
 	</enum16>
 	<tagblock name="Campaign Metagame Bucket" offset="0x11C" visible="true" elementSize="0x8">
 		<flags8 name="Flags" offset="0x0" visible="true">
@@ -841,7 +838,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<degree name="Overdampen Cusp Angle" offset="0x0" visible="true" />
 		<float32 name="Overdampen Exponent" offset="0x4" visible="true" />
 		<degree name="Maximum Left Turn" offset="0x8" visible="true" />
-		<degree name="Maximum Right Turn (negative)" offset="0xC" visible="true" />
+		<degree name="Maximum Right Turn (Negative)" offset="0xC" visible="true" />
 		<degree name="Turn Rate" offset="0x10" visible="true" />
 		<float32 name="Engine Moment" offset="0x14" visible="true" tooltip="higher moments make engine spin up slower" />
 		<float32 name="Engine Maximum Angular Velocity" offset="0x18" visible="true" tooltip="higher moments make engine spin up slower" />
@@ -939,7 +936,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<degree name="Overdampen Cusp Angle" offset="0x0" visible="true" />
 		<float32 name="Overdampen Exponent" offset="0x4" visible="true" />
 		<degree name="Maximum Left Turn" offset="0x8" visible="true" />
-		<degree name="Maximum Right Turn (negative)" offset="0xC" visible="true" />
+		<degree name="Maximum Right Turn (Negative)" offset="0xC" visible="true" />
 		<degree name="Turn Rate" offset="0x10" visible="true" />
 		<float32 name="Maximum Forward Speed" offset="0x14" visible="true" />
 		<float32 name="Maximum Reverse Speed" offset="0x18" visible="true" />
@@ -974,7 +971,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<degree name="Overdampen Cusp Angle" offset="0x0" visible="true" />
 		<float32 name="Overdampen Exponent" offset="0x4" visible="true" />
 		<degree name="Maximum Left Turn" offset="0x8" visible="true" />
-		<degree name="Maximum Right Turn (negative)" offset="0xC" visible="true" />
+		<degree name="Maximum Right Turn (Negative)" offset="0xC" visible="true" />
 		<degree name="Turn Rate" offset="0x10" visible="true" />
 		<float32 name="Maximum Forward Speed" offset="0x14" visible="true" />
 		<float32 name="Maximum Reverse Speed" offset="0x18" visible="true" />
@@ -1064,7 +1061,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 	</tagblock>
 	<tagblock name="VTOL Type" offset="0x390" visible="true" elementSize="0x74">
 		<degree name="Maximum Left Turn" offset="0x0" visible="true" />
-		<degree name="Maximum Right Turn (negative)" offset="0x4" visible="true" />
+		<degree name="Maximum Right Turn (Negative)" offset="0x4" visible="true" />
 		<degree name="Turn Rate" offset="0x8" visible="true" />
 		<stringId name="Left Lift Marker" offset="0xC" visible="true" />
 		<stringId name="Right Lift Marker" offset="0x10" visible="true" />
@@ -1079,7 +1076,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<comment title="Turn Acceleration" />
 		<float32 name="Maximum Turn Acceleration" offset="0x38" visible="true" />
 		<float32 name="Turn Acceleration Gain" offset="0x3C" visible="true" />
-		<float32 name="Rotor Dampening" offset="0x40" visible="true" tooltip="maxes out around 30" />
+		<float32 name="Rotor Damping" offset="0x40" visible="true" tooltip="maxes out around 30" />
 		<comment title="Left and Forward Accelerations" />
 		<float32 name="Maximum Left Acceleration" offset="0x44" visible="true" />
 		<float32 name="Maximum Forward Acceleration" offset="0x48" visible="true" />
@@ -1098,7 +1095,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<degree name="Overdampen Cusp Angle" offset="0x0" visible="true" />
 		<float32 name="Overdampen Exponent" offset="0x4" visible="true" />
 		<degree name="Maximum Left Turn" offset="0x8" visible="true" />
-		<degree name="Maximum Right Turn (negative)" offset="0xC" visible="true" />
+		<degree name="Maximum Right Turn (Negative)" offset="0xC" visible="true" />
 		<degree name="Turn Rate" offset="0x10" visible="true" />
 		<float32 name="Engine Moment" offset="0x14" visible="true" tooltip="higher moments make engine spin up slower" />
 		<float32 name="Engine Maximum Angular Velocity" offset="0x18" visible="true" tooltip="higher moments make engine spin up slower" />
@@ -1251,7 +1248,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
-		<stringId name="Collision Material Name" offset="0x3C" visible="true" />
+		<stringId name="Collision Global Material Name" offset="0x3C" visible="true" />
 		<int16 name="Collision Global Material Index" offset="0x40" visible="true" />
 		<enum16 name="Model State Destroyed" offset="0x42" visible="true" tooltip="only need point can destroy flag set">
 			<option name="Default" value="0x0" />

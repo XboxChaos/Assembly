@@ -9,11 +9,11 @@
 	<tagblock name="Skies" offset="0x10" visible="true" elementSize="0x10">
 		<tagRef name="Sky" offset="0x0" visible="true" />
 	</tagblock>
-	<enum16 name="Map Type" offset="0x1C" visible="true">
-		<option name="Single Player" value="0x0" />
+	<enum16 name="Type" offset="0x1C" visible="true">
+		<option name="Solo" value="0x0" />
 		<option name="Multiplayer" value="0x1" />
 		<option name="Main Menu" value="0x2" />
-		<option name="Shared" value="0x3" />
+		<option name="Multiplayer Shared" value="0x3" />
 		<option name="Single Player Shared" value="0x4" />
 	</enum16>
 	<flags16 name="Flags" offset="0x1E" visible="true">
@@ -596,9 +596,9 @@
 			<option name="Legacy" value="0x3" />
 		</enum8>
 		<comment title="Device Data" />
-		<int16 name="Power Group" offset="0x30" visible="true" />
-		<int16 name="Position Group" offset="0x32" visible="true" />
-		<flags32 name="Flags" offset="0x34" visible="true">
+		<int16 name="Power Group Index" offset="0x30" visible="true" />
+		<int16 name="Position Group Index" offset="0x32" visible="true" />
+		<flags32 name="Device Flags" offset="0x34" visible="true">
 			<bit name="Initially Open (1.0)" index="0" />
 			<bit name="Initially Off (0.0)" index="1" />
 			<bit name="Can Change Only Once" index="2" />
@@ -606,7 +606,7 @@
 			<bit name="Not Usable From Any Side" index="4" />
 		</flags32>
 		<comment title="Machine Data" />
-		<flags32 name="Flags" offset="0x38" visible="true">
+		<flags32 name="Machine Flags" offset="0x38" visible="true">
 			<bit name="Does Not Operate Automatically" index="0" />
 			<bit name="One-Sided" index="1" />
 			<bit name="Never Appears Locked" index="2" />
@@ -694,9 +694,9 @@
 			<option name="Legacy" value="0x3" />
 		</enum8>
 		<comment title="Device Data" />
-		<int16 name="Power Group" offset="0x30" visible="true" />
-		<int16 name="Position Group" offset="0x32" visible="true" />
-		<flags32 name="Flags" offset="0x34" visible="true">
+		<int16 name="Power Group Index" offset="0x30" visible="true" />
+		<int16 name="Position Group Index" offset="0x32" visible="true" />
+		<flags32 name="Device Flags" offset="0x34" visible="true">
 			<bit name="Initially Open (1.0)" index="0" />
 			<bit name="Initially Off (0.0)" index="1" />
 			<bit name="Can Change Only Once" index="2" />
@@ -704,7 +704,7 @@
 			<bit name="Not Usable From Any Side" index="4" />
 		</flags32>
 		<comment title="Control Data" />
-		<flags32 name="Flags" offset="0x38" visible="true">
+		<flags32 name="Control Flags" offset="0x38" visible="true">
 			<bit name="Usable From Both Sides" index="0" />
 		</flags32>
 		<int16 name="Unknown" offset="0x3C" visible="true" />
@@ -783,9 +783,9 @@
 			<option name="Legacy" value="0x3" />
 		</enum8>
 		<comment title="Device Data" />
-		<int16 name="Power Group" offset="0x30" visible="true" />
-		<int16 name="Position Group" offset="0x32" visible="true" />
-		<flags32 name="Flags" offset="0x34" visible="true">
+		<int16 name="Power Group Index" offset="0x30" visible="true" />
+		<int16 name="Position Group Index" offset="0x32" visible="true" />
+		<flags32 name="Device Flags" offset="0x34" visible="true">
 			<bit name="Initially Open (1.0)" index="0" />
 			<bit name="Initially Off (0.0)" index="1" />
 			<bit name="Can Change Only Once" index="2" />
@@ -946,9 +946,9 @@
 			<option name="Legacy" value="0x3" />
 		</enum8>
 		<comment title="Device Data" />
-		<int16 name="Power Group" offset="0x30" visible="true" />
-		<int16 name="Position Group" offset="0x32" visible="true" />
-		<flags32 name="Flags" offset="0x34" visible="true">
+		<int16 name="Power Group Index" offset="0x30" visible="true" />
+		<int16 name="Position Group Index" offset="0x32" visible="true" />
+		<flags32 name="Device Flags" offset="0x34" visible="true">
 			<bit name="Initially Open (1.0)" index="0" />
 			<bit name="Initially Off (0.0)" index="1" />
 			<bit name="Can Change Only Once" index="2" />
@@ -1083,14 +1083,15 @@
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
-			<option name="Juggernaut" value="0x6" />
-			<option name="Territories" value="0x7" />
-			<option name="Assault" value="0x8" />
-			<option name="ignored3" value="0x9" />
-			<option name="ignored4" value="0xA" />
-			<option name="All Game Types" value="0xB" />
-			<option name="All Except CTF" value="0xC" />
-			<option name="All Except CTF And Race" value="0xD" />
+			<option name="Headhunter" value="0x6" />
+			<option name="Juggernaut" value="0x7" />
+			<option name="Territories" value="0x8" />
+			<option name="Stub" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
+			<option name="All Game Types" value="0xC" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except CTF And Race" value="0xE" />
 		</enum16>
 		<enum16 name="Game Type 2" offset="0x16" visible="true">
 			<option name="None" value="0x0" />
@@ -1099,14 +1100,15 @@
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
-			<option name="Juggernaut" value="0x6" />
-			<option name="Territories" value="0x7" />
-			<option name="Assault" value="0x8" />
-			<option name="ignored3" value="0x9" />
-			<option name="ignored4" value="0xA" />
-			<option name="All Game Types" value="0xB" />
-			<option name="All Except CTF" value="0xC" />
-			<option name="All Except CTF And Race" value="0xD" />
+			<option name="Headhunter" value="0x6" />
+			<option name="Juggernaut" value="0x7" />
+			<option name="Territories" value="0x8" />
+			<option name="Stub" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
+			<option name="All Game Types" value="0xC" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except CTF And Race" value="0xE" />
 		</enum16>
 		<enum16 name="Game Type 3" offset="0x18" visible="true">
 			<option name="None" value="0x0" />
@@ -1115,14 +1117,15 @@
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
-			<option name="Juggernaut" value="0x6" />
-			<option name="Territories" value="0x7" />
-			<option name="Assault" value="0x8" />
-			<option name="ignored3" value="0x9" />
-			<option name="ignored4" value="0xA" />
-			<option name="All Game Types" value="0xB" />
-			<option name="All Except CTF" value="0xC" />
-			<option name="All Except CTF And Race" value="0xD" />
+			<option name="Headhunter" value="0x6" />
+			<option name="Juggernaut" value="0x7" />
+			<option name="Territories" value="0x8" />
+			<option name="Stub" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
+			<option name="All Game Types" value="0xC" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except CTF And Race" value="0xE" />
 		</enum16>
 		<enum16 name="Game Type 4" offset="0x1A" visible="true">
 			<option name="None" value="0x0" />
@@ -1131,37 +1134,38 @@
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
-			<option name="Juggernaut" value="0x6" />
-			<option name="Territories" value="0x7" />
-			<option name="Assault" value="0x8" />
-			<option name="ignored3" value="0x9" />
-			<option name="ignored4" value="0xA" />
-			<option name="All Game Types" value="0xB" />
-			<option name="All Except CTF" value="0xC" />
-			<option name="All Except CTF And Race" value="0xD" />
+			<option name="Headhunter" value="0x6" />
+			<option name="Juggernaut" value="0x7" />
+			<option name="Territories" value="0x8" />
+			<option name="Stub" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
+			<option name="All Game Types" value="0xC" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except CTF And Race" value="0xE" />
 		</enum16>
-		<enum16 name="Spawn Type 1" offset="0x1C" visible="true">
+		<enum16 name="Spawn Type 0" offset="0x1C" visible="true">
 			<option name="Both" value="0x0" />
 			<option name="Initial Spawn Only" value="0x1" />
 			<option name="Respawn Only" value="0x2" />
 		</enum16>
-		<enum16 name="Spawn Type 2" offset="0x1E" visible="true">
+		<enum16 name="Spawn Type 1" offset="0x1E" visible="true">
 			<option name="Both" value="0x0" />
 			<option name="Initial Spawn Only" value="0x1" />
 			<option name="Respawn Only" value="0x2" />
 		</enum16>
-		<enum16 name="Spawn Type 3" offset="0x20" visible="true">
+		<enum16 name="Spawn Type 2" offset="0x20" visible="true">
 			<option name="Both" value="0x0" />
 			<option name="Initial Spawn Only" value="0x1" />
 			<option name="Respawn Only" value="0x2" />
 		</enum16>
-		<enum16 name="Spawn Type 4" offset="0x22" visible="true">
+		<enum16 name="Spawn Type 3" offset="0x22" visible="true">
 			<option name="Both" value="0x0" />
 			<option name="Initial Spawn Only" value="0x1" />
 			<option name="Respawn Only" value="0x2" />
 		</enum16>
-		<stringid name="Unknown" offset="0x24" visible="true" />
-		<stringid name="Unknown" offset="0x28" visible="true" />
+		<stringid name="Unused Names 0" offset="0x24" visible="true" />
+		<stringid name="Unused Names 1" offset="0x28" visible="true" />
 		<enum16 name="Campaign Player Type" offset="0x2C" visible="true">
 			<option name="Masterchief" value="0x0" />
 			<option name="Dervish" value="0x1" />
@@ -1263,14 +1267,15 @@
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
-			<option name="Juggernaut" value="0x6" />
-			<option name="Territories" value="0x7" />
-			<option name="Assault" value="0x8" />
-			<option name="ignored3" value="0x9" />
-			<option name="ignored4" value="0xA" />
-			<option name="All Game Types" value="0xB" />
-			<option name="All Except CTF" value="0xC" />
-			<option name="All Except CTF And Race" value="0xD" />
+			<option name="Headhunter" value="0x6" />
+			<option name="Juggernaut" value="0x7" />
+			<option name="Territories" value="0x8" />
+			<option name="Stub" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
+			<option name="All Game Types" value="0xC" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except CTF And Race" value="0xE" />
 		</enum16>
 		<enum16 name="Game Type 2" offset="0x6" visible="true">
 			<option name="None" value="0x0" />
@@ -1279,14 +1284,15 @@
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
-			<option name="Juggernaut" value="0x6" />
-			<option name="Territories" value="0x7" />
-			<option name="Assault" value="0x8" />
-			<option name="ignored3" value="0x9" />
-			<option name="ignored4" value="0xA" />
-			<option name="All Game Types" value="0xB" />
-			<option name="All Except CTF" value="0xC" />
-			<option name="All Except CTF And Race" value="0xD" />
+			<option name="Headhunter" value="0x6" />
+			<option name="Juggernaut" value="0x7" />
+			<option name="Territories" value="0x8" />
+			<option name="Stub" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
+			<option name="All Game Types" value="0xC" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except CTF And Race" value="0xE" />
 		</enum16>
 		<enum16 name="Game Type 3" offset="0x8" visible="true">
 			<option name="None" value="0x0" />
@@ -1295,14 +1301,15 @@
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
-			<option name="Juggernaut" value="0x6" />
-			<option name="Territories" value="0x7" />
-			<option name="Assault" value="0x8" />
-			<option name="ignored3" value="0x9" />
-			<option name="ignored4" value="0xA" />
-			<option name="All Game Types" value="0xB" />
-			<option name="All Except CTF" value="0xC" />
-			<option name="All Except CTF And Race" value="0xD" />
+			<option name="Headhunter" value="0x6" />
+			<option name="Juggernaut" value="0x7" />
+			<option name="Territories" value="0x8" />
+			<option name="Stub" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
+			<option name="All Game Types" value="0xC" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except CTF And Race" value="0xE" />
 		</enum16>
 		<enum16 name="Game Type 4" offset="0xA" visible="true">
 			<option name="None" value="0x0" />
@@ -1311,17 +1318,18 @@
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
-			<option name="Juggernaut" value="0x6" />
-			<option name="Territories" value="0x7" />
-			<option name="Assault" value="0x8" />
-			<option name="ignored3" value="0x9" />
-			<option name="ignored4" value="0xA" />
-			<option name="All Game Types" value="0xB" />
-			<option name="All Except CTF" value="0xC" />
-			<option name="All Except CTF And Race" value="0xD" />
+			<option name="Headhunter" value="0x6" />
+			<option name="Juggernaut" value="0x7" />
+			<option name="Territories" value="0x8" />
+			<option name="Stub" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
+			<option name="All Game Types" value="0xC" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except CTF And Race" value="0xE" />
 		</enum16>
 		<int16 name="Team Index" offset="0xC" visible="true" />
-		<int16 name="Spawn Time" offset="0xE" visible="true" />
+		<int16 name="Spawn Time" offset="0xE" visible="true" tooltip="in seconds, 0 = default" />
 		<int16 name="Respawn On Empty Time" offset="0x10" visible="true" />
 		<enum16 name="Respawn Timer Starts" offset="0x12" visible="true">
 			<option name="On Pick Up" value="0x0" />
@@ -1333,7 +1341,7 @@
 			<option name="Secondary Light Land" value="0x2" />
 			<option name="Primary Heavy Land" value="0x3" />
 			<option name="Primary Flying" value="0x4" />
-			<option name="Seconary Heavy Land" value="0x5" />
+			<option name="Secondary Heavy Land" value="0x5" />
 			<option name="Primary Turret" value="0x6" />
 			<option name="Secondary Turret" value="0x7" />
 			<option name="Grenade" value="0x8" />
@@ -1369,7 +1377,7 @@
 		<undefined name="Unknown" offset="0x8C" visible="false" />
 	</tagblock>
 	<tagblock name="Starting Equipment" offset="0x1C4" visible="true" elementSize="0xCC">
-		<flags32 name="Starting Grenades" offset="0x0" visible="true">
+		<flags32 name="Flags" offset="0x0" visible="true">
 			<bit name="No Grenades" index="0" />
 			<bit name="Plasma Grenades" index="1" />
 		</flags32>
@@ -1380,14 +1388,15 @@
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
-			<option name="Juggernaut" value="0x6" />
-			<option name="Territories" value="0x7" />
-			<option name="Assault" value="0x8" />
-			<option name="ignored3" value="0x9" />
-			<option name="ignored4" value="0xA" />
-			<option name="All Game Types" value="0xB" />
-			<option name="All Except CTF" value="0xC" />
-			<option name="All Except CTF And Race" value="0xD" />
+			<option name="Headhunter" value="0x6" />
+			<option name="Juggernaut" value="0x7" />
+			<option name="Territories" value="0x8" />
+			<option name="Stub" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
+			<option name="All Game Types" value="0xC" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except CTF And Race" value="0xE" />
 		</enum16>
 		<enum16 name="Game Type 2" offset="0x6" visible="true">
 			<option name="None" value="0x0" />
@@ -1396,14 +1405,15 @@
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
-			<option name="Juggernaut" value="0x6" />
-			<option name="Territories" value="0x7" />
-			<option name="Assault" value="0x8" />
-			<option name="ignored3" value="0x9" />
-			<option name="ignored4" value="0xA" />
-			<option name="All Game Types" value="0xB" />
-			<option name="All Except CTF" value="0xC" />
-			<option name="All Except CTF And Race" value="0xD" />
+			<option name="Headhunter" value="0x6" />
+			<option name="Juggernaut" value="0x7" />
+			<option name="Territories" value="0x8" />
+			<option name="Stub" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
+			<option name="All Game Types" value="0xC" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except CTF And Race" value="0xE" />
 		</enum16>
 		<enum16 name="Game Type 3" offset="0x8" visible="true">
 			<option name="None" value="0x0" />
@@ -1412,14 +1422,15 @@
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
-			<option name="Juggernaut" value="0x6" />
-			<option name="Territories" value="0x7" />
-			<option name="Assault" value="0x8" />
-			<option name="ignored3" value="0x9" />
-			<option name="ignored4" value="0xA" />
-			<option name="All Game Types" value="0xB" />
-			<option name="All Except CTF" value="0xC" />
-			<option name="All Except CTF And Race" value="0xD" />
+			<option name="Headhunter" value="0x6" />
+			<option name="Juggernaut" value="0x7" />
+			<option name="Territories" value="0x8" />
+			<option name="Stub" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
+			<option name="All Game Types" value="0xC" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except CTF And Race" value="0xE" />
 		</enum16>
 		<enum16 name="Game Type 4" offset="0xA" visible="true">
 			<option name="None" value="0x0" />
@@ -1428,14 +1439,15 @@
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
-			<option name="Juggernaut" value="0x6" />
-			<option name="Territories" value="0x7" />
-			<option name="Assault" value="0x8" />
-			<option name="ignored3" value="0x9" />
-			<option name="ignored4" value="0xA" />
-			<option name="All Game Types" value="0xB" />
-			<option name="All Except CTF" value="0xC" />
-			<option name="All Except CTF And Race" value="0xD" />
+			<option name="Headhunter" value="0x6" />
+			<option name="Juggernaut" value="0x7" />
+			<option name="Territories" value="0x8" />
+			<option name="Stub" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
+			<option name="All Game Types" value="0xC" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except CTF And Race" value="0xE" />
 		</enum16>
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
@@ -1477,7 +1489,7 @@
 		<int8 name="Pitch" offset="0x3" visible="true" />
 		<point3 name="Position" offset="0x4" visible="true" />
 	</tagblock>
-	<tagblock name="Decal Palette" offset="0x1E8" visible="true" elementSize="0x10">
+	<tagblock name="Decals Palette" offset="0x1E8" visible="true" elementSize="0x10">
 		<tagref name="Decal" offset="0x0" visible="true" />
 	</tagblock>
 	<undefined name="Unknown" offset="0x1F4" visible="false" />
@@ -1526,6 +1538,7 @@
 			<option name="Continuous" value="0x2" />
 			<option name="Static" value="0x3" />
 			<option name="Stub" value="0x4" />
+			<option name="Command Script" value="0x5" />
 		</enum16>
 		<enum16 name="Return Type" offset="0x22" visible="true">
 			<option name="unparsed" value="0x0" />
@@ -1913,7 +1926,7 @@
 	<tagblock name="Background Sound Palette" offset="0x39C" visible="true" elementSize="0x74">
 		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
 		<tagRef name="Background Sound" offset="0x20" visible="true" />
-		<tagRef name="Inside Cluster Sound" offset="0x30" visible="true" />
+		<tagRef name="Inside Cluster Sound" offset="0x30" visible="true" tooltip="play only when player is inside cluster." />
 		<undefined name="Unknown" offset="0x40" visible="false" />
 		<undefined name="Unknown" offset="0x44" visible="false" />
 		<undefined name="Unknown" offset="0x48" visible="false" />
@@ -2015,6 +2028,7 @@
 	<int32 name="Object Salts 31" offset="0x480" visible="true" />
 	<int32 name="Object Salts 32" offset="0x484" visible="true" />
 	<tagblock name="Spawn Data" offset="0x488" visible="true" elementSize="0x6C">
+		<comment title="Dynamic Spawn">Non-0 values here overload what appears in multiplayer_globals.</comment>
 		<float32 name="Dynamic Spawn Lower Height" offset="0x0" visible="true" />
 		<float32 name="Dynamic Spawn Upper Height" offset="0x4" visible="true" />
 		<float32 name="Game Objective Reset Height" offset="0x8" visible="true" />
@@ -2054,6 +2068,7 @@
 			<float32 name="Weight" offset="0xC" visible="true" />
 		</tagblock>
 		<tagblock name="Static Respawn Zones" offset="0x54" visible="true" elementSize="0x2C">
+			<comment title="Static Spawn Zones">Lower and upper heights can be left at 0, in which case they use defaults. Leaving relevant teams empty means all teams; leaving all games empty means all games.</comment>
 			<stringId name="Name" offset="0x0" visible="true" />
 			<flags32 name="Relevant Team" offset="0x4" visible="true">
 				<bit name="Red" index="0" />
@@ -2070,7 +2085,7 @@
 				<bit name="Slayer" index="0" />
 				<bit name="Oddball" index="1" />
 				<bit name="King Of The Hill" index="2" />
-				<bit name="CTF" index="3" />
+				<bit name="Capture The Flag" index="3" />
 				<bit name="Race" index="4" />
 				<bit name="Headhunter" index="5" />
 				<bit name="Juggernaut" index="6" />
@@ -2084,6 +2099,7 @@
 			<float32 name="Weight" offset="0x28" visible="true" />
 		</tagblock>
 		<tagblock name="Static Initial Spawn Zones" offset="0x60" visible="true" elementSize="0x2C">
+			<comment title="Static Spawn Zones">Lower and upper heights can be left at 0, in which case they use defaults. Leaving relevant teams empty means all teams; leaving all games empty means all games.</comment>
 			<stringId name="Name" offset="0x0" visible="true" />
 			<flags32 name="Relevant Team" offset="0x4" visible="true">
 				<bit name="Red" index="0" />
@@ -2100,7 +2116,7 @@
 				<bit name="Slayer" index="0" />
 				<bit name="Oddball" index="1" />
 				<bit name="King Of The Hill" index="2" />
-				<bit name="CTF" index="3" />
+				<bit name="Capture The Flag" index="3" />
 				<bit name="Race" index="4" />
 				<bit name="Headhunter" index="5" />
 				<bit name="Juggernaut" index="6" />
@@ -2114,7 +2130,7 @@
 			<float32 name="Weight" offset="0x28" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagRef name="Sound Effects Collection" offset="0x494" visible="true" />
+	<tagRef name="Sound Effect Collection" offset="0x494" visible="true" />
 	<tagblock name="Crates" offset="0x4A4" visible="true" elementSize="0x30">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
@@ -2177,7 +2193,7 @@
 			<option name="Legacy" value="0x3" />
 		</enum8>
 	</tagblock>
-	<tagblock name="Crate Palette" offset="0x4B0" visible="true" elementSize="0x30">
+	<tagblock name="Crates Palette" offset="0x4B0" visible="true" elementSize="0x30">
 		<tagref name="Crate" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />

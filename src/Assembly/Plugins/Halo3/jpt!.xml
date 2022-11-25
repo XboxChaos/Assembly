@@ -10,10 +10,9 @@
 	</revisions>
 	<rangef name="Radius" offset="0x0" visible="true" />
 	<float32 name="Cutoff Scale" offset="0x8" visible="true" />
-	<flags32 name="Flags" offset="0xC" visible="true">
+	<flags32 name="Effect Flags" offset="0xC" visible="true">
 		<bit name="Don't Scale Damage By Distance" index="0" />
 		<bit name="Area Damage Players Only" index="1" tooltip="area of effect damage only affects players" />
-		<bit name="Affects Model Targets" index="2" tooltip="distribute the damage amongst the model targets. this is the default behavior for aoe damage, but can be set here for direct damage." />
 	</flags32>
 	<enum16 name="Side Effect" offset="0x10" visible="true">
 		<option name="None" value="0x0" />
@@ -51,24 +50,15 @@
 		<bit name="Transfer Damage Always Uses Minimum" index="11" />
 		<bit name="Infection Form Pop" index="12" />
 		<bit name="Ignore Seat Scale For Direct Damage" index="13" />
-		<bit name="Forces Hard Ping" index="14" />
+		<bit name="Forces Hard Ping If Body Damage" index="14" />
 		<bit name="Does Not Hurt Players" index="15" />
-		<bit name="Bit 16" index="16" />
+		<bit name="Does Not Overcombine" index="16" />
 		<bit name="Enables Special Death" index="17" />
-		<bit name="Bit 18" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Bit 20" index="20" />
-		<bit name="Bit 21" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Bit 25" index="25" />
-		<bit name="Bit 26" index="26" />
-		<bit name="Bit 27" index="27" />
-		<bit name="Bit 28" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Bit 31" index="31" />
+		<bit name="Cannot Cause Betrayals" index="18" />
+		<bit name="Uses Old EMP Behavior" index="19" />
+		<bit name="Ignores Damage Resistance" index="20" />
+		<bit name="Force Special Kill On Death" index="21" />
+		<bit name="Cause Magic Deceleration" index="22" />
 	</flags32>
 	<float32 name="Area Of Effect Core Radius" offset="0x18" visible="true" tooltip="if &gt;0 then higher fidelity obstruction collision checks are performed. This field has no other ramifications." />
 	<float32 name="Damage Lower Bound" offset="0x1C" visible="true" />
@@ -151,7 +141,7 @@ In the above equations C and A represent the color and alpha of the screen flash
 	</tagblock>
 	<tagRef name="Damage Response" offset="0x84" visible="true" />
 	<comment title="Temporary Camera Impulse" />
-	<float32 name="Duration" offset="0x94" visible="true" />
+	<float32 name="Impulse Duration" offset="0x94" visible="true" />
 	<enum16 name="Fade Function" offset="0x98" visible="true">
 		<option name="Linear" value="0x0" />
 		<option name="Late" value="0x1" />
@@ -169,8 +159,8 @@ In the above equations C and A represent the color and alpha of the screen flash
 	<comment title="Camera Shaking">The wobble function and weight affects how the camera shake oscilates over time.
 If the weight is one, then the wobble function completely scales the translational and rotational magnitudes. The less the weight, the less the effect wobble has.
 If the wobble weight is 0 then wobble is completely ignored.</comment>
-	<float32 name="Duration" offset="0xAC" visible="true" />
-	<enum16 name="Falloff Function" offset="0xB0" visible="true">
+	<float32 name="Shake Duration" offset="0xAC" visible="true" tooltip="the effect will last for this duration." />
+	<enum16 name="Falloff Function" offset="0xB0" visible="true" tooltip="a function to envelope the effect's magnitude over time">
 		<option name="Linear" value="0x0" />
 		<option name="Late" value="0x1" />
 		<option name="Very Late" value="0x2" />

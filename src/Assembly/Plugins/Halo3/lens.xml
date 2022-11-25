@@ -15,7 +15,15 @@
 		<option name="Marker Forward" value="0x1" />
 		<option name="None" value="0x2" />
 	</enum16>
-	<int16 name="Unknown" offset="0xE" visible="false" />
+	<enum16 name="Occlusion Inner Radius Scale" offset="0xE" visible="true">
+		<option name="None" value="0x0" />
+		<option name="1/2" value="0x1" />
+		<option name="1/4" value="0x2" />
+		<option name="1/8" value="0x3" />
+		<option name="1/16" value="0x4" />
+		<option name="1/32" value="0x5" />
+		<option name="1/64" value="0x6" />
+	</enum16>
 	<float32 name="Near Fade Begin Distance" offset="0x10" visible="true" tooltip="distance where the lens flare starts to fade in" />
 	<float32 name="Near Fade End Distance" offset="0x14" visible="true" tooltip="distance where the lens flare is fully faded in" />
 	<float32 name="Near Fade Distance" offset="0x18" visible="true" tooltip="distance at which the lens flare brightness is maximum" />
@@ -30,14 +38,7 @@
 		<bit name="No Reflection Opacity Feedback" index="5" tooltip="unchecked, each reflection evaluates its opacity from the previous reflection in the list" />
 		<bit name="Scale By Marker" index="6" />
 		<bit name="Don't Autofade" index="7" tooltip="otherwise fade based on effect time, for effect attachments only" />
-		<bit name="Bit 8" index="8" />
-		<bit name="Bit 9" index="9" />
-		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
+		<bit name="Don't Render While Zoomed" index="8" />
 	</flags16>
 	<int16 name="Runtime Flags" offset="0x32" visible="true" />
 	<enum16 name="Rotation Function" offset="0x34" visible="true">
@@ -63,28 +64,25 @@
 	<int16 name="Unknown" offset="0x3E" visible="false" />
 	<tagblock name="Reflections" offset="0x40" visible="true" elementSize="0x30">
 		<flags16 name="Flags" offset="0x0" visible="true">
-			<bit name="Align Rotation With Screen Center" index="0" />
-			<bit name="Radius Not Scaled By Distance" index="1" />
+			<bit name="Rotate From Center Of Screen" index="0" />
+			<bit name="Radius Scaled By Distance" index="1" />
 			<bit name="Radius Scaled By Occlusion Factor" index="2" />
-			<bit name="Occluded By Solid Objects" index="3" />
-			<bit name="Ignore Light Color" index="4" />
-			<bit name="Not Affected By Inner Occlusion" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
+			<bit name="Ignore External Color" index="3" />
+			<bit name="Lock To Flare x" index="4" />
+			<bit name="Lock To Flare y" index="5" />
+			<bit name="Proximity To Center As Function Input" index="6" tooltip="The input to the curves below should be multiplied by 1 if at the center of the screen and 0 if at the edge" />
+			<bit name="Mirror Across Flare" index="7" tooltip="Also renders this reflection's mirror image across the flare center" />
+			<bit name="Disabled For Debugging" index="8" />
+			<bit name="Flip u Coordinate" index="9" />
+			<bit name="Flip v Coordinate" index="10" />
+			<bit name="Draw In World Space Instead Of Screen Space" index="11" />
+			<bit name="Use Legacy H3 Flares System" index="12" />
 		</flags16>
 		<int16 name="Bitmap Index" offset="0x2" visible="true" />
 		<float32 name="Rotation Offset" offset="0x4" visible="true" />
 		<float32 name="Axis Offset" offset="0x8" visible="true" tooltip="percent offset in screen space along corona axis - 0.0 is on the corona, 1.0 is primary side edge of the screen, -1.0 is opposite side" />
-		<rangef name="Radius" offset="0xC" visible="true" />
-		<rangef name="Brightness" offset="0x14" visible="true" />
+		<rangef name="Radius" offset="0xC" visible="true" tooltip="interpolated by external input" />
+		<rangef name="Brightness" offset="0x14" visible="true" tooltip="interpolated by external input" />
 		<comment title="TINT COLOR">Tinting and modulating are not the same; 'tinting' a reflection will color the darker regions but leave the highlights, while 'modulating' will color everything uniformly. The modulation factor controls how much the reflection is modulated as opposed to tinted (0 is tinted, 1 is modulated). The tint power affects the curve of how much of the color range to tint.</comment>
 		<float32 name="Modulation Factor" offset="0x1C" visible="true" />
 		<colorf name="Color" offset="0x20" alpha="false" visible="true" />

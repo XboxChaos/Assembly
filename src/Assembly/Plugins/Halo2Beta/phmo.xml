@@ -43,11 +43,11 @@
 	<float32 name="Low Frequency Deactivation Scale" offset="0x8" visible="true" tooltip="0 is default (1). LESS than 1 deactivates less aggressively. GREATER than 1 is more agressive." />
 	<float32 name="High Frequency Deactivation Scale" offset="0xC" visible="true" tooltip="0 is default (1). LESS than 1 deactivates less aggressively. GREATER than 1 is more agressive." />
 	<float32 name="Unknown" offset="0x10" visible="true" />
-	<undefined name="Unknown" offset="0x14" visible="true" />
-	<undefined name="Unknown" offset="0x18" visible="true" />
-	<undefined name="Unknown" offset="0x1C" visible="true" />
-	<undefined name="Unknown" offset="0x20" visible="true" />
-	<undefined name="Unknown" offset="0x24" visible="true" />
+	<undefined name="Unknown" offset="0x14" visible="false" />
+	<undefined name="Unknown" offset="0x18" visible="false" />
+	<undefined name="Unknown" offset="0x1C" visible="false" />
+	<undefined name="Unknown" offset="0x20" visible="false" />
+	<undefined name="Unknown" offset="0x24" visible="false" />
 	<tagblock name="Phantom Types" offset="0x28" visible="true" elementSize="0x68">
 		<flags32 name="Flags" offset="0x0" visible="true">
 			<bit name="Generates Effects" index="0" />
@@ -126,8 +126,8 @@
 		<undefined name="Unknown" offset="0x64" visible="false" />
 	</tagblock>
 	<tagblock name="Node Edges" offset="0x34" visible="true" elementSize="0x1C">
-		<int16 name="Node A Material Global Index" offset="0x0" visible="true" />
-		<int16 name="Node B Material Global Index" offset="0x2" visible="true" />
+		<int16 name="Node A Global Material Index" offset="0x0" visible="true" />
+		<int16 name="Node B Global Material Index" offset="0x2" visible="true" />
 		<int16 name="Node A Index" offset="0x4" visible="true" />
 		<int16 name="Node B Index" offset="0x6" visible="true" />
 		<tagblock name="Constraints" offset="0x8" visible="true" elementSize="0x8">
@@ -145,14 +145,14 @@
 				<bit name="Disable Effects" index="1" tooltip="this constraint will not generate impact effects" />
 			</flags32>
 		</tagblock>
-		<stringid name="Node A Material Name" offset="0x14" visible="true" tooltip="if you don't fill this out we will pluck the material from the first primitive, of the first rigid body attached to node a" />
-		<stringid name="Node B Material Name" offset="0x18" visible="true" tooltip="if you don't fill this out we will pluck the material from the first primitive, of the first rigid body attached to node b, if node b is none we use whatever material a has" />
+		<stringid name="Node A Global Material Name" offset="0x14" visible="true" tooltip="if you don't fill this out we will pluck the material from the first primitive, of the first rigid body attached to node a" />
+		<stringid name="Node B Global Material Name" offset="0x18" visible="true" tooltip="if you don't fill this out we will pluck the material from the first primitive, of the first rigid body attached to node b, if node b is none we use whatever material a has" />
 	</tagblock>
 	<tagblock name="Rigid Bodies" offset="0x40" visible="true" elementSize="0x90">
 		<int16 name="Node Index" offset="0x0" visible="true" />
 		<int16 name="Region Index" offset="0x2" visible="true" />
 		<int16 name="Permutation Index" offset="0x4" visible="true" />
-		<int16 name="Unknown" offset="0x6" visible="true" />
+		<int16 name="Unknown" offset="0x6" visible="false" />
 		<point3 name="Bounding Sphere Offset" offset="0x8" visible="true" />
 		<float32 name="Bounding Sphere Radius" offset="0x14" visible="true" />
 		<flags16 name="Flags" offset="0x18" visible="true">
@@ -688,15 +688,15 @@
 		<int16 name="Sibling Index" offset="0x8" visible="true" />
 		<int16 name="Child Index" offset="0xA" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x12C" visible="true" />
-	<undefined name="Unknown" offset="0x130" visible="true" />
-	<undefined name="Unknown" offset="0x134" visible="true" />
-	<undefined name="Unknown" offset="0x138" visible="true" />
-	<undefined name="Unknown" offset="0x13C" visible="true" />
-	<undefined name="Unknown" offset="0x140" visible="true" />
-	<undefined name="Unknown" offset="0x144" visible="true" />
-	<undefined name="Unknown" offset="0x148" visible="true" />
-	<undefined name="Unknown" offset="0x14C" visible="true" />
+	<uint32 name="Import Info Block" offset="0x12C" visible="false" />
+	<uint32 name="Import Info Block" offset="0x130" visible="false" />
+	<uint32 name="Import Info Block" offset="0x134" visible="false" />
+	<uint32 name="Errors Block" offset="0x138" visible="false" />
+	<uint32 name="Errors Block" offset="0x13C" visible="false" />
+	<uint32 name="Errors Block" offset="0x140" visible="false" />
+	<undefined name="Unknown" offset="0x144" visible="false" />
+	<undefined name="Unknown" offset="0x148" visible="false" />
+	<undefined name="Unknown" offset="0x14C" visible="false" />
 	<tagblock name="Limited Hinge Constraints" offset="0x150" visible="true" elementSize="0x84">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int16 name="Node A Index" offset="0x4" visible="true" />

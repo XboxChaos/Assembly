@@ -15,7 +15,15 @@
 		<option name="Marker Forward" value="0x1" />
 		<option name="None" value="0x2" />
 	</enum16>
-	<int16 name="Unknown" offset="0x12" visible="false" />
+	<enum16 name="Occlusion Inner Radius Scale" offset="0x12" visible="true">
+		<option name="None" value="0x0" />
+		<option name="1/2" value="0x1" />
+		<option name="1/4" value="0x2" />
+		<option name="1/8" value="0x3" />
+		<option name="1/16" value="0x4" />
+		<option name="1/32" value="0x5" />
+		<option name="1/64" value="0x6" />
+	</enum16>
 	<float32 name="Near Fade Begin Distance" offset="0x14" visible="true" tooltip="distance where the lens flare starts to fade in" />
 	<float32 name="Near Fade End Distance" offset="0x18" visible="true" tooltip="distance where the lens flare is fully faded in" />
 	<float32 name="Near Fade Distance" offset="0x1C" visible="true" tooltip="distance at which the lens flare brightness is maximum" />
@@ -30,14 +38,7 @@
 		<bit name="No Reflection Opacity Feedback" index="5" tooltip="unchecked, each reflection evaluates its opacity from the previous reflection in the list" />
 		<bit name="Scale By Marker" index="6" />
 		<bit name="Don't Autofade" index="7" tooltip="otherwise fade based on effect time, for effect attachments only" />
-		<bit name="Bit 8" index="8" />
-		<bit name="Bit 9" index="9" />
-		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
+		<bit name="Don't Render While Zoomed" index="8" />
 	</flags16>
 	<int16 name="Runtime Flags" offset="0x36" visible="true" />
 	<enum16 name="Rotation Function" offset="0x38" visible="true">
@@ -75,22 +76,17 @@
 			<bit name="Flip u Coordinate" index="9" />
 			<bit name="Flip v Coordinate" index="10" />
 			<bit name="Draw In World Space Instead Of Screen Space" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
+			<bit name="Use Legacy H3 Flares System" index="12" />
 		</flags16>
-		<int16 name="Bitmap Index" offset="0x2" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<int16 name="Bitmap Index" offset="0x4" visible="true" />
+		<int16 name="Unknown" offset="0x6" visible="false" />
 		<tagRef name="Bitmap Override" offset="0x8" visible="true" />
 		<float32 name="Rotation Offset" offset="0x18" visible="true" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
+		<float32 name="Axis Offset" offset="0x1C" visible="true" tooltip="percent offset in screen space along corona axis - 0.0 is on the corona, 1.0 is primary side edge of the screen, -1.0 is opposite side" />
+		<rangef name="Offset Bounds" offset="0x20" visible="true" tooltip="the axis offset times corona offset is clamped between these values" />
+		<rangef name="Radius" offset="0x28" visible="true" tooltip="interpolated by external input" />
+		<rangef name="Brightness" offset="0x30" visible="true" tooltip="interpolated by external input" />
 		<dataref name="Radius Curve Function" offset="0x38" visible="true" />
 		<dataref name="Scale Curve x Function" offset="0x4C" visible="true" />
 		<dataref name="Scale Curve y Function" offset="0x60" visible="true" />

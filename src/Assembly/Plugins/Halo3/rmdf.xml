@@ -4,38 +4,105 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
-	<tagRef name="Unknown" offset="0x0" visible="false" />
-	<tagblock name="Methods" offset="0x10" visible="true" elementSize="0x18">
-		<stringId name="Type" offset="0x0" visible="true" />
-		<tagblock name="Shader Options" offset="0x4" visible="true" elementSize="0x1C">
-			<stringId name="Type" offset="0x0" visible="true" />
+	<tagRef name="Global Options" offset="0x0" visible="true" />
+	<tagblock name="Categories" offset="0x10" visible="true" elementSize="0x18">
+		<stringid name="Category Name" offset="0x0" visible="true" />
+		<tagblock name="Options" offset="0x4" visible="true" elementSize="0x1C">
+			<stringid name="Option Name" offset="0x0" visible="true" />
 			<tagRef name="Option" offset="0x4" visible="true" />
-			<stringid name="Unknown" offset="0x14" visible="false" />
-			<stringid name="Unknown" offset="0x18" visible="false" />
+			<stringid name="Vertex Function" offset="0x14" visible="true" />
+			<stringid name="Pixel Function" offset="0x18" visible="true" />
 		</tagblock>
-		<stringid name="Unknown" offset="0x10" visible="false" />
-		<stringid name="Unknown" offset="0x14" visible="false" />
+		<stringid name="Vertex Function" offset="0x10" visible="true" />
+		<stringid name="Pixel Function" offset="0x14" visible="true" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0x1C" visible="false" elementSize="0x10">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<tagblock name="Unknown" offset="0x4" visible="false" elementSize="0x10">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<tagblock name="Unknown" offset="0x4" visible="false" elementSize="0x4">
-				<undefined name="Unknown" offset="0x0" visible="false" />
+	<tagblock name="Entry Points" offset="0x1C" visible="true" elementSize="0x10">
+		<enum32 name="Entry Point" offset="0x0" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Albedo" value="0x1" />
+			<option name="Static Default" value="0x2" />
+			<option name="Static Per Pixel" value="0x3" />
+			<option name="Static Per Vertex" value="0x4" />
+			<option name="Static Sh" value="0x5" />
+			<option name="Static Prt Ambient" value="0x6" />
+			<option name="Static Prt Linear" value="0x7" />
+			<option name="Static Prt Quadratic" value="0x8" />
+			<option name="Dynamic Light" value="0x9" />
+			<option name="Shadow Generate" value="0xA" />
+			<option name="Shadow Apply" value="0xB" />
+			<option name="Active Camo" value="0xC" />
+			<option name="Lightmap Debug Mode" value="0xD" />
+			<option name="Vertex Color Lighting" value="0xE" />
+			<option name="Water Tessellation" value="0xF" />
+			<option name="Water Shading" value="0x10" />
+			<option name="Dynamic Light Cinematic" value="0x11" />
+		</enum32>
+		<tagblock name="Passes" offset="0x4" visible="true" elementSize="0x10">
+			<flags16 name="Flags" offset="0x0" visible="true">
+				<bit name="Shared Entry Point Compilation" index="0" />
+			</flags16>
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<tagblock name="Category Dependencies" offset="0x4" visible="true" elementSize="0x2">
+				<int16 name="Category index" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
 	</tagblock>
-	<tagblock name="Unknown" offset="0x28" visible="false" elementSize="0x10">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<tagblock name="Unknown" offset="0x4" visible="false" elementSize="0x10">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<tagblock name="Unknown" offset="0x4" visible="false" elementSize="0x4">
-				<undefined name="Unknown" offset="0x0" visible="false" />
+	<tagblock name="Vertex Types" offset="0x28" visible="true" elementSize="0x10">
+		<enum16 name="Vertex Type" offset="0x0" visible="true">
+			<option name="World" value="0x0" />
+			<option name="Rigid" value="0x1" />
+			<option name="Skinned" value="0x2" />
+			<option name="Particle Model" value="0x3" />
+			<option name="Flat World" value="0x4" />
+			<option name="Flat Rigid" value="0x5" />
+			<option name="Flat Skinned" value="0x6" />
+			<option name="Screen" value="0x7" />
+			<option name="Debug" value="0x8" />
+			<option name="Transparent" value="0x9" />
+			<option name="Particle" value="0xA" />
+			<option name="Contrail" value="0xB" />
+			<option name="Light Volume" value="0xC" />
+			<option name="Chud Simple" value="0xD" />
+			<option name="Chud Fancy" value="0xE" />
+			<option name="Decorator" value="0xF" />
+			<option name="Tiny Position" value="0x10" />
+			<option name="Patchy Fog" value="0x11" />
+			<option name="Water" value="0x12" />
+			<option name="Ripple" value="0x13" />
+			<option name="Implicit Geometry" value="0x14" />
+			<option name="Beam" value="0x15" />
+		</enum16>
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<tagblock name="Dependencies (Entry Point/Category)" offset="0x4" visible="true" elementSize="0x10">
+			<enum32 name="Entry Point" offset="0x0" visible="true">
+				<option name="Default" value="0x0" />
+				<option name="Albedo" value="0x1" />
+				<option name="Static Default" value="0x2" />
+				<option name="Static Per Pixel" value="0x3" />
+				<option name="Static Per Vertex" value="0x4" />
+				<option name="Static Sh" value="0x5" />
+				<option name="Static Prt Ambient" value="0x6" />
+				<option name="Static Prt Linear" value="0x7" />
+				<option name="Static Prt Quadratic" value="0x8" />
+				<option name="Dynamic Light" value="0x9" />
+				<option name="Shadow Generate" value="0xA" />
+				<option name="Shadow Apply" value="0xB" />
+				<option name="Active Camo" value="0xC" />
+				<option name="Lightmap Debug Mode" value="0xD" />
+				<option name="Vertex Color Lighting" value="0xE" />
+				<option name="Water Tessellation" value="0xF" />
+				<option name="Water Shading" value="0x10" />
+				<option name="Dynamic Light Cinematic" value="0x11" />
+			</enum32>
+			<tagblock name="Category Dependencies" offset="0x4" visible="true" elementSize="0x2">
+				<int16 name="Category index" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
 	</tagblock>
-	<tagRef name="Unknown" offset="0x34" visible="false" />
-	<tagRef name="Unknown" offset="0x44" visible="false" />
-	<undefined name="Unknown" offset="0x54" visible="false" />
-	<undefined name="Unknown" offset="0x58" visible="false" />
+	<tagRef name="Shared Pixel Shaders" offset="0x34" visible="true" />
+	<tagRef name="Shared Vertex Shaders" offset="0x44" visible="true" />
+	<flags32 name="Flags" offset="0x54" visible="true">
+		<bit name="Use Automatic Macros" index="0" />
+	</flags32>
+	<int32 name="Version" offset="0x58" visible="true" />
 </plugin>

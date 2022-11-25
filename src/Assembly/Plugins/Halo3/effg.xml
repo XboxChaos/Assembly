@@ -19,10 +19,15 @@ type_effect_reverse_message:     Number of render--&gt;main messages (attached e
                                  Holdback not implemented due to complexity.
 
 ALLOCATIONS ON THE RENDER THREAD
-tracer system		              Number of instances
-tracer location		          Number of instances * markers
-tracer			                  Number of instances * markers * tag-block-entries
-tracer profile row			      x16 = Number of tracer profiles
+type_beam_system                 Number of instances
+type_beam_location               Number of instances * markers
+type_beam                        Number of instances * markers * tag-block-entries
+type_beam_profile_row            x16 =Number of beam profiles
+
+type_contrail_system             Number of instances
+type_contrail_location           Number of instances * markers
+type_contrail                    Number of instances * markers * tag-block-entries
+type_contrail_profile_row        x16 =Number of contrail profiles
 
 type_decal_system                Number of instances
 type_decal                       Number of instances * tag-block-entries
@@ -41,8 +46,8 @@ type_cpu_particle                Number of cpu particles
 type_gpu_particle_row            x16 =Number of gpu particles (includes cpu particles)
 
 SPAWNS TO THE GPU
-type_particle_queue              Number of particles created in a frame (includes cpu particles)
-tracer queue		              Number of tracer profiles created in a frame</comment>
+type_contrail_queue              Number of contrail profiles created in a frame
+type_particle_queue              Number of particles created in a frame (includes cpu particles)</comment>
 	<tagblock name="Holdbacks" offset="0x0" visible="true" elementSize="0x14">
 		<enum32 name="Holdback Type" offset="0x0" visible="true">
 			<option name="Type Effect" value="0x0" />
@@ -50,38 +55,36 @@ tracer queue		              Number of tracer profiles created in a frame</commen
 			<option name="Type Location" value="0x2" />
 			<option name="Type Lightprobe" value="0x3" />
 			<option name="Type Effect Message" value="0x4" />
-			<option name="Tracer System" value="0x5" />
-			<option name="Tracer Location" value="0x6" />
-			<option name="Tracer Spawned" value="0x7" />
-			<option name="Tracer Stateless" value="0x8" />
-			<option name="Tracer Spawned Profile Row" value="0x9" />
-			<option name="Tracer Stateless Profile Row" value="0xA" />
-			<option name="Type Decal System" value="0xB" />
-			<option name="Type Decal" value="0xC" />
-			<option name="Type Decal Vertex" value="0xD" />
-			<option name="Type Decal Index" value="0xE" />
-			<option name="Type Light Volume System" value="0xF" />
-			<option name="Type Light Volume Location" value="0x10" />
-			<option name="Type Light Volume" value="0x11" />
-			<option name="Type Light Volume Profile Row" value="0x12" />
-			<option name="Type Particle System" value="0x13" />
-			<option name="Type Particle Location" value="0x14" />
-			<option name="Type Particle Emitter" value="0x15" />
-			<option name="Type Cpu Particle" value="0x16" />
-			<option name="Type Gpu Particle Row" value="0x17" />
-			<option name="Type Particle Queue" value="0x18" />
-			<option name="Tracer Queue" value="0x19" />
-			<option name="Track Decal System" value="0x1A" />
+			<option name="Type Beam System" value="0x5" />
+			<option name="Type Beam Location" value="0x6" />
+			<option name="Type Beam" value="0x7" />
+			<option name="Type Beam Profile Row" value="0x8" />
+			<option name="Type Contrail System" value="0x9" />
+			<option name="Type Contrail Location" value="0xA" />
+			<option name="Type Contrail" value="0xB" />
+			<option name="Type Contrail Profile Row" value="0xC" />
+			<option name="Type Decal System" value="0xD" />
+			<option name="Type Decal" value="0xE" />
+			<option name="Type Decal Vertex" value="0xF" />
+			<option name="Type Decal Index" value="0x10" />
+			<option name="Type Light Volume System" value="0x11" />
+			<option name="Type Light Volume Location" value="0x12" />
+			<option name="Type Light Volume" value="0x13" />
+			<option name="Type Light Volume Profile Row" value="0x14" />
+			<option name="Type Particle System" value="0x15" />
+			<option name="Type Particle Location" value="0x16" />
+			<option name="Type Particle Emitter" value="0x17" />
+			<option name="Type CPU Particle" value="0x18" />
+			<option name="Type GPU Particle Row" value="0x19" />
+			<option name="Type Contrail Queue" value="0x1A" />
+			<option name="Type Particle Queue" value="0x1B" />
 		</enum32>
-		<uint32 name="Overall Budget" offset="0x4" visible="true" />
+		<int32 name="Overall Budget" offset="0x4" visible="true" tooltip="from code" />
 		<tagblock name="Priorities" offset="0x8" visible="true" elementSize="0x10">
 			<enum32 name="Priority Type" offset="0x0" visible="true">
-				<option name="Low" value="0x0" />
-				<option name="Normal" value="0x1" />
-				<option name="Above Normal" value="0x2" />
-				<option name="High" value="0x3" />
-				<option name="Very High" value="0x4" />
-				<option name="Essential" value="0x5" />
+				<option name="Normal" value="0x0" />
+				<option name="High" value="0x1" />
+				<option name="Essential" value="0x2" />
 			</enum32>
 			<comment title="SET ONE OF THE FOLLOWING">Whichever is larger will be used</comment>
 			<uint32 name="Absolute Count" offset="0x4" visible="true" />

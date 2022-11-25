@@ -4,7 +4,7 @@
 		<revision author="Lord Zedd" version="1">Blah.</revision>
 	</revisions>
 	<enum16 name="Map Type" offset="0x0" visible="true">
-		<option name="Single Player" value="0x0" />
+		<option name="Solo" value="0x0" />
 		<option name="Multiplayer" value="0x1" />
 		<option name="Main Menu" value="0x2" />
 	</enum16>
@@ -435,7 +435,7 @@ Non-cloned bsps cannot split decorators this way - the decorator will be given t
 		<flags32 name="Flags" offset="0x108" visible="true">
 			<bit name="Begin Loading Next Level" index="0" />
 			<bit name="Debug Purposes Only" index="1" />
-			<bit name="Interal Zone Set" index="2" />
+			<bit name="Internal Zone Set" index="2" />
 			<bit name="Bit 3" index="3" />
 			<bit name="Bit 4" index="4" />
 			<bit name="Bit 5" index="5" />
@@ -2371,8 +2371,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<color32 name="Tertiary Color" offset="0x68" alpha="true" visible="true" />
 		<color32 name="Quaternary Color" offset="0x6C" alpha="true" visible="true" />
 		<comment title="Device Data" />
-		<int16 name="Power Group" offset="0x70" visible="true" />
-		<int16 name="Position Group" offset="0x72" visible="true" />
+		<int16 name="Power Group Index" offset="0x70" visible="true" />
+		<int16 name="Position Group Index" offset="0x72" visible="true" />
 		<flags32 name="Device Flags" offset="0x74" visible="true">
 			<bit name="Initially Open (1.0)" index="0" />
 			<bit name="Initially Off (0.0)" index="1" />
@@ -2730,8 +2730,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<color32 name="Tertiary Color" offset="0x68" alpha="true" visible="true" />
 		<color32 name="Quaternary Color" offset="0x6C" alpha="true" visible="true" />
 		<comment title="Device Data" />
-		<int16 name="Power Group" offset="0x70" visible="true" />
-		<int16 name="Position Group" offset="0x72" visible="true" />
+		<int16 name="Power Group Index" offset="0x70" visible="true" />
+		<int16 name="Position Group Index" offset="0x72" visible="true" />
 		<flags32 name="Device Flags" offset="0x74" visible="true">
 			<bit name="Initially Open (1.0)" index="0" />
 			<bit name="Initially Off (0.0)" index="1" />
@@ -2974,8 +2974,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<color32 name="Tertiary Color" offset="0x68" alpha="true" visible="true" />
 		<color32 name="Quaternary Color" offset="0x6C" alpha="true" visible="true" />
 		<comment title="Device Data" />
-		<int16 name="Power Group" offset="0x70" visible="true" />
-		<int16 name="Position Group" offset="0x72" visible="true" />
+		<int16 name="Power Group Index" offset="0x70" visible="true" />
+		<int16 name="Position Group Index" offset="0x72" visible="true" />
 		<flags32 name="Device Flags" offset="0x74" visible="true">
 			<bit name="Initially Open (1.0)" index="0" />
 			<bit name="Initially Off (0.0)" index="1" />
@@ -3979,8 +3979,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</flags16>
 		<int16 name="Unknown" offset="0x56" visible="false" />
 		<comment title="Device Data" />
-		<int16 name="Power Group" offset="0x58" visible="true" />
-		<int16 name="Position Group" offset="0x5A" visible="true" />
+		<int16 name="Power Group Index" offset="0x58" visible="true" />
+		<int16 name="Position Group Index" offset="0x5A" visible="true" />
 		<flags32 name="Device Flags" offset="0x5C" visible="true">
 			<bit name="Initially Open (1.0)" index="0" />
 			<bit name="Initially Off (0.0)" index="1" />
@@ -4334,7 +4334,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 		<point3 name="Position" offset="0x14" visible="true" />
 		<point2 name="Scale" offset="0x20" visible="true" />
 	</tagblock>
-	<tagblock name="Decal Palette" offset="0x388" visible="true" elementSize="0x10">
+	<tagblock name="Decals Palette" offset="0x388" visible="true" elementSize="0x10">
 		<tagRef name="Decal" offset="0x0" visible="true" />
 	</tagblock>
 	<undefined name="Unknown" offset="0x394" visible="false" />
@@ -6022,7 +6022,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 		<float32 name="Cutoff Distance" offset="0x18" visible="true" />
 		<float32 name="Interpolation Speed" offset="0x1C" visible="true" />
 		<tagRef name="Background Sound" offset="0x20" visible="true" />
-		<tagRef name="Inside Cluster Sound" offset="0x30" visible="true" />
+		<tagRef name="Inside Cluster Sound" offset="0x30" visible="true" tooltip="play only when player is inside cluster." />
 		<tagRef name="Transition In" offset="0x40" visible="true" />
 		<tagRef name="Transition Out" offset="0x50" visible="true" />
 		<float32 name="Cutoff Distance" offset="0x60" visible="true" />
@@ -6145,7 +6145,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 	<tagblock name="Spawn Data" offset="0x604" visible="true" elementSize="0x4">
 		<float32 name="Game Object Reset Height" offset="0x0" visible="true" />
 	</tagblock>
-	<tagRef name="Sound Effects Collection" offset="0x610" visible="true" />
+	<tagRef name="Sound Effect Collection" offset="0x610" visible="true" />
 	<tagblock name="Crates" offset="0x620" visible="true" elementSize="0xD8">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
@@ -6431,7 +6431,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<stringid name="Connection Marker" offset="0xD0" visible="true" />
 		<float32 name="Respawn Weight" offset="0xD4" visible="true" />
 	</tagblock>
-	<tagblock name="Crate Palette" offset="0x62C" visible="true" elementSize="0x10">
+	<tagblock name="Crates Palette" offset="0x62C" visible="true" elementSize="0x10">
 		<tagRef name="Crate" offset="0x0" visible="true" />
 	</tagblock>
 	<tagblock name="Flock Palette" offset="0x638" visible="true" elementSize="0x10">
@@ -6481,7 +6481,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 	<undefined name="Unknown" offset="0x660" visible="false" />
 	<undefined name="Unknown" offset="0x664" visible="false" />
 	<undefined name="Unknown" offset="0x668" visible="false" />
-	<tagblock name="Creature Palette" offset="0x66C" visible="true" elementSize="0x10">
+	<tagblock name="Creatures Palette" offset="0x66C" visible="true" elementSize="0x10">
 		<tagRef name="Creature" offset="0x0" visible="true" />
 	</tagblock>
 	<tagblock name="Big Battle Creatures" offset="0x678" visible="true" elementSize="0x10">

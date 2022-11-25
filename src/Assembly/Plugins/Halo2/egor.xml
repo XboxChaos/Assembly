@@ -39,14 +39,15 @@
 	<undefined name="Unknown" offset="0x80" visible="false" />
 	<undefined name="Unknown" offset="0x84" visible="false" />
 	<tagblock name="Pass References" offset="0x88" visible="true" elementSize="0xAC">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
+		<dataref name="Explanation" offset="0x0" visible="true" />
+		<comment title="Implementations">Used to control which shader pass implementations are used depending on whether the primary and/or secondary external inputs are greater than zero. An implementation of -1 will not draw anything.</comment>
 		<int16 name="Layer Pass Index" offset="0x8" visible="true" />
-		<int16 name="If Primary Equals 0 And Secondary Equals 0" offset="0xA" visible="true" />
-		<int16 name="If Primary Greater Than 0 And Secondary Equals 0" offset="0xC" visible="true" />
-		<int16 name="If Primary Equals 0 And Secondary Greater Than 0" offset="0xE" visible="true" />
-		<int16 name="If Primary Greater Than 0 And Secondary Greater Than 0" offset="0x10" visible="true" />
-		<int16 name="Unknown" offset="0x12" visible="false" />
+		<int16 name="Unknown" offset="0xA" visible="false" />
+		<int8 name="Primary=0 And Secondary=0" offset="0xC" visible="true" />
+		<int8 name="Primary&gt;0 And Secondary=0" offset="0xD" visible="true" />
+		<int8 name="Primary=0 And Secondary&gt;0" offset="0xE" visible="true" />
+		<int8 name="Primary&gt;0 And Secondary&gt;0" offset="0xF" visible="true" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
@@ -62,6 +63,15 @@
 		<undefined name="Unknown" offset="0x44" visible="false" />
 		<undefined name="Unknown" offset="0x48" visible="false" />
 		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<comment title="Texcoord Generation">* DEFAULT: Use for mask bitmaps that are mirrored and offset through the texcoords supplied to the screen effect (e.g. through the weapon HUD interface). The shader system must handle scaling.
+
+* VIEWPORT NORMALIZED: Use when copying from texaccum or some other buffer or when applying a texture that is not an interface mask (e.g. another kind of mask, a noise map, etc. which is not mirrored or offset through the weapon HUD interface). Texture coordinates will range from [0,1][0,1] within the viewport, and the shader system must handle scaling if the bitmap is a linear target or an interface bitmap.
+
+* VIEWPORT RELATIVE: Should not be used! This mode was necessary before we had he ability for the shader system to scale by texture resolution. Texture coordinates will range from [0,viewport_size_x][0,viewport_size_y] within the viewport.
+
+* FRAMEBUFFER RELATIVE: Use when copying from the framebuffer. Texture coordinates will range from [viewport_bounds.x0,viewport_bounds.x1][viewport_bounds.y0,viewport_bounds.y1] within the viewport. Let the shader system assume normalized [0,1] coordinate range.
+
+* ZERO: Use when doing dependent-z reads. Texture coordinates will be zero before applying offset (in advanced control block). Offset should be {1/(z_max-z_min), 0, -z_min/(z_max-z_min), 0} where z_min and z_max are in world units, and the "xy scaled by z_far" flag should be checked.</comment>
 		<enum16 name="Stage 0 Mode" offset="0x50" visible="true">
 			<option name="Default" value="0x0" />
 			<option name="Viewport Normalized" value="0x1" />
@@ -92,29 +102,30 @@
 		</enum16>
 		<tagblock name="Advanced Control" offset="0x58" visible="true" elementSize="0x48">
 			<flags16 name="Stage 0 Flags" offset="0x0" visible="true">
-				<bit name="Xy Scaled By Z Far" index="0" />
+				<bit name="xy Scaled By z Far" index="0" />
 			</flags16>
 			<flags16 name="Stage 1 Flags" offset="0x2" visible="true">
-				<bit name="Xy Scaled By Z Far" index="0" />
+				<bit name="xy Scaled By z Far" index="0" />
 			</flags16>
 			<flags16 name="Stage 2 Flags" offset="0x4" visible="true">
-				<bit name="Xy Scaled By Z Far" index="0" />
+				<bit name="xy Scaled By z Far" index="0" />
 			</flags16>
 			<flags16 name="Stage 3 Flags" offset="0x6" visible="true">
-				<bit name="Xy Scaled By Z Far" index="0" />
+				<bit name="xy Scaled By z Far" index="0" />
 			</flags16>
 			<plane3 name="Stage 0 Offset" offset="0x8" visible="true" />
 			<plane3 name="Stage 1 Offset" offset="0x18" visible="true" />
 			<plane3 name="Stage 2 Offset" offset="0x28" visible="true" />
 			<plane3 name="Stage 3 Offset" offset="0x38" visible="true" />
 		</tagblock>
-		<enum32 name="Target" offset="0x60" visible="true">
+		<enum16 name="Target" offset="0x60" visible="true">
 			<option name="Frame Buffer" value="0x0" />
 			<option name="Texaccum" value="0x1" />
 			<option name="Texaccum Small" value="0x2" />
 			<option name="Texaccum Tiny" value="0x3" />
-			<option name="Copy FB To Texaccum" value="0x4" />
-		</enum32>
+			<option name="Copy Frame Buffer To Texaccum" value="0x4" />
+		</enum16>
+		<int16 name="Unknown" offset="0x62" visible="false" />
 		<undefined name="Unknown" offset="0x64" visible="false" />
 		<undefined name="Unknown" offset="0x68" visible="false" />
 		<undefined name="Unknown" offset="0x6C" visible="false" />
@@ -132,6 +143,7 @@
 		<undefined name="Unknown" offset="0x9C" visible="false" />
 		<undefined name="Unknown" offset="0xA0" visible="false" />
 		<tagblock name="Convolution" offset="0xA4" visible="true" elementSize="0x5C">
+			<comment title="Convolution">Convolution blurs the target of this pass reference to the SCREEN EFFECT CONVOLUTION buffer, which is accessible in the shader system through a texture extern. It is not cheap especially for large convolution amounts, so please use it sparingly!! Note that the resolution will be clamped to 64x64 minimum and 768000 pixels total maximum.</comment>
 			<flags16 name="Flags" offset="0x0" visible="true">
 				<bit name="Only When Primary Is Active" index="0" />
 				<bit name="Only When Secondary Is Active" index="1" />

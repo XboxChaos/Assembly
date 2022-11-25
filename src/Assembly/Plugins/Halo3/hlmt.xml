@@ -12,11 +12,17 @@
 	<tagRef name="Collision Model" offset="0x10" visible="true" />
 	<tagRef name="Animation" offset="0x20" visible="true" />
 	<tagRef name="Physics Model" offset="0x30" visible="true" />
-	<comment title="Level of Detail" />
+	<comment title="Level Of Detail">If a model is further away than the LOD reduction distance, it will be reduced to that LOD.
+So the L1 reduction distance should be really long and the L5 reduction distance should be really short.
+This means distances should be in descending order, e.g. 5 4 3 2 1.
+
+Note that if we run out of memory or too many models are on screen at once, the engine may reduce models to a lower LOD BEFORE they reach the reduction distance for that LOD.
+
+If a model has a begin fade distance and disappear distance, it will begin fading out at that distance, reaching zero alpha and disappearing at the disappear distance. These distances should be greater than all of the LOD reduction distances.</comment>
 	<float32 name="Disappear Distance" offset="0x40" visible="true" />
 	<float32 name="Begin Fade Distance" offset="0x44" visible="true" />
-	<float32 name="Animation Distance" offset="0x48" visible="true" />
-	<float32 name="Shadow Fade Distance" offset="0x4C" visible="true" tooltip="NOTE this is only a maximum distance, shadows may fade closer when you exceed the shadow budget, you should balance the total shadows in a scene" />
+	<float32 name="Animation LOD Distance" offset="0x48" visible="true" />
+	<float32 name="Reduce To L1" offset="0x4C" visible="true" />
 	<float32 name="Instance Disappear Distance" offset="0x50" visible="true" />
 	<tagRef name="LOD Render Model" offset="0x54" visible="true" />
 	<tagblock name="Variants" offset="0x64" visible="true" elementSize="0x38">
@@ -54,7 +60,7 @@
 			<int16 name="Parent Variant Index" offset="0x6" visible="true" />
 			<tagblock name="Permutations" offset="0x8" visible="true" elementSize="0x24">
 				<stringid name="Permutation Name" offset="0x0" visible="true" />
-				<int8 name="Model Permutation Index" offset="0x4" visible="true" />
+				<int8 name="Runtime Model Permutation Index" offset="0x4" visible="true" />
 				<flags8 name="Flags" offset="0x5" visible="true">
 					<bit name="Copy States To All Permutations" index="0" />
 				</flags8>
@@ -62,11 +68,11 @@
 				<float32 name="Probability" offset="0x8" visible="true" />
 				<tagblock name="States" offset="0xC" visible="true" elementSize="0x20">
 					<stringId name="Permutation Name" offset="0x0" visible="true" />
-					<int8 name="Permutation Index" offset="0x4" visible="true" />
+					<int8 name="Runtime Model Permutation Index" offset="0x4" visible="true" />
 					<flags8 name="Property Flags" offset="0x5" visible="true">
 						<bit name="Blurred" index="0" />
 						<bit name="Hella Blurred" index="1" />
-						<bit name="Shielded" index="2" />
+						<bit name="Unshielded" index="2" />
 						<bit name="Battery Depleted" index="3" />
 					</flags8>
 					<enum16 name="State" offset="0x6" visible="true">
@@ -80,11 +86,11 @@
 					<stringId name="Looping Effect Marker Name" offset="0x18" visible="true" />
 					<float32 name="Initial Probability" offset="0x1C" visible="true" />
 				</tagblock>
-				<int8 name="Runtime Permutation Index" offset="0x18" visible="true" />
-				<int8 name="Runtime Permutation Index" offset="0x19" visible="true" />
-				<int8 name="Runtime Permutation Index" offset="0x1A" visible="true" />
-				<int8 name="Runtime Permutation Index" offset="0x1B" visible="true" />
-				<int8 name="Runtime Permutation Index" offset="0x1C" visible="true" />
+				<int8 name="Runtime State Permutation Index 0" offset="0x18" visible="true" />
+				<int8 name="Runtime State Permutation Index 1" offset="0x19" visible="true" />
+				<int8 name="Runtime State Permutation Index 2" offset="0x1A" visible="true" />
+				<int8 name="Runtime State Permutation Index 3" offset="0x1B" visible="true" />
+				<int8 name="Runtime State Permutation Index 4" offset="0x1C" visible="true" />
 				<int8 name="Unknown" offset="0x1D" visible="false" />
 				<int16 name="Unknown" offset="0x1E" visible="false" />
 				<undefined name="Unknown" offset="0x20" visible="false" />
@@ -125,7 +131,7 @@
 			<int32 name="Subgroup Index" offset="0x0" visible="true" tooltip="if this member is chosen, this subgroup will be chosen as well" />
 			<stringid name="Instance Name" offset="0x4" visible="true" tooltip="instance name, a partial name will choose all matching instances, leave blank for NONE" />
 			<float32 name="Probability" offset="0x8" visible="true" tooltip="higher numbers make it more likely" />
-			<flags32 name="Instance Flags 1" offset="0xC" visible="true">
+			<flags32 name="Instance Flags 0" offset="0xC" visible="true">
 				<bit name="Instance 0" index="0" />
 				<bit name="Instance 1" index="1" />
 				<bit name="Instance 2" index="2" />
@@ -159,7 +165,7 @@
 				<bit name="Instance 30" index="30" />
 				<bit name="Instance 31" index="31" />
 			</flags32>
-			<flags32 name="Instance Flags 2" offset="0x10" visible="true">
+			<flags32 name="Instance Flags 1" offset="0x10" visible="true">
 				<bit name="Instance 32" index="0" />
 				<bit name="Instance 33" index="1" />
 				<bit name="Instance 34" index="2" />
@@ -198,10 +204,10 @@
 	</tagblock>
 	<tagblock name="Materials" offset="0x7C" visible="true" elementSize="0x14">
 		<stringid name="Material Name" offset="0x0" visible="true" />
-		<int16 name="Unknown" offset="0x4" visible="true" />
+		<int16 name="Unknown" offset="0x4" visible="false" />
 		<int16 name="Damage Section Index" offset="0x6" visible="true" />
-		<int16 name="Collision Material Index" offset="0x8" visible="true" />
-		<int16 name="Damager Material Index" offset="0xA" visible="true" />
+		<int16 name="Collision Global Material Index" offset="0x8" visible="true" />
+		<int16 name="Damage Global Material Index" offset="0xA" visible="true" />
 		<stringid name="Global Material Name" offset="0xC" visible="true" />
 		<int16 name="Global Material Index" offset="0x10" visible="true" />
 		<int16 name="Unknown" offset="0x12" visible="false" />
@@ -222,20 +228,18 @@
 			<bit name="AI Do Not Damage Without Player" index="11" />
 			<bit name="Health Regrows While Dead" index="12" />
 			<bit name="Shield Recharge Plays Only When Empty" index="13" />
-			<bit name="Force Minimum Transfer" index="14" />
-			<bit name="Orphan From Postprocess Autogen" index="15" tooltip="check this to take control of the new damage info tag block" />
-			<bit name="Only Damaged By Boarding Damage" index="16" />
+			<bit name="IGNORE Force Minimum Transfer" index="14" />
 		</flags32>
-		<stringid name="Global Indirect Material Name" offset="0x4" visible="true" tooltip="absorbes AOE or child damage" />
+		<stringid name="Indirect Global Material Name" offset="0x4" visible="true" tooltip="absorbes AOE or child damage" />
 		<int16 name="Indirect Damage Section Index" offset="0x8" visible="true" tooltip="absorbes AOE or child damage" />
 		<int16 name="Unknown" offset="0xA" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<enum8 name="Collision Damage Reporting Type" offset="0x10" visible="true">
 			<option name="Guardians" value="0x0" />
 			<option name="Falling Damage" value="0x1" />
-			<option name="Collision" value="0x2" />
-			<option name="Melee" value="0x3" />
-			<option name="Explosion" value="0x4" />
+			<option name="Generic Collision Damage" value="0x2" />
+			<option name="Generic Melee Damage" value="0x3" />
+			<option name="Generic Explosion" value="0x4" />
 			<option name="Magnum" value="0x5" />
 			<option name="Plasma Pistol" value="0x6" />
 			<option name="Needler" value="0x7" />
@@ -262,10 +266,10 @@
 			<option name="Plasma Grenade" value="0x1C" />
 			<option name="Spike Grenade" value="0x1D" />
 			<option name="Firebomb Grenade" value="0x1E" />
-			<option name="Flag" value="0x1F" />
-			<option name="Bomb" value="0x20" />
-			<option name="Bomb Explosion" value="0x21" />
-			<option name="Ball" value="0x22" />
+			<option name="Flag Melee Damage" value="0x1F" />
+			<option name="Bomb Melee Damage" value="0x20" />
+			<option name="Bomb Explosion Damage" value="0x21" />
+			<option name="Ball Melee Damage" value="0x22" />
 			<option name="Machinegun Turret" value="0x23" />
 			<option name="Plasma Cannon" value="0x24" />
 			<option name="Plasma Mortar" value="0x25" />
@@ -296,9 +300,9 @@
 		<enum8 name="Response Damage Reporting Type" offset="0x11" visible="true">
 			<option name="Guardians" value="0x0" />
 			<option name="Falling Damage" value="0x1" />
-			<option name="Collision" value="0x2" />
-			<option name="Melee" value="0x3" />
-			<option name="Explosion" value="0x4" />
+			<option name="Generic Collision Damage" value="0x2" />
+			<option name="Generic Melee Damage" value="0x3" />
+			<option name="Generic Explosion" value="0x4" />
 			<option name="Magnum" value="0x5" />
 			<option name="Plasma Pistol" value="0x6" />
 			<option name="Needler" value="0x7" />
@@ -325,10 +329,10 @@
 			<option name="Plasma Grenade" value="0x1C" />
 			<option name="Spike Grenade" value="0x1D" />
 			<option name="Firebomb Grenade" value="0x1E" />
-			<option name="Flag" value="0x1F" />
-			<option name="Bomb" value="0x20" />
-			<option name="Bomb Explosion" value="0x21" />
-			<option name="Ball" value="0x22" />
+			<option name="Flag Melee Damage" value="0x1F" />
+			<option name="Bomb Melee Damage" value="0x20" />
+			<option name="Bomb Explosion Damage" value="0x21" />
+			<option name="Ball Melee Damage" value="0x22" />
 			<option name="Machinegun Turret" value="0x23" />
 			<option name="Plasma Cannon" value="0x24" />
 			<option name="Plasma Mortar" value="0x25" />
@@ -386,7 +390,7 @@
 		<undefined name="Unknown" offset="0x78" visible="false" />
 		<comment title="Shield" />
 		<float32 name="Maximum Shield Vitality" offset="0x7C" visible="true" tooltip="the default initial and maximum shield vitality of this object" />
-		<stringid name="Global Shield Material Name" offset="0x80" visible="true" />
+		<stringid name="Shield Global Material Name" offset="0x80" visible="true" />
 		<float32 name="Minimum Stun Damage" offset="0x84" visible="true" tooltip="the minimum damage required to stun this object's shields" />
 		<float32 name="Stun Time" offset="0x88" visible="true" tooltip="the length of time the shields stay stunned (do not recharge) after taking damage" />
 		<float32 name="Recharge Time" offset="0x8C" visible="true" tooltip="the length of time it would take for the shields to fully recharge after being completely depleted" />
@@ -459,7 +463,6 @@
 					<bit name="Causes SP Detonation" index="26" />
 					<bit name="Skip Sounds On Generic Effect" index="27" />
 					<bit name="Kills Giants" index="28" />
-					<bit name="Skip Sounds On Special Death" index="29" />
 				</flags32>
 				<float32 name="Damage Threshold" offset="0xC" visible="true" tooltip="response fires after crossing this threshold. 1=full health" />
 				<tagref name="Generic Transition Effect" offset="0x10" visible="true" />
@@ -488,11 +491,12 @@
 					<option name="Plays Always" value="0x0" />
 					<option name="Plays If Labels Match" value="0x1" />
 					<option name="Plays If Labels Differ" value="0x2" />
+					<option name="Plays On Match Or Empty Label" value="0x3" />
 				</enum16>
 				<stringid name="Custom Response Label" offset="0x54" visible="true" />
 				<stringid name="Effect Marker Name" offset="0x58" visible="true" />
 				<stringid name="Damage Effect Marker Name" offset="0x5C" visible="true" />
-				<comment title="Response Delay">If desired, you can specify a delay until the response fires.This delay is pre-empted if another timed response for the same section fires.The delay effect plays while the timer is counting down.If the damage threshold is taken in a single hit while counting down, it will prematurely fire.</comment>
+				<comment title="Response Delay">If desired, you can specify a delay until the response fires.This delay is pre-empted if another timed response for the same section fires.The delay effect plays while the timer is counting down. If the damage threshold is taken in a single hit while counting down, it will prematurely fire.</comment>
 				<float32 name="Response Delay" offset="0x60" visible="true" tooltip="in seconds" />
 				<tagref name="Delay Effect" offset="0x64" visible="true" />
 				<stringid name="Delay Effect Marker Name" offset="0x74" visible="true" />
@@ -521,8 +525,8 @@
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
 		</tagblock>
-		<int16 name="Global Shield Material Index" offset="0xDC" visible="true" />
-		<int16 name="Global Indirect Material Index" offset="0xDE" visible="true" />
+		<int16 name="Shield Global Material Index" offset="0xDC" visible="true" />
+		<int16 name="Indirect Global Material Index" offset="0xDE" visible="true" />
 		<float32 name="Shield Recharge Velocity" offset="0xE0" visible="true" />
 		<float32 name="Health Recharge Velocity" offset="0xE4" visible="true" />
 		<tagblock name="Damage Seats" offset="0xE8" visible="true" elementSize="0x20">
@@ -577,6 +581,8 @@
 			<bit name="Headshot" index="2" />
 			<bit name="Vulnerable" index="3" />
 			<bit name="Always Locked By Plasma Tracking" index="4" />
+			<bit name="Ignored On Local Physics" index="5" />
+			<bit name="Use For Network Lead Vector Only" index="6" />
 		</flags32>
 		<float32 name="Lock-On Distance" offset="0x1C" visible="true" />
 	</tagblock>
@@ -625,36 +631,10 @@
 	<flags32 name="Flags" offset="0xE8" visible="true">
 		<bit name="Active Camo Always On" index="0" />
 		<bit name="Active Camo Never" index="1" />
-		<bit name="Render Shield Impacts" index="2" />
-		<bit name="Always Lit By Sky" index="3" />
+		<bit name="Has Shield Impact Effect" index="2" />
+		<bit name="Model Use Sky Lighting" index="3" />
 		<bit name="Inconsequential Target" index="4" tooltip="used in magnetism and campaign saving" />
 		<bit name="Model Use Airprobe Lighting" index="5" />
-		<bit name="Bit 6" index="6" />
-		<bit name="Bit 7" index="7" />
-		<bit name="Bit 8" index="8" />
-		<bit name="Bit 9" index="9" />
-		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
-		<bit name="Bit 16" index="16" />
-		<bit name="Bit 17" index="17" />
-		<bit name="Bit 18" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Bit 20" index="20" />
-		<bit name="Bit 21" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Bit 25" index="25" />
-		<bit name="Bit 26" index="26" />
-		<bit name="Bit 27" index="27" />
-		<bit name="Bit 28" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Bit 31" index="31" />
 	</flags32>
 	<stringid name="Default Dialogue Effect" offset="0xEC" visible="true" tooltip="The default dialogue tag for this model (overriden by variants)" />
 	<flags32 name="Render-Only Node Flags 1" offset="0xF0" visible="true">
@@ -1221,6 +1201,9 @@ strips all the dialogue for this model i.e. cinematic only</comment>
 		<undefined name="Unknown" offset="0x40" visible="false" />
 	</tagblock>
 	<comment title="PRT Shadows (Soft Self-Shadow)">By default, the shadows on each permutation are computed using the first permutation in every other region as shadow casters. You can override this behavior below by specifying which permutation to use as a shadow caster in a given region.
+
+PRT shadow detail:
+    ambient occlusion means the shadows are static: they don't respond to changing directions of light, only the total amount of light. increasing the detail makes the shadows respond in an increasingly sharp fashion to different directions of light, capturing sharper shadows.
 
 PRT shadow bounces:
     the number of light bounces to use when computing the global illumination. (0 bounces gets only direct light). Increasing the number of bounces increases the calculation time. 1 or 2 bounces should be good enough for almost all models.</comment>

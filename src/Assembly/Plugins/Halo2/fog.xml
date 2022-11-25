@@ -13,15 +13,15 @@
 	</flags16>
 	<int16 name="Priority" offset="0x2" visible="true" />
 	<stringid name="Global Material Name" offset="0x4" visible="true" />
-	<int16 name="Unknown" offset="0x8" visible="false" />
+	<int16 name="Global Material Index" offset="0x8" visible="true" />
 	<int16 name="Unknown" offset="0xA" visible="false" />
 	<comment title="DENSITY" />
-	<float32 name="Maximum Density" offset="0xC" visible="true" />
-	<float32 name="Opaque Distance" offset="0x10" visible="true" />
-	<float32 name="Opaque Depth" offset="0x14" visible="true" />
-	<comment title="DENSITY (ADVANCED CONTROLS)" />
-	<rangef name="Atmospheric-Planar Depth" offset="0x18" visible="true" />
-	<float32 name="Eye Offset Scale" offset="0x20" visible="true" />
+	<float32 name="Maximum Density" offset="0xC" visible="true" tooltip="planar fog density is clamped to this value" />
+	<float32 name="Opaque Distance" offset="0x10" visible="true" tooltip="the fog becomes opaque (maximum density) at this distance from the viewer" />
+	<float32 name="Opaque Depth" offset="0x14" visible="true" tooltip="the fog becomes opaque at this distance below fog plane" />
+	<comment title="DENSITY (Advanced Controls)" />
+	<rangef name="Atmospheric-Planar Depth" offset="0x18" visible="true" tooltip="distances above fog plane where atmospheric fog supercedes planar fog and visa-versa" />
+	<float32 name="Eye Offset Scale" offset="0x20" visible="true" tooltip="negative numbers are bad, mmmkay?" />
 	<comment title="COLOR" />
 	<colorf name="Color" offset="0x24" alpha="false" visible="true" />
 	<tagblock name="Patchy Fog" offset="0x30" visible="true" elementSize="0x34">
@@ -31,14 +31,14 @@
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<rangef name="Density" offset="0x18" visible="true" />
 		<rangef name="Distance" offset="0x20" visible="true" />
-		<float32 name="Minimum Depth Fraction" offset="0x28" visible="true" />
+		<float32 name="Minimum Depth Fraction" offset="0x28" visible="true" tooltip="in range (0,max_depth) world units, where patchy fog starts fading in" />
 		<tagRef name="Patchy Fog" offset="0x2C" visible="true" />
 	</tagblock>
 	<comment title="SOUND" />
 	<tagRef name="Background Sound" offset="0x38" visible="true" />
 	<tagRef name="Sound Environment" offset="0x40" visible="true" />
-	<float32 name="Environment Damping Factor" offset="0x48" visible="true" />
-	<float32 name="Background Sound Gain" offset="0x4C" visible="true" />
+	<float32 name="Environment Damping Factor" offset="0x48" visible="true" tooltip="scales the surrounding background sound by this much" />
+	<float32 name="Background Sound Gain" offset="0x4C" visible="true" tooltip="scale for fog background sound" />
 	<tagRef name="Enter Sound" offset="0x50" visible="true" />
 	<tagRef name="Exit Sound" offset="0x58" visible="true" />
 </plugin>

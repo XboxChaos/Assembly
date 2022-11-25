@@ -6,127 +6,593 @@
 		<revision author="Lord Zedd" version="2">Standardizing.</revision>
 	</revisions>
 	<tagblock name="Contrail System" offset="0x0" visible="true" elementSize="0x26C">
-		<stringId name="Name" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<int8 name="Input" offset="0x24" visible="true" />
-		<int8 name="Input Range" offset="0x25" visible="true" />
-		<enum8 name="Output Kind" offset="0x26" visible="true">
+		<stringid name="Contrail Name" offset="0x0" visible="true" />
+		<float32 name="Origin Fade Range" offset="0x4" visible="true" tooltip="distance beyond cutoff over which contrails fade" />
+		<float32 name="Origin Fade Cutoff" offset="0x8" visible="true" tooltip="distance from contrail origin where fade begins" />
+		<float32 name="Edge Fade Range" offset="0xC" visible="true" tooltip="degrees beyond cutoff over which contrails fade" />
+		<float32 name="Edge Fade Cutoff" offset="0x10" visible="true" tooltip="degrees away from edge-on where fade is total" />
+		<float32 name="LOD In Distance" offset="0x14" visible="true" />
+		<float32 name="LOD Feather In Distance" offset="0x18" visible="true" />
+		<float32 name="LOD Out Distance" offset="0x1C" visible="true" />
+		<float32 name="LOD Feather Out Distance" offset="0x20" visible="true" />
+		<comment title="Emission Rate" />
+		<enum8 name="Input Variable" offset="0x24" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Range Variable" offset="0x25" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Output Modifier" offset="0x26" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Plus" value="0x1" />
 			<option name="Times" value="0x2" />
 		</enum8>
-		<int8 name="Output" offset="0x27" visible="true" />
-		<dataRef name="Unknown" offset="0x28" visible="true" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<int8 name="Input" offset="0x44" visible="true" />
-		<int8 name="Input Range" offset="0x45" visible="true" />
-		<enum8 name="Output Kind" offset="0x46" visible="true">
+		<enum8 name="Output Modifier Input" offset="0x27" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<dataRef name="Function" offset="0x28" visible="true" />
+		<float32 name="Runtime m Constant Value" offset="0x3C" visible="true" />
+		<flags8 name="Runtime m Flags" offset="0x40" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</flags8>
+		<int8 name="Unknown" offset="0x41" visible="false" />
+		<int16 name="Unknown" offset="0x42" visible="false" />
+		<comment title="Profile Lifespan" />
+		<enum8 name="Input Variable" offset="0x44" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Range Variable" offset="0x45" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Output Modifier" offset="0x46" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Plus" value="0x1" />
 			<option name="Times" value="0x2" />
 		</enum8>
-		<int8 name="Output" offset="0x47" visible="true" />
-		<dataRef name="Unknown" offset="0x48" visible="true" />
-		<float32 name="Lifetime" offset="0x5C" visible="true" />
-		<undefined name="Unknown" offset="0x60" visible="false" />
-		<int8 name="Input" offset="0x64" visible="true" />
-		<int8 name="Input Range" offset="0x65" visible="true" />
-		<enum8 name="Output Kind" offset="0x66" visible="true">
+		<enum8 name="Output Modifier Input" offset="0x47" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<dataRef name="Function" offset="0x48" visible="true" />
+		<float32 name="Runtime m Constant Value" offset="0x5C" visible="true" />
+		<flags8 name="Runtime m Flags" offset="0x60" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</flags8>
+		<int8 name="Unknown" offset="0x61" visible="false" />
+		<int16 name="Unknown" offset="0x62" visible="false" />
+		<comment title="Profile Self Acceleration" />
+		<enum8 name="Input Variable" offset="0x64" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Range Variable" offset="0x65" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Output Modifier" offset="0x66" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Plus" value="0x1" />
 			<option name="Times" value="0x2" />
 		</enum8>
-		<int8 name="Output" offset="0x67" visible="true" />
-		<dataRef name="Unknown" offset="0x68" visible="true" />
-		<undefined name="Unknown" offset="0x7C" visible="false" />
-		<undefined name="Unknown" offset="0x80" visible="false" />
-		<undefined name="Unknown" offset="0x84" visible="false" />
-		<undefined name="Unknown" offset="0x88" visible="false" />
-		<undefined name="Unknown" offset="0x8C" visible="false" />
-		<undefined name="Unknown" offset="0x90" visible="false" />
-		<undefined name="Unknown" offset="0x94" visible="false" />
-		<undefined name="Unknown" offset="0x98" visible="false" />
-		<int8 name="Input" offset="0x9C" visible="true" />
-		<int8 name="Input Range" offset="0x9D" visible="true" />
-		<enum8 name="Output Kind" offset="0x9E" visible="true">
+		<enum8 name="Output Modifier Input" offset="0x67" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<dataRef name="Function" offset="0x68" visible="true" />
+		<float32 name="Runtime m Constant Value" offset="0x7C" visible="true" />
+		<flags8 name="Runtime m Flags" offset="0x80" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</flags8>
+		<int8 name="Unknown" offset="0x81" visible="false" />
+		<int16 name="Unknown" offset="0x82" visible="false" />
+		<vector3 name="Starting Interpolant" offset="0x84" visible="true" />
+		<vector3 name="Ending Interpolant" offset="0x90" visible="true" />
+		<comment title="Profile Size" />
+		<enum8 name="Input Variable" offset="0x9C" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Range Variable" offset="0x9D" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Output Modifier" offset="0x9E" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Plus" value="0x1" />
 			<option name="Times" value="0x2" />
 		</enum8>
-		<int8 name="Output" offset="0x9F" visible="true" />
-		<dataRef name="Unknown" offset="0xA0" visible="true" />
-		<undefined name="Unknown" offset="0xB4" visible="false" />
-		<undefined name="Unknown" offset="0xB8" visible="false" />
-		<int8 name="Input" offset="0xBC" visible="true" />
-		<int8 name="Input Range" offset="0xBD" visible="true" />
-		<enum8 name="Output Kind" offset="0xBE" visible="true">
+		<enum8 name="Output Modifier Input" offset="0x9F" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<dataRef name="Function" offset="0xA0" visible="true" />
+		<float32 name="Runtime m Constant Value" offset="0xB4" visible="true" />
+		<flags8 name="Runtime m Flags" offset="0xB8" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</flags8>
+		<int8 name="Unknown" offset="0xB9" visible="false" />
+		<int16 name="Unknown" offset="0xBA" visible="false" />
+		<comment title="Profile Offset" />
+		<enum8 name="Input Variable" offset="0xBC" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Range Variable" offset="0xBD" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Output Modifier" offset="0xBE" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Plus" value="0x1" />
 			<option name="Times" value="0x2" />
 		</enum8>
-		<int8 name="Output" offset="0xBF" visible="true" />
-		<dataRef name="Unknown" offset="0xC0" visible="true" />
-		<undefined name="Unknown" offset="0xD4" visible="false" />
-		<undefined name="Unknown" offset="0xD8" visible="false" />
-		<undefined name="Unknown" offset="0xDC" visible="false" />
-		<undefined name="Unknown" offset="0xE0" visible="false" />
-		<undefined name="Unknown" offset="0xE4" visible="false" />
-		<undefined name="Unknown" offset="0xE8" visible="false" />
-		<int8 name="Input" offset="0xEC" visible="true" />
-		<int8 name="Input Range" offset="0xED" visible="true" />
-		<enum8 name="Output Kind" offset="0xEE" visible="true">
+		<enum8 name="Output Modifier Input" offset="0xBF" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<dataRef name="Function" offset="0xC0" visible="true" />
+		<float32 name="Runtime m Constant Value" offset="0xD4" visible="true" />
+		<flags8 name="Runtime m Flags" offset="0xD8" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</flags8>
+		<int8 name="Unknown" offset="0xD9" visible="false" />
+		<int16 name="Unknown" offset="0xDA" visible="false" />
+		<point2 name="Starting Interpolant" offset="0xDC" visible="true" />
+		<point2 name="Ending Interpolant" offset="0xE4" visible="true" />
+		<comment title="Profile Rotation" />
+		<enum8 name="Input Variable" offset="0xEC" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Range Variable" offset="0xED" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Output Modifier" offset="0xEE" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Plus" value="0x1" />
 			<option name="Times" value="0x2" />
 		</enum8>
-		<int8 name="Output" offset="0xEF" visible="true" />
-		<dataRef name="Unknown" offset="0xF0" visible="true" />
-		<undefined name="Unknown" offset="0x104" visible="false" />
-		<undefined name="Unknown" offset="0x108" visible="false" />
-		<int8 name="Input" offset="0x10C" visible="true" />
-		<int8 name="Input Range" offset="0x10D" visible="true" />
-		<enum8 name="Output Kind" offset="0x10E" visible="true">
+		<enum8 name="Output Modifier Input" offset="0xEF" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<dataRef name="Function" offset="0xF0" visible="true" />
+		<float32 name="Runtime m Constant Value" offset="0x104" visible="true" />
+		<flags8 name="Runtime m Flags" offset="0x108" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</flags8>
+		<int8 name="Unknown" offset="0x109" visible="false" />
+		<int16 name="Unknown" offset="0x10A" visible="false" />
+		<comment title="Profile Rotation Rate" />
+		<enum8 name="Input Variable" offset="0x10C" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Range Variable" offset="0x10D" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Output Modifier" offset="0x10E" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Plus" value="0x1" />
 			<option name="Times" value="0x2" />
 		</enum8>
-		<int8 name="Output" offset="0x10F" visible="true" />
-		<dataRef name="Unknown" offset="0x110" visible="true" />
-		<undefined name="Unknown" offset="0x124" visible="false" />
-		<undefined name="Unknown" offset="0x128" visible="false" />
-		<undefined name="Unknown" offset="0x12C" visible="false" />
+		<enum8 name="Output Modifier Input" offset="0x10F" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<dataRef name="Function" offset="0x110" visible="true" />
+		<float32 name="Runtime m Constant Value" offset="0x124" visible="true" />
+		<flags8 name="Runtime m Flags" offset="0x128" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</flags8>
+		<int8 name="Unknown" offset="0x129" visible="false" />
+		<int16 name="Unknown" offset="0x12A" visible="false" />
+		<comment title="Contrail Appearance" />
+		<flags16 name="Appearance Flags" offset="0x12C" visible="true">
+			<bit name="Tint From Lightmap" index="0" />
+			<bit name="Double-Sided" index="1" />
+			<bit name="Profile Opacity From Scale A" index="2" />
+			<bit name="Random U Offset" index="3" />
+			<bit name="Random V Offset" index="4" />
+		</flags16>
+		<enum8 name="Profile Shape" offset="0x12E" visible="true">
+			<option name="Aligned Ribbon" value="0x0" />
+			<option name="Cross" value="0x1" />
+			<option name="N-Gon" value="0x2" />
+		</enum8>
+		<int8 name="Number Of N-Gon Sides" offset="0x12F" visible="true" />
 		<comment title="Render Method" />
 		<tagRef name="Definition" offset="0x130" visible="true" />
-		<tagblock name="Template Identifier" offset="0x140" visible="true" elementSize="0x2">
-			<int16 name="Value" offset="0x0" visible="true" />
+		<tagblock name="Options" offset="0x140" visible="true" elementSize="0x2">
+			<int16 name="Short" offset="0x0" visible="true" />
 		</tagblock>
-		<tagblock name="Parameters" offset="0x14C" visible="false" elementSize="0x3C">
-			<stringId name="Parameter Name" offset="0x0" visible="true" />
-			<int32 name="Unknown" offset="0x4" visible="false" />
+		<tagblock name="Parameters" offset="0x14C" visible="true" elementSize="0x3C">
+			<stringid name="Parameter Name" offset="0x0" visible="true" />
+			<enum32 name="Parameter Type" offset="0x4" visible="true">
+				<option name="Bitmap" value="0x0" />
+				<option name="Color" value="0x1" />
+				<option name="Real" value="0x2" />
+				<option name="Int" value="0x3" />
+				<option name="Bool" value="0x4" />
+				<option name="ARGB Color" value="0x5" />
+			</enum32>
 			<tagRef name="Bitmap" offset="0x8" visible="true" />
-			<undefined name="Unknown" offset="0x18" visible="false" />
-			<int32 name="Unknown" offset="0x1C" visible="false" />
-			<int16 name="Unknown" offset="0x20" visible="false" />
-			<int16 name="Unknown" offset="0x22" visible="false" />
-			<int16 name="Unknown" offset="0x24" visible="false" />
-			<int16 name="Unknown" offset="0x26" visible="false" />
-			<int16 name="Unknown" offset="0x28" visible="false" />
-			<int16 name="Unknown" offset="0x2A" visible="false" />
-			<undefined name="Unknown" offset="0x2C" visible="false" />
-			<tagblock name="Functions" offset="0x30" visible="true" elementSize="0x24">
-				<int32 name="Unknown" offset="0x0" visible="false" />
-				<stringid name="Name" offset="0x4" visible="true" />
-				<undefined name="Unknown" offset="0x8" visible="false" />
-				<undefined name="Unknown" offset="0xC" visible="false" />
-				<dataRef name="Function" offset="0x10" visible="true" />
+			<float32 name="Real" offset="0x18" visible="true" />
+			<int32 name="Int/Bool" offset="0x1C" visible="true" />
+			<int16 name="Bitmap Flags" offset="0x20" visible="true" />
+			<int16 name="Bitmap Filter Mode" offset="0x22" visible="true" />
+			<int16 name="Bitmap Comparison Function" offset="0x24" visible="true" />
+			<int16 name="Bitmap Address Mode" offset="0x26" visible="true" />
+			<int16 name="Bitmap Address Mode x" offset="0x28" visible="true" />
+			<int16 name="Bitmap Address Mode y" offset="0x2A" visible="true" />
+			<int16 name="Bitmap Anisotropy Amount" offset="0x2C" visible="true" />
+			<int16 name="Bitmap Extern RTT Mode" offset="0x2E" visible="true" />
+			<tagblock name="Animated Parameters" offset="0x30" visible="true" elementSize="0x24">
+				<enum32 name="Type" offset="0x0" visible="true">
+					<option name="Value" value="0x0" />
+					<option name="Color" value="0x1" />
+					<option name="Scale Uniform" value="0x2" />
+					<option name="Scale x" value="0x3" />
+					<option name="Scale y" value="0x4" />
+					<option name="Translation x" value="0x5" />
+					<option name="Translation y" value="0x6" />
+					<option name="Frame Index" value="0x7" />
+					<option name="Alpha" value="0x8" />
+				</enum32>
+				<stringid name="Input Name" offset="0x4" visible="true" />
+				<stringid name="Range Name" offset="0x8" visible="true" />
+				<float32 name="Time Period" offset="0xC" visible="true" />
+				<dataref name="Animation Function" offset="0x10" visible="true" />
 			</tagblock>
 		</tagblock>
 		<tagblock name="Postprocess" offset="0x158" visible="true" elementSize="0x84">
@@ -141,12 +607,8 @@
 				<uint16 name="Block Index Data" offset="0x16" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
 			</tagblock>
 			<tagblock name="Float Constants" offset="0x1C" visible="true" elementSize="0x10">
-				<comment title="Usage">The application of values depend on the parameter as defined in the template tag.
-For tints a = Red, b = Green, c = Blue</comment>
-				<float32 name="Constant a" offset="0x0" visible="true" />
-				<float32 name="Constant b" offset="0x4" visible="true" />
-				<float32 name="Constant c" offset="0x8" visible="true" />
-				<float32 name="Constant d" offset="0xC" visible="true" />
+				<vector3 name="Constant" offset="0x0" visible="true" tooltip="The application of values depend on the parameter as defined in the template tag." />
+				<float32 name="Constant w" offset="0xC" visible="true" />
 			</tagblock>
 			<tagblock name="Integer Constants" offset="0x28" visible="true" elementSize="0x4">
 				<int32 name="Constant" offset="0x0" visible="true" />
@@ -213,7 +675,7 @@ For tints a = Red, b = Green, c = Blue</comment>
 				<stringid name="Input Name" offset="0x4" visible="true" />
 				<stringid name="Range Name" offset="0x8" visible="true" />
 				<float32 name="Time Period" offset="0xC" visible="true" />
-				<dataRef name="Function" offset="0x10" visible="true" />
+				<dataRef name="Animation Function" offset="0x10" visible="true" />
 			</tagblock>
 			<int32 name="Blend Mode" offset="0x68" visible="true" />
 			<flags32 name="Flags" offset="0x6C" visible="true">
@@ -251,21 +713,19 @@ For tints a = Red, b = Green, c = Blue</comment>
 				<bit name="Bit 31" index="31" />
 			</flags32>
 			<undefined name="Unknown" offset="0x70" visible="false" />
-			<int16 name="Queryable Properties Index 1" offset="0x74" visible="false" />
-			<int16 name="Queryable Properties Index 2" offset="0x76" visible="false" />
-			<int16 name="Queryable Properties Index 3" offset="0x78" visible="false" />
-			<int16 name="Queryable Properties Index 4" offset="0x7A" visible="false" />
-			<int16 name="Queryable Properties Index 5" offset="0x7C" visible="false" />
-			<int16 name="Queryable Properties Index 6" offset="0x7E" visible="false" />
-			<int16 name="Queryable Properties Index 7" offset="0x80" visible="false" />
-			<int16 name="Queryable Properties Index 8" offset="0x82" visible="false" />
+			<int16 name="Queryable Properties Index 1" offset="0x74" visible="true" />
+			<int16 name="Queryable Properties Index 2" offset="0x76" visible="true" />
+			<int16 name="Queryable Properties Index 3" offset="0x78" visible="true" />
+			<int16 name="Queryable Properties Index 4" offset="0x7A" visible="true" />
+			<int16 name="Queryable Properties Index 5" offset="0x7C" visible="true" />
+			<int16 name="Queryable Properties Index 6" offset="0x7E" visible="true" />
+			<int16 name="Queryable Properties Index 7" offset="0x80" visible="true" />
+			<int16 name="Queryable Properties Index 8" offset="0x82" visible="true" />
 		</tagblock>
 		<flags16 name="Shader Flags" offset="0x164" visible="true">
 			<bit name="Don't Fog Me" index="0" />
 			<bit name="Use Custom Setting" index="1" />
 			<bit name="Calculate z Camera" index="2" />
-			<bit name="Never Render For Shields" index="3" />
-			<bit name="Only Render For Shields" index="4" />
 		</flags16>
 		<enum8 name="Sort Layer" offset="0x166" visible="true">
 			<option name="Invalid" value="0x0" />
@@ -273,111 +733,489 @@ For tints a = Red, b = Green, c = Blue</comment>
 			<option name="Normal" value="0x2" />
 			<option name="Post-Pass" value="0x3" />
 		</enum8>
-		<int8 name="Version" offset="0x167" visible="true" />
+		<flags8 name="Runtime Flags" offset="0x167" visible="true">
+			<bit name="Use VS With Misc" index="0" />
+		</flags8>
 		<int32 name="Custom Fog Setting Index" offset="0x168" visible="true" />
-		<int32 name="Prediction B Index" offset="0x16C" visible="true" />
+		<int32 name="Prediction Atom Index" offset="0x16C" visible="true" />
 		<comment title="Contrail System Shader" />
-		<float32 name="Tile y" offset="0x170" visible="true" />
-		<float32 name="Tile x" offset="0x174" visible="true" />
-		<float32 name="Scroll Speed y" offset="0x178" visible="true" />
-		<float32 name="Scroll Speed x" offset="0x17C" visible="true" />
-		<int8 name="Input" offset="0x180" visible="true" />
-		<int8 name="Input Range" offset="0x181" visible="true" />
-		<enum8 name="Output Kind" offset="0x182" visible="true">
+		<vector2 name="uv Tiling" offset="0x170" visible="true" tooltip="u is tiles/world unit, v is absolute tiles" />
+		<vector2 name="uv Scrolling" offset="0x178" visible="true" />
+		<comment title="Profile Color" />
+		<enum8 name="Input Variable" offset="0x180" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Range Variable" offset="0x181" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Output Modifier" offset="0x182" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Plus" value="0x1" />
 			<option name="Times" value="0x2" />
 		</enum8>
-		<int8 name="Output" offset="0x183" visible="true" />
-		<dataRef name="Unknown" offset="0x184" visible="true" />
-		<undefined name="Unknown" offset="0x198" visible="false" />
-		<undefined name="Unknown" offset="0x19C" visible="false" />
-		<int8 name="Input" offset="0x1A0" visible="true" />
-		<int8 name="Input Range" offset="0x1A1" visible="true" />
-		<enum8 name="Output Kind" offset="0x1A2" visible="true">
+		<enum8 name="Output Modifier Input" offset="0x183" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<dataRef name="Function" offset="0x184" visible="true" />
+		<float32 name="Runtime m Constant Value" offset="0x198" visible="true" />
+		<flags8 name="Runtime m Flags" offset="0x19C" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</flags8>
+		<int8 name="Unknown" offset="0x19D" visible="false" />
+		<int16 name="Unknown" offset="0x19E" visible="false" />
+		<comment title="Profile Alpha" />
+		<enum8 name="Input Variable" offset="0x1A0" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Range Variable" offset="0x1A1" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Output Modifier" offset="0x1A2" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Plus" value="0x1" />
 			<option name="Times" value="0x2" />
 		</enum8>
-		<int8 name="Output" offset="0x1A3" visible="true" />
-		<dataRef name="Unknown" offset="0x1A4" visible="true" />
-		<undefined name="Unknown" offset="0x1B8" visible="false" />
-		<undefined name="Unknown" offset="0x1BC" visible="false" />
-		<int8 name="Input" offset="0x1C0" visible="true" />
-		<int8 name="Input Range" offset="0x1C1" visible="true" />
-		<enum8 name="Output Kind" offset="0x1C2" visible="true">
+		<enum8 name="Output Modifier Input" offset="0x1A3" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<dataRef name="Function" offset="0x1A4" visible="true" />
+		<float32 name="Runtime m Constant Value" offset="0x1B8" visible="true" />
+		<flags8 name="Runtime m Flags" offset="0x1BC" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</flags8>
+		<int8 name="Unknown" offset="0x1BD" visible="false" />
+		<int16 name="Unknown" offset="0x1BE" visible="false" />
+		<comment title="Profile Secondary Alpha" />
+		<enum8 name="Input Variable" offset="0x1C0" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Range Variable" offset="0x1C1" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Output Modifier" offset="0x1C2" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Plus" value="0x1" />
 			<option name="Times" value="0x2" />
 		</enum8>
-		<int8 name="Output" offset="0x1C3" visible="true" />
-		<dataRef name="Unknown" offset="0x1C4" visible="true" />
-		<undefined name="Unknown" offset="0x1D8" visible="false" />
-		<undefined name="Unknown" offset="0x1DC" visible="false" />
-		<int8 name="Input" offset="0x1E0" visible="true" />
-		<int8 name="Input Range" offset="0x1E1" visible="true" />
-		<enum8 name="Output Kind" offset="0x1E2" visible="true">
+		<enum8 name="Output Modifier Input" offset="0x1C3" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<dataRef name="Function" offset="0x1C4" visible="true" />
+		<float32 name="Runtime m Constant Value" offset="0x1D8" visible="true" />
+		<flags8 name="Runtime m Flags" offset="0x1DC" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</flags8>
+		<int8 name="Unknown" offset="0x1DD" visible="false" />
+		<int16 name="Unknown" offset="0x1DE" visible="false" />
+		<comment title="Profile Black Point" />
+		<enum8 name="Input Variable" offset="0x1E0" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Range Variable" offset="0x1E1" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Output Modifier" offset="0x1E2" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Plus" value="0x1" />
 			<option name="Times" value="0x2" />
 		</enum8>
-		<int8 name="Output" offset="0x1E3" visible="true" />
-		<dataRef name="Unknown" offset="0x1E4" visible="true" />
-		<undefined name="Unknown" offset="0x1F8" visible="false" />
-		<undefined name="Unknown" offset="0x1FC" visible="false" />
-		<int8 name="Input" offset="0x200" visible="true" />
-		<int8 name="Input Range" offset="0x201" visible="true" />
-		<enum8 name="Output Kind" offset="0x202" visible="true">
+		<enum8 name="Output Modifier Input" offset="0x1E3" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<dataRef name="Function" offset="0x1E4" visible="true" />
+		<float32 name="Runtime m Constant Value" offset="0x1F8" visible="true" />
+		<flags8 name="Runtime m Flags" offset="0x1FC" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</flags8>
+		<int8 name="Unknown" offset="0x1FD" visible="false" />
+		<int16 name="Unknown" offset="0x1FE" visible="false" />
+		<comment title="Profile Palette" />
+		<enum8 name="Input Variable" offset="0x200" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Range Variable" offset="0x201" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Output Modifier" offset="0x202" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Plus" value="0x1" />
 			<option name="Times" value="0x2" />
 		</enum8>
-		<int8 name="Output" offset="0x203" visible="true" />
-		<dataRef name="Unknown" offset="0x204" visible="true" />
-		<undefined name="Unknown" offset="0x218" visible="false" />
-		<undefined name="Unknown" offset="0x21C" visible="false" />
-		<int8 name="Input" offset="0x220" visible="true" />
-		<int8 name="Input Range" offset="0x221" visible="true" />
-		<enum8 name="Output Kind" offset="0x222" visible="true">
+		<enum8 name="Output Modifier Input" offset="0x203" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<dataRef name="Function" offset="0x204" visible="true" />
+		<float32 name="Runtime m Constant Value" offset="0x218" visible="true" />
+		<flags8 name="Runtime m Flags" offset="0x21C" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</flags8>
+		<int8 name="Unknown" offset="0x21D" visible="false" />
+		<int16 name="Unknown" offset="0x21E" visible="false" />
+		<comment title="Profile Intensity" />
+		<enum8 name="Input Variable" offset="0x220" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Range Variable" offset="0x221" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<enum8 name="Output Modifier" offset="0x222" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Plus" value="0x1" />
 			<option name="Times" value="0x2" />
 		</enum8>
-		<int8 name="Output" offset="0x223" visible="true" />
-		<dataRef name="Unknown" offset="0x224" visible="true" />
-		<undefined name="Unknown" offset="0x238" visible="false" />
-		<undefined name="Unknown" offset="0x23C" visible="false" />
-		<undefined name="Unknown" offset="0x240" visible="false" />
-		<undefined name="Unknown" offset="0x244" visible="false" />
-		<tagblock name="Unknown" offset="0x248" visible="false" elementSize="0x10" align="0x10">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
+		<enum8 name="Output Modifier Input" offset="0x223" visible="true">
+			<option name="Profile Age" value="0x0" />
+			<option name="Profile Random" value="0x1" />
+			<option name="Profile Correlation 1" value="0x2" />
+			<option name="Profile Correlation 2" value="0x3" />
+			<option name="Profile Correlation 3" value="0x4" />
+			<option name="Profile Correlation 4" value="0x5" />
+			<option name="Game Time" value="0x6" />
+			<option name="Contrail Age" value="0x7" />
+			<option name="Contrail Random" value="0x8" />
+			<option name="Contrail Correlation 1" value="0x9" />
+			<option name="Contrail Correlation 2" value="0xA" />
+			<option name="Contrail Speed" value="0xB" />
+			<option name="Contrail LOD" value="0xC" />
+			<option name="Effect A Scale" value="0xD" />
+			<option name="Effect B Scale" value="0xE" />
+			<option name="Invalid State --- Please Set Again" value="0xF" />
+		</enum8>
+		<dataRef name="Function" offset="0x224" visible="true" />
+		<float32 name="Runtime m Constant Value" offset="0x238" visible="true" />
+		<flags8 name="Runtime m Flags" offset="0x23C" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</flags8>
+		<int8 name="Unknown" offset="0x23D" visible="false" />
+		<int16 name="Unknown" offset="0x23E" visible="false" />
+		<int32 name="Runtime M Constant Per Profile Properties" offset="0x240" visible="true" />
+		<int32 name="Runtime M Used States" offset="0x244" visible="true" />
+		<tagblock name="Runtime GPU Properties" offset="0x248" visible="true" elementSize="0x10" align="0x10">
+			<float32 name="Runtime GPU Property Real 0" offset="0x0" visible="true" />
+			<float32 name="Runtime GPU Property Real 1" offset="0x4" visible="true" />
+			<float32 name="Runtime GPU Property Real 2" offset="0x8" visible="true" />
+			<float32 name="Runtime GPU Property Real 3" offset="0xC" visible="true" />
 		</tagblock>
-		<tagblock name="Compiled Functions" offset="0x254" visible="false" elementSize="0x40" align="0x10">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
-			<undefined name="Unknown" offset="0x14" visible="false" />
-			<undefined name="Unknown" offset="0x18" visible="false" />
-			<undefined name="Unknown" offset="0x1C" visible="false" />
-			<undefined name="Unknown" offset="0x20" visible="false" />
-			<undefined name="Unknown" offset="0x24" visible="false" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<undefined name="Unknown" offset="0x2C" visible="false" />
-			<undefined name="Unknown" offset="0x30" visible="false" />
-			<undefined name="Unknown" offset="0x34" visible="false" />
-			<undefined name="Unknown" offset="0x38" visible="false" />
-			<undefined name="Unknown" offset="0x3C" visible="false" />
+		<tagblock name="Runtime GPU Functions" offset="0x254" visible="true" elementSize="0x40" align="0x10">
+			<float32 name="Runtime GPU Function Real 0" offset="0x0" visible="true" />
+			<float32 name="Runtime GPU Function Real 1" offset="0x4" visible="true" />
+			<float32 name="Runtime GPU Function Real 2" offset="0x8" visible="true" />
+			<float32 name="Runtime GPU Function Real 3" offset="0xC" visible="true" />
+			<float32 name="Runtime GPU Function Real 4" offset="0x10" visible="true" />
+			<float32 name="Runtime GPU Function Real 5" offset="0x14" visible="true" />
+			<float32 name="Runtime GPU Function Real 6" offset="0x18" visible="true" />
+			<float32 name="Runtime GPU Function Real 7" offset="0x1C" visible="true" />
+			<float32 name="Runtime GPU Function Real 8" offset="0x20" visible="true" />
+			<float32 name="Runtime GPU Function Real 9" offset="0x24" visible="true" />
+			<float32 name="Runtime GPU Function Real 10" offset="0x28" visible="true" />
+			<float32 name="Runtime GPU Function Real 11" offset="0x2C" visible="true" />
+			<float32 name="Runtime GPU Function Real 12" offset="0x30" visible="true" />
+			<float32 name="Runtime GPU Function Real 13" offset="0x34" visible="true" />
+			<float32 name="Runtime GPU Function Real 14" offset="0x38" visible="true" />
+			<float32 name="Runtime GPU Function Real 15" offset="0x3C" visible="true" />
 		</tagblock>
-		<tagblock name="Compiled Color Functions" offset="0x260" visible="true" elementSize="0x10" align="0x10">
-			<float32 name="Red" offset="0x0" visible="true" />
-			<float32 name="Green" offset="0x4" visible="true" />
-			<float32 name="Blue" offset="0x8" visible="true" />
-			<float32 name="Magnitude" offset="0xC" visible="true" />
+		<tagblock name="Runtime GPU Colors" offset="0x260" visible="true" elementSize="0x10" align="0x10">
+			<float32 name="Runtime GPU Color Real 0" offset="0x0" visible="true" />
+			<float32 name="Runtime GPU Color Real 1" offset="0x4" visible="true" />
+			<float32 name="Runtime GPU Color Real 2" offset="0x8" visible="true" />
+			<float32 name="Runtime GPU Color Real 3" offset="0xC" visible="true" />
 		</tagblock>
 	</tagblock>
 </plugin>
