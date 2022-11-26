@@ -435,6 +435,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
+		public void VisitOldStringID(OldStringIDData field)
+		{
+			if (!FilterString(field, field.Name))
+				FilterString(field, field.Value);
+		}
+
 		public void FilterFields(IEnumerable<MetaField> fields, string filter)
 		{
 			_filter = filter.ToLower();

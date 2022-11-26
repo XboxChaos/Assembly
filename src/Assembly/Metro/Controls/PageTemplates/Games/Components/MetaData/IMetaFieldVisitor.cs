@@ -18,6 +18,7 @@
 		void VisitTagBlockEntry(WrappedTagBlockEntry field);
 		void VisitString(StringData field);
 		void VisitStringID(StringIDData field);
+		void VisitOldStringID(OldStringIDData field);
 		void VisitRawData(RawData field);
 		void VisitDataRef(DataRef field);
 		void VisitTagRef(TagRefData field);

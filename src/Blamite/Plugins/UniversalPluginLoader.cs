@@ -261,6 +261,10 @@ namespace Blamite.Plugins
 					visitor.VisitUtf16(name, offset, visible, 256, pluginLine, tooltip);
 					break;
 
+				case "hexstring":
+					ReadHexString(reader, name, offset, visible, visitor, pluginLine, tooltip);
+					break;
+
 				case "flags8":
 				case "bitfield8":
 				case "bitmask8":
@@ -365,6 +369,10 @@ namespace Blamite.Plugins
 					visitor.VisitRangeDegree(name, offset, visible, pluginLine, tooltip);
 					break;
 
+				case "oldstringid":
+					visitor.VisitOldStringID(name, offset, visible, pluginLine, tooltip);
+					break;
+
 
 				default:
 					throw new ArgumentException("Unknown element \"" + elementName + "\"." + PositionInfo(reader));
@@ -454,6 +462,17 @@ namespace Blamite.Plugins
 				size = ParseInt(reader.Value);
 
 			visitor.VisitUtf16(name, offset, visible, size, pluginLine, tooltip);
+		}
+
+		private static void ReadHexString(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
+			uint pluginLine, string tooltip)
+		{
+			int size = 0;
+
+			if (reader.MoveToAttribute("size") || reader.MoveToAttribute("length"))
+				size = ParseInt(reader.Value);
+
+			visitor.VisitHexString(name, offset, visible, size, pluginLine, tooltip);
 		}
 
 		private static void ReadBits(XmlReader reader, IPluginVisitor visitor)
