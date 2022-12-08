@@ -5,8 +5,7 @@
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="Dragon" version="2">named some fields</revision>
 	</revisions>
-	<ascii name="Name" offset="0x0" length="0x1C" visible="true" />
-	<stringid name="Name" offset="0x1C" visible="true" />
+	<oldstringid name="Name" offset="0x0" visible="true" />
 	<flags16 name="Flags" offset="0x20" visible="true">
 		<bit name="Render Model Force Third Person" index="0" />
 		<bit name="Force Carmack-Reverse" index="1" />
@@ -27,9 +26,9 @@
 	</flags16>
 	<int16 name="Unknown" offset="0x22" visible="false" />
 	<int32 name="Model Checksum" offset="0x24" visible="true" />
-	<undefined name="Unknown" offset="0x28" visible="false" />
-	<undefined name="Unknown" offset="0x2C" visible="false" />
-	<undefined name="Unknown" offset="0x30" visible="false" />
+	<uint32 name="Import Info Block" offset="0x28" visible="false" />
+	<uint32 name="Import Info Block" offset="0x2C" visible="false" />
+	<uint32 name="Import Info Block" offset="0x30" visible="false" />
 	<tagblock name="Compression Info" offset="0x34" visible="true" elementSize="0x38">
 		<rangef name="Position Bounds x" offset="0x0" visible="true" />
 		<rangef name="Position Bounds y" offset="0x8" visible="true" />
@@ -40,13 +39,11 @@
 		<rangef name="Secondary Texcoord Bounds y" offset="0x30" visible="true" />
 	</tagblock>
 	<tagblock name="Regions" offset="0x40" visible="true" elementSize="0x30">
-		<ascii name="Name" offset="0x0" length="0x1C" visible="true" />
-		<stringid name="Name" offset="0x1C" visible="true" />
+		<oldstringid name="Name" offset="0x0" visible="true" />
 		<int16 name="Old Node Map Offset" offset="0x20" visible="true" />
 		<int16 name="Old Node Map Size" offset="0x22" visible="true" />
 		<tagblock name="Permutations" offset="0x24" visible="true" elementSize="0x2C">
-			<ascii name="Name" offset="0x0" length="0x1C" visible="true" />
-			<stringid name="Name" offset="0x1C" visible="true" />
+			<oldstringid name="Name" offset="0x0" visible="true" />
 			<int16 name="L1 Section Index (Super Low)" offset="0x20" visible="true" />
 			<int16 name="L2 Section Index (Low)" offset="0x22" visible="true" />
 			<int16 name="L3 Section Index (Medium)" offset="0x24" visible="true" />
@@ -86,19 +83,6 @@
 			<bit name="Compressed Position" index="0" />
 			<bit name="Compressed Texcoord" index="1" />
 			<bit name="Compressed Secondary Texcoord" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
 		</flags16>
 		<undefined name="Unknown" offset="0x1C" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="true" />
@@ -107,21 +91,6 @@
 		<int16 name="Rigid Node" offset="0x2C" visible="true" />
 		<flags16 name="Flags" offset="0x2E" visible="true">
 			<bit name="Geometry Postprocessed" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
 		</flags16>
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
@@ -159,26 +128,16 @@
 			<bit name="L4 (High)" index="3" />
 			<bit name="L5 (Super High)" index="4" />
 			<bit name="L6 (Hollywood)" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
 		</flags16>
 		<int16 name="Unknown" offset="0x2" visible="false" />
 		<tagblock name="Compound Nodes" offset="0x4" visible="true" elementSize="0x10">
-			<int8 name="Node Index 1" offset="0x0" visible="true" />
-			<int8 name="Node Index 2" offset="0x1" visible="true" />
-			<int8 name="Node Index 3" offset="0x2" visible="true" />
-			<int8 name="Node Index 4" offset="0x3" visible="true" />
-			<float32 name="Node Weight 1" offset="0x4" visible="true" />
-			<float32 name="Node Weight 2" offset="0x8" visible="true" />
-			<float32 name="Node Weight 3" offset="0xC" visible="true" />
+			<int8 name="Node Index 0" offset="0x0" visible="true" />
+			<int8 name="Node Index 1" offset="0x1" visible="true" />
+			<int8 name="Node Index 2" offset="0x2" visible="true" />
+			<int8 name="Node Index 3" offset="0x3" visible="true" />
+			<float32 name="Node Weight 0" offset="0x4" visible="true" />
+			<float32 name="Node Weight 1" offset="0x8" visible="true" />
+			<float32 name="Node Weight 2" offset="0xC" visible="true" />
 		</tagblock>
 	</tagblock>
 	<int8 name="L1 Section Index (Super Low)" offset="0x70" visible="true" />
@@ -190,8 +149,7 @@
 	<int16 name="Unknown" offset="0x76" visible="false" />
 	<int32 name="Node List Checksum" offset="0x78" visible="true" />
 	<tagblock name="Nodes" offset="0x7C" visible="true" elementSize="0x7C">
-		<ascii name="Name" offset="0x0" length="0x1C" visible="true" />
-		<stringid name="Name" offset="0x1C" visible="true" />
+		<oldstringid name="Name" offset="0x0" visible="true" />
 		<int16 name="Parent Node Index" offset="0x20" visible="true" />
 		<int16 name="First Child Node Index" offset="0x22" visible="true" />
 		<int16 name="Next Sibling Node Index" offset="0x24" visible="true" />
@@ -209,8 +167,7 @@
 	<undefined name="Unknown" offset="0x8C" visible="true" />
 	<undefined name="Unknown" offset="0x90" visible="true" />
 	<tagblock name="Marker Groups" offset="0x94" visible="true" elementSize="0x2C">
-		<ascii name="Name" offset="0x0" length="0x1C" visible="true" />
-		<stringid name="Name" offset="0x1C" visible="true" />
+		<oldstringid name="Name" offset="0x0" visible="true" />
 		<tagblock name="Markers" offset="0x20" visible="true" elementSize="0x20">
 			<int8 name="Region Index" offset="0x0" visible="true" />
 			<int8 name="Permutation Index" offset="0x1" visible="true" />

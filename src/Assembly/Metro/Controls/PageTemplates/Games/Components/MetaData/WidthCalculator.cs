@@ -243,6 +243,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			AddWidth(_datumValue.Width);
 		}
 
+		public void VisitOldStringID(OldStringIDData field)
+		{
+			AddWidth(_stringIDControl.Width);
+		}
+
 		public void Add(MetaField field)
 		{
 			field.Accept(this);

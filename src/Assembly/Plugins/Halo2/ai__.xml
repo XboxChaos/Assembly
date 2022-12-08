@@ -7,12 +7,12 @@
 		<tagRef name="Style" offset="0x0" visible="true" />
 	</tagblock>
 	<tagblock name="Squad Groups" offset="0x8" visible="true" elementSize="0x24">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<int16 name="Parent Index" offset="0x20" visible="true" />
 		<int16 name="Initial Orders Index" offset="0x22" visible="true" />
 	</tagblock>
 	<tagblock name="Squads" offset="0x10" visible="true" elementSize="0x74">
-		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+		<ascii name="Name" offset="0x0" visible="true" size="0x20" />
 		<flags32 name="Flags" offset="0x20" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Never Search" index="1" />
@@ -116,16 +116,16 @@
 				<option name="Climbing" value="0x1" />
 				<option name="Flying" value="0x2" />
 			</enum16>
-			<ascii name="Placement Script" offset="0x40" visible="true" length="0x20" />
+			<ascii name="Placement Script" offset="0x40" visible="true" size="0x20" />
 			<int16 name="Placement Script Index" offset="0x60" visible="true" />
 			<int16 name="Unknown" offset="0x62" visible="false" />
 		</tagblock>
-		<ascii name="Placement Script" offset="0x50" visible="true" length="0x20" />
+		<ascii name="Placement Script" offset="0x50" visible="true" size="0x20" />
 		<int16 name="Placement Script Index" offset="0x70" visible="true" />
 		<int16 name="Unknown" offset="0x72" visible="false" />
 	</tagblock>
 	<tagblock name="Zones" offset="0x18" visible="true" elementSize="0x38">
-		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+		<ascii name="Name" offset="0x0" visible="true" size="0x20" />
 		<flags32 name="Flags" offset="0x20" visible="true">
 			<bit name="Manual BSP Index" index="0" />
 		</flags32>
@@ -151,7 +151,7 @@
 			<degree2 name="Normal" offset="0x18" visible="true" />
 		</tagblock>
 		<tagblock name="Areas" offset="0x30" visible="true" elementSize="0x88">
-			<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+			<ascii name="Name" offset="0x0" visible="true" size="0x20" />
 			<flags32 name="Area Flags" offset="0x20" visible="true">
 				<bit name="Vehicle Area" index="0" />
 				<bit name="Perch" index="1" />
@@ -196,37 +196,37 @@
 		<tagRef name="Character" offset="0x0" visible="true" />
 	</tagblock>
 	<tagblock name="AI Animation References" offset="0x28" visible="true" elementSize="0x34">
-		<ascii name="Animation Name" offset="0x0" length="0x20" visible="true" />
-		<tagRef name="Animation Graph" offset="0x20" visible="true" />
+		<ascii name="Animation Name" offset="0x0" size="0x20" visible="true" />
+		<tagRef name="Animation Graph" offset="0x20" visible="true" tooltip="leave this blank to use the unit's normal animation graph" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 	</tagblock>
 	<tagblock name="AI Script References" offset="0x30" visible="true" elementSize="0x28">
-		<ascii name="Script Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Script Name" offset="0x0" size="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 	</tagblock>
 	<tagblock name="AI Recording References" offset="0x38" visible="true" elementSize="0x28">
-		<ascii name="Recording Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Recording Name" offset="0x0" size="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 	</tagblock>
 	<tagblock name="AI Conversations" offset="0x40" visible="true" elementSize="0x68">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<flags16 name="Flags" offset="0x20" visible="true">
-			<bit name="Stop If Death" index="0" />
-			<bit name="Stop If Damaged" index="1" />
-			<bit name="Stop If Visible Enemy" index="2" />
-			<bit name="Stop If Alerted To Enemy" index="3" />
-			<bit name="Player Must Be Visible" index="4" />
-			<bit name="Stop Other Actions" index="5" />
-			<bit name="Keep Trying To Play" index="6" />
-			<bit name="Player Must Be Looking" index="7" />
+			<bit name="Stop If Death" index="0" tooltip="this conversation will be aborted if any participant dies" />
+			<bit name="Stop If Damaged" index="1" tooltip="an actor will abort this conversation if they are damaged" />
+			<bit name="Stop If Visible Enemy" index="2" tooltip="an actor will abort this conversation if they see an enemy" />
+			<bit name="Stop If Alerted To Enemy" index="3" tooltip="an actor will abort this conversation if they suspect an enemy" />
+			<bit name="Player Must Be Visible" index="4" tooltip="this conversation cannot take place unless the participants can _see_ a nearby player" />
+			<bit name="Stop Other Actions" index="5" tooltip="participants stop doing whatever they were doing in order to perform this conversation" />
+			<bit name="Keep Trying To Play" index="6" tooltip="if this conversation fails initially, it will keep testing to see when it can play" />
+			<bit name="Player Must Be Looking" index="7" tooltip="this conversation will not start until the player is looking at one of the participants" />
 		</flags16>
 		<int16 name="Unknown" offset="0x22" visible="false" />
-		<float32 name="Trigger Distance" offset="0x24" visible="true" />
-		<float32 name="Run-To-Player Distance" offset="0x28" visible="true" />
+		<float32 name="Trigger Distance" offset="0x24" visible="true" tooltip="distance the player must enter before the conversation can trigger" />
+		<float32 name="Run-To-Player Distance" offset="0x28" visible="true" tooltip="if the 'involves player' flag is set, when triggered the conversation's participant(s) will run to within this distance of the player" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
@@ -239,15 +239,15 @@
 		<tagblock name="Participants" offset="0x50" visible="true" elementSize="0x54">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
-			<int16 name="Use This Object Index" offset="0x8" visible="true" />
-			<int16 name="Set New Name Index" offset="0xA" visible="true" />
+			<int16 name="Use This Object Index" offset="0x8" visible="true" tooltip="if a unit with this name exists, we try to pick them to start the conversation" />
+			<int16 name="Set New Name Index" offset="0xA" visible="true" tooltip="once we pick a unit, we name it this" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
 			<undefined name="Unknown" offset="0x10" visible="false" />
 			<undefined name="Unknown" offset="0x14" visible="false" />
 			<undefined name="Unknown" offset="0x18" visible="false" />
 			<undefined name="Unknown" offset="0x1C" visible="false" />
 			<undefined name="Unknown" offset="0x20" visible="false" />
-			<ascii name="Encounter Name" offset="0x24" length="0x20" visible="true" />
+			<ascii name="Encounter Name" offset="0x24" size="0x20" visible="true" />
 			<undefined name="Unknown" offset="0x44" visible="false" />
 			<undefined name="Unknown" offset="0x48" visible="false" />
 			<undefined name="Unknown" offset="0x4C" visible="false" />
@@ -268,7 +268,7 @@
 				<option name="Player" value="0x1" />
 				<option name="Participant" value="0x2" />
 			</enum16>
-			<int16 name="Addressee Participant Index" offset="0x6" visible="true" />
+			<int16 name="Addressee Participant Index" offset="0x6" visible="true" tooltip="this field is only used if the addressee type is 'participant'" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<float32 name="Line Delay Time" offset="0xC" visible="true" />
 			<undefined name="Unknown" offset="0x10" visible="false" />
@@ -286,9 +286,9 @@
 	</tagblock>
 	<tagblock name="Scripting Data" offset="0x48" visible="true" elementSize="0x80">
 		<tagblock name="Point Sets" offset="0x0" visible="true" elementSize="0x30">
-			<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+			<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 			<tagblock name="Points" offset="0x20" visible="true" elementSize="0x3C">
-				<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+				<ascii name="Name" offset="0x0" visible="true" size="0x20" />
 				<point3 name="Position" offset="0x20" visible="true" />
 				<int16 name="Reference Frame" offset="0x2C" visible="true" />
 				<int16 name="Unknown" offset="0x2E" visible="false" />
@@ -334,7 +334,7 @@
 		<undefined name="Unknown" offset="0x7C" visible="false" />
 	</tagblock>
 	<tagblock name="Orders" offset="0x50" visible="true" elementSize="0x7C">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<int16 name="Style Index" offset="0x20" visible="true" />
 		<int16 name="Unknown" offset="0x22" visible="false" />
 		<flags32 name="Flags" offset="0x24" visible="true">
@@ -356,7 +356,7 @@
 			<option name="Combat" value="0x4" />
 		</enum16>
 		<int16 name="Unknown" offset="0x2A" visible="false" />
-		<ascii name="Entry Script" offset="0x2C" length="0x20" visible="true" />
+		<ascii name="Entry Script" offset="0x2C" size="0x20" visible="true" />
 		<int16 name="Unknown" offset="0x4C" visible="false" />
 		<int16 name="Follow Squad Index" offset="0x4E" visible="true" />
 		<float32 name="Follow Radius" offset="0x50" visible="true" />
@@ -385,7 +385,7 @@
 				<option name="OR" value="0x0" />
 				<option name="AND" value="0x1" />
 			</enum16>
-			<enum16 name="Dialogue Type" offset="0x2" visible="true">
+			<enum16 name="Dialogue Type" offset="0x2" visible="true" tooltip="when this ending is triggered, launch a dialogue event of the given type">
 				<option name="None" value="0x0" />
 				<option name="Advance" value="0x1" />
 				<option name="Charge" value="0x2" />
@@ -425,7 +425,7 @@
 				<option name="AND" value="0x1" />
 			</enum16>
 			<float32 name="Delay Time" offset="0x4" visible="true" />
-			<enum16 name="Dialogue Type" offset="0x8" visible="true">
+			<enum16 name="Dialogue Type" offset="0x8" visible="true" tooltip="when this ending is triggered, launch a dialogue event of the given type">
 				<option name="None" value="0x0" />
 				<option name="Advance" value="0x1" />
 				<option name="Charge" value="0x2" />
@@ -449,8 +449,8 @@
 			</tagblock>
 		</tagblock>
 	</tagblock>
-	<tagblock name="AI Triggers" offset="0x58" visible="true" elementSize="0x30">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+	<tagblock name="Triggers" offset="0x58" visible="true" elementSize="0x30">
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<flags32 name="Trigger Flags" offset="0x20" visible="true">
 			<bit name="Latch ON When Triggered" index="0" />
 		</flags32>
@@ -489,7 +489,7 @@
 			<float32 name="X" offset="0x8" visible="true" />
 			<int16 name="Trigger Volume Index" offset="0xC" visible="true" />
 			<int16 name="Unknown" offset="0xE" visible="false" />
-			<ascii name="Exit Condition Script" offset="0x10" length="0x20" visible="true" />
+			<ascii name="Exit Condition Script" offset="0x10" size="0x20" visible="true" />
 			<int16 name="Exit Condition Script Index" offset="0x30" visible="true" />
 			<int16 name="Unknown" offset="0x32" visible="false" />
 			<flags32 name="Flags" offset="0x34" visible="true">
@@ -603,7 +603,7 @@
 		</enum8>
 		<enum8 name="BSP Policy" offset="0x30" visible="true">
 			<option name="Default" value="0x0" />
-			<option name="Always Places" value="0x1" />
+			<option name="Always Placed" value="0x1" />
 			<option name="Manual BSP Placement" value="0x2" />
 		</enum8>
 		<int8 name="Unknown" offset="0x31" visible="false" />
@@ -628,7 +628,7 @@
 			<bit name="Not Enterable By Player" index="2" />
 		</flags32>
 	</tagblock>
-	<tagblock name="Mission Scenes" offset="0x80" visible="true" elementSize="0x18">
+	<tagblock name="Mission Dialogue Scenes" offset="0x80" visible="true" elementSize="0x18">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<flags32 name="Flags" offset="0x4" visible="true">
 			<bit name="Scene Can Play Multiple Times" index="0" />
@@ -664,60 +664,60 @@
 	<tagblock name="Flocks" offset="0x88" visible="true" elementSize="0x84">
 		<int16 name="BSP Index" offset="0x0" visible="true" />
 		<int16 name="Unknown" offset="0x2" visible="false" />
-		<int16 name="Bounding Trigger Volume" offset="0x4" visible="true" />
+		<int16 name="Bounding Trigger Volume Index" offset="0x4" visible="true" />
 		<flags16 name="Flags" offset="0x6" visible="true">
 			<bit name="Hard Boundaries On Volume" index="0" />
 			<bit name="Flock Initially Stopped" index="1" />
 		</flags16>
-		<float32 name="Ecology Margin" offset="0x8" visible="true" />
+		<float32 name="Ecology Margin" offset="0x8" visible="true" tooltip="distance from ecology boundary that creature begins to be repulsed" />
 		<tagblock name="Sources" offset="0xC" visible="true" elementSize="0x1C">
 			<point3 name="Position" offset="0x0" visible="true" />
 			<degree2 name="Starting" offset="0xC" visible="true" />
 			<float32 name="Radius" offset="0x14" visible="true" />
-			<float32 name="Weight" offset="0x18" visible="true" />
+			<float32 name="Weight" offset="0x18" visible="true" tooltip="probability of producing at this source" />
 		</tagblock>
 		<tagblock name="Sinks" offset="0x14" visible="true" elementSize="0x10">
 			<point3 name="Position" offset="0x0" visible="true" />
 			<float32 name="Radius" offset="0xC" visible="true" />
 		</tagblock>
-		<float32 name="Production Frequency" offset="0x1C" visible="true" />
+		<float32 name="Production Frequency" offset="0x1C" visible="true" tooltip="how frequently boids are produced at one of the sources (limited by the max boid count)" />
 		<rangef name="Scale" offset="0x20" visible="true" />
 		<tagRef name="Creature" offset="0x28" visible="true" />
 		<range16 name="Boid Count" offset="0x30" visible="true" />
-		<comment title="Flock Parameters">Recommended Initial values (For a sentinel-sized unt):
-Neighborhood Radius = 6.0
-Avoidance Radius = 3
-Forward Scale = 0.5
-Alignment Scale = 0.5
-Avoidance Scale = 1.0
-Leveling Force Scale = 0.1
-Perception Angle = 120
-Average Throttle = 0.75
-Maximum Throttle = 1.0
-Position Scale = 1.0
-Position Min Radius = 3
-Position Max Radius - 9</comment>
+		<comment title="Flock Parameters">Recommended initial values (for a sentinel-sized unit): 
+neighborhood radius= 6.0 
+avoidance radius= 3 
+forward scale= 0.5 
+alignment scale= 0.5 
+avoidance scale= 1.0 
+leveling force scale= 0.1 
+perception angle= 120 
+average throttle= 0.75 
+maximum throttle= 1.0 
+position scale= 1.0 
+position min radius= 3 
+position max radius = 9</comment>
 		<comment title="Let me give you a piece of free advice.">Flocks with a neighborhood radius of 0 don't FLOCK, per se (in the creature-creature interaction kind of way), but they are much cheaper. The best thing is to have a non-zero radius for small flocks, and a zero radius for large flocks (or for 'flow-flocks', ones with sources and sinks that are intended to create a steady flow of something). Note also that for flocks with a 0 neighborhood radius, the parameters for avoidance, alignment, position and perception angle are ignored entirely.</comment>
-		<float32 name="Neighborhood Radius" offset="0x34" visible="true" />
-		<float32 name="Avoidance Radius" offset="0x38" visible="true" />
-		<float32 name="Forward Scale" offset="0x3C" visible="true" />
-		<float32 name="Alignment Scale" offset="0x40" visible="true" />
-		<float32 name="Avoidance Scale" offset="0x44" visible="true" />
-		<float32 name="Leveling Force Scale" offset="0x48" visible="true" />
-		<float32 name="Sink Scale" offset="0x4C" visible="true" />
-		<degree name="Perception Angle" offset="0x50" visible="true" />
-		<float32 name="Average Throttle" offset="0x54" visible="true" />
-		<float32 name="Maximum Throttle" offset="0x58" visible="true" />
-		<float32 name="Position Scale" offset="0x5C" visible="true" />
-		<float32 name="Position Minimum Radius" offset="0x60" visible="true" />
-		<float32 name="Position Maximum Radius" offset="0x64" visible="true" />
-		<float32 name="Movement Weight Threshold" offset="0x68" visible="true" />
-		<float32 name="Danger Radius" offset="0x6C" visible="true" />
-		<float32 name="Danger Scale" offset="0x70" visible="true" />
+		<float32 name="Neighborhood Radius" offset="0x34" visible="true" tooltip="distance within which one boid is affected by another" />
+		<float32 name="Avoidance Radius" offset="0x38" visible="true" tooltip="distance that a boid tries to maintain from another" />
+		<float32 name="Forward Scale" offset="0x3C" visible="true" tooltip="weight given to boid's desire to fly straight ahead" />
+		<float32 name="Alignment Scale" offset="0x40" visible="true" tooltip="weight given to boid's desire to align itself with neighboring boids" />
+		<float32 name="Avoidance Scale" offset="0x44" visible="true" tooltip="weight given to boid's desire to avoid collisions with other boids, when within the avoidance radius" />
+		<float32 name="Leveling Force Scale" offset="0x48" visible="true" tooltip="weight given to boids desire to fly level" />
+		<float32 name="Sink Scale" offset="0x4C" visible="true" tooltip="weight given to boid's desire to fly towards its sinks" />
+		<degree name="Perception Angle" offset="0x50" visible="true" tooltip="angle-from-forward within which one boid can perceive and react to another" />
+		<float32 name="Average Throttle" offset="0x54" visible="true" tooltip="throttle at which boids will naturally fly" />
+		<float32 name="Maximum Throttle" offset="0x58" visible="true" tooltip="maximum throttle applicable" />
+		<float32 name="Position Scale" offset="0x5C" visible="true" tooltip="weight given to boid's desire to be near flock center" />
+		<float32 name="Position Minimum Radius" offset="0x60" visible="true" tooltip="distance to flock center beyond which an attracting force is applied" />
+		<float32 name="Position Maximum Radius" offset="0x64" visible="true" tooltip="distance to flock center at which the maximum attracting force is applied" />
+		<float32 name="Movement Weight Threshold" offset="0x68" visible="true" tooltip="the threshold of accumulated weight over which movement occurs" />
+		<float32 name="Danger Radius" offset="0x6C" visible="true" tooltip="distance within which boids will avoid a dangerous object (e.g. the player)" />
+		<float32 name="Danger Scale" offset="0x70" visible="true" tooltip="weight given to boid's desire to avoid danger" />
 		<comment title="Perlin Noise Parameters">Recommended initial values:
-Random Offset Scale = 0.2
-Offset Period Bounds = 1, 3</comment>
-		<float32 name="Random Offset Scale" offset="0x74" visible="true" />
+random offset scale= 0.2
+offset period bounds= 1, 3</comment>
+		<float32 name="Random Offset Scale" offset="0x74" visible="true" tooltip="weight given to boid's random heading offset" />
 		<rangef name="Random Offset Period" offset="0x78" visible="true" />
 		<stringid name="Flock Name" offset="0x80" visible="true" />
 	</tagblock>

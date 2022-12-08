@@ -34,6 +34,8 @@ namespace Assembly.Metro.Controls.PageTemplates
 			listH4c.ItemsSource = Halo4.Where(e => e.Type == MapType.Campaign);
 			listH4s.ItemsSource = Halo4.Where(e => e.Type == MapType.Survival);
 			listH4m.ItemsSource = Halo4.Where(e => e.Type == MapType.Multiplayer);
+
+			listStc.ItemsSource = Stubbs;
 		}
 
 		private enum MapType
@@ -331,6 +333,22 @@ namespace Assembly.Metro.Controls.PageTemplates
 			new MapEntry("ff90_fortsw", "Fortress", "11141", MapType.Survival),
 			new MapEntry("ff91_complex", "Galileo Base", "11151", MapType.Survival),
 			new MapEntry("ff92_valhalla", "Two Giants", "11161", MapType.Survival),
+		};
+
+		private List<MapEntry> Stubbs = new List<MapEntry>()
+		{
+			new MapEntry("a10_plaza", "Welcome to Punchbowl", "-", MapType.Campaign),
+			new MapEntry("a30_greenhouse", "Bleeding Ground", "-", MapType.Campaign),
+			new MapEntry("a40_police_station", "The Slammer", "-", MapType.Campaign),
+			new MapEntry("a45_dance", "Cop Rock", "-", MapType.Campaign),
+			new MapEntry("a50_maul", "Painting the Town Red", "-", MapType.Campaign),
+			new MapEntry("a60_maulfight", "Punchbowl Maul", "-", MapType.Campaign),
+			new MapEntry("b10_farm_house", "Fall of the House of Otis", "-", MapType.Campaign),
+			new MapEntry("b30_dam", "When the Zombie Breaks", "-", MapType.Campaign),
+			new MapEntry("c10_offender", "The Sacking of Punchbowl", "-", MapType.Campaign),
+			new MapEntry("c30_lab", "The Doctor Will See You Now", "-", MapType.Campaign),
+			new MapEntry("c40_cityhall", "Paved with Good Intentions", "-", MapType.Campaign),
+			new MapEntry("c50_end", "The Ghoul of Your Dreams", "-", MapType.Campaign),
 		};
 	}
 

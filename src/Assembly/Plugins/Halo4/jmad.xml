@@ -556,7 +556,7 @@ These groups should be present in the PCA Groups block.</comment>
 			<stringid name="Import Path" offset="0x10" visible="true" />
 			<int32 name="Node List Checksum" offset="0x14" visible="true" />
 			<int16 name="Resource Group Index" offset="0x18" visible="true" />
-			<int16 name="Resource Member Index" offset="0x1A" visible="true" />
+			<int16 name="Resource Group Member Index" offset="0x1A" visible="true" />
 			<vector3 name="Heading" offset="0x1C" visible="true" />
 			<float32 name="Heading Angle" offset="0x28" visible="true" />
 			<float32 name="Average Translation Magnitude" offset="0x2C" visible="true" />
@@ -594,12 +594,12 @@ These groups should be present in the PCA Groups block.</comment>
 				<int16 name="Frame" offset="0x2" visible="true" />
 			</tagblock>
 			<tagblock name="Sound Events" offset="0x40" visible="true" elementSize="0x8" tooltip="Legacy field - please edit in new frame event tag above">
-				<int16 name="Sound" offset="0x0" visible="true" />
+				<int16 name="Sound Index" offset="0x0" visible="true" />
 				<int16 name="Frame" offset="0x2" visible="true" />
 				<stringid name="Marker Name" offset="0x4" visible="true" />
 			</tagblock>
 			<tagblock name="Effect Events" offset="0x4C" visible="true" elementSize="0xC" tooltip="Legacy field - please edit in new frame event tag above">
-				<int16 name="Effect" offset="0x0" visible="true" />
+				<int16 name="Effect Index" offset="0x0" visible="true" />
 				<int16 name="Frame" offset="0x2" visible="true" />
 				<stringid name="Marker Name" offset="0x4" visible="true" />
 				<enum8 name="Damage Reporting Type" offset="0x8" visible="true">
@@ -975,7 +975,7 @@ These groups should be present in the PCA Groups block.</comment>
 		<int16 name="Weight Function Index" offset="0x24" visible="true" />
 		<int16 name="Unknown" offset="0x26" visible="false" />
 		<int16 name="Graph Index" offset="0x28" visible="true" />
-		<int16 name="Animation" offset="0x2A" visible="true" />
+		<int16 name="Animation Index" offset="0x2A" visible="true" />
 	</tagblock>
 	<tagblock name="New Function Overlays" offset="0xB4" visible="true" elementSize="0x18">
 		<stringid name="Name" offset="0x0" visible="true" />
@@ -986,7 +986,7 @@ These groups should be present in the PCA Groups block.</comment>
 		<stringid name="Playback Speed Object Function" offset="0xC" visible="true" />
 		<stringid name="Blend Weight Object Function" offset="0x10" visible="true" />
 		<int16 name="Graph Index" offset="0x14" visible="true" />
-		<int16 name="Animation" offset="0x16" visible="true" />
+		<int16 name="Animation Index" offset="0x16" visible="true" />
 	</tagblock>
 	<tagblock name="Overlay Groups" offset="0xC0" visible="true" elementSize="0x1C">
 		<stringId name="Name" offset="0x0" visible="true" />
@@ -1184,21 +1184,21 @@ Then, assign animations to these groups by setting their pca group name field</c
 						<int16 name="Overlay Group" offset="0x4" visible="true" />
 						<int16 name="ik Set Index" offset="0x6" visible="true" />
 						<int16 name="Graph Index" offset="0x8" visible="true" />
-						<int16 name="Animation" offset="0xA" visible="true" />
+						<int16 name="Animation Index" offset="0xA" visible="true" />
 					</tagblock>
 					<tagblock name="Overlays" offset="0x18" visible="true" elementSize="0xC" sort="true">
 						<stringId name="Label" offset="0x0" visible="true" />
 						<int16 name="Overlay Group" offset="0x4" visible="true" />
 						<int16 name="ik Set Index" offset="0x6" visible="true" />
 						<int16 name="Graph Index" offset="0x8" visible="true" />
-						<int16 name="Animation" offset="0xA" visible="true" />
+						<int16 name="Animation Index" offset="0xA" visible="true" />
 					</tagblock>
 					<tagblock name="Death And Damage" offset="0x24" visible="true" elementSize="0x10" sort="true">
 						<stringId name="Label" offset="0x0" visible="true" />
 						<tagblock name="Directions" offset="0x4" visible="true" elementSize="0xC">
 							<tagblock name="Regions" offset="0x0" visible="true" elementSize="0x4">
 								<int16 name="Graph Index" offset="0x0" visible="true" />
-								<int16 name="Animation" offset="0x2" visible="true" />
+								<int16 name="Animation Index" offset="0x2" visible="true" />
 							</tagblock>
 						</tagblock>
 					</tagblock>
@@ -1208,7 +1208,7 @@ Then, assign animations to these groups by setting their pca group name field</c
 							<stringid name="Mode Name" offset="0x0" visible="true" tooltip="name of the mode this transition ends in" />
 							<stringid name="State Name" offset="0x4" visible="true" tooltip="name of the state this transition ends in" />
 							<int16 name="Graph Index" offset="0x8" visible="true" />
-							<int16 name="Animation" offset="0xA" visible="true" />
+							<int16 name="Animation Index" offset="0xA" visible="true" />
 						</tagblock>
 					</tagblock>
 					<tagblock name="Velocity Boundaries" offset="0x3C" visible="true" elementSize="0x20">
@@ -1233,7 +1233,7 @@ Then, assign animations to these groups by setting their pca group name field</c
 					<int16 name="Overlay Group" offset="0x0" visible="true" />
 					<int16 name="ik Set Index" offset="0x2" visible="true" />
 					<int16 name="Graph Index" offset="0x4" visible="true" />
-					<int16 name="Animation" offset="0x6" visible="true" />
+					<int16 name="Animation Index" offset="0x6" visible="true" />
 					<float32 name="Animation Parameter" offset="0x8" visible="true" tooltip="Numerical value associated with the ranged action animation (e.g. velocity for jumps)" />
 					<float32 name="Animation Parameter B" offset="0xC" visible="true" />
 				</tagblock>
@@ -1341,7 +1341,7 @@ Then, assign animations to these groups by setting their pca group name field</c
 							<bit name="Partner" index="4" />
 						</flags32>
 						<int16 name="Graph Index" offset="0x4" visible="true" />
-						<int16 name="Animation" offset="0x6" visible="true" />
+						<int16 name="Animation Index" offset="0x6" visible="true" />
 						<point3 name="Start Offset" offset="0x8" visible="true" />
 						<vector3 name="Start Facing" offset="0x14" visible="true" />
 						<point3 name="End Offset" offset="0x20" visible="true" />
@@ -1374,7 +1374,7 @@ Then, assign animations to these groups by setting their pca group name field</c
 	<tagblock name="Vehicle Suspension" offset="0x148" visible="true" elementSize="0x30">
 		<stringid name="Label" offset="0x0" visible="true" />
 		<int16 name="Graph Index" offset="0x4" visible="true" />
-		<int16 name="Animation" offset="0x6" visible="true" />
+		<int16 name="Animation Index" offset="0x6" visible="true" />
 		<stringid name="Function Name" offset="0x8" visible="true" />
 		<stringid name="Marker Name" offset="0xC" visible="true" tooltip="this marker should be parented to the vehicle root node" />
 		<stringid name="Contact Marker Name" offset="0x10" visible="true" tooltip="this marker should be parented to the wheel node" />
@@ -1390,7 +1390,7 @@ Then, assign animations to these groups by setting their pca group name field</c
 	<tagblock name="Function Overlays" offset="0x154" visible="true" elementSize="0x14">
 		<stringid name="Label" offset="0x0" visible="true" />
 		<int16 name="Graph Index" offset="0x4" visible="true" />
-		<int16 name="Animation" offset="0x6" visible="true" />
+		<int16 name="Animation Index" offset="0x6" visible="true" />
 		<int16 name="Unknown" offset="0x8" visible="false" />
 		<enum16 name="Function Controls" offset="0xA" visible="true">
 			<option name="Frame" value="0x0" />

@@ -23,24 +23,24 @@
 	<flags16 name="Flags" offset="0x2" visible="true">
 		<bit name="Does Not Cast Shadow" index="0" />
 		<bit name="Search Cardinal Direction Lightmaps on Failure" index="1" />
-		<bit name="Bit 2" index="2" />
+		<bit name="Preserves Initial Damage Owner" index="2" />
 		<bit name="Not A Pathfinding Obstacle" index="3" />
-		<bit name="Extension Of Parent" index="4" tooltip="object uses parent's markers" />
+		<bit name="Extension Of Parent" index="4" tooltip="object passes all function values to parent and uses parent's markers" />
 		<bit name="Does Not Cause Collision Damage" index="5" />
 		<bit name="Early Mover" index="6" />
 		<bit name="Early Mover Localized Physics" index="7" />
 		<bit name="Use Static Massive Lightmap Sample" index="8" />
 		<bit name="Object Scales Attachments" index="9" />
 		<bit name="Inherits Player's Appearance" index="10" />
-		<bit name="Dead Bipeds Can't Localize" index="11" />
-		<bit name="Attach To Clusters By Dynamic Sphere" index="12" />
+		<bit name="Non Physical In Map Editor" index="11" />
+		<bit name="Attach To Clusters By Dynamic Sphere" index="12" tooltip="use this for the mac gun on spacestation" />
 		<bit name="Effects Created By This Object Do Not Spawn Objects In Multiplayer" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
+		<bit name="Does Not Collide With Camera" index="14" tooltip="specificly the flying observer camera" />
+		<bit name="Damage Not Blocked By Obstructions" index="15" tooltip="AOE damage being applied to this object does not test for obstrutions." />
 	</flags16>
 	<float32 name="Bounding Radius" offset="0x4" visible="true" tooltip="If you edit this field manually, beware that the render model is no longer respected for radius calculation and that you need to set the bounding offset as well." />
 	<point3 name="Bounding Offset" offset="0x8" visible="true" />
-	<float32 name="Acceleration Scale" offset="0x14" visible="true" />
+	<float32 name="Acceleration Scale" offset="0x14" visible="true" tooltip="marine 1.0, grunt 1.4, elite 0.9, hunter 0.5, etc." />
 	<enum16 name="Lightmap Shadow Mode" offset="0x18" visible="true">
 		<option name="Default" value="0x0" />
 		<option name="Never" value="0x1" />
@@ -104,51 +104,22 @@
 	<tagRef name="Collision Damage" offset="0x54" visible="true" tooltip="only set this tag if you want to override the default collision damage values in globals.globals" />
 	<tagblock name="Early Mover Oriented Bounding Box" offset="0x64" visible="true" elementSize="0x28">
 		<stringid name="Node Name" offset="0x0" visible="true" tooltip="empty means object space" />
-		<float32 name="X0" offset="0x4" visible="true" />
-		<float32 name="X1" offset="0x8" visible="true" />
-		<float32 name="Y0" offset="0xC" visible="true" />
-		<float32 name="Y1" offset="0x10" visible="true" />
-		<float32 name="Z0" offset="0x14" visible="true" />
-		<float32 name="Z1" offset="0x18" visible="true" />
+		<rangef name="x" offset="0x4" visible="true" />
+		<rangef name="y" offset="0xC" visible="true" />
+		<rangef name="z" offset="0x14" visible="true" />
 		<degree3 name="Angles" offset="0x1C" visible="true" />
 	</tagblock>
 	<tagRef name="Creation Effect" offset="0x70" visible="true" />
 	<tagRef name="Material Effects" offset="0x80" visible="true" />
 	<tagRef name="Melee Sound" offset="0x90" visible="true" tooltip="this is the sound that is made when I am meleed. This overrides the sweetener sound of my material." />
 	<tagblock name="AI Properties" offset="0xA0" visible="true" elementSize="0x10">
-		<flags32 name="Flags" offset="0x0" visible="true">
+		<flags32 name="AI Flags" offset="0x0" visible="true">
 			<bit name="Destroyable Cover" index="0" />
 			<bit name="Pathfinding Ignore When Dead" index="1" />
 			<bit name="Dynamic Cover" index="2" />
 			<bit name="Non Flight-Blocking" index="3" />
 			<bit name="Dynamic Cover From Centre" index="4" />
 			<bit name="Has Corner Markers" index="5" />
-			<bit name="Idle When Flying" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
 		</flags32>
 		<stringId name="AI Type Name" offset="0x4" visible="true" tooltip="used for combat dialogue, etc." />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -178,34 +149,8 @@
 			<bit name="Mapping Does Not Controls Active" index="1" tooltip="the curve mapping can make the function active/inactive" />
 			<bit name="Always Active" index="2" tooltip="function does not deactivate when at or below lower bound" />
 			<bit name="Random Time Offset" index="3" tooltip="function offsets periodic function input by random value between 0 and 1" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
+			<bit name="Always Exports Value" index="4" tooltip="when this function is deactivated, it still exports its value" />
+			<bit name="Turn Off With Uses Magnitude" index="5" tooltip="the function will be turned off if the value of the turns_off_with function is 0" />
 		</flags32>
 		<stringId name="Import Name" offset="0x4" visible="true" tooltip="if you leave this field blank then you can set this function's input value with the hs_function object_set_function_variable" />
 		<stringId name="Export Name" offset="0x8" visible="true" />
@@ -221,17 +166,13 @@
 	<tagblock name="Attachments" offset="0xBC" visible="true" elementSize="0x20">
 		<tagRef name="Type" offset="0x0" visible="true" />
 		<stringid name="Marker" offset="0x10" visible="true" />
-		<enum8 name="Change Color" offset="0x14" visible="true">
+		<enum16 name="Change Color" offset="0x14" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Primary" value="0x1" />
 			<option name="Secondary" value="0x2" />
 			<option name="Tertiary" value="0x3" />
 			<option name="Quaternary" value="0x4" />
-		</enum8>
-		<flags8 name="Flags" offset="0x15" visible="true">
-			<bit name="Force Always On" index="0" tooltip="when this flag is clear we only create the attachment when the function object function is active or set to empty string" />
-			<bit name="Effect Size Scale From Object Scale" index="1" />
-		</flags8>
+		</enum16>
 		<int16 name="Unknown" offset="0x16" visible="false" />
 		<stringid name="Primary Scale" offset="0x18" visible="true" />
 		<stringid name="Secondary Scale" offset="0x1C" visible="true" />
@@ -261,7 +202,7 @@
 	<tagblock name="Predicted Resources" offset="0xE0" visible="false" elementSize="0x0">
 	</tagblock>
 	<tagblock name="Multiplayer Object" offset="0xEC" visible="true" elementSize="0xC4">
-		<flags16 name="Engine Flags" offset="0x0" visible="true" tooltip="Set which game engines you desire this object to appear in">
+		<flags16 name="Game Engine Flags" offset="0x0" visible="true" tooltip="Set which game engines you desire this object to appear in">
 			<bit name="Capture The Flag" index="0" />
 			<bit name="Slayer" index="1" />
 			<bit name="Oddball" index="2" />
@@ -271,7 +212,7 @@
 			<bit name="Assault" index="6" />
 			<bit name="VIP" index="7" />
 			<bit name="Infection" index="8" />
-			<bit name="Bit 9" index="9" />
+			<bit name="Target Training" index="9" />
 		</flags16>
 		<comment title="TYPE AND FLAGS">Type pertains to how you want the game engine to handle this object
 Certain flags applicable only to certain object types, should be self evident</comment>
@@ -290,18 +231,18 @@ Certain flags applicable only to certain object types, should be self evident</c
 			<option name="Teleporter Receiver" value="0xB" />
 			<option name="Player Spawn Location" value="0xC" />
 			<option name="Player Respawn Zone" value="0xD" />
-			<option name="Hold Spawn Objective" value="0xE" />
-			<option name="Capture Spawn Objective" value="0xF" />
-			<option name="Hold Destination Objective" value="0x10" />
-			<option name="Capture Destination Objective" value="0x11" />
-			<option name="Hill Objective" value="0x12" />
-			<option name="Infection Haven Objective" value="0x13" />
-			<option name="Territory Objective" value="0x14" />
-			<option name="VIP Boundary Objective" value="0x15" />
-			<option name="VIP Destination Objective" value="0x16" />
-			<option name="Juggernaut Destination Objective" value="0x17" />
+			<option name="Oddball Spawn Location" value="0xE" />
+			<option name="CTF Flag Spawn Location" value="0xF" />
+			<option name="Target Spawn Location" value="0x10" />
+			<option name="CTF Flag Return Area" value="0x11" />
+			<option name="Koth Hill Area" value="0x12" />
+			<option name="Infection Safe Area" value="0x13" />
+			<option name="Territory Area" value="0x14" />
+			<option name="VIP Influence Area" value="0x15" />
+			<option name="VIP Destination Zone" value="0x16" />
+			<option name="Juggernaut Destination Zone" value="0x17" />
 		</enum8>
-		<flags8 name="Teleporter Flags" offset="0x3" visible="true">
+		<flags8 name="Teleporter Passability" offset="0x3" visible="true">
 			<bit name="Disallow Players" index="0" />
 			<bit name="Allow Light Land Vehicles" index="1" />
 			<bit name="Allow Heavy Land Vehicles" index="2" />
@@ -310,21 +251,9 @@ Certain flags applicable only to certain object types, should be self evident</c
 		</flags8>
 		<flags16 name="Flags" offset="0x4" visible="true">
 			<bit name="Only Visible In Editor" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
+			<bit name="Valid Initial Player Spawn" index="1" />
+			<bit name="Fixed Boundary Orientation" index="2" />
+			<bit name="Candy Monitor Should Ignore" index="3" />
 		</flags16>
 		<enum8 name="Boundary Shape" offset="0x6" visible="true">
 			<option name="Unused" value="0x0" />
@@ -343,15 +272,15 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<float32 name="Boundary +Height" offset="0x14" visible="true" />
 		<float32 name="Boundary -Height" offset="0x18" visible="true" />
 		<comment title="RESPAWN ZONE DATA">These are respawn zone weights, used only for respawn zones</comment>
-		<float32 name="Unknown Weight" offset="0x1C" visible="true" />
-		<float32 name="Unknown Weight" offset="0x20" visible="true" />
-		<float32 name="Unknown Weight" offset="0x24" visible="true" />
+		<float32 name="Normal Weight" offset="0x1C" visible="true" />
+		<float32 name="Flag Away Weight" offset="0x20" visible="true" />
+		<float32 name="Flag At Home Weight" offset="0x24" visible="true" />
 		<comment title="MARKER DATA">These fields are only used for defining certain, special markers to use for positional locations if the default position (object origin) is not sufficient</comment>
 		<stringid name="Boundary Center Marker" offset="0x28" visible="true" />
 		<stringid name="Spawned Object Marker Name" offset="0x2C" visible="true" />
 		<comment title="SPAWNED OBJECT">If this object is intended to spawn something, the object it spawns should be specified here</comment>
 		<tagref name="Spawned Object" offset="0x30" visible="true" tooltip="If this object is intended to spawn something, the object it spawns should be specified here" />
-		<stringid name="Boundary Material (Not Yet Implemented)" offset="0x40" visible="true" />
+		<stringid name="Boundary Material" offset="0x40" visible="true" tooltip="Not Yet Implemented" />
 		<tagref name="Default Boundary Standard Shader" offset="0x44" visible="true" />
 		<tagref name="Default Boundary Opaque Shader" offset="0x54" visible="true" />
 		<tagref name="Sphere Standard Shader" offset="0x64" visible="true" />
@@ -366,35 +295,7 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<bit name="Always Maintains z Up" index="0" />
 		<bit name="Destroyed by Explosions" index="1" />
 		<bit name="Unaffected by Gravity" index="2" />
-		<bit name="Bit 3" index="3" />
-		<bit name="Bit 4" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Bit 6" index="6" />
-		<bit name="Bit 7" index="7" />
-		<bit name="Bit 8" index="8" />
-		<bit name="Bit 9" index="9" />
-		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
-		<bit name="Bit 16" index="16" />
-		<bit name="Bit 17" index="17" />
-		<bit name="Bit 18" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Bit 20" index="20" />
-		<bit name="Bit 21" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Bit 25" index="25" />
-		<bit name="Bit 26" index="26" />
-		<bit name="Bit 27" index="27" />
-		<bit name="Bit 28" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Bit 31" index="31" />
+		<bit name="Crate Style Collision Filter" index="3" />
 	</flags32>
 	<int16 name="OLD Message Index" offset="0xFC" visible="true" />
 	<int16 name="Sort Order" offset="0xFE" visible="true" />
@@ -423,13 +324,15 @@ Certain flags applicable only to certain object types, should be self evident</c
 	<float32 name="Small Unit Stowed Scale" offset="0x188" visible="true" />
 	<float32 name="Medium Unit Armed Scale" offset="0x18C" visible="true" />
 	<float32 name="Medium Unit Stowed Scale" offset="0x190" visible="true" />
-	<float32 name="Large Unit Armed Scale" offset="0x194" visible="true" />
-	<float32 name="Large Unit Stowed Scale" offset="0x198" visible="true" />
-	<float32 name="Huge Unit Armed Scale" offset="0x19C" visible="true" />
-	<float32 name="Huge Unit Stowed Scale" offset="0x1A0" visible="true" />
-	<float32 name="Grounded Friction Length" offset="0x1A4" visible="true" />
-	<float32 name="Grounded Friction Unknown" offset="0x1A8" visible="true" />
-	<comment title="WEAPON" />
+	<float32 name="Player Unit Armed Scale" offset="0x194" visible="true" />
+	<float32 name="Player Unit Stowed Scale" offset="0x198" visible="true" />
+	<float32 name="Large Unit Armed Scale" offset="0x19C" visible="true" />
+	<float32 name="Large Unit Stowed Scale" offset="0x1A0" visible="true" />
+	<comment title="Damping Settings">how much do we damp the velocity when the item is in contact with a slow</comment>
+	<float32 name="Grounded Angular Damping" offset="0x1A4" visible="true" tooltip="~30 == complete damping, 0 == defaults" />
+	<float32 name="Grounded Linear Damping" offset="0x1A8" visible="true" tooltip="~30 == complete damping, 0 == defaults" />
+	<comment title="WEAPON">All weapons should have 'primary trigger' and 'secondary trigger' markers as appropriate.
+Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
 	<flags32 name="Flags" offset="0x1AC" visible="true">
 		<bit name="Vertical Heat Display" index="0" />
 		<bit name="Mutually Exclusive Triggers" index="1" />
@@ -459,44 +362,15 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<bit name="Can't Fire If Parent Dead" index="25" />
 		<bit name="Weapon Ages With Each Kill" index="26" tooltip="see 'weapon ages when damage is inflicted', 'per kill or hit aging amount'" />
 		<bit name="Weapon Uses Old Dual Fire Error Code" index="27" />
-		<bit name="Primary Trigger Melee Attacks" index="28" />
+		<bit name="Allows Unaimed Lunge" index="28" />
 		<bit name="Cannot Be Used By Player" index="29" />
 		<bit name="Hold FP Firing Animation" index="30" />
 		<bit name="Strict Deviation Angle" index="31" tooltip="deviation angle is allowed to be less than primary autoaim angle - for the rocket launcher" />
 	</flags32>
 	<flags32 name="Secondary Flags" offset="0x1B0" visible="true">
-		<bit name="Delete If Dropped Empty" index="0" />
-		<bit name="Bit 1" index="1" />
-		<bit name="Bit 2" index="2" />
-		<bit name="Bit 3" index="3" />
-		<bit name="Bit 4" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Bit 6" index="6" />
-		<bit name="Bit 7" index="7" />
-		<bit name="Bit 8" index="8" />
-		<bit name="Bit 9" index="9" />
-		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
-		<bit name="Bit 16" index="16" />
-		<bit name="Bit 17" index="17" />
-		<bit name="Bit 18" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Bit 20" index="20" />
-		<bit name="Bit 21" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Bit 25" index="25" />
-		<bit name="Bit 26" index="26" />
-		<bit name="Bit 27" index="27" />
-		<bit name="Bit 28" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Bit 31" index="31" />
+		<bit name="Magnitizes Only When Zoomed" index="0" />
+		<bit name="Force Enable Equipment Tossing" index="1" />
+		<bit name="Non-Lunge Melee Dash Disabled" index="2" tooltip="melee-physics dash is disabled on melees that are not lunges" />
 	</flags32>
 	<stringid name="Unused Label" offset="0x1B4" visible="true" />
 	<enum16 name="Secondary Trigger Mode" offset="0x1B8" visible="true">
@@ -508,6 +382,7 @@ Certain flags applicable only to certain object types, should be self evident</c
 	</enum16>
 	<int16 name="Maximum Alternate Shots Loaded" offset="0x1BA" visible="true" tooltip="if the second trigger loads alternate ammunition, this is the maximum number of shots that can be loaded at a time" />
 	<float32 name="Turn On Time" offset="0x1BC" visible="true" tooltip="how long after being readied it takes this weapon to switch its 'turned_on' attachment to 1.0" />
+	<comment title="Old Obsolete Export To Functions" />
 	<float32 name="Ready Time" offset="0x1C0" visible="true" />
 	<tagRef name="Ready Effect" offset="0x1C4" visible="true" />
 	<tagRef name="Ready Damage Effect" offset="0x1D4" visible="true" />
@@ -528,25 +403,25 @@ Certain flags applicable only to certain object types, should be self evident</c
 	<tagRef name="Player Melee Response" offset="0x250" visible="true" />
 	<degree2 name="Damage Pyramid Angles" offset="0x260" visible="true" tooltip="defines the frustum from the camera that the melee-attack uses to find targets" />
 	<float32 name="Damage Pyramid Depth" offset="0x268" visible="true" tooltip="0 defaults to 0.8f. how far the melee attack searches for a target" />
-	<tagRef name="1st Hit Damage" offset="0x26C" visible="true" />
-	<tagRef name="1st Hit Response" offset="0x27C" visible="true" />
-	<tagRef name="2nd Hit Damage" offset="0x28C" visible="true" />
-	<tagRef name="2nd Hit Response" offset="0x29C" visible="true" />
-	<tagRef name="3rd Hit Damage" offset="0x2AC" visible="true" />
-	<tagRef name="3rd Hit Response" offset="0x2BC" visible="true" />
+	<tagRef name="1st Hit Melee Damage" offset="0x26C" visible="true" />
+	<tagRef name="1st Hit Melee Response" offset="0x27C" visible="true" />
+	<tagRef name="2nd Hit Melee Damage" offset="0x28C" visible="true" />
+	<tagRef name="2nd Hit Melee Response" offset="0x29C" visible="true" />
+	<tagRef name="3rd Hit Melee Damage" offset="0x2AC" visible="true" />
+	<tagRef name="3rd Hit Melee Response" offset="0x2BC" visible="true" />
 	<tagRef name="Lunge Melee Damage" offset="0x2CC" visible="true" tooltip="this is only important for the energy sword" />
 	<tagRef name="Lunge Melee Response" offset="0x2DC" visible="true" tooltip="this is only important for the energy sword" />
-	<tagRef name="Clang Melee Damage" offset="0x2EC" visible="true" tooltip="e.g. used by AR to damage sword guy when clanging sword attack" />
-	<tagRef name="Clang Melee Response" offset="0x2FC" visible="true" tooltip="e.g. used by AR to damage sword guy when clanging sword attack" />
-	<tagRef name="Clang Melee Against Melee Weapon Damage" offset="0x30C" visible="true" tooltip="this is only important for the energy sword" />
-	<tagRef name="Clang Melee Against Melee Weapon Response" offset="0x31C" visible="true" tooltip="this is only important for the energy sword" />
+	<tagRef name="Empty Melee Damage" offset="0x2EC" visible="true" tooltip="this is only important for the energy sword" />
+	<tagRef name="Empty Melee Response" offset="0x2FC" visible="true" tooltip="this is only important for the energy sword" />
+	<tagRef name="Clang Melee Damage" offset="0x30C" visible="true" tooltip="this is only important for the energy sword" />
+	<tagRef name="Clang Melee Response" offset="0x31C" visible="true" tooltip="this is only important for the energy sword" />
 	<tagRef name="Clang Effect" offset="0x32C" visible="true" tooltip="effect that is played in the air between two players that clang with this weapon" />
 	<enum8 name="Melee Damage Reporting Type" offset="0x33C" visible="true">
 		<option name="Guardians" value="0x0" />
 		<option name="Falling Damage" value="0x1" />
-		<option name="Collision" value="0x2" />
-		<option name="Melee" value="0x3" />
-		<option name="Explosion" value="0x4" />
+		<option name="Generic Collision Damage" value="0x2" />
+		<option name="Generic Melee Damage" value="0x3" />
+		<option name="Generic Explosion" value="0x4" />
 		<option name="Magnum" value="0x5" />
 		<option name="Plasma Pistol" value="0x6" />
 		<option name="Needler" value="0x7" />
@@ -573,10 +448,10 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<option name="Plasma Grenade" value="0x1C" />
 		<option name="Spike Grenade" value="0x1D" />
 		<option name="Firebomb Grenade" value="0x1E" />
-		<option name="Flag" value="0x1F" />
-		<option name="Bomb" value="0x20" />
-		<option name="Bomb Explosion" value="0x21" />
-		<option name="Ball" value="0x22" />
+		<option name="Flag Melee Damage" value="0x1F" />
+		<option name="Bomb Melee Damage" value="0x20" />
+		<option name="Bomb Explosion Damage" value="0x21" />
+		<option name="Ball Melee Damage" value="0x22" />
 		<option name="Machinegun Turret" value="0x23" />
 		<option name="Plasma Cannon" value="0x24" />
 		<option name="Plasma Mortar" value="0x25" />
@@ -611,13 +486,13 @@ Certain flags applicable only to certain object types, should be self evident</c
 	<int16 name="Magnification Levels" offset="0x33E" visible="true" tooltip="the number of magnification levels this weapon allows" />
 	<rangef name="Magnification Range" offset="0x340" visible="true" />
 	<comment title="Weapon Aim Assist" />
-	<degree name="Autoaim Angle" offset="0x348" visible="true" tooltip="the maximum angle that autoaim works at full strength!" />
-	<float32 name="Autoaim Range" offset="0x34C" visible="true" tooltip="the maximum distance that autoaim works at full strength!" />
-	<float32 name="Autoaim Falloff Range" offset="0x350" visible="true" tooltip="at what point the autoaim starts falling off!" />
-	<degree name="Magnetism Angle" offset="0x354" visible="true" tooltip="the maximum angle that magnetism works at full strength!" />
-	<float32 name="Magnetism Range" offset="0x358" visible="true" tooltip="the maximum distance that magnetism works at full strength!" />
-	<float32 name="Magnetism Falloff Range" offset="0x35C" visible="true" tooltip="at what point magnetism starts falling off!" />
-	<degree name="Deviation Angle" offset="0x360" visible="true" tooltip="the maximum angle that a projectile is allowed to deviate from the gun barrel due to autoaim OR network lead vector reconstruction!" />
+	<degree name="Autoaim Angle" offset="0x348" visible="true" tooltip="the maximum angle that autoaim works at full strength" />
+	<float32 name="Autoaim Range" offset="0x34C" visible="true" tooltip="the maximum distance that autoaim works at full strength" />
+	<float32 name="Autoaim Falloff Range" offset="0x350" visible="true" tooltip="at what point the autoaim starts falling off" />
+	<degree name="Magnetism Angle" offset="0x354" visible="true" tooltip="the maximum angle that magnetism works at full strength" />
+	<float32 name="Magnetism Range" offset="0x358" visible="true" tooltip="the maximum distance that magnetism works at full strength" />
+	<float32 name="Magnetism Falloff Range" offset="0x35C" visible="true" tooltip="at what point magnetism starts falling off" />
+	<degree name="Deviation Angle" offset="0x360" visible="true" tooltip="the maximum angle that a projectile is allowed to deviate from the gun barrel" />
 	<undefined name="Unknown" offset="0x364" visible="false" />
 	<undefined name="Unknown" offset="0x368" visible="false" />
 	<undefined name="Unknown" offset="0x36C" visible="false" />
@@ -690,44 +565,14 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<flags32 name="Flags" offset="0x0" visible="true">
 			<bit name="Wastes Rounds When Reloaded" index="0" />
 			<bit name="Every Round Must Be Chambered" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
 		</flags32>
 		<int16 name="Rounds Recharged" offset="0x4" visible="true" />
 		<int16 name="Rounds Total Initial" offset="0x6" visible="true" />
 		<int16 name="Rounds Total Maximum" offset="0x8" visible="true" />
 		<int16 name="Rounds Loaded Maximum" offset="0xA" visible="true" />
 		<int16 name="Rounds Inventory Maximum" offset="0xC" visible="true" />
-		<int16 name="Unknown" offset="0xE" visible="true" />
-		<float32 name="Reload Dialogue Time" offset="0x10" visible="true" tooltip="the length of time we wait before saying the reload dialogue" />
+		<int16 name="Unknown" offset="0xE" visible="false" />
+		<float32 name="Reload Time" offset="0x10" visible="true" tooltip="the length of time it takes to load a single magazine into the weapon" />
 		<int16 name="Rounds Reloaded" offset="0x14" visible="true" />
 		<int16 name="Unknown" offset="0x16" visible="false" />
 		<float32 name="Chamber Time" offset="0x18" visible="true" tooltip="the length of time it takes to chamber the next round" />
@@ -742,7 +587,7 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<tagRef name="Chambering Effect" offset="0x54" visible="true" />
 		<tagRef name="Chambering Damage Effect" offset="0x64" visible="true" />
 		<tagblock name="Magazines" offset="0x74" visible="true" elementSize="0x14">
-			<int16 name="Rounds" offset="0x0" visible="true" tooltip="0 for max" />
+			<int16 name="Rounds" offset="0x0" visible="true" tooltip="0 for maximum" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagRef name="Equipment" offset="0x4" visible="true" />
 		</tagblock>
@@ -755,8 +600,6 @@ Certain flags applicable only to certain object types, should be self evident</c
 			<option name="Right Trigger" value="0x0" />
 			<option name="Left Trigger" value="0x1" />
 			<option name="Melee Attack" value="0x2" />
-			<option name="Automated Fire" value="0x3" />
-			<option name="Right Bumper" value="0x4" />
 		</enum16>
 		<enum16 name="Behavior" offset="0x6" visible="true">
 			<option name="Spew" value="0x0" tooltip="fires its primary action barrel whenever the trigger is down" />
@@ -766,6 +609,7 @@ Certain flags applicable only to certain object types, should be self evident</c
 			<option name="Latch-Zoom" value="0x4" tooltip="latched; fires its primary action barrel when unzoomed, secondary when zoomed" />
 			<option name="Latch-Rocketlauncher" value="0x5" />
 			<option name="Spew-Charge" value="0x6" />
+			<option name="Sword-Charge" value="0x7" />
 		</enum16>
 		<int16 name="Primary Barrel Index" offset="0x8" visible="true" />
 		<int16 name="Secondary Barrel Index" offset="0xA" visible="true" />
@@ -796,35 +640,18 @@ Certain flags applicable only to certain object types, should be self evident</c
 			<option name="Explode" value="0x1" />
 			<option name="Discharge" value="0x2" />
 		</enum16>
-		<flags16 name="Charge Flags" offset="0x26" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-		</flags16>
+		<int16 name="Cancelled Trigger Throw" offset="0x26" visible="true" tooltip="96 was the constant in code for the pp" />
 		<float32 name="Charged Illumination" offset="0x28" visible="true" tooltip="the amount of illumination given off when the weapon is fully charged" />
-		<float32 name="Spew Time" offset="0x2C" visible="true" tooltip="the length of time the weapon will spew (fire continously) while discharging" />
+		<float32 name="Spew Time" offset="0x2C" visible="true" tooltip="length of time the weapon will spew (fire continously) while discharging" />
 		<tagRef name="Charging Effect" offset="0x30" visible="true" tooltip="the charging effect is created once when the trigger begins to charge" />
 		<tagRef name="Charging Damage Effect" offset="0x40" visible="true" tooltip="the charging effect is created once when the trigger begins to charge" />
 		<tagRef name="Charging Continuous Damage Response" offset="0x50" visible="true" tooltip="plays every tick you're charging or charged, scaled to charging fraction" />
 		<float32 name="Charged Drain Rate" offset="0x60" visible="true" tooltip="how much battery to drain per second when charged" />
 		<tagRef name="Discharge Effect" offset="0x64" visible="true" tooltip="the discharging effect is created once when the trigger releases its charge" />
 		<tagRef name="Discharge Damage Effect" offset="0x74" visible="true" tooltip="the discharging effect is created once when the trigger releases its charge" />
-		<float32 name="Target Tracking Decay Time" offset="0x84" visible="true" />
-		<float32 name="Target Tracking Lock Time" offset="0x88" visible="true" />
-		<float32 name="Unknown" offset="0x8C" visible="false" />
+		<float32 name="Lock-On Hold Time" offset="0x84" visible="true" />
+		<float32 name="Lock-On Acquire Time" offset="0x88" visible="true" />
+		<float32 name="Lock-On Grace Time" offset="0x8C" visible="true" />
 	</tagblock>
 	<tagblock name="Barrels" offset="0x45C" visible="true" elementSize="0x134">
 		<flags32 name="Flags" offset="0x0" visible="true">
@@ -844,7 +671,7 @@ Certain flags applicable only to certain object types, should be self evident</c
 			<bit name="Fires Locked Projectiles" index="13" />
 			<bit name="Can Fire At Maximum Age" index="14" />
 			<bit name="Use 1 Firing Effect Per Burst" index="15" />
-			<bit name="Bit 16" index="16" />
+			<bit name="Ignore Tracked Object" index="16" />
 			<bit name="Bit 17" index="17" />
 			<bit name="Beam Follows Child Marker" index="18" tooltip="beam_system will follow projectile detonation instead of weapon's marker direction" />
 			<bit name="Bit 19" index="19" />
@@ -864,7 +691,7 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<comment title="Firing" />
 		<rangef name="Rounds Per Second" offset="0x4" visible="true" tooltip="the number of firing effects created per second" />
 		<float32 name="Acceleration Time" offset="0xC" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve its final rounds per second" />
-		<float32 name="Deceleration Time" offset="0x10" visible="true" tooltip="function value sets the current rate of fire when the barrel is not firing" />
+		<float32 name="Deceleration Time" offset="0x10" visible="true" tooltip="the continuous idle time it takes for the weapon to return from its final rounds per second to its initial" />
 		<float32 name="Barrel Spin Scale" offset="0x14" visible="true" tooltip="scale the barrel spin speed by this amount" />
 		<float32 name="Blurred Rate Of Fire" offset="0x18" visible="true" tooltip="a percentage between 0 and 1 which controls how soon in its firing animation the weapon blurs" />
 		<range16 name="Shots Per Fire" offset="0x1C" visible="true" tooltip="allows designer caps to the shots you can fire from one firing action" />
@@ -888,8 +715,13 @@ Certain flags applicable only to certain object types, should be self evident</c
 			<option name="Shout" value="0x3" />
 			<option name="Quiet" value="0x4" />
 		</enum16>
-		<comment title="Error" />
-		<float32 name="Acceleration Time" offset="0x38" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve to its final error" />
+		<comment title="Error">full error look pitch rate controlls how fast you can turn 
+with full error, yaw is implied from pitch. 0==130.
+for reference, profile sensitivities are set to:
+1: 40
+3: 60
+9: 130</comment>
+		<float32 name="Acceleration Time" offset="0x38" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve its final error" />
 		<float32 name="Deceleration Time" offset="0x3C" visible="true" tooltip="the continuous idle time it takes for the weapon to return to its initial error" />
 		<rangef name="Damage Error" offset="0x40" visible="true" tooltip="the range of angles (in degrees) that a damaged weapon will skew fire" />
 		<comment title="Turning" />
@@ -897,7 +729,7 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<degree name="Full Error Look Pitch Rate" offset="0x4C" visible="true" tooltip="yaw rate is doubled" />
 		<float32 name="Look Pitch Error Power" offset="0x50" visible="true" tooltip="use to soften or sharpen the rate ding" />
 		<comment title="Dual Weapon Error" />
-		<float32 name="Acceleration Time" offset="0x54" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve to its final error" />
+		<float32 name="Acceleration Time" offset="0x54" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve its final error" />
 		<float32 name="Deceleration Time" offset="0x58" visible="true" tooltip="the continuous idle time it takes for the weapon to return to its initial error" />
 		<float32 name="Acceleration Rate" offset="0x5C" visible="true" />
 		<float32 name="Deceleration Rate" offset="0x60" visible="true" />
@@ -916,12 +748,12 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<tagblock name="First Person Offset" offset="0x88" visible="true" elementSize="0xC">
 			<point3 name="First Person Offset" offset="0x0" visible="true" tooltip="+x is forward, +z is up, +y is left" />
 		</tagblock>
-		<enum8 name="Damage Reporting Type" offset="0x94" visible="true">
+		<enum8 name="Damage Effect Reporting Type" offset="0x94" visible="true">
 			<option name="Guardians" value="0x0" />
 			<option name="Falling Damage" value="0x1" />
-			<option name="Collision" value="0x2" />
-			<option name="Melee" value="0x3" />
-			<option name="Explosion" value="0x4" />
+			<option name="Generic Collision Damage" value="0x2" />
+			<option name="Generic Melee Damage" value="0x3" />
+			<option name="Generic Explosion" value="0x4" />
 			<option name="Magnum" value="0x5" />
 			<option name="Plasma Pistol" value="0x6" />
 			<option name="Needler" value="0x7" />
@@ -948,10 +780,10 @@ Certain flags applicable only to certain object types, should be self evident</c
 			<option name="Plasma Grenade" value="0x1C" />
 			<option name="Spike Grenade" value="0x1D" />
 			<option name="Firebomb Grenade" value="0x1E" />
-			<option name="Flag" value="0x1F" />
-			<option name="Bomb" value="0x20" />
-			<option name="Bomb Explosion" value="0x21" />
-			<option name="Ball" value="0x22" />
+			<option name="Flag Melee Damage" value="0x1F" />
+			<option name="Bomb Melee Damage" value="0x20" />
+			<option name="Bomb Explosion Damage" value="0x21" />
+			<option name="Ball Melee Damage" value="0x22" />
 			<option name="Machinegun Turret" value="0x23" />
 			<option name="Plasma Cannon" value="0x24" />
 			<option name="Plasma Mortar" value="0x25" />
@@ -995,8 +827,8 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<float32 name="Campaign Age Generated Per Round" offset="0xEC" visible="true" tooltip="the amount the weapon ages each time the trigger is fired" />
 		<float32 name="Overload Time" offset="0xF0" visible="true" tooltip="the next trigger fires this often while holding down this trigger" />
 		<ranged name="Angle Change Per Shot" offset="0xF4" visible="true" tooltip="angle change per shot of the weapon during firing" />
-		<float32 name="Angle Change Acceleration Time" offset="0xFC" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve its final angle per shot" />
-		<float32 name="Angle Change Deceleration Time" offset="0x100" visible="true" tooltip="the continuous idle time it takes for the weapon to return its initial angle per shot" />
+		<float32 name="Angle Change Acceleration Time" offset="0xFC" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve its final angle change per shot" />
+		<float32 name="Angle Change Deceleration Time" offset="0x100" visible="true" tooltip="the continuous idle time it takes for the weapon to return to its initial angle change per shot" />
 		<enum16 name="Angle Change Function" offset="0x104" visible="true" tooltip="function used to scale between initial and final angle change per shot">
 			<option name="Linear" value="0x0" />
 			<option name="Early" value="0x1" />
@@ -1022,15 +854,15 @@ Certain flags applicable only to certain object types, should be self evident</c
 			<tagRef name="Firing Effect" offset="0x4" visible="true" tooltip="this effect is used when the weapon is loaded and fired normally" />
 			<tagRef name="Misfire Effect" offset="0x14" visible="true" tooltip="this effect is used when the weapon is loaded but fired while overheated" />
 			<tagRef name="Empty Effect" offset="0x24" visible="true" tooltip="this effect is used when the weapon is not loaded" />
-			<tagRef name="Optional Secondary Firing Effect" offset="0x34" visible="true" />
+			<tagRef name="Optional Secondary Firing Effect" offset="0x34" visible="true" tooltip="this effect is used when the weapon is not loaded" />
 			<tagRef name="Firing Damage" offset="0x44" visible="true" tooltip="this effect is used when the weapon is loaded and fired normally" />
 			<tagRef name="Misfire Damage" offset="0x54" visible="true" tooltip="this effect is used when the weapon is loaded but fired while overheated" />
 			<tagRef name="Empty Damage" offset="0x64" visible="true" tooltip="this effect is used when the weapon is not loaded" />
-			<tagRef name="Optional Secondary Firing Damage" offset="0x74" visible="true" />
-			<tagRef name="Firing Rider Response" offset="0x84" visible="true" tooltip="this effect is used when the weapon is loaded and fired normally" />
-			<tagRef name="Misfire Rider Response" offset="0x94" visible="true" tooltip="this effect is used when the weapon is loaded but fired while overheated" />
-			<tagRef name="Empty Rider Response" offset="0xA4" visible="true" tooltip="this effect is used when the weapon is not loaded" />
-			<tagRef name="Optional Secondary Firing Rider Damage" offset="0xB4" visible="true" />
+			<tagRef name="Optional Secondary Firing Damage" offset="0x74" visible="true" tooltip="this effect is used when the weapon is loaded and fired normally" />
+			<tagRef name="Firing Rider Damage" offset="0x84" visible="true" tooltip="this effect is used when the weapon is loaded and fired normally" />
+			<tagRef name="Misfire Rider Damage" offset="0x94" visible="true" tooltip="this effect is used when the weapon is loaded but fired while overheated" />
+			<tagRef name="Empty Rider Damage" offset="0xA4" visible="true" tooltip="this effect is used when the weapon is not loaded" />
+			<tagRef name="Optional Secondary Firing Rider Damage" offset="0xB4" visible="true" tooltip="this effect is used when the weapon is loaded and fired normally" />
 		</tagblock>
 	</tagblock>
 	<float32 name="Weapon Power On Velocity" offset="0x468" visible="true" />
@@ -1047,8 +879,8 @@ Certain flags applicable only to certain object types, should be self evident</c
 	<tagRef name="Aged Material Effects" offset="0x4C0" visible="true" />
 	<float32 name="External Aging Amount" offset="0x4D0" visible="true" />
 	<float32 name="Campaign External Aging Amount" offset="0x4D4" visible="true" />
-	<vector3 name="Lowered First Person Weapon Offset" offset="0x4D8" visible="true" tooltip="Weapon offset when the crosshair position is Lowered." />
-	<vector3 name="Centered First Person Weapon Offset" offset="0x4E4" visible="true" tooltip="Weapon offset when the crosshair position is Centered." />
+	<vector3 name="First Person Weapon Offset" offset="0x4D8" visible="true" />
+	<vector3 name="First Person Weapon Offset Override" offset="0x4E4" visible="true" tooltip="for centered crosshair" />
 	<vector2 name="First Person Scope Size" offset="0x4F0" visible="true" />
 	<rangef name="Support Third Person Camera Range" offset="0x4F8" visible="true" tooltip="range in degrees. 0 is straight, -90 is down, 90 is up" />
 	<float32 name="Weapon Zoom Time" offset="0x500" visible="true" tooltip="seconds" />

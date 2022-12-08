@@ -7,47 +7,60 @@
 		<revision author="-DeToX-" version="3">Labelled raw size for sounds.</revision>
 		<revision author="Lord Zedd" version="4">Copypasta</revision>
 	</revisions>
-	<tagblock name="Compression Codecs" offset="0x0" visible="true" elementSize="0x10">
-		<raw name="GUID" offset="0x0" size="0x10" visible="true" />
+	<tagblock name="Codec Identifiers" offset="0x0" visible="true" elementSize="0x10">
+		<hexstring name="GUID" offset="0x0" size="0x10" visible="true" />
 	</tagblock>
-	<tagblock name="External Cache References" offset="0xC" visible="true" elementSize="0x108" align="0x10">
-		<ascii name="Map Path" offset="0x0" visible="true" length="0x100" />
-		<int16 name="Unknown" offset="0x100" visible="false" />
-		<int16 name="Unknown" offset="0x102" visible="false" />
-		<undefined name="Unknown" offset="0x104" visible="false" />
+	<tagblock name="Shared Files" offset="0xC" visible="true" elementSize="0x108">
+		<ascii name="DVD Relative Path" offset="0x0" visible="true" size="0x100" />
+		<flags16 name="Flags" offset="0x100" visible="true">
+			<bit name="Use Header IO Offset" index="0" />
+			<bit name="Not Required" index="1" />
+			<bit name="Use Header Locations" index="2" />
+			<bit name="No Resources" index="3" />
+		</flags16>
+		<int16 name="Global Shared Location Offset" offset="0x102" visible="true" />
+		<int32 name="IO Offset" offset="0x104" visible="true" />
 	</tagblock>
-	<tagblock name="Raw Pages" offset="0x18" visible="true" elementSize="0x58" align="0x8">
-		<int16 name="Salt" offset="0x0" visible="true" />
-		<int8 name="Flags" offset="0x2" visible="true" />
-		<int8 name="Compression Codec Index" offset="0x3" visible="true" />
-		<int16 name="Shared Cache Index" offset="0x4" visible="true" />
-		<int16 name="Precache Index" offset="0x6" visible="true" />
+	<tagblock name="File Locations" offset="0x18" visible="true" elementSize="0x58" align="0x10">
+		<int16 name="Runtime Salt" offset="0x0" visible="true" />
+		<flags8 name="Flags" offset="0x2" visible="true">
+			<bit name="Valid Checksum" index="0" />
+			<bit name="Shared And Required" index="1" />
+			<bit name="DVD Only Shared And Required" index="2" />
+			<bit name="DVD Only And Required" index="3" />
+			<bit name="Referenced By Cache File Header" index="4" />
+			<bit name="Only Full Valid Checksum" index="5" />
+			<bit name="Shared And Pre Optimized" index="6" />
+		</flags8>
+		<int8 name="Codec Index" offset="0x3" visible="true" />
+		<int16 name="Shared File Index" offset="0x4" visible="true" />
+		<int16 name="Shared File Location Index" offset="0x6" visible="true" />
 		<comment title="Blocks">Blocks are stored in the raw table, at the beginning of the map, and compressed using deflate. The decompressed data is hashed.</comment>
-		<uint32 name="Block Offset" offset="0x8" visible="true" />
-		<uint32 name="Compressed Block Size" offset="0xC" visible="true" />
-		<uint32 name="Uncompressed Block Size" offset="0x10" visible="true" />
+		<int32 name="Block Offset" offset="0x8" visible="true" />
+		<int32 name="Compressed Block Size" offset="0xC" visible="true" />
+		<int32 name="Uncompressed Block Size" offset="0x10" visible="true" />
 		<int32 name="CRC Checksum" offset="0x14" visible="true" />
-		<raw name="Entire Buffer Hash" offset="0x18" size="0x14" visible="true" />
-		<raw name="First Chunk Hash" offset="0x2C" size="0x14" visible="true" />
-		<raw name="Last Chunk Hash" offset="0x40" size="0x14" visible="true" />
-		<int16 name="Block Asset Count" offset="0x54" visible="true" />
-		<int16 name="Unknown Index" offset="0x56" visible="true" />
+		<hexstring name="Entire Hash" offset="0x18" size="0x14" visible="true" />
+		<hexstring name="First Chunk Hash" offset="0x2C" size="0x14" visible="true" />
+		<hexstring name="Last Chunk Hash" offset="0x40" size="0x14" visible="true" />
+		<int16 name="Resource Reference Count" offset="0x54" visible="true" />
+		<int16 name="Streaming Sublocation Table Index" offset="0x56" visible="true" />
 	</tagblock>
-	<tagblock name="Sizes" offset="0x24" visible="true" elementSize="0x10" align="0x8">
-		<int32 name="Overall Size" offset="0x0" visible="true" />
-		<tagblock name="Parts" offset="0x4" visible="true" elementSize="0x8" align="0x8">
-			<int32 name="Offset" offset="0x0" visible="true" />
-			<int32 name="Size" offset="0x4" visible="true" />
+	<tagblock name="Streaming Sublocation Tables" offset="0x24" visible="true" elementSize="0x10">
+		<int32 name="Total Memory Size" offset="0x0" visible="true" />
+		<tagblock name="Streaming Sublocations" offset="0x4" visible="true" elementSize="0x8">
+			<int32 name="Memory Offset" offset="0x0" visible="true" />
+			<int32 name="Memory Size" offset="0x4" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Segments" offset="0x30" visible="true" elementSize="0x10" align="0x8">
-		<int16 name="Primary Page Index" offset="0x0" visible="true" />
-		<int16 name="Secondary Page Index" offset="0x2" visible="true" />
-		<int32 name="Primary Segment Offset" offset="0x4" visible="true" />
-		<int32 name="Secondary Segment Offset" offset="0x8" visible="true" />
-		<int16 name="Primary Size Index" offset="0xC" visible="true" />
-		<int16 name="Secondary Size Index" offset="0xE" visible="true" />
+	<tagblock name="Default Locations" offset="0x30" visible="true" elementSize="0x10">
+		<int16 name="Required Location Index" offset="0x0" visible="true" />
+		<int16 name="Optional Location Index" offset="0x2" visible="true" />
+		<int32 name="Required Location Offset" offset="0x4" visible="true" />
+		<int32 name="Optional Location Offset" offset="0x8" visible="true" />
+		<int16 name="Pageable Sublocation Table Index" offset="0xC" visible="true" />
+		<int16 name="Optional Sublocation Table Index" offset="0xE" visible="true" />
 	</tagblock>
-	<int32 name="Header Precache Count" offset="0x3C" visible="true" />
-	<undefined name="Unknown" offset="0x40" visible="false" />
+	<int32 name="Required Location Count" offset="0x3C" visible="true" />
+	<int32 name="Required DVD Location Count" offset="0x40" visible="true" />
 </plugin>

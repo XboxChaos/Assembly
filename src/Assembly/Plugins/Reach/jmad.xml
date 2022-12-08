@@ -473,7 +473,7 @@
 			<bit name="Keep Raw Data In Tag" index="4" />
 			<bit name="Allow Ball-Roll On Foot" index="5" tooltip="prevents foot-ik from settling" />
 		</flags16>
-		<int8 name="Blend Screen" offset="0x1A" visible="true" />
+		<int8 name="Blend Screen Index" offset="0x1A" visible="true" />
 		<int8 name="Unknown" offset="0x1B" visible="false" />
 		<comment title="Shared Animation Data">data which may be shared by one or more animations</comment>
 		<tagref name="Shared Graph Reference" offset="0x1C" visible="true" />
@@ -556,8 +556,8 @@
 			<int32 name="Unknown" offset="0x18" visible="false" />
 			<int16 name="Unknown" offset="0x1C" visible="false" />
 			<int16 name="Unknown" offset="0x1E" visible="false" />
-			<int16 name="Raw Information Group Index" offset="0x20" visible="true" />
-			<int16 name="Raw Information Member Index" offset="0x22" visible="true" />
+			<int16 name="Resource Group Index" offset="0x20" visible="true" />
+			<int16 name="Resource Group Member Index" offset="0x22" visible="true" />
 			<vector3 name="Heading" offset="0x24" visible="true" />
 			<float32 name="Average Translation Magnitude" offset="0x30" visible="true" />
 			<degree name="Average Pivot Yaw" offset="0x34" visible="true" />
@@ -594,12 +594,12 @@
 				<int16 name="Frame" offset="0x2" visible="true" />
 			</tagblock>
 			<tagblock name="Sound Events" offset="0x44" visible="true" elementSize="0x8" tooltip="Legacy field - please edit in new frame event tag above">
-				<int16 name="Sound" offset="0x0" visible="true" />
+				<int16 name="Sound Index" offset="0x0" visible="true" />
 				<int16 name="Frame" offset="0x2" visible="true" />
 				<stringid name="Marker Name" offset="0x4" visible="true" />
 			</tagblock>
 			<tagblock name="Effect Events" offset="0x50" visible="true" elementSize="0xC" tooltip="Legacy field - please edit in new frame event tag above">
-				<int16 name="Effect" offset="0x0" visible="true" />
+				<int16 name="Effect Index" offset="0x0" visible="true" />
 				<int16 name="Frame" offset="0x2" visible="true" />
 				<stringid name="Marker Name" offset="0x4" visible="true" />
 				<enum8 name="Damage Reporting Type" offset="0x8" visible="true">
@@ -954,7 +954,7 @@
 		<int16 name="Weight Function Index" offset="0x24" visible="true" />
 		<int16 name="Unknown" offset="0x26" visible="false" />
 		<int16 name="Graph Index" offset="0x28" visible="true" />
-		<int16 name="Animation" offset="0x2A" visible="true" />
+		<int16 name="Animation Index" offset="0x2A" visible="true" />
 	</tagblock>
 	<tagblock name="New Function Overlays" offset="0xAC" visible="true" elementSize="0x18">
 		<stringid name="Name" offset="0x0" visible="true" />
@@ -965,7 +965,7 @@
 		<stringid name="Playback Speed Object Function" offset="0xC" visible="true" />
 		<stringid name="Blend Weight Object Function" offset="0x10" visible="true" />
 		<int16 name="Graph Index" offset="0x14" visible="true" />
-		<int16 name="Animation" offset="0x16" visible="true" />
+		<int16 name="Animation Index" offset="0x16" visible="true" />
 	</tagblock>
 	<tagblock name="Overlay Groups" offset="0xB8" visible="true" elementSize="0x1C">
 		<stringId name="Name" offset="0x0" visible="true" />
@@ -1066,21 +1066,21 @@
 						<int16 name="Overlay Group" offset="0x4" visible="true" />
 						<int16 name="ik Set Index" offset="0x6" visible="true" />
 						<int16 name="Graph Index" offset="0x8" visible="true" />
-						<int16 name="Animation" offset="0xA" visible="true" />
+						<int16 name="Animation Index" offset="0xA" visible="true" />
 					</tagblock>
 					<tagblock name="Overlays" offset="0x18" visible="true" elementSize="0xC" sort="true">
 						<stringId name="Label" offset="0x0" visible="true" />
 						<int16 name="Overlay Group" offset="0x4" visible="true" />
 						<int16 name="ik Set Index" offset="0x6" visible="true" />
 						<int16 name="Graph Index" offset="0x8" visible="true" />
-						<int16 name="Animation" offset="0xA" visible="true" />
+						<int16 name="Animation Index" offset="0xA" visible="true" />
 					</tagblock>
 					<tagblock name="Death And Damage" offset="0x24" visible="true" elementSize="0x10" sort="true">
 						<stringId name="Label" offset="0x0" visible="true" />
 						<tagblock name="Directions" offset="0x4" visible="true" elementSize="0xC">
 							<tagblock name="Regions" offset="0x0" visible="true" elementSize="0x4">
 								<int16 name="Graph Index" offset="0x0" visible="true" />
-								<int16 name="Animation" offset="0x2" visible="true" />
+								<int16 name="Animation Index" offset="0x2" visible="true" />
 							</tagblock>
 						</tagblock>
 					</tagblock>
@@ -1090,7 +1090,7 @@
 							<stringid name="Mode Name" offset="0x0" visible="true" tooltip="name of the mode this transition ends in" />
 							<stringid name="State Name" offset="0x4" visible="true" tooltip="name of the state this transition ends in" />
 							<int16 name="Graph Index" offset="0x8" visible="true" />
-							<int16 name="Animation" offset="0xA" visible="true" />
+							<int16 name="Animation Index" offset="0xA" visible="true" />
 						</tagblock>
 					</tagblock>
 					<tagblock name="Velocity Boundaries" offset="0x3C" visible="true" elementSize="0x20">
@@ -1115,7 +1115,7 @@
 					<int16 name="Overlay Group" offset="0x0" visible="true" />
 					<int16 name="ik Set Index" offset="0x2" visible="true" />
 					<int16 name="Graph Index" offset="0x4" visible="true" />
-					<int16 name="Animation" offset="0x6" visible="true" />
+					<int16 name="Animation Index" offset="0x6" visible="true" />
 					<float32 name="Animation Parameter" offset="0x8" visible="true" tooltip="Numerical value associated with the ranged action animation (e.g. velocity for jumps)" />
 					<float32 name="Animation Parameter B" offset="0xC" visible="true" />
 				</tagblock>
@@ -1223,7 +1223,7 @@
 							<bit name="Partner" index="4" />
 						</flags32>
 						<int16 name="Graph Index" offset="0x4" visible="true" />
-						<int16 name="Animation" offset="0x6" visible="true" />
+						<int16 name="Animation Index" offset="0x6" visible="true" />
 						<point3 name="Start Offset" offset="0x8" visible="true" />
 						<vector3 name="Start Facing" offset="0x14" visible="true" />
 						<point3 name="End Offset" offset="0x20" visible="true" />
@@ -1255,7 +1255,7 @@
 	<tagblock name="Vehicle Suspension" offset="0x110" visible="true" elementSize="0x30">
 		<stringid name="Label" offset="0x0" visible="true" />
 		<int16 name="Graph Index" offset="0x4" visible="true" />
-		<int16 name="Animation" offset="0x6" visible="true" />
+		<int16 name="Animation Index" offset="0x6" visible="true" />
 		<stringid name="Function Name" offset="0x8" visible="true" />
 		<stringid name="Marker Name" offset="0xC" visible="true" tooltip="this marker should be parented to the vehicle root node" />
 		<stringid name="Contact Marker Name" offset="0x10" visible="true" tooltip="this marker should be parented to the wheel node" />
@@ -1271,7 +1271,7 @@
 	<tagblock name="Function Overlays" offset="0x11C" visible="true" elementSize="0x14">
 		<stringid name="Label" offset="0x0" visible="true" />
 		<int16 name="Graph Index" offset="0x4" visible="true" />
-		<int16 name="Animation" offset="0x6" visible="true" />
+		<int16 name="Animation Index" offset="0x6" visible="true" />
 		<int16 name="Unknown" offset="0x8" visible="false" />
 		<enum16 name="Function Controls" offset="0xA" visible="true">
 			<option name="Frame" value="0x0" />

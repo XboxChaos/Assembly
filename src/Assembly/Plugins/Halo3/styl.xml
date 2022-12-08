@@ -5,14 +5,18 @@
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="Lord Zedd" version="2">Done</revision>
 	</revisions>
-	<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+	<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 	<comment title="Combat Status Decay Options">Controls how combat status is allowed to be automatically reduced in the absence of combat stimuli. 'Latch at X' means that once the level of x is attained (and/or surpassed) the combat status never falls below it. Not applicable when style is applied to a character tag.</comment>
 	<enum16 name="Combat Status Decay Options" offset="0x20" visible="true">
 		<option name="Latch at Idle" value="0x0" />
 		<option name="Latch at Alert" value="0x1" />
 		<option name="Latch at Combat" value="0x2" />
 	</enum16>
-	<int16 name="Unknown" offset="0x22" visible="false" />
+	<enum16 name="Attitude" offset="0x22" visible="true" tooltip="Indicates general stance for style. This tells us which of the property blocks in the character definition to reference (e.g. timid defense properties). Not applicable when style is applied to a character tag.">
+		<option name="Normal" value="0x0" />
+		<option name="Timid" value="0x1" />
+		<option name="Aggressive" value="0x2" />
+	</enum16>
 	<comment title="Style Behavior Control">Check the appropriate box to turn on/off the given behavior</comment>
 	<flags32 name="Style Control" offset="0x24" visible="true">
 		<bit name="New Behaviors Default To ON" index="0" />
@@ -237,9 +241,12 @@
 			<bit name="Hoist" index="4" />
 			<bit name="Wall Jump" index="5" />
 			<bit name="N/A" index="6" />
+			<bit name="Rail" index="7" />
+			<bit name="Seam" index="8" />
+			<bit name="Door" index="9" />
 		</flags32>
 	</tagblock>
 	<tagblock name="Behavior List" offset="0x50" visible="true" elementSize="0x20">
-		<ascii name="Behavior Name" offset="0x0" visible="true" length="0x20" />
+		<ascii name="Behavior Name" offset="0x0" visible="true" size="0x20" />
 	</tagblock>
 </plugin>

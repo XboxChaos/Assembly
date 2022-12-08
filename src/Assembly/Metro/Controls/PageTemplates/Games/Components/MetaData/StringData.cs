@@ -3,7 +3,8 @@
 	public enum StringType
 	{
 		ASCII,
-		UTF16
+		UTF16,
+		Hex
 	}
 
 	public class StringData : ValueField
@@ -51,6 +52,8 @@
 						return _size;
 					case StringType.UTF16:
 						return _size/2;
+					case StringType.Hex:
+						return _size * 2;
 					default:
 						return _size;
 				}

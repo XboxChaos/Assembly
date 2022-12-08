@@ -29,7 +29,7 @@
 		<bit name="Does Not Cause Collision Damage" index="5" />
 		<bit name="Early Mover" index="6" />
 		<bit name="Early Mover Localized Physics" index="7" />
-		<bit name="Use Static Massive Lightmap Sample" index="8" tooltip="cast a ton of rays once and store the results for lighting" />
+		<bit name="Use Static Massive Lightmap Sample" index="8" tooltip="cast a lot of rays once and store the results for lighting" />
 		<bit name="Object Scales Attachments" index="9" />
 		<bit name="Inherits Player's Appearance" index="10" />
 		<bit name="Dead Bipeds Can't Localize" index="11" />
@@ -250,8 +250,7 @@
 	<int16 name="Unknown" offset="0x13E" visible="false" />
 	<tagblock name="Attachments" offset="0x140" visible="true" elementSize="0x48">
 		<tagRef name="Type" offset="0x0" visible="true" />
-		<ascii name="Marker" offset="0x10" length="0x1C" visible="true" />
-		<stringid name="Marker" offset="0x2C" visible="true" />
+		<oldstringid name="Marker" offset="0x10" visible="true" />
 		<enum16 name="Primary Scale" offset="0x30" visible="true">
 			<option name="None" value="0x0" />
 			<option name="A Out" value="0x1" />
@@ -455,7 +454,7 @@
 		<undefined name="Unknown" offset="0x13C" visible="false" />
 		<undefined name="Unknown" offset="0x140" visible="false" />
 		<float32 name="Unknown" offset="0x144" visible="false" />
-		<ascii name="Usage" offset="0x148" length="0x20" visible="true" />
+		<ascii name="Usage" offset="0x148" size="0x20" visible="true" />
 	</tagblock>
 	<tagblock name="Change Colors" offset="0x164" visible="true" elementSize="0x38">
 		<enum16 name="Darken By" offset="0x0" visible="true">
@@ -611,14 +610,14 @@
 	<rangef name="Detonation Delay" offset="0x2E0" visible="true" />
 	<tagRef name="Detonating Effect" offset="0x2E8" visible="true" />
 	<tagRef name="Detonation Effect" offset="0x2F8" visible="true" />
-	<comment title="WEAPON">All weapons should have 'primary trigger' and 'secondary trigger'markers as appropriate.
+	<comment title="WEAPON">All weapons should have 'primary trigger' and 'secondary trigger' markers as appropriate.
 Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
 	<flags32 name="Flags" offset="0x308" visible="true">
 		<bit name="Vertical Heat Display" index="0" />
 		<bit name="Mutually Exclusive Triggers" index="1" />
 		<bit name="Attacks Automatically On Bump" index="2" />
 		<bit name="Must Be Readied" index="3" />
-		<bit name="Doesn't Count Towards Maximum" index="4" />
+		<bit name="Doesn't Count Toward Maximum" index="4" />
 		<bit name="Aim Assists Only When Zoomed" index="5" />
 		<bit name="Prevents Grenade Throwing" index="6" />
 		<bit name="Must Be Picked Up" index="7" />
@@ -627,7 +626,7 @@ Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
 		<bit name="Detonates When Dropped" index="10" />
 		<bit name="Cannot Fire At Maximum Age" index="11" />
 		<bit name="Secondary Trigger Overrides Grenades" index="12" />
-		<bit name="(OBSOLETE) Does Not Depower Active Camo In Multiplayer" index="13" />
+		<bit name="Does Not Depower Active Camo In Multiplayer" index="13" tooltip="obsolete" />
 		<bit name="Enables Integrated Night Vision" index="14" />
 		<bit name="AIs Use Weapon Melee Damage" index="15" />
 		<bit name="Forces No Binoculars" index="16" />
@@ -765,7 +764,7 @@ Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
 	<float32 name="Throttle Minimum Distance" offset="0x3C8" visible="true" tooltip="Minimum distance to target that throttle magnetism kicks in" />
 	<degree name="Throttle Maximum Adjustment Angle" offset="0x3CC" visible="true" tooltip="Maximum angle throttle magnetism will have an effect, relative to the players movement throttle" />
 	<undefined name="Unknown" offset="0x3D0" visible="false" />
-	<comment title="Melee Damage Parameters">Damage Pyramid Angles: Defines the frustrum from the camera that the melee-attack uses to find targets
+	<comment title="Melee Damage Parameters">Damage Pyramid Angles: Defines the frustum from the camera that the melee-attack uses to find targets
 Damage Pyramid Depth: How far the melee attack searches for a target</comment>
 	<degree2 name="Damage Pyramid Angles" offset="0x3D4" visible="true" />
 	<float32 name="Damage Pyramid Depth" offset="0x3DC" visible="true" />
@@ -896,7 +895,7 @@ Damage Pyramid Depth: How far the melee attack searches for a target</comment>
 		<undefined name="Unknown" offset="0x5C" visible="false" />
 		<undefined name="Unknown" offset="0x60" visible="false" />
 		<tagblock name="Magazine Equipment" offset="0x64" visible="true" elementSize="0x1C">
-			<int16 name="Rounds (0 for Max)" offset="0x0" visible="true" />
+			<int16 name="Rounds" offset="0x0" visible="true" tooltip="0 for maximum" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
@@ -962,7 +961,7 @@ Damage Pyramid Depth: How far the melee attack searches for a target</comment>
 		</enum16>
 		<int16 name="Unknown" offset="0x52" visible="false" />
 		<float32 name="Charged Illumination" offset="0x54" visible="true" tooltip="the amount of illumination given off when the weapon is fully charged" />
-		<float32 name="Spew Time" offset="0x58" visible="true" tooltip="length of time the weapon will spew (fire continuously) while discharging" />
+		<float32 name="Spew Time" offset="0x58" visible="true" tooltip="the length of time the weapon will spew (fire continuously) while discharging" />
 		<tagRef name="Charging Effect" offset="0x5C" visible="true" tooltip="the charging effect is created once when the trigger begins to charge" />
 		<comment title="Projectile" />
 		<enum16 name="Distribution Function" offset="0x6C" visible="true">

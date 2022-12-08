@@ -92,6 +92,7 @@
 			<option name="Watcher" value="0x29" />
 			<option name="Knight" value="0x2A" />
 			<option name="Pawn" value="0x2B" />
+			<option name="Engineer Recharge Station" value="0x2C" />
 		</enum8>
 		<enum8 name="Metagame Classification" offset="0x7" visible="true" tooltip="deprecated, use new block at the bottom of the tag.">
 			<option name="Infantry" value="0x0" />
@@ -329,7 +330,7 @@ The lower bound is valid when the danger is at 'danger threshold'
 The upper bound is valid when the danger is at or above 'danger upper threshold'.
 It is interpolated linearly everywhere in between.
 All chances are expressed as 'chance of triggering cover in a 1 second period'.</comment>
-		<rangef name="Cover Chance Time" offset="0x24" visible="true" tooltip="Bounds on the chances of seeking cover." />
+		<rangef name="Cover Chance" offset="0x24" visible="true" tooltip="Bounds on the chances of seeking cover." />
 		<float32 name="Proximity Self-Preserve" offset="0x2C" visible="true" tooltip="When the proximity_self_preservation impulse is enabled, triggers self-preservation when target within this distance" />
 		<float32 name="Disallow Cover Distance" offset="0x30" visible="true" tooltip="Disallow covering from visible target under the given distance away" />
 		<float32 name="Proximity Melee Distance" offset="0x34" visible="true" tooltip="When self preserving from a target less than given distance, causes melee attack (assuming proximity_melee_impulse is enabled)" />
@@ -534,11 +535,11 @@ for example if the burst origin angle and the burst return angle were both zero,
 		<comment title="Pathfinding" />
 		<float32 name="AI Pathfinding Radius" offset="0x14" visible="true" tooltip="(Ground vehicles)" />
 		<float32 name="AI Destination Radius" offset="0x18" visible="true" tooltip="(All vehicles) Distance within which goal is considered reached" />
-		<float32 name="AI Deceleration Distance" offset="0x1C" visible="true" tooltip="(All vehicles) Distance from goal at which AI starts to decelerate" />
+		<float32 name="AI Deceleration Distance" offset="0x1C" visible="true" tooltip="world units. (All vehicles) Distance from goal at which AI starts to decelerate" />
 		<comment title="Turning" />
 		<float32 name="AI Turning Radius" offset="0x20" visible="true" tooltip="(Warthog, Pelican, Ghost) Idealized average turning radius (should reflect actual vehicle physics)" />
-		<float32 name="AI Inner Turning Radius" offset="0x24" visible="true" tooltip="(Warthog-type) Idealized minimum turning radius (should reflect actual vehicle physics)" />
-		<float32 name="AI Ideal Turning Radius" offset="0x28" visible="true" tooltip="(Warthogs, ghosts) Ideal turning radius for rounding turns (barring obstacles, etc.)" />
+		<float32 name="AI Inner Turning Radius (&lt; Radius)" offset="0x24" visible="true" tooltip="(Warthog-type) Idealized minimum turning radius (should reflect actual vehicle physics)" />
+		<float32 name="AI Ideal Turning Radius (&gt; Radius)" offset="0x28" visible="true" tooltip="(Warthogs, ghosts) Ideal turning radius for rounding turns (barring obstacles, etc.)" />
 		<comment title="Steering" />
 		<degree name="AI Banshee Steering Maximum" offset="0x2C" visible="true" tooltip="(Banshee)" />
 		<float32 name="AI Maximum Steering Angle" offset="0x30" visible="true" tooltip="(Warthog, ghosts, wraiths) Maximum steering angle from forward (ultimately controls turning speed)" />
@@ -564,7 +565,7 @@ for example if the burst origin angle and the burst return angle were both zero,
 		<float32 name="AI Charge Tight Angle" offset="0x78" visible="true" tooltip="(All vehicles) Angle cosine within which the target is closer than tight angle distance in order to charge" />
 		<float32 name="AI Charge Repeat Timeout" offset="0x7C" visible="true" tooltip="(All vehicles) Time delay between vehicle charges" />
 		<float32 name="AI Charge Look-Ahead Time" offset="0x80" visible="true" tooltip="(All vehicles) In deciding when to abort vehicle charge, look ahead these many seconds to predict time of contact" />
-		<float32 name="AI Consider Distance" offset="0x84" visible="true" tooltip="Consider charging the target when it is within this range (0 = infinite distance)" />
+		<float32 name="AI Charge Consider Distance" offset="0x84" visible="true" tooltip="Consider charging the target when it is within this range (0 = infinite distance)" />
 		<float32 name="AI Charge Abort Distance" offset="0x88" visible="true" tooltip="Abort the charge when the target get more than this far away (0 = never abort)" />
 		<float32 name="Vehicle Ram Timeout" offset="0x8C" visible="true" tooltip="The ram behavior stops after a maximum of the given number of seconds" />
 		<float32 name="Ram Paralysis Time" offset="0x90" visible="true" tooltip="The ram behavior freezes the vehicle for a given number of seconds after performing the ram" />
@@ -636,6 +637,7 @@ for example if the burst origin angle and the burst return angle were both zero,
 			<option name="Watcher" value="0x29" />
 			<option name="Knight" value="0x2A" />
 			<option name="Pawn" value="0x2B" />
+			<option name="Engineer Recharge Station" value="0x2C" />
 		</enum8>
 		<enum8 name="Metagame Classification" offset="0x1" visible="true">
 			<option name="Infantry" value="0x0" />

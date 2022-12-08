@@ -7,12 +7,12 @@
 		<revision author="XZodia" version="3">Filled In A Fair Amount</revision>
 		<revision author="XZodia" version="4">Completed</revision>
 	</revisions>
-	<tagRef name="Unknown" offset="0x0" visible="true" />
-	<tagRef name="Unknown" offset="0x8" visible="true" />
-	<tagRef name="Unknown" offset="0x10" visible="true" />
+	<tagRef name="Editing Screen Format" offset="0x0" visible="true" />
+	<tagRef name="Quick Options Screen Format" offset="0x8" visible="true" />
+	<tagRef name="Low-Level Editing List Screen Format" offset="0x10" visible="true" />
 	<tagblock name="Game Engine Settings" offset="0x18" visible="true" elementSize="0x18">
 		<enum32 name="Setting Category" offset="0x0" visible="true">
-			<option name="Match-Ctf" value="0x0" />
+			<option name="Match-CTF" value="0x0" />
 			<option name="Match-Slayer" value="0x1" />
 			<option name="Match-Oddball" value="0x2" />
 			<option name="Match-King" value="0x3" />
@@ -25,7 +25,7 @@
 			<option name="OBSOLETE" value="0xA" />
 			<option name="Vehicles" value="0xB" />
 			<option name="Equipment" value="0xC" />
-			<option name="Game-Ctf" value="0xD" />
+			<option name="Game-CTF" value="0xD" />
 			<option name="Game-Slayer" value="0xE" />
 			<option name="Game-Oddball" value="0xF" />
 			<option name="Game-King" value="0x10" />
@@ -34,7 +34,7 @@
 			<option name="Game-Juggernaut" value="0x13" />
 			<option name="Game-Territories" value="0x14" />
 			<option name="Game-Assault" value="0x15" />
-			<option name="Quick Options-Ctf" value="0x16" />
+			<option name="Quick Options-CTF" value="0x16" />
 			<option name="Quick Options-Slayer" value="0x17" />
 			<option name="Quick Options-Oddball" value="0x18" />
 			<option name="Quick Options-King" value="0x19" />
@@ -43,7 +43,7 @@
 			<option name="Quick Options-Juggernaut" value="0x1C" />
 			<option name="Quick Options-Territories" value="0x1D" />
 			<option name="Quick Options-Assault" value="0x1E" />
-			<option name="Team-Ctf" value="0x1F" />
+			<option name="Team-CTF" value="0x1F" />
 			<option name="Team-Slayer" value="0x20" />
 			<option name="Team-Oddball" value="0x21" />
 			<option name="Team-King" value="0x22" />
@@ -53,13 +53,25 @@
 			<option name="Team-Territories" value="0x26" />
 			<option name="Team-Assault" value="0x27" />
 			<option name="Skulls" value="0x28" />
+			<option name="Match-Medic" value="0x29" />
+			<option name="Match-VIP" value="0x2A" />
+			<option name="Game-Medic" value="0x2B" />
+			<option name="Game-VIP" value="0x2C" />
+			<option name="Quick Options-Medic" value="0x2D" />
+			<option name="Quick Options-VIP" value="0x2E" />
+			<option name="Team-Medic" value="0x2F" />
+			<option name="Team-VIP" value="0x30" />
+			<option name="Match-Infection" value="0x31" />
+			<option name="Game-Infection" value="0x32" />
+			<option name="Quick Options-Infection" value="0x33" />
+			<option name="Team-Infection" value="0x34" />
 		</enum32>
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<tagblock name="Options" offset="0x8" visible="true" elementSize="0x8">
 			<tagRef name="Value Pairs" offset="0x0" visible="true" />
 		</tagblock>
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
+		<uint32 name="Null Block" offset="0x10" visible="false" />
+		<uint32 name="Null Block" offset="0x14" visible="false" />
 	</tagblock>
 	<tagRef name="Default Variant Strings" offset="0x20" visible="true" />
 	<tagblock name="Default Variants" offset="0x28" visible="true" elementSize="0x14">
@@ -72,11 +84,16 @@
 			<option name="Capture The Flag" value="0x4" />
 			<option name="Assault" value="0x5" />
 			<option name="Territories" value="0x6" />
+			<option name="Medic" value="0x7" />
+			<option name="VIP" value="0x8" />
+			<option name="Infection" value="0x9" />
+			<option name="Headhunter" value="0xA" />
+			<option name="Race" value="0xB" />
 		</enum32>
 		<tagblock name="Settings" offset="0x8" visible="true" elementSize="0x8">
 			<enum32 name="Setting Category" offset="0x0" visible="true">
 				<option name="Match Round Setting" value="0x0" />
-				<option name="Match Ctf Score To Win" value="0x1" />
+				<option name="Match CTF Score To Win" value="0x1" />
 				<option name="Match Slayer Score To Win Round" value="0x2" />
 				<option name="Match Oddball Score To Win Round" value="0x3" />
 				<option name="Match King Score To Win Round" value="0x4" />
@@ -125,15 +142,15 @@
 				<option name="Oddball Waypoint To Ball" value="0x2F" />
 				<option name="Race Random Track" value="0x30" />
 				<option name="Race Uncontested Flag" value="0x31" />
-				<option name="Ctf Game Type" value="0x32" />
-				<option name="Ctf Sudden Death" value="0x33" />
-				<option name="Ctf Flag May Be Returned" value="0x34" />
-				<option name="Ctf Flag At Home To Score" value="0x35" />
-				<option name="Ctf Flag Reset Time" value="0x36" />
-				<option name="Ctf Speed With Flag" value="0x37" />
-				<option name="Ctf Flag Hit Damage" value="0x38" />
-				<option name="Ctf Driving Gunning With Flag" value="0x39" />
-				<option name="Ctf Waypoint To Own Flag" value="0x3A" />
+				<option name="CTF Game Type" value="0x32" />
+				<option name="CTF Sudden Death" value="0x33" />
+				<option name="CTF Flag May Be Returned" value="0x34" />
+				<option name="CTF Flag At Home To Score" value="0x35" />
+				<option name="CTF Flag Reset Time" value="0x36" />
+				<option name="CTF Speed With Flag" value="0x37" />
+				<option name="CTF Flag Hit Damage" value="0x38" />
+				<option name="CTF Driving Gunning With Flag" value="0x39" />
+				<option name="CTF Waypoint To Own Flag" value="0x3A" />
 				<option name="Assault Game Type" value="0x3B" />
 				<option name="Assault Sudden Death" value="0x3C" />
 				<option name="Assault Detonation Time" value="0x3D" />
@@ -181,8 +198,8 @@
 				<option name="UNS. King Dmg. Res. In Hill" value="0x67" />
 				<option name="UNS. Players Ex. Dmg" value="0x68" />
 				<option name="UNS. Players Dmg. Resis." value="0x69" />
-				<option name="UNS. Ctf Carr. Dmg. Resis." value="0x6A" />
-				<option name="UNS. Ctf Carr. Invis." value="0x6B" />
+				<option name="UNS. CTF Carr. Dmg. Resis." value="0x6A" />
+				<option name="UNS. CTF Carr. Invis." value="0x6B" />
 				<option name="UNS. Juggy Dmg. Resis." value="0x6C" />
 				<option name="UNS. Bomb Carr. Dmg. Resis." value="0x6D" />
 				<option name="UNS. Bomb Carr. Invis." value="0x6E" />
@@ -209,10 +226,35 @@
 				<option name="Infinite Ammo" value="0x83" />
 				<option name="Recharging Grenades" value="0x84" />
 				<option name="Bottomless Clip" value="0x85" />
+				<option name="Match Medic Score To Win Round" value="0x86" />
+				<option name="Medic Unused" value="0x87" />
+				<option name="Medic Medic Active Camo" value="0x88" />
+				<option name="Uns. Medic Movement" value="0x89" />
+				<option name="Uns. Medic Less Damage" value="0x8A" />
+				<option name="Uns. Medic Shields" value="0x8B" />
+				<option name="Uns. Medic Berserk" value="0x8C" />
+				<option name="Uns. Medic All Start As Medic" value="0x8D" />
+				<option name="Match VIP Score To Win Round" value="0x8E" />
+				<option name="VIP Extra Damage" value="0x8F" />
+				<option name="VIP Damage Resist" value="0x90" />
+				<option name="VIP Active Camo" value="0x91" />
+				<option name="VIP Has Motion Sensor" value="0x92" />
+				<option name="Infected Extra Damage" value="0x93" />
+				<option name="Infected Damage Resist" value="0x94" />
+				<option name="Infected Active Camo" value="0x95" />
+				<option name="Infected Have Motion Sensor" value="0x96" />
+				<option name="VIP Show Enemy VIP Waypoint" value="0x97" />
+				<option name="VIP Helps Teammates" value="0x98" />
+				<option name="Headhunter Own Team Pickup" value="0x99" />
+				<option name="VIP Active Camo Teammates" value="0x9A" />
+				<option name="VIP Extra Damage Teammates" value="0x9B" />
+				<option name="Match Infection Score To Win Round" value="0x9C" />
+				<option name="CTF Flag Shows Player Emblem" value="0x9D" />
 			</enum32>
 			<int32 name="Value" offset="0x4" visible="true" />
 		</tagblock>
-		<int16 name="Description Index" offset="0x10" visible="true" />
+		<int8 name="Description Index" offset="0x10" visible="true" />
+		<int8 name="Unknown" offset="0x11" visible="false" />
 		<int16 name="Unknown" offset="0x12" visible="false" />
 	</tagblock>
 	<comment title="Create New Slayer Variant" />
@@ -225,11 +267,16 @@
 		<option name="Capture The Flag" value="0x4" />
 		<option name="Assault" value="0x5" />
 		<option name="Territories" value="0x6" />
+		<option name="Medic" value="0x7" />
+		<option name="VIP" value="0x8" />
+		<option name="Infection" value="0x9" />
+		<option name="Headhunter" value="0xA" />
+		<option name="Race" value="0xB" />
 	</enum32>
 	<tagblock name="Settings" offset="0x38" visible="true" elementSize="0x8">
 		<enum32 name="Setting Category" offset="0x0" visible="true">
 			<option name="Match Round Setting" value="0x0" />
-			<option name="Match Ctf Score To Win" value="0x1" />
+			<option name="Match CTF Score To Win" value="0x1" />
 			<option name="Match Slayer Score To Win Round" value="0x2" />
 			<option name="Match Oddball Score To Win Round" value="0x3" />
 			<option name="Match King Score To Win Round" value="0x4" />
@@ -278,15 +325,15 @@
 			<option name="Oddball Waypoint To Ball" value="0x2F" />
 			<option name="Race Random Track" value="0x30" />
 			<option name="Race Uncontested Flag" value="0x31" />
-			<option name="Ctf Game Type" value="0x32" />
-			<option name="Ctf Sudden Death" value="0x33" />
-			<option name="Ctf Flag May Be Returned" value="0x34" />
-			<option name="Ctf Flag At Home To Score" value="0x35" />
-			<option name="Ctf Flag Reset Time" value="0x36" />
-			<option name="Ctf Speed With Flag" value="0x37" />
-			<option name="Ctf Flag Hit Damage" value="0x38" />
-			<option name="Ctf Driving Gunning With Flag" value="0x39" />
-			<option name="Ctf Waypoint To Own Flag" value="0x3A" />
+			<option name="CTF Game Type" value="0x32" />
+			<option name="CTF Sudden Death" value="0x33" />
+			<option name="CTF Flag May Be Returned" value="0x34" />
+			<option name="CTF Flag At Home To Score" value="0x35" />
+			<option name="CTF Flag Reset Time" value="0x36" />
+			<option name="CTF Speed With Flag" value="0x37" />
+			<option name="CTF Flag Hit Damage" value="0x38" />
+			<option name="CTF Driving Gunning With Flag" value="0x39" />
+			<option name="CTF Waypoint To Own Flag" value="0x3A" />
 			<option name="Assault Game Type" value="0x3B" />
 			<option name="Assault Sudden Death" value="0x3C" />
 			<option name="Assault Detonation Time" value="0x3D" />
@@ -334,8 +381,8 @@
 			<option name="UNS. King Dmg. Res. In Hill" value="0x67" />
 			<option name="UNS. Players Ex. Dmg" value="0x68" />
 			<option name="UNS. Players Dmg. Resis." value="0x69" />
-			<option name="UNS. Ctf Carr. Dmg. Resis." value="0x6A" />
-			<option name="UNS. Ctf Carr. Invis." value="0x6B" />
+			<option name="UNS. CTF Carr. Dmg. Resis." value="0x6A" />
+			<option name="UNS. CTF Carr. Invis." value="0x6B" />
 			<option name="UNS. Juggy Dmg. Resis." value="0x6C" />
 			<option name="UNS. Bomb Carr. Dmg. Resis." value="0x6D" />
 			<option name="UNS. Bomb Carr. Invis." value="0x6E" />
@@ -362,10 +409,34 @@
 			<option name="Infinite Ammo" value="0x83" />
 			<option name="Recharging Grenades" value="0x84" />
 			<option name="Bottomless Clip" value="0x85" />
+			<option name="Match Medic Score To Win Round" value="0x86" />
+			<option name="Medic Unused" value="0x87" />
+			<option name="Medic Medic Active Camo" value="0x88" />
+			<option name="Uns. Medic Movement" value="0x89" />
+			<option name="Uns. Medic Less Damage" value="0x8A" />
+			<option name="Uns. Medic Shields" value="0x8B" />
+			<option name="Uns. Medic Berserk" value="0x8C" />
+			<option name="Uns. Medic All Start As Medic" value="0x8D" />
+			<option name="Match VIP Score To Win Round" value="0x8E" />
+			<option name="VIP Extra Damage" value="0x8F" />
+			<option name="VIP Damage Resist" value="0x90" />
+			<option name="VIP Active Camo" value="0x91" />
+			<option name="VIP Has Motion Sensor" value="0x92" />
+			<option name="Infected Extra Damage" value="0x93" />
+			<option name="Infected Damage Resist" value="0x94" />
+			<option name="Infected Active Camo" value="0x95" />
+			<option name="Infected Have Motion Sensor" value="0x96" />
+			<option name="VIP Show Enemy VIP Waypoint" value="0x97" />
+			<option name="VIP Helps Teammates" value="0x98" />
+			<option name="Headhunter Own Team Pickup" value="0x99" />
+			<option name="VIP Active Camo Teammates" value="0x9A" />
+			<option name="VIP Extra Damage Teammates" value="0x9B" />
+			<option name="Match Infection Score To Win Round" value="0x9C" />
+			<option name="CTF Flag Shows Player Emblem" value="0x9D" />
 		</enum32>
 		<int32 name="Value" offset="0x4" visible="true" />
 	</tagblock>
-	<int8 name="Unknown" offset="0x40" visible="true" />
+	<int8 name="Description Index" offset="0x40" visible="true" />
 	<int8 name="Unknown" offset="0x41" visible="false" />
 	<int16 name="Unknown" offset="0x42" visible="false" />
 	<comment title="Create New King Of The Hill Variant" />
@@ -378,11 +449,16 @@
 		<option name="Capture The Flag" value="0x4" />
 		<option name="Assault" value="0x5" />
 		<option name="Territories" value="0x6" />
+		<option name="Medic" value="0x7" />
+		<option name="VIP" value="0x8" />
+		<option name="Infection" value="0x9" />
+		<option name="Headhunter" value="0xA" />
+		<option name="Race" value="0xB" />
 	</enum32>
 	<tagblock name="Settings" offset="0x4C" visible="true" elementSize="0x8">
 		<enum32 name="Setting Category" offset="0x0" visible="true">
 			<option name="Match Round Setting" value="0x0" />
-			<option name="Match Ctf Score To Win" value="0x1" />
+			<option name="Match CTF Score To Win" value="0x1" />
 			<option name="Match Slayer Score To Win Round" value="0x2" />
 			<option name="Match Oddball Score To Win Round" value="0x3" />
 			<option name="Match King Score To Win Round" value="0x4" />
@@ -431,15 +507,15 @@
 			<option name="Oddball Waypoint To Ball" value="0x2F" />
 			<option name="Race Random Track" value="0x30" />
 			<option name="Race Uncontested Flag" value="0x31" />
-			<option name="Ctf Game Type" value="0x32" />
-			<option name="Ctf Sudden Death" value="0x33" />
-			<option name="Ctf Flag May Be Returned" value="0x34" />
-			<option name="Ctf Flag At Home To Score" value="0x35" />
-			<option name="Ctf Flag Reset Time" value="0x36" />
-			<option name="Ctf Speed With Flag" value="0x37" />
-			<option name="Ctf Flag Hit Damage" value="0x38" />
-			<option name="Ctf Driving Gunning With Flag" value="0x39" />
-			<option name="Ctf Waypoint To Own Flag" value="0x3A" />
+			<option name="CTF Game Type" value="0x32" />
+			<option name="CTF Sudden Death" value="0x33" />
+			<option name="CTF Flag May Be Returned" value="0x34" />
+			<option name="CTF Flag At Home To Score" value="0x35" />
+			<option name="CTF Flag Reset Time" value="0x36" />
+			<option name="CTF Speed With Flag" value="0x37" />
+			<option name="CTF Flag Hit Damage" value="0x38" />
+			<option name="CTF Driving Gunning With Flag" value="0x39" />
+			<option name="CTF Waypoint To Own Flag" value="0x3A" />
 			<option name="Assault Game Type" value="0x3B" />
 			<option name="Assault Sudden Death" value="0x3C" />
 			<option name="Assault Detonation Time" value="0x3D" />
@@ -487,8 +563,8 @@
 			<option name="UNS. King Dmg. Res. In Hill" value="0x67" />
 			<option name="UNS. Players Ex. Dmg" value="0x68" />
 			<option name="UNS. Players Dmg. Resis." value="0x69" />
-			<option name="UNS. Ctf Carr. Dmg. Resis." value="0x6A" />
-			<option name="UNS. Ctf Carr. Invis." value="0x6B" />
+			<option name="UNS. CTF Carr. Dmg. Resis." value="0x6A" />
+			<option name="UNS. CTF Carr. Invis." value="0x6B" />
 			<option name="UNS. Juggy Dmg. Resis." value="0x6C" />
 			<option name="UNS. Bomb Carr. Dmg. Resis." value="0x6D" />
 			<option name="UNS. Bomb Carr. Invis." value="0x6E" />
@@ -515,10 +591,34 @@
 			<option name="Infinite Ammo" value="0x83" />
 			<option name="Recharging Grenades" value="0x84" />
 			<option name="Bottomless Clip" value="0x85" />
+			<option name="Match Medic Score To Win Round" value="0x86" />
+			<option name="Medic Unused" value="0x87" />
+			<option name="Medic Medic Active Camo" value="0x88" />
+			<option name="Uns. Medic Movement" value="0x89" />
+			<option name="Uns. Medic Less Damage" value="0x8A" />
+			<option name="Uns. Medic Shields" value="0x8B" />
+			<option name="Uns. Medic Berserk" value="0x8C" />
+			<option name="Uns. Medic All Start As Medic" value="0x8D" />
+			<option name="Match VIP Score To Win Round" value="0x8E" />
+			<option name="VIP Extra Damage" value="0x8F" />
+			<option name="VIP Damage Resist" value="0x90" />
+			<option name="VIP Active Camo" value="0x91" />
+			<option name="VIP Has Motion Sensor" value="0x92" />
+			<option name="Infected Extra Damage" value="0x93" />
+			<option name="Infected Damage Resist" value="0x94" />
+			<option name="Infected Active Camo" value="0x95" />
+			<option name="Infected Have Motion Sensor" value="0x96" />
+			<option name="VIP Show Enemy VIP Waypoint" value="0x97" />
+			<option name="VIP Helps Teammates" value="0x98" />
+			<option name="Headhunter Own Team Pickup" value="0x99" />
+			<option name="VIP Active Camo Teammates" value="0x9A" />
+			<option name="VIP Extra Damage Teammates" value="0x9B" />
+			<option name="Match Infection Score To Win Round" value="0x9C" />
+			<option name="CTF Flag Shows Player Emblem" value="0x9D" />
 		</enum32>
 		<int32 name="Value" offset="0x4" visible="true" />
 	</tagblock>
-	<int8 name="Unknown" offset="0x54" visible="true" />
+	<int8 name="Description Index" offset="0x54" visible="true" />
 	<int8 name="Unknown" offset="0x55" visible="false" />
 	<int16 name="Unknown" offset="0x56" visible="false" />
 	<comment title="Create Unknown Variant" />
@@ -531,11 +631,16 @@
 		<option name="Capture The Flag" value="0x4" />
 		<option name="Assault" value="0x5" />
 		<option name="Territories" value="0x6" />
+		<option name="Medic" value="0x7" />
+		<option name="VIP" value="0x8" />
+		<option name="Infection" value="0x9" />
+		<option name="Headhunter" value="0xA" />
+		<option name="Race" value="0xB" />
 	</enum32>
 	<tagblock name="Settings" offset="0x60" visible="true" elementSize="0x8">
 		<enum32 name="Setting Category" offset="0x0" visible="true">
 			<option name="Match Round Setting" value="0x0" />
-			<option name="Match Ctf Score To Win" value="0x1" />
+			<option name="Match CTF Score To Win" value="0x1" />
 			<option name="Match Slayer Score To Win Round" value="0x2" />
 			<option name="Match Oddball Score To Win Round" value="0x3" />
 			<option name="Match King Score To Win Round" value="0x4" />
@@ -584,15 +689,15 @@
 			<option name="Oddball Waypoint To Ball" value="0x2F" />
 			<option name="Race Random Track" value="0x30" />
 			<option name="Race Uncontested Flag" value="0x31" />
-			<option name="Ctf Game Type" value="0x32" />
-			<option name="Ctf Sudden Death" value="0x33" />
-			<option name="Ctf Flag May Be Returned" value="0x34" />
-			<option name="Ctf Flag At Home To Score" value="0x35" />
-			<option name="Ctf Flag Reset Time" value="0x36" />
-			<option name="Ctf Speed With Flag" value="0x37" />
-			<option name="Ctf Flag Hit Damage" value="0x38" />
-			<option name="Ctf Driving Gunning With Flag" value="0x39" />
-			<option name="Ctf Waypoint To Own Flag" value="0x3A" />
+			<option name="CTF Game Type" value="0x32" />
+			<option name="CTF Sudden Death" value="0x33" />
+			<option name="CTF Flag May Be Returned" value="0x34" />
+			<option name="CTF Flag At Home To Score" value="0x35" />
+			<option name="CTF Flag Reset Time" value="0x36" />
+			<option name="CTF Speed With Flag" value="0x37" />
+			<option name="CTF Flag Hit Damage" value="0x38" />
+			<option name="CTF Driving Gunning With Flag" value="0x39" />
+			<option name="CTF Waypoint To Own Flag" value="0x3A" />
 			<option name="Assault Game Type" value="0x3B" />
 			<option name="Assault Sudden Death" value="0x3C" />
 			<option name="Assault Detonation Time" value="0x3D" />
@@ -640,8 +745,8 @@
 			<option name="UNS. King Dmg. Res. In Hill" value="0x67" />
 			<option name="UNS. Players Ex. Dmg" value="0x68" />
 			<option name="UNS. Players Dmg. Resis." value="0x69" />
-			<option name="UNS. Ctf Carr. Dmg. Resis." value="0x6A" />
-			<option name="UNS. Ctf Carr. Invis." value="0x6B" />
+			<option name="UNS. CTF Carr. Dmg. Resis." value="0x6A" />
+			<option name="UNS. CTF Carr. Invis." value="0x6B" />
 			<option name="UNS. Juggy Dmg. Resis." value="0x6C" />
 			<option name="UNS. Bomb Carr. Dmg. Resis." value="0x6D" />
 			<option name="UNS. Bomb Carr. Invis." value="0x6E" />
@@ -668,10 +773,34 @@
 			<option name="Infinite Ammo" value="0x83" />
 			<option name="Recharging Grenades" value="0x84" />
 			<option name="Bottomless Clip" value="0x85" />
+			<option name="Match Medic Score To Win Round" value="0x86" />
+			<option name="Medic Unused" value="0x87" />
+			<option name="Medic Medic Active Camo" value="0x88" />
+			<option name="Uns. Medic Movement" value="0x89" />
+			<option name="Uns. Medic Less Damage" value="0x8A" />
+			<option name="Uns. Medic Shields" value="0x8B" />
+			<option name="Uns. Medic Berserk" value="0x8C" />
+			<option name="Uns. Medic All Start As Medic" value="0x8D" />
+			<option name="Match VIP Score To Win Round" value="0x8E" />
+			<option name="VIP Extra Damage" value="0x8F" />
+			<option name="VIP Damage Resist" value="0x90" />
+			<option name="VIP Active Camo" value="0x91" />
+			<option name="VIP Has Motion Sensor" value="0x92" />
+			<option name="Infected Extra Damage" value="0x93" />
+			<option name="Infected Damage Resist" value="0x94" />
+			<option name="Infected Active Camo" value="0x95" />
+			<option name="Infected Have Motion Sensor" value="0x96" />
+			<option name="VIP Show Enemy VIP Waypoint" value="0x97" />
+			<option name="VIP Helps Teammates" value="0x98" />
+			<option name="Headhunter Own Team Pickup" value="0x99" />
+			<option name="VIP Active Camo Teammates" value="0x9A" />
+			<option name="VIP Extra Damage Teammates" value="0x9B" />
+			<option name="Match Infection Score To Win Round" value="0x9C" />
+			<option name="CTF Flag Shows Player Emblem" value="0x9D" />
 		</enum32>
 		<int32 name="Value" offset="0x4" visible="true" />
 	</tagblock>
-	<int8 name="Unknown" offset="0x68" visible="true" />
+	<int8 name="Description Index" offset="0x68" visible="true" />
 	<int8 name="Unknown" offset="0x69" visible="false" />
 	<int16 name="Unknown" offset="0x6A" visible="false" />
 	<comment title="Create New Oddball Variant" />
@@ -684,11 +813,16 @@
 		<option name="Capture The Flag" value="0x4" />
 		<option name="Assault" value="0x5" />
 		<option name="Territories" value="0x6" />
+		<option name="Medic" value="0x7" />
+		<option name="VIP" value="0x8" />
+		<option name="Infection" value="0x9" />
+		<option name="Headhunter" value="0xA" />
+		<option name="Race" value="0xB" />
 	</enum32>
 	<tagblock name="Settings" offset="0x74" visible="true" elementSize="0x8">
 		<enum32 name="Setting Category" offset="0x0" visible="true">
 			<option name="Match Round Setting" value="0x0" />
-			<option name="Match Ctf Score To Win" value="0x1" />
+			<option name="Match CTF Score To Win" value="0x1" />
 			<option name="Match Slayer Score To Win Round" value="0x2" />
 			<option name="Match Oddball Score To Win Round" value="0x3" />
 			<option name="Match King Score To Win Round" value="0x4" />
@@ -737,15 +871,15 @@
 			<option name="Oddball Waypoint To Ball" value="0x2F" />
 			<option name="Race Random Track" value="0x30" />
 			<option name="Race Uncontested Flag" value="0x31" />
-			<option name="Ctf Game Type" value="0x32" />
-			<option name="Ctf Sudden Death" value="0x33" />
-			<option name="Ctf Flag May Be Returned" value="0x34" />
-			<option name="Ctf Flag At Home To Score" value="0x35" />
-			<option name="Ctf Flag Reset Time" value="0x36" />
-			<option name="Ctf Speed With Flag" value="0x37" />
-			<option name="Ctf Flag Hit Damage" value="0x38" />
-			<option name="Ctf Driving Gunning With Flag" value="0x39" />
-			<option name="Ctf Waypoint To Own Flag" value="0x3A" />
+			<option name="CTF Game Type" value="0x32" />
+			<option name="CTF Sudden Death" value="0x33" />
+			<option name="CTF Flag May Be Returned" value="0x34" />
+			<option name="CTF Flag At Home To Score" value="0x35" />
+			<option name="CTF Flag Reset Time" value="0x36" />
+			<option name="CTF Speed With Flag" value="0x37" />
+			<option name="CTF Flag Hit Damage" value="0x38" />
+			<option name="CTF Driving Gunning With Flag" value="0x39" />
+			<option name="CTF Waypoint To Own Flag" value="0x3A" />
 			<option name="Assault Game Type" value="0x3B" />
 			<option name="Assault Sudden Death" value="0x3C" />
 			<option name="Assault Detonation Time" value="0x3D" />
@@ -793,8 +927,8 @@
 			<option name="UNS. King Dmg. Res. In Hill" value="0x67" />
 			<option name="UNS. Players Ex. Dmg" value="0x68" />
 			<option name="UNS. Players Dmg. Resis." value="0x69" />
-			<option name="UNS. Ctf Carr. Dmg. Resis." value="0x6A" />
-			<option name="UNS. Ctf Carr. Invis." value="0x6B" />
+			<option name="UNS. CTF Carr. Dmg. Resis." value="0x6A" />
+			<option name="UNS. CTF Carr. Invis." value="0x6B" />
 			<option name="UNS. Juggy Dmg. Resis." value="0x6C" />
 			<option name="UNS. Bomb Carr. Dmg. Resis." value="0x6D" />
 			<option name="UNS. Bomb Carr. Invis." value="0x6E" />
@@ -821,10 +955,34 @@
 			<option name="Infinite Ammo" value="0x83" />
 			<option name="Recharging Grenades" value="0x84" />
 			<option name="Bottomless Clip" value="0x85" />
+			<option name="Match Medic Score To Win Round" value="0x86" />
+			<option name="Medic Unused" value="0x87" />
+			<option name="Medic Medic Active Camo" value="0x88" />
+			<option name="Uns. Medic Movement" value="0x89" />
+			<option name="Uns. Medic Less Damage" value="0x8A" />
+			<option name="Uns. Medic Shields" value="0x8B" />
+			<option name="Uns. Medic Berserk" value="0x8C" />
+			<option name="Uns. Medic All Start As Medic" value="0x8D" />
+			<option name="Match VIP Score To Win Round" value="0x8E" />
+			<option name="VIP Extra Damage" value="0x8F" />
+			<option name="VIP Damage Resist" value="0x90" />
+			<option name="VIP Active Camo" value="0x91" />
+			<option name="VIP Has Motion Sensor" value="0x92" />
+			<option name="Infected Extra Damage" value="0x93" />
+			<option name="Infected Damage Resist" value="0x94" />
+			<option name="Infected Active Camo" value="0x95" />
+			<option name="Infected Have Motion Sensor" value="0x96" />
+			<option name="VIP Show Enemy VIP Waypoint" value="0x97" />
+			<option name="VIP Helps Teammates" value="0x98" />
+			<option name="Headhunter Own Team Pickup" value="0x99" />
+			<option name="VIP Active Camo Teammates" value="0x9A" />
+			<option name="VIP Extra Damage Teammates" value="0x9B" />
+			<option name="Match Infection Score To Win Round" value="0x9C" />
+			<option name="CTF Flag Shows Player Emblem" value="0x9D" />
 		</enum32>
 		<int32 name="Value" offset="0x4" visible="true" />
 	</tagblock>
-	<int8 name="Unknown" offset="0x7C" visible="true" />
+	<int8 name="Description Index" offset="0x7C" visible="true" />
 	<int8 name="Unknown" offset="0x7D" visible="false" />
 	<int16 name="Unknown" offset="0x7E" visible="false" />
 	<comment title="Create New Juggernaut Variant" />
@@ -837,11 +995,16 @@
 		<option name="Capture The Flag" value="0x4" />
 		<option name="Assault" value="0x5" />
 		<option name="Territories" value="0x6" />
+		<option name="Medic" value="0x7" />
+		<option name="VIP" value="0x8" />
+		<option name="Infection" value="0x9" />
+		<option name="Headhunter" value="0xA" />
+		<option name="Race" value="0xB" />
 	</enum32>
 	<tagblock name="Settings" offset="0x88" visible="true" elementSize="0x8">
 		<enum32 name="Setting Category" offset="0x0" visible="true">
 			<option name="Match Round Setting" value="0x0" />
-			<option name="Match Ctf Score To Win" value="0x1" />
+			<option name="Match CTF Score To Win" value="0x1" />
 			<option name="Match Slayer Score To Win Round" value="0x2" />
 			<option name="Match Oddball Score To Win Round" value="0x3" />
 			<option name="Match King Score To Win Round" value="0x4" />
@@ -890,15 +1053,15 @@
 			<option name="Oddball Waypoint To Ball" value="0x2F" />
 			<option name="Race Random Track" value="0x30" />
 			<option name="Race Uncontested Flag" value="0x31" />
-			<option name="Ctf Game Type" value="0x32" />
-			<option name="Ctf Sudden Death" value="0x33" />
-			<option name="Ctf Flag May Be Returned" value="0x34" />
-			<option name="Ctf Flag At Home To Score" value="0x35" />
-			<option name="Ctf Flag Reset Time" value="0x36" />
-			<option name="Ctf Speed With Flag" value="0x37" />
-			<option name="Ctf Flag Hit Damage" value="0x38" />
-			<option name="Ctf Driving Gunning With Flag" value="0x39" />
-			<option name="Ctf Waypoint To Own Flag" value="0x3A" />
+			<option name="CTF Game Type" value="0x32" />
+			<option name="CTF Sudden Death" value="0x33" />
+			<option name="CTF Flag May Be Returned" value="0x34" />
+			<option name="CTF Flag At Home To Score" value="0x35" />
+			<option name="CTF Flag Reset Time" value="0x36" />
+			<option name="CTF Speed With Flag" value="0x37" />
+			<option name="CTF Flag Hit Damage" value="0x38" />
+			<option name="CTF Driving Gunning With Flag" value="0x39" />
+			<option name="CTF Waypoint To Own Flag" value="0x3A" />
 			<option name="Assault Game Type" value="0x3B" />
 			<option name="Assault Sudden Death" value="0x3C" />
 			<option name="Assault Detonation Time" value="0x3D" />
@@ -946,8 +1109,8 @@
 			<option name="UNS. King Dmg. Res. In Hill" value="0x67" />
 			<option name="UNS. Players Ex. Dmg" value="0x68" />
 			<option name="UNS. Players Dmg. Resis." value="0x69" />
-			<option name="UNS. Ctf Carr. Dmg. Resis." value="0x6A" />
-			<option name="UNS. Ctf Carr. Invis." value="0x6B" />
+			<option name="UNS. CTF Carr. Dmg. Resis." value="0x6A" />
+			<option name="UNS. CTF Carr. Invis." value="0x6B" />
 			<option name="UNS. Juggy Dmg. Resis." value="0x6C" />
 			<option name="UNS. Bomb Carr. Dmg. Resis." value="0x6D" />
 			<option name="UNS. Bomb Carr. Invis." value="0x6E" />
@@ -974,10 +1137,34 @@
 			<option name="Infinite Ammo" value="0x83" />
 			<option name="Recharging Grenades" value="0x84" />
 			<option name="Bottomless Clip" value="0x85" />
+			<option name="Match Medic Score To Win Round" value="0x86" />
+			<option name="Medic Unused" value="0x87" />
+			<option name="Medic Medic Active Camo" value="0x88" />
+			<option name="Uns. Medic Movement" value="0x89" />
+			<option name="Uns. Medic Less Damage" value="0x8A" />
+			<option name="Uns. Medic Shields" value="0x8B" />
+			<option name="Uns. Medic Berserk" value="0x8C" />
+			<option name="Uns. Medic All Start As Medic" value="0x8D" />
+			<option name="Match VIP Score To Win Round" value="0x8E" />
+			<option name="VIP Extra Damage" value="0x8F" />
+			<option name="VIP Damage Resist" value="0x90" />
+			<option name="VIP Active Camo" value="0x91" />
+			<option name="VIP Has Motion Sensor" value="0x92" />
+			<option name="Infected Extra Damage" value="0x93" />
+			<option name="Infected Damage Resist" value="0x94" />
+			<option name="Infected Active Camo" value="0x95" />
+			<option name="Infected Have Motion Sensor" value="0x96" />
+			<option name="VIP Show Enemy VIP Waypoint" value="0x97" />
+			<option name="VIP Helps Teammates" value="0x98" />
+			<option name="Headhunter Own Team Pickup" value="0x99" />
+			<option name="VIP Active Camo Teammates" value="0x9A" />
+			<option name="VIP Extra Damage Teammates" value="0x9B" />
+			<option name="Match Infection Score To Win Round" value="0x9C" />
+			<option name="CTF Flag Shows Player Emblem" value="0x9D" />
 		</enum32>
 		<int32 name="Value" offset="0x4" visible="true" />
 	</tagblock>
-	<int8 name="Unknown" offset="0x90" visible="true" />
+	<int8 name="Description Index" offset="0x90" visible="true" />
 	<int8 name="Unknown" offset="0x91" visible="false" />
 	<int16 name="Unknown" offset="0x92" visible="false" />
 	<comment title="Create New Unknown Variant" />
@@ -990,11 +1177,16 @@
 		<option name="Capture The Flag" value="0x4" />
 		<option name="Assault" value="0x5" />
 		<option name="Territories" value="0x6" />
+		<option name="Medic" value="0x7" />
+		<option name="Vip" value="0x8" />
+		<option name="Infection" value="0x9" />
+		<option name="Headhunter" value="0xA" />
+		<option name="Race" value="0xB" />
 	</enum32>
 	<tagblock name="Settings" offset="0x9C" visible="true" elementSize="0x8">
 		<enum32 name="Setting Category" offset="0x0" visible="true">
 			<option name="Match Round Setting" value="0x0" />
-			<option name="Match Ctf Score To Win" value="0x1" />
+			<option name="Match CTF Score To Win" value="0x1" />
 			<option name="Match Slayer Score To Win Round" value="0x2" />
 			<option name="Match Oddball Score To Win Round" value="0x3" />
 			<option name="Match King Score To Win Round" value="0x4" />
@@ -1043,15 +1235,15 @@
 			<option name="Oddball Waypoint To Ball" value="0x2F" />
 			<option name="Race Random Track" value="0x30" />
 			<option name="Race Uncontested Flag" value="0x31" />
-			<option name="Ctf Game Type" value="0x32" />
-			<option name="Ctf Sudden Death" value="0x33" />
-			<option name="Ctf Flag May Be Returned" value="0x34" />
-			<option name="Ctf Flag At Home To Score" value="0x35" />
-			<option name="Ctf Flag Reset Time" value="0x36" />
-			<option name="Ctf Speed With Flag" value="0x37" />
-			<option name="Ctf Flag Hit Damage" value="0x38" />
-			<option name="Ctf Driving Gunning With Flag" value="0x39" />
-			<option name="Ctf Waypoint To Own Flag" value="0x3A" />
+			<option name="CTF Game Type" value="0x32" />
+			<option name="CTF Sudden Death" value="0x33" />
+			<option name="CTF Flag May Be Returned" value="0x34" />
+			<option name="CTF Flag At Home To Score" value="0x35" />
+			<option name="CTF Flag Reset Time" value="0x36" />
+			<option name="CTF Speed With Flag" value="0x37" />
+			<option name="CTF Flag Hit Damage" value="0x38" />
+			<option name="CTF Driving Gunning With Flag" value="0x39" />
+			<option name="CTF Waypoint To Own Flag" value="0x3A" />
 			<option name="Assault Game Type" value="0x3B" />
 			<option name="Assault Sudden Death" value="0x3C" />
 			<option name="Assault Detonation Time" value="0x3D" />
@@ -1099,8 +1291,8 @@
 			<option name="UNS. King Dmg. Res. In Hill" value="0x67" />
 			<option name="UNS. Players Ex. Dmg" value="0x68" />
 			<option name="UNS. Players Dmg. Resis." value="0x69" />
-			<option name="UNS. Ctf Carr. Dmg. Resis." value="0x6A" />
-			<option name="UNS. Ctf Carr. Invis." value="0x6B" />
+			<option name="UNS. CTF Carr. Dmg. Resis." value="0x6A" />
+			<option name="UNS. CTF Carr. Invis." value="0x6B" />
 			<option name="UNS. Juggy Dmg. Resis." value="0x6C" />
 			<option name="UNS. Bomb Carr. Dmg. Resis." value="0x6D" />
 			<option name="UNS. Bomb Carr. Invis." value="0x6E" />
@@ -1127,10 +1319,34 @@
 			<option name="Infinite Ammo" value="0x83" />
 			<option name="Recharging Grenades" value="0x84" />
 			<option name="Bottomless Clip" value="0x85" />
+			<option name="Match Medic Score To Win Round" value="0x86" />
+			<option name="Medic Unused" value="0x87" />
+			<option name="Medic Medic Active Camo" value="0x88" />
+			<option name="Uns. Medic Movement" value="0x89" />
+			<option name="Uns. Medic Less Damage" value="0x8A" />
+			<option name="Uns. Medic Shields" value="0x8B" />
+			<option name="Uns. Medic Berserk" value="0x8C" />
+			<option name="Uns. Medic All Start As Medic" value="0x8D" />
+			<option name="Match VIP Score To Win Round" value="0x8E" />
+			<option name="VIP Extra Damage" value="0x8F" />
+			<option name="VIP Damage Resist" value="0x90" />
+			<option name="VIP Active Camo" value="0x91" />
+			<option name="VIP Has Motion Sensor" value="0x92" />
+			<option name="Infected Extra Damage" value="0x93" />
+			<option name="Infected Damage Resist" value="0x94" />
+			<option name="Infected Active Camo" value="0x95" />
+			<option name="Infected Have Motion Sensor" value="0x96" />
+			<option name="VIP Show Enemy VIP Waypoint" value="0x97" />
+			<option name="VIP Helps Teammates" value="0x98" />
+			<option name="Headhunter Own Team Pickup" value="0x99" />
+			<option name="VIP Active Camo Teammates" value="0x9A" />
+			<option name="VIP Extra Damage Teammates" value="0x9B" />
+			<option name="Match Infection Score To Win Round" value="0x9C" />
+			<option name="CTF Flag Shows Player Emblem" value="0x9D" />
 		</enum32>
 		<int32 name="Value" offset="0x4" visible="true" />
 	</tagblock>
-	<int8 name="Unknown" offset="0xA4" visible="true" />
+	<int8 name="Description Index" offset="0xA4" visible="true" />
 	<int8 name="Unknown" offset="0xA5" visible="false" />
 	<int16 name="Unknown" offset="0xA6" visible="false" />
 	<comment title="Create New Capture The Flag Variant" />
@@ -1143,11 +1359,16 @@
 		<option name="Capture The Flag" value="0x4" />
 		<option name="Assault" value="0x5" />
 		<option name="Territories" value="0x6" />
+		<option name="Medic" value="0x7" />
+		<option name="VIP" value="0x8" />
+		<option name="Infection" value="0x9" />
+		<option name="Headhunter" value="0xA" />
+		<option name="Race" value="0xB" />
 	</enum32>
 	<tagblock name="Settings" offset="0xB0" visible="true" elementSize="0x8">
 		<enum32 name="Setting Category" offset="0x0" visible="true">
 			<option name="Match Round Setting" value="0x0" />
-			<option name="Match Ctf Score To Win" value="0x1" />
+			<option name="Match CTF Score To Win" value="0x1" />
 			<option name="Match Slayer Score To Win Round" value="0x2" />
 			<option name="Match Oddball Score To Win Round" value="0x3" />
 			<option name="Match King Score To Win Round" value="0x4" />
@@ -1196,15 +1417,15 @@
 			<option name="Oddball Waypoint To Ball" value="0x2F" />
 			<option name="Race Random Track" value="0x30" />
 			<option name="Race Uncontested Flag" value="0x31" />
-			<option name="Ctf Game Type" value="0x32" />
-			<option name="Ctf Sudden Death" value="0x33" />
-			<option name="Ctf Flag May Be Returned" value="0x34" />
-			<option name="Ctf Flag At Home To Score" value="0x35" />
-			<option name="Ctf Flag Reset Time" value="0x36" />
-			<option name="Ctf Speed With Flag" value="0x37" />
-			<option name="Ctf Flag Hit Damage" value="0x38" />
-			<option name="Ctf Driving Gunning With Flag" value="0x39" />
-			<option name="Ctf Waypoint To Own Flag" value="0x3A" />
+			<option name="CTF Game Type" value="0x32" />
+			<option name="CTF Sudden Death" value="0x33" />
+			<option name="CTF Flag May Be Returned" value="0x34" />
+			<option name="CTF Flag At Home To Score" value="0x35" />
+			<option name="CTF Flag Reset Time" value="0x36" />
+			<option name="CTF Speed With Flag" value="0x37" />
+			<option name="CTF Flag Hit Damage" value="0x38" />
+			<option name="CTF Driving Gunning With Flag" value="0x39" />
+			<option name="CTF Waypoint To Own Flag" value="0x3A" />
 			<option name="Assault Game Type" value="0x3B" />
 			<option name="Assault Sudden Death" value="0x3C" />
 			<option name="Assault Detonation Time" value="0x3D" />
@@ -1252,8 +1473,8 @@
 			<option name="UNS. King Dmg. Res. In Hill" value="0x67" />
 			<option name="UNS. Players Ex. Dmg" value="0x68" />
 			<option name="UNS. Players Dmg. Resis." value="0x69" />
-			<option name="UNS. Ctf Carr. Dmg. Resis." value="0x6A" />
-			<option name="UNS. Ctf Carr. Invis." value="0x6B" />
+			<option name="UNS. CTF Carr. Dmg. Resis." value="0x6A" />
+			<option name="UNS. CTF Carr. Invis." value="0x6B" />
 			<option name="UNS. Juggy Dmg. Resis." value="0x6C" />
 			<option name="UNS. Bomb Carr. Dmg. Resis." value="0x6D" />
 			<option name="UNS. Bomb Carr. Invis." value="0x6E" />
@@ -1280,10 +1501,34 @@
 			<option name="Infinite Ammo" value="0x83" />
 			<option name="Recharging Grenades" value="0x84" />
 			<option name="Bottomless Clip" value="0x85" />
+			<option name="Match Medic Score To Win Round" value="0x86" />
+			<option name="Medic Unused" value="0x87" />
+			<option name="Medic Medic Active Camo" value="0x88" />
+			<option name="Uns. Medic Movement" value="0x89" />
+			<option name="Uns. Medic Less Damage" value="0x8A" />
+			<option name="Uns. Medic Shields" value="0x8B" />
+			<option name="Uns. Medic Berserk" value="0x8C" />
+			<option name="Uns. Medic All Start As Medic" value="0x8D" />
+			<option name="Match VIP Score To Win Round" value="0x8E" />
+			<option name="VIP Extra Damage" value="0x8F" />
+			<option name="VIP Damage Resist" value="0x90" />
+			<option name="VIP Active Camo" value="0x91" />
+			<option name="VIP Has Motion Sensor" value="0x92" />
+			<option name="Infected Extra Damage" value="0x93" />
+			<option name="Infected Damage Resist" value="0x94" />
+			<option name="Infected Active Camo" value="0x95" />
+			<option name="Infected Have Motion Sensor" value="0x96" />
+			<option name="VIP Show Enemy VIP Waypoint" value="0x97" />
+			<option name="VIP Helps Teammates" value="0x98" />
+			<option name="Headhunter Own Team Pickup" value="0x99" />
+			<option name="VIP Active Camo Teammates" value="0x9A" />
+			<option name="VIP Extra Damage Teammates" value="0x9B" />
+			<option name="Match Infection Score To Win Round" value="0x9C" />
+			<option name="CTF Flag Shows Player Emblem" value="0x9D" />
 		</enum32>
 		<int32 name="Value" offset="0x4" visible="true" />
 	</tagblock>
-	<int8 name="Unknown" offset="0xB8" visible="true" />
+	<int8 name="Description Index" offset="0xB8" visible="true" />
 	<int8 name="Unknown" offset="0xB9" visible="false" />
 	<int16 name="Unknown" offset="0xBA" visible="false" />
 	<comment title="Create New Assault Variant" />
@@ -1296,11 +1541,16 @@
 		<option name="Capture The Flag" value="0x4" />
 		<option name="Assault" value="0x5" />
 		<option name="Territories" value="0x6" />
+		<option name="Medic" value="0x7" />
+		<option name="VIP" value="0x8" />
+		<option name="Infection" value="0x9" />
+		<option name="Headhunter" value="0xA" />
+		<option name="Race" value="0xB" />
 	</enum32>
 	<tagblock name="Settings" offset="0xC4" visible="true" elementSize="0x8">
 		<enum32 name="Setting Category" offset="0x0" visible="true">
 			<option name="Match Round Setting" value="0x0" />
-			<option name="Match Ctf Score To Win" value="0x1" />
+			<option name="Match CTF Score To Win" value="0x1" />
 			<option name="Match Slayer Score To Win Round" value="0x2" />
 			<option name="Match Oddball Score To Win Round" value="0x3" />
 			<option name="Match King Score To Win Round" value="0x4" />
@@ -1349,15 +1599,15 @@
 			<option name="Oddball Waypoint To Ball" value="0x2F" />
 			<option name="Race Random Track" value="0x30" />
 			<option name="Race Uncontested Flag" value="0x31" />
-			<option name="Ctf Game Type" value="0x32" />
-			<option name="Ctf Sudden Death" value="0x33" />
-			<option name="Ctf Flag May Be Returned" value="0x34" />
-			<option name="Ctf Flag At Home To Score" value="0x35" />
-			<option name="Ctf Flag Reset Time" value="0x36" />
-			<option name="Ctf Speed With Flag" value="0x37" />
-			<option name="Ctf Flag Hit Damage" value="0x38" />
-			<option name="Ctf Driving Gunning With Flag" value="0x39" />
-			<option name="Ctf Waypoint To Own Flag" value="0x3A" />
+			<option name="CTF Game Type" value="0x32" />
+			<option name="CTF Sudden Death" value="0x33" />
+			<option name="CTF Flag May Be Returned" value="0x34" />
+			<option name="CTF Flag At Home To Score" value="0x35" />
+			<option name="CTF Flag Reset Time" value="0x36" />
+			<option name="CTF Speed With Flag" value="0x37" />
+			<option name="CTF Flag Hit Damage" value="0x38" />
+			<option name="CTF Driving Gunning With Flag" value="0x39" />
+			<option name="CTF Waypoint To Own Flag" value="0x3A" />
 			<option name="Assault Game Type" value="0x3B" />
 			<option name="Assault Sudden Death" value="0x3C" />
 			<option name="Assault Detonation Time" value="0x3D" />
@@ -1405,8 +1655,8 @@
 			<option name="UNS. King Dmg. Res. In Hill" value="0x67" />
 			<option name="UNS. Players Ex. Dmg" value="0x68" />
 			<option name="UNS. Players Dmg. Resis." value="0x69" />
-			<option name="UNS. Ctf Carr. Dmg. Resis." value="0x6A" />
-			<option name="UNS. Ctf Carr. Invis." value="0x6B" />
+			<option name="UNS. CTF Carr. Dmg. Resis." value="0x6A" />
+			<option name="UNS. CTF Carr. Invis." value="0x6B" />
 			<option name="UNS. Juggy Dmg. Resis." value="0x6C" />
 			<option name="UNS. Bomb Carr. Dmg. Resis." value="0x6D" />
 			<option name="UNS. Bomb Carr. Invis." value="0x6E" />
@@ -1433,10 +1683,34 @@
 			<option name="Infinite Ammo" value="0x83" />
 			<option name="Recharging Grenades" value="0x84" />
 			<option name="Bottomless Clip" value="0x85" />
+			<option name="Match Medic Score To Win Round" value="0x86" />
+			<option name="Medic Unused" value="0x87" />
+			<option name="Medic Medic Active Camo" value="0x88" />
+			<option name="Uns. Medic Movement" value="0x89" />
+			<option name="Uns. Medic Less Damage" value="0x8A" />
+			<option name="Uns. Medic Shields" value="0x8B" />
+			<option name="Uns. Medic Berserk" value="0x8C" />
+			<option name="Uns. Medic All Start As Medic" value="0x8D" />
+			<option name="Match VIP Score To Win Round" value="0x8E" />
+			<option name="VIP Extra Damage" value="0x8F" />
+			<option name="VIP Damage Resist" value="0x90" />
+			<option name="VIP Active Camo" value="0x91" />
+			<option name="VIP Has Motion Sensor" value="0x92" />
+			<option name="Infected Extra Damage" value="0x93" />
+			<option name="Infected Damage Resist" value="0x94" />
+			<option name="Infected Active Camo" value="0x95" />
+			<option name="Infected Have Motion Sensor" value="0x96" />
+			<option name="VIP Show Enemy VIP Waypoint" value="0x97" />
+			<option name="VIP Helps Teammates" value="0x98" />
+			<option name="Headhunter Own Team Pickup" value="0x99" />
+			<option name="VIP Active Camo Teammates" value="0x9A" />
+			<option name="VIP Extra Damage Teammates" value="0x9B" />
+			<option name="Match Infection Score To Win Round" value="0x9C" />
+			<option name="CTF Flag Shows Player Emblem" value="0x9D" />
 		</enum32>
 		<int32 name="Value" offset="0x4" visible="true" />
 	</tagblock>
-	<int8 name="Unknown" offset="0xCC" visible="true" />
+	<int8 name="Description Index" offset="0xCC" visible="true" />
 	<int8 name="Unknown" offset="0xCD" visible="false" />
 	<int16 name="Unknown" offset="0xCE" visible="false" />
 	<comment title="Create New Territories Variant" />
@@ -1449,11 +1723,16 @@
 		<option name="Capture The Flag" value="0x4" />
 		<option name="Assault" value="0x5" />
 		<option name="Territories" value="0x6" />
+		<option name="Medic" value="0x7" />
+		<option name="VIP" value="0x8" />
+		<option name="Infection" value="0x9" />
+		<option name="Headhunter" value="0xA" />
+		<option name="Race" value="0xB" />
 	</enum32>
 	<tagblock name="Settings" offset="0xD8" visible="true" elementSize="0x8">
 		<enum32 name="Setting Category" offset="0x0" visible="true">
 			<option name="Match Round Setting" value="0x0" />
-			<option name="Match Ctf Score To Win" value="0x1" />
+			<option name="Match CTF Score To Win" value="0x1" />
 			<option name="Match Slayer Score To Win Round" value="0x2" />
 			<option name="Match Oddball Score To Win Round" value="0x3" />
 			<option name="Match King Score To Win Round" value="0x4" />
@@ -1502,15 +1781,15 @@
 			<option name="Oddball Waypoint To Ball" value="0x2F" />
 			<option name="Race Random Track" value="0x30" />
 			<option name="Race Uncontested Flag" value="0x31" />
-			<option name="Ctf Game Type" value="0x32" />
-			<option name="Ctf Sudden Death" value="0x33" />
-			<option name="Ctf Flag May Be Returned" value="0x34" />
-			<option name="Ctf Flag At Home To Score" value="0x35" />
-			<option name="Ctf Flag Reset Time" value="0x36" />
-			<option name="Ctf Speed With Flag" value="0x37" />
-			<option name="Ctf Flag Hit Damage" value="0x38" />
-			<option name="Ctf Driving Gunning With Flag" value="0x39" />
-			<option name="Ctf Waypoint To Own Flag" value="0x3A" />
+			<option name="CTF Game Type" value="0x32" />
+			<option name="CTF Sudden Death" value="0x33" />
+			<option name="CTF Flag May Be Returned" value="0x34" />
+			<option name="CTF Flag At Home To Score" value="0x35" />
+			<option name="CTF Flag Reset Time" value="0x36" />
+			<option name="CTF Speed With Flag" value="0x37" />
+			<option name="CTF Flag Hit Damage" value="0x38" />
+			<option name="CTF Driving Gunning With Flag" value="0x39" />
+			<option name="CTF Waypoint To Own Flag" value="0x3A" />
 			<option name="Assault Game Type" value="0x3B" />
 			<option name="Assault Sudden Death" value="0x3C" />
 			<option name="Assault Detonation Time" value="0x3D" />
@@ -1558,8 +1837,8 @@
 			<option name="UNS. King Dmg. Res. In Hill" value="0x67" />
 			<option name="UNS. Players Ex. Dmg" value="0x68" />
 			<option name="UNS. Players Dmg. Resis." value="0x69" />
-			<option name="UNS. Ctf Carr. Dmg. Resis." value="0x6A" />
-			<option name="UNS. Ctf Carr. Invis." value="0x6B" />
+			<option name="UNS. CTF Carr. Dmg. Resis." value="0x6A" />
+			<option name="UNS. CTF Carr. Invis." value="0x6B" />
 			<option name="UNS. Juggy Dmg. Resis." value="0x6C" />
 			<option name="UNS. Bomb Carr. Dmg. Resis." value="0x6D" />
 			<option name="UNS. Bomb Carr. Invis." value="0x6E" />
@@ -1586,27 +1865,582 @@
 			<option name="Infinite Ammo" value="0x83" />
 			<option name="Recharging Grenades" value="0x84" />
 			<option name="Bottomless Clip" value="0x85" />
+			<option name="Match Medic Score To Win Round" value="0x86" />
+			<option name="Medic Unused" value="0x87" />
+			<option name="Medic Medic Active Camo" value="0x88" />
+			<option name="Uns. Medic Movement" value="0x89" />
+			<option name="Uns. Medic Less Damage" value="0x8A" />
+			<option name="Uns. Medic Shields" value="0x8B" />
+			<option name="Uns. Medic Berserk" value="0x8C" />
+			<option name="Uns. Medic All Start As Medic" value="0x8D" />
+			<option name="Match VIP Score To Win Round" value="0x8E" />
+			<option name="VIP Extra Damage" value="0x8F" />
+			<option name="VIP Damage Resist" value="0x90" />
+			<option name="VIP Active Camo" value="0x91" />
+			<option name="VIP Has Motion Sensor" value="0x92" />
+			<option name="Infected Extra Damage" value="0x93" />
+			<option name="Infected Damage Resist" value="0x94" />
+			<option name="Infected Active Camo" value="0x95" />
+			<option name="Infected Have Motion Sensor" value="0x96" />
+			<option name="VIP Show Enemy VIP Waypoint" value="0x97" />
+			<option name="VIP Helps Teammates" value="0x98" />
+			<option name="Headhunter Own Team Pickup" value="0x99" />
+			<option name="VIP Active Camo Teammates" value="0x9A" />
+			<option name="VIP Extra Damage Teammates" value="0x9B" />
+			<option name="Match Infection Score To Win Round" value="0x9C" />
+			<option name="CTF Flag Shows Player Emblem" value="0x9D" />
 		</enum32>
 		<int32 name="Value" offset="0x4" visible="true" />
 	</tagblock>
-	<int8 name="Unknown" offset="0xE0" visible="true" />
+	<int8 name="Description Index" offset="0xE0" visible="true" />
 	<int8 name="Unknown" offset="0xE1" visible="false" />
 	<int16 name="Unknown" offset="0xE2" visible="false" />
-	<undefined name="Unknown" offset="0xE4" visible="false" />
-	<undefined name="Unknown" offset="0xE8" visible="false" />
-	<undefined name="Unknown" offset="0xEC" visible="false" />
-	<undefined name="Unknown" offset="0xF0" visible="false" />
-	<undefined name="Unknown" offset="0xF4" visible="false" />
-	<undefined name="Unknown" offset="0xF8" visible="false" />
-	<undefined name="Unknown" offset="0xFC" visible="false" />
-	<undefined name="Unknown" offset="0x100" visible="false" />
-	<undefined name="Unknown" offset="0x104" visible="false" />
-	<undefined name="Unknown" offset="0x108" visible="false" />
-	<undefined name="Unknown" offset="0x10C" visible="false" />
-	<undefined name="Unknown" offset="0x110" visible="false" />
-	<undefined name="Unknown" offset="0x114" visible="false" />
-	<undefined name="Unknown" offset="0x118" visible="false" />
-	<undefined name="Unknown" offset="0x11C" visible="false" />
+	<comment title="Create New Medic Variant" />
+	<stringid name="Variant Name" offset="0xE4" visible="true" />
+	<enum32 name="Variant Type" offset="0xE8" visible="true">
+		<option name="Slayer" value="0x0" />
+		<option name="Oddball" value="0x1" />
+		<option name="Juggernaut" value="0x2" />
+		<option name="King Of The Hill" value="0x3" />
+		<option name="Capture The Flag" value="0x4" />
+		<option name="Assault" value="0x5" />
+		<option name="Territories" value="0x6" />
+		<option name="Medic" value="0x7" />
+		<option name="VIP" value="0x8" />
+		<option name="Infection" value="0x9" />
+		<option name="Headhunter" value="0xA" />
+		<option name="Race" value="0xB" />
+	</enum32>
+	<tagblock name="Settings" offset="0xEC" visible="true" elementSize="0x8">
+		<enum32 name="Setting Category" offset="0x0" visible="true">
+			<option name="Match Round Setting" value="0x0" />
+			<option name="Match CTF Score To Win" value="0x1" />
+			<option name="Match Slayer Score To Win Round" value="0x2" />
+			<option name="Match Oddball Score To Win Round" value="0x3" />
+			<option name="Match King Score To Win Round" value="0x4" />
+			<option name="Match Race Score To Win Round" value="0x5" />
+			<option name="Match Headhunter Score To Win Round" value="0x6" />
+			<option name="Match Juggernaut Score To Win Round" value="0x7" />
+			<option name="Match Territories Score To Win Round" value="0x8" />
+			<option name="Match Assault Score To Win Round" value="0x9" />
+			<option name="Match Round Time Limit" value="0xA" />
+			<option name="Match Rounds Reset Map" value="0xB" />
+			<option name="Match Tie Resolution" value="0xC" />
+			<option name="Match Observers" value="0xD" />
+			<option name="Match Join In Progress" value="0xE" />
+			<option name="Maximum Players" value="0xF" />
+			<option name="Lives Per Round" value="0x10" />
+			<option name="Respawn Time" value="0x11" />
+			<option name="Suicide Penalty" value="0x12" />
+			<option name="Shields" value="0x13" />
+			<option name="Motion Sensor" value="0x14" />
+			<option name="Invisibility" value="0x15" />
+			<option name="Team Changing" value="0x16" />
+			<option name="Team Scoring" value="0x17" />
+			<option name="Friendly Fire" value="0x18" />
+			<option name="Team Respawn Setting" value="0x19" />
+			<option name="Betrayal Respawn Penalty" value="0x1A" />
+			<option name="Team Killer Management" value="0x1B" />
+			<option name="Slayer Bonus Points" value="0x1C" />
+			<option name="Slayer Suicide Point Loss" value="0x1D" />
+			<option name="Slayer Death Point Loss" value="0x1E" />
+			<option name="Headhunter Moving Head Bin" value="0x1F" />
+			<option name="Headhunter Point Multiplier" value="0x20" />
+			<option name="Headhunter Suicide Point Loss" value="0x21" />
+			<option name="Headhunter Death Point Loss" value="0x22" />
+			<option name="Headhunter Uncontested Bin" value="0x23" />
+			<option name="Headhunter Speed With Heads" value="0x24" />
+			<option name="Headhunter Max Heads Carried" value="0x25" />
+			<option name="King Uncontested Hill" value="0x26" />
+			<option name="King Team Time Multiplier" value="0x27" />
+			<option name="King Moving Hill" value="0x28" />
+			<option name="King Extra Damage On Hill" value="0x29" />
+			<option name="King Dmg Resistance On Hill" value="0x2A" />
+			<option name="Oddball Ball Spawn Count" value="0x2B" />
+			<option name="Oddball Ball Hit Damage" value="0x2C" />
+			<option name="Oddball Speed With Ball" value="0x2D" />
+			<option name="Oddball Driving Gunning With Ball" value="0x2E" />
+			<option name="Oddball Waypoint To Ball" value="0x2F" />
+			<option name="Race Random Track" value="0x30" />
+			<option name="Race Uncontested Flag" value="0x31" />
+			<option name="CTF Game Type" value="0x32" />
+			<option name="CTF Sudden Death" value="0x33" />
+			<option name="CTF Flag May Be Returned" value="0x34" />
+			<option name="CTF Flag At Home To Score" value="0x35" />
+			<option name="CTF Flag Reset Time" value="0x36" />
+			<option name="CTF Speed With Flag" value="0x37" />
+			<option name="CTF Flag Hit Damage" value="0x38" />
+			<option name="CTF Driving Gunning With Flag" value="0x39" />
+			<option name="CTF Waypoint To Own Flag" value="0x3A" />
+			<option name="Assault Game Type" value="0x3B" />
+			<option name="Assault Sudden Death" value="0x3C" />
+			<option name="Assault Detonation Time" value="0x3D" />
+			<option name="Assault Bomb At Home To Score" value="0x3E" />
+			<option name="Assault Arming Time" value="0x3F" />
+			<option name="Assault Speed With Bomb" value="0x40" />
+			<option name="Assault Bomb Hit Damage" value="0x41" />
+			<option name="Assault Driving Gunning With Bomb" value="0x42" />
+			<option name="Assault Waypoint To Own Bomb" value="0x43" />
+			<option name="Juggernaut Betrayal Point Loss" value="0x44" />
+			<option name="Juggernaut Juggy Extra Damage" value="0x45" />
+			<option name="Juggernaut Juggy Infinite Ammo" value="0x46" />
+			<option name="Juggernaut Juggy Overshields" value="0x47" />
+			<option name="Juggernaut Juggy Active Camo" value="0x48" />
+			<option name="Juggernaut Juggy Motion Sensor" value="0x49" />
+			<option name="Territories Territory Count" value="0x4A" />
+			<option name="Veh. Respawn" value="0x4B" />
+			<option name="Veh. Primary Light Land" value="0x4C" />
+			<option name="Veh. Secondary Light Land" value="0x4D" />
+			<option name="Veh. Primary Heavy Land" value="0x4E" />
+			<option name="Veh. Primary Flying" value="0x4F" />
+			<option name="Veh. Secondary Heavy Land" value="0x50" />
+			<option name="Veh. Primary Turret" value="0x51" />
+			<option name="Veh. Secondary Turret" value="0x52" />
+			<option name="Equip. Weapons On Map" value="0x53" />
+			<option name="Equip. Overshields On Map" value="0x54" />
+			<option name="Equip. Active Camo On Map" value="0x55" />
+			<option name="Equip. Grenades On Map" value="0x56" />
+			<option name="Equip. Weapon Respawn Times" value="0x57" />
+			<option name="Equip. Starting Grenades" value="0x58" />
+			<option name="Equip. Primary Starting Equipment" value="0x59" />
+			<option name="UNS. Max. Living Players" value="0x5A" />
+			<option name="UNS. Teams Enabled" value="0x5B" />
+			<option name="UNS. Assault Bomb May Be Returned" value="0x5C" />
+			<option name="UNS. Max. Teams" value="0x5D" />
+			<option name="UNS. Equip. Secondary Starting Equipment" value="0x5E" />
+			<option name="UNS. Assault Fuse Time" value="0x5F" />
+			<option name="UNS. Juggy Movement" value="0x60" />
+			<option name="UNS. Sticky Fuse" value="0x61" />
+			<option name="UNS. Terr. Contest Time" value="0x62" />
+			<option name="UNS. Terr. Control Time" value="0x63" />
+			<option name="UNS. Oddb. Carr. Invis" value="0x64" />
+			<option name="UNS. King Invis In Hill" value="0x65" />
+			<option name="UNS. Ball Carr. Dmg. Resis." value="0x66" />
+			<option name="UNS. King Dmg. Res. In Hill" value="0x67" />
+			<option name="UNS. Players Ex. Dmg" value="0x68" />
+			<option name="UNS. Players Dmg. Resis." value="0x69" />
+			<option name="UNS. CTF Carr. Dmg. Resis." value="0x6A" />
+			<option name="UNS. CTF Carr. Invis." value="0x6B" />
+			<option name="UNS. Juggy Dmg. Resis." value="0x6C" />
+			<option name="UNS. Bomb Carr. Dmg. Resis." value="0x6D" />
+			<option name="UNS. Bomb Carr. Invis." value="0x6E" />
+			<option name="UNS. Force Even Teams" value="0x6F" />
+			<option name="Skulls Arbiter Envy" value="0x70" />
+			<option name="Skulls Grunt Birthday Party" value="0x71" />
+			<option name="Skulls Famine" value="0x72" />
+			<option name="Skulls Blind" value="0x73" />
+			<option name="Skulls Black Eye" value="0x74" />
+			<option name="Skulls Sputnik" value="0x75" />
+			<option name="Skulls Boom" value="0x76" />
+			<option name="Skulls Eye Patch" value="0x77" />
+			<option name="Skulls Foreign" value="0x78" />
+			<option name="Skulls Grunt Funeral" value="0x79" />
+			<option name="Skulls Recession" value="0x7A" />
+			<option name="Skulls Malfunction" value="0x7B" />
+			<option name="Skulls Streaking" value="0x7C" />
+			<option name="Skulls Scarab" value="0x7D" />
+			<option name="Skulls Feather" value="0x7E" />
+			<option name="Veh. Indestructible" value="0x7F" />
+			<option name="World Gravity Modifier" value="0x80" />
+			<option name="Player Traits Movement Gravity" value="0x81" />
+			<option name="Vehicle Traits Movement Gravity" value="0x82" />
+			<option name="Infinite Ammo" value="0x83" />
+			<option name="Recharging Grenades" value="0x84" />
+			<option name="Bottomless Clip" value="0x85" />
+			<option name="Match Medic Score To Win Round" value="0x86" />
+			<option name="Medic Unused" value="0x87" />
+			<option name="Medic Medic Active Camo" value="0x88" />
+			<option name="Uns. Medic Movement" value="0x89" />
+			<option name="Uns. Medic Less Damage" value="0x8A" />
+			<option name="Uns. Medic Shields" value="0x8B" />
+			<option name="Uns. Medic Berserk" value="0x8C" />
+			<option name="Uns. Medic All Start As Medic" value="0x8D" />
+			<option name="Match VIP Score To Win Round" value="0x8E" />
+			<option name="VIP Extra Damage" value="0x8F" />
+			<option name="VIP Damage Resist" value="0x90" />
+			<option name="VIP Active Camo" value="0x91" />
+			<option name="VIP Has Motion Sensor" value="0x92" />
+			<option name="Infected Extra Damage" value="0x93" />
+			<option name="Infected Damage Resist" value="0x94" />
+			<option name="Infected Active Camo" value="0x95" />
+			<option name="Infected Have Motion Sensor" value="0x96" />
+			<option name="VIP Show Enemy VIP Waypoint" value="0x97" />
+			<option name="VIP Helps Teammates" value="0x98" />
+			<option name="Headhunter Own Team Pickup" value="0x99" />
+			<option name="VIP Active Camo Teammates" value="0x9A" />
+			<option name="VIP Extra Damage Teammates" value="0x9B" />
+			<option name="Match Infection Score To Win Round" value="0x9C" />
+			<option name="CTF Flag Shows Player Emblem" value="0x9D" />
+		</enum32>
+		<int32 name="Value" offset="0x4" visible="true" />
+	</tagblock>
+	<int8 name="Description Index" offset="0xF4" visible="true" />
+	<int8 name="Unknown" offset="0xF5" visible="false" />
+	<int16 name="Unknown" offset="0xF6" visible="false" />
+	<comment title="Create New VIP Variant" />
+	<stringid name="Variant Name" offset="0xF8" visible="true" />
+	<enum32 name="Variant Type" offset="0xFC" visible="true">
+		<option name="Slayer" value="0x0" />
+		<option name="Oddball" value="0x1" />
+		<option name="Juggernaut" value="0x2" />
+		<option name="King Of The Hill" value="0x3" />
+		<option name="Capture The Flag" value="0x4" />
+		<option name="Assault" value="0x5" />
+		<option name="Territories" value="0x6" />
+		<option name="Medic" value="0x7" />
+		<option name="VIP" value="0x8" />
+		<option name="Infection" value="0x9" />
+		<option name="Headhunter" value="0xA" />
+		<option name="Race" value="0xB" />
+	</enum32>
+	<tagblock name="Settings" offset="0x100" visible="true" elementSize="0x8">
+		<enum32 name="Setting Category" offset="0x0" visible="true">
+			<option name="Match Round Setting" value="0x0" />
+			<option name="Match CTF Score To Win" value="0x1" />
+			<option name="Match Slayer Score To Win Round" value="0x2" />
+			<option name="Match Oddball Score To Win Round" value="0x3" />
+			<option name="Match King Score To Win Round" value="0x4" />
+			<option name="Match Race Score To Win Round" value="0x5" />
+			<option name="Match Headhunter Score To Win Round" value="0x6" />
+			<option name="Match Juggernaut Score To Win Round" value="0x7" />
+			<option name="Match Territories Score To Win Round" value="0x8" />
+			<option name="Match Assault Score To Win Round" value="0x9" />
+			<option name="Match Round Time Limit" value="0xA" />
+			<option name="Match Rounds Reset Map" value="0xB" />
+			<option name="Match Tie Resolution" value="0xC" />
+			<option name="Match Observers" value="0xD" />
+			<option name="Match Join In Progress" value="0xE" />
+			<option name="Maximum Players" value="0xF" />
+			<option name="Lives Per Round" value="0x10" />
+			<option name="Respawn Time" value="0x11" />
+			<option name="Suicide Penalty" value="0x12" />
+			<option name="Shields" value="0x13" />
+			<option name="Motion Sensor" value="0x14" />
+			<option name="Invisibility" value="0x15" />
+			<option name="Team Changing" value="0x16" />
+			<option name="Team Scoring" value="0x17" />
+			<option name="Friendly Fire" value="0x18" />
+			<option name="Team Respawn Setting" value="0x19" />
+			<option name="Betrayal Respawn Penalty" value="0x1A" />
+			<option name="Team Killer Management" value="0x1B" />
+			<option name="Slayer Bonus Points" value="0x1C" />
+			<option name="Slayer Suicide Point Loss" value="0x1D" />
+			<option name="Slayer Death Point Loss" value="0x1E" />
+			<option name="Headhunter Moving Head Bin" value="0x1F" />
+			<option name="Headhunter Point Multiplier" value="0x20" />
+			<option name="Headhunter Suicide Point Loss" value="0x21" />
+			<option name="Headhunter Death Point Loss" value="0x22" />
+			<option name="Headhunter Uncontested Bin" value="0x23" />
+			<option name="Headhunter Speed With Heads" value="0x24" />
+			<option name="Headhunter Max Heads Carried" value="0x25" />
+			<option name="King Uncontested Hill" value="0x26" />
+			<option name="King Team Time Multiplier" value="0x27" />
+			<option name="King Moving Hill" value="0x28" />
+			<option name="King Extra Damage On Hill" value="0x29" />
+			<option name="King Dmg Resistance On Hill" value="0x2A" />
+			<option name="Oddball Ball Spawn Count" value="0x2B" />
+			<option name="Oddball Ball Hit Damage" value="0x2C" />
+			<option name="Oddball Speed With Ball" value="0x2D" />
+			<option name="Oddball Driving Gunning With Ball" value="0x2E" />
+			<option name="Oddball Waypoint To Ball" value="0x2F" />
+			<option name="Race Random Track" value="0x30" />
+			<option name="Race Uncontested Flag" value="0x31" />
+			<option name="CTF Game Type" value="0x32" />
+			<option name="CTF Sudden Death" value="0x33" />
+			<option name="CTF Flag May Be Returned" value="0x34" />
+			<option name="CTF Flag At Home To Score" value="0x35" />
+			<option name="CTF Flag Reset Time" value="0x36" />
+			<option name="CTF Speed With Flag" value="0x37" />
+			<option name="CTF Flag Hit Damage" value="0x38" />
+			<option name="CTF Driving Gunning With Flag" value="0x39" />
+			<option name="CTF Waypoint To Own Flag" value="0x3A" />
+			<option name="Assault Game Type" value="0x3B" />
+			<option name="Assault Sudden Death" value="0x3C" />
+			<option name="Assault Detonation Time" value="0x3D" />
+			<option name="Assault Bomb At Home To Score" value="0x3E" />
+			<option name="Assault Arming Time" value="0x3F" />
+			<option name="Assault Speed With Bomb" value="0x40" />
+			<option name="Assault Bomb Hit Damage" value="0x41" />
+			<option name="Assault Driving Gunning With Bomb" value="0x42" />
+			<option name="Assault Waypoint To Own Bomb" value="0x43" />
+			<option name="Juggernaut Betrayal Point Loss" value="0x44" />
+			<option name="Juggernaut Juggy Extra Damage" value="0x45" />
+			<option name="Juggernaut Juggy Infinite Ammo" value="0x46" />
+			<option name="Juggernaut Juggy Overshields" value="0x47" />
+			<option name="Juggernaut Juggy Active Camo" value="0x48" />
+			<option name="Juggernaut Juggy Motion Sensor" value="0x49" />
+			<option name="Territories Territory Count" value="0x4A" />
+			<option name="Veh. Respawn" value="0x4B" />
+			<option name="Veh. Primary Light Land" value="0x4C" />
+			<option name="Veh. Secondary Light Land" value="0x4D" />
+			<option name="Veh. Primary Heavy Land" value="0x4E" />
+			<option name="Veh. Primary Flying" value="0x4F" />
+			<option name="Veh. Secondary Heavy Land" value="0x50" />
+			<option name="Veh. Primary Turret" value="0x51" />
+			<option name="Veh. Secondary Turret" value="0x52" />
+			<option name="Equip. Weapons On Map" value="0x53" />
+			<option name="Equip. Overshields On Map" value="0x54" />
+			<option name="Equip. Active Camo On Map" value="0x55" />
+			<option name="Equip. Grenades On Map" value="0x56" />
+			<option name="Equip. Weapon Respawn Times" value="0x57" />
+			<option name="Equip. Starting Grenades" value="0x58" />
+			<option name="Equip. Primary Starting Equipment" value="0x59" />
+			<option name="UNS. Max. Living Players" value="0x5A" />
+			<option name="UNS. Teams Enabled" value="0x5B" />
+			<option name="UNS. Assault Bomb May Be Returned" value="0x5C" />
+			<option name="UNS. Max. Teams" value="0x5D" />
+			<option name="UNS. Equip. Secondary Starting Equipment" value="0x5E" />
+			<option name="UNS. Assault Fuse Time" value="0x5F" />
+			<option name="UNS. Juggy Movement" value="0x60" />
+			<option name="UNS. Sticky Fuse" value="0x61" />
+			<option name="UNS. Terr. Contest Time" value="0x62" />
+			<option name="UNS. Terr. Control Time" value="0x63" />
+			<option name="UNS. Oddb. Carr. Invis" value="0x64" />
+			<option name="UNS. King Invis In Hill" value="0x65" />
+			<option name="UNS. Ball Carr. Dmg. Resis." value="0x66" />
+			<option name="UNS. King Dmg. Res. In Hill" value="0x67" />
+			<option name="UNS. Players Ex. Dmg" value="0x68" />
+			<option name="UNS. Players Dmg. Resis." value="0x69" />
+			<option name="UNS. CTF Carr. Dmg. Resis." value="0x6A" />
+			<option name="UNS. CTF Carr. Invis." value="0x6B" />
+			<option name="UNS. Juggy Dmg. Resis." value="0x6C" />
+			<option name="UNS. Bomb Carr. Dmg. Resis." value="0x6D" />
+			<option name="UNS. Bomb Carr. Invis." value="0x6E" />
+			<option name="UNS. Force Even Teams" value="0x6F" />
+			<option name="Skulls Arbiter Envy" value="0x70" />
+			<option name="Skulls Grunt Birthday Party" value="0x71" />
+			<option name="Skulls Famine" value="0x72" />
+			<option name="Skulls Blind" value="0x73" />
+			<option name="Skulls Black Eye" value="0x74" />
+			<option name="Skulls Sputnik" value="0x75" />
+			<option name="Skulls Boom" value="0x76" />
+			<option name="Skulls Eye Patch" value="0x77" />
+			<option name="Skulls Foreign" value="0x78" />
+			<option name="Skulls Grunt Funeral" value="0x79" />
+			<option name="Skulls Recession" value="0x7A" />
+			<option name="Skulls Malfunction" value="0x7B" />
+			<option name="Skulls Streaking" value="0x7C" />
+			<option name="Skulls Scarab" value="0x7D" />
+			<option name="Skulls Feather" value="0x7E" />
+			<option name="Veh. Indestructible" value="0x7F" />
+			<option name="World Gravity Modifier" value="0x80" />
+			<option name="Player Traits Movement Gravity" value="0x81" />
+			<option name="Vehicle Traits Movement Gravity" value="0x82" />
+			<option name="Infinite Ammo" value="0x83" />
+			<option name="Recharging Grenades" value="0x84" />
+			<option name="Bottomless Clip" value="0x85" />
+			<option name="Match Medic Score To Win Round" value="0x86" />
+			<option name="Medic Unused" value="0x87" />
+			<option name="Medic Medic Active Camo" value="0x88" />
+			<option name="Uns. Medic Movement" value="0x89" />
+			<option name="Uns. Medic Less Damage" value="0x8A" />
+			<option name="Uns. Medic Shields" value="0x8B" />
+			<option name="Uns. Medic Berserk" value="0x8C" />
+			<option name="Uns. Medic All Start As Medic" value="0x8D" />
+			<option name="Match VIP Score To Win Round" value="0x8E" />
+			<option name="VIP Extra Damage" value="0x8F" />
+			<option name="VIP Damage Resist" value="0x90" />
+			<option name="VIP Active Camo" value="0x91" />
+			<option name="VIP Has Motion Sensor" value="0x92" />
+			<option name="Infected Extra Damage" value="0x93" />
+			<option name="Infected Damage Resist" value="0x94" />
+			<option name="Infected Active Camo" value="0x95" />
+			<option name="Infected Have Motion Sensor" value="0x96" />
+			<option name="VIP Show Enemy VIP Waypoint" value="0x97" />
+			<option name="VIP Helps Teammates" value="0x98" />
+			<option name="Headhunter Own Team Pickup" value="0x99" />
+			<option name="VIP Active Camo Teammates" value="0x9A" />
+			<option name="VIP Extra Damage Teammates" value="0x9B" />
+			<option name="Match Infection Score To Win Round" value="0x9C" />
+			<option name="CTF Flag Shows Player Emblem" value="0x9D" />
+		</enum32>
+		<int32 name="Value" offset="0x4" visible="true" />
+	</tagblock>
+	<int8 name="Description Index" offset="0x108" visible="true" />
+	<int8 name="Unknown" offset="0x109" visible="false" />
+	<int16 name="Unknown" offset="0x10A" visible="false" />
+	<comment title="Create New Infection Variant" />
+	<stringid name="Variant Name" offset="0x10C" visible="true" />
+	<enum32 name="Variant Type" offset="0x110" visible="true">
+		<option name="Slayer" value="0x0" />
+		<option name="Oddball" value="0x1" />
+		<option name="Juggernaut" value="0x2" />
+		<option name="King Of The Hill" value="0x3" />
+		<option name="Capture The Flag" value="0x4" />
+		<option name="Assault" value="0x5" />
+		<option name="Territories" value="0x6" />
+		<option name="Medic" value="0x7" />
+		<option name="VIP" value="0x8" />
+		<option name="Infection" value="0x9" />
+		<option name="Headhunter" value="0xA" />
+		<option name="Race" value="0xB" />
+	</enum32>
+	<tagblock name="Settings" offset="0x114" visible="true" elementSize="0x8">
+		<enum32 name="Setting Category" offset="0x0" visible="true">
+			<option name="Match Round Setting" value="0x0" />
+			<option name="Match CTF Score To Win" value="0x1" />
+			<option name="Match Slayer Score To Win Round" value="0x2" />
+			<option name="Match Oddball Score To Win Round" value="0x3" />
+			<option name="Match King Score To Win Round" value="0x4" />
+			<option name="Match Race Score To Win Round" value="0x5" />
+			<option name="Match Headhunter Score To Win Round" value="0x6" />
+			<option name="Match Juggernaut Score To Win Round" value="0x7" />
+			<option name="Match Territories Score To Win Round" value="0x8" />
+			<option name="Match Assault Score To Win Round" value="0x9" />
+			<option name="Match Round Time Limit" value="0xA" />
+			<option name="Match Rounds Reset Map" value="0xB" />
+			<option name="Match Tie Resolution" value="0xC" />
+			<option name="Match Observers" value="0xD" />
+			<option name="Match Join In Progress" value="0xE" />
+			<option name="Maximum Players" value="0xF" />
+			<option name="Lives Per Round" value="0x10" />
+			<option name="Respawn Time" value="0x11" />
+			<option name="Suicide Penalty" value="0x12" />
+			<option name="Shields" value="0x13" />
+			<option name="Motion Sensor" value="0x14" />
+			<option name="Invisibility" value="0x15" />
+			<option name="Team Changing" value="0x16" />
+			<option name="Team Scoring" value="0x17" />
+			<option name="Friendly Fire" value="0x18" />
+			<option name="Team Respawn Setting" value="0x19" />
+			<option name="Betrayal Respawn Penalty" value="0x1A" />
+			<option name="Team Killer Management" value="0x1B" />
+			<option name="Slayer Bonus Points" value="0x1C" />
+			<option name="Slayer Suicide Point Loss" value="0x1D" />
+			<option name="Slayer Death Point Loss" value="0x1E" />
+			<option name="Headhunter Moving Head Bin" value="0x1F" />
+			<option name="Headhunter Point Multiplier" value="0x20" />
+			<option name="Headhunter Suicide Point Loss" value="0x21" />
+			<option name="Headhunter Death Point Loss" value="0x22" />
+			<option name="Headhunter Uncontested Bin" value="0x23" />
+			<option name="Headhunter Speed With Heads" value="0x24" />
+			<option name="Headhunter Max Heads Carried" value="0x25" />
+			<option name="King Uncontested Hill" value="0x26" />
+			<option name="King Team Time Multiplier" value="0x27" />
+			<option name="King Moving Hill" value="0x28" />
+			<option name="King Extra Damage On Hill" value="0x29" />
+			<option name="King Dmg Resistance On Hill" value="0x2A" />
+			<option name="Oddball Ball Spawn Count" value="0x2B" />
+			<option name="Oddball Ball Hit Damage" value="0x2C" />
+			<option name="Oddball Speed With Ball" value="0x2D" />
+			<option name="Oddball Driving Gunning With Ball" value="0x2E" />
+			<option name="Oddball Waypoint To Ball" value="0x2F" />
+			<option name="Race Random Track" value="0x30" />
+			<option name="Race Uncontested Flag" value="0x31" />
+			<option name="CTF Game Type" value="0x32" />
+			<option name="CTF Sudden Death" value="0x33" />
+			<option name="CTF Flag May Be Returned" value="0x34" />
+			<option name="CTF Flag At Home To Score" value="0x35" />
+			<option name="CTF Flag Reset Time" value="0x36" />
+			<option name="CTF Speed With Flag" value="0x37" />
+			<option name="CTF Flag Hit Damage" value="0x38" />
+			<option name="CTF Driving Gunning With Flag" value="0x39" />
+			<option name="CTF Waypoint To Own Flag" value="0x3A" />
+			<option name="Assault Game Type" value="0x3B" />
+			<option name="Assault Sudden Death" value="0x3C" />
+			<option name="Assault Detonation Time" value="0x3D" />
+			<option name="Assault Bomb At Home To Score" value="0x3E" />
+			<option name="Assault Arming Time" value="0x3F" />
+			<option name="Assault Speed With Bomb" value="0x40" />
+			<option name="Assault Bomb Hit Damage" value="0x41" />
+			<option name="Assault Driving Gunning With Bomb" value="0x42" />
+			<option name="Assault Waypoint To Own Bomb" value="0x43" />
+			<option name="Juggernaut Betrayal Point Loss" value="0x44" />
+			<option name="Juggernaut Juggy Extra Damage" value="0x45" />
+			<option name="Juggernaut Juggy Infinite Ammo" value="0x46" />
+			<option name="Juggernaut Juggy Overshields" value="0x47" />
+			<option name="Juggernaut Juggy Active Camo" value="0x48" />
+			<option name="Juggernaut Juggy Motion Sensor" value="0x49" />
+			<option name="Territories Territory Count" value="0x4A" />
+			<option name="Veh. Respawn" value="0x4B" />
+			<option name="Veh. Primary Light Land" value="0x4C" />
+			<option name="Veh. Secondary Light Land" value="0x4D" />
+			<option name="Veh. Primary Heavy Land" value="0x4E" />
+			<option name="Veh. Primary Flying" value="0x4F" />
+			<option name="Veh. Secondary Heavy Land" value="0x50" />
+			<option name="Veh. Primary Turret" value="0x51" />
+			<option name="Veh. Secondary Turret" value="0x52" />
+			<option name="Equip. Weapons On Map" value="0x53" />
+			<option name="Equip. Overshields On Map" value="0x54" />
+			<option name="Equip. Active Camo On Map" value="0x55" />
+			<option name="Equip. Grenades On Map" value="0x56" />
+			<option name="Equip. Weapon Respawn Times" value="0x57" />
+			<option name="Equip. Starting Grenades" value="0x58" />
+			<option name="Equip. Primary Starting Equipment" value="0x59" />
+			<option name="UNS. Max. Living Players" value="0x5A" />
+			<option name="UNS. Teams Enabled" value="0x5B" />
+			<option name="UNS. Assault Bomb May Be Returned" value="0x5C" />
+			<option name="UNS. Max. Teams" value="0x5D" />
+			<option name="UNS. Equip. Secondary Starting Equipment" value="0x5E" />
+			<option name="UNS. Assault Fuse Time" value="0x5F" />
+			<option name="UNS. Juggy Movement" value="0x60" />
+			<option name="UNS. Sticky Fuse" value="0x61" />
+			<option name="UNS. Terr. Contest Time" value="0x62" />
+			<option name="UNS. Terr. Control Time" value="0x63" />
+			<option name="UNS. Oddb. Carr. Invis" value="0x64" />
+			<option name="UNS. King Invis In Hill" value="0x65" />
+			<option name="UNS. Ball Carr. Dmg. Resis." value="0x66" />
+			<option name="UNS. King Dmg. Res. In Hill" value="0x67" />
+			<option name="UNS. Players Ex. Dmg" value="0x68" />
+			<option name="UNS. Players Dmg. Resis." value="0x69" />
+			<option name="UNS. CTF Carr. Dmg. Resis." value="0x6A" />
+			<option name="UNS. CTF Carr. Invis." value="0x6B" />
+			<option name="UNS. Juggy Dmg. Resis." value="0x6C" />
+			<option name="UNS. Bomb Carr. Dmg. Resis." value="0x6D" />
+			<option name="UNS. Bomb Carr. Invis." value="0x6E" />
+			<option name="UNS. Force Even Teams" value="0x6F" />
+			<option name="Skulls Arbiter Envy" value="0x70" />
+			<option name="Skulls Grunt Birthday Party" value="0x71" />
+			<option name="Skulls Famine" value="0x72" />
+			<option name="Skulls Blind" value="0x73" />
+			<option name="Skulls Black Eye" value="0x74" />
+			<option name="Skulls Sputnik" value="0x75" />
+			<option name="Skulls Boom" value="0x76" />
+			<option name="Skulls Eye Patch" value="0x77" />
+			<option name="Skulls Foreign" value="0x78" />
+			<option name="Skulls Grunt Funeral" value="0x79" />
+			<option name="Skulls Recession" value="0x7A" />
+			<option name="Skulls Malfunction" value="0x7B" />
+			<option name="Skulls Streaking" value="0x7C" />
+			<option name="Skulls Scarab" value="0x7D" />
+			<option name="Skulls Feather" value="0x7E" />
+			<option name="Veh. Indestructible" value="0x7F" />
+			<option name="World Gravity Modifier" value="0x80" />
+			<option name="Player Traits Movement Gravity" value="0x81" />
+			<option name="Vehicle Traits Movement Gravity" value="0x82" />
+			<option name="Infinite Ammo" value="0x83" />
+			<option name="Recharging Grenades" value="0x84" />
+			<option name="Bottomless Clip" value="0x85" />
+			<option name="Match Medic Score To Win Round" value="0x86" />
+			<option name="Medic Unused" value="0x87" />
+			<option name="Medic Medic Active Camo" value="0x88" />
+			<option name="Uns. Medic Movement" value="0x89" />
+			<option name="Uns. Medic Less Damage" value="0x8A" />
+			<option name="Uns. Medic Shields" value="0x8B" />
+			<option name="Uns. Medic Berserk" value="0x8C" />
+			<option name="Uns. Medic All Start As Medic" value="0x8D" />
+			<option name="Match VIP Score To Win Round" value="0x8E" />
+			<option name="VIP Extra Damage" value="0x8F" />
+			<option name="VIP Damage Resist" value="0x90" />
+			<option name="VIP Active Camo" value="0x91" />
+			<option name="VIP Has Motion Sensor" value="0x92" />
+			<option name="Infected Extra Damage" value="0x93" />
+			<option name="Infected Damage Resist" value="0x94" />
+			<option name="Infected Active Camo" value="0x95" />
+			<option name="Infected Have Motion Sensor" value="0x96" />
+			<option name="VIP Show Enemy VIP Waypoint" value="0x97" />
+			<option name="VIP Helps Teammates" value="0x98" />
+			<option name="Headhunter Own Team Pickup" value="0x99" />
+			<option name="VIP Active Camo Teammates" value="0x9A" />
+			<option name="VIP Extra Damage Teammates" value="0x9B" />
+			<option name="Match Infection Score To Win Round" value="0x9C" />
+			<option name="CTF Flag Shows Player Emblem" value="0x9D" />
+		</enum32>
+		<int32 name="Value" offset="0x4" visible="true" />
+	</tagblock>
+	<int8 name="Description Index" offset="0x11C" visible="true" />
+	<int8 name="Unknown" offset="0x11D" visible="false" />
+	<int16 name="Unknown" offset="0x11E" visible="false" />
 	<undefined name="Unknown" offset="0x120" visible="false" />
 	<undefined name="Unknown" offset="0x124" visible="false" />
 	<undefined name="Unknown" offset="0x128" visible="false" />

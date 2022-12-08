@@ -27,9 +27,9 @@
 		</tagblock>
 	</tagblock>
 	<tagblock name="Background Sound Palette" offset="0x8" visible="true" elementSize="0x64">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<tagRef name="Background Sound" offset="0x20" visible="true" />
-		<tagRef name="Inside Cluster Sound" offset="0x28" visible="true" />
+		<tagRef name="Inside Cluster Sound" offset="0x28" visible="true" tooltip="play only when player is inside cluster." />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
@@ -50,7 +50,7 @@
 		<undefined name="Unknown" offset="0x60" visible="false" />
 	</tagblock>
 	<tagblock name="Sound Environment Palette" offset="0x10" visible="true" elementSize="0x48">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<tagRef name="Sound Environment" offset="0x20" visible="true" />
 		<float32 name="Cutoff Distance" offset="0x28" visible="true" />
 		<float32 name="Interpolation Speed" offset="0x2C" visible="true" />
@@ -62,7 +62,7 @@
 		<undefined name="Unknown" offset="0x44" visible="false" />
 	</tagblock>
 	<tagblock name="Weather Palette" offset="0x18" visible="true" elementSize="0x88">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<tagRef name="Weather System" offset="0x20" visible="true" />
 		<int16 name="Unknown" offset="0x28" visible="false" />
 		<int16 name="Unknown" offset="0x2A" visible="false" />
@@ -78,24 +78,24 @@
 		<vector3 name="Wind Direction" offset="0x54" visible="true" />
 		<float32 name="Wind Magnitude" offset="0x60" visible="true" />
 		<undefined name="Unknown" offset="0x64" visible="false" />
-		<ascii name="Wind Scale Function" offset="0x68" length="0x20" visible="true" />
+		<ascii name="Wind Scale Function" offset="0x68" size="0x20" visible="true" />
 	</tagblock>
 	<tagblock name="Atmospheric Fog Palette" offset="0x20" visible="true" elementSize="0xF4">
 		<stringId name="Name" offset="0x0" visible="true" />
-		<comment title="Atmostpheric Fog" />
+		<comment title="Atmospheric Fog" />
 		<colorf name="Color" offset="0x4" alpha="false" visible="true" />
-		<float32 name="Spread Distance" offset="0x10" visible="true" />
+		<float32 name="Spread Distance" offset="0x10" visible="true" tooltip="how far fog spreads into adjacent clusters" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
-		<float32 name="Maximum Density" offset="0x18" visible="true" />
-		<float32 name="Start Distance" offset="0x1C" visible="true" />
-		<float32 name="Opaque Distance" offset="0x20" visible="true" />
+		<float32 name="Maximum Density" offset="0x18" visible="true" tooltip="fog density clamps to this value." />
+		<float32 name="Start Distance" offset="0x1C" visible="true" tooltip="before this distance, there is no fog." />
+		<float32 name="Opaque Distance" offset="0x20" visible="true" tooltip="fog becomes opaque (maximum density) at this distance from viewer." />
 		<comment title="Secondary Fog" />
 		<colorf name="Color" offset="0x24" alpha="false" visible="true" />
-		<float32 name="Spread Distance" offset="0x30" visible="true" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<float32 name="Maximum Density" offset="0x38" visible="true" />
-		<float32 name="Start Distance" offset="0x3C" visible="true" />
-		<float32 name="Opaque Distance" offset="0x40" visible="true" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<float32 name="Maximum Density" offset="0x34" visible="true" tooltip="fog density clamps to this value." />
+		<float32 name="Start Distance" offset="0x38" visible="true" tooltip="before this distance, there is no fog." />
+		<float32 name="Opaque Distance" offset="0x3C" visible="true" tooltip="fog becomes opaque (maximum density) at this distance from viewer." />
+		<undefined name="Unknown" offset="0x40" visible="false" />
 		<comment title="Planar Fog Override">Planar fog, if present, is interpolated toward these values.</comment>
 		<colorf name="Planar Color" offset="0x44" alpha="false" visible="true" />
 		<float32 name="Planar Maximum Density" offset="0x50" visible="true" />
@@ -145,7 +145,7 @@
 			<bit name="Disable Atmospheric Fog" index="0" />
 			<bit name="Disable Secondary Fog" index="1" />
 			<bit name="Disable Planar Fog" index="2" />
-			<bit name="Invert Planar Fog Priorites" index="3" />
+			<bit name="Invert Planar Fog Priorities" index="3" />
 			<bit name="Disable Water" index="4" />
 		</flags16>
 		<int16 name="Unknown" offset="0xF2" visible="false" />

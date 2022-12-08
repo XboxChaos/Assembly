@@ -70,7 +70,7 @@
 		<tagRef name="Sound" offset="0x0" visible="true" />
 	</tagblock>
 	<tagblock name="Camera" offset="0x10C" visible="true" elementSize="0x15C">
-		<undefined name="Unknown" offset="0x0" visible="false" />
+		<int32 name="Unknown" offset="0x0" visible="false" />
 		<tagRef name="Default Unit Camera Track" offset="0x4" visible="true" />
 		<float32 name="Unknown" offset="0x18" visible="false" />
 		<float32 name="Unknown" offset="0x1C" visible="false" />
@@ -155,9 +155,10 @@
 		<undefined name="Unknown" offset="0x158" visible="false" />
 	</tagblock>
 	<tagblock name="Player Control" offset="0x120" visible="true" elementSize="0x88">
+		<comment title="Player Aim Magnetism">Relates to the 'magnetism' effect of the player's crosshair over targets when looking around. NOT to be confused with auto-aim, which adjusts fired projectiles</comment>
 		<float32 name="Magnetism Friction" offset="0x0" visible="true" tooltip="how much the crosshair slows over enemies" />
 		<float32 name="Magnetism Adhesion" offset="0x4" visible="true" tooltip="how much the crosshair sticks to enemies" />
-		<float32 name="Inconsequential Target Scale" offset="0x8" visible="true" tooltip="scales magnetism level for inconsequential targets like infection forms" />
+		<float32 name="Inconsequential Target Scale" offset="0x8" visible="true" tooltip="scales magnetism level for inconsequential units like infection forms" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -365,7 +366,7 @@
 		<tagRef name="Vector Normalization" offset="0x14" visible="true" />
 		<tagRef name="Atmospheric Fog Density" offset="0x28" visible="true" />
 		<tagRef name="Planar Fog Density" offset="0x3C" visible="true" />
-		<tagRef name="Linear Corner Fade" offset="0x50" visible="true" />
+		<tagRef name="Linear Corner Fade" offset="0x50" visible="true" tooltip="used for shadows" />
 		<tagRef name="Active Camouflage Distortion" offset="0x64" visible="true" />
 		<tagRef name="Glow" offset="0x78" visible="true" />
 		<undefined name="Unknown" offset="0x8C" visible="false" />
@@ -413,6 +414,9 @@
 		<float32 name="Refraction Amount" offset="0x1B8" visible="true" />
 		<float32 name="Distance Falloff" offset="0x1BC" visible="true" />
 		<colorf name="Tint Color" offset="0x1C0" alpha="false" visible="true" />
+		<comment title="Super Active Camouflage">Dear user:
+	just consider 'hyper-stealth' and 'super active camouflage' interchangeable
+&lt;3 Good Number Company</comment>
 		<float32 name="Hyper-Stealth Refraction" offset="0x1CC" visible="true" />
 		<float32 name="Hyper-Stealth Distance Falloff" offset="0x1D0" visible="true" />
 		<colorf name="Hyper-Stealth Tint Color" offset="0x1D4" alpha="false" visible="true" />
@@ -455,11 +459,11 @@
 	<tagblock name="Cheat Powerups" offset="0x190" visible="true" elementSize="0x14">
 		<tagRef name="Powerup" offset="0x0" visible="true" />
 	</tagblock>
-	<uint32 name="Multiplayer Information Block Here" offset="0x1A4" visible="false" />
-	<uint32 name="Multiplayer Information Block Here" offset="0x1A8" visible="false" />
-	<uint32 name="Multiplayer Information Block Here" offset="0x1AC" visible="false" />
-	<uint32 name="Multiplayer Information Block Here" offset="0x1B0" visible="false" />
-	<uint32 name="Multiplayer Information Block Here" offset="0x1B4" visible="false" />
+	<uint32 name="Multiplayer Information Block" offset="0x1A4" visible="false" />
+	<uint32 name="Multiplayer Information Block" offset="0x1A8" visible="false" />
+	<uint32 name="Multiplayer Information Block" offset="0x1AC" visible="false" />
+	<uint32 name="Multiplayer Information Block" offset="0x1B0" visible="false" />
+	<uint32 name="Multiplayer Information Block" offset="0x1B4" visible="false" />
 	<tagblock name="Player Information" offset="0x1B8" visible="true" elementSize="0xFC">
 		<tagRef name="Unit" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -806,8 +810,8 @@
 		<tagRef name="Melee Hit Sound" offset="0x374" visible="true" />
 	</tagblock>
 	<tagblock name="Playlist Members" offset="0x208" visible="true" elementSize="0x94">
-		<ascii name="Map Name" offset="0x0" length="0x20" visible="true" />
-		<ascii name="Game Variant" offset="0x20" length="0x20" visible="true" />
+		<ascii name="Map Name" offset="0x0" size="0x20" visible="true" />
+		<ascii name="Game Variant" offset="0x20" size="0x20" visible="true" />
 		<int32 name="Minimum Experience" offset="0x40" visible="true" />
 		<int32 name="Maximum Experience" offset="0x44" visible="true" />
 		<int32 name="Minimum Player Count" offset="0x48" visible="true" />

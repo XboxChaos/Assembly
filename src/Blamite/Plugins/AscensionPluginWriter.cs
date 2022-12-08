@@ -238,6 +238,13 @@ namespace Blamite.Plugins
 			// TODO: does Ascension support this?
 		}
 
+		public void VisitHexString(string name, uint offset, bool visible, int length, uint pluginLine, string tooltip)
+		{
+			WriteValueStart("bytearray", name, offset, visible);
+			_output.WriteAttributeString("length", length.ToString(CultureInfo.InvariantCulture));
+			_output.WriteEndElement();
+		}
+
 		public void VisitColorInt(string name, uint offset, bool visible, bool alpha, uint pluginLine, string tooltip)
 		{
 			WriteValueStart("color8", name, offset, visible);
@@ -369,6 +376,15 @@ namespace Blamite.Plugins
 		public void VisitDatum(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 			WriteBasicValue("uint32", name, offset, visible);
+		}
+
+		public void VisitOldStringID(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			WriteValueStart("string", name, offset, visible);
+			_output.WriteAttributeString("length", "0x1C");
+			_output.WriteEndElement();
+
+			WriteBasicValue("stringid", name, offset + 0x1C, visible);
 		}
 
 		private void WriteValueStart(string element, string name, uint offset, bool visible)

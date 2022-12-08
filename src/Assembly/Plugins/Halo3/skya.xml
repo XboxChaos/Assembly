@@ -4,55 +4,67 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
-	<undefined name="Unknown" offset="0x0" visible="false" />
-	<tagRef name="Fog Bitmap" offset="0x4" visible="true" />
-	<float32 name="Unknown" offset="0x14" visible="false" />
-	<float32 name="Unknown" offset="0x18" visible="false" />
-	<float32 name="Unknown" offset="0x1C" visible="false" />
-	<float32 name="Unknown" offset="0x20" visible="false" />
-	<float32 name="Unknown" offset="0x24" visible="false" />
-	<float32 name="Unknown" offset="0x28" visible="false" />
-	<float32 name="Unknown" offset="0x2C" visible="false" />
-	<undefined name="Unknown" offset="0x30" visible="false" />
-	<tagblock name="Atmosphere Properties" offset="0x34" visible="true" elementSize="0xA4">
-		<int16 name="Unknown" offset="0x0" visible="false" />
+	<flags16 name="Flags" offset="0x0" visible="true">
+		<bit name="Lock Effects To Nearest Cluster" index="0" />
+	</flags16>
+	<int16 name="Unknown" offset="0x2" visible="false" />
+	<tagRef name="Fog Bitmap" offset="0x4" visible="true" tootip="Noise texture to use on the screen-aligned sheets of fog" />
+	<float32 name="Texture Repeat Rate" offset="0x14" visible="true" tooltip="Scaling factor to apply to fog UV coordinates" />
+	<float32 name="Distance Between Sheets" offset="0x18" visible="true" tooltip="Separating distance between sheets of fog" />
+	<float32 name="Depth Fade Factor" offset="0x1C" visible="true" tooltip="Lower values (approaching 0) cause a smoother fade at scene boundaries. Larger values (1 or more) make for a sharp transition" />
+	<float32 name="Cluster Search Radius" offset="0x20" visible="true" tooltip="Radius (in world units) to search for neighboring clusters for the purpose of cross-fading (20-50 seems reasonable, default: 25)" />
+	<float32 name="Falloff Start Distance" offset="0x24" visible="true" tooltip="Distance (in world units) at which to begin fading out the influence of a cluster (default: 5)" />
+	<float32 name="Distance Falloff Power" offset="0x28" visible="true" tooltip="Rate at which to begin attenuating the influence of neighboring clusters' fog settings (default: 2)" />
+	<float32 name="Transparent Sort Distance" offset="0x2C" visible="true" tooltip="Distance from the camera where we sort the patchy fog effect (default: 100)" />
+	<enum8 name="Transparent Sort Layer" offset="0x30" visible="true">
+		<option name="Invalid" value="0x0" />
+		<option name="Pre-Pass" value="0x1" />
+		<option name="Normal" value="0x2" />
+		<option name="Post-Pass" value="0x3" />
+	</enum8>
+	<int8 name="Unknown" offset="0x31" visible="false" />
+	<int16 name="Unknown" offset="0x32" visible="false" />
+	<tagblock name="Atmosphere Settings" offset="0x34" visible="true" elementSize="0xA4">
+		<flags16 name="Flags" offset="0x0" visible="true">
+			<bit name="Enable Atmosphere" index="0" />
+			<bit name="Override Real Sun Values" index="1" />
+			<bit name="Patchy Fog" index="2" />
+		</flags16>
 		<int16 name="Unknown" offset="0x2" visible="false" />
 		<stringId name="Name" offset="0x4" visible="true" />
-		<float32 name="Light Source y" offset="0x8" visible="true" />
-		<float32 name="Light Source x" offset="0xC" visible="true" />
-		<colorf name="Fog Color" offset="0x10" alpha="false" visible="true" />
-		<float32 name="Brightness" offset="0x1C" visible="true" />
-		<float32 name="Fog Gradient Threshold?" offset="0x20" visible="true" />
-		<float32 name="Light Intensity" offset="0x24" visible="true" />
-		<float32 name="Sky invisiblility Through Fog" offset="0x28" visible="true" />
-		<float32 name="Unknown" offset="0x2C" visible="false" />
-		<float32 name="Unknown" offset="0x30" visible="false" />
-		<float32 name="Light Source Spread" offset="0x34" visible="true" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<float32 name="Fog Intensity" offset="0x3C" visible="true" />
-		<float32 name="Unknown" offset="0x40" visible="false" />
-		<float32 name="Tint Cyan?" offset="0x44" visible="true" />
-		<float32 name="Tint Magenta?" offset="0x48" visible="true" />
-		<float32 name="Tint Yellow?" offset="0x4C" visible="true" />
-		<float32 name="Fog Intensity Cyan?" offset="0x50" visible="true" />
-		<float32 name="Fog Intensity Magenta?" offset="0x54" visible="true" />
-		<float32 name="Fog Intensity Yellow?" offset="0x58" visible="true" />
-		<float32 name="Background Color Red" offset="0x5C" visible="true" />
-		<float32 name="Background Color Green" offset="0x60" visible="true" />
-		<float32 name="Background Color Blue" offset="0x64" visible="true" />
-		<float32 name="Tint Red?" offset="0x68" visible="true" />
-		<float32 name="Tint2 Green?" offset="0x6C" visible="true" />
-		<float32 name="Tint2 Blue?" offset="0x70" visible="true" />
-		<float32 name="Fog Intensity2" offset="0x74" visible="true" />
-		<float32 name="Start Distance?" offset="0x78" visible="true" />
-		<float32 name="End Distance?" offset="0x7C" visible="true" />
-		<point3 name="Fog Velocity" offset="0x80" visible="true" />
+		<comment title="Dominant Light Source">Only used if the flag is checked to override the sun values</comment>
+		<float32 name="Pitch" offset="0x8" visible="true" tooltip="[0 To 90]" />
+		<float32 name="Heading" offset="0xC" visible="true" tooltip="[0 To 360]" />
+		<colorf name="Color" offset="0x10" alpha="false" visible="true" />
+		<float32 name="Intensity" offset="0x1C" visible="true" />
+		<comment title="Scattering" />
+		<float32 name="Sea Level" offset="0x20" visible="true" tooltip="in world units, set it to lowest height of scenario" />
+		<float32 name="Rayleign Height Scale" offset="0x24" visible="true" tooltip="Height above sea level where atmosphere is 30% thick" />
+		<float32 name="Mie Height Scale" offset="0x28" visible="true" tooltip="Height above sea level where atmosphere is 30% thick" />
+		<float32 name="Rayleigh Multiplier" offset="0x2C" visible="true" tooltip="Control how much scattering from air molecules(small)" />
+		<float32 name="Mie Multiplier" offset="0x30" visible="true" tooltip="Control how much scattering from large particles" />
+		<float32 name="Sun Phase Function" offset="0x34" visible="true" tooltip="The angular dependency of scattering(MIE) to the sun" />
+		<float32 name="De-Saturation" offset="0x38" visible="true" tooltip="Increase this to reduce the amount of reddening effect" />
+		<float32 name="Distance Bias" offset="0x3C" visible="true" tooltip="Push the fog away or pull it" />
+		<float32 name="Max Fog Thickness" offset="0x40" visible="true" tooltip="The maximum distance for which non-patchy fog still increases in intensity; its effect clamps after that" />
+		<vector3 name="Beta m" offset="0x44" visible="true" />
+		<vector3 name="Beta p" offset="0x50" visible="true" />
+		<vector3 name="Beta m Theta Prefix" offset="0x5C" visible="true" />
+		<vector3 name="Beta p Theta Prefix" offset="0x68" visible="true" />
+		<comment title="Patchy Fog Per-Cluster Parameters" />
+		<float32 name="Sheet Density" offset="0x74" visible="true" tooltip="Intensity scaling factor applied to all sheets" />
+		<float32 name="Full Intensity Height" offset="0x78" visible="true" tooltip="Height above 0 below which fog should be at full intensity" />
+		<float32 name="Half Intensity Height" offset="0x7C" visible="true" tooltip="Height at which fog should be attenuated to half intensity" />
+		<vector3 name="Wind Direction" offset="0x80" visible="true" tooltip="Direction and intensity of fog motion due to wind" />
+		<comment title="Weather Effect">Effect tag to create nearby raindrops, snowflakes, etc.
+Particle systems from this effect will follow the camera and wrap seamlessly as you turn or move.</comment>
 		<tagRef name="Weather Effect" offset="0x8C" visible="true" />
-		<undefined name="Unknown" offset="0x9C" visible="false" />
-		<undefined name="Unknown" offset="0xA0" visible="false" />
+		<float32 name="Runtime Weight" offset="0x9C" visible="true" />
+		<float32 name="Runtime Effect Weight" offset="0xA0" visible="true" />
 	</tagblock>
-	<tagblock name="Underwater" offset="0x40" visible="true" elementSize="0x14">
+	<tagblock name="Underwater Settings" offset="0x40" visible="true" elementSize="0x14">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<colorf name="Color" offset="0x4" alpha="true" visible="true" />
+		<float32 name="Murkiness" offset="0x4" visible="true" />
+		<colorf name="Fog Color" offset="0x8" alpha="false" visible="true" />
 	</tagblock>
 </plugin>

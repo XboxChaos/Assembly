@@ -170,7 +170,7 @@
 	<int16 name="Forced Shader Permutation Index" offset="0x13E" visible="true" />
 	<tagblock name="Attachments" offset="0x140" visible="true" elementSize="0x48">
 		<tagRef name="Type" offset="0x0" visible="true" />
-		<ascii name="Marker" offset="0x10" length="0x20" visible="true" />
+		<ascii name="Marker" offset="0x10" size="0x20" visible="true" />
 		<enum16 name="Primary Scale" offset="0x30" visible="true">
 			<option name="None" value="0x0" />
 			<option name="A Out" value="0x1" />
@@ -374,7 +374,7 @@
 		<undefined name="Unknown" offset="0x13C" visible="false" />
 		<undefined name="Unknown" offset="0x140" visible="false" />
 		<float32 name="Unknown" offset="0x144" visible="false" />
-		<ascii name="Usage" offset="0x148" length="0x20" visible="true" />
+		<ascii name="Usage" offset="0x148" size="0x20" visible="true" />
 	</tagblock>
 	<tagblock name="Change Colors" offset="0x164" visible="true" elementSize="0x2C">
 		<enum16 name="Darken By" offset="0x0" visible="true">
@@ -432,7 +432,7 @@
 		<bit name="Melee Attack Is Fatal" index="8" />
 		<bit name="Don't Reface During Pings" index="9" />
 		<bit name="Has No Aiming" index="10" />
-		<bit name="Simple Creature" index="11" />
+		<bit name="Simple Creature" index="11" tooltip="has most complex behavior disabled (used for infection form)" />
 		<bit name="Impact Melee Attaches To Unit" index="12" />
 		<bit name="Impact Melee Dies On Shields" index="13" />
 		<bit name="Cannot Open Doors Automatically" index="14" />
@@ -440,8 +440,8 @@
 		<bit name="Not Instantly Killed By Melee" index="16" />
 		<bit name="Shield Sapping" index="17" />
 		<bit name="Runs Around Flaming" index="18" />
-		<bit name="Inconsequential" index="19" />
-		<bit name="Special Cinematic Unit" index="20" />
+		<bit name="Inconsequential" index="19" tooltip="Results in different behavior for: aim magnetism, game_safe_to_save calculations, and infection form pop damage effects" />
+		<bit name="Special Cinematic Unit" index="20" tooltip="cannot turn, no flying death" />
 		<bit name="Ignored By Autoaiming" index="21" />
 		<bit name="Shields Fry Infection Forms" index="22" />
 		<bit name="Integrated Light Controls Weapon" index="23" />
@@ -527,8 +527,8 @@
 	</enum16>
 	<degree name="Camera Field Of View" offset="0x1C0" visible="true" />
 	<float32 name="Camera Stiffness" offset="0x1C4" visible="true" />
-	<ascii name="Camera Marker Name" offset="0x1C8" length="0x20" visible="true" />
-	<ascii name="Camera Submerged Marker Name" offset="0x1E8" length="0x20" visible="true" />
+	<ascii name="Camera Marker Name" offset="0x1C8" size="0x20" visible="true" />
+	<ascii name="Camera Submerged Marker Name" offset="0x1E8" size="0x20" visible="true" />
 	<degree name="Pitch Auto-Level" offset="0x208" visible="true" />
 	<ranged name="Pitch Range" offset="0x20C" visible="true" />
 	<tagblock name="Camera Tracks" offset="0x214" visible="true" elementSize="0x1C">
@@ -654,7 +654,7 @@
 		<undefined name="Unknown" offset="0xC8" visible="false" />
 		<undefined name="Unknown" offset="0xCC" visible="false" />
 	</tagblock>
-	<tagblock name="Attacks" offset="0x33C" visible="false" elementSize="0x170">
+	<tagblock name="Attacks" offset="0x33C" visible="true" elementSize="0x170">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<int16 name="Maximum Count" offset="0x4" visible="true" />
 		<int16 name="Cost" offset="0x6" visible="true" />
@@ -674,12 +674,12 @@
 		<undefined name="Unknown" offset="0x74" visible="false" />
 		<undefined name="Unknown" offset="0x78" visible="false" />
 		<undefined name="Unknown" offset="0x7C" visible="false" />
-		<ascii name="Hidden Region While Active" offset="0x80" length="0x20" visible="true" />
+		<ascii name="Hidden Region While Active" offset="0x80" size="0x20" visible="true" />
 		<undefined name="Unknown" offset="0xA0" visible="false" />
 		<undefined name="Unknown" offset="0xA4" visible="false" />
 		<float32 name="Projectile Velocity" offset="0xA8" visible="true" />
 		<tagRef name="Projectile" offset="0xAC" visible="true" />
-		<ascii name="Projectile Origin Marker" offset="0xBC" length="0x20" visible="true" />
+		<ascii name="Projectile Origin Marker" offset="0xBC" size="0x20" visible="true" />
 		<undefined name="Unknown" offset="0xDC" visible="false" />
 		<undefined name="Unknown" offset="0xE0" visible="false" />
 		<undefined name="Unknown" offset="0xE4" visible="false" />
@@ -821,8 +821,8 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</flags32>
-		<ascii name="Label" offset="0x4" length="0x20" visible="true" />
-		<ascii name="Marker Name" offset="0x24" length="0x20" visible="true" />
+		<ascii name="Label" offset="0x4" size="0x20" visible="true" />
+		<ascii name="Marker Name" offset="0x24" size="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x44" visible="false" />
 		<undefined name="Unknown" offset="0x48" visible="false" />
 		<undefined name="Unknown" offset="0x4C" visible="false" />
@@ -837,8 +837,8 @@
 		<undefined name="Unknown" offset="0x78" visible="false" />
 		<float32 name="Yaw Rate" offset="0x7C" visible="true" />
 		<float32 name="Pitch Rate" offset="0x80" visible="true" />
-		<ascii name="Camera Marker Name" offset="0x84" length="0x20" visible="true" />
-		<ascii name="Camera Submerged Marker Name" offset="0xA4" length="0x20" visible="true" />
+		<ascii name="Camera Marker Name" offset="0x84" size="0x20" visible="true" />
+		<ascii name="Camera Submerged Marker Name" offset="0xA4" size="0x20" visible="true" />
 		<degree name="Pitch Auto-Level" offset="0xC4" visible="true" />
 		<ranged name="Pitch Range" offset="0xC8" visible="true" />
 		<tagblock name="Camera Tracks" offset="0xD0" visible="true" elementSize="0x1C">
@@ -1064,6 +1064,6 @@
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<ascii name="Marker Name" offset="0x20" length="0x20" visible="true" />
+		<ascii name="Marker Name" offset="0x20" size="0x20" visible="true" />
 	</tagblock>
 </plugin>

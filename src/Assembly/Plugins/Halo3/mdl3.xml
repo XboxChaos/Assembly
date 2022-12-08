@@ -7,57 +7,52 @@
 		<revision author="Lord Zedd" version="3">Updated and copypasted.</revision>
 	</revisions>
 	<flags32 name="Flags" offset="0x0" visible="true">
-		<bit name="Bit 0" index="0" />
-		<bit name="Bit 1" index="1" />
-		<bit name="Bit 2" index="2" />
-		<bit name="Bit 3" index="3" />
-		<bit name="Bit 4" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Bit 6" index="6" />
-		<bit name="Bit 7" index="7" />
-		<bit name="Bit 8" index="8" />
-		<bit name="Bit 9" index="9" />
-		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
-		<bit name="Bit 16" index="16" />
-		<bit name="Bit 17" index="17" />
-		<bit name="Bit 18" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Bit 20" index="20" />
-		<bit name="Bit 21" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Bit 25" index="25" />
-		<bit name="Bit 26" index="26" />
-		<bit name="Bit 27" index="27" />
-		<bit name="Bit 28" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Bit 31" index="31" />
+		<bit name="Do Not Apply Old Content Upscaling" index="0" />
+		<bit name="Override Template Flags" index="1" />
+		<bit name="Enable Animation Debugging" index="2" />
+		<bit name="UNUSED" index="3" />
 	</flags32>
 	<stringid name="Name" offset="0x4" visible="true" />
-	<int16 name="Unknown" offset="0x8" visible="false" />
-	<int16 name="Layer" offset="0xA" visible="true" />
+	<enum16 name="Scaled Positioning" offset="0x8" visible="true">
+		<option name="UNUSED" value="0x0" />
+		<option name="Centered" value="0x1" />
+		<option name="Top Edge" value="0x2" />
+		<option name="Bottom Edge" value="0x3" />
+		<option name="Left Edge" value="0x4" />
+		<option name="Right Edge" value="0x5" />
+		<option name="Top-Left Corner" value="0x6" />
+		<option name="Top-Right Corner" value="0x7" />
+		<option name="Bottom-Right Corner" value="0x8" />
+		<option name="Bottom-Left Corner" value="0x9" />
+	</enum16>
+	<int16 name="Render Depth Bias" offset="0xA" visible="true" />
 	<rect16 name="Widescreen Bounds" offset="0xC" visible="true" />
 	<rect16 name="Standard Bounds" offset="0x14" visible="true" />
-	<tagRef name="Animation" offset="0x1C" visible="true" />
-	<tagblock name="Camera Control" offset="0x2C" visible="true" elementSize="0x3C">
-		<stringid name="Biped" offset="0x0" visible="true" />
-		<float32 name="Base Distance" offset="0x4" visible="true" />
-		<rangef name="Distance Range" offset="0x8" visible="true" />
-		<float32 name="Distance Change Rate" offset="0x10" visible="true" />
-		<float32 name="Base Height" offset="0x14" visible="true" />
-		<rangef name="Height Range" offset="0x18" visible="true" />
-		<float32 name="Unknown" offset="0x20" visible="false" />
-		<tagblock name="Distance Function" offset="0x24" visible="true" elementSize="0x14">
+	<tagRef name="Animation Collection" offset="0x1C" visible="true" />
+	<tagblock name="Camera Settings" offset="0x2C" visible="true" elementSize="0x3C">
+		<comment title="Camera Settings">These are model-viewing camera parameters that you can control
+* FOV is the field of view used by the texture camera. if left 0, a suitable default FOV is used
+* Initial Radial Offset is the initial radial distance of the camera from the target model
+* Final Radial Offset is the final radial distance of the camera from the target model
+* Camera Radial Step Size is the incremental change in input to the radial transition function per tick
+* Initial Vertical Offset is the initial vertical distance of the camera from the target's center
+* Final Vertical Offset is the final vertical distance of the camera from the target's center
+* Camera Vertical Step Size is the incremental change in input to the vertical transition function per tick
+* Camera Rotational Step Size is the incremental change in camera rotation per game tick
+* The Transition Functions are used to control the camera zoom with controller input. if left empty, a linear interpolation is used for camera zoom</comment>
+		<stringid name="Name" offset="0x0" visible="true" />
+		<float32 name="FOV" offset="0x4" visible="true" />
+		<float32 name="Initial Radial Offset" offset="0x8" visible="true" />
+		<float32 name="Final Radial Offset" offset="0xC" visible="true" />
+		<float32 name="Camera Radial Step Size" offset="0x10" visible="true" />
+		<float32 name="Initial Vertical Offset" offset="0x14" visible="true" />
+		<float32 name="Final Vertical Offset" offset="0x18" visible="true" />
+		<float32 name="Camera Vertical Step Size" offset="0x1C" visible="true" />
+		<float32 name="Camera Rotational Step" offset="0x20" visible="true" />
+		<tagblock name="Radial Transition Function" offset="0x24" visible="true" elementSize="0x14">
 			<dataref name="Function" offset="0x0" visible="true" />
 		</tagblock>
-		<tagblock name="Height Function" offset="0x30" visible="true" elementSize="0x14">
+		<tagblock name="Vertical Transition Function" offset="0x30" visible="true" elementSize="0x14">
 			<dataref name="Function" offset="0x0" visible="true" />
 		</tagblock>
 	</tagblock>

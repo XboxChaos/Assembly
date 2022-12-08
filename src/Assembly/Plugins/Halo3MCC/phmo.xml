@@ -7,38 +7,9 @@
 		<revision author="Lord Zedd" version="3">Messy Messy Messy</revision>
 	</revisions>
 	<flags32 name="Flags" offset="0x0" visible="true">
-		<bit name="Bit 0" index="0" />
-		<bit name="Bit 1" index="1" />
-		<bit name="Bit 2" index="2" />
-		<bit name="Bit 3" index="3" />
-		<bit name="Bit 4" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Bit 6" index="6" />
-		<bit name="Bit 7" index="7" />
-		<bit name="Bit 8" index="8" />
-		<bit name="Bit 9" index="9" />
-		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
-		<bit name="Bit 16" index="16" />
-		<bit name="Bit 17" index="17" />
-		<bit name="Bit 18" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Bit 20" index="20" />
-		<bit name="Bit 21" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Bit 25" index="25" />
-		<bit name="Bit 26" index="26" />
-		<bit name="Bit 27" index="27" />
-		<bit name="Bit 28" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Bit 31" index="31" />
+		<bit name="MOPP Codes Dirty" index="0" />
+		<bit name="Expensive Plant" index="1" />
+		<bit name="Is 64 Bit" index="2" />
 	</flags32>
 	<float32 name="Mass" offset="0x4" visible="true" />
 	<float32 name="Low Frequency Deactivation Scale" offset="0x8" visible="true" tooltip="0 is default (1). LESS than 1 deactivates less aggressively. GREATER than 1 is more agressive." />
@@ -96,10 +67,10 @@
 			<bit name="Disable Linear Damping" index="25" />
 			<bit name="Disable Angular Damping" index="26" />
 			<bit name="Ignores Dead Bipeds" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
+			<bit name="Reciprocal Acceleration" index="28" />
+			<bit name="Reciprocal Acceleration ONLY" index="29" />
 			<bit name="Latching Disabled" index="30" />
-			<bit name="Bit 31" index="31" />
+			<bit name="Mirrored Axis" index="31" />
 		</flags32>
 		<enum8 name="Minimum Size" offset="0x4" visible="true">
 			<option name="Default" value="0x0" />
@@ -186,8 +157,8 @@
 		</tagblock>
 	</tagblock>
 	<tagblock name="Node Edges" offset="0x4C" visible="true" elementSize="0x1C">
-		<int16 name="Node A Material Global Index" offset="0x0" visible="true" />
-		<int16 name="Node B Material Global Index" offset="0x2" visible="true" />
+		<int16 name="Node A Global Material Index" offset="0x0" visible="true" />
+		<int16 name="Node B Global Material Index" offset="0x2" visible="true" />
 		<int16 name="Node A Index" offset="0x4" visible="true" />
 		<int16 name="Node B Index" offset="0x6" visible="true" />
 		<tagblock name="Constraints" offset="0x8" visible="true" elementSize="0x24">
@@ -202,38 +173,9 @@
 			</enum16>
 			<int16 name="Index" offset="0x2" visible="true" />
 			<flags32 name="Flags" offset="0x4" visible="true">
-				<bit name="Is Physical Child" index="0" tooltip="this constraint will only be created when this object is a child of another physical object (turrets on vehicles for example)" />
-				<bit name="Is Rigid" index="1" tooltip="this constraint makes the edge rigid until it is loosened by damage" />
-				<bit name="Disable Effects" index="2" tooltip="this constraint will not generate impact effects" />
-				<bit name="Not Created Automatically" index="3" tooltip="this flag is used for special systems that need to create constraints dynamically" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
+				<bit name="Is Rigid" index="0" tooltip="this constraint makes the edge rigid until it is loosened by damage" />
+				<bit name="Disable Effects" index="1" tooltip="this constraint will not generate impact effects" />
+				<bit name="Not Created Automatically" index="2" tooltip="this flag is used for special systems that need to create constraints dynamically" />
 			</flags32>
 			<float32 name="Friction" offset="0x8" visible="true" tooltip="0 is the default (takes what it was set in max) anything else overrides that value" />
 			<tagblock name="Ragdoll Motors" offset="0xC" visible="true" elementSize="0xC">
@@ -268,8 +210,8 @@
 				<int16 name="Motor Index" offset="0x2" visible="true" />
 			</tagblock>
 		</tagblock>
-		<stringid name="Node A Material Name" offset="0x14" visible="true" tooltip="if you don't fill this out we will pluck the material from the first primitive, of the first rigid body attached to node a" />
-		<stringid name="Node B Material Name" offset="0x18" visible="true" tooltip="if you don't fill this out we will pluck the material from the first primitive, of the first rigid body attached to node b, if node b is none we use whatever material a has" />
+		<stringid name="Node A Global Material Name" offset="0x14" visible="true" tooltip="if you don't fill this out we will pluck the material from the first primitive, of the first rigid body attached to node a" />
+		<stringid name="Node B Global Material Name" offset="0x18" visible="true" tooltip="if you don't fill this out we will pluck the material from the first primitive, of the first rigid body attached to node b, if node b is none we use whatever material a has" />
 	</tagblock>
 	<tagblock name="Rigid Bodies" offset="0x58" visible="true" elementSize="0xC0" align="0x10">
 		<int16 name="Node Index" offset="0x0" visible="true" />
@@ -283,18 +225,10 @@
 			<bit name="Only Collide With Environment" index="1" />
 			<bit name="Disable Effects" index="2" tooltip="this rigid body will not generate impact effects unless it hits another dynamic rigid body that does" />
 			<bit name="Does Not Interact With Environment" index="3" tooltip="set this flag if this rigid bodies won't touch the environment, this allows us to open up some optimizations" />
-			<bit name="Best Early Mover Body" index="4" tooltip="if you have either of the early mover flags set in the object definitoin this body will be choosen as the one to make every thing local to, otherwise I pick" />
-			<bit name="Has No Phantom Power Version" index="5" />
-			<bit name="Infinite Inertia Tensor" index="6" tooltip="rigid body will never have angular velocity" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
+			<bit name="Best Early Mover Body" index="4" tooltip=" if you have either of the early mover flags set in the object definitoin this body will be choosen as the one to make every thing local to, otherwise I pick" />
+			<bit name="Has No Phantom Power Version" index="5" tooltip="don't check this flag without talking to eamon" />
+			<bit name="Infinite Intertia Tensor" index="6" tooltip="rigid body will never have angular velocity" />
+			<bit name="Can Use MOPPs" index="7" tooltip="this flag was invented for the behemoth and is dangerous to use anywhere else" />
 		</flags16>
 		<enum16 name="Motion Type" offset="0x1A" visible="true">
 			<option name="Sphere" value="0x0" />
@@ -396,27 +330,15 @@
 		<stringid name="Global Material Name" offset="0x4" visible="true" />
 		<int16 name="Phantom Type Index" offset="0x8" visible="true" />
 		<enum8 name="Proxy Collision Group" offset="0xA" visible="true" tooltip="does not affect anything, change the groups in the individual shapes instead.">
-			<option name="None" value="0x0" />
+			<option name="NONE" value="0x0" />
 			<option name="Small Crate" value="0x1" />
-			<option name="Unknown x2" value="0x2" />
+			<option name="Crate" value="0x2" />
 			<option name="Machine" value="0x3" />
 			<option name="Only Collide With Environment" value="0x4" />
-			<option name="Tech Art Custom?" value="0x5" />
-			<option name="Unknown x6" value="0x6" />
-			<option name="Huge Vehicle" value="0x7" />
+			<option name="Expensive Plant" value="0x5" />
+			<option name="Small Expensive Plant" value="0x6" />
+			<option name="Behemoth" value="0x7" />
 			<option name="Early Mover Machine" value="0x8" />
-			<option name="Unknown x9" value="0x9" />
-			<option name="Unknown xA" value="0xA" />
-			<option name="Unknown xB" value="0xB" />
-			<option name="Unknown xC" value="0xC" />
-			<option name="Unknown xD" value="0xD" />
-			<option name="Unknown xE" value="0xE" />
-			<option name="Unknown xF" value="0xF" />
-			<option name="Unknown x10" value="0x10" />
-			<option name="Unknown x11" value="0x11" />
-			<option name="Unknown x12" value="0x12" />
-			<option name="Unknown x13" value="0x13" />
-			<option name="Unknown x14" value="0x14" />
 		</enum8>
 		<enum8 name="Collision Group" offset="0xB" visible="true" tooltip="This value overrides the default group, model, and rigid body.">
 			<option name="No Override" value="0xFF" />
@@ -451,12 +373,10 @@
 	</tagblock>
 	<tagblock name="Spheres" offset="0x70" visible="true" elementSize="0xA0" align="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<int8 name="Material Index" offset="0x4" visible="true" />
-		<flags8 name="Material Flags" offset="0x5" visible="true">
-			<bit name="Supresses Effects" index="0" />
-			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
-		</flags8>
-		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<int16 name="Material Index" offset="0x4" visible="true" />
+		<flags16 name="Flags" offset="0x6" visible="true">
+			<bit name="Unused" index="0" />
+		</flags16>
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
@@ -545,12 +465,10 @@
 	</tagblock>
 	<tagblock name="Multi Spheres" offset="0x7C" visible="true" elementSize="0xD0" align="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<int8 name="Material Index" offset="0x4" visible="true" />
-		<flags8 name="Material Flags" offset="0x5" visible="true">
-			<bit name="Supresses Effects" index="0" />
-			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
-		</flags8>
-		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<int16 name="Material Index" offset="0x4" visible="true" />
+		<flags16 name="Flags" offset="0x6" visible="true">
+			<bit name="Unused" index="0" />
+		</flags16>
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
@@ -620,12 +538,10 @@
 	</tagblock>
 	<tagblock name="Pills" offset="0x88" visible="true" elementSize="0x70" align="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<int8 name="Material Index" offset="0x4" visible="true" />
-		<flags8 name="Material Flags" offset="0x5" visible="true">
-			<bit name="Supresses Effects" index="0" />
-			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
-		</flags8>
-		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<int16 name="Material Index" offset="0x4" visible="true" />
+		<flags16 name="Flags" offset="0x6" visible="true">
+			<bit name="Unused" index="0" />
+		</flags16>
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
@@ -682,12 +598,10 @@
 	</tagblock>
 	<tagblock name="Boxes" offset="0x94" visible="true" elementSize="0xE0" align="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<int8 name="Material Index" offset="0x4" visible="true" />
-		<flags8 name="Material Flags" offset="0x5" visible="true">
-			<bit name="Supresses Effects" index="0" />
-			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
-		</flags8>
-		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<int16 name="Material Index" offset="0x4" visible="true" />
+		<flags16 name="Flags" offset="0x6" visible="true">
+			<bit name="Unused" index="0" />
+		</flags16>
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
@@ -784,12 +698,10 @@
 	</tagblock>
 	<tagblock name="Triangles" offset="0xA0" visible="true" elementSize="0x90" align="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<int8 name="Material Index" offset="0x4" visible="true" />
-		<flags8 name="Material Flags" offset="0x5" visible="true">
-			<bit name="Supresses Effects" index="0" />
-			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
-		</flags8>
-		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<int16 name="Material Index" offset="0x4" visible="true" />
+		<flags16 name="Flags" offset="0x6" visible="true">
+			<bit name="Unused" index="0" />
+		</flags16>
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
@@ -852,12 +764,10 @@
 	</tagblock>
 	<tagblock name="Polyhedra" offset="0xAC" visible="true" elementSize="0xA0" align="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<int8 name="Material Index" offset="0x4" visible="true" />
-		<flags8 name="Material Flags" offset="0x5" visible="true">
-			<bit name="Supresses Effects" index="0" />
-			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
-		</flags8>
-		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<int16 name="Material Index" offset="0x4" visible="true" />
+		<flags16 name="Flags" offset="0x6" visible="true">
+			<bit name="Unused" index="0" />
+		</flags16>
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />

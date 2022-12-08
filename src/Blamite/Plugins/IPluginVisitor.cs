@@ -72,6 +72,7 @@ namespace Blamite.Plugins
 		void VisitQuat16(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 		void VisitPoint16(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 		void VisitStringID(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitOldStringID(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 		void VisitTagReference(string name, uint offset, bool visible, bool withGroup, uint pluginLine, string tooltip);
 		void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine, string tooltip);
 
@@ -108,6 +109,8 @@ namespace Blamite.Plugins
 		/// <param name="size">The size of the string in bytes.</param>
 		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
 		void VisitUtf16(string name, uint offset, bool visible, int size, uint pluginLine, string tooltip);
+
+		void VisitHexString(string name, uint offset, bool visible, int size, uint pluginLine, string tooltip);
 
 		/// <summary>
 		///     Called when a argb32 or rgb32 is encountered in the plugin.

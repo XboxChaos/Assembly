@@ -31,13 +31,13 @@
 		<option name="Embm" value="0x7" />
 		<option name="Height Map A8L8" value="0x8" />
 		<option name="Height Map G8B8" value="0x9" />
-		<option name="Height Map G8B8 /w Alpha" value="0xA" />
+		<option name="Height Map G8B8 With Alpha" value="0xA" />
 	</enum16>
 	<flags16 name="Flags" offset="0x6" visible="true">
 		<bit name="Enable Diffusion Dithering" index="0" />
 		<bit name="Disable Height Map Compression" index="1" />
-		<bit name="Uniform Sprite Sequnces" index="2" />
-		<bit name="Filthy Sprite Bugfix" index="3" />
+		<bit name="Uniform Sprite Sequences" index="2" />
+		<bit name="Filthy Sprite Bug Fix" index="3" />
 		<bit name="Use Sharp Bump Filter" index="4" />
 		<bit name="Bit 5" index="5" />
 		<bit name="Use Clamped/Mirrored Bump Filter" index="6" />
@@ -46,11 +46,12 @@
 		<bit name="Convert From Signed" index="9" />
 		<bit name="Convert To Signed" index="10" />
 		<bit name="Import Mipmap Chains" index="11" />
-		<bit name="Internationally True Color" index="12" />
+		<bit name="Intentionally True Color" index="12" />
 	</flags16>
-	<float32 name="Detail Fade Factor" offset="0x8" visible="true" />
-	<float32 name="Sharpen Amount" offset="0xC" visible="true" />
-	<float32 name="Bump Height" offset="0x10" visible="true" />
+	<comment title="Postprocessing">These properties control how mipmaps are postprocessed.</comment>
+	<float32 name="Detail Fade Factor" offset="0x8" visible="true" tooltip="0 means fade to gray by last mipmap; 1 means fade to gray by first mipmap." />
+	<float32 name="Sharpen Amount" offset="0xC" visible="true" tooltip="sharpens mipmap after downsampling." />
+	<float32 name="Bump Height" offset="0x10" visible="true" tooltip="the apparent height of the bump map above the triangle onto which it is textured, in texture repeats (i.e., 1.0 would be as high as the texture is wide)." />
 	<enum16 name="Sprite Budget Size" offset="0x14" visible="true">
 		<option name="32x32" value="0x0" />
 		<option name="64x64" value="0x1" />
@@ -60,6 +61,7 @@
 		<option name="1024x1024" value="0x5" />
 	</enum16>
 	<int16 name="Sprite Budget Count" offset="0x16" visible="true" />
+	<comment title="Color Plate">The original image file used to import the bitmap group.</comment>
 	<int16 name="Color Plate Width" offset="0x18" visible="true" />
 	<int16 name="Color Plate Height" offset="0x1A" visible="true" />
 	<int32 name="Compressed Color Plate Data" offset="0x1C" visible="true" />
@@ -77,7 +79,7 @@
 	<undefined name="Unknown" offset="0x4C" visible="true" />
 	<undefined name="Unknown" offset="0x50" visible="true" />
 	<tagblock name="Sequences" offset="0x54" visible="true" elementSize="0x40">
-		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+		<ascii name="Name" offset="0x0" visible="true" size="0x20" />
 		<int16 name="First Bitmap Index" offset="0x20" visible="true" />
 		<int16 name="Bitmap Count" offset="0x22" visible="true" />
 		<undefined name="Unknown" offset="0x24" visible="true" />
@@ -96,7 +98,7 @@
 		</tagblock>
 	</tagblock>
 	<tagblock name="Bitmaps" offset="0x60" visible="true" elementSize="0x74">
-		<ascii name="Signature" offset="0x0" length="0x4" visible="true" />
+		<ascii name="Signature" offset="0x0" size="0x4" visible="true" />
 		<int16 name="Width" offset="0x4" visible="true" />
 		<int16 name="Height" offset="0x6" visible="true" />
 		<int8 name="Depth" offset="0x8" visible="true" />
@@ -175,10 +177,37 @@
 		<undefined name="Unknown" offset="0x54" visible="true" />
 		<undefined name="Unknown" offset="0x58" visible="true" />
 		<undefined name="Unknown" offset="0x5C" visible="true" />
-		<int32 name="Unknown" offset="0x60" visible="true" />
-		<int32 name="Unknown" offset="0x64" visible="true" />
-		<int32 name="Unknown" offset="0x68" visible="true" />
-		<int32 name="Unknown" offset="0x6C" visible="true" />
+		<int32 name="Low-Detail Offset" offset="0x60" visible="true" tooltip="Offset into low-detail block defined in map header." />
+		<int32 name="Low-Detail Size" offset="0x64" visible="true" />
+		<enum16 name="Low-Detail Format" offset="0x68" visible="true" tooltip="Determines how pixels are represented internally.">
+			<option name="A8" value="0x0" />
+			<option name="Y8" value="0x1" />
+			<option name="AY8" value="0x2" />
+			<option name="A8Y8" value="0x3" />
+			<option name="Unused1" value="0x4" />
+			<option name="Unused2" value="0x5" />
+			<option name="R5G6B5" value="0x6" />
+			<option name="Unused3" value="0x7" />
+			<option name="A1R5G5B5" value="0x8" />
+			<option name="A4R4G4B4" value="0x9" />
+			<option name="X8R8G8B8" value="0xA" />
+			<option name="A8R8G8B8" value="0xB" />
+			<option name="Unused4" value="0xC" />
+			<option name="Unused5" value="0xD" />
+			<option name="DXT1" value="0xE" />
+			<option name="DXT3" value="0xF" />
+			<option name="DXT5" value="0x10" />
+			<option name="P8-Bump" value="0x11" />
+			<option name="P8" value="0x12" />
+			<option name="ARGBFP32" value="0x13" />
+			<option name="RGBFP32" value="0x14" />
+			<option name="RGBFP16" value="0x15" />
+			<option name="V8U8" value="0x16" />
+			<option name="G8B8" value="0x17" />
+		</enum16>
+		<int16 name="Low-Detail Width" offset="0x6A" visible="true" />
+		<int16 name="Low-Detail Height" offset="0x6C" visible="true" />
+		<int16 name="Low-Detail Depth" offset="0x6E" visible="true" />
 		<undefined name="Unknown" offset="0x70" visible="true" />
 	</tagblock>
 </plugin>

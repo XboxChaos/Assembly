@@ -207,6 +207,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				case StringType.UTF16:
 					field.Value = _reader.ReadUTF16(field.Size);
 					break;
+
+				case StringType.Hex:
+					field.Value = FunctionHelpers.BytesToHexString(_reader.ReadBlock(field.Size));
+					break;
 			}
 		}
 
@@ -490,6 +494,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			uint value = _reader.ReadUInt32();
 			field.Salt = (ushort)((value >> 16) & 0xFFFF);
 			field.Index = (ushort)(value & 0xFFFF);
+		}
+
+		public void VisitOldStringID(OldStringIDData field)
+		{
+			//we dont care about the string portion
+			SeekToOffset(field.Offset + 0x1C);
+			field.Value = _cache.StringIDs.GetString(new StringID(_reader.ReadUInt32()));
 		}
 
 		public void VisitTagBlockEntry(WrappedTagBlockEntry field)

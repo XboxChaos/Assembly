@@ -1,0 +1,820 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="ODSTMCC" baseSize="0x1F8">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+		<revision author="Lord Zedd" version="2">Updated and standardized.</revision>
+	</revisions>
+	<flags32 name="Character Flags" offset="0x0" visible="true">
+		<bit name="Bit 0" index="0" />
+	</flags32>
+	<tagRef name="Parent Character" offset="0x4" visible="true" />
+	<tagRef name="Unit" offset="0x14" visible="true" />
+	<tagRef name="Creature" offset="0x24" visible="true" tooltip="Creature reference for swarm characters ONLY" />
+	<tagRef name="Style" offset="0x34" visible="true" />
+	<tagRef name="Major Character" offset="0x44" visible="true" />
+	<tagblock name="Variants" offset="0x54" visible="true" elementSize="0x14">
+		<stringid name="Variant Name" offset="0x0" visible="true" />
+		<int16 name="Variant Index" offset="0x4" visible="true" />
+		<int16 name="Unknown" offset="0x6" visible="false" />
+		<tagblock name="Voices" offset="0x8" visible="true" elementSize="0x18">
+			<tagRef name="Dialogue" offset="0x0" visible="true" />
+			<stringid name="Designator" offset="0x10" visible="true" />
+			<float32 name="Weight" offset="0x14" visible="true" />
+		</tagblock>
+	</tagblock>
+	<tagblock name="Voice" offset="0x60" visible="true" elementSize="0xC">
+		<tagblock name="Voices" offset="0x0" visible="true" elementSize="0x18">
+			<tagRef name="Dialogue" offset="0x0" visible="true" />
+			<stringid name="Designator" offset="0x10" visible="true" />
+			<float32 name="Weight" offset="0x14" visible="true" />
+		</tagblock>
+	</tagblock>
+	<tagblock name="General Properties" offset="0x6C" visible="true" elementSize="0x1C">
+		<flags32 name="General Flags" offset="0x0" visible="true">
+			<bit name="Swarm" index="0" />
+			<bit name="Flying" index="1" />
+			<bit name="Dual Wields" index="2" />
+			<bit name="Uses Gravemind" index="3" />
+			<bit name="Gravemind Chorus" index="4" />
+			<bit name="Don't Trade Weapon" index="5" />
+			<bit name="Don't Stow Weapon" index="6" />
+			<bit name="Hero Character" index="7" />
+			<bit name="Leader Independent Positioning" index="8" />
+			<bit name="Has Active Camo" index="9" />
+			<bit name="Do Not Drop Equipment" index="10" />
+		</flags32>
+		<enum16 name="Type" offset="0x4" visible="true">
+			<option name="Elite" value="0x0" />
+			<option name="Jackal" value="0x1" />
+			<option name="Grunt" value="0x2" />
+			<option name="Hunter" value="0x3" />
+			<option name="Engineer" value="0x4" />
+			<option name="Assassin" value="0x5" />
+			<option name="Player" value="0x6" />
+			<option name="Marine" value="0x7" />
+			<option name="Crew" value="0x8" />
+			<option name="Combat Form" value="0x9" />
+			<option name="Infection Form" value="0xA" />
+			<option name="Carrier Form" value="0xB" />
+			<option name="Monitor" value="0xC" />
+			<option name="Sentinel" value="0xD" />
+			<option name="None" value="0xE" />
+			<option name="Mounted Weapon" value="0xF" />
+			<option name="Brute" value="0x10" />
+			<option name="Prophet" value="0x11" />
+			<option name="Bugger" value="0x12" />
+			<option name="Juggernaut" value="0x13" />
+			<option name="Pure Form Stealth" value="0x14" />
+			<option name="Pure Form Tank" value="0x15" />
+			<option name="Pure Form Ranged" value="0x16" />
+			<option name="Scarab" value="0x17" />
+			<option name="Guardian" value="0x18" />
+		</enum16>
+		<int16 name="Rank" offset="0x6" visible="true" tooltip="the rank of this character, helps us work out who in a squad should be a leader (0 is lowly, 32767 is highest)" />
+		<enum16 name="Follower Positioning" offset="0x8" visible="true" tooltip="where should my followers try and position themselves when I am their leader?">
+			<option name="In Front Of Me" value="0x0" />
+			<option name="Behind Me" value="0x1" />
+			<option name="Tight" value="0x2" />
+		</enum16>
+		<int16 name="Unknown" offset="0xA" visible="false" />
+		<float32 name="Maximum Leader Distance" offset="0xC" visible="true" tooltip="don't let my combat range get outside this distance from my leader when in combat (if 0 then defaults to 4wu)" />
+		<float32 name="Absolute Maximum Leader Distance" offset="0x10" visible="true" tooltip="never select firing positions outside this range from the leader (if 0 then defaults to 8wu)" />
+		<float32 name="Scariness" offset="0x14" visible="true" tooltip="the inherent scariness of the character" />
+		<enum16 name="Default Grenade Type" offset="0x18" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Human Grenade" value="0x1" />
+			<option name="Covenant Plasma" value="0x2" />
+			<option name="Brute Claymore" value="0x3" />
+			<option name="Firebomb" value="0x4" />
+		</enum16>
+		<enum16 name="Behavior Tree Root" offset="0x1A" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Scarab" value="0x1" />
+			<option name="Flying" value="0x2" />
+		</enum16>
+	</tagblock>
+	<tagblock name="Vitality Properties" offset="0x78" visible="true" elementSize="0x80">
+		<flags32 name="Vitality Flags" offset="0x0" visible="true">
+			<bit name="Auto Resurrect" index="0" />
+		</flags32>
+		<float32 name="Normal Body Vitality" offset="0x4" visible="true" tooltip="maximum body vitality of our unit" />
+		<float32 name="Normal Shield Vitality" offset="0x8" visible="true" tooltip="maximum shield vitality of our unit" />
+		<float32 name="Legendary Body Vitality" offset="0xC" visible="true" tooltip="maximum body vitality of our unit (on legendary)" />
+		<float32 name="Legendary Shield Vitality" offset="0x10" visible="true" tooltip="maximum shield vitality of our unit (on legendary)" />
+		<float32 name="Body Recharge Fraction" offset="0x14" visible="true" tooltip="fraction of body health that can be regained after damage" />
+		<float32 name="Soft Ping Threshold (With Shields)" offset="0x18" visible="true" tooltip="damage necessary to trigger a soft ping when shields are up" />
+		<float32 name="Soft Ping Threshold (No Shields)" offset="0x1C" visible="true" tooltip="damage necessary to trigger a soft ping when shields are down" />
+		<float32 name="Soft Ping Minimum Interrupt Time" offset="0x20" visible="true" tooltip="minimum time before a soft ping can be interrupted" />
+		<float32 name="Hard Ping Threshold (With Shields)" offset="0x24" visible="true" tooltip="damage necessary to trigger a hard ping when shields are up" />
+		<float32 name="Hard Ping Threshold (No Shields)" offset="0x28" visible="true" tooltip="damage necessary to trigger a hard ping when shields are down" />
+		<float32 name="Hard Ping Minimum Interrupt Time" offset="0x2C" visible="true" tooltip="minimum time before a hard ping can be interrupted" />
+		<float32 name="Current Damage Decay Delay" offset="0x30" visible="true" tooltip="current damage begins to fall after a time delay has passed since last the damage" />
+		<float32 name="Current Damage Decay Time" offset="0x34" visible="true" tooltip="amount of time it would take for 100% current damage to decay to 0" />
+		<float32 name="Recent Damage Decay Delay" offset="0x38" visible="true" tooltip="recent damage begins to fall after a time delay has passed since last the damage" />
+		<float32 name="Recent Damage Decay Time" offset="0x3C" visible="true" tooltip="amount of time it would take for 100% recent damage to decay to 0" />
+		<float32 name="Body Recharge Delay Time" offset="0x40" visible="true" tooltip="amount of time delay before a shield begins to recharge" />
+		<float32 name="Body Recharge Time" offset="0x44" visible="true" tooltip="amount of time for shields to recharge completely" />
+		<float32 name="Shield Recharge Delay Time" offset="0x48" visible="true" tooltip="amount of time delay before a shield begins to recharge" />
+		<float32 name="Shield Recharge Time" offset="0x4C" visible="true" tooltip="amount of time for shields to recharge completely" />
+		<float32 name="Stun Threshold" offset="0x50" visible="true" tooltip="stun level that triggers the stunned state (currently, the 'stunned' behavior)" />
+		<rangef name="Stun Time Bounds" offset="0x54" visible="true" />
+		<float32 name="Extended Shield Damage Threshold" offset="0x5C" visible="true" tooltip="Amount of shield damage sustained before it is considered 'extended'" />
+		<float32 name="Extended Body Damage Threshold" offset="0x60" visible="true" tooltip="Amount of body damage sustained before it is considered 'extended'" />
+		<float32 name="Suicide Radius" offset="0x64" visible="true" tooltip="when I die and explode, I damage stuff within this distance of me." />
+		<float32 name="Runtime Body Recharge Velocity" offset="0x68" visible="true" />
+		<float32 name="Runtime Shield Recharge Velocity" offset="0x6C" visible="true" />
+		<tagRef name="Resurrect Weapon" offset="0x70" visible="true" tooltip="If I'm being automatically resurrected then I pull out a ..." />
+	</tagblock>
+	<tagblock name="Placement Properties" offset="0x84" visible="true" elementSize="0x34">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<float32 name="Few Upgrade Chance (Easy)" offset="0x4" visible="true" />
+		<float32 name="Few Upgrade Chance (Normal)" offset="0x8" visible="true" />
+		<float32 name="Few Upgrade Chance (Heroic)" offset="0xC" visible="true" />
+		<float32 name="Few Upgrade Chance (Legendary)" offset="0x10" visible="true" />
+		<float32 name="Normal Upgrade Chance (Easy)" offset="0x14" visible="true" />
+		<float32 name="Normal Upgrade Chance (Normal)" offset="0x18" visible="true" />
+		<float32 name="Normal Upgrade Chance (Heroic)" offset="0x1C" visible="true" />
+		<float32 name="Normal Upgrade Chance (Legendary)" offset="0x20" visible="true" />
+		<float32 name="Many Upgrade Chance (Easy)" offset="0x24" visible="true" />
+		<float32 name="Many Upgrade Chance (Normal)" offset="0x28" visible="true" />
+		<float32 name="Many Upgrade Chance (Heroic)" offset="0x2C" visible="true" />
+		<float32 name="Many Upgrade Chance (Legendary)" offset="0x30" visible="true" />
+	</tagblock>
+	<tagblock name="Perception Properties" offset="0x90" visible="true" elementSize="0x2C">
+		<flags32 name="Perception Flags" offset="0x0" visible="true">
+			<bit name="Character Can See In Darkness" index="0" />
+			<bit name="Ignore Tracking Projectiles" index="1" />
+			<bit name="Ignore Minor Tracking Projectiles" index="2" />
+		</flags32>
+		<float32 name="Maximum Vision Distance" offset="0x4" visible="true" tooltip="maximum range of sight" />
+		<degree name="Central Vision Angle" offset="0x8" visible="true" tooltip="horizontal angle within which we see targets out to our maximum range" />
+		<degree name="Maximum Vision Angle" offset="0xC" visible="true" tooltip="maximum horizontal angle within which we see targets at range" />
+		<degree name="Peripheral Vision Angle" offset="0x10" visible="true" tooltip="maximum horizontal angle within which we can see targets out of the corner of our eye" />
+		<float32 name="Peripheral Distance" offset="0x14" visible="true" tooltip="maximum range at which we can see targets out of the corner of our eye" />
+		<float32 name="Hearing Distance" offset="0x18" visible="true" tooltip="maximum range at which sounds can be heard" />
+		<float32 name="Notice Projectile Chance" offset="0x1C" visible="true" tooltip="random chance of noticing a dangerous enemy projectile (e.g. grenade)" />
+		<float32 name="Notice Vehicle Chance" offset="0x20" visible="true" tooltip="random chance of noticing a dangerous vehicle" />
+		<float32 name="Perception Time" offset="0x24" visible="true" tooltip="time required to acknowledge a visible enemy at optimal range" />
+		<float32 name="First Acknowledge Surprise Distance" offset="0x28" visible="true" tooltip="If a new prop is acknowledged within the given distance, surprise is registered" />
+	</tagblock>
+	<tagblock name="Look Properties" offset="0x9C" visible="true" elementSize="0x50">
+		<degree2 name="Maximum Aiming Deviation" offset="0x0" visible="true" tooltip="how far we can turn our weapon" />
+		<degree2 name="Maximum Looking Deviation" offset="0x8" visible="true" tooltip="how far we can turn our head" />
+		<degree2 name="Runtime Aiming Deviation Cosines" offset="0x10" visible="true" />
+		<degree2 name="Runtime Looking Deviation Cosines" offset="0x18" visible="true" />
+		<degree name="Noncombat Look Delta Left" offset="0x20" visible="true" tooltip="how far we can turn our head left away from aiming vector when not in combat" />
+		<degree name="Noncombat Look Delta Right" offset="0x24" visible="true" tooltip="how far we can turn our head right away from aiming vector when not in combat" />
+		<degree name="Combat Look Delta Left" offset="0x28" visible="true" tooltip="how far we can turn our head left away from aiming vector when in combat" />
+		<degree name="Combat Look Delta Right" offset="0x2C" visible="true" tooltip="how far we can turn our head right away from aiming vector when in combat" />
+		<rangef name="Noncombat Idle Looking" offset="0x30" visible="true" tooltip="rate at which we change look around randomly when not in combat" />
+		<rangef name="Noncombat Idle Aiming" offset="0x38" visible="true" tooltip="rate at which we change aiming directions when looking around randomly when not in combat" />
+		<rangef name="Combat Idle Looking" offset="0x40" visible="true" tooltip="rate at which we change look around randomly when searching or in combat" />
+		<rangef name="Combat Idle Aiming" offset="0x48" visible="true" tooltip="rate at which we change aiming directions when looking around randomly when in combat" />
+	</tagblock>
+	<tagblock name="Movement Properties" offset="0xA8" visible="true" elementSize="0x2C">
+		<flags32 name="Movement Flags" offset="0x0" visible="true">
+			<bit name="Danger Crouch Allow Movement" index="0" />
+			<bit name="No Side-Step" index="1" />
+			<bit name="Prefer To Combat Near Friends" index="2" />
+			<bit name="Hop (To Cover Path Segments)" index="3" />
+			<bit name="Allow Jump to Firing Position" index="4" />
+			<bit name="Allow Boosted Jump" index="5" />
+			<bit name="Perch" index="6" />
+			<bit name="Climb" index="7" />
+			<bit name="Prefer Wall Movement" index="8" />
+			<bit name="Has Flying Mode" index="9" />
+			<bit name="Disallow Crouch" index="10" />
+			<bit name="Disallow All Movement" index="11" />
+			<bit name="Always Use Search Points" index="12" />
+			<bit name="Keep Moving" index="13" />
+			<bit name="Cure Isolation Jump" index="14" />
+			<bit name="Only Use Aerial Firing Positions" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
+		</flags32>
+		<float32 name="Pathfinding Radius" offset="0x4" visible="true" />
+		<float32 name="Destination Radius" offset="0x8" visible="true" />
+		<float32 name="Dive Grenade Chance" offset="0xC" visible="true" />
+		<enum16 name="Obstacle Leap Minimum Size" offset="0x10" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Tiny" value="0x1" />
+			<option name="Small" value="0x2" />
+			<option name="Medium" value="0x3" />
+			<option name="Large" value="0x4" />
+			<option name="Huge" value="0x5" />
+			<option name="Immobile" value="0x6" />
+		</enum16>
+		<enum16 name="Obstacle Leap Maximum Size" offset="0x12" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Tiny" value="0x1" />
+			<option name="Small" value="0x2" />
+			<option name="Medium" value="0x3" />
+			<option name="Large" value="0x4" />
+			<option name="Huge" value="0x5" />
+			<option name="Immobile" value="0x6" />
+		</enum16>
+		<enum16 name="Obstacle Ignore Size" offset="0x14" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Tiny" value="0x1" />
+			<option name="Small" value="0x2" />
+			<option name="Medium" value="0x3" />
+			<option name="Large" value="0x4" />
+			<option name="Huge" value="0x5" />
+			<option name="Immobile" value="0x6" />
+		</enum16>
+		<enum16 name="Obstacle Smashable Size" offset="0x16" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Tiny" value="0x1" />
+			<option name="Small" value="0x2" />
+			<option name="Medium" value="0x3" />
+			<option name="Large" value="0x4" />
+			<option name="Huge" value="0x5" />
+			<option name="Immobile" value="0x6" />
+		</enum16>
+		<int16 name="Unknown" offset="0x18" visible="false" />
+		<enum16 name="Jump Height" offset="0x1A" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Down" value="0x1" />
+			<option name="Step" value="0x2" />
+			<option name="Crouch" value="0x3" />
+			<option name="Stand" value="0x4" />
+			<option name="Storey" value="0x5" />
+			<option name="Tower" value="0x6" />
+			<option name="Infinite" value="0x7" />
+		</enum16>
+		<flags32 name="Movement Hints" offset="0x1C" visible="true">
+			<bit name="Vault Step" index="0" />
+			<bit name="Vault Crouch" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Mount Step" index="5" />
+			<bit name="Mount Crouch" index="6" />
+			<bit name="Mount Stand" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Hoist Crouch" index="11" />
+			<bit name="Hoist Stand" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+		</flags32>
+		<float32 name="Unknown" offset="0x20" visible="true" />
+		<float32 name="Unknown" offset="0x24" visible="true" />
+		<float32 name="Unknown" offset="0x28" visible="true" />
+	</tagblock>
+	<tagblock name="Flocking Properties" offset="0xB4" visible="true" elementSize="0x18">
+		<float32 name="Deceleration Distance" offset="0x0" visible="true" />
+		<float32 name="Normalized Speed" offset="0x4" visible="true" />
+		<float32 name="Buffer Distance" offset="0x8" visible="true" />
+		<rangef name="Throttle Threshold Bounds" offset="0xC" visible="true" />
+		<float32 name="Deceleration Stop Time" offset="0x14" visible="true" />
+	</tagblock>
+	<tagblock name="Swarm Properties" offset="0xC0" visible="true" elementSize="0x38">
+		<int16 name="Scatter Killed Count" offset="0x0" visible="true" tooltip="After the given number of deaths, the swarm scatters" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<float32 name="Scatter Radius" offset="0x4" visible="true" tooltip="the distance from the target that the swarm scatters" />
+		<float32 name="Scatter Time" offset="0x8" visible="true" tooltip="amount of time to remain scattered" />
+		<rangef name="Hound Distance" offset="0xC" visible="true" />
+		<rangef name="Infection Time" offset="0x14" visible="true" tooltip="how long the infection form and its victim will wrestle before the point of no return" />
+		<float32 name="Perlin Offset Scale" offset="0x1C" visible="true" tooltip="amount of randomness added to creature's throttle" />
+		<rangef name="Offset Period" offset="0x20" visible="true" tooltip="how fast the creature changes random offset to throttle" />
+		<float32 name="Perlin Idle Movement Threshold" offset="0x28" visible="true" tooltip="a random offset lower then given threshold is made 0. (threshold of 1 = no movement)" />
+		<float32 name="Perlin Combat Movement Threshold" offset="0x2C" visible="true" tooltip="a random offset lower then given threshold is made 0. (threshold of 1 = no movement)" />
+		<float32 name="Stuck Time" offset="0x30" visible="true" tooltip="how long we have to move (stuck distance) before we get deleted" />
+		<float32 name="Stuck Distance" offset="0x34" visible="true" tooltip="how far we have to move in (stuck time) to not get deleted" />
+	</tagblock>
+	<tagblock name="Ready Properties" offset="0xCC" visible="true" elementSize="0x8">
+		<rangef name="Ready Time Bounds" offset="0x0" visible="true" tooltip="Character will pause for given time before engaging threat" />
+	</tagblock>
+	<tagblock name="Engage Properties" offset="0xD8" visible="true" elementSize="0x38">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="Engage Perch" index="0" />
+			<bit name="Fight Constant Movement" index="1" />
+			<bit name="Flight Fight Constant Movement" index="2" />
+		</flags32>
+		<rangef name="Reposition Bounds" offset="0x4" visible="true" tooltip="How long should I remain at a firing position before moving? (0 values will use the default values of 6 and 7 seconds)" />
+		<float32 name="Crouch Danger Threshold" offset="0xC" visible="true" tooltip="When danger rises above the threshold, the actor crouches" />
+		<float32 name="Stand Danger Threshold" offset="0x10" visible="true" tooltip="When danger drops below this threshold, the actor can stand again." />
+		<float32 name="Fight Danger Move Threshold" offset="0x14" visible="true" tooltip="When danger goes above given level, this actor switches firing positions" />
+		<tagRef name="Override Grenade Projectile" offset="0x18" visible="true" tooltip="when I throw a grenade, forget what type I officially have" />
+		<rangef name="Default Combat Range" offset="0x28" visible="true" tooltip="If we are not holding a weapon, or we don't know how to use our weapon, use these bounds on my combat range" />
+		<rangef name="Default Firing Range" offset="0x30" visible="true" tooltip="If we don't know how to use our weapon, use these bounds on my firing range" />
+	</tagblock>
+	<tagblock name="Charge Properties" offset="0xE4" visible="true" elementSize="0x7C">
+		<flags32 name="Charge Flags" offset="0x0" visible="true">
+			<bit name="Offhand Melee Allowed" index="0" />
+			<bit name="Berserk Whenever Charge" index="1" />
+			<bit name="Don't Use Berserk Mode" index="2" />
+		</flags32>
+		<float32 name="Melee Consider Range" offset="0x4" visible="true" />
+		<float32 name="Melee Chance" offset="0x8" visible="true" tooltip="chance of initiating a melee within a 1 second period" />
+		<float32 name="Melee Attack Range" offset="0xC" visible="true" />
+		<float32 name="Melee Abort Range" offset="0x10" visible="true" />
+		<float32 name="Melee Attack Timeout" offset="0x14" visible="true" tooltip="Give up after given amount of time spent charging" />
+		<float32 name="Melee Attack Delay Timer" offset="0x18" visible="true" tooltip="don't attempt again before given time since last melee" />
+		<rangef name="Melee Leap Range" offset="0x1C" visible="true" />
+		<float32 name="Melee Leap Chance" offset="0x24" visible="true" />
+		<float32 name="Ideal Leap Velocity" offset="0x28" visible="true" />
+		<float32 name="Maximum Leap Velocity" offset="0x2C" visible="true" />
+		<float32 name="Melee Leap Ballistic" offset="0x30" visible="true" tooltip="min ballistic fraction" />
+		<float32 name="Melee Delay Timer" offset="0x34" visible="true" tooltip="time between melee leaps" />
+		<float32 name="Melee Leap Prediction Time" offset="0x38" visible="true" tooltip="how far ahead (seconds) do we look at target for translational prediction?" />
+		<rangef name="Shield-Down Berserk Chance" offset="0x3C" visible="true" tooltip="lower bound is chance to berserk at max range, upper bound is chance to berserk at min range, requires shield depleted berserk impulse" />
+		<rangef name="Shield-Down Berserk Ranges" offset="0x44" visible="true" />
+		<tagRef name="Berserk Weapon" offset="0x4C" visible="true" tooltip="when I berserk, I pull out a ..." />
+		<float32 name="Beserk Cooldown" offset="0x5C" visible="true" tooltip="Time that I will stay in beserk after losing my target, and then revert back to normal" />
+		<float32 name="Broken Kamikaze Chance" offset="0x60" visible="true" tooltip="Probability that I will run the kamikaze behaviour when my leader dies." />
+		<float32 name="Perimeter Range" offset="0x64" visible="true" tooltip="How far we will melee charge outside our firing points before starting perimeter (defaults to 5wu)" />
+		<float32 name="Perimeter Range Close" offset="0x68" visible="true" tooltip="How far we will melee charge outside our firing points before starting perimeter when the target is close to me (within 3wu) (defaults to 9wu)" />
+		<float32 name="Perimeter Damage Timeout" offset="0x6C" visible="true" tooltip="How long will we take damage from our target before either seeking cover or berserking (defaults to 3secs)" />
+		<tagblock name="Difficulty Limits" offset="0x70" visible="true" elementSize="0x6">
+			<comment title="Difficulty Limits">Per difficulty values to limit the number of guys in particular behaviours</comment>
+			<int16 name="Maximum Kamikaze Count" offset="0x0" visible="true" tooltip="How many guys in a single clump can be kamikazing at one time" />
+			<int16 name="Maximum Berserk Count" offset="0x2" visible="true" tooltip="How many guys in a single clump can be berserking at one time" />
+			<int16 name="Minimum Berserk Count" offset="0x4" visible="true" tooltip="We'd like at least this number of guys in a single clump can be berserking at one time (primarily combat forms)" />
+		</tagblock>
+	</tagblock>
+	<comment title="Danger Values">Danger values can be found in the ai-globals section of the globals tag.</comment>
+	<tagblock name="Evasion Properties" offset="0xF0" visible="true" elementSize="0x14">
+		<float32 name="Evasion Danger Threshold" offset="0x0" visible="true" tooltip="Consider evading when immediate danger surpasses threshold" />
+		<float32 name="Evasion Delay Timer" offset="0x4" visible="true" tooltip="Wait at least this delay between evasions" />
+		<float32 name="Evasion Chance" offset="0x8" visible="true" tooltip="If danger is above threshold, the chance that we will evade. Expressed as chance of evading within a 1 second time period" />
+		<float32 name="Evasion Proximity Threshold" offset="0xC" visible="true" tooltip="If target is within given proximity, possibly evade" />
+		<float32 name="Dive Retreat Chance" offset="0x10" visible="true" tooltip="Chance of retreating (fleeing) after danger avoidance dive" />
+	</tagblock>
+	<tagblock name="Cover Properties" offset="0xFC" visible="true" elementSize="0x54">
+		<flags32 name="Cover Flags" offset="0x0" visible="true">
+			<bit name="Bit 0" index="0" />
+		</flags32>
+		<rangef name="Hide Behind Cover Time" offset="0x4" visible="true" tooltip="how long we stay behind cover after seeking cover" />
+		<float32 name="Cover Vitality Threshold" offset="0xC" visible="true" tooltip="When vitality drops below this level, possibly trigger a cover" />
+		<float32 name="Cover Shield Fraction" offset="0x10" visible="true" tooltip="trigger cover when shield drops below this fraction (low shield cover impulse must be enabled)" />
+		<float32 name="Cover Check Delay" offset="0x14" visible="true" tooltip="amount of time I will wait before trying again after covering" />
+		<float32 name="Cover Danger Threshold" offset="0x18" visible="true" tooltip="Danger must be this high to cover. At danger level of 'danger threshold', the chance of seeking cover is the cover chance lower bound (below)" />
+		<float32 name="Danger Upper Threshold" offset="0x1C" visible="true" tooltip="At or above danger level of upper threshold, the chance of seeking cover is the cover chance upper bound (below)" />
+		<comment title="Cover Chance">The bounds on the chance of seeking cover.
+The lower bound is valid when the danger is at 'danger threshold'
+The upper bound is valid when the danger is at or above 'danger upper threshold'.
+It is interpolated linearly everywhere in between.
+All chances are expressed as 'chance of triggering cover in a 1 second period'.</comment>
+		<rangef name="Cover Chance Time" offset="0x20" visible="true" tooltip="Bounds on the chances of seeking cover." />
+		<float32 name="Cover Check Delay" offset="0x28" visible="true" tooltip="Amount of time I will wait before trying again after covering (0 value defaults to 2 seconds)" />
+		<float32 name="Cover Pinned Down Check Delay" offset="0x2C" visible="true" tooltip="Amount of time I will wait before issuing a pinned down message (0 value defaults to 2 seconds)" />
+		<float32 name="Emerge From Cover When Shield Fraction Reaches Threshold" offset="0x30" visible="true" tooltip="Emerge from cover when shield fraction reaches threshold" />
+		<float32 name="Proximity Self-Preserve" offset="0x34" visible="true" tooltip="When the proximity_self_preservation impulse is enabled, triggers self-preservation when target within this distance" />
+		<float32 name="Disallow Cover Distance" offset="0x38" visible="true" tooltip="Disallow covering from visible target under the given distance away" />
+		<float32 name="Proximity Melee Distance" offset="0x3C" visible="true" tooltip="When self preserving from a target less than given distance, causes melee attack (assuming proximity_melee_impulse is enabled)" />
+		<float32 name="Unreachable Enemy Danger Threshold" offset="0x40" visible="true" tooltip="When danger from an unreachable enemy surpasses threshold, actor cover (assuming unreachable_enemy_cover impulse is enabled)" />
+		<float32 name="Scary Target Threshold" offset="0x44" visible="true" tooltip="When target is aware of me and surpasses the given scariness, self-preserve (scary_target_cover_impulse)" />
+		<float32 name="Vitality Fraction Bubbleshield" offset="0x48" visible="true" tooltip="Fraction of vitality below which an equipped bubbleshield equipment will be activated (once damage has died down)" />
+		<float32 name="Recent Damage Shield Equipment" offset="0x4C" visible="true" tooltip="Must have less than this amount of recent body damage before we can deploy our equipped shield equipment." />
+		<undefined name="Unknown" offset="0x50" visible="true" />
+	</tagblock>
+	<tagblock name="Retreat Properties" offset="0x108" visible="true" elementSize="0x58">
+		<flags32 name="Retreat Flags" offset="0x0" visible="true">
+			<bit name="Zig-Zag When Fleeing" index="0" />
+			<bit name="Bit 1" index="1" />
+		</flags32>
+		<float32 name="Shield Threshold" offset="0x4" visible="true" tooltip="When shield vitality drops below given amount, retreat is triggered by low_shield_retreat_impulse" />
+		<float32 name="Scary Target Threshold" offset="0x8" visible="true" tooltip="When confronting an enemy of over the given scariness, retreat is triggered by scary_target_retreat_impulse" />
+		<float32 name="Danger Threshold" offset="0xC" visible="true" tooltip="When perceived danger rises above the given threshold, retreat is triggered by danger_retreat_impulse" />
+		<float32 name="Proximity Threshold" offset="0x10" visible="true" tooltip="When enemy closer than given threshold, retreat is triggered by proximity_retreat_impulse" />
+		<rangef name="Forced Cower Time Bounds" offset="0x14" visible="true" tooltip="actor cowers for at least the given amount of time" />
+		<rangef name="Cower Timeout Bounds" offset="0x1C" visible="true" tooltip="actor times out of cower after the given amount of time" />
+		<float32 name="Proximity Ambush Threshold" offset="0x24" visible="true" tooltip="If target reaches is within the given proximity, an ambush is triggered by the proximity ambush impulse" />
+		<float32 name="Awareness Ambush Threshold" offset="0x28" visible="true" tooltip="If target is less than threshold (0-1) aware of me, an ambush is triggered by the vulnerable enemy ambush impulse" />
+		<float32 name="Leader Dead Retreat Chance" offset="0x2C" visible="true" tooltip="If leader-dead-retreat-impulse is active, gives the chance that we will flee when our leader dies within 4 world units of us" />
+		<float32 name="Peer Dead Retreat Chance" offset="0x30" visible="true" tooltip="If peer-dead-retreat-impulse is active, gives the chance that we will flee when one of our peers (friend of the same race) dies within 4 world units of us" />
+		<float32 name="Second Peer Dead Retreat Chance" offset="0x34" visible="true" tooltip="If peer-dead-retreat-impulse is active, gives the chance that we will flee when a second peer (friend of the same race) dies within 4 world units of us" />
+		<float32 name="Flee Timeout" offset="0x38" visible="true" tooltip="Flee for no longer than this time (if there is no cover, then we will keep fleeing indefinitely). Value of 0 means 'no timeout'" />
+		<degree name="Zig-Zag Angle" offset="0x3C" visible="true" tooltip="The angle from the intended destination direction that a zig-zag will cause" />
+		<float32 name="Zig-Zag Period" offset="0x40" visible="true" tooltip="How long it takes to zig left and then zag right." />
+		<float32 name="Retreat Grenade Chance" offset="0x44" visible="true" tooltip="The likelihood of throwing down a grenade to cover our retreat" />
+		<tagRef name="Backup Weapon" offset="0x48" visible="true" tooltip="If I want to flee and I don't have flee animations with my current weapon, throw it away and try a ..." />
+	</tagblock>
+	<tagblock name="Search Properties" offset="0x114" visible="true" elementSize="0x20">
+		<flags32 name="Search Flags" offset="0x0" visible="true">
+			<bit name="Crouch On Investigate" index="0" />
+			<bit name="Walk On Pursuit" index="1" />
+			<bit name="Search Forever" index="2" />
+			<bit name="Search Exclusively" index="3" />
+		</flags32>
+		<rangef name="Search Time" offset="0x4" visible="true" />
+		<float32 name="Search Distance" offset="0xC" visible="true" tooltip="Maximum distance away from our firing positions that we are happy to search (0 value will default to 3wu). Does not affect vehicle search distance (see maxd if you want that value too)." />
+		<rangef name="Uncover Distance Bounds" offset="0x10" visible="true" tooltip="Distance of uncover point from target. Hard lower limit, soft upper limit." />
+		<rangef name="Vocalization Time" offset="0x18" visible="true" />
+	</tagblock>
+	<tagblock name="Pre-Search Properties" offset="0x120" visible="true" elementSize="0x28">
+		<flags32 name="Pre-Search Flags" offset="0x0" visible="true">
+			<bit name="Bit 0" index="0" />
+		</flags32>
+		<rangef name="Minimum Presearch Time" offset="0x4" visible="true" tooltip="If the min presearch time expires and the target is (actually) outside the min-certainty radius, presearch turns off" />
+		<rangef name="Maximum Presearch Time" offset="0xC" visible="true" tooltip="Presearch turns off after the given time" />
+		<float32 name="Minimum Certainty Radius" offset="0x14" visible="true" />
+		<float32 name="Unknown" offset="0x18" visible="true" />
+		<rangef name="Minimum Suppressing Time" offset="0x1C" visible="true" tooltip="if the min suppressing time expires and the target is outside min-certainty radius, suppressing fire turns off" />
+		<int16 name="Unknown" offset="0x24" visible="false" />
+		<int16 name="Unknown" offset="0x26" visible="false" />
+	</tagblock>
+	<tagblock name="Idle Properties" offset="0x12C" visible="true" elementSize="0x14">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<rangef name="Idle Pose Delay Time" offset="0x4" visible="true" tooltip="time range for delays between idle poses" />
+		<rangef name="Wander Delay Time" offset="0xC" visible="true" tooltip="time to pause at a point while wandering" />
+	</tagblock>
+	<tagblock name="Vocalization Properties" offset="0x138" visible="true" elementSize="0xC">
+		<comment title="Skip Fraction">For vocalization with priority &lt; react, multiplies the skip fraction in the dialogue globals tag.
+For priorities &gt; react, multiplies the vocalization WEIGHT (i.e. the desire of that character to vocalize RELATIVE to other characters in the scene).
+Thus if you hurt the arbiter, say, he's still going to yell at you, no matter what, and if you kill somebody and nobody else is there to witness it, he will yell at you.
+As always, 0 means speak normally, 1 means skip everything (don't say shit)</comment>
+		<float32 name="Character Skip Fraction" offset="0x0" visible="true" />
+		<float32 name="Look Comment Time" offset="0x4" visible="true" tooltip="How long does the player look at an AI before the AI responds?" />
+		<float32 name="Look Long Comment Time" offset="0x8" visible="true" tooltip="How long does the player look at the AI before he responds with his 'long look' comment?" />
+	</tagblock>
+	<tagblock name="Boarding Properties" offset="0x144" visible="true" elementSize="0x14">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="Airborne Boarding" index="0" />
+		</flags32>
+		<float32 name="Maximum Distance" offset="0x4" visible="true" tooltip="maximum distance from entry point that we will consider boarding" />
+		<float32 name="Abort Distance" offset="0x8" visible="true" tooltip="give up trying to get in boarding seat if entry point is further away than this" />
+		<float32 name="Maximum Speed" offset="0xC" visible="true" tooltip="maximum speed at which we will consider boarding" />
+		<float32 name="Board Time" offset="0x10" visible="true" tooltip="maximum time we will melee board for" />
+	</tagblock>
+	<tagblock name="Kungfu Properties" offset="0x150" visible="true" elementSize="0x8">
+		<float32 name="Kungfu Override Distance" offset="0x0" visible="true" tooltip="If the player is within this distance, open fire, even if your task is kungfu-fight disallowed" />
+		<float32 name="Kungfu Cover Danger Threshold" offset="0x4" visible="true" tooltip="If you are kungfu disallowed and your danger is above this level, take cover" />
+	</tagblock>
+	<tagblock name="Guardian Properties" offset="0x15C" visible="true" elementSize="0x18">
+		<float32 name="Surge Time" offset="0x0" visible="true" tooltip="length of time for which the guardian surges" />
+		<float32 name="Surge Delay Time" offset="0x4" visible="true" tooltip="minimum enforced delay between surges" />
+		<float32 name="Proximity Surge Distance" offset="0x8" visible="true" tooltip="surge when our target gets closer than this to me (0 value defaults to 2wu)" />
+		<float32 name="Phase Time" offset="0xC" visible="true" tooltip="length of time it takes the guardian to get to its phase destination" />
+		<float32 name="Current Position Distance" offset="0x10" visible="true" tooltip="Minimum distance that I will consider phasing" />
+		<float32 name="Target Position Distance" offset="0x14" visible="true" tooltip="Minimum distance from my target that I will phase to" />
+	</tagblock>
+	<tagblock name="Combatform Properties" offset="0x168" visible="true" elementSize="0x8">
+		<float32 name="Berserk Distance" offset="0x0" visible="true" tooltip="distance at which combatform will be forced into berserk" />
+		<float32 name="Berserk Chance" offset="0x4" visible="true" tooltip="chance of berserking this second" />
+	</tagblock>
+	<tagblock name="Engineer Properties" offset="0x174" visible="true" elementSize="0x38">
+		<float32 name="Death Height" offset="0x0" visible="true" tooltip="try and rise this amount before dying" />
+		<float32 name="Death Rise Time" offset="0x4" visible="true" tooltip="spend this time rising" />
+		<float32 name="Death Detonation Time" offset="0x8" visible="true" tooltip="spend this time detonating" />
+		<float32 name="Shield Boost Radius Maximum" offset="0xC" visible="true" tooltip="Boost the shields of allies within this radius during combat" />
+		<float32 name="Shield Boost Period" offset="0x10" visible="true" tooltip="Time between shield boost pings from the engineer" />
+		<float32 name="Shield Boost Strength" offset="0x14" visible="true" />
+		<comment title="Detonation Thresholds">If shield vitality AND body vitality fall below the thresholds below, detonate</comment>
+		<float32 name="Detonation Shield Threshold" offset="0x18" visible="true" />
+		<float32 name="Detonation Body Vitality" offset="0x1C" visible="true" />
+		<float32 name="Proximity Radius" offset="0x20" visible="true" tooltip="if target enters within this radius, either detonate or deploy equipment" />
+		<float32 name="Proximity Detonation Chance" offset="0x24" visible="true" tooltip="chance of detonating if target enters the drain radius radius" />
+		<tagRef name="Proximity Equipment" offset="0x28" visible="true" tooltip="if target enters radius and detonation is not chosen, deploy this equipment." />
+	</tagblock>
+	<tagblock name="Inspect Properties" offset="0x180" visible="true" elementSize="0x14">
+		<float32 name="Stop Distance" offset="0x0" visible="true" tooltip="distance from object at which to stop and turn on the inspection light" />
+		<rangef name="Inspect Time" offset="0x4" visible="true" tooltip="time which we should inspect each object for" />
+		<rangef name="Search Range" offset="0xC" visible="true" tooltip="range in which we should search for objects to inspect" />
+	</tagblock>
+	<tagblock name="Scarab Properties" offset="0x18C" visible="true" elementSize="0x18">
+		<rangef name="Fighting Distance" offset="0x0" visible="true" tooltip="When target outside this range, the scarab will back up or chase to stay within range" />
+		<rangef name="Anticipated Aim Radius" offset="0x8" visible="true" tooltip="When within these bounds distance from the target, we blend in our anticipated facing vector" />
+		<rangef name="Snap Forward Angle" offset="0x10" visible="true" tooltip="When moving forward within this dot of our desired facing, just move forward" />
+	</tagblock>
+	<tagblock name="Weapons Properties" offset="0x198" visible="true" elementSize="0xE0">
+		<flags32 name="Weapons Flags" offset="0x0" visible="true">
+			<bit name="Bursting Inhibits Movement" index="0" />
+			<bit name="Must Crouch To Shoot" index="1" />
+			<bit name="Use Extended Safe-To-Save Range" index="2" />
+			<bit name="Fixed Aiming Vector" index="3" />
+			<bit name="Aim At Feet" index="4" />
+		</flags32>
+		<tagRef name="Weapon" offset="0x4" visible="true" />
+		<comment title="Combat Ranges" />
+		<float32 name="Maximum Firing Range" offset="0x14" visible="true" tooltip="we can only fire our weapon at targets within this distance" />
+		<float32 name="Minimum Firing Range" offset="0x18" visible="true" tooltip="weapon will not be fired at target closer than given distance" />
+		<rangef name="Normal Combat Range" offset="0x1C" visible="true" />
+		<float32 name="Bombardment Range" offset="0x24" visible="true" tooltip="we offset our burst targets randomly by this range when firing at non-visible enemies (zero = never)" />
+		<float32 name="Maximum Special Target Distance" offset="0x28" visible="true" tooltip="Specific target regions on a vehicle or unit will be fired upon only under the given distance" />
+		<rangef name="Timid Combat Range" offset="0x2C" visible="true" />
+		<rangef name="Aggressive Combat Range" offset="0x34" visible="true" />
+		<comment title="Ballistic Firing" />
+		<float32 name="Super-Ballistic Range" offset="0x3C" visible="true" tooltip="we try to aim our shots super-ballistically if target is outside this range (zero = never)" />
+		<rangef name="Ballistic Firing Bounds" offset="0x40" visible="true" tooltip="At the min range, the min ballistic fraction is used, at the max, the max ballistic fraction is used" />
+		<rangef name="Ballistic Fraction Bounds" offset="0x48" visible="true" tooltip="Controls speed and degree of arc. 0 = high, slow, 1 = low, fast" />
+		<comment title="Behavior" />
+		<rangef name="First Burst Delay Time" offset="0x50" visible="true" />
+		<float32 name="Surprise Delay Time" offset="0x58" visible="true" />
+		<float32 name="Surprise Fire-Wildly Time" offset="0x5C" visible="true" />
+		<float32 name="Death Fire-Wildly Chance" offset="0x60" visible="true" />
+		<float32 name="Death Fire-Wildly Time" offset="0x64" visible="true" />
+		<vector3 name="Custom Stand Gun Offset" offset="0x68" visible="true" tooltip="custom standing gun offset for overriding the default in the base actor" />
+		<vector3 name="Custom Crouch Gun Offset" offset="0x74" visible="true" tooltip="custom crouching gun offset for overriding the default in the base actor" />
+		<comment title="Special-Case Firing Properties" />
+		<enum16 name="Special-Fire Mode" offset="0x80" visible="true" tooltip="the type of special weapon fire that we can use">
+			<option name="None" value="0x0" />
+			<option name="Overcharge" value="0x1" />
+			<option name="Secondary Trigger" value="0x2" />
+		</enum16>
+		<enum16 name="Special-Fire Situation" offset="0x82" visible="true" tooltip="when we will decide to use our special weapon fire mode">
+			<option name="Never" value="0x0" />
+			<option name="Enemy Visible" value="0x1" />
+			<option name="Enemy Out Of Sight" value="0x2" />
+			<option name="Strafing" value="0x3" />
+		</enum16>
+		<float32 name="Special-Fire Chance" offset="0x84" visible="true" tooltip="how likely we are to use our special weapon fire mode" />
+		<float32 name="Special-Fire Delay" offset="0x88" visible="true" tooltip="how long we must wait between uses of our special weapon fire mode" />
+		<float32 name="Special Damage Modifier" offset="0x8C" visible="true" tooltip="damage modifier for special weapon fire (applied in addition to the normal damage modifier. zero = no change)" />
+		<degree name="Special Projectile Error" offset="0x90" visible="true" tooltip="projectile error angle for special weapon fire (applied in addition to the normal error)" />
+		<comment title="Weapon Drop When Killed" />
+		<rangef name="Drop Weapon Loaded" offset="0x94" visible="true" tooltip="amount of ammo loaded into the weapon that we drop (in fractions of a clip, e.g. 0.3 to 0.5)" />
+		<range16 name="Drop Weapon Ammo" offset="0x9C" visible="true" tooltip="total number of rounds in the weapon that we drop (ignored for energy weapons)" />
+		<comment title="Accuracy">Parameters control how accuracy changes over the duration of a series of bursts
+Accuracy is an analog value between 0 and 1. At zero, the parameters of the first firing-pattern block is used. At 1, the parameters in the second block is used. In between, all the values are linearly interpolated</comment>
+		<rangef name="Normal Accuracy Bounds" offset="0xA0" visible="true" tooltip="Indicates starting and ending accuracies at normal difficulty" />
+		<float32 name="Normal Accuracy Time" offset="0xA8" visible="true" tooltip="The amount of time it takes the accuracy to go from starting to ending" />
+		<rangef name="Heroic Accuracy Bounds" offset="0xAC" visible="true" tooltip="Indicates starting and ending accuracies at heroic difficulty" />
+		<float32 name="Heroic Accuracy Time" offset="0xB4" visible="true" tooltip="The amount of time it takes the accuracy to go from starting to ending" />
+		<rangef name="Legendary Accuracy Bounds" offset="0xB8" visible="true" tooltip="Indicates starting and ending accuracies at legendary difficulty" />
+		<float32 name="Legendary Accuracy Time" offset="0xC0" visible="true" tooltip="The amount of time it takes the accuracy to go from starting to ending" />
+		<tagblock name="Firing Patterns" offset="0xC4" visible="true" elementSize="0x40">
+			<float32 name="Rate Of Fire" offset="0x0" visible="true" tooltip="how many times per second we pull the trigger (zero = continuously held down)" />
+			<float32 name="Target Tracking" offset="0x4" visible="true" tooltip="how well our bursts track moving targets. 0.0= fire at the position they were standing when we started the burst. 1.0= fire at current position" />
+			<float32 name="Target Leading" offset="0x8" visible="true" tooltip="how much we lead moving targets. 0.0= no prediction. 1.0= predict completely." />
+			<comment title="Burst Geometry">at the start of every burst we pick a random point near the target to fire at, on either the left or the right side.
+the burst origin angle controls whether this error is exactly horizontal or might have some vertical component.
+
+over the course of the burst we move our projectiles back in the opposite direction towards the target. this return motion is also controlled by an angle that specifies how close to the horizontal it is.
+
+for example if the burst origin angle and the burst return angle were both zero, and the return length was the same as the burst length, every burst would start the same amount away from the target (on either the left or right) and move back to exactly over the target at the end of the burst.</comment>
+			<float32 name="Burst Origin Radius" offset="0xC" visible="true" tooltip="how far away from the target the starting point is" />
+			<degree name="Burst Origin Angle" offset="0x10" visible="true" tooltip="the range from the horizontal that our starting error can be" />
+			<rangef name="Burst Return Length" offset="0x14" visible="true" tooltip="how far the burst point moves back towards the target (could be negative)" />
+			<degree name="Burst Return Angle" offset="0x1C" visible="true" tooltip="the range from the horizontal that the return direction can be" />
+			<rangef name="Burst Duration" offset="0x20" visible="true" tooltip="how long each burst we fire is" />
+			<rangef name="Burst Separation" offset="0x28" visible="true" tooltip="how long we wait between bursts" />
+			<float32 name="Weapon Damage Modifier" offset="0x30" visible="true" tooltip="what fraction of its normal damage our weapon inflicts (zero = no modifier)" />
+			<degree name="Projectile Error" offset="0x34" visible="true" tooltip="error added to every projectile we fire" />
+			<degree name="Burst Angular Velocity" offset="0x38" visible="true" tooltip="the maximum rate at which we can sweep our fire (zero = unlimited)" />
+			<degree name="Maximum Error Angle" offset="0x3C" visible="true" tooltip="cap on the maximum angle by which we will miss target (restriction on burst origin radius)" />
+		</tagblock>
+		<tagRef name="Weapon Melee Damage" offset="0xD0" visible="true" />
+	</tagblock>
+	<tagblock name="Firing Pattern Properties" offset="0x1A4" visible="true" elementSize="0x1C">
+		<tagRef name="Weapon" offset="0x0" visible="true" />
+		<tagblock name="Firing Patterns" offset="0x10" visible="true" elementSize="0x40">
+			<float32 name="Rate Of Fire" offset="0x0" visible="true" tooltip="how many times per second we pull the trigger (zero = continuously held down)" />
+			<float32 name="Target Tracking" offset="0x4" visible="true" tooltip="how well our bursts track moving targets. 0.0= fire at the position they were standing when we started the burst. 1.0= fire at current position" />
+			<float32 name="Target Leading" offset="0x8" visible="true" tooltip="how much we lead moving targets. 0.0= no prediction. 1.0= predict completely." />
+			<comment title="Burst Geometry">at the start of every burst we pick a random point near the target to fire at, on either the left or the right side.
+the burst origin angle controls whether this error is exactly horizontal or might have some vertical component.
+
+over the course of the burst we move our projectiles back in the opposite direction towards the target. this return motion is also controlled by an angle that specifies how close to the horizontal it is.
+
+for example if the burst origin angle and the burst return angle were both zero, and the return length was the same as the burst length, every burst would start the same amount away from the target (on either the left or right) and move back to exactly over the target at the end of the burst.</comment>
+			<float32 name="Burst Origin Radius" offset="0xC" visible="true" tooltip="how far away from the target the starting point is" />
+			<degree name="Burst Origin Angle" offset="0x10" visible="true" tooltip="the range from the horizontal that our starting error can be" />
+			<rangef name="Burst Return Length" offset="0x14" visible="true" tooltip="how far the burst point moves back towards the target (could be negative)" />
+			<degree name="Burst Return Angle" offset="0x1C" visible="true" tooltip="the range from the horizontal that the return direction can be" />
+			<rangef name="Burst Duration" offset="0x20" visible="true" tooltip="how long each burst we fire is" />
+			<rangef name="Burst Separation" offset="0x28" visible="true" tooltip="how long we wait between bursts" />
+			<float32 name="Weapon Damage Modifier" offset="0x30" visible="true" tooltip="what fraction of its normal damage our weapon inflicts (zero = no modifier)" />
+			<degree name="Projectile Error" offset="0x34" visible="true" tooltip="error added to every projectile we fire" />
+			<degree name="Burst Angular Velocity" offset="0x38" visible="true" tooltip="the maximum rate at which we can sweep our fire (zero = unlimited)" />
+			<degree name="Maximum Error Angle" offset="0x3C" visible="true" tooltip="cap on the maximum angle by which we will miss target (restriction on burst origin radius)" />
+		</tagblock>
+	</tagblock>
+	<tagblock name="Grenades Properties" offset="0x1B0" visible="true" elementSize="0x3C">
+		<flags32 name="Grenades Flags" offset="0x0" visible="true">
+			<bit name="Bit 0" index="0" />
+		</flags32>
+		<enum16 name="Grenade Type" offset="0x4" visible="true" tooltip="type of grenades that we throw">
+			<option name="Human Fragmentation" value="0x0" />
+			<option name="Covenant Plasma" value="0x1" />
+			<option name="Brute Claymore" value="0x2" />
+			<option name="Firebomb" value="0x3" />
+		</enum16>
+		<enum16 name="Trajectory Type" offset="0x6" visible="true" tooltip="How we throw our grenades">
+			<option name="Toss" value="0x0" />
+			<option name="Lob" value="0x1" />
+			<option name="Bounce" value="0x2" />
+		</enum16>
+		<int16 name="Unknown" offset="0x8" visible="false" />
+		<int16 name="Minimum Enemy Count" offset="0xA" visible="true" tooltip="how many enemies must be within the radius of the grenade before we will consider throwing there" />
+		<float32 name="Enemy Radius" offset="0xC" visible="true" tooltip="we consider enemies within this radius when determining where to throw" />
+		<float32 name="Grenade Ideal Velocity" offset="0x10" visible="true" tooltip="how fast we LIKE to throw our grenades" />
+		<float32 name="Grenade Velocity" offset="0x14" visible="true" tooltip="the fastest we can possibly throw our grenades" />
+		<rangef name="Grenade Ranges" offset="0x18" visible="true" tooltip="ranges within which we will consider throwing a grenade" />
+		<float32 name="Collateral Damage Radius" offset="0x20" visible="true" tooltip="we won't throw if there are friendlies around our target within this range" />
+		<float32 name="Grenade Chance" offset="0x24" visible="true" tooltip="how likely we are to throw a grenade in one second" />
+		<float32 name="Grenade Throw Delay" offset="0x28" visible="true" tooltip="How long we have to wait after throwing a grenade before we can throw another one" />
+		<float32 name="Grenade Uncover Chance" offset="0x2C" visible="true" tooltip="how likely we are to throw a grenade to flush out a target in one second" />
+		<float32 name="Anti-Vehicle Grenade Chance" offset="0x30" visible="true" tooltip="how likely we are to throw a grenade against a vehicle" />
+		<comment title="Grenade Drop When Killed" />
+		<range16 name="Grenade Count" offset="0x34" visible="true" tooltip="number of grenades that we start with" />
+		<float32 name="Don't Drop Grenades Chance" offset="0x38" visible="true" tooltip="how likely we are not to drop any grenades when we die, even if we still have some" />
+	</tagblock>
+	<tagblock name="Vehicle Properties" offset="0x1BC" visible="true" elementSize="0xD0">
+		<tagRef name="Unit" offset="0x0" visible="true" />
+		<tagRef name="Style" offset="0x10" visible="true" />
+		<flags32 name="Vehicle Flags" offset="0x20" visible="true">
+			<bit name="Passengers Adopt Original Squad" index="0" />
+			<bit name="Snap Facing To Forward (Ghosts)" index="1" />
+			<bit name="Throttle To Target (Hornets)" index="2" />
+			<bit name="Stationary Fight (Tanks)" index="3" />
+			<bit name="Keep Moving" index="4" />
+		</flags32>
+		<comment title="Pathfinding" />
+		<float32 name="AI Pathfinding Radius" offset="0x24" visible="true" tooltip="(Ground vehicles)" />
+		<float32 name="AI Destination Radius" offset="0x28" visible="true" tooltip="(All vehicles) Distance within which goal is considered reached" />
+		<float32 name="AI Deceleration Distance" offset="0x2C" visible="true" tooltip="(All vehicles) Distance from goal at which AI starts to decelerate" />
+		<comment title="Turning" />
+		<float32 name="AI Turning Radius" offset="0x30" visible="true" tooltip="(Warthog, Pelican, Ghost) Idealized average turning radius (should reflect actual vehicle physics)" />
+		<float32 name="AI Inner Turning Radius" offset="0x34" visible="true" tooltip="(Warthog-type) Idealized minimum turning radius (should reflect actual vehicle physics)" />
+		<float32 name="AI Ideal Turning Radius" offset="0x38" visible="true" tooltip="(Warthogs, ghosts) Ideal turning radius for rounding turns (barring obstacles, etc.)" />
+		<comment title="Steering" />
+		<degree name="AI Banshee Steering Maximum" offset="0x3C" visible="true" tooltip="(Banshee)" />
+		<float32 name="AI Maximum Steering Angle" offset="0x40" visible="true" tooltip="(Warthog, ghosts, wraiths) Maximum steering angle from forward (ultimately controls turning speed)" />
+		<float32 name="AI Maximum Steering Delta" offset="0x44" visible="true" tooltip="(pelicans, dropships, ghosts, wraiths) Maximum delta in steering angle from one tick to the next (ultimately controls turn acceleration)" />
+		<float32 name="AI Oversteering Scale" offset="0x48" visible="true" tooltip="(Warthog, ghosts, wraiths)" />
+		<ranged name="AI Oversteering Bounds" offset="0x4C" visible="true" tooltip="(Banshee) Angle to goal at which AI will oversteer" />
+		<float32 name="AI Sideslip Distance" offset="0x54" visible="true" tooltip="(Ghosts, Dropships) Distance within which AI will strafe to target (as opposed to turning)" />
+		<float32 name="AI Avoidance Distance" offset="0x58" visible="true" tooltip="(Banshee-style) Look-ahead distance for obstacle avoidance" />
+		<float32 name="AI Minimum Urgency" offset="0x5C" visible="true" tooltip="(Banshees) The minimum urgency with which a turn can be made (urgency = percent of maximum steering delta)" />
+		<degree name="Destination Behind Angle" offset="0x60" visible="true" tooltip="The angle from facing that is considered to be behind us (we do the ugly floaty slidey turn to things behind us)" />
+		<float32 name="Skid Scale" offset="0x64" visible="true" tooltip="When approaching a corner at speed, we may want to skid around that corner, by turning slightly too early. This is (roughly) how many seconds ahead we should start turning." />
+		<comment title="Throttle" />
+		<float32 name="AI Throttle Maximum" offset="0x68" visible="true" tooltip="(All vehicles)" />
+		<float32 name="AI Goal Minimum Throttle Scale" offset="0x6C" visible="true" tooltip="(Warthogs, Dropships, ghosts) scale on throttle when within 'ai deceleration distance' of goal (0...1)" />
+		<float32 name="AI Turn Minimum Throttle Scale" offset="0x70" visible="true" tooltip="(Warthogs, ghosts) Scale on throttle due to nearness to a turn (0...1)" />
+		<float32 name="AI Direction Minimum Throttle Scale" offset="0x74" visible="true" tooltip="(Warthogs, ghosts) Scale on throttle due to facing away from intended direction (0...1)" />
+		<float32 name="AI Acceleration Scale" offset="0x78" visible="true" tooltip="(warthogs, ghosts) The maximum allowable change in throttle between ticks" />
+		<float32 name="AI Throttle Blend" offset="0x7C" visible="true" tooltip="(dropships, sentinels) The degree of throttle blending between one tick and the next (0 = no blending)" />
+		<float32 name="Theoretical Maximum Speed" offset="0x80" visible="true" tooltip="(dropships, warthogs, ghosts) About how fast I can go." />
+		<float32 name="Error Scale" offset="0x84" visible="true" tooltip="(dropships, warthogs) scale on the difference between desired and actual speed, applied to throttle" />
+		<comment title="Combat" />
+		<degree name="AI Allowable Aim Deviation Angle" offset="0x88" visible="true" />
+		<comment title="Behavior" />
+		<float32 name="AI Charge Tight Angle Distance" offset="0x8C" visible="true" tooltip="(All vehicles) The distance at which the tight angle criterion is used for deciding to vehicle charge" />
+		<float32 name="AI Charge Tight Angle" offset="0x90" visible="true" tooltip="(All vehicles) Angle cosine within which the target is closer than tight angle distance in order to charge" />
+		<float32 name="AI Charge Repeat Timeout" offset="0x94" visible="true" tooltip="(All vehicles) Time delay between vehicle charges" />
+		<float32 name="AI Charge Look-Ahead Time" offset="0x98" visible="true" tooltip="(All vehicles) In deciding when to abort vehicle charge, look ahead these many seconds to predict time of contact" />
+		<float32 name="AI Consider Distance" offset="0x9C" visible="true" tooltip="Consider charging the target when it is within this range (0 = infinite distance)" />
+		<float32 name="AI Charge Abort Distance" offset="0xA0" visible="true" tooltip="Abort the charge when the target get more than this far away (0 = never abort)" />
+		<float32 name="Vehicle Ram Timeout" offset="0xA4" visible="true" tooltip="The ram behavior stops after a maximum of the given number of seconds" />
+		<float32 name="Ram Paralysis Time" offset="0xA8" visible="true" tooltip="The ram behavior freezes the vehicle for a given number of seconds after performing the ram" />
+		<float32 name="AI Cover Damage Threshold" offset="0xAC" visible="true" tooltip="(All vehicles) Trigger a cover when recent damage is above given threshold (damage_vehicle_cover impulse)" />
+		<float32 name="AI Cover Minimum Distance" offset="0xB0" visible="true" tooltip="(All vehicles) When executing vehicle-cover, minimum distance from the target to flee to" />
+		<float32 name="AI Cover Time" offset="0xB4" visible="true" tooltip="(All vehicles) How long to stay away from the target" />
+		<float32 name="AI Cover Minimum Boost Distance" offset="0xB8" visible="true" tooltip="(All vehicles) Boosting allowed when distance to cover destination is greater then this" />
+		<float32 name="Turtling Recent Damage Threshold" offset="0xBC" visible="true" tooltip="If vehicle turtling behavior is enabled, turtling is initiated if 'recent damage' surpasses the given threshold" />
+		<float32 name="Turtling Minimum Time" offset="0xC0" visible="true" tooltip="If the vehicle turtling behavior is enabled, turtling occurs for at least the given time" />
+		<float32 name="Turtling Timeout" offset="0xC4" visible="true" tooltip="The turtled state times out after the given number of seconds" />
+		<enum16 name="Obstacle Ignore Size" offset="0xC8" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Tiny" value="0x1" />
+			<option name="Small" value="0x2" />
+			<option name="Medium" value="0x3" />
+			<option name="Large" value="0x4" />
+			<option name="Huge" value="0x5" />
+			<option name="Immobile" value="0x6" />
+		</enum16>
+		<int16 name="Unknown" offset="0xCA" visible="false" />
+		<int16 name="Maximum Vehicle Charge" offset="0xCC" visible="true" tooltip="max number of this type of vehicle in a task who can vehicle charge at once" />
+		<int16 name="Minimum Vehicle Charge" offset="0xCE" visible="true" tooltip="min number of this type of vehicle in a task who can vehicle charge at once (soft limit, just a desired number)" />
+	</tagblock>
+	<tagblock name="Morph Properties" offset="0x1C8" visible="true" elementSize="0xE4">
+		<tagRef name="Ranged Character" offset="0x0" visible="true" />
+		<tagRef name="Tank Character" offset="0x10" visible="true" />
+		<tagRef name="Stealth Character" offset="0x20" visible="true" />
+		<tagRef name="Morph Muffins" offset="0x30" visible="true" />
+		<tagRef name="Ranged Weapon" offset="0x40" visible="true" />
+		<tagRef name="Tank Weapon" offset="0x50" visible="true" />
+		<tagRef name="Stealth Weapon" offset="0x60" visible="true" />
+		<comment title="Tank Guy" />
+		<float32 name="Distance Damage Outer Radius" offset="0x70" visible="true" tooltip="Considered damaging-outside-range when you START firing from outside this distance" />
+		<float32 name="Distance Damage Inner Radius" offset="0x74" visible="true" tooltip="Considered damaging-outside-range when you CONTINUE firing from outside this distance" />
+		<float32 name="Distance Damage Time" offset="0x78" visible="true" tooltip="Damaging tank guy from outside-range for this long causes a morph" />
+		<float32 name="Distance Damage Reset Time" offset="0x7C" visible="true" tooltip="Damage timer is reset after this long of not damaging him from outside-range" />
+		<rangef name="Throttle Distance" offset="0x80" visible="true" tooltip="Throttle the tank from running (far) to walking (near) across this range of distances. (defaults to 5 and 3)" />
+		<float32 name="Protect Damage Amount" offset="0x88" visible="true" tooltip="Once current damage reaches this amount, protect your special parts until no recent damage" />
+		<float32 name="Protect Time" offset="0x8C" visible="true" tooltip="How long should we protect our special parts for?" />
+		<tagRef name="Spew Infection Character" offset="0x90" visible="true" tooltip="What character should I throw up all over my target? Carrots?" />
+		<float32 name="Spew Chance" offset="0xA0" visible="true" tooltip="Probability of throwing up a bunch of infection forms when perimeterising" />
+		<stringid name="Spew Marker" offset="0xA4" visible="true" tooltip="From whence should the infection forms cometh?" />
+		<rangef name="Spew Frequency" offset="0xA8" visible="true" tooltip="Min/max time between spawning each infection form during spew. (defaults to 0.1 and 0.3)" />
+		<comment title="Stealth Dude" />
+		<float32 name="Stealth Morph Distance Threshold" offset="0xB0" visible="true" tooltip="Morphing inside this range causes a tank guy, outside this range causes a ranged fella" />
+		<float32 name="Stealth Morph Damage Threshold" offset="0xB4" visible="true" tooltip="Percentage of body health he has to be taken down in order to cause a morph" />
+		<rangef name="Stalk Range" offset="0xB8" visible="true" tooltip="We want to stalk our target within this range" />
+		<float32 name="Stalk Range Hard Maximum" offset="0xC0" visible="true" tooltip="We will never be able to pick a firing position more than this far from our target" />
+		<float32 name="Stalk Charge Chance" offset="0xC4" visible="true" tooltip="While stalking, charge randomly with this probability per second (also will charge when on periphery, this is just some spice)" />
+		<comment title="Ranged Bloke" />
+		<float32 name="Ranged Proximity Distance" offset="0xC8" visible="true" tooltip="Morph to tank/stalker when someone gets this close to me as a ranged form" />
+		<float32 name="Turtle Damage Threshold" offset="0xCC" visible="true" tooltip="amount of damage necessary to trigger a turtle" />
+		<rangef name="Turtle Time" offset="0xD0" visible="true" tooltip="when turtling, turtle for a random time with these bounds" />
+		<float32 name="Turtle Distance" offset="0xD8" visible="true" tooltip="when I turtle I send out a stimulus to friends within this radius to also turtle" />
+		<float32 name="Turtle Abort Distance" offset="0xDC" visible="true" tooltip="when my target get within this range, abort turtling" />
+		<comment title="General" />
+		<float32 name="Group Morph Range" offset="0xE0" visible="true" tooltip="Follow the morph of any other form within this distance" />
+	</tagblock>
+	<tagblock name="Equipment Definitions" offset="0x1D4" visible="true" elementSize="0x24">
+		<comment title="Equipment">Create one of these for each equipment type that you would like a character to be able to use. If you specify a relative drop chance of greater than zero then the character will use and drop this type of equipment with that (relative) chance. If you leave the equipment field empty, then there will be that (relative) chance of using and dropping no equipment at all.</comment>
+		<tagRef name="Equipment" offset="0x0" visible="true" tooltip="The equipment item that is to be usable" />
+		<flags32 name="Flags" offset="0x10" visible="true">
+			<bit name="Stop If No Energy" index="0" />
+		</flags32>
+		<float32 name="Relative Drop Chance" offset="0x14" visible="true" tooltip="The relative chance of this equipment being dropped with respect to the other pieces of equipment specified in this block" />
+		<tagblock name="Equipment Use" offset="0x18" visible="true" elementSize="0xC">
+			<enum16 name="Use When" offset="0x0" visible="true" tooltip="When should we use this equipment?">
+				<option name="Combat" value="0x0" />
+				<option name="Cover" value="0x1" />
+				<option name="Shield" value="0x2" />
+				<option name="Health" value="0x3" />
+				<option name="Uncover" value="0x4" />
+				<option name="Berserk" value="0x5" />
+				<option name="Investigate" value="0x6" />
+				<option name="Anti Vehicle" value="0x7" />
+			</enum16>
+			<enum16 name="Use How" offset="0x2" visible="true" tooltip="How should we use this equipment?">
+				<option name="Attach To Self" value="0x0" />
+				<option name="Throw At Enemy" value="0x1" />
+				<option name="Throw At Feet" value="0x2" />
+				<option name="Use On Self" value="0x3" />
+				<option name="Stop Using On Self" value="0x4" />
+			</enum16>
+			<comment title="Skip Fraction">Given that we have decided to use this equipment, should we do so? (0= always use it, 1= never use it). Heroic skip fraction is the average of normal and legendary chances.</comment>
+			<float32 name="Easy/Normal" offset="0x4" visible="true" />
+			<float32 name="Legendary" offset="0x8" visible="true" />
+		</tagblock>
+	</tagblock>
+	<tagblock name="Campaign Metagame Bucket" offset="0x1E0" visible="true" elementSize="0x8">
+		<flags8 name="Flags" offset="0x0" visible="true">
+			<bit name="Only Counts With Riders" index="0" />
+		</flags8>
+		<enum8 name="Type" offset="0x1" visible="true">
+			<option name="Brute" value="0x0" />
+			<option name="Grunt" value="0x1" />
+			<option name="Jackal" value="0x2" />
+			<option name="Marine" value="0x3" />
+			<option name="Bugger" value="0x4" />
+			<option name="Hunter" value="0x5" />
+			<option name="Flood Infection" value="0x6" />
+			<option name="Flood Carrier" value="0x7" />
+			<option name="Flood Combat" value="0x8" />
+			<option name="Flood Pureform" value="0x9" />
+			<option name="Sentinel" value="0xA" />
+			<option name="Elite" value="0xB" />
+			<option name="Turret" value="0xC" />
+			<option name="Mongoose" value="0xD" />
+			<option name="Warthog" value="0xE" />
+			<option name="Scorpion" value="0xF" />
+			<option name="Hornet" value="0x10" />
+			<option name="Pelican" value="0x11" />
+			<option name="Shade" value="0x12" />
+			<option name="Watchtower" value="0x13" />
+			<option name="Ghost" value="0x14" />
+			<option name="Chopper" value="0x15" />
+			<option name="Mauler" value="0x16" />
+			<option name="Wraith" value="0x17" />
+			<option name="Banshee" value="0x18" />
+			<option name="Phantom" value="0x19" />
+			<option name="Scarab" value="0x1A" />
+			<option name="Guntower" value="0x1B" />
+		</enum8>
+		<enum8 name="Class" offset="0x2" visible="true">
+			<option name="Infantry" value="0x0" />
+			<option name="Leader" value="0x1" />
+			<option name="Hero" value="0x2" />
+			<option name="Specialist" value="0x3" />
+			<option name="Light Vehicle" value="0x4" />
+			<option name="Heavy Vehicle" value="0x5" />
+			<option name="Giant Vehicle" value="0x6" />
+			<option name="Standard Vehicle" value="0x7" />
+		</enum8>
+		<int8 name="Unknown" offset="0x3" visible="false" />
+		<int16 name="Point Count" offset="0x4" visible="true" />
+		<int16 name="Unknown" offset="0x6" visible="false" />
+	</tagblock>
+	<tagblock name="Activity Objects" offset="0x1EC" visible="true" elementSize="0x1C">
+		<stringid name="Activity Name" offset="0x0" visible="true" />
+		<tagRef name="Crate" offset="0x4" visible="true" />
+		<stringid name="Crate Marker Name" offset="0x14" visible="true" />
+		<stringid name="Unit Marker Name" offset="0x18" visible="true" />
+	</tagblock>
+</plugin>

@@ -13,19 +13,18 @@
 	<float32 name="Near Clip Plane Distance" offset="0x4" visible="true" />
 	<float32 name="Projection Plane Distance" offset="0x8" visible="true" />
 	<float32 name="Far Clip Plane Distance" offset="0xC" visible="true" />
-	<tagRef name="Global Strings" offset="0x10" visible="true" />
-	<tagRef name="Damage Reporting Strings" offset="0x20" visible="true" />
-	<tagRef name="Input Strings" offset="0x30" visible="true" />
-	<tagRef name="Main Menu Music" offset="0x40" visible="true" />
+	<tagRef name="Unicode String List" offset="0x10" visible="true" />
+	<tagRef name="Unicode Damage Reporting String List" offset="0x20" visible="true" />
+	<tagRef name="Unicode Input String List" offset="0x30" visible="true" />
+	<tagRef name="Main Menu Music" offset="0x40" visible="true" tooltip="Looping sound that plays while the main menu is active" />
 	<int32 name="Music Fade Time" offset="0x50" visible="true" />
 	<colorf name="Default Text Color" offset="0x54" visible="true" alpha="true" />
 	<colorf name="Default Text Shadow Color" offset="0x64" visible="true" alpha="true" />
-	<comment title="Color Presets">Colors are defined here and used in text widgets throughout the UI. Specify a string_id here and the same one in a text widget. If you don't specify one in a text widget, you'll use the first entry here.</comment>
-	<tagblock name="Color Presets" offset="0x74" visible="true" elementSize="0x14">
+	<tagblock name="Color Presets" offset="0x74" visible="true" elementSize="0x14" tooltip="Colors are defined here and used in text widgets throughout the UI. Specify a string_id here and the same one in a text widget. If you don't specify one in a text widget, you'll use the first entry here.">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<colorf name="Color" offset="0x4" visible="true" alpha="true" />
 	</tagblock>
-	<tagblock name="Tint Colors" offset="0x80" visible="true" elementSize="0x30">
+	<tagblock name="Tint Colors" offset="0x80" visible="true" elementSize="0x30" tooltip="These colors are used for tinting widgets by team or player color.">
 		<tagblock name="Text Player" offset="0x0" visible="true" elementSize="0x10">
 			<colorf name="Color" offset="0x0" visible="true" alpha="true" />
 		</tagblock>
@@ -39,8 +38,8 @@
 			<colorf name="Color" offset="0x0" visible="true" alpha="true" />
 		</tagblock>
 	</tagblock>
-	<tagRef name="Default Sounds" offset="0x8C" visible="true" />
-	<tagblock name="Alert Descriptions" offset="0x9C" visible="true" elementSize="0x10">
+	<tagRef name="Default Sounds" offset="0x8C" visible="true" tooltip="Default sound effects for various UI actions" />
+	<tagblock name="Alert Descriptions" offset="0x9C" visible="true" elementSize="0x10" tooltip="Alerts are triggered by specific events that happen in the game. The game can require that an error be resolved before the dialog can be dismissed. Once the error is resolved (or if it doesn't require resolution) the user can dismiss it.">
 		<stringid name="Error Name" offset="0x0" visible="true" />
 		<flags8 name="Flags" offset="0x4" visible="true">
 			<bit name="Allow Auto Dismissal" index="0" />
@@ -63,6 +62,10 @@
 		<stringid name="Title" offset="0x8" visible="true" />
 		<stringid name="Message" offset="0xC" visible="true" />
 	</tagblock>
+	<comment title="Halox Dialogs">Dialogs are brought up by individual screens or UI systems to ask the user a question, typically of the Ok/Cancel sort such as: 'Are you sure you want to leave the game?'.
+Notes:
+- first item defaults to 'ok', second item defaults to 'cancel. third and fourth items don't display if they're not set
+- if 'b button action' is set to 'button ignored' then the b button doesn't do anything (such as cancelling)</comment>
 	<tagblock name="Dialog Descriptions" offset="0xA8" visible="true" elementSize="0x28">
 		<stringid name="Dialog Name" offset="0x0" visible="true" />
 		<flags16 name="Flags" offset="0x4" visible="true">
@@ -91,23 +94,29 @@
 			<option name="Fourth Item Activates" value="0x5" />
 		</enum16>
 	</tagblock>
-	<tagblock name="Global Data Sources" offset="0xB4" visible="true" elementSize="0x10">
+	<tagblock name="Global Data Sources" offset="0xB4" visible="true" elementSize="0x10" tooltip="Datasources that are available from anywhere in the UI">
 		<tagRef name="Data Source" offset="0x0" visible="true" />
 	</tagblock>
+	<comment title="Content Aspect Ratio Scaling">These define the scaling that will get applied to UI content and animations when running at the specified display modes</comment>
 	<vector2 name="16x9" offset="0xC0" visible="true" />
 	<vector2 name="4x3" offset="0xC8" visible="true" />
+	<comment title="Blur Constants">These control the blur kernel used when blurring overlayed UI</comment>
 	<float32 name="Horizontal Blur Factor" offset="0xD0" visible="true" />
 	<float32 name="Vertical Blur Factor" offset="0xD4" visible="true" />
-	<ascii name="MC Biped Name" offset="0xD8" length="0x20" visible="true" />
-	<ascii name="MC AI Squad Name" offset="0xF8" length="0x20" visible="true" />
+	<comment title="Appearance Model Names">These specify the name of a scenario-placed biped to be used for the Start Menu Appearance model
+If you want to use a scenario-placed biped (non-AI), enter the biped name in the 'biped name' field
+If you want to use an AI-placed biped, enter the squad name string and starting position string_id</comment>
+	<ascii name="MC Biped Name" offset="0xD8" size="0x20" visible="true" />
+	<ascii name="MC AI Squad Name" offset="0xF8" size="0x20" visible="true" />
 	<stringid name="MC AI Start Position Name" offset="0x118" visible="true" />
-	<ascii name="Elite Biped Name" offset="0x11C" length="0x20" visible="true" />
-	<ascii name="Elite AI Squad Name" offset="0x13C" length="0x20" visible="true" />
+	<ascii name="Elite Biped Name" offset="0x11C" size="0x20" visible="true" />
+	<ascii name="Elite AI Squad Name" offset="0x13C" size="0x20" visible="true" />
 	<stringid name="Elite AI Start Position Name" offset="0x15C" visible="true" />
 	<comment title="UI Navigation Speed">This controls tabbing around the UI. The tab delay is how fast you move around normally.
 Tab fast wait is how long the UI waits till using the tab fast delay instead of the tab delay.</comment>
 	<int32 name="Navigation Tab Delay ms" offset="0x160" visible="true" />
 	<int32 name="Navigation Tab Fast Wait ms" offset="0x164" visible="true" />
 	<int32 name="Navigation Tab Fast Delay ms" offset="0x168" visible="true" />
+	<comment title="Attract Mode Settings">These control behavior of the attract mode movies</comment>
 	<int32 name="Attract Mode Delay" offset="0x16C" visible="true" />
 </plugin>

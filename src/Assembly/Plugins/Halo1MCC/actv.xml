@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo1MCC" baseSize="0x238">
+	<revisions>
+		<revision author="Lord Zedd" version="1">ayy lmao</revision>
+	</revisions>
+	<flags32 name="Flags" offset="0x0" visible="true">
+		<bit name="Can Shoot While Flying" index="0" />
+		<bit name="Interpolate Color In HSV" index="1" tooltip="unused. Change colors are ALWAYS interpolated (Not sure if Bungie made a typo or not)" />
+		<bit name="Has Unlimited Grenades" index="2" tooltip="unused" />
+		<bit name="Movement Switching Try To Stay With Friends" index="3" tooltip="try not to get ahead of or fall behind any nearby friends that are also switching movement modes" />
+		<bit name="Active Camouflage" index="4" />
+		<bit name="Super Active Camouflage" index="5" />
+		<bit name="Cannot Use Ranged Weapons" index="6" />
+		<bit name="Prefer Passenger Seat" index="7" />
+	</flags32>
+	<tagRef name="Actor Definition" offset="0x4" visible="true" />
+	<tagRef name="Unit" offset="0x14" visible="true" />
+	<tagRef name="Major Variant" offset="0x24" visible="true" />
+	<enum16 name="Metagame Type" offset="0x34" visible="true">
+		<option name="Brute" value="0x0" />
+		<option name="Grunt" value="0x1" />
+		<option name="Jackal" value="0x2" />
+		<option name="Skirmisher" value="0x3" />
+		<option name="Marine" value="0x4" />
+		<option name="Spartan" value="0x5" />
+		<option name="Bugger" value="0x6" />
+		<option name="Hunter" value="0x7" />
+		<option name="Flood Infection" value="0x8" />
+		<option name="Flood Carrier" value="0x9" />
+		<option name="Flood Combat" value="0xA" />
+		<option name="Flood Pureform" value="0xB" />
+		<option name="Sentinel" value="0xC" />
+		<option name="Elite" value="0xD" />
+		<option name="Engineer" value="0xE" />
+		<option name="Mule" value="0xF" />
+		<option name="Turret" value="0x10" />
+		<option name="Mongoose" value="0x11" />
+		<option name="Warthog" value="0x12" />
+		<option name="Scorpion" value="0x13" />
+		<option name="Hornet" value="0x14" />
+		<option name="Pelican" value="0x15" />
+		<option name="Revenant" value="0x16" />
+		<option name="Seraph" value="0x17" />
+		<option name="Shade" value="0x18" />
+		<option name="Watchtower" value="0x19" />
+		<option name="Ghost" value="0x1A" />
+		<option name="Chopper" value="0x1B" />
+		<option name="Mauler" value="0x1C" />
+		<option name="Wraith" value="0x1D" />
+		<option name="Banshee" value="0x1E" />
+		<option name="Phantom" value="0x1F" />
+		<option name="Scarab" value="0x20" />
+		<option name="Guntower" value="0x21" />
+		<option name="Tuning Fork" value="0x22" />
+		<option name="Broadsword" value="0x23" />
+		<option name="Mammoth" value="0x24" />
+		<option name="Lich" value="0x25" />
+		<option name="Mantis" value="0x26" />
+		<option name="Wasp" value="0x27" />
+		<option name="Phaeton" value="0x28" />
+		<option name="Watcher" value="0x29" />
+		<option name="Knight" value="0x2A" />
+		<option name="Pawn" value="0x2B" />
+	</enum16>
+	<enum16 name="Metagame Classification" offset="0x36" visible="true">
+		<option name="Infantry" value="0x0" />
+		<option name="Leader" value="0x1" />
+		<option name="Hero" value="0x2" />
+		<option name="Specialist" value="0x3" />
+		<option name="Light Vehicle" value="0x4" />
+		<option name="Heavy Vehicle" value="0x5" />
+		<option name="Giant Vehicle" value="0x6" />
+		<option name="Standard Vehicle" value="0x7" />
+	</enum16>
+	<undefined name="Unknown" offset="0x38" visible="false" />
+	<undefined name="Unknown" offset="0x3C" visible="false" />
+	<undefined name="Unknown" offset="0x40" visible="false" />
+	<undefined name="Unknown" offset="0x44" visible="false" />
+	<undefined name="Unknown" offset="0x48" visible="false" />
+	<comment title="Movement Switching">note: only the flood combat forms will ever try to switch movement types voluntarily during combat</comment>
+	<enum16 name="Movement Type" offset="0x4C" visible="true" tooltip="when we have a choice of movement types, which type we will use">
+		<option name="Always Run" value="0x0" />
+		<option name="Always Crouch" value="0x1" />
+		<option name="Switch Types" value="0x2" />
+	</enum16>
+	<int16 name="Unknown" offset="0x4E" visible="false" />
+	<float32 name="Initial Crouch Chance" offset="0x50" visible="true" tooltip="actors that start their movement try to maintain this fraction of crouched actors" />
+	<rangef name="Crouch Time" offset="0x54" visible="true" tooltip="when switching movement types, how long we will stay crouched for before running" />
+	<rangef name="Run Time" offset="0x5C" visible="true" tooltip="when switching movement types, how long we will run for before slowing to a crouch" />
+	<comment title="Ranged Combat" />
+	<tagRef name="Weapon" offset="0x64" visible="true" />
+	<float32 name="Maximum Firing Distance" offset="0x74" visible="true" tooltip="we can only fire our weapon at targets within this distance" />
+	<float32 name="Rate Of Fire" offset="0x78" visible="true" tooltip="how many times per second we pull the trigger (zero = continuously held down)" />
+	<degree name="Projectile Error" offset="0x7C" visible="true" tooltip="error added to every projectile we fire" />
+	<rangef name="First Burst Delay Time" offset="0x80" visible="true" />
+	<float32 name="New-Target Firing Pattern Time" offset="0x88" visible="true" />
+	<float32 name="Surprise Delay Time" offset="0x8C" visible="true" />
+	<float32 name="Surprise Fire-Wildly Time" offset="0x90" visible="true" />
+	<float32 name="Death Fire-Wildly Chance" offset="0x94" visible="true" />
+	<float32 name="Death Fire-Wildly Time" offset="0x98" visible="true" />
+	<rangef name="Desired Combat Range" offset="0x9C" visible="true" />
+	<vector3 name="Custom Stand Gun Offset" offset="0xA4" visible="true" tooltip="custom standing gun offset for overriding the default in the base actor" />
+	<vector3 name="Custom Crouch Gun Offset" offset="0xB0" visible="true" tooltip="custom crouching gun offset for overriding the default in the base actor" />
+	<float32 name="Target Tracking" offset="0xBC" visible="true" tooltip="how well our bursts track moving targets. 0.0= fire at the position they were standing when we started the burst. 1.0= fire at current position" />
+	<float32 name="Target Leading" offset="0xC0" visible="true" tooltip="how much we lead moving targets. 0.0= no prediction. 1.0= predict completely." />
+	<float32 name="Weapon Damage Modifier" offset="0xC4" visible="true" tooltip="what fraction of its normal damage our weapon inflicts (zero = no modifier)" />
+	<float32 name="Damage Per Second" offset="0xC8" visible="true" tooltip="only used if weapon damage modifier is zero... how much damage we should deliver to the target per second while firing a burst at them (zero = use weapon default)" />
+	<comment title="Burst Geometry">at the start of every burst we pick a random point near the target to fire at, on either the left or the right side.
+the burst origin angle controls whether this error is exactly horizontal or might have some vertical component.
+
+over the course of the burst we move our projectiles back in the opposite direction towards the target. this return motion is also controlled by an angle that specifies how close to the horizontal it is.
+
+for example if the burst origin angle and the burst return angle were both zero, and the return length was the same as the burst length, every burst would start the same amount away from the target (on either the left or right) and move back to exactly over the target at the end of the burst.</comment>
+	<float32 name="Burst Origin Radius" offset="0xCC" visible="true" tooltip="how far away from the target the starting point is" />
+	<degree name="Burst Origin Angle" offset="0xD0" visible="true" tooltip="the range from the horizontal that our starting error can be" />
+	<rangef name="Burst Return Length" offset="0xD4" visible="true" tooltip="how far the burst point moves back towards the target (could be negative)" />
+	<degree name="Burst Return Angle" offset="0xDC" visible="true" tooltip="the range from the horizontal that the return direction can be" />
+	<rangef name="Burst Duration" offset="0xE0" visible="true" tooltip="how long each burst we fire is" />
+	<rangef name="Burst Separation" offset="0xE8" visible="true" tooltip="how long we wait between bursts" />
+	<degree name="Burst Angular Velocity" offset="0xF0" visible="true" tooltip="the maximum rate at which we can sweep our fire (zero = unlimited)" />
+	<undefined name="Unknown" offset="0xF4" visible="false" />
+	<float32 name="Special Damage Modifier" offset="0xF8" visible="true" tooltip="damage modifier for special weapon fire (applied in addition to the normal damage modifier. zero = no change)" />
+	<degree name="Special Projectile Error" offset="0xFC" visible="true" tooltip="projectile error angle for special weapon fire (applied in addition to the normal error)" />
+	<comment title="Firing Patterns">a firing pattern lets you modify the properties of an actor's burst geometry. actors choose which firing pattern to use based on their current state:
+     'new-target' when the target just appeared
+     'moving' when the actor is moving
+     'berserk' if the actor is berserk
+if none of these apply, no firing pattern is used.
+
+the default values in the burst geometry are multiplied by any non-zero modifiers in the firing pattern.</comment>
+	<float32 name="New-Target Burst Duration" offset="0x100" visible="true" tooltip="burst duration multiplier for newly appeared targets (zero = unchanged)" />
+	<float32 name="New-Target Burst Separation" offset="0x104" visible="true" tooltip="burst separation multiplier for newly appeared targets (zero = unchanged)" />
+	<float32 name="New-Target Rate Of Fire" offset="0x108" visible="true" tooltip="rate-of-fire multiplier for newly appeared targets (zero = unchanged)" />
+	<float32 name="New-Target Projectile Error" offset="0x10C" visible="true" tooltip="error multiplier for newly appeared targets (zero = unchanged)" />
+	<undefined name="Unknown" offset="0x110" visible="false" />
+	<undefined name="Unknown" offset="0x114" visible="false" />
+	<float32 name="Moving Burst Duration" offset="0x118" visible="true" tooltip="burst duration multiplier when the actor is moving (zero = unchanged)" />
+	<float32 name="Moving Burst Separation" offset="0x11C" visible="true" tooltip="burst separation multiplier when the actor is moving (zero = unchanged)" />
+	<float32 name="Moving Rate Of Fire" offset="0x120" visible="true" tooltip="rate-of-fire multiplier when the actor is moving (zero = unchanged)" />
+	<float32 name="Moving Projectile Error" offset="0x124" visible="true" tooltip="error multiplier when the actor is moving (zero = unchanged)" />
+	<undefined name="Unknown" offset="0x128" visible="false" />
+	<undefined name="Unknown" offset="0x12C" visible="false" />
+	<float32 name="Berserk Burst Duration" offset="0x130" visible="true" tooltip="burst duration multiplier when the actor is berserk (zero = unchanged)" />
+	<float32 name="Berserk Burst Separation" offset="0x134" visible="true" tooltip="burst separation multiplier when the actor is berserk (zero = unchanged)" />
+	<float32 name="Berserk Rate Of Fire" offset="0x138" visible="true" tooltip="rate-of-fire multiplier when the actor is berserk (zero = unchanged)" />
+	<float32 name="Berserk Projectile Error" offset="0x13C" visible="true" tooltip="error multiplier when the actor is berserk (zero = unchanged)" />
+	<undefined name="Unknown" offset="0x140" visible="false" />
+	<undefined name="Unknown" offset="0x144" visible="false" />
+	<comment title="Special-Case Firing Properties" />
+	<float32 name="Super-Ballistic Range" offset="0x148" visible="true" tooltip="we try to aim our shots super-ballistically if target is outside this range (zero = never)" />
+	<float32 name="Bombardment Range" offset="0x14C" visible="true" tooltip="we offset our burst targets randomly by this range when firing at non-visible enemies (zero = never)" />
+	<float32 name="Modified Vision Range" offset="0x150" visible="true" tooltip="any custom vision range that this actor variant has (zero = normal)" />
+	<enum16 name="Special-Fire Mode" offset="0x154" visible="true" tooltip="the type of special weapon fire that we can use">
+		<option name="None" value="0x0" />
+		<option name="Overcharge" value="0x1" />
+		<option name="Secondary Trigger" value="0x2" />
+	</enum16>
+	<enum16 name="Special-Fire Situation" offset="0x156" visible="true" tooltip="when we will decide to use our special weapon fire mode">
+		<option name="Never" value="0x0" />
+		<option name="Enemy Visible" value="0x1" />
+		<option name="Enemy Out Of Sight" value="0x2" />
+		<option name="Strafing" value="0x3" />
+	</enum16>
+	<float32 name="Special-Fire Chance" offset="0x158" visible="true" tooltip="how likely we are to use our special weapon fire mode" />
+	<float32 name="Special-Fire Delay" offset="0x15C" visible="true" tooltip="how long we must wait between uses of our special weapon fire mode" />
+	<comment title="Berserking And Melee" />
+	<float32 name="Melee Range" offset="0x160" visible="true" tooltip="how close an enemy target must get before triggering a melee charge" />
+	<float32 name="Melee Abort Range" offset="0x164" visible="true" tooltip="if our target gets this far away from us, we stop trying to melee them" />
+	<rangef name="Berserk Firing Ranges" offset="0x168" visible="true" tooltip="if we are outside maximum range, we advance towards target, stopping when we reach minimum range" />
+	<float32 name="Berserk Melee Range" offset="0x170" visible="true" tooltip="while berserking, how close an enemy target must get before triggering a melee charge" />
+	<float32 name="Berserk Melee Abort Range" offset="0x174" visible="true" tooltip="while berserking, if our target gets this far away from us, we stop trying to melee them" />
+	<undefined name="Unknown" offset="0x178" visible="false" />
+	<undefined name="Unknown" offset="0x17C" visible="false" />
+	<comment title="Grenades" />
+	<enum16 name="Grenade Type" offset="0x180" visible="true" tooltip="type of grenades that we throw">
+		<option name="Human Fragmentation" value="0x0" />
+		<option name="Covenant Plasma" value="0x1" />
+		<option name="Grenade Type 2" value="0x2" />
+		<option name="Grenade Type 3" value="0x3" />
+	</enum16>
+	<enum16 name="Trajectory Type" offset="0x182" visible="true" tooltip="how we throw our grenades">
+		<option name="Toss" value="0x0" />
+		<option name="Lob" value="0x1" />
+		<option name="Bounce" value="0x2" />
+	</enum16>
+	<enum16 name="Grenade Stimulus" offset="0x184" visible="true" tooltip="what causes us to consider throwing a grenade">
+		<option name="Never" value="0x0" />
+		<option name="Visible Target" value="0x1" />
+		<option name="Seek Cover" value="0x2" />
+	</enum16>
+	<int16 name="Minimum Enemy Count" offset="0x186" visible="true" tooltip="how many enemies must be within the radius of the grenade before we will consider throwing there" />
+	<float32 name="Enemy Radius" offset="0x188" visible="true" tooltip="we consider enemies within this radius when determining where to throw" />
+	<undefined name="Unknown" offset="0x18C" visible="false" />
+	<float32 name="Grenade Velocity" offset="0x190" visible="true" tooltip="how fast we can throw our grenades" />
+	<rangef name="Grenade Ranges" offset="0x194" visible="true" tooltip="ranges within which we will consider throwing a grenade" />
+	<float32 name="Collateral Damage Radius" offset="0x19C" visible="true" tooltip="we won't throw if there are friendlies around our target within this range" />
+	<float32 name="Grenade Chance" offset="0x1A0" visible="true" tooltip="how likely we are to throw a grenade" />
+	<float32 name="Grenade Check Time" offset="0x1A4" visible="true" tooltip="for continuous stimuli (e.g. visible target), how often we check to see if we want to throw a grenade" />
+	<float32 name="Encounter Grenade Timeout" offset="0x1A8" visible="true" tooltip="we cannot throw grenades if someone else in our encounter threw one this recently" />
+	<undefined name="Unknown" offset="0x1AC" visible="false" />
+	<undefined name="Unknown" offset="0x1B0" visible="false" />
+	<undefined name="Unknown" offset="0x1B4" visible="false" />
+	<undefined name="Unknown" offset="0x1B8" visible="false" />
+	<undefined name="Unknown" offset="0x1BC" visible="false" />
+	<comment title="Items" />
+	<tagRef name="Equipment" offset="0x1C0" visible="true" tooltip="equipment item to drop when we die" />
+	<range16 name="Grenade Count" offset="0x1D0" visible="true" tooltip="number of grenades that we start with" />
+	<float32 name="Dont Drop Grenades Chance" offset="0x1D4" visible="true" tooltip="how likely we are not to drop any grenades when we die, even if we still have some" />
+	<rangef name="Drop Weapon Loaded" offset="0x1D8" visible="true" tooltip="amount of ammo loaded into the weapon that we drop (in fractions of a clip, e.g. 0.3 to 0.5)" />
+	<range16 name="Drop Weapon Ammo" offset="0x1E0" visible="true" tooltip="total number of rounds in the weapon that we drop (ignored for energy weapons)" />
+	<undefined name="Unknown" offset="0x1E4" visible="false" />
+	<undefined name="Unknown" offset="0x1E8" visible="false" />
+	<undefined name="Unknown" offset="0x1EC" visible="false" />
+	<undefined name="Unknown" offset="0x1F0" visible="false" />
+	<undefined name="Unknown" offset="0x1F4" visible="false" />
+	<undefined name="Unknown" offset="0x1F8" visible="false" />
+	<undefined name="Unknown" offset="0x1FC" visible="false" />
+	<comment title="Unit" />
+	<float32 name="Body Vitality" offset="0x200" visible="true" tooltip="maximum body vitality of our unit" />
+	<float32 name="Shield Vitality" offset="0x204" visible="true" tooltip="maximum shield vitality of our unit" />
+	<float32 name="Shield Sapping Radius" offset="0x208" visible="true" tooltip="how far away we can drain the player's shields" />
+	<int16 name="Forced Shader Permutation" offset="0x20C" visible="true" tooltip="if nonzero, overrides the unit's shader permutation" />
+	<int16 name="Unknown" offset="0x20E" visible="false" />
+	<undefined name="Unknown" offset="0x210" visible="false" />
+	<undefined name="Unknown" offset="0x214" visible="false" />
+	<undefined name="Unknown" offset="0x218" visible="false" />
+	<undefined name="Unknown" offset="0x21C" visible="false" />
+	<undefined name="Unknown" offset="0x220" visible="false" />
+	<undefined name="Unknown" offset="0x224" visible="false" />
+	<undefined name="Unknown" offset="0x228" visible="false" />
+	<tagblock name="Change Colors" offset="0x22C" visible="true" elementSize="0x20">
+		<colorf name="Color Lower Bound" offset="0x0" alpha="false" visible="true" />
+		<colorf name="Color Upper Bound" offset="0xC" alpha="false" visible="true" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+	</tagblock>
+</plugin>

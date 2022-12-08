@@ -305,6 +305,10 @@ namespace Blamite.Injection
 		{
 		}
 
+		public void VisitHexString(string name, uint offset, bool visible, int size, uint pluginLine, string tooltip)
+		{
+		}
+
 		public void VisitColorInt(string name, uint offset, bool visible, bool alpha, uint pluginLine, string tooltip)
 		{
 		}
@@ -434,6 +438,11 @@ namespace Blamite.Injection
 			}
 		}
 
+		public void VisitOldStringID(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			ReadReferences(offset, ReadOldStringId);
+		}
+
 		private void ReadReferences(uint offset, Action<DataBlock, uint> processor)
 		{
 			var blocks = _blockStack.Peek();
@@ -458,6 +467,19 @@ namespace Blamite.Injection
 			if (str == null) return;
 
 			var fixup = new DataBlockStringIDFixup(str, (int) offset);
+			block.StringIDFixups.Add(fixup);
+		}
+
+		private void ReadOldStringId(DataBlock block, uint offset)
+		{
+			SeekToOffset(block, offset + 0x1C);
+			var sid = new StringID(_reader.ReadUInt32());
+			if (sid == StringID.Null) return;
+
+			var str = _cacheFile.StringIDs.GetString(sid);
+			if (str == null) return;
+
+			var fixup = new DataBlockStringIDFixup(str, (int)offset);
 			block.StringIDFixups.Add(fixup);
 		}
 

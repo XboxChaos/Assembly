@@ -201,6 +201,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			RegisterMetaTag("datum", "32-bit datum value");
 
+			RegisterMetaTag("oldstringid", "Early string ID, x1C length string ending in a 32-bit string ID. 32 bytes long");
+
 			CompletableXMLTag color = RegisterMetaTag("color32", "Integer color value");
 			CompletableXMLTag colorf = RegisterMetaTag("colorf", "Floating-point color value");
 			var colorAlpha = new CompletableXMLAttribute("alpha",
@@ -236,10 +238,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			CompletableXMLTag ascii = RegisterMetaTag("ascii", "ASCII string");
 			CompletableXMLTag utf16 = RegisterMetaTag("utf16", "UTF-16 string");
-			var strLength = new CompletableXMLAttribute("length",
-				"The size of the string, including the null terminator (required)");
-			ascii.RegisterAttribute(strLength);
-			utf16.RegisterAttribute(strLength);
+			CompletableXMLTag hexstring = RegisterMetaTag("hexstring", "Raw byte data as a string, intended for things like hashes and checksums vs \"raw\"");
+			ascii.RegisterAttribute(new CompletableXMLAttribute("size",
+				"The maximum size of the string data, including the null terminator. Should normally only be 0x20 or 0x100. TextBox max length = size (required)"));
+			utf16.RegisterAttribute(new CompletableXMLAttribute("size",
+				"The maximum size of the string data, including the null terminator. Should normally only be 0x40 or 0x100. TextBox max length = size / 2 (required)"));
+			hexstring.RegisterAttribute(new CompletableXMLAttribute("size",
+				"The maximum size of the byte array. TextBox max length = size * 2. (required)"));
 
 			CompletableXMLTag raw = RegisterMetaTag("raw", "Raw data viewer");
 			raw.RegisterAttribute(new CompletableXMLAttribute("size", "The size of the raw data (required)"));

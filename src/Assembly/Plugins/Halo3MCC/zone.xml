@@ -1,103 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin game="Halo3MCC" baseSize="0x220">
+<plugin game="Halo3MCC" baseSize="0x228">
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Lord Zedd" version="1">k</revision>
 	</revisions>
-	<enum16 name="Map Type" offset="0x0" visible="true">
-		<option name="Single Player" value="0x0" />
+	<enum16 name="Scenario Type" offset="0x0" visible="true">
+		<option name="Solo" value="0x0" />
 		<option name="Multiplayer" value="0x1" />
 		<option name="Main Menu" value="0x2" />
+		<option name="Multiplayer Shared" value="0x3" />
+		<option name="Single Player Shared" value="0x4" />
 	</enum16>
-	<int16 name="Flags" offset="0x2" visible="true" />
-	<tagblock name="Resource Types" offset="0x4" visible="true" elementSize="0x1C">
-		<raw name="GUID" offset="0x0" size="0x10" visible="true" />
-		<int16 name="Unknown" offset="0x10" visible="true" />
-		<int16 name="Unknown" offset="0x12" visible="true" />
-		<int16 name="Unknown" offset="0x14" visible="true" />
-		<int16 name="Unknown" offset="0x16" visible="true" />
+	<flags16 name="Scenario Flags" offset="0x2" visible="true">
+		<bit name="Don't Strip Pathfinding" index="0" tooltip="always leave pathfinding in, even for a multiplayer scenario" />
+		<bit name="Symmetric Multiplayer Map" index="1" />
+		<bit name="Quick Loading (Cinematic Only) Scenario" index="2" />
+		<bit name="Characters Use Previous Mission Weapons" index="3" />
+		<bit name="Override Globals" index="4" />
+		<bit name="Big Vehicle Use Center Point For Light Sampling" index="5" />
+		<bit name="Don't Use Campaign Sharing" index="6" />
+	</flags16>
+	<tagblock name="Resource Type Identifiers" offset="0x4" visible="true" elementSize="0x1C">
+		<hexstring name="GUID" offset="0x0" size="0x10" visible="true" />
+		<int32 name="Definition Flags" offset="0x10" visible="true" />
+		<int16 name="Pageable Alignment Bits" offset="0x14" visible="true" />
+		<int16 name="Optional Alignment Bits" offset="0x16" visible="true" />
 		<stringid name="Name" offset="0x18" visible="true" />
 	</tagblock>
-	<tagblock name="Resource Structure Types" offset="0x10" visible="true" elementSize="0x14">
-		<raw name="GUID" offset="0x0" size="0x10" visible="true" />
+	<tagblock name="Interop Type Identifiers" offset="0x10" visible="true" elementSize="0x14">
+		<hexstring name="GUID" offset="0x0" size="0x10" visible="true" />
 		<stringid name="Name" offset="0x10" visible="true" />
 	</tagblock>
-	<tagblock name="Compression Codecs" offset="0x1C" visible="true" elementSize="0x10">
-		<raw name="GUID" offset="0x0" size="0x10" visible="true" />
+	<tagblock name="Codec Identifiers" offset="0x1C" visible="true" elementSize="0x10">
+		<hexstring name="GUID" offset="0x0" size="0x10" visible="true" />
 	</tagblock>
-	<tagblock name="External Cache References" offset="0x28" visible="true" elementSize="0x108">
-		<ascii name="Map Path" offset="0x0" visible="true" length="0x100" />
-		<int16 name="Unknown" offset="0x100" visible="false" />
-		<int16 name="Unknown" offset="0x102" visible="false" />
-		<undefined name="Unknown" offset="0x104" visible="false" />
+	<tagblock name="Shared Files" offset="0x28" visible="true" elementSize="0x108" align="0x10">
+		<ascii name="DVD Relative Path" offset="0x0" visible="true" size="0x100" />
+		<flags16 name="Flags" offset="0x100" visible="true">
+			<bit name="Use Header IO Offset" index="0" />
+			<bit name="Not Required" index="1" />
+			<bit name="Use Header Locations" index="2" />
+			<bit name="No Resources" index="3" />
+		</flags16>
+		<int16 name="Global Shared Location Offset" offset="0x102" visible="true" />
+		<int32 name="IO Offset" offset="0x104" visible="true" />
 	</tagblock>
-	<tagblock name="Raw Pages" offset="0x34" visible="true" elementSize="0x58">
-		<int16 name="Salt" offset="0x0" visible="true" />
-		<int8 name="Flags" offset="0x2" visible="true" />
-		<int8 name="Compression Codec Index" offset="0x3" visible="true" />
-		<int16 name="Shared Cache Index" offset="0x4" visible="true" />
-		<int16 name="Unknown" offset="0x6" visible="true" />
+	<tagblock name="File Locations" offset="0x34" visible="true" elementSize="0x58" align="0x8">
+		<int16 name="Runtime Salt" offset="0x0" visible="true" />
+		<flags8 name="Flags" offset="0x2" visible="true">
+			<bit name="Valid Checksum" index="0" />
+			<bit name="Shared And Required" index="1" />
+			<bit name="DVD Only Shared And Required" index="2" />
+			<bit name="DVD Only And Required" index="3" />
+			<bit name="Referenced By Cache File Header" index="4" />
+			<bit name="Only Full Valid Checksum" index="5" />
+			<bit name="Shared And Pre Optimized" index="6" />
+		</flags8>
+		<int8 name="Codec Index" offset="0x3" visible="true" />
+		<int16 name="Shared File Index" offset="0x4" visible="true" />
+		<int16 name="Shared File Location Index" offset="0x6" visible="true" />
 		<comment title="Blocks">Blocks are stored in the raw table, at the beginning of the map, and compressed using deflate. The decompressed data is hashed.</comment>
 		<int32 name="Block Offset" offset="0x8" visible="true" />
 		<int32 name="Compressed Block Size" offset="0xC" visible="true" />
 		<int32 name="Uncompressed Block Size" offset="0x10" visible="true" />
 		<int32 name="CRC Checksum" offset="0x14" visible="true" />
-		<raw name="Entire Buffer Hash" offset="0x18" size="0x14" visible="true" />
-		<raw name="First Chunk Hash" offset="0x2C" size="0x14" visible="true" />
-		<raw name="Last Chunk Hash" offset="0x40" size="0x14" visible="true" />
-		<int16 name="Block Asset Count" offset="0x54" visible="true" />
-		<int16 name="Unknown Index" offset="0x56" visible="true" />
+		<hexstring name="Entire Hash" offset="0x18" size="0x14" visible="true" />
+		<hexstring name="First Chunk Hash" offset="0x2C" size="0x14" visible="true" />
+		<hexstring name="Last Chunk Hash" offset="0x40" size="0x14" visible="true" />
+		<int16 name="Resource Reference Count" offset="0x54" visible="true" />
+		<int16 name="Streaming Sublocation Table Index" offset="0x56" visible="true" />
 	</tagblock>
-	<tagblock name="Sizes" offset="0x40" visible="true" elementSize="0x10" align="0x8">
-		<int32 name="Overall Size" offset="0x0" visible="true" />
-		<tagblock name="Parts" offset="0x4" visible="true" elementSize="0x8" align="0x8">
-			<int32 name="Offset" offset="0x0" visible="true" />
-			<int32 name="Size" offset="0x4" visible="true" />
+	<tagblock name="Streaming Sublocation Tables" offset="0x40" visible="true" elementSize="0x10" align="0x8">
+		<int32 name="Total Memory Size" offset="0x0" visible="true" />
+		<tagblock name="Streaming Sublocations" offset="0x4" visible="true" elementSize="0x8" align="0x8">
+			<int32 name="Memory Offset" offset="0x0" visible="true" />
+			<int32 name="Memory Size" offset="0x4" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Unknown" offset="0x4C" visible="false" elementSize="0xC">
-		<int32 name="Unknown" offset="0x0" visible="false" />
-		<int32 name="Unknown" offset="0x4" visible="false" />
-		<int32 name="Unknown" offset="0x8" visible="false" />
+	<tagblock name="File Locations Patch Lookup" offset="0x4C" visible="true" elementSize="0xC">
+		<int32 name="Patch Index" offset="0x0" visible="true" />
+		<int32 name="Pageable File Location Index" offset="0x4" visible="true" />
+		<int32 name="Resource Index" offset="0x8" visible="true" />
 	</tagblock>
-	<tagblock name="Segments" offset="0x58" visible="true" elementSize="0x10" align="0x8">
-		<int16 name="Primary Page Index" offset="0x0" visible="true" />
-		<int16 name="Secondary Page Index" offset="0x2" visible="true" />
-		<int32 name="Primary Segment Offset" offset="0x4" visible="true" />
-		<int32 name="Secondary Segment Offset" offset="0x8" visible="true" />
-		<int16 name="Primary Size Index" offset="0xC" visible="true" />
-		<int16 name="Secondary Size Index" offset="0xE" visible="true" />
+	<tagblock name="Default Locations" offset="0x58" visible="true" elementSize="0x10" align="0x8">
+		<int16 name="Required Location Index" offset="0x0" visible="true" />
+		<int16 name="Optional Location Index" offset="0x2" visible="true" />
+		<int32 name="Required Location Offset" offset="0x4" visible="true" />
+		<int32 name="Optional Location Offset" offset="0x8" visible="true" />
+		<int16 name="Pageable Sublocation Table Index" offset="0xC" visible="true" />
+		<int16 name="Optional Sublocation Table Index" offset="0xE" visible="true" />
 	</tagblock>
-	<tagblock name="Tag Resources" offset="0x64" visible="true" elementSize="0x40">
-		<tagRef name="Parent Tag" offset="0x0" visible="true" />
-		<uint16 name="Salt" offset="0x10" visible="true" />
+	<tagblock name="Resources" offset="0x64" visible="true" elementSize="0x40">
+		<tagRef name="Owner Tag" offset="0x0" visible="true" />
+		<uint16 name="Resource Salt" offset="0x10" visible="true" />
 		<uint8 name="Resource Type Index" offset="0x12" visible="true" />
-		<uint8 name="Flags" offset="0x13" visible="true" />
-		<int32 name="Fixup Information Offset" offset="0x14" visible="true" />
-		<int32 name="Fixup Information Length" offset="0x18" visible="true" />
-		<int32 name="Secondary Fixup Information Offset" offset="0x1C" visible="true" />
-		<flags16 name="Fixup Flags" offset="0x20" visible="true">
-			<bit name="Primary Fixup Exists" index="0" />
-			<bit name="Secondary Fixup Exists" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
+		<int8 name="Control Alignment Bits" offset="0x13" visible="true" />
+		<int32 name="Control Offset Offset" offset="0x14" visible="true" />
+		<int32 name="Control Size" offset="0x18" visible="true" />
+		<int32 name="Optional Control Offset" offset="0x1C" visible="true" />
+		<flags16 name="Flags" offset="0x20" visible="true">
+			<bit name="Has Pageable Data" index="0" />
+			<bit name="Has Optional Data" index="1" />
 		</flags16>
-		<int16 name="[play] Segment Index" offset="0x22" visible="true" />
-		<uint16 name="Root Definition Address" offset="0x24" visible="true" />
-		<uint8 name="Root Definition Address Upper Bits" offset="0x26" visible="true" />
-		<flags8 name="Root Definition Address Location/High Bits" offset="0x27" visible="true">
+		<int16 name="[play] Location Index" offset="0x22" visible="true" />
+		<uint16 name="Root Fixup" offset="0x24" visible="true" />
+		<uint8 name="Root Fixup Upper Bits" offset="0x26" visible="true" />
+		<flags8 name="Root Fixup/High Bits" offset="0x27" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -107,13 +115,11 @@
 			<bit name="Raw Page" index="6" />
 			<bit name="Bit 7" index="7" />
 		</flags8>
-		<tagblock name="Resource Fixups" offset="0x28" visible="true" elementSize="0x8">
-			<comment title="Members">Block Offset: [offset in tag data sub-buffer].
-Address: fix-up address (either in the data sub-buffer, or a cache-resource offset.</comment>
-			<int32 name="Block Offset" offset="0x0" visible="true" />
-			<uint16 name="Address" offset="0x4" visible="true" />
-			<uint8 name="Address Upper Bits" offset="0x6" visible="true" />
-			<flags8 name="Address Location/High Bits" offset="0x7" visible="true">
+		<tagblock name="Control Fixups" offset="0x28" visible="true" elementSize="0x8">
+			<int32 name="Encoded Fixup Location" offset="0x0" visible="true" tooltip="offset in tag data sub-buffer" />
+			<uint16 name="Encoded Fixup Value" offset="0x4" visible="true" tootip="(split across above) fix-up address (either in the data sub-buffer, or a cache-resource offset." />
+			<uint8 name="Encoded Fixup Value Upper Bits" offset="0x6" visible="true" />
+			<flags8 name="Encoded Fixup Value/High Bits" offset="0x7" visible="true">
 				<bit name="Bit 0" index="0" />
 				<bit name="Bit 1" index="1" />
 				<bit name="Bit 2" index="2" />
@@ -124,10 +130,10 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="Bit 7" index="7" />
 			</flags8>
 		</tagblock>
-		<tagblock name="Resource Definition Fixups" offset="0x34" visible="true" elementSize="0x8">
-			<uint16 name="Offset" offset="0x0" visible="true" />
-			<uint8 name="Offset Upper Bits" offset="0x2" visible="true" />
-			<flags8 name="Offset Location/High Bits" offset="0x3" visible="true">
+		<tagblock name="Interop Locations" offset="0x34" visible="true" elementSize="0x8">
+			<uint16 name="Encoded Interop Location" offset="0x0" visible="true" />
+			<uint8 name="Encoded Interop Location Upper Bits" offset="0x2" visible="true" />
+			<flags8 name="Encoded Interop Location/High Bits" offset="0x3" visible="true">
 				<bit name="Bit 0" index="0" />
 				<bit name="Bit 1" index="1" />
 				<bit name="Bit 2" index="2" />
@@ -137,15 +143,15 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="Raw Page" index="6" />
 				<bit name="Bit 7" index="7" />
 			</flags8>
-			<int32 name="Resource Structure Type Index" offset="0x4" visible="true" />
+			<int32 name="Interop Type Index" offset="0x4" visible="true" />
 		</tagblock>
 	</tagblock>
-	<comment title="Active Pool Members">Pools are divided up into 32-bit groups per chunk.
-Each bit corresponds to either a chunk in "Tag Resources" above (Raw Pools), or a tag in the overall tag listing (Tag Pools).
-If a bit is enabled then that member will be loaded.</comment>
-	<tagblock name="Designer Zonesets" offset="0x70" visible="true" elementSize="0x78">
-		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+	<comment title="Manifest Bits">Divided into sets of 32.
+Resources refer to the Resources block above.
+Owners refer to the overall tag list.</comment>
+	<tagblock name="Designer Zone Manifests" offset="0x70" visible="true" elementSize="0x78">
+		<tagblock name="Required Resource Bits" offset="0x0" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -180,11 +186,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Deferred Resource Bits" offset="0xC" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -219,8 +222,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Optional Resource Bits" offset="0x18" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -255,21 +258,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<stringid name="Set Name" offset="0x44" visible="true" />
-		<tagblock name="Resource Types" offset="0x48" visible="false" elementSize="0x14">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
-		</tagblock>
-		<tagblock name="Required Tag Pool" offset="0x54" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Streamed Resource Bits" offset="0x24" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -304,8 +294,21 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Tag Pool" offset="0x60" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<int32 name="Required Resource Size" offset="0x30" visible="true" />
+		<int32 name="Deferred Required Size" offset="0x34" visible="true" />
+		<int32 name="Optional Resource Size" offset="0x38" visible="true" />
+		<int32 name="Streamed Resource Size" offset="0x3C" visible="true" />
+		<int32 name="DVD In-Memory Resource Size" offset="0x40" visible="true" />
+		<stringid name="Name" offset="0x44" visible="true" />
+		<tagblock name="Resource Usage" offset="0x48" visible="true" elementSize="0x14">
+			<int32 name="Required Resource Size" offset="0x0" visible="true" />
+			<int32 name="Deferred Required Size" offset="0x4" visible="true" />
+			<int32 name="Optional Resource Size" offset="0x8" visible="true" />
+			<int32 name="Streamed Resource Size" offset="0xC" visible="true" />
+			<int32 name="Disk Size" offset="0x10" visible="true" />
+		</tagblock>
+		<tagblock name="Active Resource Owners" offset="0x54" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -340,13 +343,53 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<undefined name="Unknown" offset="0x70" visible="false" />
-		<undefined name="Unknown" offset="0x74" visible="false" />
+		<tagblock name="Top Level Resource Owners" offset="0x60" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Attachment Hierarchy" offset="0x6C" visible="true" elementSize="0x10">
+			<int16 name="Parent Tag Index" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<tagblock name="Children" offset="0x4" visible="true" elementSize="0x2">
+				<int16 name="Child Tag Index" offset="0x0" visible="true" />
+			</tagblock>
+		</tagblock>
 	</tagblock>
-	<tagblock name="Global Zoneset" offset="0x7C" visible="true" elementSize="0x78">
-		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+	<tagblock name="Global Zone Manifest" offset="0x7C" visible="true" elementSize="0x78">
+		<tagblock name="Required Resource Bits" offset="0x0" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -381,11 +424,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Deferred Resource Bits" offset="0xC" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -420,8 +460,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Optional Resource Bits" offset="0x18" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -456,21 +496,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<stringid name="Set Name" offset="0x44" visible="true" />
-		<tagblock name="Resource Types" offset="0x48" visible="false" elementSize="0x14">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
-		</tagblock>
-		<tagblock name="Required Tag Pool" offset="0x54" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Streamed Resource Bits" offset="0x24" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -505,8 +532,21 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Tag Pool" offset="0x60" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<int32 name="Required Resource Size" offset="0x30" visible="true" />
+		<int32 name="Deferred Required Size" offset="0x34" visible="true" />
+		<int32 name="Optional Resource Size" offset="0x38" visible="true" />
+		<int32 name="Streamed Resource Size" offset="0x3C" visible="true" />
+		<int32 name="DVD In-Memory Resource Size" offset="0x40" visible="true" />
+		<stringid name="Name" offset="0x44" visible="true" />
+		<tagblock name="Resource Usage" offset="0x48" visible="true" elementSize="0x14">
+			<int32 name="Required Resource Size" offset="0x0" visible="true" />
+			<int32 name="Deferred Required Size" offset="0x4" visible="true" />
+			<int32 name="Optional Resource Size" offset="0x8" visible="true" />
+			<int32 name="Streamed Resource Size" offset="0xC" visible="true" />
+			<int32 name="Disk Size" offset="0x10" visible="true" />
+		</tagblock>
+		<tagblock name="Active Resource Owners" offset="0x54" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -541,16 +581,53 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<undefined name="Unknown" offset="0x70" visible="false" />
-		<undefined name="Unknown" offset="0x74" visible="false" />
+		<tagblock name="Top Level Resource Owners" offset="0x60" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Attachment Hierarchy" offset="0x6C" visible="true" elementSize="0x10">
+			<int16 name="Parent Tag Index" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<tagblock name="Children" offset="0x4" visible="true" elementSize="0x2">
+				<int16 name="Child Tag Index" offset="0x0" visible="true" />
+			</tagblock>
+		</tagblock>
 	</tagblock>
-	<undefined name="Unknown" offset="0x88" visible="false" />
-	<undefined name="Unknown" offset="0x8C" visible="false" />
-	<undefined name="Unknown" offset="0x90" visible="false" />
-	<tagblock name="Unattached Zoneset" offset="0x94" visible="true" elementSize="0x78">
-		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+	<tagblock name="HS Zone Manifest" offset="0x88" visible="true" elementSize="0x78">
+		<tagblock name="Required Resource Bits" offset="0x0" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -585,11 +662,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Deferred Resource Bits" offset="0xC" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -624,8 +698,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Optional Resource Bits" offset="0x18" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -660,21 +734,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<stringid name="Set Name" offset="0x44" visible="true" />
-		<tagblock name="Resource Types" offset="0x48" visible="false" elementSize="0x14">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
-		</tagblock>
-		<tagblock name="Required Tag Pool" offset="0x54" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Streamed Resource Bits" offset="0x24" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -709,8 +770,21 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Tag Pool" offset="0x60" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<int32 name="Required Resource Size" offset="0x30" visible="true" />
+		<int32 name="Deferred Required Size" offset="0x34" visible="true" />
+		<int32 name="Optional Resource Size" offset="0x38" visible="true" />
+		<int32 name="Streamed Resource Size" offset="0x3C" visible="true" />
+		<int32 name="DVD In-Memory Resource Size" offset="0x40" visible="true" />
+		<stringid name="Name" offset="0x44" visible="true" />
+		<tagblock name="Resource Usage" offset="0x48" visible="true" elementSize="0x14">
+			<int32 name="Required Resource Size" offset="0x0" visible="true" />
+			<int32 name="Deferred Required Size" offset="0x4" visible="true" />
+			<int32 name="Optional Resource Size" offset="0x8" visible="true" />
+			<int32 name="Streamed Resource Size" offset="0xC" visible="true" />
+			<int32 name="Disk Size" offset="0x10" visible="true" />
+		</tagblock>
+		<tagblock name="Active Resource Owners" offset="0x54" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -745,13 +819,53 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<undefined name="Unknown" offset="0x70" visible="false" />
-		<undefined name="Unknown" offset="0x74" visible="false" />
+		<tagblock name="Top Level Resource Owners" offset="0x60" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Attachment Hierarchy" offset="0x6C" visible="true" elementSize="0x10">
+			<int16 name="Parent Tag Index" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<tagblock name="Children" offset="0x4" visible="true" elementSize="0x2">
+				<int16 name="Child Tag Index" offset="0x0" visible="true" />
+			</tagblock>
+		</tagblock>
 	</tagblock>
-	<tagblock name="Disc-Forbidden Zoneset" offset="0xA0" visible="true" elementSize="0x78">
-		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+	<tagblock name="Unattached Designer Zone Manifest" offset="0x94" visible="true" elementSize="0x78">
+		<tagblock name="Required Resource Bits" offset="0x0" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -786,11 +900,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Deferred Resource Bits" offset="0xC" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -825,8 +936,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Optional Resource Bits" offset="0x18" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -861,21 +972,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<stringid name="Set Name" offset="0x44" visible="true" />
-		<tagblock name="Resource Types" offset="0x48" visible="false" elementSize="0x14">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
-		</tagblock>
-		<tagblock name="Required Tag Pool" offset="0x54" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Streamed Resource Bits" offset="0x24" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -910,8 +1008,21 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Tag Pool" offset="0x60" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<int32 name="Required Resource Size" offset="0x30" visible="true" />
+		<int32 name="Deferred Required Size" offset="0x34" visible="true" />
+		<int32 name="Optional Resource Size" offset="0x38" visible="true" />
+		<int32 name="Streamed Resource Size" offset="0x3C" visible="true" />
+		<int32 name="DVD In-Memory Resource Size" offset="0x40" visible="true" />
+		<stringid name="Name" offset="0x44" visible="true" />
+		<tagblock name="Resource Usage" offset="0x48" visible="true" elementSize="0x14">
+			<int32 name="Required Resource Size" offset="0x0" visible="true" />
+			<int32 name="Deferred Required Size" offset="0x4" visible="true" />
+			<int32 name="Optional Resource Size" offset="0x8" visible="true" />
+			<int32 name="Streamed Resource Size" offset="0xC" visible="true" />
+			<int32 name="Disk Size" offset="0x10" visible="true" />
+		</tagblock>
+		<tagblock name="Active Resource Owners" offset="0x54" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -946,13 +1057,53 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<undefined name="Unknown" offset="0x70" visible="false" />
-		<undefined name="Unknown" offset="0x74" visible="false" />
+		<tagblock name="Top Level Resource Owners" offset="0x60" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Attachment Hierarchy" offset="0x6C" visible="true" elementSize="0x10">
+			<int16 name="Parent Tag Index" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<tagblock name="Children" offset="0x4" visible="true" elementSize="0x2">
+				<int16 name="Child Tag Index" offset="0x0" visible="true" />
+			</tagblock>
+		</tagblock>
 	</tagblock>
-	<tagblock name="Disc-Always-Streaming Zoneset" offset="0xAC" visible="true" elementSize="0x78">
-		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+	<tagblock name="DVD Forbidden Zone Manifest" offset="0xA0" visible="true" elementSize="0x78">
+		<tagblock name="Required Resource Bits" offset="0x0" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -987,11 +1138,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Deferred Resource Bits" offset="0xC" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1026,8 +1174,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Optional Resource Bits" offset="0x18" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1062,21 +1210,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<stringid name="Set Name" offset="0x44" visible="true" />
-		<tagblock name="Resource Types" offset="0x48" visible="false" elementSize="0x14">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
-		</tagblock>
-		<tagblock name="Required Tag Pool" offset="0x54" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Streamed Resource Bits" offset="0x24" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1111,8 +1246,21 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Tag Pool" offset="0x60" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<int32 name="Required Resource Size" offset="0x30" visible="true" />
+		<int32 name="Deferred Required Size" offset="0x34" visible="true" />
+		<int32 name="Optional Resource Size" offset="0x38" visible="true" />
+		<int32 name="Streamed Resource Size" offset="0x3C" visible="true" />
+		<int32 name="DVD In-Memory Resource Size" offset="0x40" visible="true" />
+		<stringid name="Name" offset="0x44" visible="true" />
+		<tagblock name="Resource Usage" offset="0x48" visible="true" elementSize="0x14">
+			<int32 name="Required Resource Size" offset="0x0" visible="true" />
+			<int32 name="Deferred Required Size" offset="0x4" visible="true" />
+			<int32 name="Optional Resource Size" offset="0x8" visible="true" />
+			<int32 name="Streamed Resource Size" offset="0xC" visible="true" />
+			<int32 name="Disk Size" offset="0x10" visible="true" />
+		</tagblock>
+		<tagblock name="Active Resource Owners" offset="0x54" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1147,13 +1295,53 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<undefined name="Unknown" offset="0x70" visible="false" />
-		<undefined name="Unknown" offset="0x74" visible="false" />
+		<tagblock name="Top Level Resource Owners" offset="0x60" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Attachment Hierarchy" offset="0x6C" visible="true" elementSize="0x10">
+			<int16 name="Parent Tag Index" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<tagblock name="Children" offset="0x4" visible="true" elementSize="0x2">
+				<int16 name="Child Tag Index" offset="0x0" visible="true" />
+			</tagblock>
+		</tagblock>
 	</tagblock>
-	<tagblock name="BSP Zonesets" offset="0xB8" visible="true" elementSize="0x78">
-		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+	<tagblock name="DVD Always Streaming Zone Manifest" offset="0xAC" visible="true" elementSize="0x78">
+		<tagblock name="Required Resource Bits" offset="0x0" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1188,11 +1376,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Deferred Resource Bits" offset="0xC" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1227,8 +1412,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Optional Resource Bits" offset="0x18" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1263,21 +1448,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<stringid name="Set Name" offset="0x44" visible="true" />
-		<tagblock name="Resource Types" offset="0x48" visible="false" elementSize="0x14">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
-		</tagblock>
-		<tagblock name="Required Tag Pool" offset="0x54" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Streamed Resource Bits" offset="0x24" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1312,8 +1484,21 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Tag Pool" offset="0x60" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<int32 name="Required Resource Size" offset="0x30" visible="true" />
+		<int32 name="Deferred Required Size" offset="0x34" visible="true" />
+		<int32 name="Optional Resource Size" offset="0x38" visible="true" />
+		<int32 name="Streamed Resource Size" offset="0x3C" visible="true" />
+		<int32 name="DVD In-Memory Resource Size" offset="0x40" visible="true" />
+		<stringid name="Name" offset="0x44" visible="true" />
+		<tagblock name="Resource Usage" offset="0x48" visible="true" elementSize="0x14">
+			<int32 name="Required Resource Size" offset="0x0" visible="true" />
+			<int32 name="Deferred Required Size" offset="0x4" visible="true" />
+			<int32 name="Optional Resource Size" offset="0x8" visible="true" />
+			<int32 name="Streamed Resource Size" offset="0xC" visible="true" />
+			<int32 name="Disk Size" offset="0x10" visible="true" />
+		</tagblock>
+		<tagblock name="Active Resource Owners" offset="0x54" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1348,13 +1533,53 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<undefined name="Unknown" offset="0x70" visible="false" />
-		<undefined name="Unknown" offset="0x74" visible="false" />
+		<tagblock name="Top Level Resource Owners" offset="0x60" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Attachment Hierarchy" offset="0x6C" visible="true" elementSize="0x10">
+			<int16 name="Parent Tag Index" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<tagblock name="Children" offset="0x4" visible="true" elementSize="0x2">
+				<int16 name="Child Tag Index" offset="0x0" visible="true" />
+			</tagblock>
+		</tagblock>
 	</tagblock>
-	<tagblock name="BSP Zonesets 2" offset="0xC4" visible="true" elementSize="0x78">
-		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+	<tagblock name="Default BSP Zone Manifests" offset="0xB8" visible="true" elementSize="0x78">
+		<tagblock name="Required Resource Bits" offset="0x0" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1389,11 +1614,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Deferred Resource Bits" offset="0xC" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1428,8 +1650,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Optional Resource Bits" offset="0x18" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1464,21 +1686,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<stringid name="Set Name" offset="0x44" visible="true" />
-		<tagblock name="Resource Types" offset="0x48" visible="false" elementSize="0x14">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
-		</tagblock>
-		<tagblock name="Required Tag Pool" offset="0x54" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Streamed Resource Bits" offset="0x24" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1513,8 +1722,21 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Tag Pool" offset="0x60" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<int32 name="Required Resource Size" offset="0x30" visible="true" />
+		<int32 name="Deferred Required Size" offset="0x34" visible="true" />
+		<int32 name="Optional Resource Size" offset="0x38" visible="true" />
+		<int32 name="Streamed Resource Size" offset="0x3C" visible="true" />
+		<int32 name="DVD In-Memory Resource Size" offset="0x40" visible="true" />
+		<stringid name="Name" offset="0x44" visible="true" />
+		<tagblock name="Resource Usage" offset="0x48" visible="true" elementSize="0x14">
+			<int32 name="Required Resource Size" offset="0x0" visible="true" />
+			<int32 name="Deferred Required Size" offset="0x4" visible="true" />
+			<int32 name="Optional Resource Size" offset="0x8" visible="true" />
+			<int32 name="Streamed Resource Size" offset="0xC" visible="true" />
+			<int32 name="Disk Size" offset="0x10" visible="true" />
+		</tagblock>
+		<tagblock name="Active Resource Owners" offset="0x54" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1549,13 +1771,53 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<undefined name="Unknown" offset="0x70" visible="false" />
-		<undefined name="Unknown" offset="0x74" visible="false" />
+		<tagblock name="Top Level Resource Owners" offset="0x60" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Attachment Hierarchy" offset="0x6C" visible="true" elementSize="0x10">
+			<int16 name="Parent Tag Index" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<tagblock name="Children" offset="0x4" visible="true" elementSize="0x2">
+				<int16 name="Child Tag Index" offset="0x0" visible="true" />
+			</tagblock>
+		</tagblock>
 	</tagblock>
-	<tagblock name="BSP Zonesets 3" offset="0xD0" visible="true" elementSize="0x78">
-		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+	<tagblock name="Static BSP Zone Manifests" offset="0xC4" visible="true" elementSize="0x78">
+		<tagblock name="Required Resource Bits" offset="0x0" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1590,11 +1852,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Deferred Resource Bits" offset="0xC" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1629,8 +1888,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Optional Resource Bits" offset="0x18" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1665,21 +1924,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<stringid name="Set Name" offset="0x44" visible="true" />
-		<tagblock name="Resource Types" offset="0x48" visible="false" elementSize="0x14">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
-		</tagblock>
-		<tagblock name="Required Tag Pool" offset="0x54" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Streamed Resource Bits" offset="0x24" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1714,8 +1960,21 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Tag Pool" offset="0x60" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<int32 name="Required Resource Size" offset="0x30" visible="true" />
+		<int32 name="Deferred Required Size" offset="0x34" visible="true" />
+		<int32 name="Optional Resource Size" offset="0x38" visible="true" />
+		<int32 name="Streamed Resource Size" offset="0x3C" visible="true" />
+		<int32 name="DVD In-Memory Resource Size" offset="0x40" visible="true" />
+		<stringid name="Name" offset="0x44" visible="true" />
+		<tagblock name="Resource Usage" offset="0x48" visible="true" elementSize="0x14">
+			<int32 name="Required Resource Size" offset="0x0" visible="true" />
+			<int32 name="Deferred Required Size" offset="0x4" visible="true" />
+			<int32 name="Optional Resource Size" offset="0x8" visible="true" />
+			<int32 name="Streamed Resource Size" offset="0xC" visible="true" />
+			<int32 name="Disk Size" offset="0x10" visible="true" />
+		</tagblock>
+		<tagblock name="Active Resource Owners" offset="0x54" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1750,13 +2009,53 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<undefined name="Unknown" offset="0x70" visible="false" />
-		<undefined name="Unknown" offset="0x74" visible="false" />
+		<tagblock name="Top Level Resource Owners" offset="0x60" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Attachment Hierarchy" offset="0x6C" visible="true" elementSize="0x10">
+			<int16 name="Parent Tag Index" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<tagblock name="Children" offset="0x4" visible="true" elementSize="0x2">
+				<int16 name="Child Tag Index" offset="0x0" visible="true" />
+			</tagblock>
+		</tagblock>
 	</tagblock>
-	<tagblock name="Cinematic Zonesets" offset="0xDC" visible="true" elementSize="0x78">
-		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+	<tagblock name="Dynamic BSP Zone Manifests" offset="0xD0" visible="true" elementSize="0x78">
+		<tagblock name="Required Resource Bits" offset="0x0" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1791,11 +2090,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Deferred Resource Bits" offset="0xC" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1830,8 +2126,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Optional Resource Bits" offset="0x18" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1866,21 +2162,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<stringid name="Set Name" offset="0x44" visible="true" />
-		<tagblock name="Resource Types" offset="0x48" visible="false" elementSize="0x14">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
-		</tagblock>
-		<tagblock name="Required Tag Pool" offset="0x54" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Streamed Resource Bits" offset="0x24" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1915,8 +2198,21 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Tag Pool" offset="0x60" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<int32 name="Required Resource Size" offset="0x30" visible="true" />
+		<int32 name="Deferred Required Size" offset="0x34" visible="true" />
+		<int32 name="Optional Resource Size" offset="0x38" visible="true" />
+		<int32 name="Streamed Resource Size" offset="0x3C" visible="true" />
+		<int32 name="DVD In-Memory Resource Size" offset="0x40" visible="true" />
+		<stringid name="Name" offset="0x44" visible="true" />
+		<tagblock name="Resource Usage" offset="0x48" visible="true" elementSize="0x14">
+			<int32 name="Required Resource Size" offset="0x0" visible="true" />
+			<int32 name="Deferred Required Size" offset="0x4" visible="true" />
+			<int32 name="Optional Resource Size" offset="0x8" visible="true" />
+			<int32 name="Streamed Resource Size" offset="0xC" visible="true" />
+			<int32 name="Disk Size" offset="0x10" visible="true" />
+		</tagblock>
+		<tagblock name="Active Resource Owners" offset="0x54" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1951,13 +2247,53 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<undefined name="Unknown" offset="0x70" visible="false" />
-		<undefined name="Unknown" offset="0x74" visible="false" />
+		<tagblock name="Top Level Resource Owners" offset="0x60" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Attachment Hierarchy" offset="0x6C" visible="true" elementSize="0x10">
+			<int16 name="Parent Tag Index" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<tagblock name="Children" offset="0x4" visible="true" elementSize="0x2">
+				<int16 name="Child Tag Index" offset="0x0" visible="true" />
+			</tagblock>
+		</tagblock>
 	</tagblock>
-	<tagblock name="Scenario Zonesets" offset="0xE8" visible="true" elementSize="0x78">
-		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+	<tagblock name="Cinematic Zone Manifests" offset="0xDC" visible="true" elementSize="0x78">
+		<tagblock name="Required Resource Bits" offset="0x0" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1992,11 +2328,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Deferred Resource Bits" offset="0xC" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -2031,8 +2364,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Optional Resource Bits" offset="0x18" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -2067,21 +2400,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<stringid name="Set Name" offset="0x44" visible="true" />
-		<tagblock name="Resource Types" offset="0x48" visible="false" elementSize="0x14">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
-		</tagblock>
-		<tagblock name="Required Tag Pool" offset="0x54" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Streamed Resource Bits" offset="0x24" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -2116,8 +2436,21 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Tag Pool" offset="0x60" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<int32 name="Required Resource Size" offset="0x30" visible="true" />
+		<int32 name="Deferred Required Size" offset="0x34" visible="true" />
+		<int32 name="Optional Resource Size" offset="0x38" visible="true" />
+		<int32 name="Streamed Resource Size" offset="0x3C" visible="true" />
+		<int32 name="DVD In-Memory Resource Size" offset="0x40" visible="true" />
+		<stringid name="Name" offset="0x44" visible="true" />
+		<tagblock name="Resource Usage" offset="0x48" visible="true" elementSize="0x14">
+			<int32 name="Required Resource Size" offset="0x0" visible="true" />
+			<int32 name="Deferred Required Size" offset="0x4" visible="true" />
+			<int32 name="Optional Resource Size" offset="0x8" visible="true" />
+			<int32 name="Streamed Resource Size" offset="0xC" visible="true" />
+			<int32 name="Disk Size" offset="0x10" visible="true" />
+		</tagblock>
+		<tagblock name="Active Resource Owners" offset="0x54" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -2152,259 +2485,1011 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<undefined name="Unknown" offset="0x70" visible="false" />
-		<undefined name="Unknown" offset="0x74" visible="false" />
+		<tagblock name="Top Level Resource Owners" offset="0x60" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Attachment Hierarchy" offset="0x6C" visible="true" elementSize="0x10">
+			<int16 name="Parent Tag Index" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<tagblock name="Children" offset="0x4" visible="true" elementSize="0x2">
+				<int16 name="Child Tag Index" offset="0x0" visible="true" />
+			</tagblock>
+		</tagblock>
 	</tagblock>
-	<undefined name="Unknown" offset="0xF4" visible="false" />
-	<undefined name="Unknown" offset="0xF8" visible="false" />
-	<undefined name="Unknown" offset="0xFC" visible="false" />
-	<undefined name="Unknown" offset="0x100" visible="false" />
-	<undefined name="Unknown" offset="0x104" visible="false" />
-	<undefined name="Unknown" offset="0x108" visible="false" />
-	<tagblock name="Scenario Zoneset Groups" offset="0x10C" visible="true" elementSize="0x24">
+	<tagblock name="Zone Only Zone Set Manifests" offset="0xE8" visible="true" elementSize="0x78">
+		<tagblock name="Required Resource Bits" offset="0x0" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Deferred Resource Bits" offset="0xC" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Optional Resource Bits" offset="0x18" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Streamed Resource Bits" offset="0x24" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<int32 name="Required Resource Size" offset="0x30" visible="true" />
+		<int32 name="Deferred Required Size" offset="0x34" visible="true" />
+		<int32 name="Optional Resource Size" offset="0x38" visible="true" />
+		<int32 name="Streamed Resource Size" offset="0x3C" visible="true" />
+		<int32 name="DVD In-Memory Resource Size" offset="0x40" visible="true" />
+		<stringid name="Name" offset="0x44" visible="true" />
+		<tagblock name="Resource Usage" offset="0x48" visible="true" elementSize="0x14">
+			<int32 name="Required Resource Size" offset="0x0" visible="true" />
+			<int32 name="Deferred Required Size" offset="0x4" visible="true" />
+			<int32 name="Optional Resource Size" offset="0x8" visible="true" />
+			<int32 name="Streamed Resource Size" offset="0xC" visible="true" />
+			<int32 name="Disk Size" offset="0x10" visible="true" />
+		</tagblock>
+		<tagblock name="Active Resource Owners" offset="0x54" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Top Level Resource Owners" offset="0x60" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Attachment Hierarchy" offset="0x6C" visible="true" elementSize="0x10">
+			<int16 name="Parent Tag Index" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<tagblock name="Children" offset="0x4" visible="true" elementSize="0x2">
+				<int16 name="Child Tag Index" offset="0x0" visible="true" />
+			</tagblock>
+		</tagblock>
+	</tagblock>
+	<tagblock name="Expected Zone Set Manifests" offset="0xF4" visible="true" elementSize="0x78">
+		<tagblock name="Required Resource Bits" offset="0x0" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Deferred Resource Bits" offset="0xC" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Optional Resource Bits" offset="0x18" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Streamed Resource Bits" offset="0x24" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<int32 name="Required Resource Size" offset="0x30" visible="true" />
+		<int32 name="Deferred Required Size" offset="0x34" visible="true" />
+		<int32 name="Optional Resource Size" offset="0x38" visible="true" />
+		<int32 name="Streamed Resource Size" offset="0x3C" visible="true" />
+		<int32 name="DVD In-Memory Resource Size" offset="0x40" visible="true" />
+		<stringid name="Name" offset="0x44" visible="true" />
+		<tagblock name="Resource Usage" offset="0x48" visible="true" elementSize="0x14">
+			<int32 name="Required Resource Size" offset="0x0" visible="true" />
+			<int32 name="Deferred Required Size" offset="0x4" visible="true" />
+			<int32 name="Optional Resource Size" offset="0x8" visible="true" />
+			<int32 name="Streamed Resource Size" offset="0xC" visible="true" />
+			<int32 name="Disk Size" offset="0x10" visible="true" />
+		</tagblock>
+		<tagblock name="Active Resource Owners" offset="0x54" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Top Level Resource Owners" offset="0x60" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Attachment Hierarchy" offset="0x6C" visible="true" elementSize="0x10">
+			<int16 name="Parent Tag Index" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<tagblock name="Children" offset="0x4" visible="true" elementSize="0x2">
+				<int16 name="Child Tag Index" offset="0x0" visible="true" />
+			</tagblock>
+		</tagblock>
+	</tagblock>
+	<tagblock name="Fully Populated Zone Set Manifests" offset="0x100" visible="true" elementSize="0x78">
+		<tagblock name="Required Resource Bits" offset="0x0" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Deferred Resource Bits" offset="0xC" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Optional Resource Bits" offset="0x18" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Streamed Resource Bits" offset="0x24" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<int32 name="Required Resource Size" offset="0x30" visible="true" />
+		<int32 name="Deferred Required Size" offset="0x34" visible="true" />
+		<int32 name="Optional Resource Size" offset="0x38" visible="true" />
+		<int32 name="Streamed Resource Size" offset="0x3C" visible="true" />
+		<int32 name="DVD In-Memory Resource Size" offset="0x40" visible="true" />
+		<stringid name="Name" offset="0x44" visible="true" />
+		<tagblock name="Resource Usage" offset="0x48" visible="true" elementSize="0x14">
+			<int32 name="Required Resource Size" offset="0x0" visible="true" />
+			<int32 name="Deferred Required Size" offset="0x4" visible="true" />
+			<int32 name="Optional Resource Size" offset="0x8" visible="true" />
+			<int32 name="Streamed Resource Size" offset="0xC" visible="true" />
+			<int32 name="Disk Size" offset="0x10" visible="true" />
+		</tagblock>
+		<tagblock name="Active Resource Owners" offset="0x54" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Top Level Resource Owners" offset="0x60" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Attachment Hierarchy" offset="0x6C" visible="true" elementSize="0x10">
+			<int16 name="Parent Tag Index" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<tagblock name="Children" offset="0x4" visible="true" elementSize="0x2">
+				<int16 name="Child Tag Index" offset="0x0" visible="true" />
+			</tagblock>
+		</tagblock>
+	</tagblock>
+	<tagblock name="Zone Set Zone Usage" offset="0x10C" visible="true" elementSize="0x24">
 		<stringId name="Name" offset="0x0" visible="true" />
-		<int32 name="BSP Group Index" offset="0x4" visible="true" />
-		<flags32 name="Import Loaded BSPs" offset="0x8" visible="true">
-			<bit name="BSP 0" index="0" />
-			<bit name="BSP 1" index="1" />
-			<bit name="BSP 2" index="2" />
-			<bit name="BSP 3" index="3" />
-			<bit name="BSP 4" index="4" />
-			<bit name="BSP 5" index="5" />
-			<bit name="BSP 6" index="6" />
-			<bit name="BSP 7" index="7" />
-			<bit name="BSP 8" index="8" />
-			<bit name="BSP 9" index="9" />
-			<bit name="BSP 10" index="10" />
-			<bit name="BSP 11" index="11" />
-			<bit name="BSP 12" index="12" />
-			<bit name="BSP 13" index="13" />
-			<bit name="BSP 14" index="14" />
-			<bit name="BSP 15" index="15" />
-			<bit name="BSP 16" index="16" />
-			<bit name="BSP 17" index="17" />
-			<bit name="BSP 18" index="18" />
-			<bit name="BSP 19" index="19" />
-			<bit name="BSP 20" index="20" />
-			<bit name="BSP 21" index="21" />
-			<bit name="BSP 22" index="22" />
-			<bit name="BSP 23" index="23" />
-			<bit name="BSP 24" index="24" />
-			<bit name="BSP 25" index="25" />
-			<bit name="BSP 26" index="26" />
-			<bit name="BSP 27" index="27" />
-			<bit name="BSP 28" index="28" />
-			<bit name="BSP 29" index="29" />
-			<bit name="BSP 30" index="30" />
-			<bit name="BSP 31" index="31" />
+		<flags32 name="Flags" offset="0x4" visible="true">
+			<bit name="Begin Loading Next Level" index="0" />
+			<bit name="Debug Purposes Only" index="1" />
+			<bit name="Internal Zone Set" index="2" />
 		</flags32>
-		<flags32 name="Loaded BSPs" offset="0xC" visible="true">
-			<bit name="BSP 0" index="0" />
-			<bit name="BSP 1" index="1" />
-			<bit name="BSP 2" index="2" />
-			<bit name="BSP 3" index="3" />
-			<bit name="BSP 4" index="4" />
-			<bit name="BSP 5" index="5" />
-			<bit name="BSP 6" index="6" />
-			<bit name="BSP 7" index="7" />
-			<bit name="BSP 8" index="8" />
-			<bit name="BSP 9" index="9" />
-			<bit name="BSP 10" index="10" />
-			<bit name="BSP 11" index="11" />
-			<bit name="BSP 12" index="12" />
-			<bit name="BSP 13" index="13" />
-			<bit name="BSP 14" index="14" />
-			<bit name="BSP 15" index="15" />
-			<bit name="BSP 16" index="16" />
-			<bit name="BSP 17" index="17" />
-			<bit name="BSP 18" index="18" />
-			<bit name="BSP 19" index="19" />
-			<bit name="BSP 20" index="20" />
-			<bit name="BSP 21" index="21" />
-			<bit name="BSP 22" index="22" />
-			<bit name="BSP 23" index="23" />
-			<bit name="BSP 24" index="24" />
-			<bit name="BSP 25" index="25" />
-			<bit name="BSP 26" index="26" />
-			<bit name="BSP 27" index="27" />
-			<bit name="BSP 28" index="28" />
-			<bit name="BSP 29" index="29" />
-			<bit name="BSP 30" index="30" />
-			<bit name="BSP 31" index="31" />
+		<flags32 name="Required BSP Zones" offset="0x8" visible="true">
+			<bit name="Index 0" index="0" />
+			<bit name="Index 1" index="1" />
+			<bit name="Index 2" index="2" />
+			<bit name="Index 3" index="3" />
+			<bit name="Index 4" index="4" />
+			<bit name="Index 5" index="5" />
+			<bit name="Index 6" index="6" />
+			<bit name="Index 7" index="7" />
+			<bit name="Index 8" index="8" />
+			<bit name="Index 9" index="9" />
+			<bit name="Index 10" index="10" />
+			<bit name="Index 11" index="11" />
+			<bit name="Index 12" index="12" />
+			<bit name="Index 13" index="13" />
+			<bit name="Index 14" index="14" />
+			<bit name="Index 15" index="15" />
+			<bit name="Index 16" index="16" />
+			<bit name="Index 17" index="17" />
+			<bit name="Index 18" index="18" />
+			<bit name="Index 19" index="19" />
+			<bit name="Index 20" index="20" />
+			<bit name="Index 21" index="21" />
+			<bit name="Index 22" index="22" />
+			<bit name="Index 23" index="23" />
+			<bit name="Index 24" index="24" />
+			<bit name="Index 25" index="25" />
+			<bit name="Index 26" index="26" />
+			<bit name="Index 27" index="27" />
+			<bit name="Index 28" index="28" />
+			<bit name="Index 29" index="29" />
+			<bit name="Index 30" index="30" />
+			<bit name="Index 31" index="31" />
 		</flags32>
-		<flags32 name="Loaded Designer Zonesets" offset="0x10" visible="true">
-			<bit name="Set 0" index="0" />
-			<bit name="Set 1" index="1" />
-			<bit name="Set 2" index="2" />
-			<bit name="Set 3" index="3" />
-			<bit name="Set 4" index="4" />
-			<bit name="Set 5" index="5" />
-			<bit name="Set 6" index="6" />
-			<bit name="Set 7" index="7" />
-			<bit name="Set 8" index="8" />
-			<bit name="Set 9" index="9" />
-			<bit name="Set 10" index="10" />
-			<bit name="Set 11" index="11" />
-			<bit name="Set 12" index="12" />
-			<bit name="Set 13" index="13" />
-			<bit name="Set 14" index="14" />
-			<bit name="Set 15" index="15" />
-			<bit name="Set 16" index="16" />
-			<bit name="Set 17" index="17" />
-			<bit name="Set 18" index="18" />
-			<bit name="Set 19" index="19" />
-			<bit name="Set 20" index="20" />
-			<bit name="Set 21" index="21" />
-			<bit name="Set 22" index="22" />
-			<bit name="Set 23" index="23" />
-			<bit name="Set 24" index="24" />
-			<bit name="Set 25" index="25" />
-			<bit name="Set 26" index="26" />
-			<bit name="Set 27" index="27" />
-			<bit name="Set 28" index="28" />
-			<bit name="Set 29" index="29" />
-			<bit name="Set 30" index="30" />
-			<bit name="Set 31" index="31" />
+		<flags32 name="Expected Touched BSP Zones" offset="0xC" visible="true">
+			<bit name="Index 0" index="0" />
+			<bit name="Index 1" index="1" />
+			<bit name="Index 2" index="2" />
+			<bit name="Index 3" index="3" />
+			<bit name="Index 4" index="4" />
+			<bit name="Index 5" index="5" />
+			<bit name="Index 6" index="6" />
+			<bit name="Index 7" index="7" />
+			<bit name="Index 8" index="8" />
+			<bit name="Index 9" index="9" />
+			<bit name="Index 10" index="10" />
+			<bit name="Index 11" index="11" />
+			<bit name="Index 12" index="12" />
+			<bit name="Index 13" index="13" />
+			<bit name="Index 14" index="14" />
+			<bit name="Index 15" index="15" />
+			<bit name="Index 16" index="16" />
+			<bit name="Index 17" index="17" />
+			<bit name="Index 18" index="18" />
+			<bit name="Index 19" index="19" />
+			<bit name="Index 20" index="20" />
+			<bit name="Index 21" index="21" />
+			<bit name="Index 22" index="22" />
+			<bit name="Index 23" index="23" />
+			<bit name="Index 24" index="24" />
+			<bit name="Index 25" index="25" />
+			<bit name="Index 26" index="26" />
+			<bit name="Index 27" index="27" />
+			<bit name="Index 28" index="28" />
+			<bit name="Index 29" index="29" />
+			<bit name="Index 30" index="30" />
+			<bit name="Index 31" index="31" />
 		</flags32>
-		<flags32 name="Unknown Loaded Designer Zonesets" offset="0x14" visible="true">
-			<bit name="Set 0" index="0" />
-			<bit name="Set 1" index="1" />
-			<bit name="Set 2" index="2" />
-			<bit name="Set 3" index="3" />
-			<bit name="Set 4" index="4" />
-			<bit name="Set 5" index="5" />
-			<bit name="Set 6" index="6" />
-			<bit name="Set 7" index="7" />
-			<bit name="Set 8" index="8" />
-			<bit name="Set 9" index="9" />
-			<bit name="Set 10" index="10" />
-			<bit name="Set 11" index="11" />
-			<bit name="Set 12" index="12" />
-			<bit name="Set 13" index="13" />
-			<bit name="Set 14" index="14" />
-			<bit name="Set 15" index="15" />
-			<bit name="Set 16" index="16" />
-			<bit name="Set 17" index="17" />
-			<bit name="Set 18" index="18" />
-			<bit name="Set 19" index="19" />
-			<bit name="Set 20" index="20" />
-			<bit name="Set 21" index="21" />
-			<bit name="Set 22" index="22" />
-			<bit name="Set 23" index="23" />
-			<bit name="Set 24" index="24" />
-			<bit name="Set 25" index="25" />
-			<bit name="Set 26" index="26" />
-			<bit name="Set 27" index="27" />
-			<bit name="Set 28" index="28" />
-			<bit name="Set 29" index="29" />
-			<bit name="Set 30" index="30" />
-			<bit name="Set 31" index="31" />
+		<flags32 name="Required Designer Zones" offset="0x10" visible="true">
+			<bit name="Index 0" index="0" />
+			<bit name="Index 1" index="1" />
+			<bit name="Index 2" index="2" />
+			<bit name="Index 3" index="3" />
+			<bit name="Index 4" index="4" />
+			<bit name="Index 5" index="5" />
+			<bit name="Index 6" index="6" />
+			<bit name="Index 7" index="7" />
+			<bit name="Index 8" index="8" />
+			<bit name="Index 9" index="9" />
+			<bit name="Index 10" index="10" />
+			<bit name="Index 11" index="11" />
+			<bit name="Index 12" index="12" />
+			<bit name="Index 13" index="13" />
+			<bit name="Index 14" index="14" />
+			<bit name="Index 15" index="15" />
+			<bit name="Index 16" index="16" />
+			<bit name="Index 17" index="17" />
+			<bit name="Index 18" index="18" />
+			<bit name="Index 19" index="19" />
+			<bit name="Index 20" index="20" />
+			<bit name="Index 21" index="21" />
+			<bit name="Index 22" index="22" />
+			<bit name="Index 23" index="23" />
+			<bit name="Index 24" index="24" />
+			<bit name="Index 25" index="25" />
+			<bit name="Index 26" index="26" />
+			<bit name="Index 27" index="27" />
+			<bit name="Index 28" index="28" />
+			<bit name="Index 29" index="29" />
+			<bit name="Index 30" index="30" />
+			<bit name="Index 31" index="31" />
 		</flags32>
-		<flags32 name="Unloaded Designer Zonesets" offset="0x18" visible="true">
-			<bit name="Set 0" index="0" />
-			<bit name="Set 1" index="1" />
-			<bit name="Set 2" index="2" />
-			<bit name="Set 3" index="3" />
-			<bit name="Set 4" index="4" />
-			<bit name="Set 5" index="5" />
-			<bit name="Set 6" index="6" />
-			<bit name="Set 7" index="7" />
-			<bit name="Set 8" index="8" />
-			<bit name="Set 9" index="9" />
-			<bit name="Set 10" index="10" />
-			<bit name="Set 11" index="11" />
-			<bit name="Set 12" index="12" />
-			<bit name="Set 13" index="13" />
-			<bit name="Set 14" index="14" />
-			<bit name="Set 15" index="15" />
-			<bit name="Set 16" index="16" />
-			<bit name="Set 17" index="17" />
-			<bit name="Set 18" index="18" />
-			<bit name="Set 19" index="19" />
-			<bit name="Set 20" index="20" />
-			<bit name="Set 21" index="21" />
-			<bit name="Set 22" index="22" />
-			<bit name="Set 23" index="23" />
-			<bit name="Set 24" index="24" />
-			<bit name="Set 25" index="25" />
-			<bit name="Set 26" index="26" />
-			<bit name="Set 27" index="27" />
-			<bit name="Set 28" index="28" />
-			<bit name="Set 29" index="29" />
-			<bit name="Set 30" index="30" />
-			<bit name="Set 31" index="31" />
+		<flags32 name="Expected Designer Zones" offset="0x14" visible="true">
+			<bit name="Index 0" index="0" />
+			<bit name="Index 1" index="1" />
+			<bit name="Index 2" index="2" />
+			<bit name="Index 3" index="3" />
+			<bit name="Index 4" index="4" />
+			<bit name="Index 5" index="5" />
+			<bit name="Index 6" index="6" />
+			<bit name="Index 7" index="7" />
+			<bit name="Index 8" index="8" />
+			<bit name="Index 9" index="9" />
+			<bit name="Index 10" index="10" />
+			<bit name="Index 11" index="11" />
+			<bit name="Index 12" index="12" />
+			<bit name="Index 13" index="13" />
+			<bit name="Index 14" index="14" />
+			<bit name="Index 15" index="15" />
+			<bit name="Index 16" index="16" />
+			<bit name="Index 17" index="17" />
+			<bit name="Index 18" index="18" />
+			<bit name="Index 19" index="19" />
+			<bit name="Index 20" index="20" />
+			<bit name="Index 21" index="21" />
+			<bit name="Index 22" index="22" />
+			<bit name="Index 23" index="23" />
+			<bit name="Index 24" index="24" />
+			<bit name="Index 25" index="25" />
+			<bit name="Index 26" index="26" />
+			<bit name="Index 27" index="27" />
+			<bit name="Index 28" index="28" />
+			<bit name="Index 29" index="29" />
+			<bit name="Index 30" index="30" />
+			<bit name="Index 31" index="31" />
 		</flags32>
-		<flags32 name="Loaded Cinematic Zonesets" offset="0x1C" visible="true">
-			<bit name="Set 0" index="0" />
-			<bit name="Set 1" index="1" />
-			<bit name="Set 2" index="2" />
-			<bit name="Set 3" index="3" />
-			<bit name="Set 4" index="4" />
-			<bit name="Set 5" index="5" />
-			<bit name="Set 6" index="6" />
-			<bit name="Set 7" index="7" />
-			<bit name="Set 8" index="8" />
-			<bit name="Set 9" index="9" />
-			<bit name="Set 10" index="10" />
-			<bit name="Set 11" index="11" />
-			<bit name="Set 12" index="12" />
-			<bit name="Set 13" index="13" />
-			<bit name="Set 14" index="14" />
-			<bit name="Set 15" index="15" />
-			<bit name="Set 16" index="16" />
-			<bit name="Set 17" index="17" />
-			<bit name="Set 18" index="18" />
-			<bit name="Set 19" index="19" />
-			<bit name="Set 20" index="20" />
-			<bit name="Set 21" index="21" />
-			<bit name="Set 22" index="22" />
-			<bit name="Set 23" index="23" />
-			<bit name="Set 24" index="24" />
-			<bit name="Set 25" index="25" />
-			<bit name="Set 26" index="26" />
-			<bit name="Set 27" index="27" />
-			<bit name="Set 28" index="28" />
-			<bit name="Set 29" index="29" />
-			<bit name="Set 30" index="30" />
-			<bit name="Set 31" index="31" />
+		<flags32 name="Forbidden Designer Zones" offset="0x18" visible="true">
+			<bit name="Index 0" index="0" />
+			<bit name="Index 1" index="1" />
+			<bit name="Index 2" index="2" />
+			<bit name="Index 3" index="3" />
+			<bit name="Index 4" index="4" />
+			<bit name="Index 5" index="5" />
+			<bit name="Index 6" index="6" />
+			<bit name="Index 7" index="7" />
+			<bit name="Index 8" index="8" />
+			<bit name="Index 9" index="9" />
+			<bit name="Index 10" index="10" />
+			<bit name="Index 11" index="11" />
+			<bit name="Index 12" index="12" />
+			<bit name="Index 13" index="13" />
+			<bit name="Index 14" index="14" />
+			<bit name="Index 15" index="15" />
+			<bit name="Index 16" index="16" />
+			<bit name="Index 17" index="17" />
+			<bit name="Index 18" index="18" />
+			<bit name="Index 19" index="19" />
+			<bit name="Index 20" index="20" />
+			<bit name="Index 21" index="21" />
+			<bit name="Index 22" index="22" />
+			<bit name="Index 23" index="23" />
+			<bit name="Index 24" index="24" />
+			<bit name="Index 25" index="25" />
+			<bit name="Index 26" index="26" />
+			<bit name="Index 27" index="27" />
+			<bit name="Index 28" index="28" />
+			<bit name="Index 29" index="29" />
+			<bit name="Index 30" index="30" />
+			<bit name="Index 31" index="31" />
 		</flags32>
-		<int32 name="BSP Atlas Index" offset="0x20" visible="true" />
+		<flags32 name="Required Cinematic Zones" offset="0x1C" visible="true">
+			<bit name="Index 0" index="0" />
+			<bit name="Index 1" index="1" />
+			<bit name="Index 2" index="2" />
+			<bit name="Index 3" index="3" />
+			<bit name="Index 4" index="4" />
+			<bit name="Index 5" index="5" />
+			<bit name="Index 6" index="6" />
+			<bit name="Index 7" index="7" />
+			<bit name="Index 8" index="8" />
+			<bit name="Index 9" index="9" />
+			<bit name="Index 10" index="10" />
+			<bit name="Index 11" index="11" />
+			<bit name="Index 12" index="12" />
+			<bit name="Index 13" index="13" />
+			<bit name="Index 14" index="14" />
+			<bit name="Index 15" index="15" />
+			<bit name="Index 16" index="16" />
+			<bit name="Index 17" index="17" />
+			<bit name="Index 18" index="18" />
+			<bit name="Index 19" index="19" />
+			<bit name="Index 20" index="20" />
+			<bit name="Index 21" index="21" />
+			<bit name="Index 22" index="22" />
+			<bit name="Index 23" index="23" />
+			<bit name="Index 24" index="24" />
+			<bit name="Index 25" index="25" />
+			<bit name="Index 26" index="26" />
+			<bit name="Index 27" index="27" />
+			<bit name="Index 28" index="28" />
+			<bit name="Index 29" index="29" />
+			<bit name="Index 30" index="30" />
+			<bit name="Index 31" index="31" />
+		</flags32>
+		<int32 name="Hint Previous Zone Set index" offset="0x20" visible="true" />
 	</tagblock>
-	<tagblock name="Scenario BSPs" offset="0x118" visible="true" elementSize="0x10">
+	<tagblock name="BSP References" offset="0x118" visible="true" elementSize="0x10">
 		<tagRef name="BSP" offset="0x0" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x124" visible="false" />
-	<undefined name="Unknown" offset="0x128" visible="false" />
-	<undefined name="Unknown" offset="0x12C" visible="false" />
-	<undefined name="Unknown" offset="0x130" visible="false" />
-	<undefined name="Unknown" offset="0x134" visible="false" />
-	<undefined name="Unknown" offset="0x138" visible="false" />
-	<undefined name="Unknown" offset="0x13C" visible="false" />
-	<undefined name="Unknown" offset="0x140" visible="false" />
-	<undefined name="Unknown" offset="0x144" visible="false" />
-	<dataRef name="Fixup Information" offset="0x148" visible="true" align="0x10" />
-	<undefined name="Unknown" offset="0x15C" visible="false" />
-	<undefined name="Unknown" offset="0x160" visible="false" />
-	<undefined name="Unknown" offset="0x164" visible="false" />
-	<undefined name="Unknown" offset="0x168" visible="false" />
-	<undefined name="Unknown" offset="0x16C" visible="false" />
-	<tagblock name="Unknown" offset="0x170" visible="false" elementSize="0x14">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
+	<uint32 name="Resource Owners Block" offset="0x124" visible="false" />
+	<uint32 name="Resource Owners Block" offset="0x128" visible="false" />
+	<uint32 name="Resource Owners Block" offset="0x12C" visible="false" />
+	<uint32 name="Model Variant Usage Block" offset="0x130" visible="false" />
+	<uint32 name="Model Variant Usage Block" offset="0x134" visible="false" />
+	<uint32 name="Model Variant Usage Block" offset="0x138" visible="false" />
+	<uint32 name="Character Usage Block" offset="0x13C" visible="false" />
+	<uint32 name="Character Usage Block" offset="0x140" visible="false" />
+	<uint32 name="Character Usage Block" offset="0x144" visible="false" />
+	<dataRef name="Native Resource Control Data" offset="0x148" visible="true" align="0x10" />
+	<int32 name="Minimum Complete Resource Size" offset="0x15C" visible="true" />
+	<int32 name="Minimum Required Resource Size" offset="0x160" visible="true" />
+	<int32 name="Minimum DVD Resource Size" offset="0x164" visible="true" />
+	<int32 name="Global Required Resource Size" offset="0x168" visible="true" tooltip="intersection of resources amongst all zone sets" />
+	<int32 name="Total Optional Control Data Size" offset="0x16C" visible="true" />
+	<tagblock name="Overall Resource Usage" offset="0x170" visible="true" elementSize="0x14">
+		<int32 name="Required Resource Size" offset="0x0" visible="true" />
+		<int32 name="Deferred Required Size" offset="0x4" visible="true" />
+		<int32 name="Optional Resource Size" offset="0x8" visible="true" />
+		<int32 name="Streamed Resource Size" offset="0xC" visible="true" />
+		<int32 name="Disk Size" offset="0x10" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x17C" visible="false" />
-	<undefined name="Unknown" offset="0x180" visible="false" />
-	<undefined name="Unknown" offset="0x184" visible="false" />
-	<undefined name="Unknown" offset="0x188" visible="false" />
-	<undefined name="Unknown" offset="0x18C" visible="false" />
-	<undefined name="Unknown" offset="0x190" visible="false" />
-	<tagblock name="Combat Dialogue Zonesets" offset="0x194" visible="true" elementSize="0x90">
-		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+	<uint32 name="BSP Game Attachments Block" offset="0x17C" visible="false" />
+	<uint32 name="BSP Game Attachments Block" offset="0x180" visible="false" />
+	<uint32 name="BSP Game Attachments Block" offset="0x184" visible="false" />
+	<uint32 name="Model Variant Zones Block" offset="0x188" visible="false" />
+	<uint32 name="Model Variant Zones Block" offset="0x18C" visible="false" />
+	<uint32 name="Model Variant Zones Block" offset="0x190" visible="false" />
+	<tagblock name="Combat Dialogue Zones" offset="0x194" visible="true" elementSize="0x90">
+		<tagblock name="Required Resource Bits" offset="0x0" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -2439,11 +3524,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Deferred Resource Bits" offset="0xC" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -2478,8 +3560,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Optional Resource Bits" offset="0x18" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -2514,21 +3596,8 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<stringid name="Set Name" offset="0x44" visible="true" />
-		<tagblock name="Resource Types" offset="0x48" visible="false" elementSize="0x14">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
-		</tagblock>
-		<tagblock name="Required Tag Pool" offset="0x54" visible="true" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<tagblock name="Streamed Resource Bits" offset="0x24" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -2563,8 +3632,21 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Optional Tag Pool" offset="0x60" visible="false" elementSize="0x4">
-			<flags32 name="Active Members" offset="0x0" visible="true">
+		<int32 name="Required Resource Size" offset="0x30" visible="true" />
+		<int32 name="Deferred Required Size" offset="0x34" visible="true" />
+		<int32 name="Optional Resource Size" offset="0x38" visible="true" />
+		<int32 name="Streamed Resource Size" offset="0x3C" visible="true" />
+		<int32 name="DVD In-Memory Resource Size" offset="0x40" visible="true" />
+		<stringid name="Name" offset="0x44" visible="true" />
+		<tagblock name="Resource Usage" offset="0x48" visible="true" elementSize="0x14">
+			<int32 name="Required Resource Size" offset="0x0" visible="true" />
+			<int32 name="Deferred Required Size" offset="0x4" visible="true" />
+			<int32 name="Optional Resource Size" offset="0x8" visible="true" />
+			<int32 name="Streamed Resource Size" offset="0xC" visible="true" />
+			<int32 name="Disk Size" offset="0x10" visible="true" />
+		</tagblock>
+		<tagblock name="Active Resource Owners" offset="0x54" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -2599,50 +3681,92 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="31" index="31" />
 			</flags32>
 		</tagblock>
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<undefined name="Unknown" offset="0x70" visible="false" />
-		<undefined name="Unknown" offset="0x74" visible="false" />
-		<undefined name="Unknown" offset="0x78" visible="false" />
-		<undefined name="Unknown" offset="0x7C" visible="false" />
-		<tagRef name="Dialogue Tag" offset="0x80" visible="true" />
+		<tagblock name="Top Level Resource Owners" offset="0x60" visible="true" elementSize="0x4">
+			<flags32 name="Bits" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Attachment Hierarchy" offset="0x6C" visible="true" elementSize="0x10">
+			<int16 name="Parent Tag Index" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<tagblock name="Children" offset="0x4" visible="true" elementSize="0x2">
+				<int16 name="Child Tag Index" offset="0x0" visible="true" />
+			</tagblock>
+		</tagblock>
+		<int32 name="Disk Size" offset="0x78" visible="true" />
+		<int32 name="Unused Size" offset="0x7C" visible="true" />
+		<tagRef name="Owner Tag" offset="0x80" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x1A0" visible="false" />
-	<undefined name="Unknown" offset="0x1A4" visible="false" />
-	<undefined name="Unknown" offset="0x1A8" visible="false" />
-	<undefined name="Unknown" offset="0x1AC" visible="false" />
-	<undefined name="Unknown" offset="0x1B0" visible="false" />
-	<undefined name="Unknown" offset="0x1B4" visible="false" />
-	<undefined name="Unknown" offset="0x1B8" visible="false" />
-	<undefined name="Unknown" offset="0x1BC" visible="false" />
-	<undefined name="Unknown" offset="0x1C0" visible="false" />
-	<undefined name="Unknown" offset="0x1C4" visible="false" />
-	<undefined name="Unknown" offset="0x1C8" visible="false" />
-	<undefined name="Unknown" offset="0x1CC" visible="false" />
-	<undefined name="Unknown" offset="0x1D0" visible="false" />
-	<undefined name="Unknown" offset="0x1D4" visible="false" />
-	<undefined name="Unknown" offset="0x1D8" visible="false" />
-	<tagblock name="Prediction A" offset="0x1DC" visible="true" elementSize="0x4">
+	<uint32 name="Tag Zones Block" offset="0x1A0" visible="false" />
+	<uint32 name="Tag Zones Block" offset="0x1A4" visible="false" />
+	<uint32 name="Tag Zones Block" offset="0x1A8" visible="false" />
+	<uint32 name="Debug Resource Definitions Block" offset="0x1AC" visible="false" />
+	<uint32 name="Debug Resource Definitions Block" offset="0x1B0" visible="false" />
+	<uint32 name="Debug Resource Definitions Block" offset="0x1B4" visible="false" />
+	<uint32 name="Resource Layouts Block" offset="0x1B8" visible="false" />
+	<uint32 name="Resource Layouts Block" offset="0x1BC" visible="false" />
+	<uint32 name="Resource Layouts Block" offset="0x1C0" visible="false" />
+	<uint32 name="Resource Properties Block" offset="0x1C4" visible="false" />
+	<uint32 name="Resource Properties Block" offset="0x1C8" visible="false" />
+	<uint32 name="Resource Properties Block" offset="0x1CC" visible="false" />
+	<uint32 name="Parentages Block" offset="0x1D0" visible="false" />
+	<uint32 name="Parentages Block" offset="0x1D4" visible="false" />
+	<uint32 name="Parentages Block" offset="0x1D8" visible="false" />
+	<tagblock name="Prediction Quanta" offset="0x1DC" visible="true" elementSize="0x4">
 		<datum name="Adjusted Asset" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Prediction B" offset="0x1E8" visible="true" elementSize="0x8">
+	<tagblock name="Prediction Atoms" offset="0x1E8" visible="true" elementSize="0x8">
 		<int16 name="Salt" offset="0x0" visible="true" />
 		<int16 name="A Count" offset="0x2" visible="true" />
 		<int32 name="A Index" offset="0x4" visible="true" />
 	</tagblock>
-	<tagblock name="Prediction C" offset="0x1F4" visible="true" elementSize="0x4">
+	<tagblock name="Prediction Molecule Atoms" offset="0x1F4" visible="true" elementSize="0x4">
 		<datum name="B Datum" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Prediction D - Tags" offset="0x200" visible="true" elementSize="0x8">
+	<tagblock name="Prediction Molecules" offset="0x200" visible="true" elementSize="0x8">
 		<int16 name="C Count" offset="0x0" visible="true" />
 		<int16 name="C Index" offset="0x2" visible="true" />
 		<int16 name="A Count" offset="0x4" visible="true" />
 		<int16 name="A Index" offset="0x6" visible="true" />
 	</tagblock>
-	<tagblock name="Prediction D2 - Tags" offset="0x20C" visible="true" elementSize="0xC">
+	<tagblock name="Prediction Molecule Keys" offset="0x20C" visible="true" elementSize="0xC">
 		<tagref name="Tag" offset="0x0" withGroup="false" visible="true" />
 		<int32 name="First Value" offset="0x4" visible="true" />
 		<int32 name="Second Value" offset="0x8" visible="true" />
 	</tagblock>
-	<int32 name="Campaign ID" offset="0x218" visible="true" />
-	<int32 name="Map ID" offset="0x21C" visible="true" />
+	<undefined name="Unknown" offset="0x218" visible="false" />
+	<undefined name="Unknown" offset="0x21C" visible="false" />
+	<undefined name="Unknown" offset="0x220" visible="false" />
+	<undefined name="Unknown" offset="0x224" visible="false" />
 </plugin>

@@ -201,6 +201,13 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
+		public void VisitHexString(string name, uint offset, bool visible, int size, uint pluginLine, string tooltip)
+		{
+			WriteValueStart("hexstring", name, offset, visible, tooltip);
+			_output.WriteAttributeString("size", ToHexString(size));
+			_output.WriteEndElement();
+		}
+
 		public void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine, string tooltip)
 		{
 			WriteValueStart("dataRef", name, offset, visible, tooltip);
@@ -354,6 +361,11 @@ namespace Blamite.Plugins
 		public void VisitDatum(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 			WriteBasicValue("datum", name, offset, visible, tooltip);
+		}
+
+		public void VisitOldStringID(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			WriteBasicValue("oldstringid", name, offset, visible, tooltip);
 		}
 
 		private void WriteValueStart(string element, string name, uint offset, bool visible, string tooltip)

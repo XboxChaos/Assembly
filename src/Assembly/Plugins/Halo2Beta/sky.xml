@@ -9,38 +9,38 @@
 	<tagRef name="Animation Graph" offset="0x10" visible="true" />
 	<flags32 name="Flags" offset="0x20" visible="true">
 		<bit name="Fixed In World Space" index="0" />
-		<bit name="Depricated" index="1" />
-		<bit name="Sky Casts Light from Below" index="2" />
-		<bit name="Disable Sky from Lightmaps" index="3" />
+		<bit name="Depreciated" index="1" />
+		<bit name="Sky Casts Light From Below" index="2" />
+		<bit name="Disable Sky In Lightmaps" index="3" />
 		<bit name="Fog Only Affects Containing Clusters" index="4" />
 		<bit name="Use Clear Color" index="5" />
 	</flags32>
-	<float32 name="Render model Scale" offset="0x24" visible="true" />
-	<float32 name="Movement Scale" offset="0x28" visible="true" />
+	<float32 name="Render Model Scale" offset="0x24" visible="true" tooltip="multiplier by which to scale the model's geometry up or down (0 defaults to standard, 0.03)." />
+	<float32 name="Movement Scale" offset="0x28" visible="true" tooltip="how much the sky moves to remain centered on the player (0 defaults to 1.0, which means no parallax)." />
 	<tagblock name="Cube Map" offset="0x2C" visible="true" elementSize="0x14">
 		<tagref name="Cube Map Reference" offset="0x0" visible="true" />
-		<float32 name="Power Scale" offset="0x10" visible="true" />
+		<float32 name="Power Scale" offset="0x10" visible="true" tooltip="0 defaults to 1." />
 	</tagblock>
 	<colorf name="Indoor Ambient Color" offset="0x38" alpha="false" visible="true" tooltip="Indoor ambient light color." />
 	<undefined name="Unknown" offset="0x44" visible="false" />
 	<colorf name="Outdoor Ambient Color" offset="0x48" alpha="false" visible="true" tooltip="Indoor ambient light color." />
 	<undefined name="Unknown" offset="0x54" visible="false" />
-	<float32 name="Fog Spread Distance" offset="0x58" visible="true" />
+	<float32 name="Fog Spread Distance" offset="0x58" visible="true" tooltip="how far fog spreads into adjacent clusters." />
 	<tagblock name="Atmospheric Fog" offset="0x5C" visible="true" elementSize="0x18">
 		<colorf name="Color" offset="0x0" alpha="false" visible="true" />
-		<float32 name="Maximum Density" offset="0xC" visible="true" />
-		<float32 name="Start Distance" offset="0x10" visible="true" />
-		<float32 name="Opaque Distance" offset="0x14" visible="true" />
+		<float32 name="Maximum Density" offset="0xC" visible="true" tooltip="fog density is clamped to this value." />
+		<float32 name="Start Distance" offset="0x10" visible="true" tooltip="before this distance there is no fog." />
+		<float32 name="Opaque Distance" offset="0x14" visible="true" tooltip="fog becomes opaque (maximum density) at this distance from the viewer." />
 	</tagblock>
 	<tagblock name="Secondary Fog" offset="0x68" visible="true" elementSize="0x18">
 		<colorf name="Color" offset="0x0" alpha="false" visible="true" />
-		<float32 name="Maximum Density" offset="0xC" visible="true" />
-		<float32 name="Start Distance" offset="0x10" visible="true" />
-		<float32 name="Opaque Distance" offset="0x14" visible="true" />
+		<float32 name="Maximum Density" offset="0xC" visible="true" tooltip="fog density is clamped to this value." />
+		<float32 name="Start Distance" offset="0x10" visible="true" tooltip="before this distance there is no fog." />
+		<float32 name="Opaque Distance" offset="0x14" visible="true" tooltip="fog becomes opaque (maximum density) at this distance from the viewer." />
 	</tagblock>
 	<tagblock name="Sky Fog" offset="0x74" visible="true" elementSize="0x10">
 		<colorf name="Color" offset="0x0" alpha="false" visible="true" />
-		<float32 name="Density" offset="0xC" visible="true" />
+		<float32 name="Density" offset="0xC" visible="true" tooltip="fog density is clamped to this value." />
 	</tagblock>
 	<tagblock name="Patchy Fog" offset="0x80" visible="true" elementSize="0x58">
 		<colorf name="Color" offset="0x0" alpha="false" visible="true" />
@@ -69,21 +69,23 @@
 		<tagRef name="Lens Flare" offset="0x14" visible="true" />
 		<tagblock name="Fog" offset="0x24" visible="true" elementSize="0x2C">
 			<colorf name="Color" offset="0x0" alpha="false" visible="true" />
-			<float32 name="Maximum Density" offset="0xC" visible="true" />
-			<float32 name="Start Distance" offset="0x10" visible="true" />
-			<float32 name="Opaque Distance" offset="0x14" visible="true" />
+			<float32 name="Maximum Density" offset="0xC" visible="true" tooltip="fog density is clamped to this value." />
+			<float32 name="Start Distance" offset="0x10" visible="true" tooltip="before this distance there is no fog." />
+			<float32 name="Opaque Distance" offset="0x14" visible="true" tooltip="fog becomes opaque (maximum density) at this distance from the viewer." />
+			<comment title="Fog Influences" />
 			<ranged name="Cone" offset="0x18" visible="true" />
-			<float32 name="Atmospheroc Fog Influence" offset="0x20" visible="true" />
+			<float32 name="Atmospheric Fog Influence" offset="0x20" visible="true" />
 			<float32 name="Secondary Fog Influence" offset="0x24" visible="true" />
 			<float32 name="Sky Fog Influence" offset="0x28" visible="true" />
 		</tagblock>
 		<tagblock name="Fog Opposite" offset="0x30" visible="true" elementSize="0x2C">
 			<colorf name="Color" offset="0x0" alpha="false" visible="true" />
-			<float32 name="Maximum Density" offset="0xC" visible="true" />
-			<float32 name="Start Distance" offset="0x10" visible="true" />
-			<float32 name="Opaque Distance" offset="0x14" visible="true" />
+			<float32 name="Maximum Density" offset="0xC" visible="true" tooltip="fog density is clamped to this value." />
+			<float32 name="Start Distance" offset="0x10" visible="true" tooltip="before this distance there is no fog." />
+			<float32 name="Opaque Distance" offset="0x14" visible="true" tooltip="fog becomes opaque (maximum density) at this distance from the viewer." />
+			<comment title="Fog Influences" />
 			<ranged name="Cone" offset="0x18" visible="true" />
-			<float32 name="Atmospheroc Fog Influence" offset="0x20" visible="true" />
+			<float32 name="Atmospheric Fog Influence" offset="0x20" visible="true" />
 			<float32 name="Secondary Fog Influence" offset="0x24" visible="true" />
 			<float32 name="Sky Fog Influence" offset="0x28" visible="true" />
 		</tagblock>
@@ -95,18 +97,18 @@
 				<bit name="Indirect Illumination in Lightmaps" index="3" />
 			</flags32>
 			<colorf name="Color" offset="0x4" alpha="false" visible="true" tooltip="Light color." />
-			<float32 name="Power" offset="0x10" visible="true" />
-			<float32 name="Test Distance" offset="0x14" visible="true" />
+			<float32 name="Power" offset="0x10" visible="true" tooltip="light power from 0 to infinity." />
+			<float32 name="Test Distance" offset="0x14" visible="true" tooltip="length of the ray for shadow testing." />
 			<undefined name="Unknown" offset="0x18" visible="false" />
 			<undefined name="Unknown" offset="0x1C" visible="false" />
 			<undefined name="Unknown" offset="0x20" visible="false" />
-			<degree name="Diameter" offset="0x24" visible="true" />
+			<degree name="Diameter" offset="0x24" visible="true" tooltip="angular diameter of the light source in the sky." />
 		</tagblock>
 	</tagblock>
 	<degree name="Global Sky Rotation" offset="0xA8" visible="true" />
 	<tagblock name="Shader Functions" offset="0xAC" visible="true" elementSize="0x24">
 		<undefined name="Unknown" offset="0x0" visible="false" />
-		<ascii name="Global Function Name" offset="0x4" length="0x20" visible="true" tooltip="the global function that controls this shader value" />
+		<ascii name="Global Function Name" offset="0x4" size="0x20" visible="true" tooltip="the global function that controls this shader value" />
 	</tagblock>
 	<tagblock name="Animations" offset="0xB8" visible="true" elementSize="0x24">
 		<int16 name="Animation Index" offset="0x0" visible="true" tooltip="the index of the animation in the animation graph" />

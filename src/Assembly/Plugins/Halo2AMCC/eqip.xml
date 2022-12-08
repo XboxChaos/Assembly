@@ -132,7 +132,7 @@
 	<tagRef name="Generic Name List" offset="0x58" visible="true" />
 	<tagRef name="Generic Service Tag List" offset="0x68" visible="true" />
 	<tagblock name="Source Sidecar" offset="0x78" visible="true" elementSize="0x100">
-		<ascii name="Sidecar Path" offset="0x0" length="0x100" visible="true" />
+		<ascii name="Sidecar Path" offset="0x0" size="0x100" visible="true" />
 	</tagblock>
 	<stringid name="Default Model Variant" offset="0x84" visible="true" />
 	<tagRef name="Model" offset="0x88" visible="true" />
@@ -142,12 +142,9 @@
 	<tagblock name="Early Mover Oriented Bounding Box" offset="0xC8" visible="true" elementSize="0x2C">
 		<stringid name="Node Name" offset="0x0" visible="true" tooltip="empty means object space" />
 		<int32 name="Runtime Node Index" offset="0x4" visible="true" />
-		<float32 name="X0" offset="0x8" visible="true" />
-		<float32 name="X1" offset="0xC" visible="true" />
-		<float32 name="Y0" offset="0x10" visible="true" />
-		<float32 name="Y1" offset="0x14" visible="true" />
-		<float32 name="Z0" offset="0x18" visible="true" />
-		<float32 name="Z1" offset="0x1C" visible="true" />
+		<rangef name="x" offset="0x8" visible="true" />
+		<rangef name="y" offset="0x10" visible="true" />
+		<rangef name="z" offset="0x18" visible="true" />
 		<degree3 name="Angles" offset="0x20" visible="true" />
 	</tagblock>
 	<tagRef name="Creation Effect" offset="0xD4" visible="true" />
@@ -761,8 +758,8 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<float32 name="Flash Radius" offset="0x10" visible="true" tooltip="radius in WU that the damage flash noise extends to." />
 		</tagblock>
 		<tagblock name="Invincibility Mode" offset="0x84" visible="true" elementSize="0x80">
-			<stringid name="Invincibility Material Name" offset="0x0" visible="true" />
-			<int16 name="Invincibility Material Global Index" offset="0x4" visible="true" />
+			<stringid name="Invincibility Global Material Name" offset="0x0" visible="true" />
+			<int16 name="Invincibility Global Material Index" offset="0x4" visible="true" />
 			<int16 name="Unknown" offset="0x6" visible="false" />
 			<float32 name="Shield Recharge Rate" offset="0x8" visible="true" tooltip="while active, shields recharge at this fraction per second" />
 			<float32 name="Shield Maximum Recharge Level" offset="0xC" visible="true" tooltip="highest level shield can recharge to (can be up to 4)" />

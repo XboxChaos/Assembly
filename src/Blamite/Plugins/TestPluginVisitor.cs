@@ -272,6 +272,11 @@ namespace Blamite.Plugins
 			Debug.WriteLine(Indent() + "Utf16 string \"{0}\" at {1}, visible = {2}, size = {3}, tooltip = {4}", name, offset, visible, size, tooltip);
 		}
 
+		public void VisitHexString(string name, uint offset, bool visible, int size, uint pluginLine, string tooltip)
+		{
+			Debug.WriteLine(Indent() + "Hex string \"{0}\" at {1}, visible = {2}, size = {3}, tooltip = {4}", name, offset, visible, size, tooltip);
+		}
+
 		public void VisitColorInt(string name, uint offset, bool visible, bool alpha, uint pluginLine, string tooltip)
 		{
 			Debug.WriteLine(Indent() + "Color32 \"{0}\" at {1}, visible = {2}, alpha = {3}, tooltip = {4}", name, offset, visible, alpha, tooltip);
@@ -320,6 +325,11 @@ namespace Blamite.Plugins
 		public void VisitDatum(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 			PrintBasicValue("Datum", name, offset, visible, tooltip);
+		}
+
+		public void VisitOldStringID(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			PrintBasicValue("OldStringID", name, offset, visible, tooltip);
 		}
 	}
 }

@@ -5,7 +5,7 @@
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
 	<stringid name="Name" offset="0x0" visible="true" />
-	<ascii name="Anchor" offset="0x4" length="0x20" visible="true" />
+	<ascii name="Anchor" offset="0x4" size="0x20" visible="true" />
 	<enum16 name="Reset Object Lighting" offset="0x24" visible="true">
 		<option name="Default" value="0x0" />
 		<option name="Don't Reset Lighting" value="0x1" />
@@ -14,78 +14,53 @@
 	<int16 name="Unknown" offset="0x26" visible="false" />
 	<dataref name="Header Script" format="asciiz" offset="0x28" visible="true" tooltip="leftover import data, editing won't do anything" />
 	<tagblock name="Objects" offset="0x3C" visible="true" elementSize="0x74">
-		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+		<ascii name="Name" offset="0x0" visible="true" size="0x20" />
 		<stringid name="Identifier" offset="0x20" visible="true" />
 		<stringid name="Variant Name" offset="0x24" visible="true" />
 		<tagref name="Model Animation Graph" offset="0x28" visible="true" />
-		<tagref name="Object" offset="0x38" visible="true" />
+		<tagref name="Object Type" offset="0x38" visible="true" />
 		<flags32 name="Flags" offset="0x48" visible="true">
 			<bit name="Placed Manually In Sapien" index="0" />
 			<bit name="Object Comes From Game" index="1" />
-			<bit name="Special Case (Like Player0)" index="2" />
+			<bit name="Name Is Function Call" index="2" />
 			<bit name="Effect Object" index="3" />
 			<bit name="No Lightmap Shadow" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
+			<bit name="Use Master Chief Player Appearance" index="5" />
+			<bit name="Use Dervish (Arbiter) Player Appearance" index="6" />
 		</flags32>
-		<flags32 name="Unknown Shot Flags" offset="0x4C" visible="true">
-			<bit name="Shot 0" index="0" />
-			<bit name="Shot 1" index="1" />
-			<bit name="Shot 2" index="2" />
-			<bit name="Shot 3" index="3" />
-			<bit name="Shot 4" index="4" />
-			<bit name="Shot 5" index="5" />
-			<bit name="Shot 6" index="6" />
-			<bit name="Shot 7" index="7" />
-			<bit name="Shot 8" index="8" />
-			<bit name="Shot 9" index="9" />
-			<bit name="Shot 10" index="10" />
-			<bit name="Shot 11" index="11" />
-			<bit name="Shot 12" index="12" />
-			<bit name="Shot 13" index="13" />
-			<bit name="Shot 14" index="14" />
-			<bit name="Shot 15" index="15" />
-			<bit name="Shot 16" index="16" />
-			<bit name="Shot 17" index="17" />
-			<bit name="Shot 18" index="18" />
-			<bit name="Shot 19" index="19" />
-			<bit name="Shot 20" index="20" />
-			<bit name="Shot 21" index="21" />
-			<bit name="Shot 22" index="22" />
-			<bit name="Shot 23" index="23" />
-			<bit name="Shot 24" index="24" />
-			<bit name="Shot 25" index="25" />
-			<bit name="Shot 26" index="26" />
-			<bit name="Shot 27" index="27" />
-			<bit name="Shot 28" index="28" />
-			<bit name="Shot 29" index="29" />
-			<bit name="Shot 30" index="30" />
-			<bit name="Shot 31" index="31" />
+		<flags32 name="Shots Active Flags" offset="0x4C" visible="true">
+			<bit name="Index 0" index="0" />
+			<bit name="Index 1" index="1" />
+			<bit name="Index 2" index="2" />
+			<bit name="Index 3" index="3" />
+			<bit name="Index 4" index="4" />
+			<bit name="Index 5" index="5" />
+			<bit name="Index 6" index="6" />
+			<bit name="Index 7" index="7" />
+			<bit name="Index 8" index="8" />
+			<bit name="Index 9" index="9" />
+			<bit name="Index 10" index="10" />
+			<bit name="Index 11" index="11" />
+			<bit name="Index 12" index="12" />
+			<bit name="Index 13" index="13" />
+			<bit name="Index 14" index="14" />
+			<bit name="Index 15" index="15" />
+			<bit name="Index 16" index="16" />
+			<bit name="Index 17" index="17" />
+			<bit name="Index 18" index="18" />
+			<bit name="Index 19" index="19" />
+			<bit name="Index 20" index="20" />
+			<bit name="Index 21" index="21" />
+			<bit name="Index 22" index="22" />
+			<bit name="Index 23" index="23" />
+			<bit name="Index 24" index="24" />
+			<bit name="Index 25" index="25" />
+			<bit name="Index 26" index="26" />
+			<bit name="Index 27" index="27" />
+			<bit name="Index 28" index="28" />
+			<bit name="Index 29" index="29" />
+			<bit name="Index 30" index="30" />
+			<bit name="Index 31" index="31" />
 		</flags32>
 		<flags32 name="Override Creation Flags" offset="0x50" visible="true">
 			<bit name="Single Player" index="0" />
@@ -97,7 +72,7 @@
 		<dataref name="Custom Don't Create Condition Script" format="asciiz" offset="0x54" visible="true" tooltip="leftover import data, editing won't do anything" />
 		<tagblock name="Attachments" offset="0x68" visible="true" elementSize="0x38">
 			<stringid name="Object Marker Name" offset="0x0" visible="true" />
-			<ascii name="Attachment Object Name" offset="0x4" length="0x20" visible="true" />
+			<ascii name="Attachment Object Name" offset="0x4" size="0x20" visible="true" />
 			<stringid name="Attachment Marker Name" offset="0x24" visible="true" />
 			<tagRef name="Attachment Type" offset="0x28" visible="true" />
 		</tagblock>
@@ -159,8 +134,8 @@
 			</tagblock>
 		</tagblock>
 		<tagblock name="Cortana Effects" offset="0x68" visible="true" elementSize="0x14">
-			<tagRef name="Effect" offset="0x0" visible="true" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
+			<tagRef name="Cortana Effect" offset="0x0" visible="true" />
+			<int32 name="Frame" offset="0x10" visible="true" />
 		</tagblock>
 		<tagblock name="Custom Script" offset="0x74" visible="true" elementSize="0x18">
 			<int32 name="Frame" offset="0x0" visible="true" />
@@ -172,12 +147,12 @@
 			<point3 name="Camera Position" offset="0x0" visible="true" />
 			<vector3 name="Camera Forward" offset="0xC" visible="true" />
 			<vector3 name="Camera Up" offset="0x18" visible="true" />
-			<float32 name="Unknown" offset="0x24" visible="true" />
-			<float32 name="Unknown" offset="0x28" visible="true" />
+			<float32 name="Horizontal Field Of View" offset="0x24" visible="true" />
+			<float32 name="Horizontal Film Aperture" offset="0x28" visible="true" />
 			<float32 name="Focal Length" offset="0x2C" visible="true" />
 			<comment title="Depth Of Field" />
-			<flags32 name="Flags" offset="0x30" visible="true">
-				<bit name="Enable Depth Of Field" index="0" />
+			<flags32 name="Depth Of Field" offset="0x30" visible="true">
+				<bit name="Enable" index="0" />
 			</flags32>
 			<float32 name="Near Focal Plane Distance" offset="0x34" visible="true" />
 			<float32 name="Far Focal Plane Distance" offset="0x38" visible="true" />
@@ -196,12 +171,12 @@
 				<point3 name="Camera Position" offset="0x4" visible="true" />
 				<vector3 name="Camera Forward" offset="0x10" visible="true" />
 				<vector3 name="Camera Up" offset="0x1C" visible="true" />
-				<float32 name="Unknown" offset="0x28" visible="false" />
-				<float32 name="Unknown" offset="0x2C" visible="false" />
+				<float32 name="Horizontal Field Of View" offset="0x28" visible="true" />
+				<float32 name="Horizontal Film Aperture" offset="0x2C" visible="true" />
 				<float32 name="Focal Length" offset="0x30" visible="true" />
 				<comment title="Depth Of Field" />
-				<flags32 name="Flags" offset="0x34" visible="true">
-					<bit name="Enable Depth Of Field" index="0" />
+				<flags32 name="Depth Of Field" offset="0x34" visible="true">
+					<bit name="Enable" index="0" />
 				</flags32>
 				<float32 name="Near Focal Plane Distance" offset="0x38" visible="true" />
 				<float32 name="Far Focal Plane Distance" offset="0x3C" visible="true" />

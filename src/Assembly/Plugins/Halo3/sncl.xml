@@ -73,18 +73,11 @@
 			<bit name="Valid Doppler Factor" index="5" />
 			<bit name="Valid Obstruction Factor" index="6" />
 			<bit name="Multilingual" index="7" />
-			<bit name="Don't Strip Languages" index="8" />
-			<bit name="Valid Underwater Propagation" index="9" />
-			<bit name="Valid Suppress Spatialization" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
+			<bit name="Valid Underwater Propagation" index="8" />
 		</flags16>
 		<flags16 name="Flags" offset="0xA" visible="true">
 			<bit name="Plays During Pause" index="0" />
-			<bit name="Dry Stereo Mix" index="1" />
+			<bit name="Bypass Default DSP Effects" index="1" />
 			<bit name="No Object Obstruction" index="2" />
 			<bit name="Use Center Speaker Unspatialized" index="3" />
 			<bit name="Send (Mono) To LFE" index="4" />
@@ -100,7 +93,7 @@
 			<bit name="Bit 14" index="14" />
 			<bit name="Bit 15" index="15" />
 		</flags16>
-		<int16 name="Priority" offset="0xC" visible="true" />
+		<int16 name="Priority" offset="0xC" visible="true" tooltip="higher means more important" />
 		<enum16 name="Cache Miss Mode" offset="0xE" visible="true">
 			<option name="Discard" value="0x0" />
 			<option name="Postpone" value="0x1" />
@@ -117,23 +110,22 @@
 		<float32 name="Underwater Base Occlusion" offset="0x2C" visible="true" />
 		<float32 name="Override Speaker Gain" offset="0x30" visible="true" />
 		<comment title="Attenuation Distances">these settings vary how the sound fades as you move closer or further away from it.</comment>
-		<float32 name="Don't Play Distance" offset="0x34" visible="true" tooltip="don't play below this distance" />
-		<float32 name="Attack Distance" offset="0x38" visible="true" tooltip="start playing at full volume at this distance" />
+		<rangef name="Attack Bounds" offset="0x34" visible="true" />
 		<rangef name="Distance Bounds" offset="0x3C" visible="true" />
 		<rangef name="Gain Bounds" offset="0x44" visible="true" />
 		<float32 name="Cutscene Ducking" offset="0x4C" visible="true" />
 		<float32 name="Cutscene Ducking Fade In Time" offset="0x50" visible="true" />
-		<float32 name="Cutscene Ducking Sustain" offset="0x54" visible="true" />
+		<float32 name="Cutscene Ducking Sustain Time" offset="0x54" visible="true" tooltip="how long this lasts after the cutscene ends" />
 		<float32 name="Cutscene Ducking Fade Out Time" offset="0x58" visible="true" />
 		<float32 name="Scripted Dialog Ducking" offset="0x5C" visible="true" />
 		<float32 name="Scripted Dialog Ducking Fade In Time" offset="0x60" visible="true" />
 		<float32 name="Scripted Dialog Ducking Sustain Time" offset="0x64" visible="true" tooltip="how long this lasts after the scripted dialog ends" />
 		<float32 name="Scripted Dialog Ducking Fade Out Time" offset="0x68" visible="true" />
-		<float32 name="Unknown Ducking" offset="0x6C" visible="true" />
-		<float32 name="Unknown Ducking Fade In Time" offset="0x70" visible="true" />
-		<float32 name="Unknown Ducking Sustain" offset="0x74" visible="true" />
-		<float32 name="Unknown Ducking Fade Out Time" offset="0x78" visible="true" />
-		<float32 name="Unknown" offset="0x7C" visible="false" />
+		<float32 name="Cortana Channel Ducking" offset="0x6C" visible="true" />
+		<float32 name="Cortana Channel Ducking Fade In Time" offset="0x70" visible="true" />
+		<float32 name="Cortana Channel Ducking Sustain Time" offset="0x74" visible="true" tooltip="how long this lasts after the scripted dialog ends" />
+		<float32 name="Cortana Channel Ducking Fade Out Time" offset="0x78" visible="true" />
+		<float32 name="Cortana Channel Occlusion Factor" offset="0x7C" visible="true" tooltip="zero (no occlusion) to one (full occlusion)" />
 		<comment title="Misc" />
 		<float32 name="Doppler Factor" offset="0x80" visible="true" />
 		<enum8 name="Stereo Playback Type" offset="0x84" visible="true">

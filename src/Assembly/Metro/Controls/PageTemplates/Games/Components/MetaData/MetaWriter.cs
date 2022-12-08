@@ -212,10 +212,26 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				case StringType.UTF16:
 					_writer.WriteUTF16(field.Value);
 					break;
+
+				case StringType.Hex:
+					{
+						// Build the data
+						byte[] buffer = new byte[field.Size];
+						byte[] bytes = FunctionHelpers.HexStringToBytes(field.Value);
+
+						Array.Copy(bytes, buffer, bytes.Length > field.Size ? field.Size : bytes.Length);
+						_writer.WriteBlock(buffer, 0, buffer.Length);
+						break;
+					}
 			}
 		}
 
 		public void VisitStringID(StringIDData field)
+		{
+			HandleStringID(field, field.Offset);
+		}
+
+		private void HandleStringID(StringIDData field, uint offset)
 		{
 			SeekToOffset(field.Offset);
 			if (_stringIdTrie.Contains(field.Value))
@@ -238,7 +254,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void VisitRawData(RawData field)
 		{
 			SeekToOffset(field.Offset);
-			_writer.WriteBlock(FunctionHelpers.HexStringToBytes(field.Value), 0, field.Length);
+
+			// Build the data
+			byte[] buffer = new byte[field.Length];
+			byte[] bytes = FunctionHelpers.HexStringToBytes(field.Value);
+
+			Array.Copy(bytes, buffer, bytes.Length > field.Length ? field.Length : bytes.Length);
+			_writer.WriteBlock(buffer, 0, buffer.Length);
 		}
 
 		public void VisitDataRef(DataRef field)
@@ -483,6 +505,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			SeekToOffset(field.Offset);
 			_writer.WriteUInt32((uint)(field.Salt << 16) | field.Index);
+		}
+
+		public void VisitOldStringID(OldStringIDData field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteAscii(field.Value, 0x1C);
+			HandleStringID(field, field.Offset + 0x1C);
 		}
 
 		public void WriteFields(IList<MetaField> fields)

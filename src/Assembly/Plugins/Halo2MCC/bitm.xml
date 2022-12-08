@@ -4,6 +4,13 @@
 	<revisions>
 		<revision author="Lord Zedd" version="1">k</revision>
 	</revisions>
+	<comment title="Type">Type controls bitmap 'geometry'. All dimensions must be a power of two except for SPRITES and INTERFACE BITMAPS:
+
+* 2D TEXTURES: Ordinary, 2D textures will be generated.
+* 3D TEXTURES: Volume textures will be generated from each sequence of 2D texture 'slices'.
+* CUBE MAPS: Cube maps will be generated from each consecutive set of six 2D textures in each sequence, all faces of a cube map must be square and the same size.
+* SPRITES: Sprite texture pages will be generated.
+* INTERFACE BITMAPS: Similar to 2D TEXTURES, but without mipmaps and without the power of two restriction.</comment>
 	<enum16 name="Type" offset="0x0" visible="true">
 		<option name="2D Textures" value="0x0" />
 		<option name="3D Textures" value="0x1" />
@@ -11,6 +18,16 @@
 		<option name="Sprites" value="0x3" />
 		<option name="Interface Bitmaps" value="0x4" />
 	</enum16>
+	<comment title="Format">Format controls how pixels will be stored internally:
+
+* COMPRESSED WITH COLOR-KEY TRANSPARENCY: DXT1 compression, uses 4 bits per pixel. 4x4 blocks of pixels are reduced to 2 colors and interpolated, alpha channel uses color-key transparency instead of alpha from the plate (all zero-alpha pixels also have zero-color).
+* COMPRESSED WITH EXPLICIT ALPHA: DXT2/3 compression, uses 8 bits per pixel. Same as DXT1 without the color key transparency, alpha channel uses alpha from plate quantized down to 4 bits per pixel.
+* COMPRESSED WITH INTERPOLATED ALPHA: DXT4/5 compression, uses 8 bits per pixel. Same as DXT2/3, except alpha is smoother. Better for smooth alpha gradients, worse for noisy alpha.
+* 16-BIT COLOR: Uses 16 bits per pixel. Depending on the alpha channel, bitmaps are quantized to either r5g6b5 (no alpha), a1r5g5b5 (1-bit alpha), or a4r4g4b4 (&gt;1-bit alpha).
+* 32-BIT COLOR: Uses 32 bits per pixel. Very high quality, can have alpha at no added cost. This format takes up the most memory, however. Bitmap formats are x8r8g8b8 and a8r8g8b.
+* MONOCHROME: Uses either 8 or 16 bits per pixel. Bitmap formats are a8 (alpha), y8 (intensity), ay8 (combined alpha-intensity) and a8y8 (separate alpha-intensity).
+
+Note: Height maps (a.k.a. bump maps) should use 32-bit color; this is internally converted to a palettized format which takes less memory.</comment>
 	<enum16 name="Format" offset="0x2" visible="true">
 		<option name="Compressed with Color-Key Transparency" value="0x0" />
 		<option name="Compressed with Explicit Alpha" value="0x1" />
@@ -19,6 +36,14 @@
 		<option name="32-Bit Color" value="0x4" />
 		<option name="Monochrome" value="0x5" />
 	</enum16>
+	<comment title="Usage">Usage controls how mipmaps are generated:
+
+* ALPHA BLEND: Pixels with zero alpha are ignored in mipmaps, to prevent bleeding the transparent color. If the edges are zero alpha, the dimensions will in turn get cropped in this process.
+* DEFAULT: Downsampling works normally, as in Photoshop.
+* HEIGHT MAP: The bitmap (normally grayscale) is a height map which gets converted to a bump map. Uses &lt;bump height&gt; below. Alpha is passed through unmodified.
+* DETAIL MAP: Mipmap color fades to gray, controlled by &lt;detail fade factor&gt; below. Alpha fades to white.
+* LIGHT MAP: Generates no mipmaps. Do not use!
+* VECTOR MAP: Used mostly for special effects; pixels are treated as XYZ vectors and normalized after downsampling. Alpha is passed through unmodified.</comment>
 	<enum16 name="Usage" offset="0x4" visible="true">
 		<option name="Alpha-Blend" value="0x0" />
 		<option name="Default" value="0x1" />
@@ -30,13 +55,13 @@
 		<option name="Embm" value="0x7" />
 		<option name="Height Map A8L8" value="0x8" />
 		<option name="Height Map G8B8" value="0x9" />
-		<option name="Height Map G8B8 /w Alpha" value="0xA" />
+		<option name="Height Map G8B8 With Alpha" value="0xA" />
 	</enum16>
 	<flags16 name="Flags" offset="0x6" visible="true">
 		<bit name="Enable Diffusion Dithering" index="0" />
 		<bit name="Disable Height Map Compression" index="1" />
-		<bit name="Uniform Sprite Sequnces" index="2" />
-		<bit name="Filthy Sprite Bugfix" index="3" />
+		<bit name="Uniform Sprite Sequences" index="2" />
+		<bit name="Filthy Sprite Bug Fix" index="3" />
 		<bit name="Use Sharp Bump Filter" index="4" />
 		<bit name="WDP Compression" index="5" />
 		<bit name="Use Clamped/Mirrored Bump Filter" index="6" />
@@ -45,11 +70,13 @@
 		<bit name="Convert From Signed" index="9" />
 		<bit name="Convert To Signed" index="10" />
 		<bit name="Import Mipmap Chains" index="11" />
-		<bit name="Internationally True Color" index="12" />
+		<bit name="Intentionally True Color" index="12" />
+		<bit name="OG Xbox Mipmap Selection" index="13" />
 	</flags16>
-	<float32 name="Detail Fade Factor" offset="0x8" visible="true" />
-	<float32 name="Sharpen Amount" offset="0xC" visible="true" />
-	<float32 name="Bump Height" offset="0x10" visible="true" />
+	<comment title="Postprocessing">These properties control how mipmaps are postprocessed.</comment>
+	<float32 name="Detail Fade Factor" offset="0x8" visible="true" tooltip="0 means fade to gray by last mipmap; 1 means fade to gray by first mipmap." />
+	<float32 name="Sharpen Amount" offset="0xC" visible="true" tooltip="sharpens mipmap after downsampling." />
+	<float32 name="Bump Height" offset="0x10" visible="true" tooltip="the apparent height of the bump map above the triangle onto which it is textured, in texture repeats (i.e., 1.0 would be as high as the texture is wide)." />
 	<enum16 name="Sprite Budget Size" offset="0x14" visible="true">
 		<option name="32x32" value="0x0" />
 		<option name="64x64" value="0x1" />
@@ -59,15 +86,17 @@
 		<option name="1024x1024" value="0x5" />
 	</enum16>
 	<int16 name="Sprite Budget Count" offset="0x16" visible="true" />
+	<comment title="Color Plate">The original TIFF file used to import the bitmap group.</comment>
 	<int16 name="Color Plate Width" offset="0x18" visible="true" />
 	<int16 name="Color Plate Height" offset="0x1A" visible="true" />
 	<undefined name="Unknown" offset="0x1C" visible="false" />
 	<undefined name="Unknown" offset="0x20" visible="false" />
 	<undefined name="Unknown" offset="0x24" visible="false" />
 	<undefined name="Unknown" offset="0x28" visible="false" />
-	<float32 name="Blur Filter Size" offset="0x2C" visible="true" />
-	<float32 name="Alpha Bias" offset="0x30" visible="true" />
-	<int16 name="Mipmap Count" offset="0x34" visible="true" />
+	<float32 name="Blur Filter Size" offset="0x2C" visible="true" tooltip="blurs the bitmap before generating mipmaps." />
+	<float32 name="Alpha Bias" offset="0x30" visible="true" tooltip="affects alpha mipmap generation." />
+	<int16 name="Mipmap Count" offset="0x34" visible="true" tooltip="0 defaults to all levels." />
+	<comment title="...More Sprite Processing">Sprite usage controls the background color of sprite plates.</comment>
 	<enum16 name="Sprite Usage" offset="0x36" visible="true">
 		<option name="Blend/Add/Subtract/Max" value="0x0" />
 		<option name="Multiply/Min" value="0x1" />
@@ -84,7 +113,7 @@
 		<option name="Force A4R4G4B4" value="0x6" />
 	</enum16>
 	<tagblock name="Sequences" offset="0x3C" visible="true" elementSize="0x3C">
-		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+		<ascii name="Name" offset="0x0" visible="true" size="0x20" />
 		<int16 name="First Bitmap Index" offset="0x20" visible="true" />
 		<int16 name="Bitmap Count" offset="0x22" visible="true" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
@@ -103,7 +132,7 @@
 		</tagblock>
 	</tagblock>
 	<tagblock name="Bitmaps" offset="0x44" visible="true" elementSize="0xA8">
-		<ascii name="Signature" offset="0x0" length="0x4" visible="true" />
+		<ascii name="Signature" offset="0x0" size="0x4" visible="true" />
 		<int16 name="Width" offset="0x4" visible="true" />
 		<int16 name="Height" offset="0x6" visible="true" />
 		<int8 name="Depth" offset="0x8" visible="true" tooltip="Depth is 1 for 2D textures and cube maps." />
@@ -164,7 +193,7 @@
 		</flags16>
 		<point16 name="Registration Point" offset="0x10" visible="true" />
 		<int16 name="Mipmap Count" offset="0x14" visible="true" />
-		<int8 name="Lod Adjust" offset="0x16" visible="true" />
+		<int8 name="LOD Adjust" offset="0x16" visible="true" />
 		<enum8 name="Cache Usage" offset="0x17" visible="true">
 			<option name="Default" value="0x0" />
 			<option name="Environment" value="0x1" />

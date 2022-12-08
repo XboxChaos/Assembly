@@ -29,7 +29,7 @@
 		<bit name="Does Not Cause Collision Damage" index="5" />
 		<bit name="Early Mover" index="6" />
 		<bit name="Early Mover Localized Physics" index="7" />
-		<bit name="Use Static Massive Lightmap Sample" index="8" tooltip="cast a ton of rays once and store the results for lighting" />
+		<bit name="Use Static Massive Lightmap Sample" index="8" tooltip="cast a lot of rays once and store the results for lighting" />
 		<bit name="Object Scales Attachments" index="9" />
 		<bit name="Inherits Player's Appearance" index="10" />
 		<bit name="Dead Bipeds Can't Localize" index="11" />
@@ -203,7 +203,7 @@
 	<undefined name="Unknown" offset="0x10C" visible="false" />
 	<undefined name="Unknown" offset="0x110" visible="false" />
 	<undefined name="Unknown" offset="0x114" visible="false" />
-	<comment title="Applying Collision Damage">For things that want to cause more or less collision damage</comment>
+	<comment title="Applying Collision Damage">for things that want to cause more or less collision damage</comment>
 	<float32 name="Apply Collision Damage Scale" offset="0x118" visible="true" tooltip="0 means 1. 1 is standard scale. Some things may want to apply more damage" />
 	<comment title="Game Collision Damage Parameters">0 - means take default value from globals.globals</comment>
 	<rangef name="Game Acceleration" offset="0x11C" visible="true" tooltip="0-oo" />
@@ -215,8 +215,7 @@
 	<int16 name="Unknown" offset="0x13E" visible="false" />
 	<tagblock name="Attachments" offset="0x140" visible="true" elementSize="0x48">
 		<tagRef name="Type" offset="0x0" visible="true" />
-		<ascii name="Marker" offset="0x10" length="0x1C" visible="true" />
-		<stringid name="Marker" offset="0x2C" visible="true" />
+		<oldstringid name="Marker" offset="0x10" visible="true" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<enum16 name="Change Color" offset="0x34" visible="true">
 			<option name="None" value="0x0" />
@@ -343,10 +342,10 @@
 		<option name="After First Bounce Off Any Surface" value="0x3" />
 	</enum16>
 	<enum16 name="Impact Noise" offset="0x182" visible="true">
-		<option name="Silent" value="0x0" tooltip="ai will not respond to this sound" />
+		<option name="Silent" value="0x0" />
 		<option name="Medium" value="0x1" />
 		<option name="Loud" value="0x2" />
-		<option name="Shout" value="0x3" tooltip="ai can hear this sound at any range" />
+		<option name="Shout" value="0x3" />
 		<option name="Quiet" value="0x4" />
 	</enum16>
 	<undefined name="Unknown" offset="0x184" visible="false" />
@@ -360,10 +359,10 @@
 	<float32 name="Minimum Velocity" offset="0x1A4" visible="true" tooltip="detonates when slowed below this velocity" />
 	<float32 name="Maximum Range" offset="0x1A8" visible="true" tooltip="detonates after travelling this distance" />
 	<enum16 name="Detonation Noise" offset="0x1AC" visible="true">
-		<option name="Silent" value="0x0" tooltip="ai will not respond to this sound" />
+		<option name="Silent" value="0x0" />
 		<option name="Medium" value="0x1" />
 		<option name="Loud" value="0x2" />
-		<option name="Shout" value="0x3" tooltip="ai can hear this sound at any range" />
+		<option name="Shout" value="0x3" />
 		<option name="Quiet" value="0x4" />
 	</enum16>
 	<int16 name="Super Detonation Projectile Count" offset="0x1AE" visible="true" />
@@ -378,9 +377,9 @@
 	<enum8 name="Damage Reporting Type" offset="0x230" visible="true">
 		<option name="Guardians" value="0x0" />
 		<option name="Falling Damage" value="0x1" />
-		<option name="Collision Damage" value="0x2" />
-		<option name="Melee Damage" value="0x3" />
-		<option name="Explosion" value="0x4" />
+		<option name="Generic Collision Damage" value="0x2" />
+		<option name="Generic Melee Damage" value="0x3" />
+		<option name="Generic Explosion" value="0x4" />
 		<option name="Magnum Pistol" value="0x5" />
 		<option name="Plasma Pistol" value="0x6" />
 		<option name="Needler" value="0x7" />
@@ -490,7 +489,7 @@
 			<option name="Fizzle (Ricochet)" value="0x6" />
 		</enum16>
 		<tagRef name="DO NOT USE (OLD Effect)" offset="0x4" visible="true" />
-		<stringid name="Material Name" offset="0x14" visible="true" />
+		<stringid name="Global Material Name" offset="0x14" visible="true" />
 		<int16 name="Global Material Index" offset="0x18" visible="true" />
 		<int16 name="Unknown" offset="0x1A" visible="false" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
