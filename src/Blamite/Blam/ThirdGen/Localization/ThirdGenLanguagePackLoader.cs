@@ -15,7 +15,6 @@ namespace Blamite.Blam.ThirdGen.Localization
 		private readonly ThirdGenLanguageGlobals _languageGlobals;
 		private readonly List<GameLanguage> _languages;
 		private readonly EngineDescription _buildInfo;
-	    private readonly bool _sortByStringId;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ThirdGenLanguagePackLoader" /> class.
@@ -39,7 +38,6 @@ namespace Blamite.Blam.ThirdGen.Localization
 			_buildInfo = buildInfo;
 			_languageGlobals = languageGlobals;
 			_languages = languageGlobals.Languages.Where(l => l.StringCount != 0).Select(l => l.Language).ToList();
-			_sortByStringId = buildInfo.Settings.GetSettingOrDefault("engineInfo/sortLocalesByStringId", false);
 			LoadGroups(reader, cacheFile);
 		}
 
@@ -89,7 +87,7 @@ namespace Blamite.Blam.ThirdGen.Localization
 				currentIndex += MergeStringList(stringList, languageIndex, currentIndex);
 
 			// Rebuild the table and save
-			var strings = pack.StringLists.SelectMany(l => _sortByStringId ? l.Strings.OrderBy(s => s.Key.Value).ToList() : l.Strings).ToList();
+			var strings = pack.StringLists.SelectMany(l => _buildInfo.SortLocalesByStringID ? l.Strings.OrderBy(s => s.Key.Value).ToList() : l.Strings).ToList();
 			_languageGlobals.Languages[languageIndex].SaveStrings(strings, stream);
 			SaveGroups(stream);
 		}

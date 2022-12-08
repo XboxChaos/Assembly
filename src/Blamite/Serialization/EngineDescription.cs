@@ -187,6 +187,11 @@ namespace Blamite.Serialization
 		/// </summary>
 		public RTEConnectionType PokingPlatform { get; private set; }
 
+		/// <summary>
+		///		Starting with Halo 4 localization is expected to be sorted by their string id keys for performance reasons.
+		/// </summary>
+		public bool SortLocalesByStringID { get; private set; }
+
 		private void LoadSettings()
 		{
 			LoadEngineSettings();
@@ -204,6 +209,7 @@ namespace Blamite.Serialization
 			UsesStringHashes = Settings.GetSettingOrDefault("engineInfo/usesStringHashes", true);
 			UsesRawHashes = Settings.GetSettingOrDefault("engineInfo/usesRawHashes", true);
 			OptimizedShaders = Settings.GetSettingOrDefault("engineInfo/optimizedShaders", false);
+			SortLocalesByStringID = Settings.GetSettingOrDefault("engineInfo/sortLocalesByStringId", false);
 
 			string endian = Settings.GetSettingOrDefault("engineInfo/endian", "undefined");
 
