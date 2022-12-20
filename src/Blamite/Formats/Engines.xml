@@ -26,10 +26,11 @@
 				<stringIdKey>{key}</stringIdKey> - Used to decrypt string ID strings in engines where they are encrypted.
 				<localeKey>{key}</localeKey> - Used to decrypt localization strings in engines where they are encrypted.
 			</encryption>
-			<usesCompression>{"true", "false"}</usesCompression> - Whether the cache files for this engine have some sort of overall compression. (H1X, H2MCC, etc)
-			<usesStringHashes>{"true", "false"}</usesStringHashes> - Whether hashes inside the globals tag should be updated upon modification to localizations. Because for some reason giving hashes when they shipped as 0's can crash.
-			<usesRawHashes>{"true", "false"}</usesRawHashes> - Whether hashes inside the play or zone tags are fully implemented or some/all are 0'd. This aids in making sure the relevant option in the Import dialog is checked/unchecked by default as tag injection optimizations use hashes to reduce redundant pages.
-			<optimizedShaders>{"true", "false"}</optimizedShaders> - Whether the shaders in each map are stripped down to only shaders used by that specific cache file. This aids in making sure the relevant option in the Import dialog is checked/unchecked by default as if shaders are optimized then you can't trust the existing shader during tag injection and must rename/inject the new shader to prevent ingame issues.
+			<sortLocalesByStringId>{"true", "false"}</sortLocalesByStringId> - Whether the localization strings in a tag are sorted by their string id value. This was introduced in H4 to increase performance. Default if not present is false.
+			<usesCompression>{"true", "false"}</usesCompression> - Whether the cache files for this engine have some sort of overall compression. (H1X, H2MCC, etc). Default if not present is false.
+			<usesStringHashes>{"true", "false"}</usesStringHashes> - Whether hashes inside the globals tag should be updated upon modification to localizations. Because for some reason giving hashes when they shipped as 0's can crash. Default if not present is true.
+			<usesRawHashes>{"true", "false"}</usesRawHashes> - Whether hashes inside the play or zone tags are fully implemented or some/all are 0'd. This aids in making sure the relevant option in the Import dialog is checked/unchecked by default as tag injection optimizations use hashes to reduce redundant pages. Default if not present is true.
+			<optimizedShaders>{"true", "false"}</optimizedShaders> - Whether the shaders in each map are stripped down to only shaders used by that specific cache file. This aids in making sure the relevant option in the Import dialog is checked/unchecked by default as if shaders are optimized then you can't trust the existing shader during tag injection and must rename/inject the new shader to prevent ingame issues. Default if not present is false.
 		</engineInfo>
 
 		<pokingInfo>
@@ -769,114 +770,97 @@
 		</databases>
 	</engine>
 
-	<engine name="Halo: Reach MCC Update 3" version="13" build="Jun  5 2020 10:40:14" inherits="Halo: Reach MCC">
+	<engine name="Halo: Reach MCC Update 3" version="13" build="Jun  5 2020 10:40:14">
+		<shortName>ReachMCC</shortName>
+		<plugins>ReachMCC</plugins>
+		<fallbackPlugins>Reach</fallbackPlugins>
+		<engineInfo>
+			<generation>third</generation>
+			<endian>little</endian>
+			<segmentAlignment>0x1000</segmentAlignment>
+			<expandMagic>0x50000000</expandMagic>
+		</engineInfo>
+		<pokingInfo>
+			<platform>pc64</platform>
+			<executable>MCC-Win64-Shipping</executable>
+			<executableAlt>MCCWinStore-Win64-Shipping</executableAlt>
+			<module>haloreach</module>
+		</pokingInfo>
 		<databases>
-			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
+			<localeSymbols type="localeSymbols" path="Formats/ReachMCC/ReachMCC_LocaleSymbols.xml" />
+			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/ReachMCC/ReachMCC_Scripting.xml" />
+			<poking type="poking" path="Formats/ReachMCC/ReachMCC_Poking.xml" />
 			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU3" />
 		</databases>
 	</engine>
 
-	<engine name="Halo: Reach MCC Update 4" version="13" build="Oct 15 2020 18:23:50" inherits="Halo: Reach MCC">
-		<databases>
-			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
-			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU3" />
-		</databases>
-	</engine>
+	<engine name="Halo: Reach MCC Update 4" version="13" build="Oct 15 2020 18:23:50" inherits="Halo: Reach MCC Update 3" />
 
-	<engine name="Halo: Reach MCC Update 5" version="13" build="Nov 24 2020 18:32:37" inherits="Halo: Reach MCC">
-		<databases>
-			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
-			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU3" />
-		</databases>
-	</engine>
+	<engine name="Halo: Reach MCC Update 5" version="13" build="Nov 24 2020 18:32:37" inherits="Halo: Reach MCC Update 3" />
 
-	<engine name="Halo: Reach MCC Flight 3" version="13" build="Feb 17 2021 21:07:38" inherits="Halo: Reach MCC">
-		<databases>
-			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
-			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU3" />
-		</databases>
-	</engine>
+	<engine name="Halo: Reach MCC Flight 3" version="13" build="Feb 17 2021 21:07:38" inherits="Halo: Reach MCC Update 3" />
 
-	<engine name="Halo: Reach MCC Update 6" version="13" build="Mar  4 2021 13:14:28" inherits="Halo: Reach MCC">
-		<databases>
-			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
-			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU3" />
-		</databases>
-	</engine>
+	<engine name="Halo: Reach MCC Update 6" version="13" build="Mar  4 2021 13:14:28" inherits="Halo: Reach MCC Update 3" />
 
-	<engine name="Halo: Reach MCC Update 7" version="13" build="May 26 2021 10:02:45" inherits="Halo: Reach MCC">
-		<databases>
-			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
-			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU3" />
-		</databases>
-	</engine>
+	<engine name="Halo: Reach MCC Update 7" version="13" build="May 26 2021 10:02:45" inherits="Halo: Reach MCC Update 3" />
 
-	<engine name="Halo: Reach MCC Flight 4" version="13" build="Aug 11 2021 15:50:30" inherits="Halo: Reach MCC">
+	<engine name="Halo: Reach MCC Flight 4" version="13" build="Aug 11 2021 15:50:30" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU8" />
 		</databases>
 	</engine>
 
-	<engine name="Halo: Reach MCC Update 8" version="13" build="Sep 13 2021 09:49:52" inherits="Halo: Reach MCC">
+	<engine name="Halo: Reach MCC Update 8" version="13" build="Sep 13 2021 09:49:52" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU8" />
 		</databases>
 	</engine>
 
-	<engine name="Halo: Reach MCC Update 9" version="13" build="Sep 17 2021 13:25:40" inherits="Halo: Reach MCC">
+	<engine name="Halo: Reach MCC Update 9" version="13" build="Sep 17 2021 13:25:40" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU8" />
 		</databases>
 	</engine>
 
-	<engine name="Halo: Reach MCC Update 10" version="13" build="Jan 13 2022 00:54:50" inherits="Halo: Reach MCC">
+	<engine name="Halo: Reach MCC Update 10" version="13" build="Jan 13 2022 00:54:50" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" />
 		</databases>
 	</engine>
 
-	<engine name="Halo: Reach MCC Update 11" version="13" build="Aug  5 2022 20:35:02" inherits="Halo: Reach MCC">
+	<engine name="Halo: Reach MCC Update 11" version="13" build="Aug  5 2022 20:35:02" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" />
 		</databases>
 	</engine>
 
-	<engine name="Halo: Reach MCC Toolset" version="13" build="Aug 31 2022 11:53:49" inherits="Halo: Reach MCC">
+	<engine name="Halo: Reach MCC Toolset" version="13" build="Aug 31 2022 11:53:49" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" />
 		</databases>
 	</engine>
 
-	<engine name="Halo: Reach MCC Toolset Fast" version="13" build="Aug 31 2022 11:53:19" inherits="Halo: Reach MCC">
+	<engine name="Halo: Reach MCC Toolset Fast" version="13" build="Aug 31 2022 11:53:19" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" />
 		</databases>
 	</engine>
 
-	<engine name="Halo: Reach MCC Update 12" version="13" build="Oct 12 2022 01:55:01" inherits="Halo: Reach MCC">
+	<engine name="Halo: Reach MCC Update 12" version="13" build="Oct 12 2022 01:55:01" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" />
 		</databases>
 	</engine>
 
-	<engine name="Halo: Reach MCC Toolset Update 1" version="13" build="Nov 16 2022 21:11:25" inherits="Halo: Reach MCC">
+	<engine name="Halo: Reach MCC Toolset Update 1" version="13" build="Nov 16 2022 21:11:25" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" />
 		</databases>
 	</engine>
 
-	<engine name="Halo: Reach MCC Toolset Update 1 Fast" version="13" build="Nov 16 2022 21:13:04" inherits="Halo: Reach MCC">
+	<engine name="Halo: Reach MCC Toolset Update 1 Fast" version="13" build="Nov 16 2022 21:13:04" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U2_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" />
 		</databases>
 	</engine>
@@ -912,9 +896,6 @@
 			<segmentAlignment>0x1</segmentAlignment>
 			<usesCompression>false</usesCompression>
 		</engineInfo>
-		<databases>
-			<scripting type="scripting" path="Formats/Halo1/H1AMCC_U1_Scripting.xml" />
-		</databases>
 	</engine>
 
 	<!-- Halo 2 MCC -->
@@ -1031,52 +1012,49 @@
 		</databases>
 	</engine>
 
-	<engine name="Halo 2 Anniversary MCC Update 8" version="13" build="Feb 14 2022 19:18:28" inherits="Halo 2 Anniversary MCC Flight">
+	<engine name="Halo 2 Anniversary MCC Update 8" version="13" build="Feb 14 2022 19:18:28">
+		<shortName>H2AMCC</shortName>
+		<plugins>Halo2AMCC</plugins>
+		<fallbackPlugins>Halo4</fallbackPlugins>
 		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
+			<generation>third</generation>
+			<endian>little</endian>
+			<segmentAlignment>0x1000</segmentAlignment>
+			<expandMagic>0x7AC00000</expandMagic>
+			<sortLocalesByStringId>true</sortLocalesByStringId>
+			<optimizedShaders>true</optimizedShaders>
 		</engineInfo>
+		<pokingInfo>
+			<platform>pc64</platform>
+			<executable>MCC-Win64-Shipping</executable>
+			<executableAlt>MCCWinStore-Win64-Shipping</executableAlt>
+			<module>groundhog</module>
+		</pokingInfo>
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo2AMCC/H2AMCC_U6_StringIDs.xml" />
+			<localeSymbols type="localeSymbols" path="Formats/Halo2AMCC/H2AMCC_LocaleSymbols.xml" />
+			<stringIds type="stringIds" path="Formats/Halo2AMCC/H2AMCC_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/Halo2AMCC/H2AMCC_Scripting.xml" />
+			<poking type="poking" path="Formats/Halo2AMCC/H2AMCC_Poking.xml" />
 			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU8" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 2 Anniversary MCC Update 9" version="13" build="Jun 13 2022 13:44:24" inherits="Halo 2 Anniversary MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-		</engineInfo>
-		<databases>
-			<stringIds type="stringIds" path="Formats/Halo2AMCC/H2AMCC_U6_StringIDs.xml" />
-			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU8" />
-		</databases>
-	</engine>
+	<engine name="Halo 2 Anniversary MCC Update 9" version="13" build="Jun 13 2022 13:44:24" inherits="Halo 2 Anniversary MCC Update 8" />
 
-	<engine name="Halo 2 Anniversary MCC Update 10" version="13" build="Oct 14 2022 21:11:35" inherits="Halo 2 Anniversary MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-		</engineInfo>
+	<engine name="Halo 2 Anniversary MCC Update 10" version="13" build="Oct 14 2022 21:11:35" inherits="Halo 2 Anniversary MCC Update 8">
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo2AMCC/H2AMCC_U6_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 2 Anniversary MCC Toolset" version="13" build="Dec  6 2022 11:13:38" inherits="Halo 2 Anniversary MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-		</engineInfo>
+	<engine name="Halo 2 Anniversary MCC Toolset" version="13" build="Dec  6 2022 11:13:38" inherits="Halo 2 Anniversary MCC Update 8">
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo2AMCC/H2AMCC_U6_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 2 Anniversary MCC Toolset Fast" version="13" build="Dec  6 2022 11:13:46" inherits="Halo 2 Anniversary MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-		</engineInfo>
+	<engine name="Halo 2 Anniversary MCC Toolset Fast" version="13" build="Dec  6 2022 11:13:46" inherits="Halo 2 Anniversary MCC Update 8">
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo2AMCC/H2AMCC_U6_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" />
 		</databases>
 	</engine>
@@ -1216,216 +1194,124 @@
 			<usesStringHashes>true</usesStringHashes>
 		</engineInfo>
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
+			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_Stub_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU6" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 3 MCC Update 6" version="13" build="Sep 29 2021 09:17:56" inherits="Halo 3 MCC Flight">
+	<engine name="Halo 3 MCC Update 6" version="13" build="Sep 29 2021 09:17:56">
+		<shortName>H3MCC</shortName>
+		<plugins>Halo3MCC</plugins>
+		<fallbackPlugins>Halo3</fallbackPlugins>
 		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
+			<generation>third</generation>
+			<endian>little</endian>
+			<segmentAlignment>0x1000</segmentAlignment>
+			<expandMagic>0</expandMagic>
 		</engineInfo>
+		<pokingInfo>
+			<platform>pc64</platform>
+			<executable>MCC-Win64-Shipping</executable>
+			<executableAlt>MCCWinStore-Win64-Shipping</executableAlt>
+			<module>halo3</module>
+		</pokingInfo>
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
+			<localeSymbols type="localeSymbols" path="Formats/Halo3MCC/H3MCC_LocaleSymbols.xml" />
+			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/Halo3MCC/H3MCC_Scripting.xml" />
+			<poking type="poking" path="Formats/Halo3MCC/H3MCC_Poking.xml" />
 			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU6" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 3 MCC Update 7" version="13" build="Oct 11 2021 04:58:42" inherits="Halo 3 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
-		<databases>
-			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU6" />
-		</databases>
-	</engine>
+	<engine name="Halo 3 MCC Update 7" version="13" build="Oct 11 2021 04:58:42" inherits="Halo 3 MCC Update 6" />
 
-	<engine name="Halo 3 MCC Toolset" version="13" build="Oct 11 2021 04:56:39" inherits="Halo 3 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
-		<databases>
-			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU6" />
-		</databases>
-	</engine>
+	<engine name="Halo 3 MCC Toolset" version="13" build="Oct 11 2021 04:56:39" inherits="Halo 3 MCC Update 6" />
 
-	<engine name="Halo 3 MCC Update 8" version="13" build="Nov  1 2021 06:16:14" inherits="Halo 3 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
-		<databases>
-			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU6" />
-		</databases>
-	</engine>
+	<engine name="Halo 3 MCC Update 8" version="13" build="Nov  1 2021 06:16:14" inherits="Halo 3 MCC Update 6" />
 
-	<engine name="Halo 3 MCC Toolset Update 1" version="13" build="Nov  1 2021 06:14:30" inherits="Halo 3 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
-		<databases>
-			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU6" />
-		</databases>
-	</engine>
+	<engine name="Halo 3 MCC Toolset Update 1" version="13" build="Nov  1 2021 06:14:30" inherits="Halo 3 MCC Update 6" />
 
-	<engine name="Halo 3 MCC Update 9" version="13" build="Feb 15 2022 01:35:34" inherits="Halo 3 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
+	<engine name="Halo 3 MCC Update 9" version="13" build="Feb 15 2022 01:35:34" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 3 MCC Toolset Update 2" version="13" build="Apr  6 2022 10:48:27" inherits="Halo 3 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
+	<engine name="Halo 3 MCC Toolset Update 2" version="13" build="Apr  6 2022 10:48:27" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 3 MCC Toolset Update 2 Fast" version="13" build="Apr  6 2022 10:48:46" inherits="Halo 3 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
+	<engine name="Halo 3 MCC Toolset Update 2 Fast" version="13" build="Apr  6 2022 10:48:46" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 3 MCC Toolset Update 3" version="13" build="Apr 20 2022 11:55:21" inherits="Halo 3 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
+	<engine name="Halo 3 MCC Toolset Update 3" version="13" build="Apr 20 2022 11:55:21" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 3 MCC Toolset Update 3 Fast" version="13" build="Apr 20 2022 11:56:23" inherits="Halo 3 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
+	<engine name="Halo 3 MCC Toolset Update 3 Fast" version="13" build="Apr 20 2022 11:56:23" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 3 MCC Update 10" version="13" build="May  3 2022 12:38:41" inherits="Halo 3 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
+	<engine name="Halo 3 MCC Update 10" version="13" build="May  3 2022 12:38:41" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 3 MCC Toolset Update 4" version="13" build="Jun  8 2022 16:05:04" inherits="Halo 3 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
+	<engine name="Halo 3 MCC Toolset Update 4" version="13" build="Jun  8 2022 16:05:04" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 3 MCC Toolset Update 4 Fast" version="13" build="Jun  8 2022 16:06:30" inherits="Halo 3 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
+	<engine name="Halo 3 MCC Toolset Update 4 Fast" version="13" build="Jun  8 2022 16:06:30" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 3 MCC Update 11" version="13" build="Jul 21 2022 21:15:27" inherits="Halo 3 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
+	<engine name="Halo 3 MCC Update 11" version="13" build="Jul 21 2022 21:15:27" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 3 MCC Toolset Update 5" version="13" build="Aug 21 2022 17:23:29" inherits="Halo 3 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
+	<engine name="Halo 3 MCC Toolset Update 5" version="13" build="Aug 21 2022 17:23:29" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 3 MCC Toolset Update 5 Fast" version="13" build="Aug 21 2022 17:24:39" inherits="Halo 3 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
+	<engine name="Halo 3 MCC Toolset Update 5 Fast" version="13" build="Aug 21 2022 17:24:39" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 3 MCC Update 12" version="13" build="Oct 11 2022 04:34:53" inherits="Halo 3 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
+	<engine name="Halo 3 MCC Update 12" version="13" build="Oct 11 2022 04:34:53" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU12" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 3 MCC Toolset Update 6" version="13" build="Nov 16 2022 21:16:57" inherits="Halo 3 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
+	<engine name="Halo 3 MCC Toolset Update 6" version="13" build="Nov 16 2022 21:16:57" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU12" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 3 MCC Toolset Update 6 Fast" version="13" build="Nov 16 2022 21:18:10" inherits="Halo 3 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
+	<engine name="Halo 3 MCC Toolset Update 6 Fast" version="13" build="Nov 16 2022 21:18:10" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU12" />
 		</databases>
 	</engine>
@@ -1440,7 +1326,6 @@
 			<endian>little</endian>
 			<segmentAlignment>0x1000</segmentAlignment>
 			<expandMagic>0</expandMagic>
-			<usesStringHashes>true</usesStringHashes>
 			<usesRawHashes>false</usesRawHashes>
 		</engineInfo>
 		<pokingInfo>
@@ -1476,131 +1361,69 @@
 
 	<engine name="Halo ODST MCC Update 3" version="13" build="Sep 18 2021 21:15:55" inherits="Halo ODST MCC Flight">
 		<databases>
+			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC_Stub_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU3" />
 		</databases>
 	</engine>
 
-	<engine name="Halo ODST MCC Update 4" version="13" build="Feb 15 2022 01:59:47" inherits="Halo ODST MCC Flight">
+	<engine name="Halo ODST MCC Update 4" version="13" build="Feb 15 2022 01:59:47">
+		<shortName>ODSTMCC</shortName>
+		<plugins>ODSTMCC</plugins>
+		<fallbackPlugins>ODST</fallbackPlugins>
 		<engineInfo>
-			<usesRawHashes>true</usesRawHashes>
+			<generation>third</generation>
+			<endian>little</endian>
+			<segmentAlignment>0x1000</segmentAlignment>
+			<expandMagic>0</expandMagic>
 		</engineInfo>
+		<pokingInfo>
+			<platform>pc64</platform>
+			<executable>MCC-Win64-Shipping</executable>
+			<executableAlt>MCCWinStore-Win64-Shipping</executableAlt>
+			<module>halo3odst</module>
+		</pokingInfo>
 		<databases>
+			<localeSymbols type="localeSymbols" path="Formats/ODSTMCC/ODSTMCC_LocaleSymbols.xml" />
+			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_Scripting.xml" />
+			<poking type="poking" path="Formats/ODSTMCC/ODSTMCC_Poking.xml" />
 			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU4" />
 		</databases>
 	</engine>
 
-	<engine name="Halo ODST MCC Toolset" version="13" build="Apr  5 2022 14:16:52" inherits="Halo ODST MCC Flight">
-		<engineInfo>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
-		<databases>
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU4" />
-		</databases>
-	</engine>
+	<engine name="Halo ODST MCC Toolset" version="13" build="Apr  5 2022 14:16:52" inherits="Halo ODST MCC Update 4" />
 
-	<engine name="Halo ODST MCC Toolset Fast" version="13" build="Apr  5 2022 14:16:35" inherits="Halo ODST MCC Flight">
-		<engineInfo>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
-		<databases>
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU4" />
-		</databases>
-	</engine>
+	<engine name="Halo ODST MCC Toolset Fast" version="13" build="Apr  5 2022 14:16:35" inherits="Halo ODST MCC Update 4" />
 
-	<engine name="Halo ODST MCC Toolset Update 1" version="13" build="Apr 20 2022 11:53:15" inherits="Halo ODST MCC Flight">
-		<engineInfo>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
-		<databases>
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU4" />
-		</databases>
-	</engine>
+	<engine name="Halo ODST MCC Toolset Update 1" version="13" build="Apr 20 2022 11:53:15" inherits="Halo ODST MCC Update 4" />
 
-	<engine name="Halo ODST MCC Toolset Update 1 Fast" version="13" build="Apr 20 2022 11:52:14" inherits="Halo ODST MCC Flight">
-		<engineInfo>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
-		<databases>
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU4" />
-		</databases>
-	</engine>
+	<engine name="Halo ODST MCC Toolset Update 1 Fast" version="13" build="Apr 20 2022 11:52:14" inherits="Halo ODST MCC Update 4" />
 
-	<engine name="Halo ODST MCC Update 5" version="13" build="Apr 20 2022 11:53:15" inherits="Halo ODST MCC Flight">
-		<engineInfo>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
-		<databases>
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU4" />
-		</databases>
-	</engine>
+	<engine name="Halo ODST MCC Update 5" version="13" build="Apr 20 2022 11:53:15" inherits="Halo ODST MCC Update 4" />
 
-	<engine name="Halo ODST MCC Toolset Update 2" version="13" build="May  3 2022 12:27:56" inherits="Halo ODST MCC Flight">
-		<engineInfo>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
-		<databases>
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU4" />
-		</databases>
-	</engine>
+	<engine name="Halo ODST MCC Toolset Update 2" version="13" build="May  3 2022 12:27:56" inherits="Halo ODST MCC Update 4" />
 
-	<engine name="Halo ODST MCC Toolset Update 2 Fast" version="13" build="May  3 2022 12:27:08" inherits="Halo ODST MCC Flight">
-		<engineInfo>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
-		<databases>
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU4" />
-		</databases>
-	</engine>
+	<engine name="Halo ODST MCC Toolset Update 2 Fast" version="13" build="May  3 2022 12:27:08" inherits="Halo ODST MCC Update 4" />
 
-	<engine name="Halo ODST MCC Update 6" version="13" build="Jul 22 2022 05:55:30" inherits="Halo ODST MCC Flight">
-		<engineInfo>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
-		<databases>
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU4" />
-		</databases>
-	</engine>
+	<engine name="Halo ODST MCC Update 6" version="13" build="Jul 22 2022 05:55:30" inherits="Halo ODST MCC Update 4" />
 
-	<engine name="Halo ODST MCC Toolset Update 3" version="13" build="Aug 21 2022 17:29:59" inherits="Halo ODST MCC Flight">
-		<engineInfo>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
-		<databases>
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU4" />
-		</databases>
-	</engine>
+	<engine name="Halo ODST MCC Toolset Update 3" version="13" build="Aug 21 2022 17:29:59" inherits="Halo ODST MCC Update 4" />
 
-	<engine name="Halo ODST MCC Toolset Update 3 Fast" version="13" build="Aug 21 2022 17:30:28" inherits="Halo ODST MCC Flight">
-		<engineInfo>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
-		<databases>
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU4" />
-		</databases>
-	</engine>
+	<engine name="Halo ODST MCC Toolset Update 3 Fast" version="13" build="Aug 21 2022 17:30:28" inherits="Halo ODST MCC Update 4" />
 
-	<engine name="Halo ODST MCC Update 7" version="13" build="Oct 24 2022 03:07:19" inherits="Halo ODST MCC Flight">
-		<engineInfo>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
+	<engine name="Halo ODST MCC Update 7" version="13" build="Oct 24 2022 03:07:19" inherits="Halo ODST MCC Update 4">
 		<databases>
 			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU7" />
 		</databases>
 	</engine>
 
-	<engine name="Halo ODST MCC Toolset Update 4" version="13" build="Nov 16 2022 20:57:46" inherits="Halo ODST MCC Flight">
-		<engineInfo>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
+	<engine name="Halo ODST MCC Toolset Update 4" version="13" build="Nov 16 2022 20:57:46" inherits="Halo ODST MCC Update 4">
 		<databases>
 			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU7" />
 		</databases>
 	</engine>
 
-	<engine name="Halo ODST MCC Toolset Update 4 Fast" version="13" build="Nov 16 2022 20:59:16" inherits="Halo ODST MCC Flight">
-		<engineInfo>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
+	<engine name="Halo ODST MCC Toolset Update 4 Fast" version="13" build="Nov 16 2022 20:59:16" inherits="Halo ODST MCC Update 4">
 		<databases>
 			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU7" />
 		</databases>
@@ -1670,57 +1493,49 @@
 		</databases>
 	</engine>
 
-	<engine name="Halo 4 MCC Update 4" version="13" build="Feb  3 2022 19:02:31" inherits="Halo 4 MCC Flight">
+	<engine name="Halo 4 MCC Update 4" version="13" build="Feb  3 2022 19:02:31">
+		<shortName>H4MCC</shortName>
+		<plugins>Halo4MCC</plugins>
+		<fallbackPlugins>Halo4</fallbackPlugins>
 		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
+			<generation>third</generation>
+			<endian>little</endian>
+			<segmentAlignment>0x1000</segmentAlignment>
+			<expandMagic>0x4FFF0000</expandMagic>
+			<sortLocalesByStringId>true</sortLocalesByStringId>
+			<optimizedShaders>true</optimizedShaders>
 		</engineInfo>
+		<pokingInfo>
+			<platform>pc64</platform>
+			<executable>MCC-Win64-Shipping</executable>
+			<executableAlt>MCCWinStore-Win64-Shipping</executableAlt>
+			<module>halo4</module>
+		</pokingInfo>
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo4MCC/H4MCC_U3_StringIDs.xml" />
+			<localeSymbols type="localeSymbols" path="Formats/Halo4MCC/H4MCC_LocaleSymbols.xml" />
+			<stringIds type="stringIds" path="Formats/Halo4MCC/H4MCC_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/Halo4MCC/H4MCC_Scripting.xml" />
+			<poking type="poking" path="Formats/Halo4MCC/H4MCC_Poking.xml" />
 			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU4" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 4 MCC Update 5" version="13" build="Aug  8 2022 17:28:57" inherits="Halo 4 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
-		<databases>
-			<stringIds type="stringIds" path="Formats/Halo4MCC/H4MCC_U3_StringIDs.xml" />
-			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU4" />
-		</databases>
-	</engine>
+	<engine name="Halo 4 MCC Update 5" version="13" build="Aug  8 2022 17:28:57" inherits="Halo 4 MCC Update 4" />
 
-	<engine name="Halo 4 MCC Update 6" version="13" build="Oct 17 2022 21:26:14" inherits="Halo 4 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
+	<engine name="Halo 4 MCC Update 6" version="13" build="Oct 17 2022 21:26:14" inherits="Halo 4 MCC Update 4">
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo4MCC/H4MCC_U3_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU6" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 4 MCC Toolset" version="13" build="Dec  6 2022 11:23:50" inherits="Halo 4 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
+	<engine name="Halo 4 MCC Toolset" version="13" build="Dec  6 2022 11:23:50" inherits="Halo 4 MCC Update 4">
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo4MCC/H4MCC_U3_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU6" />
 		</databases>
 	</engine>
 
-	<engine name="Halo 4 MCC Toolset Fast" version="13" build="Dec  6 2022 11:26:37" inherits="Halo 4 MCC Flight">
-		<engineInfo>
-			<usesStringHashes>true</usesStringHashes>
-			<usesRawHashes>true</usesRawHashes>
-		</engineInfo>
+	<engine name="Halo 4 MCC Toolset Fast" version="13" build="Dec  6 2022 11:26:37" inherits="Halo 4 MCC Update 4">
 		<databases>
-			<stringIds type="stringIds" path="Formats/Halo4MCC/H4MCC_U3_StringIDs.xml" />
 			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU6" />
 		</databases>
 	</engine>
