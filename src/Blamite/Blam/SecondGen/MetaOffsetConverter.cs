@@ -13,27 +13,24 @@ namespace Blamite.Blam.SecondGen
 			_mask = mask;
 		}
 
-		public int PointerToOffset(long pointer)
+		public uint PointerToOffset(long pointer)
 		{
 			return PointerToOffset(pointer, _metaSegment.Offset);
 		}
 
-		public int PointerToOffset(long pointer, int areaStartOffset)
+		public uint PointerToOffset(long pointer, uint areaStartOffset)
 		{
-			return (int)(pointer - _mask + areaStartOffset);
+			return (uint)(pointer - _mask + areaStartOffset);
 		}
 
-		public long OffsetToPointer(int offset)
+		public long OffsetToPointer(uint offset)
 		{
 			return OffsetToPointer(offset, _metaSegment.Offset);
 		}
 
-		public long OffsetToPointer(int offset, int areaStartOffset)
+		public long OffsetToPointer(uint offset, uint areaStartOffset)
 		{
-			// NOTE: this *was* casting as an int, which was causing arithmetic problems
-			//		 while loading tags from ogbox cache files. it should probably be tested
-			//		 to make sure it doesnt break something else by casting it as unsigned
-			return (uint)(offset - areaStartOffset + _mask);
+			return (offset - areaStartOffset + _mask);
 		}
 	}
 }

@@ -81,7 +81,7 @@ namespace Blamite.Blam.SecondGen.Structures
 		/// <returns>
 		///     The tag that was allocated.
 		/// </returns>
-		public override ITag AddTag(int groupMagic, int baseSize, IStream stream)
+		public override ITag AddTag(int groupMagic, uint baseSize, IStream stream)
 		{
 			throw new NotImplementedException("Adding tags is not supported for second-generation cache files");
 		}
@@ -120,7 +120,7 @@ namespace Blamite.Blam.SecondGen.Structures
 		{
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("tag group element");
 			IEnumerable<StructureValueCollection> entries = _groups.Select(g => ((SecondGenTagGroup)g).Serialize());
-			var addr = _metaArea.OffsetToPointer(_metaArea.Offset + offset);
+			var addr = _metaArea.OffsetToPointer(_metaArea.Offset + (uint)offset);
 
 			TagBlockWriter.WriteTagBlock(entries, addr, layout, _metaArea, stream);
 
@@ -138,7 +138,7 @@ namespace Blamite.Blam.SecondGen.Structures
 		{
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("tag element");
 			IEnumerable<StructureValueCollection> entries = _tags.Select(t => ((SecondGenTag)t).Serialize());
-			var addr = _metaArea.OffsetToPointer(_metaArea.Offset + offset);
+			var addr = _metaArea.OffsetToPointer(_metaArea.Offset + (uint)offset);
 
 			TagBlockWriter.WriteTagBlock(entries, addr, layout, _metaArea, stream);
 

@@ -29,8 +29,8 @@ namespace Blamite.Blam.Resources
 			var pagesNeeded = (int)(Math.Ceiling(page.CompressedSize / (double)pageSize));
 
 			// calculate sizes, positions and resize the raw table
-			var injectSize = pagesNeeded * pageSize;
-			var offsetInCache = (_rawTable.Offset + _rawTable.Size);
+			uint injectSize = (uint)pagesNeeded * pageSize;
+			uint offsetInCache = _rawTable.Offset + (uint)_rawTable.Size;
 			var offsetInRaw = (_rawTable.Size);
 			_rawTable.Resize(_rawTable.Size + injectSize, cacheStream);
 
@@ -38,8 +38,8 @@ namespace Blamite.Blam.Resources
 			cacheStream.SeekTo(offsetInCache);
 			cacheStream.WriteBlock(data);
 
-			return offsetInRaw
-				+ (_fileOffsets ? _rawTable.Offset : 0);
+			return (int)(offsetInRaw
+				+ (_fileOffsets ? (int)_rawTable.Offset : 0));
 		}
 	}
 }

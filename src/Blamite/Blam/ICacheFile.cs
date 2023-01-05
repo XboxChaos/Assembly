@@ -213,12 +213,12 @@ namespace Blamite.Blam
 			// XOR all of the uint32s in the file after the header
 			// based on http://codeescape.com/2009/05/optimized-c-halo-2-map-signing-algorithm/
 			uint checksum = 0;
-			int blockSize = 0x10000;
+			uint blockSize = 0x10000;
 			reader.SeekTo(cacheFile.HeaderSize);
 
 			while (reader.Position < reader.Length)
 			{
-				int actualSize = Math.Min(blockSize, (int)(reader.Length - reader.Position));
+				int actualSize = (int)Math.Min(blockSize, (uint)(reader.Length - reader.Position));
 				int adjustedSize = (actualSize + 3) & ~0x3;
 				byte[] block = new byte[adjustedSize];
 				reader.ReadBlock(block, 0, actualSize);

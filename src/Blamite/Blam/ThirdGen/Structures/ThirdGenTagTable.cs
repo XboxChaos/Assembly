@@ -91,7 +91,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 		/// <returns>
 		///     The tag that was allocated.
 		/// </returns>
-		public override ITag AddTag(int groupMagic, int baseSize, IStream stream)
+		public override ITag AddTag(int groupMagic, uint baseSize, IStream stream)
 		{
 			if (_indexHeaderLocation == null)
 				throw new InvalidOperationException("Tags cannot be added to a shared map");

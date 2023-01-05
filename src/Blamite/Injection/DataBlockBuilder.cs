@@ -548,7 +548,7 @@ namespace Blamite.Injection
 
 			long expand = _cacheFile.PointerExpander.Expand(pointer);
 
-			if (size <= 0 || !_cacheFile.MetaArea.ContainsBlockPointer(expand, size)) return;
+			if (size <= 0 || !_cacheFile.MetaArea.ContainsBlockPointer(expand, (uint)size)) return;
 
 			// Read the block and create a fixup for it
 			ReadDataBlock(expand, size, 1, align, false);
@@ -566,7 +566,7 @@ namespace Blamite.Injection
 
 			long expand = _cacheFile.PointerExpander.Expand(pointer);
 
-			if (count <= 0 || !_cacheFile.MetaArea.ContainsBlockPointer(expand, (int) (count*entrySize))) return;
+			if (count <= 0 || !_cacheFile.MetaArea.ContainsBlockPointer(expand, (uint) (count*entrySize))) return;
 
 			var newBlock = ReadDataBlock(expand, (int)entrySize, count, align, sort);
 
@@ -635,7 +635,7 @@ namespace Blamite.Injection
 
 			int length = _dataRefLayout.Size * refCount + (polyart ? refCount * 4 : 0);
 
-			if (!_cacheFile.MetaArea.ContainsBlockPointer(expand, length)) return;
+			if (!_cacheFile.MetaArea.ContainsBlockPointer(expand, (uint)length)) return;
 
 			var newBlock = ReadDataBlock(expand, length, 1, 16, false);
 			for (int i = 0; i < refCount; i++)

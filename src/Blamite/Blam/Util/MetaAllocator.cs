@@ -30,7 +30,7 @@ namespace Blamite.Blam.Util
 		/// <param name="size">The size of the memory block to allocate.</param>
 		/// <param name="stream">The stream to write cache file changes to.</param>
 		/// <returns>The memory address of the allocated area.</returns>
-		public long Allocate(int size, IStream stream)
+		public long Allocate(uint size, IStream stream)
 		{
 			return Allocate(size, 4, stream);
 		}
@@ -42,7 +42,7 @@ namespace Blamite.Blam.Util
 		/// <param name="align">The power of two to align the block to.</param>
 		/// <param name="stream">The stream to write cache file changes to.</param>
 		/// <returns></returns>
-		public long Allocate(int size, uint align, IStream stream)
+		public long Allocate(uint size, uint align, IStream stream)
 		{
 			// Find the smallest block that fits, or if nothing is found, expand the meta area
 			FreeArea block = FindSmallestBlock(size, align);
@@ -80,7 +80,7 @@ namespace Blamite.Blam.Util
 
 			// Add a block at the beginning if we had to align
 			if (alignedAddress > oldAddress)
-				Free(oldAddress, (int) (alignedAddress - oldAddress));
+				Free(oldAddress, (uint) (alignedAddress - oldAddress));
 
 			return alignedAddress;
 		}
@@ -94,7 +94,7 @@ namespace Blamite.Blam.Util
 		/// <param name="newSize">The requested size of the newly-allocated data block. If this is 0, the block will be freed and 0 will be returned.</param>
 		/// <param name="stream">The stream to write cache file changes to.</param>
 		/// <returns>The memory address of the new block, or 0 if the block was freed.</returns>
-		public long Reallocate(long address, int oldSize, int newSize, IStream stream)
+		public long Reallocate(long address, uint oldSize, uint newSize, IStream stream)
 		{
 			return Reallocate(address, oldSize, newSize, 4, stream);
 		}
@@ -109,7 +109,7 @@ namespace Blamite.Blam.Util
 		/// <param name="align">The power of two to align the block to.</param>
 		/// <param name="stream">The stream to write cache file changes to.</param>
 		/// <returns>The memory address of the new block, or 0 if the block was freed.</returns>
-		public long Reallocate(long address, int oldSize, int newSize, uint align, IStream stream)
+		public long Reallocate(long address, uint oldSize, uint newSize, uint align, IStream stream)
 		{
 			if (newSize == oldSize)
 				return address;
@@ -166,12 +166,12 @@ namespace Blamite.Blam.Util
 		/// </summary>
 		/// <param name="address">The starting address of the block to free.</param>
 		/// <param name="size">The size of the block to free.</param>
-		public void Free(long address, int size)
+		public void Free(long address, uint size)
 		{
 			FreeBlock(address, size);
 		}
 
-		private FreeArea FreeBlock(long address, int size)
+		private FreeArea FreeBlock(long address, uint size)
 		{
 			if (size <= 0)
 				throw new ArgumentException("Invalid block size");
@@ -249,7 +249,7 @@ namespace Blamite.Blam.Util
 			return area;
 		}
 
-		private FreeArea FindSmallestBlock(int minSize, uint align)
+		private FreeArea FindSmallestBlock(uint minSize, uint align)
 		{
 			if (minSize <= 0)
 				throw new ArgumentException("Invalid block size");
@@ -271,14 +271,14 @@ namespace Blamite.Blam.Util
 			return null;
 		}
 
-		private FreeArea Expand(int minSize, IStream stream)
+		private FreeArea Expand(uint minSize, IStream stream)
 		{
 			if (minSize <= 0)
 				throw new ArgumentException("Invalid expansion amount");
 
 			// Round the size up to the next multiple of the page size and expand the meta area
-			int roundedSize = (minSize + _pageSize - 1) & ~(_pageSize - 1);
-			int oldSize = _cacheFile.MetaArea.Size;
+			uint roundedSize = (uint)((minSize + _pageSize - 1) & ~(_pageSize - 1));
+			uint oldSize = _cacheFile.MetaArea.Size;
 			_cacheFile.MetaArea.Resize(_cacheFile.MetaArea.Size + roundedSize, stream);
 
 			// Free the newly-allocated area
@@ -323,7 +323,7 @@ namespace Blamite.Blam.Util
 			UnregisterAreaSize(area);
 		}
 
-		private void ResizeArea(FreeArea area, int newSize)
+		private void ResizeArea(FreeArea area, uint newSize)
 		{
 			if (newSize <= 0)
 				throw new ArgumentException("Invalid area size");
@@ -335,7 +335,7 @@ namespace Blamite.Blam.Util
 
 		private void ChangeStartAddress(FreeArea area, long newAddress)
 		{
-			var sizeDelta = (int) (area.Address - newAddress);
+			var sizeDelta = (uint) (area.Address - newAddress);
 			if (area.Size + sizeDelta < 0)
 				throw new ArgumentException("Invalid start address");
 
@@ -360,7 +360,7 @@ namespace Blamite.Blam.Util
 			/// <summary>
 			///     The size of the free area.
 			/// </summary>
-			public int Size { get; set; }
+			public uint Size { get; set; }
 		}
 	}
 }

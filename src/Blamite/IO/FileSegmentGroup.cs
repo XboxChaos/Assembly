@@ -9,7 +9,7 @@ namespace Blamite.IO
 	public class FileSegmentGroup
 	{
 		private readonly IPointerConverter _pointerConverter;
-		private readonly SortedList<int, FileSegment> _segmentsByOffset = new SortedList<int, FileSegment>();
+		private readonly SortedList<uint, FileSegment> _segmentsByOffset = new SortedList<uint, FileSegment>();
 
 		/// <summary>
 		///     Constructs a new FileSegmentGroup where pointers are equivalent to file offsets.
@@ -56,7 +56,7 @@ namespace Blamite.IO
 		/// <summary>
 		///     Gets the offset of the first segment in the group.
 		/// </summary>
-		public int Offset
+		public uint Offset
 		{
 			get
 			{
@@ -69,12 +69,12 @@ namespace Blamite.IO
 		/// <summary>
 		///     Gets the total size of the group.
 		/// </summary>
-		public int Size
+		public uint Size
 		{
 			get
 			{
 				if (Segments.Count > 0)
-					return Segments[Segments.Count - 1].Offset - Segments[0].Offset + Segments[Segments.Count - 1].ActualSize;
+					return (Segments[Segments.Count - 1].Offset - Segments[0].Offset + Segments[Segments.Count - 1].ActualSize);
 				return 0;
 			}
 		}
@@ -99,7 +99,7 @@ namespace Blamite.IO
 		/// <returns>A SegmentPointer pointing to the beginning of the segment.</returns>
 		public SegmentPointer AddSegment(FileSegment segment)
 		{
-			int offset = segment.Offset;
+			uint offset = segment.Offset;
 			if (_segmentsByOffset.ContainsKey(offset))
 				throw new ArgumentException("A segment has already been added at the given offset.");
 
@@ -129,7 +129,7 @@ namespace Blamite.IO
 		/// <param name="pointer">The pointer to the start of the block.</param>
 		/// <param name="size">The size of the block in bytes.</param>
 		/// <returns>true if the block falls completely inside the group.</returns>
-		public bool ContainsBlockPointer(long pointer, int size)
+		public bool ContainsBlockPointer(long pointer, uint size)
 		{
 			if (Segments.Count == 0)
 				return false;
@@ -143,7 +143,7 @@ namespace Blamite.IO
 		/// </summary>
 		/// <param name="pointer">The offset to test.</param>
 		/// <returns>true if the offset falls inside a segment in the group.</returns>
-		public bool ContainsOffset(int offset)
+		public bool ContainsOffset(uint offset)
 		{
 			if (Segments.Count == 0)
 				return false;
@@ -157,12 +157,12 @@ namespace Blamite.IO
 		/// <param name="offset">The file offset of the start of the block.</param>
 		/// <param name="size">The size of the block in bytes.</param>
 		/// <returns>true if the block falls completely inside the group.</returns>
-		public bool ContainsBlockOffset(int offset, int size)
+		public bool ContainsBlockOffset(uint offset, int size)
 		{
 			if (Segments.Count == 0)
 				return false;
 
-			int groupOffset = Offset;
+			uint groupOffset = Offset;
 			return (offset + size >= offset && offset >= groupOffset && offset + size <= groupOffset + Size);
 		}
 
@@ -171,7 +171,7 @@ namespace Blamite.IO
 		/// </summary>
 		/// <param name="offset">The offset to search for.</param>
 		/// <returns>The FileSegment containing the offset if found, or null otherwise.</returns>
-		public FileSegment FindSegmentWithOffset(int offset)
+		public FileSegment FindSegmentWithOffset(uint offset)
 		{
 			// Just do a linear search for now, if this gets slow then it can be converted to binary search or something
 			foreach (FileSegment segment in Segments)
@@ -208,7 +208,7 @@ namespace Blamite.IO
 		/// </summary>
 		/// <param name="pointer">The pointer to convert.</param>
 		/// <returns>The file offset corresponding to the pointer.</returns>
-		public int PointerToOffset(long pointer)
+		public uint PointerToOffset(long pointer)
 		{
 			if (_pointerConverter != null)
 			{
@@ -216,7 +216,7 @@ namespace Blamite.IO
 					return _pointerConverter.PointerToOffset(pointer, Offset);
 				return _pointerConverter.PointerToOffset(pointer);
 			}
-			return (int) pointer;
+			return (uint) pointer;
 		}
 
 		/// <summary>
@@ -224,7 +224,7 @@ namespace Blamite.IO
 		/// </summary>
 		/// <param name="offset">The file offset to convert.</param>
 		/// <returns>The pointer corresponding to the file offset.</returns>
-		public long OffsetToPointer(int offset)
+		public long OffsetToPointer(uint offset)
 		{
 			if (_pointerConverter != null)
 			{
@@ -240,13 +240,13 @@ namespace Blamite.IO
 		/// </summary>
 		/// <param name="newSize">The total amount of space that the resized group should at least occupy.</param>
 		/// <param name="stream">The stream to write changes to.</param>
-		public void Resize(int newSize, IStream stream)
+		public void Resize(uint newSize, IStream stream)
 		{
 			if (Segments.Count == 0)
 				return;
 
 			FileSegment lastSegment = Segments[Segments.Count - 1];
-			int newLastSegmentSize = newSize - (lastSegment.Offset - Offset);
+			uint newLastSegmentSize = newSize - (lastSegment.Offset - Offset);
 			if (newLastSegmentSize <= 0)
 				throw new ArgumentException("Cannot shrink the group enough without deleting the last segment");
 

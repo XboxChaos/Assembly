@@ -148,13 +148,13 @@ namespace Blamite.Blam.ThirdGen.Shaders
 				var data = reader.ReadBlock((int)dataSize);
 
 				// Allocate space for the shader data and write it in
-				var dataAddr = _cacheFile.Allocator.Allocate((int)dataSize, 0x10, stream); // 16-byte aligned
+				var dataAddr = _cacheFile.Allocator.Allocate((uint)dataSize, 0x10, stream); // 16-byte aligned
 				var dataOffset = _cacheFile.MetaArea.PointerToOffset(dataAddr);
 				stream.SeekTo(dataOffset);
 				stream.WriteBlock(data);
 
 				// Allocate and zero space for the info structures
-				var infoSize = infoLayoutSize + (int)debugInfoSize;
+				var infoSize = (uint)infoLayoutSize + debugInfoSize;
 				var infoAddr = _cacheFile.Allocator.Allocate(infoSize, 0x10, stream); // 16-byte aligned too
 				var infoOffset = _cacheFile.MetaArea.PointerToOffset(infoAddr);
 				stream.SeekTo(infoOffset);

@@ -92,9 +92,9 @@ namespace Blamite.Patching
 			foreach (SegmentChange segment in patch.SegmentChanges)
 			{
 				writer.WriteUInt32(segment.OldOffset);
-				writer.WriteInt32(segment.OldSize);
+				writer.WriteUInt32(segment.OldSize);
 				writer.WriteUInt32(segment.NewOffset);
-				writer.WriteInt32(segment.NewSize);
+				writer.WriteUInt32(segment.NewSize);
 				writer.WriteByte(Convert.ToByte(segment.ResizeAtEnd));
 
 				WriteDataChanges(segment.DataChanges, writer);

@@ -183,7 +183,7 @@ namespace Blamite.Blam.Scripting
 
             uint tableAddr = (uint)values.GetInteger("script string table address");
 			long expand = _expander.Expand(tableAddr);
-			int tableOffset = _metaArea.PointerToOffset(expand);
+			uint tableOffset = _metaArea.PointerToOffset(expand);
 
             var result = new CachedStringTable();
             stringReader.ReadRequestedStrings(reader, tableOffset, result);
@@ -206,7 +206,7 @@ namespace Blamite.Blam.Scripting
             int oldScriptCount = (int)scnr.GetInteger("number of scripts");
             uint oldScriptAddress = (uint)scnr.GetInteger("script table address");
             long expOldScriptAddress = _expander.Expand(oldScriptAddress);
-            int oldParamSize = 0;
+            uint oldParamSize = 0;
 
             StructureValueCollection[] oldScripts = TagBlockReader.ReadTagBlock(stream, oldScriptCount, expOldScriptAddress, scrlayout, _metaArea);
 
@@ -226,7 +226,7 @@ namespace Blamite.Blam.Scripting
                 if(addr != 0 && !freedParamAddresses.Contains(addr))
                 {
                     long exp = _expander.Expand(addr);
-                    int blockSize = paramCount * paramlayout.Size;
+                    uint blockSize = (uint)(paramCount * paramlayout.Size);
                     _allocator.Free(exp, blockSize);
                     oldParamSize += blockSize;
                     freedParamAddresses.Add(addr);                  
@@ -234,7 +234,7 @@ namespace Blamite.Blam.Scripting
             }
 
             int newTotalParamCount = 0;
-            int newParamSize = 0;
+            uint newParamSize = 0;
             Dictionary<int, uint> newParamAddresses = new Dictionary<int, uint>();
 
             // loop through new scripts
@@ -247,7 +247,7 @@ namespace Blamite.Blam.Scripting
                     int paramHash = SequenceHash.GetSequenceHashCode(scr.Parameters);
                     if (!newParamAddresses.ContainsKey(paramHash))
                     {
-                        long newAddr = _allocator.Allocate(paramlayout.Size * count, stream);
+                        long newAddr = _allocator.Allocate((uint)(paramlayout.Size * count), stream);
                         uint conNewAddr = _expander.Contract(newAddr);
                         stream.SeekTo(_metaArea.PointerToOffset(newAddr));
                         // write params to stream
@@ -257,7 +257,7 @@ namespace Blamite.Blam.Scripting
                         }
 
                         newParamAddresses.Add(paramHash, conNewAddr);
-                        newParamSize += scr.Parameters.Count * 36;
+                        newParamSize += (uint)scr.Parameters.Count * 36;
                     }
                 }
                 newTotalParamCount += scr.Parameters.Count;
@@ -292,8 +292,8 @@ namespace Blamite.Blam.Scripting
             long expOldScriptAddress = _expander.Expand(oldScriptAddress);
             long newScriptAddress = 0;
 
-            int oldScriptSize = oldScriptCount * scrlayout.Size;
-            int newScriptSize = newScriptCount * scrlayout.Size;
+            uint oldScriptSize = (uint)(oldScriptCount * scrlayout.Size);
+            uint newScriptSize = (uint)(newScriptCount * scrlayout.Size);
 
             // get new Script Address
             if(newScriptCount > 0)
@@ -349,7 +349,7 @@ namespace Blamite.Blam.Scripting
 
         private void WriteStrings(ScriptData data, IStream stream, StructureValueCollection scnr)
         {
-            int oldStringsSize = (int)scnr.GetInteger("script string table size");
+            uint oldStringsSize = (uint)scnr.GetInteger("script string table size");
             uint oldStringAddress = (uint)scnr.GetInteger("script string table address");
             long expOldStringAddress = _expander.Expand(oldStringAddress);
             long newStringsAddress = 0;
@@ -360,11 +360,11 @@ namespace Blamite.Blam.Scripting
                 // allocate space for the string table
                 if (oldStringsSize > 0)
                 {
-                    newStringsAddress = _allocator.Reallocate(expOldStringAddress, oldStringsSize, data.Strings.Size, stream);
+                    newStringsAddress = _allocator.Reallocate(expOldStringAddress, oldStringsSize, (uint)data.Strings.Size, stream);
                 }
                 else
                 {
-                    newStringsAddress = _allocator.Allocate(data.Strings.Size, stream);
+                    newStringsAddress = _allocator.Allocate((uint)data.Strings.Size, stream);
                 }
                 // write strings
                 stream.SeekTo(_metaArea.PointerToOffset(newStringsAddress));
@@ -386,13 +386,13 @@ namespace Blamite.Blam.Scripting
             int oldGlobalCount = (int)scnr.GetInteger("number of script globals");
             uint oldGlobalAddress = (uint)scnr.GetInteger("script global table address");
             long expOldGlobalAddress = _expander.Expand(oldGlobalAddress);
-            int oldGlobalSize = oldGlobalCount * glolayout.Size;
+            uint oldGlobalSize = (uint)(oldGlobalCount * glolayout.Size);
             long newGlobalAddress = 0;
 
             // check if the returned data contains globals
             if (data.Globals.Count > 0)
             {
-                int newGlobalSize = data.Globals.Count * glolayout.Size;
+                uint newGlobalSize = (uint)(data.Globals.Count * glolayout.Size);
 
                 // allocate space for the globals
                 if (oldGlobalCount > 0)
@@ -427,12 +427,12 @@ namespace Blamite.Blam.Scripting
             int newExpCount = data.Expressions.Count;
             uint oldExpressionAddress = (uint)scnr.GetInteger("script expression table address");
             long oldExpandedAddress = _expander.Expand(oldExpressionAddress);
-            int oldExpSize = oldExpCount * expLayout.Size;
+            uint oldExpSize = (uint)(oldExpCount * expLayout.Size);
             long newExpAddress = 0;
 
             if (newExpCount > 0)
             {
-                int newExpSize = (int)(newExpCount * expLayout.Size);
+                uint newExpSize = (uint)(newExpCount * expLayout.Size);
 
                 // allocate space for the expressions
                 if (oldExpCount > 0)
@@ -465,13 +465,13 @@ namespace Blamite.Blam.Scripting
             int oldRefCount = (int)scnr.GetInteger("number of script tag references");
             uint oldRefAddress = (uint)scnr.GetInteger("script tag references table address");
             long expOldRefAddress = _expander.Expand(oldRefAddress);
-            int oldRefSize = oldRefCount * 0x10;
+            uint oldRefSize = (uint)oldRefCount * 0x10;
             long newRefAddress = 0;
 
             //check if the returned data contained tag references
             if (data.TagReferences.Count > 0)
             {
-                int newRefSize = data.TagReferences.Count * 0x10;
+                uint newRefSize = (uint)data.TagReferences.Count * 0x10;
 
                 // allocate space for the references
                 if (oldRefCount > 0)

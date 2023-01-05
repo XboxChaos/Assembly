@@ -173,7 +173,7 @@ namespace Blamite.Blam
 			stream.SeekTo(_metaArea.PointerToOffset(pointer));
 			var pointerData = StructureReader.ReadStructure(stream, pointerLayout);
 
-			var oldSize = (int)pointerData.GetInteger("size");
+			var oldSize = (uint)pointerData.GetInteger("size");
 			var oldAddress = (uint)pointerData.GetInteger("pointer");
 
 			var oldExpand = _expander.Expand(oldAddress);
@@ -184,7 +184,7 @@ namespace Blamite.Blam
 			long newAddress = 0;
 			if (data.Length > 0)
 			{
-				newAddress = _allocator.Allocate(data.Length, 0x10, stream);
+				newAddress = _allocator.Allocate((uint)data.Length, 0x10, stream);
 				stream.SeekTo(_metaArea.PointerToOffset(newAddress));
 				stream.WriteBlock(data);
 			}

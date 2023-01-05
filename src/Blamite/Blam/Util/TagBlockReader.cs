@@ -20,7 +20,7 @@ namespace Blamite.Blam.Util
 				return new StructureValueCollection[0];
 
 			// Convert the address to an offset and seek to it
-			int offset = metaArea.PointerToOffset(address);
+			uint offset = metaArea.PointerToOffset(address);
 			reader.SeekTo(offset);
 
 			// Read the entries

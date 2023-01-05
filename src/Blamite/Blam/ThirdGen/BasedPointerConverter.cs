@@ -14,22 +14,22 @@ namespace Blamite.Blam.ThirdGen
 
 		public long BasePointer { get; set; }
 
-		public int PointerToOffset(long pointer)
+		public uint PointerToOffset(long pointer)
 		{
-			return (int) (pointer - BasePointer + _defaultStartOffset);
+			return (uint) (pointer - BasePointer + _defaultStartOffset);
 		}
 
-		public int PointerToOffset(long pointer, int areaStartOffset)
+		public uint PointerToOffset(long pointer, uint areaStartOffset)
 		{
-			return (int) (pointer - BasePointer + areaStartOffset);
+			return (uint) (pointer - BasePointer + areaStartOffset);
 		}
 
-		public long OffsetToPointer(int offset)
+		public long OffsetToPointer(uint offset)
 		{
 			return (uint) (offset - _defaultStartOffset + BasePointer);
 		}
 
-		public long OffsetToPointer(int offset, int areaStartOffset)
+		public long OffsetToPointer(uint offset, uint areaStartOffset)
 		{
 			return (uint) (offset - areaStartOffset + BasePointer);
 		}

@@ -213,7 +213,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			long newAddress;
 			if (!cache.TryGetAddress(ints, out newAddress))
 			{
-				newAddress = allocator.Allocate(ints.Length*4, stream);
+				newAddress = allocator.Allocate((uint)ints.Length*4, stream);
 				stream.SeekTo(_metaArea.PointerToOffset(newAddress));
 				foreach (int i in ints)
 					stream.WriteInt32(i);
@@ -238,7 +238,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			long expand = expander.Expand(oldAddress);
 
 			if (oldCount > 0 && oldAddress > 0)
-				allocator.Free(expand, oldCount*4);
+				allocator.Free(expand, (uint)oldCount*4);
 		}
 	}
 }

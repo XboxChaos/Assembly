@@ -14,7 +14,7 @@ namespace Blamite.Blam.Util
 			FileSegmentGroup metaArea, IWriter writer, IPointerExpander expander)
 		{
 			long cont = expander.Expand(address);
-			int offset = metaArea.PointerToOffset(address);
+			uint offset = metaArea.PointerToOffset(address);
 			int index = 0;
 			foreach (StructureValueCollection entry in elements)
 			{
@@ -35,7 +35,7 @@ namespace Blamite.Blam.Util
 		public static void WriteTagBlock(IEnumerable<StructureValueCollection> elements, long address, StructureLayout layout,
 			FileSegmentGroup metaArea, IWriter writer)
 		{
-			int offset = metaArea.PointerToOffset(address);
+			uint offset = metaArea.PointerToOffset(address);
 			int index = 0;
 			foreach (StructureValueCollection element in elements)
 			{
@@ -96,7 +96,7 @@ namespace Blamite.Blam.Util
 			{
 				// Free the old block and return
 				if (oldCount > 0 && oldAddress != 0)
-					allocator.Free(oldAddress, oldCount*layout.Size);
+					allocator.Free(oldAddress, (uint)(oldCount*layout.Size));
 				return 0;
 			}
 
@@ -104,8 +104,8 @@ namespace Blamite.Blam.Util
 			if (newCount != oldCount)
 			{
 				// Reallocate the block
-				int oldSize = oldCount*layout.Size;
-				int newSize = newCount*layout.Size;
+				uint oldSize = (uint)(oldCount*layout.Size);
+				uint newSize = (uint)(newCount*layout.Size);
 				if (oldCount > 0 && oldAddress != 0)
 					newAddress = allocator.Reallocate(oldAddress, oldSize, newSize, stream);
 				else

@@ -28,7 +28,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		public long FileSize
 		{
-			get { return (long) _eofSegment.Offset; }
+			get { return _eofSegment.Offset; }
 		}
 
 		public CacheFileType Type { get; private set; }
@@ -175,13 +175,13 @@ namespace Blamite.Blam.ThirdGen.Structures
 				partition.BasePointer = SegmentPointer.FromPointer(MetaArea.BasePointer, MetaArea);
 
 			// Recalculate the size of each partition
-			int partitionEnd = MetaArea.Offset + MetaArea.Size;
+			uint partitionEnd = MetaArea.Offset + MetaArea.Size;
 			for (int i = Partitions.Length - 1; i >= 0; i--)
 			{
 				if (Partitions[i].BasePointer == null)
 					continue;
 
-				int offset = Partitions[i].BasePointer.AsOffset();
+				uint offset = Partitions[i].BasePointer.AsOffset();
 				Partitions[i].Size = (uint) (partitionEnd - offset);
 				partitionEnd = offset;
 			}
@@ -269,8 +269,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		private void Load(StructureValueCollection values, FileSegmenter segmenter)
 		{
-			segmenter.DefineSegment(0, HeaderSize, 1, SegmentResizeOrigin.Beginning); // Define a segment for the header
-			_eofSegment = segmenter.WrapEOF((int) values.GetInteger("file size"));
+			segmenter.DefineSegment(0, (uint)HeaderSize, 1, SegmentResizeOrigin.Beginning); // Define a segment for the header
+			_eofSegment = segmenter.WrapEOF((uint) values.GetInteger("file size"));
 
 			Type = (CacheFileType)values.GetInteger("type");
 
@@ -357,8 +357,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 		{
 			if (ResourcePointerConverter != null)
 			{
-				int rawTableOffset = ResourcePointerConverter.PointerToOffset(ResourcePointerConverter.BasePointer);
-				var rawTableSize = (int) Sections[(int) ThirdGenInteropSectionType.Resource].Size;
+				uint rawTableOffset = ResourcePointerConverter.PointerToOffset(ResourcePointerConverter.BasePointer);
+				var rawTableSize = (uint) Sections[(int) ThirdGenInteropSectionType.Resource].Size;
 				return segmenter.WrapSegment(rawTableOffset, rawTableSize, cacheSegmentAlignment, SegmentResizeOrigin.End);
 			}
 			return null;
@@ -368,8 +368,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 		{
 			if (TagBufferPointerConverter != null)
 			{
-				int tagDataOffset = TagBufferPointerConverter.PointerToOffset(TagBufferPointerConverter.BasePointer);
-				var tagDataSize = (int) values.GetInteger("virtual size");
+				uint tagDataOffset = TagBufferPointerConverter.PointerToOffset(TagBufferPointerConverter.BasePointer);
+				var tagDataSize = (uint) values.GetInteger("virtual size");
 				return segmenter.WrapSegment(tagDataOffset, tagDataSize, 0x10000, SegmentResizeOrigin.Beginning);
 			}
 			return null;
@@ -386,11 +386,11 @@ namespace Blamite.Blam.ThirdGen.Structures
 			StringIDCount = (int) values.GetInteger("string table count");
 			if (StringIDCount > 0)
 			{
-				int sidIndexTableOff = DebugPointerConverter.PointerToOffset((uint)values.GetInteger("string index table offset"));
-				int sidDataOff = DebugPointerConverter.PointerToOffset((uint)values.GetInteger("string table offset"));
+				uint sidIndexTableOff = DebugPointerConverter.PointerToOffset((uint)values.GetInteger("string index table offset"));
+				uint sidDataOff = DebugPointerConverter.PointerToOffset((uint)values.GetInteger("string table offset"));
 
-				var sidTableSize = (int) values.GetInteger("string table size");
-				StringIDIndexTable = segmenter.WrapSegment(sidIndexTableOff, StringIDCount*4, 4, SegmentResizeOrigin.End);
+				uint sidTableSize = (uint) values.GetInteger("string table size");
+				StringIDIndexTable = segmenter.WrapSegment(sidIndexTableOff, (uint)StringIDCount*4, 4, SegmentResizeOrigin.End);
 				StringIDData = segmenter.WrapSegment(sidDataOff, sidTableSize, 1, SegmentResizeOrigin.End);
 
 				StringIDIndexTableLocation = StringArea.AddSegment(StringIDIndexTable);
@@ -399,8 +399,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 				// idk what this is, but H3Beta has it
 				if (values.HasInteger("string block offset"))
 				{
-					int sidBlockOff = DebugPointerConverter.PointerToOffset((uint)values.GetInteger("string block offset"));
-					StringBlock = segmenter.WrapSegment(sidBlockOff, StringIDCount*0x80, 0x80, SegmentResizeOrigin.End);
+					uint sidBlockOff = DebugPointerConverter.PointerToOffset((uint)values.GetInteger("string block offset"));
+					StringBlock = segmenter.WrapSegment(sidBlockOff, (uint)StringIDCount*0x80, 0x80, SegmentResizeOrigin.End);
 					StringBlockLocation = StringArea.AddSegment(StringBlock);
 				}
 
@@ -410,9 +410,9 @@ namespace Blamite.Blam.ThirdGen.Structures
 					StringIDNamespaceCount = (int)values.GetInteger("string namespace table count");
 					if (StringIDNamespaceCount > 0)
 					{
-						int namespaceTableOff = DebugPointerConverter.PointerToOffset((uint)values.GetInteger("string namespace table offset"));
+						uint namespaceTableOff = DebugPointerConverter.PointerToOffset((uint)values.GetInteger("string namespace table offset"));
 
-						StringIDNamespaceTable = segmenter.WrapSegment(namespaceTableOff, StringIDNamespaceCount * 4, 4, SegmentResizeOrigin.End);
+						StringIDNamespaceTable = segmenter.WrapSegment(namespaceTableOff, (uint)StringIDNamespaceCount * 4, 4, SegmentResizeOrigin.End);
 
 						StringIDNamespaceTableLocation = StringArea.AddSegment(StringIDNamespaceTable);
 					}
@@ -424,11 +424,11 @@ namespace Blamite.Blam.ThirdGen.Structures
 			FileNameCount = (int) values.GetInteger("file table count");
 			if (FileNameCount > 0)
 			{
-				int nameIndexTableOff = DebugPointerConverter.PointerToOffset((uint)values.GetInteger("file index table offset"));
-				int nameDataOff = DebugPointerConverter.PointerToOffset((uint)values.GetInteger("file table offset"));
+				uint nameIndexTableOff = DebugPointerConverter.PointerToOffset((uint)values.GetInteger("file index table offset"));
+				uint nameDataOff = DebugPointerConverter.PointerToOffset((uint)values.GetInteger("file table offset"));
 
-				var fileTableSize = (int) values.GetInteger("file table size");
-				FileNameIndexTable = segmenter.WrapSegment(nameIndexTableOff, FileNameCount*4, 4, SegmentResizeOrigin.End);
+				var fileTableSize = (uint) values.GetInteger("file table size");
+				FileNameIndexTable = segmenter.WrapSegment(nameIndexTableOff, (uint)FileNameCount*4, 4, SegmentResizeOrigin.End);
 				FileNameData = segmenter.WrapSegment(nameDataOff, fileTableSize, 1, SegmentResizeOrigin.End);
 
 				FileNameIndexTableLocation = StringArea.AddSegment(FileNameIndexTable);
@@ -441,8 +441,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 				UnknownCount = (int) values.GetInteger("unknown table count");
 				if (UnknownCount > 0)
 				{
-					int unknownOff = DebugPointerConverter.PointerToOffset((uint)values.GetInteger("unknown table offset"));
-					UnknownTable = segmenter.WrapSegment(unknownOff, UnknownCount*0x10, 0x10, SegmentResizeOrigin.End);
+					uint unknownOff = DebugPointerConverter.PointerToOffset((uint)values.GetInteger("unknown table offset"));
+					UnknownTable = segmenter.WrapSegment(unknownOff, (uint)UnknownCount*0x10, 0x10, SegmentResizeOrigin.End);
 					UnknownTableLocation = StringArea.AddSegment(UnknownTable);
 				}
 			}
