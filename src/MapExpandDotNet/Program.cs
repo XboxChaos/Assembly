@@ -94,7 +94,7 @@ namespace MapExpandDotNet
 
 			Console.WriteLine("Injecting empty pages...");
 
-			var injectSize = pageCount * pageSize;
+			uint injectSize = (uint)(pageCount * pageSize);
 			section.Resize(section.Size + injectSize, stream);
 
 			Console.WriteLine("Adjusting the header...");

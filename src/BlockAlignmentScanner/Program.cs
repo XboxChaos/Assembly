@@ -99,7 +99,7 @@ namespace BlockAlignmentScanner
 			}
 		}
 
-		static void DetectAlignment(ICacheFile cacheFile, IReader reader, int baseOffset, XElement baseElement, Dictionary<XElement, int> alignsByElem, HashSet<uint> visitedTagBlocks)
+		static void DetectAlignment(ICacheFile cacheFile, IReader reader, uint baseOffset, XElement baseElement, Dictionary<XElement, int> alignsByElem, HashSet<uint> visitedTagBlocks)
 		{
 			// Loop through all tag blocks and data references
 			foreach (var elem in baseElement.Elements())
@@ -127,7 +127,7 @@ namespace BlockAlignmentScanner
 				var addr = reader.ReadUInt32();
 				if (addr == 0)
 					continue;
-				if (isTagBlock && !cacheFile.MetaArea.ContainsBlockPointer(addr, count * elementSize))
+				if (isTagBlock && !cacheFile.MetaArea.ContainsBlockPointer(addr, (uint)(count * elementSize)))
 					continue;
 
 				// Only update the alignment if it's less than the currently-guessed alignment
@@ -142,7 +142,7 @@ namespace BlockAlignmentScanner
 					visitedTagBlocks.Add(addr);
 					var blockBaseOffset = cacheFile.MetaArea.PointerToOffset(addr);
 					for (var i = 0; i < count; i++)
-						DetectAlignment(cacheFile, reader, blockBaseOffset + i * elementSize, elem, alignsByElem, visitedTagBlocks);
+						DetectAlignment(cacheFile, reader, (uint)(blockBaseOffset + i * elementSize), elem, alignsByElem, visitedTagBlocks);
 				}
 			}
 		}
