@@ -6,28 +6,46 @@
 		<revision author="Lord Zedd" version="2">Standardizing.</revision>
 	</revisions>
 	<tagRef name="Definition" offset="0x0" visible="true" />
-	<tagblock name="Template Identifier" offset="0x10" visible="true" elementSize="0x2">
-		<int16 name="Value" offset="0x0" visible="true" />
+	<tagblock name="Options" offset="0x10" visible="true" elementSize="0x2">
+		<int16 name="Short" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Parameters" offset="0x1C" visible="false" elementSize="0x3C">
-		<stringId name="Parameter Name" offset="0x0" visible="true" />
-		<int32 name="Unknown" offset="0x4" visible="false" />
+	<tagblock name="Parameters" offset="0x1C" visible="true" elementSize="0x3C">
+		<stringid name="Parameter Name" offset="0x0" visible="true" />
+		<enum32 name="Parameter Type" offset="0x4" visible="true">
+			<option name="Bitmap" value="0x0" />
+			<option name="Color" value="0x1" />
+			<option name="Real" value="0x2" />
+			<option name="Int" value="0x3" />
+			<option name="Bool" value="0x4" />
+			<option name="ARGB Color" value="0x5" />
+		</enum32>
 		<tagRef name="Bitmap" offset="0x8" visible="true" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<int32 name="Unknown" offset="0x1C" visible="false" />
-		<int16 name="Unknown" offset="0x20" visible="false" />
-		<int16 name="Unknown" offset="0x22" visible="false" />
-		<int16 name="Unknown" offset="0x24" visible="false" />
-		<int16 name="Unknown" offset="0x26" visible="false" />
-		<int16 name="Unknown" offset="0x28" visible="false" />
-		<int16 name="Unknown" offset="0x2A" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<tagblock name="Functions" offset="0x30" visible="true" elementSize="0x24">
-			<int32 name="Unknown" offset="0x0" visible="false" />
-			<stringid name="Name" offset="0x4" visible="true" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<dataRef name="Function" offset="0x10" visible="true" />
+		<float32 name="Real" offset="0x18" visible="true" />
+		<int32 name="Int/Bool" offset="0x1C" visible="true" />
+		<int16 name="Bitmap Flags" offset="0x20" visible="true" />
+		<int16 name="Bitmap Filter Mode" offset="0x22" visible="true" />
+		<int16 name="Bitmap Comparison Function" offset="0x24" visible="true" />
+		<int16 name="Bitmap Address Mode" offset="0x26" visible="true" />
+		<int16 name="Bitmap Address Mode x" offset="0x28" visible="true" />
+		<int16 name="Bitmap Address Mode y" offset="0x2A" visible="true" />
+		<int16 name="Bitmap Anisotropy Amount" offset="0x2C" visible="true" />
+		<int16 name="Bitmap Extern RTT Mode" offset="0x2E" visible="true" />
+		<tagblock name="Animated Parameters" offset="0x30" visible="true" elementSize="0x24">
+			<enum32 name="Type" offset="0x0" visible="true">
+				<option name="Value" value="0x0" />
+				<option name="Color" value="0x1" />
+				<option name="Scale Uniform" value="0x2" />
+				<option name="Scale x" value="0x3" />
+				<option name="Scale y" value="0x4" />
+				<option name="Translation x" value="0x5" />
+				<option name="Translation y" value="0x6" />
+				<option name="Frame Index" value="0x7" />
+				<option name="Alpha" value="0x8" />
+			</enum32>
+			<stringid name="Input Name" offset="0x4" visible="true" />
+			<stringid name="Range Name" offset="0x8" visible="true" />
+			<float32 name="Time Period" offset="0xC" visible="true" />
+			<dataref name="Animation Function" offset="0x10" visible="true" />
 		</tagblock>
 	</tagblock>
 	<tagblock name="Postprocess" offset="0x28" visible="true" elementSize="0x84">
@@ -42,12 +60,8 @@
 			<uint16 name="Block Index Data" offset="0x16" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
 		</tagblock>
 		<tagblock name="Float Constants" offset="0x1C" visible="true" elementSize="0x10">
-			<comment title="Usage">The application of values depend on the parameter as defined in the template tag.
-For tints a = Red, b = Green, c = Blue</comment>
-			<float32 name="Constant a" offset="0x0" visible="true" />
-			<float32 name="Constant b" offset="0x4" visible="true" />
-			<float32 name="Constant c" offset="0x8" visible="true" />
-			<float32 name="Constant d" offset="0xC" visible="true" />
+			<vector3 name="Constant" offset="0x0" visible="true" tooltip="The application of values depend on the parameter as defined in the template tag." />
+			<float32 name="Constant w" offset="0xC" visible="true" />
 		</tagblock>
 		<tagblock name="Integer Constants" offset="0x28" visible="true" elementSize="0x4">
 			<int32 name="Constant" offset="0x0" visible="true" />
@@ -114,7 +128,7 @@ For tints a = Red, b = Green, c = Blue</comment>
 			<stringid name="Input Name" offset="0x4" visible="true" />
 			<stringid name="Range Name" offset="0x8" visible="true" />
 			<float32 name="Time Period" offset="0xC" visible="true" />
-			<dataRef name="Function" offset="0x10" visible="true" />
+			<dataRef name="Animation Function" offset="0x10" visible="true" />
 		</tagblock>
 		<int32 name="Blend Mode" offset="0x68" visible="true" />
 		<flags32 name="Flags" offset="0x6C" visible="true">
@@ -152,21 +166,19 @@ For tints a = Red, b = Green, c = Blue</comment>
 			<bit name="Bit 31" index="31" />
 		</flags32>
 		<undefined name="Unknown" offset="0x70" visible="false" />
-		<int16 name="Queryable Properties Index 1" offset="0x74" visible="false" />
-		<int16 name="Queryable Properties Index 2" offset="0x76" visible="false" />
-		<int16 name="Queryable Properties Index 3" offset="0x78" visible="false" />
-		<int16 name="Queryable Properties Index 4" offset="0x7A" visible="false" />
-		<int16 name="Queryable Properties Index 5" offset="0x7C" visible="false" />
-		<int16 name="Queryable Properties Index 6" offset="0x7E" visible="false" />
-		<int16 name="Queryable Properties Index 7" offset="0x80" visible="false" />
-		<int16 name="Queryable Properties Index 8" offset="0x82" visible="false" />
+		<int16 name="Queryable Properties Index 1" offset="0x74" visible="true" />
+		<int16 name="Queryable Properties Index 2" offset="0x76" visible="true" />
+		<int16 name="Queryable Properties Index 3" offset="0x78" visible="true" />
+		<int16 name="Queryable Properties Index 4" offset="0x7A" visible="true" />
+		<int16 name="Queryable Properties Index 5" offset="0x7C" visible="true" />
+		<int16 name="Queryable Properties Index 6" offset="0x7E" visible="true" />
+		<int16 name="Queryable Properties Index 7" offset="0x80" visible="true" />
+		<int16 name="Queryable Properties Index 8" offset="0x82" visible="true" />
 	</tagblock>
 	<flags16 name="Shader Flags" offset="0x34" visible="true">
 		<bit name="Don't Fog Me" index="0" />
 		<bit name="Use Custom Setting" index="1" />
 		<bit name="Calculate z Camera" index="2" />
-		<bit name="Never Render For Shields" index="3" />
-		<bit name="Only Render For Shields" index="4" />
 	</flags16>
 	<enum8 name="Sort Layer" offset="0x36" visible="true">
 		<option name="Invalid" value="0x0" />
@@ -174,9 +186,11 @@ For tints a = Red, b = Green, c = Blue</comment>
 		<option name="Normal" value="0x2" />
 		<option name="Post-Pass" value="0x3" />
 	</enum8>
-	<int8 name="Version" offset="0x37" visible="true" />
+	<flags8 name="Runtime Flags" offset="0x37" visible="true">
+		<bit name="Use VS With Misc" index="0" />
+	</flags8>
 	<int32 name="Custom Fog Setting Index" offset="0x38" visible="true" />
-	<int32 name="Prediction B Index" offset="0x3C" visible="true" />
+	<int32 name="Prediction Atom Index" offset="0x3C" visible="true" />
 	<comment title="Foliage Shader" />
-	<stringid name="Material Name" offset="0x40" visible="true" />
+	<stringid name="Global Material Name" offset="0x40" visible="true" />
 </plugin>

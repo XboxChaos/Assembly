@@ -16,8 +16,8 @@
 		<bit name="Can Penetrate Walls (Expensive)" index="5" />
 		<bit name="Cannot Be Restarted" index="6" tooltip="Will help performance for parallel events of different lengths, if the effect is unlikely to be reused" />
 		<bit name="Force Use Own Lightprobe" index="7" tooltip="Do not adopt parent object's lightprobe, even when it's available" />
-		<bit name="(Runtime?) Bit 8" index="8" />
-		<bit name="(Runtime?) Enable Accelerations?" index="9" />
+		<bit name="Heavy Performance" index="8" tooltip="This effect loads hardware very much and can be turned off for peformance reasons" />
+		<bit name="Half Resolution" index="9" tooltip="This effect is candidate for half resolution render" />
 		<bit name="(Runtime?) Dark Casings?" index="10" />
 		<bit name="(Runtime?) Bit 11" index="11" />
 		<bit name="(Runtime?) Bit 12" index="12" />
@@ -45,21 +45,16 @@
 	<float32 name="Restart If Within" offset="0x8" visible="true" />
 	<float32 name="Continue If Within" offset="0xC" visible="true" />
 	<float32 name="Death Delay" offset="0x10" visible="true" />
-	<int8 name="Unknown" offset="0x14" visible="true" />
-	<int8 name="Unknown" offset="0x15" visible="true" />
-	<int8 name="Unknown" offset="0x16" visible="true" />
-	<int8 name="Unknown" offset="0x17" visible="true" />
-	<int16 name="Loop Start Event" offset="0x18" visible="true" />
-	<enum8 name="Priority" offset="0x1A" visible="true">
-		<option name="Low" value="0x0" />
-		<option name="Normal" value="0x1" />
-		<option name="Above Normal" value="0x2" />
-		<option name="High" value="0x3" />
-		<option name="Very High" value="0x4" />
-		<option name="Essential" value="0x5" />
+	<enum8 name="Priority" offset="0x14" visible="true">
+		<option name="Normal" value="0x0" />
+		<option name="High" value="0x1" />
+		<option name="Essential" value="0x2" />
 	</enum8>
-	<int8 name="Unknown" offset="0x1B" visible="false" />
-	<undefined name="Unknown" offset="0x1C" visible="true" />
+	<int8 name="Unknown" offset="0x15" visible="false" />
+	<int16 name="Unknown" offset="0x16" visible="false" />
+	<int16 name="Loop Start Event index" offset="0x18" visible="true" />
+	<int16 name="Local Location 0" offset="0x1A" visible="true" />
+	<float32 name="Danger Radius" offset="0x1C" visible="true" />
 	<tagblock name="Locations" offset="0x20" visible="true" elementSize="0xC">
 		<comment title="MARKER NAMES">In addition to the marker in the render model there are several special marker names:
 
@@ -90,117 +85,55 @@ The location of a havok impact.
 water_surface
 Point of the effect projected to the water surface above it. Otherwise it just returns the effect position.
 
+structure_surface
+Use this for effects that might be going off underneath soft surface that you want to be on the surface
+
 child
-The location of the last detonated projectile, in case the parent object is a weapon (tracers only)</comment>
+The location of the last detonated projectile, in case the parent object is a weapon (beams only)</comment>
 		<stringId name="Marker Name" offset="0x0" visible="true" />
 		<flags32 name="Flags" offset="0x4" visible="true">
 			<bit name="Optional (no error if not found)" index="0" />
 			<bit name="Destructible (no error if goes away)" index="1" />
 			<bit name="Track Sub-Frame Movements" index="2" tooltip="When effect moves multiple times within one frame, update location each time" />
-			<bit name="Never Stagger Across Markers" index="3" tooltip="Even if this effect is told to stagger across available markers, always fire from all instances" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
 		</flags32>
 		<enum8 name="Priority" offset="0x8" visible="true">
-			<option name="Low" value="0x0" />
-			<option name="Normal" value="0x1" />
-			<option name="Above Normal" value="0x2" />
-			<option name="High" value="0x3" />
-			<option name="Very High" value="0x4" />
-			<option name="Essential" value="0x5" />
+			<option name="Normal" value="0x0" />
+			<option name="High" value="0x1" />
+			<option name="Essential" value="0x2" />
 		</enum8>
 		<int8 name="Unknown" offset="0x9" visible="false" />
 		<int16 name="Unknown" offset="0xA" visible="false" />
 	</tagblock>
 	<tagblock name="Events" offset="0x2C" visible="true" elementSize="0x44">
-		<stringId name="Name" offset="0x0" visible="true" />
+		<stringId name="Event Name" offset="0x0" visible="true" />
 		<flags32 name="Flags" offset="0x4" visible="true">
 			<bit name="Disabled for Debugging" index="0" />
 			<bit name="Particles Die When Effect Ends" index="1" />
-			<bit name="Loop Event Age Duration Override" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
 		</flags32>
 		<enum8 name="Priority" offset="0x8" visible="true">
-			<option name="Low" value="0x0" />
-			<option name="Normal" value="0x1" />
-			<option name="Above Normal" value="0x2" />
-			<option name="High" value="0x3" />
-			<option name="Very High" value="0x4" />
-			<option name="Essential" value="0x5" />
+			<option name="Normal" value="0x0" />
+			<option name="High" value="0x1" />
+			<option name="Essential" value="0x2" />
 		</enum8>
 		<int8 name="Unknown" offset="0x9" visible="false" />
 		<int16 name="Unknown" offset="0xA" visible="false" />
-		<float32 name="Skip Fraction" offset="0xC" visible="true" />
-		<rangef name="Delay Bounds" offset="0x10" visible="true" />
-		<rangef name="Duration Bounds" offset="0x18" visible="true" />
+		<float32 name="Skip Fraction" offset="0xC" visible="true" tooltip="chance that this event will be skipped entirely" />
+		<rangef name="Delay Bounds" offset="0x10" visible="true" tooltip="delay before this event takes place" />
+		<rangef name="Duration Bounds" offset="0x18" visible="true" tooltip="duration of this event" />
 		<tagblock name="Parts" offset="0x20" visible="true" elementSize="0x60">
-			<enum16 name="Create In Environment" offset="0x0" visible="true">
+			<enum16 name="Create In" offset="0x0" visible="true">
 				<option name="Any Environment" value="0x0" />
 				<option name="Air Only" value="0x1" />
 				<option name="Water Only" value="0x2" />
 				<option name="Space Only" value="0x3" />
 			</enum16>
-			<enum16 name="Create In Disposition" offset="0x2" visible="true">
+			<enum16 name="Violence Mode" offset="0x2" visible="true">
 				<option name="Either Mode" value="0x0" />
 				<option name="Violent Mode Only" value="0x1" />
 				<option name="Nonviolent Mode Only" value="0x2" />
 			</enum16>
 			<int16 name="Location Index" offset="0x4" visible="true" />
-			<int16 name="Secondary Location (beams)" offset="0x6" visible="true" />
+			<int16 name="Secondary Location (Beams) Index" offset="0x6" visible="true" />
 			<flags16 name="Flags" offset="0x8" visible="true">
 				<bit name="Face Down Regardless of Location (decals)" index="0" />
 				<bit name="Offset Origin Away From Geometry (lights)" index="1" />
@@ -210,21 +143,16 @@ The location of the last detonated projectile, in case the parent object is a we
 				<bit name="Make Every Tick" index="5" />
 				<bit name="Inherit Parent Variant" index="6" />
 				<bit name="Batch AOE Damage" index="7" />
-				<bit name="Create Even When Event Loops Back to Self" index="8" />
-				<bit name="Face Up Regardless of Location (replace_up)" index="9" />
 			</flags16>
 			<enum8 name="Priority" offset="0xA" visible="true">
-				<option name="Low" value="0x0" />
-				<option name="Normal" value="0x1" />
-				<option name="Above Normal" value="0x2" />
-				<option name="High" value="0x3" />
-				<option name="Very High" value="0x4" />
-				<option name="Essential" value="0x5" />
+				<option name="Normal" value="0x0" />
+				<option name="High" value="0x1" />
+				<option name="Essential" value="0x2" />
 			</enum8>
-			<enum8 name="Camera Mode" offset="0xB" visible="true">
+			<enum8 name="Camera Mode" offset="0xB" visible="true" tooltip="Currently, the only supported use is to turn parts off in first-person view.">
 				<option name="Independent Of Camera Mode" value="0x0" />
-				<option name="First Person Only" value="0x1" />
-				<option name="Third Person Only" value="0x2" />
+				<option name="Only In First Person" value="0x1" />
+				<option name="Only In Third Person" value="0x2" />
 				<option name="Both First And Third" value="0x3" />
 			</enum8>
 			<enum32 name="Runtime Base Group Tag" offset="0xC" visible="true" tooltip="This should be set to match the below &quot;Type&quot; tag reference, any object should use &quot;object&quot;.">
@@ -243,13 +171,14 @@ The location of the last detonated projectile, in case the parent object is a we
 				<option name="snd! - sound" value="0x736E6421" />
 			</enum32>
 			<tagRef name="Type" offset="0x10" visible="true" tooltip="The above &quot;Runtime Base Group Tag&quot; field should match this reference." />
-			<rangef name="Velocity Bounds" offset="0x20" visible="true" />
-			<degree2 name="Velocity Orientation" offset="0x28" visible="true" tooltip="NOT USED!" />
-			<degree name="Velocity Cone Angle" offset="0x30" visible="true" />
+			<rangef name="Velocity Bounds" offset="0x20" visible="true" tooltip="initial velocity along the location's forward, for decals the distance at which decal is created (defaults to 0.5)" />
+			<degree2 name="Velocity Orientation" offset="0x28" visible="true" />
+			<degree name="Velocity Cone Angle" offset="0x30" visible="true" tooltip="initial velocity will be inside the cone defined by this angle." />
 			<ranged name="Angular Velocity Bounds" offset="0x34" visible="true" />
 			<rangef name="Radius Modifier Bounds" offset="0x3C" visible="true" />
-			<point3 name="Origin Offset" offset="0x44" visible="true" />
-			<vector2 name="Origin Rotation" offset="0x50" visible="true" />
+			<point3 name="Relative Offset" offset="0x44" visible="true" />
+			<degree2 name="Relative Orientation" offset="0x50" visible="true" />
+			<comment title="SCALE MODIFIERS" />
 			<flags32 name="A Scales Values" offset="0x58" visible="true">
 				<bit name="Velocity" index="0" />
 				<bit name="Velocity Delta" index="1" />
@@ -268,13 +197,13 @@ The location of the last detonated projectile, in case the parent object is a we
 			</flags32>
 		</tagblock>
 		<tagblock name="Accelerations" offset="0x2C" visible="true" elementSize="0x14">
-			<enum16 name="Create In Environment" offset="0x0" visible="true">
+			<enum16 name="Create In" offset="0x0" visible="true">
 				<option name="Any Environment" value="0x0" />
 				<option name="Air Only" value="0x1" />
 				<option name="Water Only" value="0x2" />
 				<option name="Space Only" value="0x3" />
 			</enum16>
-			<enum16 name="Create In Disposition" offset="0x2" visible="true">
+			<enum16 name="Violence Mode" offset="0x2" visible="true">
 				<option name="Either Mode" value="0x0" />
 				<option name="Violent Mode Only" value="0x1" />
 				<option name="Nonviolent Mode Only" value="0x2" />
@@ -287,22 +216,17 @@ The location of the last detonated projectile, in case the parent object is a we
 		</tagblock>
 		<tagblock name="Particle Systems" offset="0x38" visible="true" elementSize="0x5C">
 			<enum8 name="Priority" offset="0x0" visible="true">
-				<option name="Low" value="0x0" />
-				<option name="Normal" value="0x1" />
-				<option name="Above Normal" value="0x2" />
-				<option name="High" value="0x3" />
-				<option name="Very High" value="0x4" />
-				<option name="Essential" value="0x5" />
+				<option name="Normal" value="0x0" />
+				<option name="High" value="0x1" />
+				<option name="Essential" value="0x2" />
 			</enum8>
 			<int8 name="Unknown" offset="0x1" visible="false" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagRef name="Particle" offset="0x4" visible="true" />
-			<int16 name="Unknown" offset="0x14" visible="false" />
-			<int16 name="Location Index" offset="0x16" visible="true" />
+			<int32 name="Location index" offset="0x14" visible="true" />
 			<enum16 name="Coordinate System" offset="0x18" visible="true">
 				<option name="World" value="0x0" />
 				<option name="Local" value="0x1" />
-				<option name="Parent" value="0x2" />
 			</enum16>
 			<enum16 name="Environment" offset="0x1A" visible="true">
 				<option name="Any Environment" value="0x0" />
@@ -315,44 +239,56 @@ The location of the last detonated projectile, in case the parent object is a we
 				<option name="Violent Mode Only" value="0x1" />
 				<option name="Nonviolent Mode Only" value="0x2" />
 			</enum16>
-			<enum16 name="Camera Mode" offset="0x1E" visible="true">
+			<enum16 name="Camera Mode" offset="0x1E" visible="true" tooltip="Currently, the only supported use is to turn parts off in first-person view.">
 				<option name="Independent Of Camera Mode" value="0x0" />
-				<option name="First Person Only" value="0x1" />
-				<option name="Third Person Only" value="0x2" />
+				<option name="Only In First Person" value="0x1" />
+				<option name="Only In Third Person" value="0x2" />
 				<option name="Both First And Third" value="0x3" />
 			</enum16>
-			<int16 name="Sort Bias" offset="0x20" visible="true" />
+			<int16 name="Sort Bias" offset="0x20" visible="true" tooltip="use values between -10 and 10 to move closer and farther from camera (positive is closer)" />
 			<flags16 name="Flags" offset="0x22" visible="true">
 				<bit name="Particles Freeze When Offscreen" index="0" />
 				<bit name="Particles Continue As Usual When Offscreen" index="1" />
-				<bit name="Lod Always 1.0" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
+				<bit name="LOD Always 1.0" index="2" />
+				<bit name="LOD Same In Splitscreen" index="3" />
+				<bit name="Disabled In 3- And 4-Way Splitscreen" index="4" />
 				<bit name="Disabled For Debugging" index="5" />
 				<bit name="Inherit Effect Velocity" index="6" />
 				<bit name="Don't Render System" index="7" />
 				<bit name="Render When Zoomed" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
+				<bit name="Force CPU Updating" index="9" />
+				<bit name="Force GPU Updating" index="10" />
+				<bit name="Override Near Fade (Use With Caution)" index="11" />
+				<bit name="Particles Die When Effect Ends" index="12" />
+				<bit name="GPU Occlusion (Weather Only)" index="13" />
 			</flags16>
+			<comment title="Estimate Overdraw Threshold" />
 			<float32 name="Pixel Budget" offset="0x24" visible="true" />
 			<float32 name="Near Fade Range" offset="0x28" visible="true" tooltip="distance beyond cutoff over which particles fade" />
-			<float32 name="Near Fade Cuttoff" offset="0x2C" visible="true" tooltip="distance in front of camera where fade is complete*" />
+			<float32 name="Near Fade Cutoff" offset="0x2C" visible="true" tooltip="distance in front of camera where fade is complete" />
 			<float32 name="Near Fade Override" offset="0x30" visible="true" tooltip="distance in front of camera where fade is complete" />
-			<float32 name="LOD In Distance" offset="0x34" visible="true" />
-			<float32 name="LOD Feather In Delta" offset="0x38" visible="true" tooltip="minimum is 0.0001" />
+			<float32 name="LOD In Distance" offset="0x34" visible="true" tooltip="defaults to 0.0" />
+			<float32 name="LOD Feather In Delta" offset="0x38" visible="true" tooltip="defaults to 0.0" />
 			<float32 name="Inverse LOD Feather In" offset="0x3C" visible="true" />
-			<float32 name="LOD Out Distance" offset="0x40" visible="true" tooltip="defaults to 20.0" />
-			<float32 name="LOD Feather Out Delta" offset="0x44" visible="true" tooltip="0 defaults to 5.0, minimum is 0.0001" />
+			<float32 name="LOD Out Distance" offset="0x40" visible="true" tooltip="defaults to 30.0" />
+			<float32 name="LOD Feather Out Delta" offset="0x44" visible="true" tooltip="defaults to 10.0" />
 			<float32 name="Inverse LOD Feather Out" offset="0x48" visible="true" />
 			<tagblock name="Emitters" offset="0x4C" visible="true" elementSize="0x2F0">
 				<stringid name="Emitter Name" offset="0x0" visible="true" />
-				<flags16 name="Flags" offset="0x4" visible="true">
+				<enum8 name="Emission Shape" offset="0x4" visible="true">
+					<option name="Sprayer" value="0x0" />
+					<option name="Disc" value="0x1" />
+					<option name="Globe" value="0x2" />
+					<option name="Implode" value="0x3" />
+					<option name="Tube" value="0x4" />
+					<option name="Halo" value="0x5" />
+					<option name="Impact Contour" value="0x6" />
+					<option name="Impact Area" value="0x7" />
+					<option name="Debris" value="0x8" />
+					<option name="Line" value="0x9" />
+					<option name="Breakable Surface" value="0xA" />
+				</enum8>
+				<flags8 name="Flags" offset="0x5" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -361,34 +297,20 @@ The location of the last detonated projectile, in case the parent object is a we
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-					<bit name="Bit 16" index="16" />
-					<bit name="Bit 17" index="17" />
-					<bit name="Bit 18" index="18" />
-					<bit name="Bit 19" index="19" />
-					<bit name="Bit 20" index="20" />
-					<bit name="Bit 21" index="21" />
-					<bit name="Bit 22" index="22" />
-					<bit name="Bit 23" index="23" />
-					<bit name="Bit 24" index="24" />
-					<bit name="Bit 25" index="25" />
-					<bit name="Bit 26" index="26" />
-					<bit name="Bit 27" index="27" />
-					<bit name="Bit 28" index="28" />
-					<bit name="Bit 29" index="29" />
-					<bit name="Bit 30" index="30" />
-					<bit name="Bit 31" index="31" />
-				</flags16>
-				<int16 name="Unknown" offset="0x6" visible="false" />
-				<float32 name="Bounding Radius Estimate" offset="0x8" visible="true" />
-				<float32 name="Bounding Radius Override" offset="0xC" visible="true" />
+				</flags8>
+				<enum8 name="Particle Axis (For Models)" offset="0x6" visible="true">
+					<option name="Constant" value="0x0" />
+					<option name="Cone" value="0x1" />
+					<option name="Disc" value="0x2" />
+					<option name="Globe" value="0x3" />
+				</enum8>
+				<enum8 name="Particle Reference Axis" offset="0x7" visible="true">
+					<option name="x" value="0x0" />
+					<option name="y" value="0x1" />
+					<option name="z" value="0x2" />
+				</enum8>
+				<float32 name="Bounding Radius Estimate" offset="0x8" visible="true" tooltip="used if override is zero" />
+				<float32 name="Bounding Radius Override" offset="0xC" visible="true" tooltip="used if non-zero" />
 				<vector2 name="UV Scrolling" offset="0x10" visible="true" />
 				<comment title="Translational Offset (World Units)">XYZ controls that offset the emitter's origin from the original location</comment>
 				<enum8 name="Input Variable" offset="0x18" visible="true">
@@ -403,17 +325,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Range Variable" offset="0x19" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -427,17 +348,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Output Modifier" offset="0x1A" visible="true">
 					<option name="None" value="0x0" />
@@ -456,21 +376,20 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
-				<dataRef name="Mapping" offset="0x1C" visible="true" />
+				<dataRef name="Function" offset="0x1C" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x30" visible="true" />
-				<flags16 name="Runtime m Flags" offset="0x34" visible="true">
+				<flags8 name="Runtime m Flags" offset="0x34" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -479,15 +398,8 @@ The location of the last detonated projectile, in case the parent object is a we
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-				</flags16>
+				</flags8>
+				<int8 name="Unknown" offset="0x35" visible="false" />
 				<int16 name="Unknown" offset="0x36" visible="false" />
 				<point3 name="Starting Interpolant" offset="0x38" visible="true" />
 				<point3 name="Ending Interpolant" offset="0x44" visible="true" />
@@ -504,17 +416,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Range Variable" offset="0x51" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -528,17 +439,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Output Modifier" offset="0x52" visible="true">
 					<option name="None" value="0x0" />
@@ -557,21 +467,20 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
-				<dataRef name="Mapping" offset="0x54" visible="true" />
+				<dataRef name="Function" offset="0x54" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x68" visible="true" />
-				<flags16 name="Runtime m Flags" offset="0x6C" visible="true">
+				<flags8 name="Runtime m Flags" offset="0x6C" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -580,18 +489,15 @@ The location of the last detonated projectile, in case the parent object is a we
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-				</flags16>
+				</flags8>
+				<int8 name="Unknown" offset="0x6D" visible="false" />
 				<int16 name="Unknown" offset="0x6E" visible="false" />
-				<vector3 name="Direction At 0" offset="0x70" visible="true" />
-				<vector3 name="Direction At 1" offset="0x7C" visible="true" />
+				<comment title="Starting Interpolant" />
+				<float32 name="Radius" offset="0x70" visible="true" />
+				<degree2 name="Euler Angles" offset="0x74" visible="true" />
+				<comment title="Ending Interpolant" />
+				<float32 name="Radius" offset="0x7C" visible="true" />
+				<degree2 name="Euler Angles" offset="0x80" visible="true" />
 				<comment title="Emission Radius (World Units)">defines the size of the emitter</comment>
 				<enum8 name="Input Variable" offset="0x88" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -605,17 +511,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Range Variable" offset="0x89" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -629,17 +534,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Output Modifier" offset="0x8A" visible="true">
 					<option name="None" value="0x0" />
@@ -658,21 +562,20 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
-				<dataRef name="Mapping" offset="0x8C" visible="true" />
+				<dataRef name="Function" offset="0x8C" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0xA0" visible="true" />
-				<flags16 name="Runtime m Flags" offset="0xA4" visible="true">
+				<flags8 name="Runtime m Flags" offset="0xA4" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -681,19 +584,9 @@ The location of the last detonated projectile, in case the parent object is a we
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-				</flags16>
-				<flags8 name="Force Flags" offset="0xA6" visible="true">
-					<bit name="Force Constant" index="0" />
 				</flags8>
-				<int8 name="Unknown" offset="0xA7" visible="false" />
+				<int8 name="Unknown" offset="0xA5" visible="false" />
+				<int16 name="Unknown" offset="0xA6" visible="false" />
 				<comment title="Emission Angle (Degrees)">determines the angle at which particles are emitted</comment>
 				<enum8 name="Input Variable" offset="0xA8" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -707,17 +600,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Range Variable" offset="0xA9" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -731,17 +623,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Output Modifier" offset="0xAA" visible="true">
 					<option name="None" value="0x0" />
@@ -760,21 +651,20 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
-				<dataRef name="Mapping" offset="0xAC" visible="true" />
+				<dataRef name="Function" offset="0xAC" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0xC0" visible="true" />
-				<flags16 name="Runtime m Flags" offset="0xC4" visible="true">
+				<flags8 name="Runtime m Flags" offset="0xC4" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -783,19 +673,9 @@ The location of the last detonated projectile, in case the parent object is a we
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-				</flags16>
-				<flags8 name="Force Flags" offset="0xC6" visible="true">
-					<bit name="Force Constant" index="0" />
 				</flags8>
-				<int8 name="Unknown" offset="0xC7" visible="false" />
+				<int8 name="Unknown" offset="0xC5" visible="false" />
+				<int16 name="Unknown" offset="0xC6" visible="false" />
 				<comment title="Emission Axis Angle (Degrees)">determines the max tilt for particle axis</comment>
 				<enum8 name="Input Variable" offset="0xC8" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -809,17 +689,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Range Variable" offset="0xC9" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -833,17 +712,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Output Modifier" offset="0xCA" visible="true">
 					<option name="None" value="0x0" />
@@ -862,21 +740,20 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
-				<dataRef name="Mapping" offset="0xCC" visible="true" />
+				<dataRef name="Function" offset="0xCC" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0xE0" visible="true" />
-				<flags16 name="Runtime m Flags" offset="0xE4" visible="true">
+				<flags8 name="Runtime m Flags" offset="0xE4" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -885,19 +762,9 @@ The location of the last detonated projectile, in case the parent object is a we
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-				</flags16>
-				<flags8 name="Force Flags" offset="0xE6" visible="true">
-					<bit name="Force Constant" index="0" />
 				</flags8>
-				<int8 name="Unknown" offset="0xE7" visible="false" />
+				<int8 name="Unknown" offset="0xE5" visible="false" />
+				<int16 name="Unknown" offset="0xE6" visible="false" />
 				<comment title="Particle Starting Count">number of particles that are spawned at the birth of the effect</comment>
 				<enum8 name="Input Variable" offset="0xE8" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -911,17 +778,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Range Variable" offset="0xE9" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -935,17 +801,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Output Modifier" offset="0xEA" visible="true">
 					<option name="None" value="0x0" />
@@ -964,21 +829,20 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
-				<dataRef name="Mapping" offset="0xEC" visible="true" />
+				<dataRef name="Function" offset="0xEC" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x100" visible="true" />
-				<flags16 name="Runtime m Flags" offset="0x104" visible="true">
+				<flags8 name="Runtime m Flags" offset="0x104" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -987,19 +851,9 @@ The location of the last detonated projectile, in case the parent object is a we
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-				</flags16>
-				<flags8 name="Force Flags" offset="0x106" visible="true">
-					<bit name="Force Constant" index="0" />
 				</flags8>
-				<int8 name="Unknown" offset="0x107" visible="false" />
+				<int8 name="Unknown" offset="0x105" visible="false" />
+				<int16 name="Unknown" offset="0x106" visible="false" />
 				<comment title="Particle Maximum Count (0=unlimited)">max number of particles allowed to exist at one time</comment>
 				<enum8 name="Input Variable" offset="0x108" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -1013,17 +867,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Range Variable" offset="0x109" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -1037,17 +890,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Output Modifier" offset="0x10A" visible="true">
 					<option name="None" value="0x0" />
@@ -1066,21 +918,20 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
-				<dataRef name="Mapping" offset="0x10C" visible="true" />
+				<dataRef name="Function" offset="0x10C" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x120" visible="true" />
-				<flags16 name="Runtime m Flags" offset="0x124" visible="true">
+				<flags8 name="Runtime m Flags" offset="0x124" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -1089,19 +940,9 @@ The location of the last detonated projectile, in case the parent object is a we
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-				</flags16>
-				<flags8 name="Force Flags" offset="0x126" visible="true">
-					<bit name="Force Constant" index="0" />
 				</flags8>
-				<int8 name="Unknown" offset="0x127" visible="false" />
+				<int8 name="Unknown" offset="0x125" visible="false" />
+				<int16 name="Unknown" offset="0x126" visible="false" />
 				<comment title="Particle Emission Rate (Particles Per Second)">number of particles that are spawned every second from the emitters</comment>
 				<enum8 name="Input Variable" offset="0x128" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -1115,17 +956,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Range Variable" offset="0x129" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -1139,17 +979,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Output Modifier" offset="0x12A" visible="true">
 					<option name="None" value="0x0" />
@@ -1168,21 +1007,20 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
-				<dataRef name="Mapping" offset="0x12C" visible="true" />
+				<dataRef name="Function" offset="0x12C" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x140" visible="true" />
-				<flags16 name="Runtime m Flags" offset="0x144" visible="true">
+				<flags8 name="Runtime m Flags" offset="0x144" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -1191,19 +1029,9 @@ The location of the last detonated projectile, in case the parent object is a we
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-				</flags16>
-				<flags8 name="Force Flags" offset="0x146" visible="true">
-					<bit name="Force Constant" index="0" />
 				</flags8>
-				<int8 name="Unknown" offset="0x147" visible="false" />
+				<int8 name="Unknown" offset="0x145" visible="false" />
+				<int16 name="Unknown" offset="0x146" visible="false" />
 				<comment title="Particle Lifespan (Seconds)">the number of seconds a particle will live after emission</comment>
 				<enum8 name="Input Variable" offset="0x148" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -1217,17 +1045,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Range Variable" offset="0x149" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -1241,17 +1068,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Output Modifier" offset="0x14A" visible="true">
 					<option name="None" value="0x0" />
@@ -1270,21 +1096,20 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
-				<dataRef name="Mapping" offset="0x14C" visible="true" />
+				<dataRef name="Function" offset="0x14C" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x160" visible="true" />
-				<flags16 name="Runtime m Flags" offset="0x164" visible="true">
+				<flags8 name="Runtime m Flags" offset="0x164" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -1293,27 +1118,29 @@ The location of the last detonated projectile, in case the parent object is a we
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-				</flags16>
-				<flags8 name="Force Flags" offset="0x166" visible="true">
-					<bit name="Force Constant" index="0" />
 				</flags8>
-				<int8 name="Unknown" offset="0x167" visible="false" />
+				<int8 name="Unknown" offset="0x165" visible="false" />
+				<int16 name="Unknown" offset="0x166" visible="false" />
 				<comment title="Particle Movement" />
 				<tagRef name="Template" offset="0x168" visible="true" />
-				<int8 name="Unknown" offset="0x178" visible="true" />
-				<int8 name="Unknown" offset="0x179" visible="true" />
-				<int8 name="Unknown" offset="0x17A" visible="true" />
-				<int8 name="Unknown" offset="0x17B" visible="true" />
+				<flags32 name="Flags" offset="0x178" visible="true">
+					<bit name="Physics" index="0" />
+					<bit name="Collide With Structure" index="1" />
+					<bit name="Collide With Media" index="2" />
+					<bit name="Collide With Scenery" index="3" />
+					<bit name="Collide With Vehicles" index="4" />
+					<bit name="Collide With Bipeds" index="5" />
+					<bit name="Swarm" index="6" />
+					<bit name="Wind" index="7" />
+				</flags32>
 				<tagblock name="Movements" offset="0x17C" visible="true" elementSize="0x18">
-					<undefined name="Unknown" offset="0x0" visible="true" />
+					<enum16 name="Type" offset="0x0" visible="true">
+						<option name="Physics" value="0x0" />
+						<option name="Collider" value="0x1" />
+						<option name="Swarm" value="0x2" />
+						<option name="Wind" value="0x3" />
+					</enum16>
+					<int16 name="Unknown" offset="0x2" visible="false" />
 					<tagblock name="Parameters" offset="0x4" visible="true" elementSize="0x24">
 						<int32 name="Parameter ID" offset="0x0" visible="true" />
 						<enum8 name="Input Variable" offset="0x4" visible="true">
@@ -1328,17 +1155,16 @@ The location of the last detonated projectile, in case the parent object is a we
 							<option name="System Correlation 1" value="0x8" />
 							<option name="System Correlation 2" value="0x9" />
 							<option name="Particle Emission Time" value="0xA" />
-							<option name="Location Lod" value="0xB" />
+							<option name="Location LOD" value="0xB" />
 							<option name="Game Time" value="0xC" />
 							<option name="Effect A Scale" value="0xD" />
 							<option name="Effect B Scale" value="0xE" />
 							<option name="Particle Rotation" value="0xF" />
 							<option name="Location Random" value="0x10" />
 							<option name="Distance From Emitter" value="0x11" />
-							<option name="Particle Simulation A" value="0x12" />
-							<option name="Particle Simulation B" value="0x13" />
-							<option name="Particle Velocity" value="0x14" />
-							<option name="Invalid State --- Please Set Again" value="0x15" />
+							<option name="Explosion Animation" value="0x12" />
+							<option name="Explosion Rotation" value="0x13" />
+							<option name="Invalid State --- Please Set Again" value="0x14" />
 						</enum8>
 						<enum8 name="Range Variable" offset="0x5" visible="true">
 							<option name="Particle Age" value="0x0" />
@@ -1352,17 +1178,16 @@ The location of the last detonated projectile, in case the parent object is a we
 							<option name="System Correlation 1" value="0x8" />
 							<option name="System Correlation 2" value="0x9" />
 							<option name="Particle Emission Time" value="0xA" />
-							<option name="Location Lod" value="0xB" />
+							<option name="Location LOD" value="0xB" />
 							<option name="Game Time" value="0xC" />
 							<option name="Effect A Scale" value="0xD" />
 							<option name="Effect B Scale" value="0xE" />
 							<option name="Particle Rotation" value="0xF" />
 							<option name="Location Random" value="0x10" />
 							<option name="Distance From Emitter" value="0x11" />
-							<option name="Particle Simulation A" value="0x12" />
-							<option name="Particle Simulation B" value="0x13" />
-							<option name="Particle Velocity" value="0x14" />
-							<option name="Invalid State --- Please Set Again" value="0x15" />
+							<option name="Explosion Animation" value="0x12" />
+							<option name="Explosion Rotation" value="0x13" />
+							<option name="Invalid State --- Please Set Again" value="0x14" />
 						</enum8>
 						<enum8 name="Output Modifier" offset="0x6" visible="true">
 							<option name="None" value="0x0" />
@@ -1381,21 +1206,20 @@ The location of the last detonated projectile, in case the parent object is a we
 							<option name="System Correlation 1" value="0x8" />
 							<option name="System Correlation 2" value="0x9" />
 							<option name="Particle Emission Time" value="0xA" />
-							<option name="Location Lod" value="0xB" />
+							<option name="Location LOD" value="0xB" />
 							<option name="Game Time" value="0xC" />
 							<option name="Effect A Scale" value="0xD" />
 							<option name="Effect B Scale" value="0xE" />
 							<option name="Particle Rotation" value="0xF" />
 							<option name="Location Random" value="0x10" />
 							<option name="Distance From Emitter" value="0x11" />
-							<option name="Particle Simulation A" value="0x12" />
-							<option name="Particle Simulation B" value="0x13" />
-							<option name="Particle Velocity" value="0x14" />
-							<option name="Invalid State --- Please Set Again" value="0x15" />
+							<option name="Explosion Animation" value="0x12" />
+							<option name="Explosion Rotation" value="0x13" />
+							<option name="Invalid State --- Please Set Again" value="0x14" />
 						</enum8>
-						<dataRef name="Mapping" offset="0x8" visible="true" />
+						<dataRef name="Function" offset="0x8" visible="true" />
 						<float32 name="Runtime m Constant Value" offset="0x1C" visible="true" />
-						<flags16 name="Runtime m Flags" offset="0x20" visible="true">
+						<flags8 name="Runtime m Flags" offset="0x20" visible="true">
 							<bit name="Bit 0" index="0" />
 							<bit name="Bit 1" index="1" />
 							<bit name="Bit 2" index="2" />
@@ -1404,19 +1228,9 @@ The location of the last detonated projectile, in case the parent object is a we
 							<bit name="Bit 5" index="5" />
 							<bit name="Bit 6" index="6" />
 							<bit name="Bit 7" index="7" />
-							<bit name="Bit 8" index="8" />
-							<bit name="Bit 9" index="9" />
-							<bit name="Bit 10" index="10" />
-							<bit name="Bit 11" index="11" />
-							<bit name="Bit 12" index="12" />
-							<bit name="Bit 13" index="13" />
-							<bit name="Bit 14" index="14" />
-							<bit name="Bit 15" index="15" />
-						</flags16>
-						<flags8 name="Force Flags" offset="0x22" visible="true">
-							<bit name="Force Constant" index="0" />
 						</flags8>
-						<int8 name="Unknown" offset="0x23" visible="false" />
+						<int8 name="Unknown" offset="0x21" visible="false" />
+						<int16 name="Unknown" offset="0x22" visible="false" />
 					</tagblock>
 					<int32 name="Runtime m Constant Parameters" offset="0x10" visible="true" />
 					<int32 name="Runtime m Used Particle States" offset="0x14" visible="true" />
@@ -1434,17 +1248,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Range Variable" offset="0x189" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -1458,17 +1271,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Output Modifier" offset="0x18A" visible="true">
 					<option name="None" value="0x0" />
@@ -1487,21 +1299,20 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
-				<dataRef name="Mapping" offset="0x18C" visible="true" />
+				<dataRef name="Function" offset="0x18C" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x1A0" visible="true" />
-				<flags16 name="Runtime m Flags" offset="0x1A4" visible="true">
+				<flags8 name="Runtime m Flags" offset="0x1A4" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -1510,15 +1321,8 @@ The location of the last detonated projectile, in case the parent object is a we
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-				</flags16>
+				</flags8>
+				<int8 name="Unknown" offset="0x1A5" visible="false" />
 				<int16 name="Unknown" offset="0x1A6" visible="false" />
 				<vector3 name="Starting Interpolant" offset="0x1A8" visible="true" />
 				<vector3 name="Ending Interpolant" offset="0x1B4" visible="true" />
@@ -1535,17 +1339,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Range Variable" offset="0x1C1" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -1559,17 +1362,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Output Modifier" offset="0x1C2" visible="true">
 					<option name="None" value="0x0" />
@@ -1588,21 +1390,20 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
-				<dataRef name="Mapping" offset="0x1C4" visible="true" />
+				<dataRef name="Function" offset="0x1C4" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x1D8" visible="true" />
-				<flags16 name="Runtime m Flags" offset="0x1DC" visible="true">
+				<flags8 name="Runtime m Flags" offset="0x1DC" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -1611,19 +1412,9 @@ The location of the last detonated projectile, in case the parent object is a we
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-				</flags16>
-				<flags8 name="Force Flags" offset="0x1DE" visible="true">
-					<bit name="Force Constant" index="0" />
 				</flags8>
-				<int8 name="Unknown" offset="0x1DF" visible="false" />
+				<int8 name="Unknown" offset="0x1DD" visible="false" />
+				<int16 name="Unknown" offset="0x1DE" visible="false" />
 				<comment title="Particle Rotation (.25=90°, .5=180°, 1=360° ... adds to physics)" />
 				<enum8 name="Input Variable" offset="0x1E0" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -1637,17 +1428,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Range Variable" offset="0x1E1" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -1661,17 +1451,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Output Modifier" offset="0x1E2" visible="true">
 					<option name="None" value="0x0" />
@@ -1690,21 +1479,20 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
-				<dataRef name="Mapping" offset="0x1E4" visible="true" />
+				<dataRef name="Function" offset="0x1E4" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x1F8" visible="true" />
-				<flags16 name="Runtime m Flags" offset="0x1FC" visible="true">
+				<flags8 name="Runtime m Flags" offset="0x1FC" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -1713,19 +1501,9 @@ The location of the last detonated projectile, in case the parent object is a we
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-				</flags16>
-				<flags8 name="Force Flags" offset="0x1FE" visible="true">
-					<bit name="Force Constant" index="0" />
 				</flags8>
-				<int8 name="Unknown" offset="0x1FF" visible="false" />
+				<int8 name="Unknown" offset="0x1FD" visible="false" />
+				<int16 name="Unknown" offset="0x1FE" visible="false" />
 				<comment title="Particle Initial Rotation Rate (360 Degree Rotations Per Second)" />
 				<enum8 name="Input Variable" offset="0x200" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -1739,17 +1517,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Range Variable" offset="0x201" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -1763,17 +1540,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Output Modifier" offset="0x202" visible="true">
 					<option name="None" value="0x0" />
@@ -1792,21 +1568,20 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
-				<dataRef name="Mapping" offset="0x204" visible="true" />
+				<dataRef name="Function" offset="0x204" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x218" visible="true" />
-				<flags16 name="Runtime m Flags" offset="0x21C" visible="true">
+				<flags8 name="Runtime m Flags" offset="0x21C" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -1815,19 +1590,9 @@ The location of the last detonated projectile, in case the parent object is a we
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-				</flags16>
-				<flags8 name="Force Flags" offset="0x21E" visible="true">
-					<bit name="Force Constant" index="0" />
 				</flags8>
-				<int8 name="Unknown" offset="0x21F" visible="false" />
+				<int8 name="Unknown" offset="0x21D" visible="false" />
+				<int16 name="Unknown" offset="0x21E" visible="false" />
 				<comment title="Particle Size (World Units)" />
 				<enum8 name="Input Variable" offset="0x220" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -1841,17 +1606,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Range Variable" offset="0x221" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -1865,17 +1629,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Output Modifier" offset="0x222" visible="true">
 					<option name="None" value="0x0" />
@@ -1894,21 +1657,20 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
-				<dataRef name="Mapping" offset="0x224" visible="true" />
+				<dataRef name="Function" offset="0x224" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x238" visible="true" />
-				<flags16 name="Runtime m Flags" offset="0x23C" visible="true">
+				<flags8 name="Runtime m Flags" offset="0x23C" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -1917,19 +1679,9 @@ The location of the last detonated projectile, in case the parent object is a we
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-				</flags16>
-				<flags8 name="Force Flags" offset="0x23E" visible="true">
-					<bit name="Force Constant" index="0" />
 				</flags8>
-				<int8 name="Unknown" offset="0x23F" visible="false" />
+				<int8 name="Unknown" offset="0x23D" visible="false" />
+				<int16 name="Unknown" offset="0x23E" visible="false" />
 				<comment title="Particle Scale (Multiple Of Size)" />
 				<enum8 name="Input Variable" offset="0x240" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -1943,17 +1695,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Range Variable" offset="0x241" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -1967,17 +1718,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Output Modifier" offset="0x242" visible="true">
 					<option name="None" value="0x0" />
@@ -1996,21 +1746,20 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
-				<dataRef name="Mapping" offset="0x244" visible="true" />
+				<dataRef name="Function" offset="0x244" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x258" visible="true" />
-				<flags16 name="Runtime m Flags" offset="0x25C" visible="true">
+				<flags8 name="Runtime m Flags" offset="0x25C" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -2019,19 +1768,9 @@ The location of the last detonated projectile, in case the parent object is a we
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-				</flags16>
-				<flags8 name="Force Flags" offset="0x25E" visible="true">
-					<bit name="Force Constant" index="0" />
 				</flags8>
-				<int8 name="Unknown" offset="0x25F" visible="false" />
+				<int8 name="Unknown" offset="0x25D" visible="false" />
+				<int16 name="Unknown" offset="0x25E" visible="false" />
 				<comment title="Particle Tint">controls the overall tint of the particle</comment>
 				<enum8 name="Input Variable" offset="0x260" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -2045,17 +1784,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Range Variable" offset="0x261" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -2069,17 +1807,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Output Modifier" offset="0x262" visible="true">
 					<option name="None" value="0x0" />
@@ -2098,21 +1835,20 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
-				<dataRef name="Mapping" offset="0x264" visible="true" />
+				<dataRef name="Function" offset="0x264" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x278" visible="true" />
-				<flags16 name="Runtime m Flags" offset="0x27C" visible="true">
+				<flags8 name="Runtime m Flags" offset="0x27C" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -2121,15 +1857,8 @@ The location of the last detonated projectile, in case the parent object is a we
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-				</flags16>
+				</flags8>
+				<int8 name="Unknown" offset="0x27D" visible="false" />
 				<int16 name="Unknown" offset="0x27E" visible="false" />
 				<comment title="Particle Alpha" />
 				<enum8 name="Input Variable" offset="0x280" visible="true">
@@ -2144,17 +1873,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Range Variable" offset="0x281" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -2168,17 +1896,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Output Modifier" offset="0x282" visible="true">
 					<option name="None" value="0x0" />
@@ -2197,21 +1924,20 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
-				<dataRef name="Mapping" offset="0x284" visible="true" />
+				<dataRef name="Function" offset="0x284" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x298" visible="true" />
-				<flags16 name="Runtime m Flags" offset="0x29C" visible="true">
+				<flags8 name="Runtime m Flags" offset="0x29C" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -2220,19 +1946,9 @@ The location of the last detonated projectile, in case the parent object is a we
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-				</flags16>
-				<flags8 name="Force Flags" offset="0x29E" visible="true">
-					<bit name="Force Constant" index="0" />
 				</flags8>
-				<int8 name="Unknown" offset="0x29F" visible="false" />
+				<int8 name="Unknown" offset="0x29D" visible="false" />
+				<int16 name="Unknown" offset="0x29E" visible="false" />
 				<comment title="Particle Alpha Black Point (0=Normal, 1=Clamped)" />
 				<enum8 name="Input Variable" offset="0x2A0" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -2246,17 +1962,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Range Variable" offset="0x2A1" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -2270,17 +1985,16 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
 				<enum8 name="Output Modifier" offset="0x2A2" visible="true">
 					<option name="None" value="0x0" />
@@ -2299,21 +2013,20 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
 					<option name="Particle Rotation" value="0xF" />
 					<option name="Location Random" value="0x10" />
 					<option name="Distance From Emitter" value="0x11" />
-					<option name="Particle Simulation A" value="0x12" />
-					<option name="Particle Simulation B" value="0x13" />
-					<option name="Particle Velocity" value="0x14" />
-					<option name="Invalid State --- Please Set Again" value="0x15" />
+					<option name="Explosion Animation" value="0x12" />
+					<option name="Explosion Rotation" value="0x13" />
+					<option name="Invalid State --- Please Set Again" value="0x14" />
 				</enum8>
-				<dataRef name="Mapping" offset="0x2A4" visible="true" />
+				<dataRef name="Function" offset="0x2A4" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x2B8" visible="true" />
-				<flags16 name="Runtime m Flags" offset="0x2BC" visible="true">
+				<flags8 name="Runtime m Flags" offset="0x2BC" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -2322,51 +2035,41 @@ The location of the last detonated projectile, in case the parent object is a we
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-				</flags16>
-				<flags8 name="Force Flags" offset="0x2BE" visible="true">
-					<bit name="Force Constant" index="0" />
 				</flags8>
-				<int8 name="Unknown" offset="0x2BF" visible="false" />
-				<int32 name="Runtime m Constant Per Particle Properties!" offset="0x2C0" visible="true" />
-				<int32 name="Runtime m Constant Over Time Properties!" offset="0x2C4" visible="true" />
-				<int32 name="Runtime m Used Particle States!" offset="0x2C8" visible="true" />
-				<tagblock name="Runtime GPU Property Block" offset="0x2CC" visible="true" elementSize="0x10" align="0x10">
-					<float32 name="Runtime GPU Property" offset="0x0" visible="true" />
-					<float32 name="Runtime GPU Property" offset="0x4" visible="true" />
-					<float32 name="Runtime GPU Property" offset="0x8" visible="true" />
-					<float32 name="Runtime GPU Property" offset="0xC" visible="true" />
+				<int8 name="Unknown" offset="0x2BD" visible="false" />
+				<int16 name="Unknown" offset="0x2BE" visible="false" />
+				<int32 name="Runtime m Constant Per Particle Properties" offset="0x2C0" visible="true" />
+				<int32 name="Runtime m Constant Over Time Properties" offset="0x2C4" visible="true" />
+				<int32 name="Runtime m Used Particle States" offset="0x2C8" visible="true" />
+				<tagblock name="Runtime GPU Properties" offset="0x2CC" visible="true" elementSize="0x10" align="0x10">
+					<float32 name="Runtime GPU Property Real 0" offset="0x0" visible="true" />
+					<float32 name="Runtime GPU Property Real 1" offset="0x4" visible="true" />
+					<float32 name="Runtime GPU Property Real 2" offset="0x8" visible="true" />
+					<float32 name="Runtime GPU Property Real 3" offset="0xC" visible="true" />
 				</tagblock>
-				<tagblock name="Runtime GPU Functions Block" offset="0x2D8" visible="true" elementSize="0x40" align="0x10">
-					<float32 name="Runtime GPU Function" offset="0x0" visible="true" />
-					<float32 name="Runtime GPU Function" offset="0x4" visible="true" />
-					<float32 name="Runtime GPU Function" offset="0x8" visible="true" />
-					<float32 name="Runtime GPU Function" offset="0xC" visible="true" />
-					<float32 name="Runtime GPU Function" offset="0x10" visible="true" />
-					<float32 name="Runtime GPU Function" offset="0x14" visible="true" />
-					<float32 name="Runtime GPU Function" offset="0x18" visible="true" />
-					<float32 name="Runtime GPU Function" offset="0x1C" visible="true" />
-					<float32 name="Runtime GPU Function" offset="0x20" visible="true" />
-					<float32 name="Runtime GPU Function" offset="0x24" visible="true" />
-					<float32 name="Runtime GPU Function" offset="0x28" visible="true" />
-					<float32 name="Runtime GPU Function" offset="0x2C" visible="true" />
-					<float32 name="Runtime GPU Function" offset="0x30" visible="true" />
-					<float32 name="Runtime GPU Function" offset="0x34" visible="true" />
-					<float32 name="Runtime GPU Function" offset="0x38" visible="true" />
-					<float32 name="Runtime GPU Function" offset="0x3C" visible="true" />
+				<tagblock name="Runtime GPU Functions" offset="0x2D8" visible="true" elementSize="0x40" align="0x10">
+					<float32 name="Runtime GPU Function Real 0" offset="0x0" visible="true" />
+					<float32 name="Runtime GPU Function Real 1" offset="0x4" visible="true" />
+					<float32 name="Runtime GPU Function Real 2" offset="0x8" visible="true" />
+					<float32 name="Runtime GPU Function Real 3" offset="0xC" visible="true" />
+					<float32 name="Runtime GPU Function Real 4" offset="0x10" visible="true" />
+					<float32 name="Runtime GPU Function Real 5" offset="0x14" visible="true" />
+					<float32 name="Runtime GPU Function Real 6" offset="0x18" visible="true" />
+					<float32 name="Runtime GPU Function Real 7" offset="0x1C" visible="true" />
+					<float32 name="Runtime GPU Function Real 8" offset="0x20" visible="true" />
+					<float32 name="Runtime GPU Function Real 9" offset="0x24" visible="true" />
+					<float32 name="Runtime GPU Function Real 10" offset="0x28" visible="true" />
+					<float32 name="Runtime GPU Function Real 11" offset="0x2C" visible="true" />
+					<float32 name="Runtime GPU Function Real 12" offset="0x30" visible="true" />
+					<float32 name="Runtime GPU Function Real 13" offset="0x34" visible="true" />
+					<float32 name="Runtime GPU Function Real 14" offset="0x38" visible="true" />
+					<float32 name="Runtime GPU Function Real 15" offset="0x3C" visible="true" />
 				</tagblock>
-				<tagblock name="Runtime GPU Colors Block" offset="0x2E4" visible="true" elementSize="0x10" align="0x10">
-					<float32 name="Red" offset="0x0" visible="true" />
-					<float32 name="Green" offset="0x4" visible="true" />
-					<float32 name="Blue" offset="0x8" visible="true" />
-					<float32 name="Magnitude" offset="0xC" visible="true" />
+				<tagblock name="Runtime GPU Colors" offset="0x2E4" visible="true" elementSize="0x10" align="0x10">
+					<float32 name="Runtime GPU Color Real 0" offset="0x0" visible="true" />
+					<float32 name="Runtime GPU Color Real 1" offset="0x4" visible="true" />
+					<float32 name="Runtime GPU Color Real 2" offset="0x8" visible="true" />
+					<float32 name="Runtime GPU Color Real 3" offset="0xC" visible="true" />
 				</tagblock>
 			</tagblock>
 			<float32 name="Runtime Maximum Lifespan" offset="0x58" visible="true" />
@@ -2374,8 +2077,8 @@ The location of the last detonated projectile, in case the parent object is a we
 	</tagblock>
 	<tagRef name="Looping Sound" offset="0x38" visible="true" />
 	<int8 name="Location Index" offset="0x48" visible="true" />
-	<int8 name="Event Index" offset="0x49" visible="true" />
-	<int16 name="Unknown" offset="0x4A" visible="false" />
+	<int8 name="Bind Scale To Event Index" offset="0x49" visible="true" />
+	<int16 name="Local Location 1" offset="0x4A" visible="true" />
 	<float32 name="Always Play Distance" offset="0x4C" visible="true" />
 	<float32 name="Never Play Distance" offset="0x50" visible="true" />
 	<float32 name="Runtime Lightprobe Death Delay" offset="0x54" visible="true" />
@@ -2384,7 +2087,7 @@ The location of the last detonated projectile, in case the parent object is a we
 		<comment title="Conical Projection">projectile_count = yaw_count*pitch_count</comment>
 		<int16 name="Yaw Count" offset="0x0" visible="true" />
 		<int16 name="Pitch Count" offset="0x2" visible="true" />
-		<float32 name="Distribution Exponent" offset="0x4" visible="true" />
-		<degree name="Spread" offset="0x8" visible="true" />
+		<float32 name="Distribution Exponent" offset="0x4" visible="true" tooltip="exp==.5 even distribution, exp&gt;.5== tighter" />
+		<degree name="Spread" offset="0x8" visible="true" tooltip="degrees" />
 	</tagblock>
 </plugin>

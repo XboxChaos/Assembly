@@ -29,7 +29,9 @@ namespace Blamite.Blam.Scripting.Context
         {
             if (_unitSeatMappings.ContainsKey(mapping.Name))
             {
-                throw new InvalidOperationException($"The context collection has multiple definitions for the unit seat mapping {mapping.Name}.");
+                //mod tool maps can build with multiple entries I guess?
+
+                //throw new InvalidOperationException($"The context collection has multiple definitions for the unit seat mapping {mapping.Name}.");
             }
             else
             {

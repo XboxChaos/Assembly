@@ -37,7 +37,7 @@ Note: Height maps (a.k.a. bump maps) should use 32-bit color; this is internally
 	</enum16>
 	<comment title="Usage">Usage controls how mipmaps are generated:
 
-* ALPHA BLEND: Pixels with zero alpha are ignored in mipmaps, to prevent bleeding the transparent color.
+* ALPHA BLEND: Pixels with zero alpha are ignored in mipmaps, to prevent bleeding the transparent color. If the edges are zero alpha, the dimensions will in turn get cropped in this process.
 * DEFAULT: Downsampling works normally, as in Photoshop.
 * HEIGHT MAP: The bitmap (normally grayscale) is a height map which gets converted to a bump map. Uses &lt;bump height&gt; below. Alpha is passed through unmodified.
 * DETAIL MAP: Mipmap color fades to gray, controlled by &lt;detail fade factor&gt; below. Alpha fades to white.
@@ -89,7 +89,7 @@ Note: Height maps (a.k.a. bump maps) should use 32-bit color; this is internally
 	<int16 name="Sprite Spacing" offset="0x50" visible="true" />
 	<int16 name="Unknown" offset="0x52" visible="false" />
 	<tagblock name="Sequences" offset="0x54" visible="true" elementSize="0x40">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<int16 name="First Bitmap Index" offset="0x20" visible="true" />
 		<int16 name="Bitmap Count" offset="0x22" visible="true" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
@@ -108,7 +108,7 @@ Note: Height maps (a.k.a. bump maps) should use 32-bit color; this is internally
 		</tagblock>
 	</tagblock>
 	<tagblock name="Bitmaps" offset="0x60" visible="true" elementSize="0x30">
-		<ascii name="Signature" offset="0x0" length="0x4" />
+		<ascii name="Signature" offset="0x0" size="0x4" visible="true" />
 		<int16 name="Width" offset="0x4" visible="true" />
 		<int16 name="Height" offset="0x6" visible="true" />
 		<int16 name="Depth" offset="0x8" visible="true" tooltip="depth is 1 for 2D textures and cube maps" />
@@ -145,6 +145,10 @@ Note: Height maps (a.k.a. bump maps) should use 32-bit color; this is internally
 			<bit name="Swizzled" index="3" />
 			<bit name="Linear" index="4" />
 			<bit name="V16U16" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Runtime Required" index="7" />
+			<bit name="External" index="8" />
+			<bit name="Environment" index="9" />
 		</flags16>
 		<point16 name="Registration Point" offset="0x10" visible="true" />
 		<int16 name="Mipmap Count" offset="0x14" visible="true" />
@@ -152,7 +156,7 @@ Note: Height maps (a.k.a. bump maps) should use 32-bit color; this is internally
 		<uint32 name="Pixels Offset" offset="0x18" visible="true" />
 		<uint32 name="Pixels Size" offset="0x1C" visible="true" />
 		<tagref name="Datum" offset="0x20" withGroup="false" visible="true" />
-		<int32 name="Unknown" offset="0x24" visible="false" />
+		<uint32 name="Pointer" offset="0x24" visible="true" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<int8 name="Unknown" offset="0x2C" visible="false" />
 		<int8 name="Unknown" offset="0x2D" visible="false" />

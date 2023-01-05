@@ -277,6 +277,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			return new Degree2Data(Name, Offset, FieldAddress, Type, RadianA, RadianB, PluginLine, ToolTip);
 		}
+
+		public override string AsString()
+		{
+			return string.Format("{0} | {1} | {2} {3}", Type, Name, A, B);
+		}
+
+		public override object GetAsJson()
+		{
+			List<object> dict = new List<object>(3)
+			{
+				A,
+				B
+			};
+
+			return dict;
+		}
 	}
 
 	public class Degree3Data : Multi3Data<float>
@@ -357,6 +373,23 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public override MetaField CloneValue()
 		{
 			return new Degree3Data(Name, Offset, FieldAddress, Type, RadianA, RadianB, RadianC, PluginLine, ToolTip);
+		}
+
+		public override string AsString()
+		{
+			return string.Format("{0} | {1} | {2} {3} {4}", Type, Name, A, B, C);
+		}
+
+		public override object GetAsJson()
+		{
+			List<object> dict = new List<object>(3)
+			{
+				A,
+				B,
+				C
+			};
+
+			return dict;
 		}
 	}
 

@@ -109,9 +109,9 @@ namespace Blamite.Patching
 			for (int i = 0; i < numChanges; i++)
 			{
 				uint oldOffset = reader.ReadUInt32();
-				int oldSize = reader.ReadInt32();
+				uint oldSize = reader.ReadUInt32();
 				uint newOffset = reader.ReadUInt32();
-				int newSize = reader.ReadInt32();
+				uint newSize = reader.ReadUInt32();
 				bool resizeAtEnd = Convert.ToBoolean(reader.ReadByte());
 				var segmentChange = new SegmentChange(oldOffset, oldSize, newOffset, newSize, resizeAtEnd);
 				segmentChange.DataChanges.AddRange(ReadDataChanges(reader));

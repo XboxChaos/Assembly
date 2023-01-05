@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo1MCC" baseSize="0x78">
+	<revisions>
+		<revision author="Lord Zedd" version="1">ayy lmao</revision>
+	</revisions>
+	<comment title="Radiosity Properties" />
+	<flags16 name="Flags" offset="0x0" visible="true">
+		<bit name="Simple Parameterization" index="0" tooltip="lightmap texture parametrization should correspond to diffuse texture parametrization" />
+		<bit name="Ignore Normals" index="1" tooltip="light independent of normals (trees)" />
+		<bit name="Transparent Lit" index="2" tooltip="use lit vertex shader permutation. Only for transparent chicago (extended) and generic" />
+	</flags16>
+	<enum16 name="Detail Level" offset="0x2" visible="true" tooltip="affects the density of tesselation (high means slow).">
+		<option name="High" value="0x0" />
+		<option name="Medium" value="0x1" />
+		<option name="Low" value="0x2" />
+		<option name="Turd" value="0x3" />
+	</enum16>
+	<float32 name="Power" offset="0x4" visible="true" tooltip="power of emitted light from 0 to infinity" />
+	<colorf name="Color Of Emitted Light" offset="0x8" alpha="false" visible="true" />
+	<colorf name="Tint Color" offset="0x14" alpha="false" visible="true" tooltip="light passing through this surface (if it's transparent) will be tinted this color." />
+	<comment title="Physics Properties">only relevant in structure bsp uses</comment>
+	<flags16 name="Flags" offset="0x20" visible="true">
+	</flags16>
+	<enum16 name="Material Type" offset="0x22" visible="true">
+		<option name="Dirt" value="0x0" />
+		<option name="Sand" value="0x1" />
+		<option name="Stone" value="0x2" />
+		<option name="Snow" value="0x3" />
+		<option name="Wood" value="0x4" />
+		<option name="Metal (Hollow)" value="0x5" />
+		<option name="Metal (Thin)" value="0x6" />
+		<option name="Metal (Thick)" value="0x7" />
+		<option name="Rubber" value="0x8" />
+		<option name="Glass" value="0x9" />
+		<option name="Force Field" value="0xA" />
+		<option name="Grunt" value="0xB" />
+		<option name="Hunter Armor" value="0xC" />
+		<option name="Hunter Skin" value="0xD" />
+		<option name="Elite" value="0xE" />
+		<option name="Jackal" value="0xF" />
+		<option name="Jackal Energy Shield" value="0x10" />
+		<option name="Engineer Skin" value="0x11" />
+		<option name="Engineer Force Field" value="0x12" />
+		<option name="Flood Combat Form" value="0x13" />
+		<option name="Flood Carrier Form" value="0x14" />
+		<option name="Cyborg Armor" value="0x15" />
+		<option name="Cyborg Energy Shield" value="0x16" />
+		<option name="Human Armor" value="0x17" />
+		<option name="Human Skin" value="0x18" />
+		<option name="Sentinel" value="0x19" />
+		<option name="Monitor" value="0x1A" />
+		<option name="Plastic" value="0x1B" />
+		<option name="Water" value="0x1C" />
+		<option name="Leaves" value="0x1D" />
+		<option name="Elite Energy Shield" value="0x1E" />
+		<option name="Ice" value="0x1F" />
+		<option name="Hunter Shield" value="0x20" />
+	</enum16>
+	<int16 name="Shader Type" offset="0x24" visible="true" />
+	<int16 name="Unknown" offset="0x26" visible="false" />
+	<comment title="Chicago Shader Extended" />
+	<int8 name="Numeric Counter Limit" offset="0x28" visible="true" />
+	<flags8 name="Flags" offset="0x29" visible="true">
+		<bit name="Alpha-Tested" index="0" />
+		<bit name="Decal" index="1" />
+		<bit name="Two-Sided" index="2" />
+		<bit name="First Map Is In Screenspace" index="3" />
+		<bit name="Draw Before Water" index="4" />
+		<bit name="Ignore Effect" index="5" />
+		<bit name="Scale First Map With Distance" index="6" />
+		<bit name="Numeric" index="7" />
+	</flags8>
+	<enum16 name="First Map Type" offset="0x2A" visible="true">
+		<option name="2D Map" value="0x0" />
+		<option name="First Map Is Reflection Cube Map" value="0x1" />
+		<option name="First Map Is Object-Centered Cube Map" value="0x2" />
+		<option name="First Map Is Viewer-Centered Cube Map" value="0x3" />
+	</enum16>
+	<enum16 name="Framebuffer Blend Function" offset="0x2C" visible="true">
+		<option name="Alpha Blend" value="0x0" />
+		<option name="Multiply" value="0x1" />
+		<option name="Double Multiply" value="0x2" />
+		<option name="Add" value="0x3" />
+		<option name="Subtract" value="0x4" />
+		<option name="Component Min" value="0x5" />
+		<option name="Component Max" value="0x6" />
+		<option name="Alpha-Multiply Add" value="0x7" />
+	</enum16>
+	<enum16 name="Framebuffer Fade Mode" offset="0x2E" visible="true">
+		<option name="None" value="0x0" />
+		<option name="Fade When Perpendicular" value="0x1" />
+		<option name="Fade When Parallel" value="0x2" />
+	</enum16>
+	<enum16 name="Framebuffer Fade Source" offset="0x30" visible="true" tooltip="fade is multiplied by this external value">
+		<option name="None" value="0x0" />
+		<option name="A Out" value="0x1" />
+		<option name="B Out" value="0x2" />
+		<option name="C Out" value="0x3" />
+		<option name="D Out" value="0x4" />
+	</enum16>
+	<int16 name="Unknown" offset="0x32" visible="false" />
+	<comment title="Lens Flares" />
+	<float32 name="Lens Flare Spacing" offset="0x34" visible="true" tooltip="0 places a single lens flare" />
+	<tagRef name="Lens Flare" offset="0x38" visible="true" />
+	<tagblock name="Extra Layers" offset="0x48" visible="true" elementSize="0x10">
+		<tagRef name="Shader" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="4 Stage Maps" offset="0x54" visible="true" elementSize="0xDC">
+		<flags16 name="Flags" offset="0x0" visible="true">
+			<bit name="Unfiltered" index="0" />
+			<bit name="Alpha Replicate" index="1" />
+			<bit name="U-Clamped" index="2" />
+			<bit name="V-Clamped" index="3" />
+		</flags16>
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<enum16 name="Color Function" offset="0x2C" visible="true" tooltip="ignored for last map">
+			<option name="Current" value="0x0" />
+			<option name="Next Map" value="0x1" />
+			<option name="Multiply" value="0x2" />
+			<option name="Double-Multiply" value="0x3" />
+			<option name="Add" value="0x4" />
+			<option name="Add-Signed Current" value="0x5" />
+			<option name="Add-Signed Next Map" value="0x6" />
+			<option name="Subtract Current" value="0x7" />
+			<option name="Subtract Next Map" value="0x8" />
+			<option name="Blend Current Alpha" value="0x9" />
+			<option name="Blend Current Alpha-Inverse" value="0xA" />
+			<option name="Blend Next Map Alpha" value="0xB" />
+			<option name="Blend Next Map Alpha-Inverse" value="0xC" />
+		</enum16>
+		<enum16 name="Alpha Function" offset="0x2E" visible="true" tooltip="ignored for last map">
+			<option name="Current" value="0x0" />
+			<option name="Next Map" value="0x1" />
+			<option name="Multiply" value="0x2" />
+			<option name="Double-Multiply" value="0x3" />
+			<option name="Add" value="0x4" />
+			<option name="Add-Signed Current" value="0x5" />
+			<option name="Add-Signed Next Map" value="0x6" />
+			<option name="Subtract Current" value="0x7" />
+			<option name="Subtract Next Map" value="0x8" />
+			<option name="Blend Current Alpha" value="0x9" />
+			<option name="Blend Current Alpha-Inverse" value="0xA" />
+			<option name="Blend Next Map Alpha" value="0xB" />
+			<option name="Blend Next Map Alpha-Inverse" value="0xC" />
+		</enum16>
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<float32 name="Map U-Scale" offset="0x54" visible="true" tooltip="0 defaults to 1" />
+		<float32 name="Map V-Scale" offset="0x58" visible="true" tooltip="0 defaults to 1" />
+		<float32 name="Map U-Offset" offset="0x5C" visible="true" />
+		<float32 name="Map V-Offset" offset="0x60" visible="true" />
+		<float32 name="Map Rotation" offset="0x64" visible="true" />
+		<float32 name="Mipmap Bias" offset="0x68" visible="true" />
+		<tagRef name="Map" offset="0x6C" visible="true" />
+		<undefined name="Unknown" offset="0x7C" visible="false" />
+		<undefined name="Unknown" offset="0x80" visible="false" />
+		<undefined name="Unknown" offset="0x84" visible="false" />
+		<undefined name="Unknown" offset="0x88" visible="false" />
+		<undefined name="Unknown" offset="0x8C" visible="false" />
+		<undefined name="Unknown" offset="0x90" visible="false" />
+		<undefined name="Unknown" offset="0x94" visible="false" />
+		<undefined name="Unknown" offset="0x98" visible="false" />
+		<undefined name="Unknown" offset="0x9C" visible="false" />
+		<undefined name="Unknown" offset="0xA0" visible="false" />
+		<comment title="2D Texture Animation" />
+		<enum16 name="U-Animation Source" offset="0xA4" visible="true">
+			<option name="None" value="0x0" />
+			<option name="A Out" value="0x1" />
+			<option name="B Out" value="0x2" />
+			<option name="C Out" value="0x3" />
+			<option name="D Out" value="0x4" />
+		</enum16>
+		<enum16 name="U-Animation Function" offset="0xA6" visible="true">
+			<option name="One" value="0x0" />
+			<option name="Zero" value="0x1" />
+			<option name="Cosine" value="0x2" />
+			<option name="Cosine (Variable Period)" value="0x3" />
+			<option name="Diagonal Wave" value="0x4" />
+			<option name="Diagonal Wave (Variable Period)" value="0x5" />
+			<option name="Slide" value="0x6" />
+			<option name="Slide (Variable Period)" value="0x7" />
+			<option name="Noise" value="0x8" />
+			<option name="Jitter" value="0x9" />
+			<option name="Wander" value="0xA" />
+			<option name="Spark" value="0xB" />
+		</enum16>
+		<float32 name="U-Animation Period" offset="0xA8" visible="true" tooltip="0 defaults to 1" />
+		<float32 name="U-Animation Phase" offset="0xAC" visible="true" />
+		<float32 name="U-Animation Scale" offset="0xB0" visible="true" tooltip="0 defaults to 1" />
+		<enum16 name="V-Animation Source" offset="0xB4" visible="true">
+			<option name="None" value="0x0" />
+			<option name="A Out" value="0x1" />
+			<option name="B Out" value="0x2" />
+			<option name="C Out" value="0x3" />
+			<option name="D Out" value="0x4" />
+		</enum16>
+		<enum16 name="V-Animation Function" offset="0xB6" visible="true">
+			<option name="One" value="0x0" />
+			<option name="Zero" value="0x1" />
+			<option name="Cosine" value="0x2" />
+			<option name="Cosine (Variable Period)" value="0x3" />
+			<option name="Diagonal Wave" value="0x4" />
+			<option name="Diagonal Wave (Variable Period)" value="0x5" />
+			<option name="Slide" value="0x6" />
+			<option name="Slide (Variable Period)" value="0x7" />
+			<option name="Noise" value="0x8" />
+			<option name="Jitter" value="0x9" />
+			<option name="Wander" value="0xA" />
+			<option name="Spark" value="0xB" />
+		</enum16>
+		<float32 name="V-Animation Period" offset="0xB8" visible="true" tooltip="0 defaults to 1" />
+		<float32 name="V-Animation Phase" offset="0xBC" visible="true" />
+		<float32 name="V-Animation Scale" offset="0xC0" visible="true" tooltip="0 defaults to 1" />
+		<enum16 name="Rotation-Animation Source" offset="0xC4" visible="true">
+			<option name="None" value="0x0" />
+			<option name="A Out" value="0x1" />
+			<option name="B Out" value="0x2" />
+			<option name="C Out" value="0x3" />
+			<option name="D Out" value="0x4" />
+		</enum16>
+		<enum16 name="Rotation-Animation Function" offset="0xC6" visible="true">
+			<option name="One" value="0x0" />
+			<option name="Zero" value="0x1" />
+			<option name="Cosine" value="0x2" />
+			<option name="Cosine (Variable Period)" value="0x3" />
+			<option name="Diagonal Wave" value="0x4" />
+			<option name="Diagonal Wave (Variable Period)" value="0x5" />
+			<option name="Slide" value="0x6" />
+			<option name="Slide (Variable Period)" value="0x7" />
+			<option name="Noise" value="0x8" />
+			<option name="Jitter" value="0x9" />
+			<option name="Wander" value="0xA" />
+			<option name="Spark" value="0xB" />
+		</enum16>
+		<float32 name="Rotation-Animation Period" offset="0xC8" visible="true" tooltip="0 defaults to 1" />
+		<float32 name="Rotation-Animation Phase" offset="0xCC" visible="true" />
+		<float32 name="Rotation-Animation Scale" offset="0xD0" visible="true" tooltip="0 defaults to 360" />
+		<point2 name="Rotation-Animation Center" offset="0xD4" visible="true" />
+	</tagblock>
+	<tagblock name="2 Stage Maps" offset="0x60" visible="true" elementSize="0xDC">
+		<flags16 name="Flags" offset="0x0" visible="true">
+			<bit name="Unfiltered" index="0" />
+			<bit name="Alpha Replicate" index="1" />
+			<bit name="U-Clamped" index="2" />
+			<bit name="V-Clamped" index="3" />
+		</flags16>
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<enum16 name="Color Function" offset="0x2C" visible="true" tooltip="ignored for last map">
+			<option name="Current" value="0x0" />
+			<option name="Next Map" value="0x1" />
+			<option name="Multiply" value="0x2" />
+			<option name="Double-Multiply" value="0x3" />
+			<option name="Add" value="0x4" />
+			<option name="Add-Signed Current" value="0x5" />
+			<option name="Add-Signed Next Map" value="0x6" />
+			<option name="Subtract Current" value="0x7" />
+			<option name="Subtract Next Map" value="0x8" />
+			<option name="Blend Current Alpha" value="0x9" />
+			<option name="Blend Current Alpha-Inverse" value="0xA" />
+			<option name="Blend Next Map Alpha" value="0xB" />
+			<option name="Blend Next Map Alpha-Inverse" value="0xC" />
+		</enum16>
+		<enum16 name="Alpha Function" offset="0x2E" visible="true" tooltip="ignored for last map">
+			<option name="Current" value="0x0" />
+			<option name="Next Map" value="0x1" />
+			<option name="Multiply" value="0x2" />
+			<option name="Double-Multiply" value="0x3" />
+			<option name="Add" value="0x4" />
+			<option name="Add-Signed Current" value="0x5" />
+			<option name="Add-Signed Next Map" value="0x6" />
+			<option name="Subtract Current" value="0x7" />
+			<option name="Subtract Next Map" value="0x8" />
+			<option name="Blend Current Alpha" value="0x9" />
+			<option name="Blend Current Alpha-Inverse" value="0xA" />
+			<option name="Blend Next Map Alpha" value="0xB" />
+			<option name="Blend Next Map Alpha-Inverse" value="0xC" />
+		</enum16>
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<float32 name="Map U-Scale" offset="0x54" visible="true" tooltip="0 defaults to 1" />
+		<float32 name="Map V-Scale" offset="0x58" visible="true" tooltip="0 defaults to 1" />
+		<float32 name="Map U-Offset" offset="0x5C" visible="true" />
+		<float32 name="Map V-Offset" offset="0x60" visible="true" />
+		<float32 name="Map Rotation" offset="0x64" visible="true" />
+		<float32 name="Mipmap Bias" offset="0x68" visible="true" />
+		<tagRef name="Map" offset="0x6C" visible="true" />
+		<undefined name="Unknown" offset="0x7C" visible="false" />
+		<undefined name="Unknown" offset="0x80" visible="false" />
+		<undefined name="Unknown" offset="0x84" visible="false" />
+		<undefined name="Unknown" offset="0x88" visible="false" />
+		<undefined name="Unknown" offset="0x8C" visible="false" />
+		<undefined name="Unknown" offset="0x90" visible="false" />
+		<undefined name="Unknown" offset="0x94" visible="false" />
+		<undefined name="Unknown" offset="0x98" visible="false" />
+		<undefined name="Unknown" offset="0x9C" visible="false" />
+		<undefined name="Unknown" offset="0xA0" visible="false" />
+		<comment title="2D Texture Animation" />
+		<enum16 name="U-Animation Source" offset="0xA4" visible="true">
+			<option name="None" value="0x0" />
+			<option name="A Out" value="0x1" />
+			<option name="B Out" value="0x2" />
+			<option name="C Out" value="0x3" />
+			<option name="D Out" value="0x4" />
+		</enum16>
+		<enum16 name="U-Animation Function" offset="0xA6" visible="true">
+			<option name="One" value="0x0" />
+			<option name="Zero" value="0x1" />
+			<option name="Cosine" value="0x2" />
+			<option name="Cosine (Variable Period)" value="0x3" />
+			<option name="Diagonal Wave" value="0x4" />
+			<option name="Diagonal Wave (Variable Period)" value="0x5" />
+			<option name="Slide" value="0x6" />
+			<option name="Slide (Variable Period)" value="0x7" />
+			<option name="Noise" value="0x8" />
+			<option name="Jitter" value="0x9" />
+			<option name="Wander" value="0xA" />
+			<option name="Spark" value="0xB" />
+		</enum16>
+		<float32 name="U-Animation Period" offset="0xA8" visible="true" tooltip="0 defaults to 1" />
+		<float32 name="U-Animation Phase" offset="0xAC" visible="true" />
+		<float32 name="U-Animation Scale" offset="0xB0" visible="true" tooltip="0 defaults to 1" />
+		<enum16 name="V-Animation Source" offset="0xB4" visible="true">
+			<option name="None" value="0x0" />
+			<option name="A Out" value="0x1" />
+			<option name="B Out" value="0x2" />
+			<option name="C Out" value="0x3" />
+			<option name="D Out" value="0x4" />
+		</enum16>
+		<enum16 name="V-Animation Function" offset="0xB6" visible="true">
+			<option name="One" value="0x0" />
+			<option name="Zero" value="0x1" />
+			<option name="Cosine" value="0x2" />
+			<option name="Cosine (Variable Period)" value="0x3" />
+			<option name="Diagonal Wave" value="0x4" />
+			<option name="Diagonal Wave (Variable Period)" value="0x5" />
+			<option name="Slide" value="0x6" />
+			<option name="Slide (Variable Period)" value="0x7" />
+			<option name="Noise" value="0x8" />
+			<option name="Jitter" value="0x9" />
+			<option name="Wander" value="0xA" />
+			<option name="Spark" value="0xB" />
+		</enum16>
+		<float32 name="V-Animation Period" offset="0xB8" visible="true" tooltip="0 defaults to 1" />
+		<float32 name="V-Animation Phase" offset="0xBC" visible="true" />
+		<float32 name="V-Animation Scale" offset="0xC0" visible="true" tooltip="0 defaults to 1" />
+		<enum16 name="Rotation-Animation Source" offset="0xC4" visible="true">
+			<option name="None" value="0x0" />
+			<option name="A Out" value="0x1" />
+			<option name="B Out" value="0x2" />
+			<option name="C Out" value="0x3" />
+			<option name="D Out" value="0x4" />
+		</enum16>
+		<enum16 name="Rotation-Animation Function" offset="0xC6" visible="true">
+			<option name="One" value="0x0" />
+			<option name="Zero" value="0x1" />
+			<option name="Cosine" value="0x2" />
+			<option name="Cosine (Variable Period)" value="0x3" />
+			<option name="Diagonal Wave" value="0x4" />
+			<option name="Diagonal Wave (Variable Period)" value="0x5" />
+			<option name="Slide" value="0x6" />
+			<option name="Slide (Variable Period)" value="0x7" />
+			<option name="Noise" value="0x8" />
+			<option name="Jitter" value="0x9" />
+			<option name="Wander" value="0xA" />
+			<option name="Spark" value="0xB" />
+		</enum16>
+		<float32 name="Rotation-Animation Period" offset="0xC8" visible="true" tooltip="0 defaults to 1" />
+		<float32 name="Rotation-Animation Phase" offset="0xCC" visible="true" />
+		<float32 name="Rotation-Animation Scale" offset="0xD0" visible="true" tooltip="0 defaults to 360" />
+		<point2 name="Rotation-Animation Center" offset="0xD4" visible="true" />
+	</tagblock>
+	<flags32 name="Extra Flags" offset="0x6C" visible="true">
+		<bit name="Don't Fade Active-Camouflage" index="0" />
+		<bit name="Numeric Countdown Timer" index="1" />
+		<bit name="Custom Edition Blending" index="2" />
+	</flags32>
+	<undefined name="Unknown" offset="0x70" visible="false" />
+	<undefined name="Unknown" offset="0x74" visible="false" />
+</plugin>

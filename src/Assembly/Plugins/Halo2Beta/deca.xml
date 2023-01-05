@@ -5,6 +5,23 @@
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="Dragon" version="2">named some fields</revision>
 	</revisions>
+	<comment title="Decal">There are several "layers" which decals can be placed into, these layers are drawn in a specific order relative to the shader layers and each layer has its own specific blending mode. In general, the decal bitmap's alpha channel will be used as an opacity mask if it exists.
+
+* LIT ALPHA-BLEND PRELIGHT: Decals in this layer are lit by the lightmap but are "faded out" by dynamic lights. What this means is that dynamic lights hitting them will cause them to disappear, sort of. This layer is rendered immediately before lightmap shadows (and before dynamic lights).
+
+* LIT ALPHA-BLEND: Decals in this layer are lit by the lightmap but are NOT lit by dynamic lights. What this means is that if the decal exists in an area that has dark lightmapping but bright dynamic lighting, the decal will appear dark. This layer is rendered immediately after dynamic lights, and all subsequent decal layers are rendered after this one in order.
+
+* DOUBLE MULTIPLY: Decals in this layer will double-multiply the color in the framebuffer. Gray pixels in the decal bitmap will be transparent (black darkens, white brightens). The decal color in the tag does NOT do anything!!
+
+* MULTIPLY: Decals in this layer will multiply the color in the framebuffer. White pixels in the decal bitmap will be transparent. The decal color (in the decal tag) does NOT do anything!!
+
+* MAX: Decals in this layer will perform a component-wise max operation on the framebuffer, replacing color values with whichever is higher. Black pixels in the decal bitmap will be transparent.
+
+* ADD: Decals in this layer will perform an addition operation on the framebuffer, replacing color values with the sum of the two. Black pixels in the decal bitmap will be transparent.
+
+* ERROR: Decals in this layer will render bright red and show through geometry!
+
+A compound decal is a chain of decals which are instantiated simultaneously. Compound decals are created by referencing another decal tag in the 'next_decal_in_chain' field below. Do not attempt to create a circularly linked decal chain, i.e. A-&gt;B-&gt;C-&gt;A! This will cause problems and probably hang the game. Also, do not reference a decal from an effect if it is not the head of the chain; for example an effect should not instantiate decal B if the chain was A-&gt;B-&gt;C. Compound decals can have seperate bitmaps, etc., and can be drawn in seperate layers. In addition, we used to have the ability for each decal in the chain can either inherit its parent's radius, rotation, color, etc. - or it can randomly choose its own. This behavior was controlled by the 'geometry_inherited_by_next_decal_in_chain' flag, below but it's currently broken.</comment>
 	<flags16 name="Flags" offset="0x0" visible="true">
 		<bit name="Geometry Inherited By Next Decal In Chain" index="0" />
 		<bit name="Interpolate Color In Hsv" index="1" />
@@ -17,7 +34,7 @@
 		<bit name="Preserve Aspect" index="8" />
 		<bit name="Bit 9" index="9" />
 	</flags16>
-	<enum16 name="Type" offset="0x2" visible="true">
+	<enum16 name="Type" offset="0x2" visible="true" tooltip="controls how the decal wraps onto surface geometry">
 		<option name="Scratch" value="0x0" />
 		<option name="Splatter" value="0x1" />
 		<option name="Burn" value="0x2" />
@@ -96,7 +113,7 @@
 	<undefined name="Unknown" offset="0xF4" visible="false" />
 	<undefined name="Unknown" offset="0xF8" visible="false" />
 	<comment title="Sprite Info" />
-	<float32 name="Maximum Sprite Extent" offset="0xFC" visible="true" />
+	<float32 name="Maximum Sprite Extent" offset="0xFC" visible="true" tooltip="pixels" />
 	<undefined name="Unknown" offset="0x100" visible="false" />
 	<undefined name="Unknown" offset="0x104" visible="false" />
 	<undefined name="Unknown" offset="0x108" visible="false" />

@@ -10,11 +10,12 @@
 			<option name="22kHz" value="0x0" />
 			<option name="44kHz" value="0x1" />
 			<option name="32kHz" value="0x2" />
+			<option name="48Khz" value="0x3" />
 		</enum8>
 		<enum8 name="Encoding" offset="0x1" visible="true">
 			<option name="Mono" value="0x0" />
 			<option name="Stereo" value="0x1" />
-			<option name="Surround" value="0x2" />
+			<option name="Quad" value="0x2" />
 			<option name="5.1 Surround" value="0x3" />
 			<option name="Codec" value="0x4" />
 		</enum8>
@@ -66,7 +67,7 @@
 		</flags32>
 		<float32 name="Don't Play Distance" offset="0x4" visible="true" tooltip="don't play below this distance" />
 		<float32 name="Attack Distance" offset="0x8" visible="true" tooltip="start playing at full volume at this distance" />
-		<float32 name="Minimum Distance" offset="0xC" visible="true" tooltip="start attenuating at this distance" />
+		<float32 name="Minimum Distance" offset="0xC" visible="true" tooltip="the distance below which this sound no longer gets louder" />
 		<float32 name="Maximum Distance" offset="0x10" visible="true" tooltip="the distance beyond which this sound is no longer audible" />
 		<float32 name="Skip Fraction" offset="0x14" visible="true" tooltip="fraction of requests to play this sound that will be ignored (0 means always play.)" />
 		<float32 name="Maximum Bend Per Second" offset="0x18" visible="true" />
@@ -147,9 +148,22 @@ azimuth:
 		<flags32 name="Flags" offset="0xC" visible="true">
 			<bit name="Use 3D Radio Hack" index="0" />
 		</flags32>
-		<undefined name="Unknown" offset="0x10" visible="false" />
+		<int32 name="Radio Channel" offset="0x10" visible="true" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<tagblock name="Filter" offset="0x18" visible="true" elementSize="0x48">
+			<comment title="Parameter Description">DLS2 filtering:
+    resonance gain range: [0, 22.5] dB
+
+parametric EQ:
+    gain range: [-64, 14] dB
+
+for mono sounds:
+    the left filter controls the DLS 2 parameters
+    the right filter controls the Parametric EQ parameters
+
+for stereo sounds:
+    both left and right channels must have the same filter
+    i.e., filter type both is invalid</comment>
 			<enum32 name="Filter Type" offset="0x0" visible="true">
 				<option name="Parametric EQ" value="0x0" />
 				<option name="DLS2" value="0x1" />
@@ -205,9 +219,37 @@ azimuth:
 			<float32 name="Random Base" offset="0x38" visible="true" />
 			<float32 name="Random Variance" offset="0x3C" visible="true" />
 		</tagblock>
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
+		<tagblock name="Sound Effect" offset="0x3C" visible="true" elementSize="0x48">
+			<tagRef name="Template" offset="0x0" visible="true" />
+			<tagblock name="Components" offset="0x10" visible="true" elementSize="0x18">
+				<tagRef name="Sound" offset="0x0" visible="true" />
+				<float32 name="Gain" offset="0x10" visible="true" tooltip="additional attenuation to sound" />
+				<flags32 name="Flags" offset="0x14" visible="true">
+					<bit name="Don't Play At Start" index="0" />
+					<bit name="Play On Stop" index="1" />
+					<bit name="Play On Abnormal Stop" index="2" />
+					<bit name="Play Alternate" index="3" />
+					<bit name="Play Alternate On Abnormal Stop" index="4" />
+					<bit name="Sync With Origin Looping Sound" index="5" />
+				</flags32>
+			</tagblock>
+			<tagblock name="Template Collection" offset="0x1C" visible="true" elementSize="0x10">
+				<stringid name="Name" offset="0x0" visible="true" />
+				<tagblock name="Overrides" offset="0x4" visible="true" elementSize="0x2C">
+					<stringid name="Name" offset="0x0" visible="true" />
+					<stringid name="Input" offset="0x4" visible="true" />
+					<stringid name="Range" offset="0x8" visible="true" />
+					<float32 name="Time Period" offset="0xC" visible="true" />
+					<int32 name="Integer Value" offset="0x10" visible="true" />
+					<float32 name="Real Value" offset="0x14" visible="true" />
+					<dataRef name="Function" offset="0x18" visible="true" />
+				</tagblock>
+			</tagblock>
+			<dataref name="Hardware Format" offset="0x28" visible="true" />
+			<uint32 name="Platform Effect Block" offset="0x3C" visible="false" />
+			<uint32 name="Platform Effect Block" offset="0x40" visible="false" />
+			<uint32 name="Platform Effect Block" offset="0x44" visible="false" />
+		</tagblock>
 	</tagblock>
 	<tagblock name="Language Durations" offset="0x60" visible="true" elementSize="0x1C">
 		<enum32 name="Language" offset="0x0" visible="true">
@@ -225,7 +267,7 @@ azimuth:
 			<option name="Polish" value="0xB" />
 		</enum32>
 		<tagblock name="Permutation Durations" offset="0x4" visible="true" elementSize="0x2">
-			<int16 name="Duration (Script Ticks)" offset="0x0" visible="true" />
+			<int16 name="Duration" offset="0x0" visible="true" tooltip="script ticks" />
 		</tagblock>
 		<tagblock name="Pitch Ranges" offset="0x10" visible="true" elementSize="0x4">
 			<int16 name="First Permutation Duration Index" offset="0x0" visible="true" />
@@ -275,15 +317,15 @@ azimuth:
 					<float32 name="End Time" offset="0x4" visible="true" />
 					<float32 name="Blend In" offset="0x8" visible="true" />
 					<float32 name="Blend Out" offset="0xC" visible="true" />
-					<tagblock name="Unknown" offset="0x10" visible="true" elementSize="0x10">
-						<undefined name="Unknown" offset="0x0" visible="true" />
-						<undefined name="Unknown" offset="0x4" visible="true" />
-						<undefined name="Unknown" offset="0x8" visible="true" />
-						<undefined name="Unknown" offset="0xC" visible="true" />
+					<tagblock name="Curve Keys" offset="0x10" visible="true" elementSize="0x10">
+						<float32 name="Time" offset="0x0" visible="true" />
+						<float32 name="Weight" offset="0x4" visible="true" />
+						<float32 name="Slope In" offset="0x8" visible="true" />
+						<float32 name="Slope Out" offset="0xC" visible="true" />
 					</tagblock>
-					<tagblock name="Curves" offset="0x1C" visible="true" elementSize="0x8">
+					<tagblock name="Keys" offset="0x1C" visible="true" elementSize="0x8">
 						<int16 name="Time" offset="0x0" visible="true" />
-						<enum8 name="Track 1" offset="0x2" visible="true">
+						<enum8 name="Track A" offset="0x2" visible="true">
 							<option name="Silence" value="0x0" />
 							<option name="Eat" value="0x1" />
 							<option name="Earth" value="0x2" />
@@ -319,7 +361,7 @@ azimuth:
 							<option name="Pain" value="0x20" />
 							<option name="Shout" value="0x21" />
 						</enum8>
-						<enum8 name="Track 2" offset="0x3" visible="true">
+						<enum8 name="Track B" offset="0x3" visible="true">
 							<option name="Silence" value="0x0" />
 							<option name="Eat" value="0x1" />
 							<option name="Earth" value="0x2" />
@@ -355,7 +397,7 @@ azimuth:
 							<option name="Pain" value="0x20" />
 							<option name="Shout" value="0x21" />
 						</enum8>
-						<enum8 name="Track 3" offset="0x4" visible="true">
+						<enum8 name="Track C" offset="0x4" visible="true">
 							<option name="Silence" value="0x0" />
 							<option name="Eat" value="0x1" />
 							<option name="Earth" value="0x2" />
@@ -391,9 +433,9 @@ azimuth:
 							<option name="Pain" value="0x20" />
 							<option name="Shout" value="0x21" />
 						</enum8>
-						<int8 name="Track 1 Weight" offset="0x5" visible="true" />
-						<int8 name="Track 2 Weight" offset="0x6" visible="true" />
-						<int8 name="Track 3 Weight" offset="0x7" visible="true" />
+						<int8 name="Track A Weight" offset="0x5" visible="true" />
+						<int8 name="Track B Weight" offset="0x6" visible="true" />
+						<int8 name="Track C Weight" offset="0x7" visible="true" />
 					</tagblock>
 				</tagblock>
 			</tagblock>

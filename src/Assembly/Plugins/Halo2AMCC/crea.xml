@@ -132,7 +132,7 @@
 	<tagRef name="Generic Name List" offset="0x58" visible="true" />
 	<tagRef name="Generic Service Tag List" offset="0x68" visible="true" />
 	<tagblock name="Source Sidecar" offset="0x78" visible="true" elementSize="0x100">
-		<ascii name="Sidecar Path" offset="0x0" length="0x100" visible="true" />
+		<ascii name="Sidecar Path" offset="0x0" size="0x100" visible="true" />
 	</tagblock>
 	<stringid name="Default Model Variant" offset="0x84" visible="true" />
 	<tagRef name="Model" offset="0x88" visible="true" />
@@ -142,12 +142,9 @@
 	<tagblock name="Early Mover Oriented Bounding Box" offset="0xC8" visible="true" elementSize="0x2C">
 		<stringid name="Node Name" offset="0x0" visible="true" tooltip="empty means object space" />
 		<int32 name="Runtime Node Index" offset="0x4" visible="true" />
-		<float32 name="X0" offset="0x8" visible="true" />
-		<float32 name="X1" offset="0xC" visible="true" />
-		<float32 name="Y0" offset="0x10" visible="true" />
-		<float32 name="Y1" offset="0x14" visible="true" />
-		<float32 name="Z0" offset="0x18" visible="true" />
-		<float32 name="Z1" offset="0x1C" visible="true" />
+		<rangef name="x" offset="0x8" visible="true" />
+		<rangef name="y" offset="0x10" visible="true" />
+		<rangef name="z" offset="0x18" visible="true" />
 		<degree3 name="Angles" offset="0x20" visible="true" />
 	</tagblock>
 	<tagRef name="Creation Effect" offset="0xD4" visible="true" />
@@ -500,10 +497,10 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<float32 name="Height Crouching" offset="0x224" visible="true" />
 	<float32 name="Radius" offset="0x228" visible="true" />
 	<float32 name="Mass" offset="0x22C" visible="true" />
-	<stringId name="Living Material Name" offset="0x230" visible="true" tooltip="collision material used when character is alive" />
-	<stringId name="Dead Material Name" offset="0x234" visible="true" tooltip="collision material used when character is dead" />
-	<int16 name="Living Material Global Index" offset="0x238" visible="true" />
-	<int16 name="Dead Material Global Index" offset="0x23A" visible="true" />
+	<stringId name="Living Global Material Name" offset="0x230" visible="true" tooltip="collision material used when character is alive" />
+	<stringId name="Dead Global Material Name" offset="0x234" visible="true" tooltip="collision material used when character is dead" />
+	<int16 name="Living Global Material Index" offset="0x238" visible="true" />
+	<int16 name="Dead Global Material Index" offset="0x23A" visible="true" />
 	<tagblock name="Dead Sphere Shapes" offset="0x23C" visible="true" elementSize="0xB0" align="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int8 name="Material Index" offset="0x4" visible="true" />
@@ -511,7 +508,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<bit name="Supresses Effects" index="0" />
 			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
 		</flags8>
-		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<int16 name="Global Material Index" offset="0x6" visible="true" />
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
@@ -619,7 +616,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<bit name="Supresses Effects" index="0" />
 			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
 		</flags8>
-		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<int16 name="Global Material Index" offset="0x6" visible="true" />
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
@@ -688,7 +685,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<bit name="Supresses Effects" index="0" />
 			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
 		</flags8>
-		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<int16 name="Global Material Index" offset="0x6" visible="true" />
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
@@ -796,7 +793,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<bit name="Supresses Effects" index="0" />
 			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
 		</flags8>
-		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<int16 name="Global Material Index" offset="0x6" visible="true" />
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
@@ -999,11 +996,11 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<degree name="Uphill Cutoff Angle" offset="0x294" visible="true" />
 	<float32 name="Downhill Velocity Scale" offset="0x298" visible="true" />
 	<float32 name="Uphill Velocity Scale" offset="0x29C" visible="true" />
-	<float32 name="Minimum Normal k" offset="0x2A0" visible="true" />
-	<float32 name="Downhill k0" offset="0x2A4" visible="true" />
-	<float32 name="Downhill k1" offset="0x2A8" visible="true" />
-	<float32 name="Uphill k0" offset="0x2AC" visible="true" />
-	<float32 name="Uphill k1" offset="0x2B0" visible="true" />
+	<float32 name="Cosine Maximum Slope Angle" offset="0x2A0" visible="true" />
+	<float32 name="Negative Sine Downhill Falloff Angle" offset="0x2A4" visible="true" />
+	<float32 name="Negative Sine Downhill Cutoff Angle" offset="0x2A8" visible="true" />
+	<float32 name="Sine Uphill Falloff Angle" offset="0x2AC" visible="true" />
+	<float32 name="Sine Uphill Cutoff Angle" offset="0x2B0" visible="true" />
 	<degree name="Climb Inflection Angle" offset="0x2B4" visible="true" tooltip="angle for bipeds at which climb direction changes between up and down" />
 	<float32 name="Airborne Reaction Time Scale" offset="0x2B8" visible="true" tooltip="scale on the time for the entity to realize it is airborne" />
 	<float32 name="Ground Adhesion Velocity Scale" offset="0x2BC" visible="true" tooltip="scale on velocity with which the entity is pushed back into its ground plane (set to -1 to lock to ground)" />

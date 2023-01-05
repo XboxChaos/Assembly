@@ -47,7 +47,7 @@ namespace Blamite.Blam.FirstGen.Structures
 			return _tags.GetEnumerator();
 		}
 
-		public override ITag AddTag(int groupMagic, int baseSize, IStream stream)
+		public override ITag AddTag(int groupMagic, uint baseSize, IStream stream)
 		{
 			throw new NotImplementedException("Adding tags is not supported for first-generation cache files");
 		}

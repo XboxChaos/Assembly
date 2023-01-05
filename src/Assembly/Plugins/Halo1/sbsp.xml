@@ -26,7 +26,42 @@
 	<undefined name="Unknown" offset="0xA0" visible="false" />
 	<tagblock name="Collision Materials" offset="0xA4" visible="true" elementSize="0x14">
 		<tagRef name="Shader" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
+		<int16 name="Unknown" offset="0x10" visible="false" />
+		<enum16 name="Material Type" offset="0x12" visible="true">
+			<option name="Dirt" value="0x0" />
+			<option name="Sand" value="0x1" />
+			<option name="Stone" value="0x2" />
+			<option name="Snow" value="0x3" />
+			<option name="Wood" value="0x4" />
+			<option name="Metal (Hollow)" value="0x5" />
+			<option name="Metal (Thin)" value="0x6" />
+			<option name="Metal (Thick)" value="0x7" />
+			<option name="Rubber" value="0x8" />
+			<option name="Glass" value="0x9" />
+			<option name="Force Field" value="0xA" />
+			<option name="Grunt" value="0xB" />
+			<option name="Hunter Armor" value="0xC" />
+			<option name="Hunter Skin" value="0xD" />
+			<option name="Elite" value="0xE" />
+			<option name="Jackal" value="0xF" />
+			<option name="Jackal Energy Shield" value="0x10" />
+			<option name="Engineer Skin" value="0x11" />
+			<option name="Engineer Force Field" value="0x12" />
+			<option name="Flood Combat Form" value="0x13" />
+			<option name="Flood Carrier Form" value="0x14" />
+			<option name="Cyborg Armor" value="0x15" />
+			<option name="Cyborg Energy Shield" value="0x16" />
+			<option name="Human Armor" value="0x17" />
+			<option name="Human Skin" value="0x18" />
+			<option name="Sentinel" value="0x19" />
+			<option name="Monitor" value="0x1A" />
+			<option name="Plastic" value="0x1B" />
+			<option name="Water" value="0x1C" />
+			<option name="Leaves" value="0x1D" />
+			<option name="Elite Energy Shield" value="0x1E" />
+			<option name="Ice" value="0x1F" />
+			<option name="Hunter Shield" value="0x20" />
+		</enum16>
 	</tagblock>
 	<tagblock name="Collision BSP" offset="0xB0" visible="true" elementSize="0x60">
 		<tagblock name="BSP3D Nodes" offset="0x0" visible="true" elementSize="0xC">
@@ -79,15 +114,17 @@
 		</tagblock>
 	</tagblock>
 	<tagblock name="Nodes" offset="0xBC" visible="true" elementSize="0x6">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<int16 name="Unknown" offset="0x4" visible="false" />
+		<int16 name="Nodes 0" offset="0x0" visible="true" />
+		<int16 name="Nodes 1" offset="0x2" visible="true" />
+		<int16 name="Nodes 2" offset="0x4" visible="true" />
 	</tagblock>
 	<rangef name="World Bounds x" offset="0xC8" visible="true" />
 	<rangef name="World Bounds y" offset="0xD0" visible="true" />
 	<rangef name="World Bounds z" offset="0xD8" visible="true" />
 	<tagblock name="Leaves" offset="0xE0" visible="true" elementSize="0x10">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<int16 name="Unknown" offset="0x4" visible="false" />
+		<int16 name="Vertices 0" offset="0x0" visible="true" />
+		<int16 name="Vertices 1" offset="0x2" visible="true" />
+		<int16 name="Vertices 2" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
 		<int16 name="Cluster" offset="0x8" visible="true" />
 		<int16 name="Surface Reference Count" offset="0xA" visible="true" />
@@ -136,17 +173,33 @@
 			<int16 name="Breakable Surface" offset="0xAC" visible="true" />
 			<int16 name="Unknown" offset="0xAE" visible="false" />
 			<comment title="Vertex Buffer 1" />
-			<undefined name="Unknown" offset="0xB0" visible="false" />
+			<enum16 name="Vertex Type" offset="0xB0" visible="true">
+				<option name="Structure BSP Uncompressed Rendered Vertices" value="0x0" />
+				<option name="Structure BSP Compressed Rendered Vertices" value="0x1" />
+				<option name="Structure BSP Uncompressed Lightmap Vertices" value="0x2" />
+				<option name="Structure BSP Compressed Lightmap Vertices" value="0x3" />
+				<option name="Model Uncompressed" value="0x4" />
+				<option name="Model Compressed" value="0x5" />
+			</enum16>
+			<int16 name="Unknown" offset="0xB2" visible="false" />
 			<int32 name="Count" offset="0xB4" visible="true" />
 			<int32 name="Offset" offset="0xB8" visible="true" />
 			<undefined name="Unknown" offset="0xBC" visible="false" />
-			<undefined name="Unknown" offset="0xC0" visible="false" />
+			<uint32 name="Vertices Index Pointer" offset="0xC0" visible="true" />
 			<comment title="Vertex Buffer 2" />
-			<undefined name="Unknown" offset="0xC4" visible="false" />
+			<enum16 name="Vertex Type" offset="0xC4" visible="true">
+				<option name="Structure BSP Uncompressed Rendered Vertices" value="0x0" />
+				<option name="Structure BSP Compressed Rendered Vertices" value="0x1" />
+				<option name="Structure BSP Uncompressed Lightmap Vertices" value="0x2" />
+				<option name="Structure BSP Compressed Lightmap Vertices" value="0x3" />
+				<option name="Model Uncompressed" value="0x4" />
+				<option name="Model Compressed" value="0x5" />
+			</enum16>
+			<int16 name="Unknown" offset="0xC6" visible="false" />
 			<int32 name="Count" offset="0xC8" visible="true" />
 			<int32 name="Offset" offset="0xCC" visible="true" />
 			<undefined name="Unknown" offset="0xD0" visible="false" />
-			<undefined name="Unknown" offset="0xD4" visible="false" />
+			<uint32 name="Vertices Index Pointer" offset="0xD4" visible="true" />
 			<dataref name="Uncompressed Vertices" offset="0xD8" visible="true" />
 			<dataref name="Compressed Vertices" offset="0xEC" visible="true" />
 		</tagblock>
@@ -171,7 +224,8 @@
 		<int16 name="Sound Environment Index" offset="0x6" visible="true" />
 		<int16 name="Weather Index" offset="0x8" visible="true" />
 		<int16 name="Transition Structure BSP" offset="0xA" visible="true" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
+		<int16 name="First Decal Index" offset="0xC" visible="true" />
+		<int16 name="Decal Count" offset="0xE" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
@@ -223,7 +277,7 @@
 		<point3 name="Centroid" offset="0x8" visible="true" />
 		<float32 name="Bounding Radius" offset="0x14" visible="true" />
 		<flags32 name="Flags" offset="0x18" visible="true">
-			<bit name="AI Can't Hear Through This Shit" index="0" />
+			<bit name="AI Can't Hear Through This" index="0" />
 		</flags32>
 		<undefined name="Unknown" offset="0x1C" visible="false" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
@@ -252,7 +306,41 @@
 	</tagblock>
 	<tagblock name="Fog Planes" offset="0x178" visible="true" elementSize="0x20">
 		<int16 name="Front Region Index" offset="0x0" visible="true" />
-		<int16 name="Unknown" offset="0x2" visible="false" />
+		<enum16 name="Material Type" offset="0x2" visible="true">
+			<option name="Dirt" value="0x0" />
+			<option name="Sand" value="0x1" />
+			<option name="Stone" value="0x2" />
+			<option name="Snow" value="0x3" />
+			<option name="Wood" value="0x4" />
+			<option name="Metal (Hollow)" value="0x5" />
+			<option name="Metal (Thin)" value="0x6" />
+			<option name="Metal (Thick)" value="0x7" />
+			<option name="Rubber" value="0x8" />
+			<option name="Glass" value="0x9" />
+			<option name="Force Field" value="0xA" />
+			<option name="Grunt" value="0xB" />
+			<option name="Hunter Armor" value="0xC" />
+			<option name="Hunter Skin" value="0xD" />
+			<option name="Elite" value="0xE" />
+			<option name="Jackal" value="0xF" />
+			<option name="Jackal Energy Shield" value="0x10" />
+			<option name="Engineer Skin" value="0x11" />
+			<option name="Engineer Force Field" value="0x12" />
+			<option name="Flood Combat Form" value="0x13" />
+			<option name="Flood Carrier Form" value="0x14" />
+			<option name="Cyborg Armor" value="0x15" />
+			<option name="Cyborg Energy Shield" value="0x16" />
+			<option name="Human Armor" value="0x17" />
+			<option name="Human Skin" value="0x18" />
+			<option name="Sentinel" value="0x19" />
+			<option name="Monitor" value="0x1A" />
+			<option name="Plastic" value="0x1B" />
+			<option name="Water" value="0x1C" />
+			<option name="Leaves" value="0x1D" />
+			<option name="Elite Energy Shield" value="0x1E" />
+			<option name="Ice" value="0x1F" />
+			<option name="Hunter Shield" value="0x20" />
+		</enum16>
 		<plane3 name="Plane" offset="0x4" visible="true" />
 		<tagblock name="Vertices" offset="0x14" visible="true" elementSize="0xC">
 			<point3 name="Point" offset="0x0" visible="true" />
@@ -272,10 +360,10 @@
 		<int16 name="Weather Palette Index" offset="0x26" visible="true" />
 	</tagblock>
 	<tagblock name="Fog Palette" offset="0x190" visible="true" elementSize="0x88">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<tagRef name="Fog" offset="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
-		<ascii name="Fog Scale Function" offset="0x34" length="0x20" visible="true" />
+		<ascii name="Fog Scale Function" offset="0x34" size="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x54" visible="false" />
 		<undefined name="Unknown" offset="0x58" visible="false" />
 		<undefined name="Unknown" offset="0x5C" visible="false" />
@@ -297,10 +385,10 @@
 	<undefined name="Unknown" offset="0x1AC" visible="false" />
 	<undefined name="Unknown" offset="0x1B0" visible="false" />
 	<tagblock name="Weather Palette" offset="0x1B4" visible="true" elementSize="0xF0">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<tagRef name="Particle System" offset="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
-		<ascii name="Particle System Scale Function" offset="0x34" length="0x20" visible="true" />
+		<ascii name="Particle System Scale Function" offset="0x34" size="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x54" visible="false" />
 		<undefined name="Unknown" offset="0x58" visible="false" />
 		<undefined name="Unknown" offset="0x5C" visible="false" />
@@ -316,7 +404,7 @@
 		<vector3 name="Wind Direction" offset="0x90" visible="true" />
 		<float32 name="Wind Magnitude" offset="0x9C" visible="true" />
 		<undefined name="Unknown" offset="0xA0" visible="false" />
-		<ascii name="Wind Scale Function" offset="0xA4" length="0x20" visible="true" />
+		<ascii name="Wind Scale Function" offset="0xA4" size="0x20" visible="true" />
 		<undefined name="Unknown" offset="0xC4" visible="false" />
 		<undefined name="Unknown" offset="0xC8" visible="false" />
 		<undefined name="Unknown" offset="0xCC" visible="false" />
@@ -350,10 +438,10 @@
 		<int8 name="Midpoint" offset="0x0" visible="true" />
 	</tagblock>
 	<tagblock name="Background Sound Palette" offset="0x1FC" visible="true" elementSize="0x74">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<tagRef name="Background Sound" offset="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
-		<ascii name="Scale Function" offset="0x34" length="0x20" visible="true" />
+		<ascii name="Scale Function" offset="0x34" size="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x54" visible="false" />
 		<undefined name="Unknown" offset="0x58" visible="false" />
 		<undefined name="Unknown" offset="0x5C" visible="false" />
@@ -364,7 +452,7 @@
 		<undefined name="Unknown" offset="0x70" visible="false" />
 	</tagblock>
 	<tagblock name="Sound Environment Palette" offset="0x208" visible="true" elementSize="0x50">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<tagRef name="Sound Environment" offset="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
@@ -383,7 +471,7 @@
 	<undefined name="Unknown" offset="0x238" visible="false" />
 	<undefined name="Unknown" offset="0x23C" visible="false" />
 	<tagblock name="Markers" offset="0x240" visible="true" elementSize="0x3C">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<vector4 name="Rotation" offset="0x20" visible="true" />
 		<point3 name="Position" offset="0x30" visible="true" />
 	</tagblock>
@@ -419,10 +507,10 @@
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 	</tagblock>
 	<tagblock name="Runtime Decals" offset="0x258" visible="true" elementSize="0x10">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
+		<point3 name="Position" offset="0x0" visible="true" />
+		<int16 name="Decal Type" offset="0xC" visible="true" />
+		<int8 name="Yaw" offset="0xE" visible="true" />
+		<int8 name="Pitch" offset="0xF" visible="true" />
 	</tagblock>
 	<undefined name="Unknown" offset="0x264" visible="false" />
 	<undefined name="Unknown" offset="0x268" visible="false" />

@@ -27,9 +27,22 @@
 		<flags32 name="Flags" offset="0x10" visible="true">
 			<bit name="Use 3D Radio Hack" index="0" />
 		</flags32>
-		<undefined name="Unknown" offset="0x14" visible="false" />
+		<int32 name="Radio Channel" offset="0x14" visible="true" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
 		<tagblock name="Filter" offset="0x1C" visible="true" elementSize="0x48">
+			<comment title="Parameter Description">DLS2 filtering:
+    resonance gain range: [0, 22.5] dB
+
+parametric EQ:
+    gain range: [-64, 14] dB
+
+for mono sounds:
+    the left filter controls the DLS 2 parameters
+    the right filter controls the Parametric EQ parameters
+
+for stereo sounds:
+    both left and right channels must have the same filter
+    i.e., filter type both is invalid</comment>
 			<enum32 name="Filter Type" offset="0x0" visible="true">
 				<option name="Parametric EQ" value="0x0" />
 				<option name="DLS2" value="0x1" />
@@ -86,32 +99,35 @@
 			<float32 name="Random Variance" offset="0x3C" visible="true" />
 		</tagblock>
 		<tagblock name="Sound Effect" offset="0x40" visible="true" elementSize="0x48">
-			<tagRef name="Unknown" offset="0x0" visible="true" />
+			<tagRef name="Template" offset="0x0" visible="true" />
 			<tagblock name="Components" offset="0x10" visible="true" elementSize="0x18">
 				<tagRef name="Sound" offset="0x0" visible="true" />
-				<float32 name="Gain" offset="0x10" visible="true" />
-				<int32 name="Flags" offset="0x14" visible="true" />
+				<float32 name="Gain" offset="0x10" visible="true" tooltip="additional attenuation to sound" />
+				<flags32 name="Flags" offset="0x14" visible="true">
+					<bit name="Don't Play At Start" index="0" />
+					<bit name="Play On Stop" index="1" />
+					<bit name="Play On Abnormal Stop" index="2" />
+					<bit name="Play Alternate" index="3" />
+					<bit name="Play Alternate On Abnormal Stop" index="4" />
+					<bit name="Sync With Origin Looping Sound" index="5" />
+				</flags32>
 			</tagblock>
 			<tagblock name="Template Collection" offset="0x1C" visible="true" elementSize="0x10">
-				<stringid name="DSP Effect" offset="0x0" visible="true" />
-				<tagblock name="Parameters" offset="0x4" visible="true" elementSize="0x2C">
+				<stringid name="Name" offset="0x0" visible="true" />
+				<tagblock name="Overrides" offset="0x4" visible="true" elementSize="0x2C">
 					<stringid name="Name" offset="0x0" visible="true" />
-					<undefined name="Unknown" offset="0x4" visible="true" />
-					<undefined name="Unknown" offset="0x8" visible="true" />
-					<float32 name="Hardware Offset" offset="0xC" visible="true" />
-					<undefined name="Unknown" offset="0x10" visible="true" />
-					<float32 name="Default Scalar Value" offset="0x14" visible="true" />
+					<stringid name="Input" offset="0x4" visible="true" />
+					<stringid name="Range" offset="0x8" visible="true" />
+					<float32 name="Time Period" offset="0xC" visible="true" />
+					<int32 name="Integer Value" offset="0x10" visible="true" />
+					<float32 name="Real Value" offset="0x14" visible="true" />
 					<dataRef name="Function" offset="0x18" visible="true" />
 				</tagblock>
 			</tagblock>
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<undefined name="Unknown" offset="0x2C" visible="false" />
-			<undefined name="Unknown" offset="0x30" visible="false" />
-			<undefined name="Unknown" offset="0x34" visible="false" />
-			<undefined name="Unknown" offset="0x38" visible="false" />
-			<undefined name="Unknown" offset="0x3C" visible="false" />
-			<undefined name="Unknown" offset="0x40" visible="false" />
-			<undefined name="Unknown" offset="0x44" visible="false" />
+			<dataref name="Hardware Format" offset="0x28" visible="true" />
+			<uint32 name="Platform Effect Block" offset="0x3C" visible="false" />
+			<uint32 name="Platform Effect Block" offset="0x40" visible="false" />
+			<uint32 name="Platform Effect Block" offset="0x44" visible="false" />
 		</tagblock>
 	</tagblock>
 </plugin>

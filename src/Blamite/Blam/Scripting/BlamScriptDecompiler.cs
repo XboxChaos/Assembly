@@ -618,7 +618,13 @@ namespace Blamite.Blam.Scripting
 				case "ai_command_script":
 				case "script":
 					short index = BitConverter.ToInt16(val, 0);
-					text = _scripts.Scripts[index].Name;
+					if (index != -1)
+						text = _scripts.Scripts[index].Name;
+					else
+					{
+						//turns out this can be -1 for real when a script has to be stripped due to an error, so best we can do is use the string its supposed to be so at least we dont get an exception.
+						text = expression.StringValue;
+					}
 					break;
 				case "boolean":
 					text = BitConverter.ToBoolean(val, 0) ? "true" : "false";

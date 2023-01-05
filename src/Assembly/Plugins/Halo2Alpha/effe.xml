@@ -6,11 +6,11 @@
 		<revision author="Dragon" version="2">named some fields</revision>
 	</revisions>
 	<flags32 name="Flags" offset="0x0" visible="true">
-		<bit name="Deleted When Attachment Deactivated" index="0" />
+		<bit name="Deleted When Attachment Deactivates" index="0" />
 	</flags32>
-	<int16 name="Loop Start Event" offset="0x4" visible="true" />
-	<int16 name="Unknown" offset="0x6" visible="true" />
-	<undefined name="Unknown" offset="0x8" visible="true" />
+	<int16 name="Loop Start Event Index" offset="0x4" visible="true" />
+	<int16 name="Loop Stop Event Index" offset="0x6" visible="true" />
+	<float32 name="Damage Radius" offset="0x8" visible="true" />
 	<tagblock name="Locations" offset="0xC" visible="true" elementSize="0x20">
 		<comment title="MARKER NAMES">In addition to the marker in the render model there are several special marker names:
 
@@ -37,8 +37,7 @@ The object root (pivot). These can used for all effects which are associated wit
 
 impact
 The location of a havok impact.</comment>
-		<ascii name="Marker Name" offset="0x0" length="0x1C" visible="true" />
-		<stringid name="Marker Name" offset="0x1C" visible="true" />
+		<oldstringid name="Marker Name" offset="0x0" visible="true" />
 	</tagblock>
 	<tagblock name="Events" offset="0x18" visible="true" elementSize="0x54">
 		<flags32 name="Flags" offset="0x0" visible="true">
@@ -59,10 +58,10 @@ The location of a havok impact.</comment>
 				<option name="Violent Mode Only" value="0x1" />
 				<option name="NonViolent Mode Only" value="0x2" />
 			</enum16>
-			<int16 name="Location" offset="0x4" visible="true" />
+			<int16 name="Location Index" offset="0x4" visible="true" />
 			<flags16 name="Flags" offset="0x6" visible="true">
-				<bit name="Face Down Regardless Of Location" index="0" />
-				<bit name="Offset Origin Away From Geometry" index="1" />
+				<bit name="Face Down Regardless Of Location" index="0" tooltip="decals" />
+				<bit name="Offset Origin Away From Geometry" index="1" tooltip="lights" />
 				<bit name="Never Attached To Object" index="2" />
 				<bit name="Disabled For Debugging" index="3" />
 				<bit name="Draw Regardless Of Distance" index="4" />
@@ -80,8 +79,8 @@ The location of a havok impact.</comment>
 				<option name="tdtl - liquid" value="0x7464746C" />
 			</enum32>
 			<tagRef name="Type" offset="0xC" visible="true" tooltip="The above &quot;Runtime Base Group Tag&quot; field should match this reference." />
-			<rangef name="Velocity Bound" offset="0x1C" visible="true" tooltip="Initial velocity along the location's forward, for decals the distance at which decal is created (defaults to 0.5)" />
-			<degree name="Velocity Cone Angle" offset="0x24" visible="true" tooltip="Initial velocity will be inside the cone defined by this angle" />
+			<rangef name="Velocity Bounds" offset="0x1C" visible="true" tooltip="Initial velocity along the location's forward, for decals the distance at which decal is created (defaults to 0.5)" />
+			<degree name="Velocity Cone Angle" offset="0x24" visible="true" tooltip="Initial velocity will be inside the cone defined by this angle." />
 			<ranged name="Angular Velocity Bounds" offset="0x28" visible="true" />
 			<rangef name="Radius Modifier Bounds" offset="0x30" visible="true" />
 			<comment title="Scale Modifiers" />
@@ -108,12 +107,27 @@ The location of a havok impact.</comment>
 		<undefined name="Unknown" offset="0x30" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="true" />
 		<undefined name="Unknown" offset="0x38" visible="true" />
-		<undefined name="Unknown" offset="0x3C" visible="true" />
-		<undefined name="Unknown" offset="0x40" visible="true" />
-		<undefined name="Unknown" offset="0x44" visible="true" />
+		<tagblock name="Accelerations" offset="0x3C" visible="true" elementSize="0x14">
+			<enum16 name="Create In" offset="0x0" visible="true">
+				<option name="Any Environment" value="0x0" />
+				<option name="Air Only" value="0x1" />
+				<option name="Water Only" value="0x2" />
+				<option name="Space Only" value="0x3" />
+			</enum16>
+			<enum16 name="Create In" offset="0x2" visible="true">
+				<option name="Either Mode" value="0x0" />
+				<option name="Violent Mode Only" value="0x1" />
+				<option name="NonViolent Mode Only" value="0x2" />
+			</enum16>
+			<int16 name="Location Index" offset="0x4" visible="true" />
+			<int16 name="Unknown" offset="0x6" visible="false" />
+			<float32 name="Acceleration" offset="0x8" visible="true" />
+			<degree name="Inner Cone Angle" offset="0xC" visible="true" />
+			<degree name="Outer Cone Angle" offset="0x10" visible="true" />
+		</tagblock>
 		<tagblock name="Particle Systems" offset="0x48" visible="true" elementSize="0x2C">
 			<tagref name="Particle" offset="0x0" visible="true" />
-			<int16 name="Location" offset="0x10" visible="true" />
+			<int16 name="Location Index" offset="0x10" visible="true" />
 			<int16 name="Unknown" offset="0x12" visible="false" />
 			<enum16 name="Coordinate System" offset="0x14" visible="true">
 				<option name="World" value="0x0" />
@@ -133,9 +147,9 @@ The location of a havok impact.</comment>
 			</enum16>
 			<enum16 name="Camera Mode" offset="0x1A" visible="true">
 				<option name="Independent Of Camera Mode" value="0x0" />
-				<option name="Only In 1st Person" value="0x1" />
-				<option name="Only In 3rd Person" value="0x2" />
-				<option name="Both 1st And 3rd" value="0x3" />
+				<option name="Only In First Person" value="0x1" />
+				<option name="Only In Third Person" value="0x2" />
+				<option name="Both First And Third" value="0x3" />
 			</enum16>
 			<int16 name="Sort Bias" offset="0x1C" visible="true" tooltip="Use values between -10 and 10 to move closer and farther from camera (positive is closer)" />
 			<flags16 name="Flags" offset="0x1E" visible="true">
@@ -153,7 +167,7 @@ The location of a havok impact.</comment>
 			<tagblock name="Emitters" offset="0x20" visible="true" elementSize="0x198">
 				<tagRef name="Particle Physics" offset="0x0" visible="true" />
 				<comment title="Particle Emission Rate (particles/tick)" />
-				<enum16 name="Input" offset="0x10" visible="true">
+				<enum16 name="Input Variable" offset="0x10" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -172,7 +186,7 @@ The location of a havok impact.</comment>
 					<option name="Particle Random 4" value="0xF" />
 					<option name="Location Random" value="0x10" />
 				</enum16>
-				<enum16 name="Range" offset="0x12" visible="true">
+				<enum16 name="Range Variable" offset="0x12" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -191,12 +205,12 @@ The location of a havok impact.</comment>
 					<option name="Particle Random 4" value="0xF" />
 					<option name="Location Random" value="0x10" />
 				</enum16>
-				<enum16 name="Output Modifier Kind" offset="0x14" visible="true">
+				<enum16 name="Output Modifier" offset="0x14" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum16>
-				<enum16 name="Output Modifier" offset="0x16" visible="true">
+				<enum16 name="Output Modifier Input" offset="0x16" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -259,7 +273,7 @@ The location of a havok impact.</comment>
 					<float32 name="Value" offset="0x0" visible="true" />
 				</tagblock>
 				<comment title="Particle Lifespan (seconds)" />
-				<enum16 name="Input" offset="0x38" visible="true">
+				<enum16 name="Input Variable" offset="0x38" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -278,7 +292,7 @@ The location of a havok impact.</comment>
 					<option name="Particle Random 4" value="0xF" />
 					<option name="Location Random" value="0x10" />
 				</enum16>
-				<enum16 name="Range" offset="0x3A" visible="true">
+				<enum16 name="Range Variable" offset="0x3A" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -297,12 +311,12 @@ The location of a havok impact.</comment>
 					<option name="Particle Random 4" value="0xF" />
 					<option name="Location Random" value="0x10" />
 				</enum16>
-				<enum16 name="Output Modifier Kind" offset="0x3C" visible="true">
+				<enum16 name="Output Modifier" offset="0x3C" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum16>
-				<enum16 name="Output Modifier" offset="0x3E" visible="true">
+				<enum16 name="Output Modifier Input" offset="0x3E" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -365,7 +379,7 @@ The location of a havok impact.</comment>
 					<float32 name="Value" offset="0x0" visible="true" />
 				</tagblock>
 				<comment title="Particle Velocity (world units/second)" />
-				<enum16 name="Input" offset="0x60" visible="true">
+				<enum16 name="Input Variable" offset="0x60" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -384,7 +398,7 @@ The location of a havok impact.</comment>
 					<option name="Particle Random 4" value="0xF" />
 					<option name="Location Random" value="0x10" />
 				</enum16>
-				<enum16 name="Range" offset="0x62" visible="true">
+				<enum16 name="Range Variable" offset="0x62" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -403,12 +417,12 @@ The location of a havok impact.</comment>
 					<option name="Particle Random 4" value="0xF" />
 					<option name="Location Random" value="0x10" />
 				</enum16>
-				<enum16 name="Output Modifier Kind" offset="0x64" visible="true">
+				<enum16 name="Output Modifier" offset="0x64" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum16>
-				<enum16 name="Output Modifier" offset="0x66" visible="true">
+				<enum16 name="Output Modifier Input" offset="0x66" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -471,7 +485,7 @@ The location of a havok impact.</comment>
 					<float32 name="Value" offset="0x0" visible="true" />
 				</tagblock>
 				<comment title="Particle Angular Velocity (degrees/second)" />
-				<enum16 name="Input" offset="0x88" visible="true">
+				<enum16 name="Input Variable" offset="0x88" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -490,7 +504,7 @@ The location of a havok impact.</comment>
 					<option name="Particle Random 4" value="0xF" />
 					<option name="Location Random" value="0x10" />
 				</enum16>
-				<enum16 name="Range" offset="0x8A" visible="true">
+				<enum16 name="Range Variable" offset="0x8A" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -509,12 +523,12 @@ The location of a havok impact.</comment>
 					<option name="Particle Random 4" value="0xF" />
 					<option name="Location Random" value="0x10" />
 				</enum16>
-				<enum16 name="Output Modifier Kind" offset="0x8C" visible="true">
+				<enum16 name="Output Modifier" offset="0x8C" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum16>
-				<enum16 name="Output Modifier" offset="0x8E" visible="true">
+				<enum16 name="Output Modifier Input" offset="0x8E" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -577,7 +591,7 @@ The location of a havok impact.</comment>
 					<float32 name="Value" offset="0x0" visible="true" />
 				</tagblock>
 				<comment title="Particle Size (world units)" />
-				<enum16 name="Input" offset="0xB0" visible="true">
+				<enum16 name="Input Variable" offset="0xB0" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -596,7 +610,7 @@ The location of a havok impact.</comment>
 					<option name="Particle Random 4" value="0xF" />
 					<option name="Location Random" value="0x10" />
 				</enum16>
-				<enum16 name="Range" offset="0xB2" visible="true">
+				<enum16 name="Range Variable" offset="0xB2" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -615,12 +629,12 @@ The location of a havok impact.</comment>
 					<option name="Particle Random 4" value="0xF" />
 					<option name="Location Random" value="0x10" />
 				</enum16>
-				<enum16 name="Output Modifier Kind" offset="0xB4" visible="true">
+				<enum16 name="Output Modifier" offset="0xB4" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum16>
-				<enum16 name="Output Modifier" offset="0xB6" visible="true">
+				<enum16 name="Output Modifier Input" offset="0xB6" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -683,7 +697,7 @@ The location of a havok impact.</comment>
 					<float32 name="Value" offset="0x0" visible="true" />
 				</tagblock>
 				<comment title="Particle Tint" />
-				<enum16 name="Input" offset="0xD8" visible="true">
+				<enum16 name="Input Variable" offset="0xD8" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -702,7 +716,7 @@ The location of a havok impact.</comment>
 					<option name="Particle Random 4" value="0xF" />
 					<option name="Location Random" value="0x10" />
 				</enum16>
-				<enum16 name="Range" offset="0xDA" visible="true">
+				<enum16 name="Range Variable" offset="0xDA" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -721,12 +735,12 @@ The location of a havok impact.</comment>
 					<option name="Particle Random 4" value="0xF" />
 					<option name="Location Random" value="0x10" />
 				</enum16>
-				<enum16 name="Output Modifier Kind" offset="0xDC" visible="true">
+				<enum16 name="Output Modifier" offset="0xDC" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum16>
-				<enum16 name="Output Modifier" offset="0xDE" visible="true">
+				<enum16 name="Output Modifier Input" offset="0xDE" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -789,7 +803,7 @@ The location of a havok impact.</comment>
 					<float32 name="Value" offset="0x0" visible="true" />
 				</tagblock>
 				<comment title="Particle Alpha" />
-				<enum16 name="Input" offset="0x100" visible="true">
+				<enum16 name="Input Variable" offset="0x100" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -808,7 +822,7 @@ The location of a havok impact.</comment>
 					<option name="Particle Random 4" value="0xF" />
 					<option name="Location Random" value="0x10" />
 				</enum16>
-				<enum16 name="Range" offset="0x102" visible="true">
+				<enum16 name="Range Variable" offset="0x102" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -827,12 +841,12 @@ The location of a havok impact.</comment>
 					<option name="Particle Random 4" value="0xF" />
 					<option name="Location Random" value="0x10" />
 				</enum16>
-				<enum16 name="Output Modifier Kind" offset="0x104" visible="true">
+				<enum16 name="Output Modifier" offset="0x104" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum16>
-				<enum16 name="Output Modifier" offset="0x106" visible="true">
+				<enum16 name="Output Modifier Input" offset="0x106" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -894,7 +908,7 @@ The location of a havok impact.</comment>
 				<tagblock name="Function Values" offset="0x11C" visible="true" elementSize="0x4">
 					<float32 name="Value" offset="0x0" visible="true" />
 				</tagblock>
-				<comment title="Emmision Settings" />
+				<comment title="Emission Settings" />
 				<enum32 name="Emission Shape" offset="0x128" visible="true">
 					<option name="Sprayer" value="0x0" />
 					<option name="Disc" value="0x1" />
@@ -908,7 +922,7 @@ The location of a havok impact.</comment>
 					<option name="Line" value="0x9" />
 				</enum32>
 				<comment title="Emission Radius (World Units)" />
-				<enum16 name="Input" offset="0x12C" visible="true">
+				<enum16 name="Input Variable" offset="0x12C" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -927,7 +941,7 @@ The location of a havok impact.</comment>
 					<option name="Particle Random 4" value="0xF" />
 					<option name="Location Random" value="0x10" />
 				</enum16>
-				<enum16 name="Range" offset="0x12E" visible="true">
+				<enum16 name="Range Variable" offset="0x12E" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -946,12 +960,12 @@ The location of a havok impact.</comment>
 					<option name="Particle Random 4" value="0xF" />
 					<option name="Location Random" value="0x10" />
 				</enum16>
-				<enum16 name="Output Modifier Kind" offset="0x130" visible="true">
+				<enum16 name="Output Modifier" offset="0x130" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum16>
-				<enum16 name="Output Modifier" offset="0x132" visible="true">
+				<enum16 name="Output Modifier Input" offset="0x132" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -1014,7 +1028,7 @@ The location of a havok impact.</comment>
 					<float32 name="Value" offset="0x0" visible="true" />
 				</tagblock>
 				<comment title="Emission Angle (Degrees)" />
-				<enum16 name="Input" offset="0x154" visible="true">
+				<enum16 name="Input Variable" offset="0x154" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -1033,7 +1047,7 @@ The location of a havok impact.</comment>
 					<option name="Particle Random 4" value="0xF" />
 					<option name="Location Random" value="0x10" />
 				</enum16>
-				<enum16 name="Range" offset="0x156" visible="true">
+				<enum16 name="Range Variable" offset="0x156" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -1052,12 +1066,12 @@ The location of a havok impact.</comment>
 					<option name="Particle Random 4" value="0xF" />
 					<option name="Location Random" value="0x10" />
 				</enum16>
-				<enum16 name="Output Modifier Kind" offset="0x158" visible="true">
+				<enum16 name="Output Modifier" offset="0x158" visible="true">
 					<option name="None" value="0x0" />
 					<option name="Plus" value="0x1" />
 					<option name="Times" value="0x2" />
 				</enum16>
-				<enum16 name="Output Modifier" offset="0x15A" visible="true">
+				<enum16 name="Output Modifier Input" offset="0x15A" visible="true">
 					<option name="Particle Age" value="0x0" />
 					<option name="Particle Emit Time" value="0x1" />
 					<option name="Particle Random 1" value="0x2" />
@@ -1119,7 +1133,7 @@ The location of a havok impact.</comment>
 				<tagblock name="Function Values" offset="0x170" visible="true" elementSize="0x4">
 					<float32 name="Value" offset="0x0" visible="true" />
 				</tagblock>
-				<point3 name="Translation Offset" offset="0x17C" visible="true" />
+				<point3 name="Translational Offset" offset="0x17C" visible="true" />
 				<degree2 name="Relative Direction" offset="0x188" visible="true" tooltip="Particle initial velocity direction relative to the location's forward" />
 				<undefined name="Unknown" offset="0x190" visible="true" />
 				<undefined name="Unknown" offset="0x194" visible="true" />

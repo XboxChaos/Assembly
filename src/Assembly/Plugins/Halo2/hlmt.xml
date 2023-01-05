@@ -73,7 +73,7 @@ If a model has a begin fade distance and disappear distance, it will begin fadin
 			<int16 name="Parent Variant Index" offset="0x6" visible="true" />
 			<tagblock name="Permutations" offset="0x8" visible="true" elementSize="0x20">
 				<stringid name="Permutation Name" offset="0x0" visible="true" />
-				<int8 name="Model Permutation Index" offset="0x4" visible="true" />
+				<int8 name="Runtime Model Permutation Index" offset="0x4" visible="true" />
 				<flags8 name="Flags" offset="0x5" visible="true">
 					<bit name="Copy States To All Permutations" index="0" />
 				</flags8>
@@ -81,7 +81,7 @@ If a model has a begin fade distance and disappear distance, it will begin fadin
 				<float32 name="Probability" offset="0x8" visible="true" />
 				<tagblock name="States" offset="0xC" visible="true" elementSize="0x18">
 					<stringId name="Permutation Name" offset="0x0" visible="true" />
-					<int8 name="Permutation Index" offset="0x4" visible="true" />
+					<int8 name="Runtime Model Permutation Index" offset="0x4" visible="true" />
 					<flags8 name="Property Flags" offset="0x5" visible="true">
 						<bit name="Blurred" index="0" />
 						<bit name="Hella Blurred" index="1" />
@@ -99,11 +99,11 @@ If a model has a begin fade distance and disappear distance, it will begin fadin
 					<stringId name="Looping Effect Marker Name" offset="0x10" visible="true" />
 					<float32 name="Initial Probability" offset="0x14" visible="true" />
 				</tagblock>
-				<int8 name="Runtime Permutation Index" offset="0x14" visible="true" />
-				<int8 name="Runtime Permutation Index" offset="0x15" visible="true" />
-				<int8 name="Runtime Permutation Index" offset="0x16" visible="true" />
-				<int8 name="Runtime Permutation Index" offset="0x17" visible="true" />
-				<int8 name="Runtime Permutation Index" offset="0x18" visible="true" />
+				<int8 name="Runtime State Permutation Index 0" offset="0x14" visible="true" />
+				<int8 name="Runtime State Permutation Index 1" offset="0x15" visible="true" />
+				<int8 name="Runtime State Permutation Index 2" offset="0x16" visible="true" />
+				<int8 name="Runtime State Permutation Index 3" offset="0x17" visible="true" />
+				<int8 name="Runtime State Permutation Index 4" offset="0x18" visible="true" />
 				<int8 name="Unknown" offset="0x19" visible="false" />
 				<int16 name="Unknown" offset="0x1A" visible="false" />
 				<undefined name="Unknown" offset="0x1C" visible="false" />
@@ -172,8 +172,8 @@ If a model has a begin fade distance and disappear distance, it will begin fadin
 			<option name="Hunter Shield" value="0x20" />
 		</enum16>
 		<int16 name="Damage Section Index" offset="0x6" visible="true" />
-		<int16 name="Collision Material Index" offset="0x8" visible="true" />
-		<int16 name="Damager Material Index" offset="0xA" visible="true" />
+		<int16 name="Collision Global Material Index" offset="0x8" visible="true" />
+		<int16 name="Damage Global Material Index" offset="0xA" visible="true" />
 		<stringid name="Global Material Name" offset="0xC" visible="true" />
 		<int16 name="Global Material Index" offset="0x10" visible="true" />
 		<int16 name="Unknown" offset="0x12" visible="false" />
@@ -190,12 +190,12 @@ If a model has a begin fade distance and disappear distance, it will begin fadin
 			<bit name="Cannot Die From Damage" index="7" />
 			<bit name="Passes Attached Damage To Riders" index="8" />
 		</flags32>
-		<stringId name="Global Indirect Material Name" offset="0x4" visible="true" tooltip="absorbes AOE or child damage" />
+		<stringId name="Indirect Global Material Name" offset="0x4" visible="true" tooltip="absorbes AOE or child damage" />
 		<int16 name="Indirect Damage Section Index" offset="0x8" visible="true" tooltip="absorbes AOE or child damage" />
 		<int16 name="Unknown" offset="0xA" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<enum8 name="Collision Damage Reporting Type" offset="0x10" visible="true">
-			<option name="Teh Guardians" value="0x0" />
+			<option name="Guardians" value="0x0" />
 			<option name="Falling Damage" value="0x1" />
 			<option name="Generic Collision Damage" value="0x2" />
 			<option name="Generic Melee Damage" value="0x3" />
@@ -237,11 +237,9 @@ If a model has a begin fade distance and disappear distance, it will begin fadin
 			<option name="Sentinel Beam" value="0x27" />
 			<option name="Sentinel Rpg" value="0x28" />
 			<option name="Teleporter" value="0x29" />
-			<option name="Warthog Gunner Gauss" value="0x2A" />
-			<option name="Warthog Gunner Rocket" value="0x2B" />
 		</enum8>
 		<enum8 name="Response Damage Reporting Type" offset="0x11" visible="true">
-			<option name="Teh Guardians" value="0x0" />
+			<option name="Guardians" value="0x0" />
 			<option name="Falling Damage" value="0x1" />
 			<option name="Generic Collision Damage" value="0x2" />
 			<option name="Generic Melee Damage" value="0x3" />
@@ -283,8 +281,6 @@ If a model has a begin fade distance and disappear distance, it will begin fadin
 			<option name="Sentinel Beam" value="0x27" />
 			<option name="Sentinel Rpg" value="0x28" />
 			<option name="Teleporter" value="0x29" />
-			<option name="Warthog Gunner Gauss" value="0x2A" />
-			<option name="Warthog Gunner Rocket" value="0x2B" />
 		</enum8>
 		<int16 name="Unknown" offset="0x12" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -318,7 +314,7 @@ If a model has a begin fade distance and disappear distance, it will begin fadin
 		<tagRef name="Shield Damaged First Person Shader" offset="0x7C" visible="true" />
 		<tagRef name="Shield Damaged Shader" offset="0x84" visible="true" />
 		<float32 name="Maximum Shield Vitality" offset="0x8C" visible="true" tooltip="the default initial and maximum shield vitality of this object" />
-		<stringid name="Global Shield Material Name" offset="0x90" visible="true" />
+		<stringid name="Shield Global Material Name" offset="0x90" visible="true" />
 		<float32 name="Minimum Stun Damage" offset="0x94" visible="true" tooltip="the minimum damage required to stun this object's shields" />
 		<float32 name="Stun Time" offset="0x98" visible="true" tooltip="the length of time the shields stay stunned (do not recharge) after taking damage" />
 		<float32 name="Recharge Time" offset="0x9C" visible="true" tooltip="the length of time it would take for the shields to fully recharge after being completely depleted" />
@@ -410,10 +406,10 @@ If a model has a begin fade distance and disappear distance, it will begin fadin
 				<stringId name="Destroyed Child Object Marker Name" offset="0x48" visible="true" tooltip="when this response fires, any children objects created at the supplied marker name will be destroyed" />
 				<float32 name="Total Damage Threshold" offset="0x4C" visible="true" tooltip="scale on total damage section vitality" />
 			</tagblock>
-			<uint32 name="null block here 1" offset="0x14" visible="false" />
-			<uint32 name="null block here 1" offset="0x18" visible="false" />
-			<uint32 name="null block here 2" offset="0x1C" visible="false" />
-			<uint32 name="null block here 2" offset="0x20" visible="false" />
+			<uint32 name="Null Block 1" offset="0x14" visible="false" />
+			<uint32 name="Null Block 1" offset="0x18" visible="false" />
+			<uint32 name="Null Block 2" offset="0x1C" visible="false" />
+			<uint32 name="Null Block 2" offset="0x20" visible="false" />
 			<float32 name="Stun Time" offset="0x24" visible="true" />
 			<float32 name="Recharge Time" offset="0x28" visible="true" />
 			<float32 name="Runtime Recharge Velocity" offset="0x2C" visible="true" />
@@ -428,8 +424,8 @@ If a model has a begin fade distance and disappear distance, it will begin fadin
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
 		</tagblock>
-		<int16 name="Global Shield Material Index" offset="0xCC" visible="true" />
-		<int16 name="Global Indirect Material Index" offset="0xCE" visible="true" />
+		<int16 name="Shield Global Material Index" offset="0xCC" visible="true" />
+		<int16 name="Indirect Global Material Index" offset="0xCE" visible="true" />
 		<float32 name="Shield Recharge Velocity" offset="0xD0" visible="true" />
 		<float32 name="Health Recharge Velocity" offset="0xD4" visible="true" />
 		<tagblock name="Damage Seats" offset="0xD8" visible="true" elementSize="0x14">

@@ -4,23 +4,72 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
-	<undefined name="Unknown" offset="0x0" visible="false" />
-	<undefined name="Unknown" offset="0x4" visible="false" />
-	<undefined name="Unknown" offset="0x8" visible="false" />
-	<undefined name="Unknown" offset="0xC" visible="false" />
-	<undefined name="Unknown" offset="0x10" visible="false" />
-	<undefined name="Unknown" offset="0x14" visible="false" />
-	<undefined name="Unknown" offset="0x18" visible="false" />
-	<undefined name="Unknown" offset="0x1C" visible="false" />
-	<undefined name="Unknown" offset="0x20" visible="false" />
-	<undefined name="Unknown" offset="0x24" visible="false" />
-	<undefined name="Unknown" offset="0x28" visible="false" />
-	<undefined name="Unknown" offset="0x2C" visible="false" />
-	<undefined name="Unknown" offset="0x30" visible="false" />
-	<undefined name="Unknown" offset="0x34" visible="false" />
-	<undefined name="Unknown" offset="0x38" visible="false" />
-	<undefined name="Unknown" offset="0x3C" visible="false" />
-	<undefined name="Unknown" offset="0x40" visible="false" />
-	<undefined name="Unknown" offset="0x44" visible="false" />
-	<undefined name="Unknown" offset="0x48" visible="false" />
+	<flags32 name="Flags" offset="0x0" visible="true">
+		<bit name="Ripple Drifted By Flow" index="0" />
+		<bit name="Amplitude Changed By Pendulum Function" index="1" />
+		<bit name="Display Flash Foam" index="2" />
+		<bit name="Foam Size Defined In Game Unit" index="3" />
+	</flags32>
+	<comment title="INITIAL SETTINGS" />
+	<float32 name="Initial Radius" offset="0x4" visible="true" />
+	<float32 name="Initial Amplitude" offset="0x8" visible="true" />
+	<float32 name="Spread Speed" offset="0xC" visible="true" />
+	<float32 name="Speed Bias" offset="0x10" visible="true" />
+	<float32 name="Position Random Range" offset="0x14" visible="true" />
+	<comment title="LIFE SETTINGS">what happens during the ripple life. damping should be always larger than 0.</comment>
+	<float32 name="Duration Maximum" offset="0x18" visible="true" />
+	<float32 name="Duration Minimum" offset="0x1C" visible="true" />
+	<float32 name="Rise Period Ratio" offset="0x20" visible="true" />
+	<enum16 name="Rise Function" offset="0x24" visible="true">
+		<option name="Linear" value="0x0" />
+		<option name="Early" value="0x1" />
+		<option name="Very Early" value="0x2" />
+		<option name="Late" value="0x3" />
+		<option name="Very Late" value="0x4" />
+		<option name="Cosine" value="0x5" />
+		<option name="One" value="0x6" />
+		<option name="Zero" value="0x7" />
+	</enum16>
+	<enum16 name="Descend Function" offset="0x26" visible="true">
+		<option name="Linear" value="0x0" />
+		<option name="Early" value="0x1" />
+		<option name="Very Early" value="0x2" />
+		<option name="Late" value="0x3" />
+		<option name="Very Late" value="0x4" />
+		<option name="Cosine" value="0x5" />
+		<option name="One" value="0x6" />
+		<option name="Zero" value="0x7" />
+	</enum16>
+	<comment title="PENDULUM SETTINGS">Only valid in case of the predulum flag has been checked.</comment>
+	<float32 name="Phase Revolution Speed" offset="0x28" visible="true" />
+	<float32 name="Phase Repeat Along Radius" offset="0x2C" visible="true" />
+	<comment title="SHAPE TRANSITION">interpolate between shapes in ripple pattern array</comment>
+	<float32 name="Pattern Start Idx" offset="0x30" visible="true" />
+	<float32 name="Pattern End Idx" offset="0x34" visible="true" />
+	<enum16 name="Pattern Transition" offset="0x38" visible="true">
+		<option name="Linear" value="0x0" />
+		<option name="Early" value="0x1" />
+		<option name="Very Early" value="0x2" />
+		<option name="Late" value="0x3" />
+		<option name="Very Late" value="0x4" />
+		<option name="Cosine" value="0x5" />
+		<option name="One" value="0x6" />
+		<option name="Zero" value="0x7" />
+	</enum16>
+	<int16 name="Unknown" offset="0x3A" visible="false" />
+	<comment title="FOAM">quick flashed foam</comment>
+	<float32 name="Foam Out Radius" offset="0x3C" visible="true" />
+	<float32 name="Foam Fade Distance" offset="0x40" visible="true" />
+	<float32 name="Foam Duration" offset="0x44" visible="true" />
+	<enum16 name="Foam Fade Function" offset="0x48" visible="true">
+		<option name="Linear" value="0x0" />
+		<option name="Early" value="0x1" />
+		<option name="Very Early" value="0x2" />
+		<option name="Late" value="0x3" />
+		<option name="Very Late" value="0x4" />
+		<option name="Cosine" value="0x5" />
+		<option name="One" value="0x6" />
+		<option name="Zero" value="0x7" />
+	</enum16>
+	<int16 name="Unknown" offset="0x4A" visible="false" />
 </plugin>

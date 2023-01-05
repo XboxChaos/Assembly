@@ -23,11 +23,11 @@
 		<bit name="Disable Overlay Effect" index="5" />
 	</flags32>
 	<enum16 name="Screen ID" offset="0x4" visible="true">
-		<option name="Test 0" value="0x0" tooltip="1" />
-		<option name="Test 1" value="0x1" tooltip="2" />
-		<option name="Test 2" value="0x2" tooltip="3" />
-		<option name="Test 3" value="0x3" tooltip="4" />
-		<option name="Test 4" value="0x4" tooltip="5" />
+		<option name="Test 1" value="0x0" />
+		<option name="Test 2" value="0x1" />
+		<option name="Test 3" value="0x2" />
+		<option name="Test 4" value="0x3" />
+		<option name="Test 5" value="0x4" />
 		<option name="Game Shell Background" value="0x5" />
 		<option name="Main Menu" value="0x6" />
 		<option name="Error Dialog OK Cancel" value="0x7" />
@@ -266,63 +266,8 @@
 		<option name="Error OK Cancel Large" value="0xF0" />
 		<option name="YZZYX" value="0xF1" />
 		<option name="Subtitle Display" value="0xF2" />
-		<option name="PP Keyboard Settings" value="0xF3" />
-		<option name="PP Keyboard Settings Qtr" value="0xF4" />
-		<option name="PP Invert Dual Wield" value="0xF5" />
-		<option name="System Settings" value="0xF6" />
-		<option name="Bungie News" value="0xF7" />
-		<option name="Filter Select" value="0xF8" />
-		<option name="Live Game Browser" value="0xF9" />
-		<option name="Game Details" value="0xFA" />
-		<option name="MP Custom Map Select" value="0xFB" />
-		<option name="MP All Maps Select" value="0xFC" />
-		<option name="PP Advanced Keyboard Settings" value="0xFD" />
-		<option name="PP Advanced Keyboard Settings Qtr" value="0xFE" />
-		<option name="Pp Restore Default Controller Settings" value="0xFF" />
-		<option name="Video Settings" value="0x100" />
-		<option name="Audio Settings" value="0x101" />
-		<option name="Pp Keyboard Settings Menu" value="0x102" />
-		<option name="Pause Settings" value="0x103" />
-		<option name="Mp Start Keyboard Settings" value="0x104" />
-		<option name="Mp Start Video Settings" value="0x105" />
-		<option name="Mp Start Audio Settings" value="0x106" />
-		<option name="Volume Settings" value="0x107" />
-		<option name="Sound Quality Setting" value="0x108" />
-		<option name="Eax Setting" value="0x109" />
-		<option name="3D Audio Setting" value="0x10A" />
-		<option name="Speaker Configuration" value="0x10B" />
-		<option name="Restore Audio Defaults" value="0x10C" />
-		<option name="Resolution Settings" value="0x10D" />
-		<option name="Aspect Ratio Settings" value="0x10E" />
-		<option name="Display Mode Settings" value="0x10F" />
-		<option name="Brightness Level Settings" value="0x110" />
-		<option name="Gamma Settings" value="0x111" />
-		<option name="Anti-Aliasing Settings" value="0x112" />
-		<option name="Hud Size Settings" value="0x113" />
-		<option name="Restore Video Defaults" value="0x114" />
-		<option name="Search Option Maps" value="0x115" />
-		<option name="Search Option Gametype" value="0x116" />
-		<option name="Search Option Variant" value="0x117" />
-		<option name="Search Option Gold Only" value="0x118" />
-		<option name="Search Option Dedicated Server" value="0x119" />
-		<option name="Search Option Max Players" value="0x11A" />
-		<option name="Search Option Favorites" value="0x11B" />
-		<option name="Search Option Show Full Games" value="0x11C" />
-		<option name="Safe Area Settings" value="0x11D" />
-		<option name="Find Game Menu" value="0x11E" />
-		<option name="Search Options" value="0x11F" />
-		<option name="Live Checkpoint Dropped Connection" value="0x120" />
-		<option name="Live Checkpoint Hash Mismatch" value="0x121" />
-		<option name="Level Of Detail Settings" value="0x122" />
-		<option name="Refresh Rate" value="0x123" />
-		<option name="Esrb Warning" value="0x124" />
-		<option name="Confirm Resolution Change" value="0x125" />
-		<option name="Invert Keyboard Look" value="0x126" />
-		<option name="Restore Keyboard Defaults" value="0x127" />
-		<option name="Network Adapter Settings" value="0x128" />
-		<option name="About Dialog" value="0x129" />
 	</enum16>
-	<enum16 name="Button Key Type" offset="0x6" visible="true" tooltip="The labels here are just a guide; the actual string used comes from the Nth position of this button key entry as found in the ui globals button key string list tag">
+	<enum16 name="Button Key" offset="0x6" visible="true" tooltip="The labels here are just a guide; the actual string used comes from the Nth position of this button key entry as found in the ui globals button key string list tag">
 		<option name="NONE" value="0x0" />
 		<option name="A=SELECT B=BACK" value="0x1" />
 		<option name="A=SELECT B=CANCEL" value="0x2" />
@@ -346,12 +291,9 @@
 		<option name="Y=XBOX LIVE PLAYERS B=CANCEL" value="0x14" />
 		<option name="X=DELETE A=SELECT B=BACK" value="0x15" />
 		<option name="A=OK" value="0x16" />
-		<option name="A=Edit B=Done" value="0x17" />
-		<option name="A=Select B=Back Y=Refresh" value="0x18" />
-		<option name="A=Accept B=Cancel" value="0x19" />
 	</enum16>
-	<colorf name="Text Color" offset="0x8" alpha="true" visible="true" tooltip="Any ui elements that don't explicitly set a text color will use this color" />
-	<tagRef name="String List Tag" offset="0x18" visible="true" tooltip="All text specific to this screen" />
+	<colorf name="Default Text Color" offset="0x8" alpha="true" visible="true" tooltip="Any ui elements that don't explicitly set a text color will use this color" />
+	<tagRef name="Screen String List Tag" offset="0x18" visible="true" tooltip="All text specific to this screen" />
 	<tagblock name="Panes" offset="0x20" visible="true" elementSize="0x4C" tooltip="Define the screen's panes here (normal screens have 1 pane, tab-view screens have 2+ panes)">
 		<int16 name="Unknown" offset="0x0" visible="false" />
 		<enum16 name="Animation Index" offset="0x2" visible="true">
@@ -510,21 +452,20 @@
 				<option name="HUD Number Text" value="0x8" />
 				<option name="Subtitle Font" value="0x9" />
 				<option name="Main Menu Font" value="0xA" />
-				<option name="Text Chat Font" value="0xB" />
 			</enum16>
 			<colorf name="Text Color" offset="0xC" alpha="true" visible="true" />
 			<rect16 name="Bounds" offset="0x1C" visible="true" />
 			<tagRef name="Bitmap" offset="0x24" visible="true" />
 			<point16 name="Bitmap Offset" offset="0x2C" visible="true" tooltip="from top-left" />
-			<stringid name="String Id" offset="0x30" visible="true" />
+			<stringid name="String ID" offset="0x30" visible="true" />
 			<int16 name="Render Depth Bias" offset="0x34" visible="true" />
-			<int16 name="Mouse Region Top Offset" offset="0x36" visible="true" />
+			<int16 name="Unknown" offset="0x36" visible="false" />
 			<flags32 name="Button Flags" offset="0x38" visible="true">
 				<bit name="DOESN'T Tab Vertically" index="0" />
 				<bit name="DOESN'T Tab Horizontally" index="1" />
 			</flags32>
 		</tagblock>
-		<tagblock name="List Block" offset="0xC" visible="true" elementSize="0x18" tooltip="If the pane contains a list, define it here">
+		<tagblock name="List Definition" offset="0xC" visible="true" elementSize="0x18" tooltip="If the pane contains a list, define it here">
 			<flags32 name="Flags" offset="0x0" visible="true">
 				<bit name="List Wraps" index="0" />
 				<bit name="Interactive" index="1" />
@@ -647,9 +588,9 @@
 				</enum16>
 				<int32 name="Integer Value" offset="0x4" visible="true" />
 				<float32 name="Float Value" offset="0x8" visible="true" />
-				<stringid name="Text Value String Id" offset="0xC" visible="true" />
+				<stringid name="Text Value String ID" offset="0xC" visible="true" />
 				<comment title="Text Label">This is text string associated with data when it has the value specified above. The string comes from the screen's string list tag.</comment>
-				<stringid name="Text Label String Id" offset="0x10" visible="true" />
+				<stringid name="Text Label String ID" offset="0x10" visible="true" />
 			</tagblock>
 		</tagblock>
 		<tagblock name="Obsolete Table View" offset="0x14" visible="true" elementSize="0x28" tooltip="If the pane contains a table-view, define it here">
@@ -736,7 +677,6 @@
 				<option name="HUD Number Text" value="0x8" />
 				<option name="Subtitle Font" value="0x9" />
 				<option name="Main Menu Font" value="0xA" />
-				<option name="Text Chat Font" value="0xB" />
 			</enum16>
 			<int16 name="Unknown" offset="0xA" visible="false" />
 			<colorf name="Text Color" offset="0xC" alpha="true" visible="true" />
@@ -759,7 +699,7 @@
 					<int16 name="Unknown" offset="0x6" visible="false" />
 					<point16 name="Bitmap Top-Left" offset="0x8" visible="true" />
 					<tagRef name="Bitmap Tag" offset="0xC" visible="true" />
-					<stringid name="String Id" offset="0x14" visible="true" />
+					<stringid name="String ID" offset="0x14" visible="true" />
 					<int16 name="Render Depth Bias" offset="0x18" visible="true" />
 					<int16 name="Unknown" offset="0x1A" visible="false" />
 				</tagblock>
@@ -855,11 +795,10 @@
 				<option name="HUD Number Text" value="0x8" />
 				<option name="Subtitle Font" value="0x9" />
 				<option name="Main Menu Font" value="0xA" />
-				<option name="Text Chat Font" value="0xB" />
 			</enum16>
 			<colorf name="Text Color" offset="0xC" alpha="true" visible="true" />
 			<rect16 name="Text Bounds" offset="0x1C" visible="true" />
-			<stringid name="String Id" offset="0x24" visible="true" />
+			<stringid name="String ID" offset="0x24" visible="true" />
 			<int16 name="Render Depth Bias" offset="0x28" visible="true" />
 			<int16 name="Unknown" offset="0x2A" visible="false" />
 		</tagblock>
@@ -952,7 +891,7 @@
 			<float32 name="Sprite Animation Speed FPS" offset="0x24" visible="true" />
 			<point16 name="Progress Bottom-Left" offset="0x28" visible="true" />
 			<stringid name="String Identifier" offset="0x2C" visible="true" />
-			<vector2 name="Progress Scale" offset="0x30" visible="true" />
+			<vector2 name="Render Scale" offset="0x30" visible="true" />
 		</tagblock>
 		<tagblock name="Model Scene Blocks" offset="0x2C" visible="true" elementSize="0x4C">
 			<comment title="NOTE On Coordinate Systems">Halo y-axis=ui z-axis, and Halo z-axis=ui y-axis.
@@ -1031,10 +970,10 @@ As a convention, let's always place objects in the ui scenario such that they ar
 			<int16 name="Render Depth Bias" offset="0x8" visible="true" />
 			<int16 name="Unknown" offset="0xA" visible="false" />
 			<tagblock name="Objects" offset="0xC" visible="true" elementSize="0x20">
-				<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+				<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 			</tagblock>
 			<tagblock name="Lights" offset="0x14" visible="true" elementSize="0x20">
-				<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+				<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 			</tagblock>
 			<vector3 name="Animation Scale Factor" offset="0x1C" visible="true" />
 			<point3 name="Camera Position" offset="0x28" visible="true" />
@@ -1045,7 +984,7 @@ As a convention, let's always place objects in the ui scenario such that they ar
 			<stringid name="UNUSED Ambient Anim" offset="0x48" visible="true" />
 		</tagblock>
 		<tagblock name="Unused Text-Value Blocks" offset="0x34" visible="true" elementSize="0x28">
-			<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+			<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 			<tagblock name="Text Value Pairs" offset="0x20" visible="true" elementSize="0x14">
 				<enum16 name="Value Type" offset="0x0" visible="true">
 					<option name="Integer Number" value="0x0" />
@@ -1060,9 +999,9 @@ As a convention, let's always place objects in the ui scenario such that they ar
 				</enum16>
 				<int32 name="Integer Value" offset="0x4" visible="true" />
 				<float32 name="Float Value" offset="0x8" visible="true" />
-				<stringid name="Text Value String Id" offset="0xC" visible="true" />
+				<stringid name="Text Value String ID" offset="0xC" visible="true" />
 				<comment title="Text Label">This is text string associated with data when it has the value specified above. The string comes from the screen's string list tag.</comment>
-				<stringid name="Text Label String Id" offset="0x10" visible="true" />
+				<stringid name="Text Label String ID" offset="0x10" visible="true" />
 			</tagblock>
 		</tagblock>
 		<tagblock name="HUD Blocks" offset="0x3C" visible="true" elementSize="0x24">

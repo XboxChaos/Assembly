@@ -8,7 +8,7 @@
 	<flags16 name="Flags" offset="0x0" visible="true">
 		<bit name="Simple Parameterization" index="0" tooltip="lightmap texture parametrization should correspond to diffuse texture parametrization" />
 		<bit name="Ignore Normals" index="1" tooltip="light independent of normals (trees)" />
-		<bit name="Transparent Lit" index="2" />
+		<bit name="Transparent Lit" index="2" tooltip="use lit vertex shader permutation. Only for transparent chicago (extended) and generic" />
 	</flags16>
 	<enum16 name="Detail Level" offset="0x2" visible="true" tooltip="affects the density of tesselation (high means slow).">
 		<option name="High" value="0x0" />
@@ -60,7 +60,7 @@
 		<option name="Fur" value="0x22" />
 		<option name="Pee Battle" value="0x23" />
 	</enum16>
-	<int16 name="Unknown" offset="0x24" visible="false" />
+	<int16 name="Shader Type" offset="0x24" visible="true" />
 	<int16 name="Unknown" offset="0x26" visible="false" />
 	<comment title="Model Shader">Setting &lt;true atmospheric fog&gt; enables per-pixel atmospheric fog but disables point/spot lights, planar fog, and the ability to control the atmospheric fog density for this shader.</comment>
 	<flags16 name="Flags" offset="0x28" visible="true">
@@ -70,7 +70,6 @@
 		<bit name="Alpha-Blended Decal" index="3" />
 		<bit name="True Atmospheric Fog" index="4" />
 		<bit name="Disable Two-Sided Culling" index="5" />
-		<bit name="Multipurpose Map Uses OG Xbox Channel Order" index="6" />
 	</flags16>
 	<int16 name="Unknown" offset="0x2A" visible="false" />
 	<undefined name="Unknown" offset="0x2C" visible="false" />
@@ -136,12 +135,6 @@ Multipurpose map is used for the following:
 * GREEN: self-illumination mask (adds to diffuse light)
 * ALPHA: primary change color mask (recolors diffuse map)
 * RED: auxiliary mask
-
-Multipurpose map is used for the following (if &lt;OG Xbox channel order&gt; flag is set):
-* RED: specular reflection mask (modulates reflections)
-* GREEN: self-illumination mask (adds to diffuse light)
-* BLUE: primary change color mask (recolors diffuse map)
-* ALPHA: auxiliary mask
 
 Note that when DXT1 compressed color-key textures are used for the multipurpose map (as they should be normally), the alpha channel is 1-bit and any non-zero alpha pixels must have zero-color, therefore the secondary change color mask cannot affect pixels already affected by any of the other channels.
 
@@ -264,7 +257,7 @@ Detail map affects diffuse map, and optionally affects reflection if &lt;detail 
 	<undefined name="Unknown" offset="0x188" visible="false" />
 	<undefined name="Unknown" offset="0x18C" visible="false" />
 	<undefined name="Unknown" offset="0x190" visible="false" />
-	<float32 name="Unknown" offset="0x194" visible="false" />
+	<float32 name="Runtime Unknown" offset="0x194" visible="true" />
 	<tagRef name="Bump Map" offset="0x198" visible="true" />
 	<undefined name="Unknown" offset="0x1AC" visible="false" />
 	<undefined name="Unknown" offset="0x1B0" visible="false" />

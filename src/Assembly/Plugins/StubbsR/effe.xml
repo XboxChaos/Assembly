@@ -10,7 +10,7 @@
 	</flags32>
 	<int16 name="Loop Start Event Index" offset="0x4" visible="true" />
 	<int16 name="Loop Stop Event Index" offset="0x6" visible="true" />
-	<undefined name="Unknown" offset="0x8" visible="false" />
+	<float32 name="Damage Radius" offset="0x8" visible="true" />
 	<undefined name="Unknown" offset="0xC" visible="false" />
 	<undefined name="Unknown" offset="0x10" visible="false" />
 	<undefined name="Unknown" offset="0x14" visible="false" />
@@ -19,7 +19,7 @@
 	<undefined name="Unknown" offset="0x20" visible="false" />
 	<undefined name="Unknown" offset="0x24" visible="false" />
 	<tagblock name="Locations" offset="0x28" visible="true" elementSize="0x20">
-		<ascii name="Marker Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Marker Name" offset="0x0" size="0x20" visible="true" />
 	</tagblock>
 	<tagblock name="Events" offset="0x3C" visible="true" elementSize="0x54">
 		<undefined name="Unknown" offset="0x0" visible="false" />
@@ -46,6 +46,8 @@
 			<int16 name="Location Index" offset="0x4" visible="true" />
 			<flags16 name="Flags" offset="0x6" visible="true">
 				<bit name="Face Down Regardless Of Location (Decals)" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Runtime Required" index="2" />
 			</flags16>
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
@@ -109,10 +111,8 @@
 			<int16 name="Location Index" offset="0x8" visible="true" />
 			<int16 name="Unknown" offset="0xA" visible="false" />
 			<degree2 name="Relative Direction" offset="0xC" visible="true" tooltip="particle initial velocity direction relative to the location's forward" />
-			<vector3 name="Relative Offset" offset="0x14" visible="true" tooltip="particle initial position offset relative to the locatin's forward" />
-			<undefined name="Unknown" offset="0x20" visible="false" />
-			<undefined name="Unknown" offset="0x24" visible="false" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
+			<point3 name="Relative Offset" offset="0x14" visible="true" tooltip="particle initial position offset relative to the locatin's forward" />
+			<vector3 name="Relative Direction Vector" offset="0x20" visible="true" />
 			<undefined name="Unknown" offset="0x2C" visible="false" />
 			<undefined name="Unknown" offset="0x30" visible="false" />
 			<undefined name="Unknown" offset="0x34" visible="false" />

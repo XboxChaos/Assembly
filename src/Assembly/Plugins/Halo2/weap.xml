@@ -29,7 +29,7 @@
 		<bit name="Does Not Cause Collision Damage" index="5" />
 		<bit name="Early Mover" index="6" />
 		<bit name="Early Mover Localized Physics" index="7" />
-		<bit name="Use Static Massive Lightmap Sample" index="8" tooltip="cast a ton of rays once and store the results for lighting" />
+		<bit name="Use Static Massive Lightmap Sample" index="8" tooltip="cast a lot of rays once and store the results for lighting" />
 		<bit name="Object Scales Attachments" index="9" />
 		<bit name="Inherits Player's Appearance" index="10" />
 		<bit name="Dead Bipeds Can't Localize" index="11" />
@@ -247,14 +247,14 @@
 	<rangef name="Detonation Delay" offset="0x114" visible="true" />
 	<tagRef name="Detonating Effect" offset="0x11C" visible="true" />
 	<tagRef name="Detonation Effect" offset="0x124" visible="true" />
-	<comment title="WEAPON">All weapons should have 'primary trigger' and 'secondary trigger'markers as appropriate.
+	<comment title="WEAPON">All weapons should have 'primary trigger' and 'secondary trigger' markers as appropriate.
 Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
 	<flags32 name="Flags" offset="0x12C" visible="true">
 		<bit name="Vertical Heat Display" index="0" />
 		<bit name="Mutually Exclusive Triggers" index="1" />
 		<bit name="Attacks Automatically On Bump" index="2" />
 		<bit name="Must Be Readied" index="3" />
-		<bit name="Doesn't Count Towards Maximum" index="4" />
+		<bit name="Doesn't Count Toward Maximum" index="4" />
 		<bit name="Aim Assists Only When Zoomed" index="5" />
 		<bit name="Prevents Grenade Throwing" index="6" />
 		<bit name="Must Be Picked Up" index="7" />
@@ -263,7 +263,7 @@ Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
 		<bit name="Detonates When Dropped" index="10" />
 		<bit name="Cannot Fire At Maximum Age" index="11" />
 		<bit name="Secondary Trigger Overrides Grenades" index="12" />
-		<bit name="(OBSOLETE) Does Not Depower Active Camo In Multiplayer" index="13" />
+		<bit name="Does Not Depower Active Camo In Multiplayer" index="13" tooltip="obsolete" />
 		<bit name="Enables Integrated Night Vision" index="14" />
 		<bit name="AIs Use Weapon Melee Damage" index="15" />
 		<bit name="Forces No Binoculars" index="16" />
@@ -289,9 +289,9 @@ Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
 		<option name="Loads Alternate Ammunition" value="0x3" />
 		<option name="Loads Multiple Primary Ammunition" value="0x4" />
 	</enum16>
-	<int16 name="Maximum Alternate Shots Loaded" offset="0x136" visible="true" tooltip="If the second trigger loads alternate ammunition. This is the maximum number of shots that can be loaded at a time" />
-	<float32 name="Turn On Time" offset="0x138" visible="true" tooltip="How long after being readied it takes this weapon to switch its 'turned_on' attatchment 1.0" />
-	<comment title="Old obsolete export to functions" />
+	<int16 name="Maximum Alternate Shots Loaded" offset="0x136" visible="true" tooltip="If the second trigger loads alternate ammunition, This is the maximum number of shots that can be loaded at a time" />
+	<float32 name="Turn On Time" offset="0x138" visible="true" tooltip="How long after being readied it takes this weapon to switch its 'turned_on' attachment to 1.0" />
+	<comment title="Old Obsolete Export To Functions" />
 	<float32 name="Ready Time" offset="0x13C" visible="true" />
 	<tagRef name="Ready Effect" offset="0x140" visible="true" />
 	<tagRef name="Ready Damage Effect" offset="0x148" visible="true" />
@@ -315,7 +315,7 @@ Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
 	<float32 name="Throttle Magnitude" offset="0x1A4" visible="true" tooltip="Additional throttle to apply towards target when melee-ing w/ magnetism" />
 	<float32 name="Throttle Minimum Distance" offset="0x1A8" visible="true" tooltip="Minimum distance to target that throttle magnetism kicks in" />
 	<degree name="Throttle Maximum Adjustment Angle" offset="0x1AC" visible="true" tooltip="Maximum angle throttle magnetism will have an effect, relative to the players movement throttle" />
-	<comment title="Melee Damage Parameters">Damage Pyramid Angles: Defines the frustrum from the camera that the melee-attack uses to find targets
+	<comment title="Melee Damage Parameters">Damage Pyramid Angles: Defines the frustum from the camera that the melee-attack uses to find targets
 Damage Pyramid Depth: How far the melee attack searches for a target</comment>
 	<degree2 name="Damage Pyramid Angles" offset="0x1B0" visible="true" />
 	<float32 name="Damage Pyramid Depth" offset="0x1B8" visible="true" />
@@ -329,7 +329,7 @@ Damage Pyramid Depth: How far the melee attack searches for a target</comment>
 	<tagRef name="Lunge Melee Damage" offset="0x1EC" visible="true" tooltip="This is only important for the energy sword" />
 	<tagRef name="Lunge Melee Response" offset="0x1F4" visible="true" tooltip="This is only important for the energy sword" />
 	<enum8 name="Melee Damage Reporting Type" offset="0x1FC" visible="true">
-		<option name="Teh Guardians !!1!!1!" value="0x0" />
+		<option name="Guardians" value="0x0" />
 		<option name="Falling Damage" value="0x1" />
 		<option name="Generic Collision Damage" value="0x2" />
 		<option name="Generic Melee Damage" value="0x3" />
@@ -371,8 +371,6 @@ Damage Pyramid Depth: How far the melee attack searches for a target</comment>
 		<option name="Sentinel Beam" value="0x27" />
 		<option name="Sentinel RPG" value="0x28" />
 		<option name="Teleporter" value="0x29" />
-		<option name="Warthog Gunner Gauss" value="0x2A" />
-		<option name="Warthog Gunner Rocket" value="0x2B" />
 	</enum8>
 	<int8 name="Unknown" offset="0x1FD" visible="false" />
 	<comment title="Zoom" />
@@ -395,7 +393,7 @@ Damage Pyramid Depth: How far the melee attack searches for a target</comment>
 		<option name="When Zoomed or Reloading" value="0x2" />
 	</enum16>
 	<int16 name="Unknown" offset="0x22E" visible="false" />
-	<float32 name="Forwards Movement Penalty" offset="0x230" visible="true" tooltip="percent slowdown to forward movement for units carrying this weapon" />
+	<float32 name="Forward Movement Penalty" offset="0x230" visible="true" tooltip="percent slowdown to forward movement for units carrying this weapon" />
 	<float32 name="Sideways Movement Penalty" offset="0x234" visible="true" tooltip="percent slowdown to sideways and backward movement for units carrying this weapon" />
 	<comment title="AI Targeting Parameters" />
 	<float32 name="AI Scariness" offset="0x238" visible="true" />
@@ -443,13 +441,13 @@ Damage Pyramid Depth: How far the melee attack searches for a target</comment>
 	<undefined name="Unknown" offset="0x29C" visible="false" />
 	<undefined name="Unknown" offset="0x2A0" visible="false" />
 	<undefined name="Unknown" offset="0x2A4" visible="false" />
-	<comment title="Inteface" />
+	<comment title="Interface" />
 	<tagblock name="First Person" offset="0x2A8" visible="true" elementSize="0x10">
 		<tagRef name="First Person Model" offset="0x0" visible="true" />
 		<tagRef name="First Person Animations" offset="0x8" visible="true" />
 	</tagblock>
 	<tagRef name="New HUD Interface" offset="0x2B0" visible="true" />
-	<tagblock name="Predicted Resource" offset="0x2B8" visible="true" elementSize="0x8">
+	<tagblock name="Predicted Resources" offset="0x2B8" visible="true" elementSize="0x8">
 		<enum16 name="Type" offset="0x0" visible="true">
 			<option name="Bitmap" value="0x0" />
 			<option name="Sound" value="0x1" />
@@ -473,12 +471,12 @@ Damage Pyramid Depth: How far the melee attack searches for a target</comment>
 		<int16 name="Rounds Total Initial" offset="0x6" visible="true" />
 		<int16 name="Rounds Total Maximum" offset="0x8" visible="true" />
 		<int16 name="Rounds Loaded Maximum" offset="0xA" visible="true" />
-		<int16 name="Runtime Rounds Inventory Maximum" offset="0xC" visible="true" />
+		<int16 name="Rounds Inventory Maximum" offset="0xC" visible="true" />
 		<int16 name="Unknown" offset="0xE" visible="false" />
 		<float32 name="Reload Time" offset="0x10" visible="true" tooltip="the length of time it takes to load a single magazine into the weapon" />
 		<int16 name="Rounds Reloaded" offset="0x14" visible="true" />
 		<int16 name="Unknown" offset="0x16" visible="false" />
-		<float32 name="Chamber Time" offset="0x18" visible="true" />
+		<float32 name="Chamber Time" offset="0x18" visible="true" tooltip="the length of time it takes to chamber the next round" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
@@ -490,7 +488,7 @@ Damage Pyramid Depth: How far the melee attack searches for a target</comment>
 		<tagRef name="Chambering Effect" offset="0x44" visible="true" />
 		<tagRef name="Chambering Damage Effect" offset="0x4C" visible="true" />
 		<tagblock name="Magazine Equipment" offset="0x54" visible="true" elementSize="0xC">
-			<int16 name="Rounds (0 for Max)" offset="0x0" visible="true" />
+			<int16 name="Rounds" offset="0x0" visible="true" tooltip="0 for maximum" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagRef name="Equipment" offset="0x4" visible="true" />
 		</tagblock>
@@ -513,8 +511,8 @@ Damage Pyramid Depth: How far the melee attack searches for a target</comment>
 			<option name="Latch-Zoom" value="0x4" />
 			<option name="Latch-Rocketlauncher" value="0x5" />
 		</enum16>
-		<int16 name="Primary Barrel" offset="0x8" visible="true" />
-		<int16 name="Secondary Barrel" offset="0xA" visible="true" />
+		<int16 name="Primary Barrel Index" offset="0x8" visible="true" />
+		<int16 name="Secondary Barrel Index" offset="0xA" visible="true" />
 		<enum16 name="Prediction" offset="0xC" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Spew" value="0x1" />
@@ -553,37 +551,35 @@ Damage Pyramid Depth: How far the melee attack searches for a target</comment>
 	<tagblock name="Barrels" offset="0x2D0" visible="true" elementSize="0xEC">
 		<flags32 name="Flags" offset="0x0" visible="true">
 			<bit name="Tracks Fired Projectile" index="0" />
-			<bit name="Random Firing Effects" index="1" />
-			<bit name="Can Fire With Partial Ammo" index="2" />
-			<bit name="Projectiles Use Weapon Origin" index="3" />
-			<bit name="Ejects During Chamber" index="4" />
+			<bit name="Random Firing Effects" index="1" tooltip="rather than being chosen sequentially, firing effects are picked randomly" />
+			<bit name="Can Fire With Partial Ammo" index="2" tooltip="allows a weapon to be fired as long as there is a non-zero amount of ammunition loaded" />
+			<bit name="Projectiles Use Weapon Origin" index="3" tooltip="instead of coming out of the magic first person camera origin, the projectiles for this weapon actually come out of the gun" />
+			<bit name="Ejects During Chamber" index="4" tooltip="this trigger's ejection port is started during the key frame of its chamber animation" />
 			<bit name="Use Error When Unzoomed" index="5" />
-			<bit name="Projectile Vector Cannot Be Adjusted" index="6" />
+			<bit name="Projectile Vector Cannot Be Adjusted" index="6" tooltip="projectiles fired by this weapon cannot have their direction adjusted by the ai to hit the target" />
 			<bit name="Projectiles Have Identical Error" index="7" />
-			<bit name="Projectiles Fire Parallel" index="8" />
+			<bit name="Projectiles Fire Parallel" index="8" tooltip="if there are multiple guns for this trigger, the projectiles emerge in parallel beams (rather than independant aiming)" />
 			<bit name="Cant Fire When Others Firing" index="9" />
 			<bit name="Cant Fire When Others Recovering" index="10" />
 			<bit name="Don't Clear Fire Bit After Recovering" index="11" />
 			<bit name="Stagger Fire Across Multiple Markers" index="12" />
 			<bit name="Fires Locked Projectiles" index="13" />
-			<bit name="Can Fire At Maximum Age" index="14" />
 		</flags32>
 		<comment title="Firing" />
 		<rangef name="Rounds Per Second" offset="0x4" visible="true" tooltip="the number of firing effects created per second" />
 		<float32 name="Acceleration Time" offset="0xC" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve its final rounds per second" />
-		<float32 name="Deceleration Time" offset="0x10" visible="true" tooltip="function value sets the current rate of fire when the barrel is not firing" />
+		<float32 name="Deceleration Time" offset="0x10" visible="true" tooltip="the continuous idle time it takes for the weapon to return from its final rounds per second to its initial" />
 		<float32 name="Barrel Spin Scale" offset="0x14" visible="true" tooltip="scale the barrel spin speed by this amount" />
 		<float32 name="Blurred Rate Of Fire" offset="0x18" visible="true" tooltip="a percentage between 0 and 1 which controls how soon in its firing animation the weapon blurs" />
 		<range16 name="Shots Per Fire" offset="0x1C" visible="true" tooltip="allows designer caps to the shots you can fire from one firing action" />
 		<float32 name="Fire Recovery Time" offset="0x20" visible="true" tooltip="how long after a set of shots it takes before the barrel can fire again" />
 		<float32 name="Soft Recovery Fraction" offset="0x24" visible="true" tooltip="how much of the recovery allows shots to be queued" />
-		<int16 name="Magazine" offset="0x28" visible="true" tooltip="the magazine from which this trigger draws its ammunition" />
+		<int16 name="Magazine Index" offset="0x28" visible="true" tooltip="the magazine from which this trigger draws its ammunition" />
 		<int16 name="Rounds Per Shot" offset="0x2A" visible="true" tooltip="the number of rounds expended to create a single firing effect" />
 		<int16 name="Minimum Rounds Loaded" offset="0x2C" visible="true" tooltip="the minimum number of rounds necessary to fire the weapon" />
 		<int16 name="Rounds Between Tracers" offset="0x2E" visible="true" tooltip="the number of non-tracer rounds fired between tracers" />
 		<stringId name="Optional Barrel Marker Name" offset="0x30" visible="true" />
-		<comment title="Prediction Properties">What the behavior of this barrel is in a predicted network game
-		</comment>
+		<comment title="Prediction Properties">What the behavior of this barrel is in a predicted network game</comment>
 		<enum16 name="Prediction Type" offset="0x34" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Continuous" value="0x1" />
@@ -597,11 +593,11 @@ Damage Pyramid Depth: How far the melee attack searches for a target</comment>
 			<option name="Quiet" value="0x4" />
 		</enum16>
 		<comment title="Error" />
-		<float32 name="Acceleration Time" offset="0x38" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve to its final error" />
+		<float32 name="Acceleration Time" offset="0x38" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve its final error" />
 		<float32 name="Deceleration Time" offset="0x3C" visible="true" tooltip="the continuous idle time it takes for the weapon to return to its initial error" />
 		<rangef name="Damage Error" offset="0x40" visible="true" tooltip="the range of angles (in degrees) that a damaged weapon will skew fire" />
 		<comment title="Dual Weapon Error" />
-		<float32 name="Acceleration Time" offset="0x48" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve to its final error" />
+		<float32 name="Acceleration Time" offset="0x48" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve its final error" />
 		<float32 name="Deceleration Time" offset="0x4C" visible="true" tooltip="the continuous idle time it takes for the weapon to return to its initial error" />
 		<float32 name="Runtime Dual Error Acceleration Rate" offset="0x50" visible="true" />
 		<float32 name="Runtime Dual Error Deceleration Rate" offset="0x54" visible="true" />
@@ -618,8 +614,8 @@ Damage Pyramid Depth: How far the melee attack searches for a target</comment>
 		<degree name="Minimum Error" offset="0x70" visible="true" />
 		<ranged name="Error Angle" offset="0x74" visible="true" />
 		<point3 name="First Person Offset" offset="0x7C" visible="true" tooltip="+x is forward, +z is up, +y is left" />
-		<enum8 name="Damage Reporting Type" offset="0x88" visible="true">
-			<option name="Teh Guardians !!1!!1!" value="0x0" />
+		<enum8 name="Damage Effect Reporting Type" offset="0x88" visible="true">
+			<option name="Guardians" value="0x0" />
 			<option name="Falling Damage" value="0x1" />
 			<option name="Generic Collision Damage" value="0x2" />
 			<option name="Generic Melee Damage" value="0x3" />
@@ -661,8 +657,6 @@ Damage Pyramid Depth: How far the melee attack searches for a target</comment>
 			<option name="Sentinel Beam" value="0x27" />
 			<option name="Sentinel RPG" value="0x28" />
 			<option name="Teleporter" value="0x29" />
-			<option name="Warthog Gunner Gauss" value="0x2A" />
-			<option name="Warthog Gunner Rocket" value="0x2B" />
 		</enum8>
 		<int8 name="Unknown" offset="0x89" visible="false" />
 		<int16 name="Unknown" offset="0x8A" visible="false" />
@@ -676,8 +670,8 @@ Damage Pyramid Depth: How far the melee attack searches for a target</comment>
 		<float32 name="Overload Time" offset="0xAC" visible="true" tooltip="the next trigger fires this often while holding down this trigger" />
 		<comment title="Angle Change (Recoil)" />
 		<ranged name="Angle Change Per Shot" offset="0xB0" visible="true" tooltip="angle change per shot of the weapon during firing" />
-		<float32 name="Angle Change Acceleration Time" offset="0xB8" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve its final angle per shot" />
-		<float32 name="Angle Change Deceleration Time" offset="0xBC" visible="true" tooltip="the continuous idle time it takes for the weapon to return its initial angle per shot" />
+		<float32 name="Angle Change Acceleration Time" offset="0xB8" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve its final angle change per shot" />
+		<float32 name="Angle Change Deceleration Time" offset="0xBC" visible="true" tooltip="the continuous idle time it takes for the weapon to return to its initial angle change per shot" />
 		<enum16 name="Angle Change Function" offset="0xC0" visible="true" tooltip="function used to scale between initial and final angle change per shot">
 			<option name="Linear" value="0x0" />
 			<option name="Early" value="0x1" />
@@ -685,18 +679,18 @@ Damage Pyramid Depth: How far the melee attack searches for a target</comment>
 			<option name="Late" value="0x3" />
 			<option name="Very Late" value="0x4" />
 			<option name="Cosine" value="0x5" />
-			<option name="Zero" value="0x6" />
-			<option name="One" value="0x7" />
+			<option name="One" value="0x6" />
+			<option name="Zero" value="0x7" />
 		</enum16>
 		<int16 name="Unknown" offset="0xC2" visible="false" />
-		<float32 name="Runtime Angle Change Acceleration Rate" offset="0xC4" visible="true" />
-		<float32 name="Runtime Angle Change Deceleration Rate" offset="0xC8" visible="true" />
-		<float32 name="Runtime Illumination Recovery Rate" offset="0xCC" visible="true" />
-		<float32 name="Runtime Ejection Port Recovery Rate" offset="0xD0" visible="true" />
-		<float32 name="Runtime Rate Of Fire Acceleration Rate" offset="0xD4" visible="true" />
-		<float32 name="Runtime Rate Of Fire Deceleration Rate" offset="0xD8" visible="true" />
-		<float32 name="Runtime Error Acceleration Rate" offset="0xDC" visible="true" />
-		<float32 name="Runtime Error Deceleration Rate" offset="0xE0" visible="true" />
+		<float32 name="Angle Change Acceleration Rate" offset="0xC4" visible="true" />
+		<float32 name="Angle Change Deceleration Rate" offset="0xC8" visible="true" />
+		<float32 name="Illumination Recovery Rate" offset="0xCC" visible="true" />
+		<float32 name="Ejection Port Recovery Rate" offset="0xD0" visible="true" />
+		<float32 name="Rate Of Fire Acceleration Rate" offset="0xD4" visible="true" />
+		<float32 name="Rate Of Fire Deceleration Rate" offset="0xD8" visible="true" />
+		<float32 name="Error Acceleration Rate" offset="0xDC" visible="true" />
+		<float32 name="Error Deceleration Rate" offset="0xE0" visible="true" />
 		<tagblock name="Firing Effects" offset="0xE4" visible="true" elementSize="0x34" tooltip="firing effects determine what happens when this trigger is fired">
 			<int16 name="Shot Count Lower Bound" offset="0x0" visible="true" tooltip="the minimum number of times this firing effect will be used, once it has been chosen" />
 			<int16 name="Shot Count Upper Bound" offset="0x2" visible="true" tooltip="the maximum number of times this firing effect will be used, once it has been chosen" />

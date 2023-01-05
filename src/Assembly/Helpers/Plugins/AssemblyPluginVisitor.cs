@@ -176,6 +176,12 @@ namespace Assembly.Helpers.Plugins
 				AddValue(new StringData(name, offset, 0, StringType.UTF16, "", size, pluginLine, tooltip));
 		}
 
+		public void VisitHexString(string name, uint offset, bool visible, int size, uint pluginLine, string tooltip)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new StringData(name, offset, 0, StringType.Hex, "", size, pluginLine, tooltip));
+		}
+
 		public void VisitRawData(string name, uint offset, bool visible, int size, uint pluginLine, string tooltip)
 		{
 			if (visible || _showInvisibles)
@@ -216,6 +222,12 @@ namespace Assembly.Helpers.Plugins
 		{
 			if (visible || _showInvisibles)
 				AddValue(new DatumData(name, offset, 0, 0, 0, pluginLine, tooltip));
+		}
+
+		public void VisitOldStringID(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new OldStringIDData(name, offset, 0, "", _stringIDTrie, pluginLine, tooltip));
 		}
 
 		#region Range

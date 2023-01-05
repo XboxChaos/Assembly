@@ -20,8 +20,8 @@ namespace Blamite.Patching
 		///     or false if it will be found at the beginning.
 		/// </param>
 		/// <returns>The differences between the two parts of the files.</returns>
-		public static List<DataChange> CompareData(IReader originalReader, uint originalOffset, int originalSize,
-			IReader newReader, uint newOffset, int newSize, bool extraDataAtEnd)
+		public static List<DataChange> CompareData(IReader originalReader, uint originalOffset, uint originalSize,
+			IReader newReader, uint newOffset, uint newSize, bool extraDataAtEnd)
 		{
 			var results = new List<DataChange>();
 
@@ -29,7 +29,7 @@ namespace Blamite.Patching
 			var oldBuffer = new byte[BufferSize];
 			var newBuffer = new byte[BufferSize];
 
-			int sizeDiff = newSize - originalSize;
+			uint sizeDiff = newSize - originalSize;
 			if (sizeDiff < 0)
 				throw new NotSupportedException("Comparing shrunk segments is not supported yet");
 
@@ -42,7 +42,7 @@ namespace Blamite.Patching
 					newReader.SeekTo(newOffset);
 
 				var offset = (uint) (newReader.Position - newOffset);
-				byte[] data = newReader.ReadBlock(sizeDiff);
+				byte[] data = newReader.ReadBlock((int)sizeDiff);
 				results.Add(new DataChange(offset, data));
 			}
 

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin game="ODSTMCC" baseSize="0x840">
+<plugin game="ODSTMCC" baseSize="0x800">
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Lord Zedd" version="1">k</revision>
 	</revisions>
 	<enum8 name="Map Type" offset="0x0" visible="true">
-		<option name="Single Player" value="0x0" />
+		<option name="Solo" value="0x0" />
 		<option name="Multiplayer" value="0x1" />
 		<option name="Main Menu" value="0x2" />
 	</enum8>
@@ -34,11 +34,12 @@
 		<bit name="Bit 14" index="14" />
 		<bit name="Bit 15" index="15" />
 	</flags16>
-	<int32 name="Campaign ID" offset="0x4" visible="true" />
-	<int32 name="Map ID" offset="0x8" visible="true" />
-	<degree name="Local North" offset="0xC" visible="true" />
-	<float32 name="Sandbox Budget" offset="0x10" visible="true" />
-	<tagblock name="Structure BSPs" offset="0x14" visible="true" elementSize="0x6C">
+	<undefined name="Unknown" offset="0x4" visible="false" />
+	<int32 name="Campaign ID" offset="0x8" visible="true" />
+	<int32 name="Map ID" offset="0xC" visible="true" />
+	<degree name="Local North" offset="0x10" visible="true" />
+	<float32 name="Sandbox Budget" offset="0x14" visible="true" />
+	<tagblock name="Structure BSPs" offset="0x18" visible="true" elementSize="0x6C">
 		<tagRef name="Structure BSP" offset="0x0" visible="true" />
 		<tagRef name="Structure Design" offset="0x10" visible="true" />
 		<tagRef name="Structure Lighting" offset="0x20" visible="true" />
@@ -82,12 +83,12 @@
 		<tagRef name="Wind" offset="0x58" visible="true" />
 		<undefined name="Unknown" offset="0x68" visible="false" />
 	</tagblock>
-	<tagRef name="Scenario PDA" offset="0x20" visible="true" />
-	<undefined name="Unknown" offset="0x30" visible="false" />
+	<tagRef name="Scenario PDA" offset="0x24" visible="true" />
 	<undefined name="Unknown" offset="0x34" visible="false" />
 	<undefined name="Unknown" offset="0x38" visible="false" />
-	<tagRef name="Structure Seams" offset="0x3C" visible="true" />
-	<tagblock name="Skies" offset="0x4C" visible="true" elementSize="0x14">
+	<undefined name="Unknown" offset="0x3C" visible="false" />
+	<tagRef name="Structure Seams" offset="0x40" visible="true" />
+	<tagblock name="Skies" offset="0x50" visible="true" elementSize="0x14">
 		<tagRef name="Sky Object" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x10" visible="true" />
 		<flags16 name="Active On BSPs" offset="0x12" visible="true">
@@ -109,7 +110,7 @@
 			<bit name="Index 15" index="15" />
 		</flags16>
 	</tagblock>
-	<tagblock name="Zone Set Potentially Visible Sets" offset="0x58" visible="true" elementSize="0x2C">
+	<tagblock name="Zone Set Potentially Visible Sets" offset="0x5C" visible="true" elementSize="0x2C">
 		<flags32 name="Included BSPs" offset="0x0" visible="true">
 			<bit name="Index 0" index="0" />
 			<bit name="Index 1" index="1" />
@@ -285,7 +286,7 @@
 			</tagblock>
 		</tagblock>
 	</tagblock>
-	<tagblock name="Zone Set Audibility" offset="0x64" visible="true" elementSize="0x64">
+	<tagblock name="Zone Set Audibility" offset="0x68" visible="true" elementSize="0x64">
 		<int32 name="Door Portal Count" offset="0x0" visible="true" />
 		<int32 name="Room Count" offset="0x4" visible="true" />
 		<rangef name="Room Distance Bounds" offset="0x8" visible="true" />
@@ -313,13 +314,13 @@
 			<int16 name="Room Index" offset="0x0" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Zone Sets" offset="0x70" visible="true" elementSize="0x24">
+	<tagblock name="Zone Sets" offset="0x74" visible="true" elementSize="0x24">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<int32 name="PVS Index" offset="0x4" visible="true" />
 		<flags32 name="Flags" offset="0x8" visible="true">
 			<bit name="Begin Loading Next Level" index="0" />
 			<bit name="Debug Purposes Only" index="1" />
-			<bit name="Interal Zone Set" index="2" />
+			<bit name="Internal Zone Set" index="2" />
 			<bit name="Bit 3" index="3" />
 			<bit name="Bit 4" index="4" />
 			<bit name="Bit 5" index="5" />
@@ -489,7 +490,7 @@
 		<int32 name="Hint Previous Zone Set Index" offset="0x1C" visible="true" />
 		<int32 name="Audibility Index" offset="0x20" visible="true" />
 	</tagblock>
-	<tagblock name="Lighting Zone Sets" offset="0x7C" visible="true" elementSize="0xC">
+	<tagblock name="Lighting Zone Sets" offset="0x80" visible="true" elementSize="0xC">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<flags32 name="Rendered BSP Flags" offset="0x4" visible="true">
 			<bit name="Index 0" index="0" />
@@ -560,24 +561,18 @@
 			<bit name="Index 31" index="31" />
 		</flags32>
 	</tagblock>
-	<tagblock name="Campaign Players" offset="0x88" visible="true" elementSize="0x4">
+	<tagblock name="Campaign Players" offset="0x8C" visible="true" elementSize="0x4">
 		<stringId name="Player Representation Name" offset="0x0" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x94" visible="false" />
-	<undefined name="Unknown" offset="0x98" visible="false" />
-	<undefined name="Unknown" offset="0x9C" visible="false" />
-	<undefined name="Unknown" offset="0xA0" visible="false" />
-	<undefined name="Unknown" offset="0xA4" visible="false" />
-	<undefined name="Unknown" offset="0xA8" visible="false" />
+	<dataref name="Editor Scenario Data" offset="0x98" visible="true" />
 	<undefined name="Unknown" offset="0xAC" visible="false" />
 	<undefined name="Unknown" offset="0xB0" visible="false" />
 	<undefined name="Unknown" offset="0xB4" visible="false" />
-	<dataref name="Editor Scenario Data" offset="0xB8" visible="true" />
-	<undefined name="Unknown" offset="0xCC" visible="false" />
-	<undefined name="Unknown" offset="0xD0" visible="false" />
-	<undefined name="Unknown" offset="0xD4" visible="false" />
-	<tagblock name="Object Names" offset="0xD8" visible="true" elementSize="0x24">
-		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+	<undefined name="Unknown" offset="0xB8" visible="false" />
+	<undefined name="Unknown" offset="0xBC" visible="false" />
+	<undefined name="Unknown" offset="0xC0" visible="false" />
+	<tagblock name="Object Names" offset="0xC4" visible="true" elementSize="0x24">
+		<ascii name="Name" offset="0x0" visible="true" size="0x20" />
 		<enum16 name="Type" offset="0x20" visible="true">
 			<option name="Null" value="0xFFFF" />
 			<option name="Biped" value="0x0" />
@@ -598,7 +593,7 @@
 		</enum16>
 		<int16 name="Placement Index" offset="0x22" visible="true" />
 	</tagblock>
-	<tagblock name="Scenery" offset="0xE4" visible="true" elementSize="0xB4">
+	<tagblock name="Scenery" offset="0xD0" visible="true" elementSize="0xB4">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
@@ -878,7 +873,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<float32 name="Boundary Shape -Height" offset="0xAC" visible="true" />
 		<float32 name="Respawn Weight" offset="0xB0" visible="true" />
 	</tagblock>
-	<tagblock name="Scenery Palette" offset="0xF0" visible="true" elementSize="0x30">
+	<tagblock name="Scenery Palette" offset="0xDC" visible="true" elementSize="0x30">
 		<tagRef name="Scenery" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -889,7 +884,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Bipeds" offset="0xFC" visible="true" elementSize="0x74">
+	<tagblock name="Bipeds" offset="0xE8" visible="true" elementSize="0x74">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
@@ -1095,7 +1090,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Not Enterable by Player" index="2" />
 		</flags32>
 	</tagblock>
-	<tagblock name="Biped Palette" offset="0x108" visible="true" elementSize="0x30">
+	<tagblock name="Biped Palette" offset="0xF4" visible="true" elementSize="0x30">
 		<tagRef name="Biped" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -1106,7 +1101,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Vehicles" offset="0x114" visible="true" elementSize="0xA8">
+	<tagblock name="Vehicles" offset="0x100" visible="true" elementSize="0xA8">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
@@ -1374,7 +1369,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<float32 name="Boundary Shape -Height" offset="0xA0" visible="true" />
 		<float32 name="Respawn Weight" offset="0xA4" visible="true" />
 	</tagblock>
-	<tagblock name="Vehicle Palette" offset="0x120" visible="true" elementSize="0x30">
+	<tagblock name="Vehicle Palette" offset="0x10C" visible="true" elementSize="0x30">
 		<tagRef name="Vehicle" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -1385,7 +1380,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Equipment" offset="0x12C" visible="true" elementSize="0x8C">
+	<tagblock name="Equipment" offset="0x118" visible="true" elementSize="0x8C">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
@@ -1640,7 +1635,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<float32 name="Boundary Shape -Height" offset="0x84" visible="true" />
 		<float32 name="Respawn Weight" offset="0x88" visible="true" />
 	</tagblock>
-	<tagblock name="Equipment Palette" offset="0x138" visible="true" elementSize="0x30">
+	<tagblock name="Equipment Palette" offset="0x124" visible="true" elementSize="0x30">
 		<tagRef name="Equipment" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -1651,7 +1646,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Weapons" offset="0x144" visible="true" elementSize="0xA8">
+	<tagblock name="Weapons" offset="0x130" visible="true" elementSize="0xA8">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
@@ -1920,7 +1915,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<float32 name="Boundary Shape -Height" offset="0xA0" visible="true" />
 		<float32 name="Respawn Weight" offset="0xA4" visible="true" />
 	</tagblock>
-	<tagblock name="Weapon Palette" offset="0x150" visible="true" elementSize="0x30">
+	<tagblock name="Weapon Palette" offset="0x13C" visible="true" elementSize="0x30">
 		<tagRef name="Weapon" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -1931,8 +1926,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Device Groups" offset="0x15C" visible="true" elementSize="0x2C">
-		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+	<tagblock name="Device Groups" offset="0x148" visible="true" elementSize="0x2C">
+		<ascii name="Name" offset="0x0" visible="true" size="0x20" />
 		<float32 name="Initial Value" offset="0x20" visible="true" />
 		<flags32 name="Flags" offset="0x24" visible="true">
 			<bit name="Can Change Only Once" index="0" />
@@ -1940,7 +1935,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Editor Folder Index" offset="0x28" visible="true" />
 		<int16 name="Unknown" offset="0x2A" visible="false" />
 	</tagblock>
-	<tagblock name="Machines" offset="0x168" visible="true" elementSize="0x88">
+	<tagblock name="Machines" offset="0x154" visible="true" elementSize="0x88">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
@@ -2139,8 +2134,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<color32 name="Tertiary Color" offset="0x64" alpha="true" visible="true" />
 		<color32 name="Quaternary Color" offset="0x68" alpha="true" visible="true" />
 		<comment title="Device Data" />
-		<int16 name="Power Group" offset="0x6C" visible="true" />
-		<int16 name="Position Group" offset="0x6E" visible="true" />
+		<int16 name="Power Group Index" offset="0x6C" visible="true" />
+		<int16 name="Position Group Index" offset="0x6E" visible="true" />
 		<flags32 name="Device Flags" offset="0x70" visible="true">
 			<bit name="Initially Open (1.0)" index="0" />
 			<bit name="Initially Off (0.0)" index="1" />
@@ -2223,7 +2218,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</enum16>
 		<int16 name="Unknown" offset="0x86" visible="true" />
 	</tagblock>
-	<tagblock name="Machine Palette" offset="0x174" visible="true" elementSize="0x30">
+	<tagblock name="Machine Palette" offset="0x160" visible="true" elementSize="0x30">
 		<tagRef name="Machine" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -2234,7 +2229,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Terminals" offset="0x180" visible="true" elementSize="0x78">
+	<tagblock name="Terminals" offset="0x16C" visible="true" elementSize="0x78">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
@@ -2433,8 +2428,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<color32 name="Tertiary Color" offset="0x64" alpha="true" visible="true" />
 		<color32 name="Quaternary Color" offset="0x68" alpha="true" visible="true" />
 		<comment title="Device Data" />
-		<int16 name="Power Group" offset="0x6C" visible="true" />
-		<int16 name="Position Group" offset="0x6E" visible="true" />
+		<int16 name="Power Group Index" offset="0x6C" visible="true" />
+		<int16 name="Position Group Index" offset="0x6E" visible="true" />
 		<flags32 name="Device Flags" offset="0x70" visible="true">
 			<bit name="Initially Open (1.0)" index="0" />
 			<bit name="Initially Off (0.0)" index="1" />
@@ -2472,7 +2467,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<comment title="Terminal Data" />
 		<undefined name="Unknown" offset="0x74" visible="true" />
 	</tagblock>
-	<tagblock name="Terminal Palette" offset="0x18C" visible="true" elementSize="0x30">
+	<tagblock name="Terminal Palette" offset="0x178" visible="true" elementSize="0x30">
 		<tagRef name="Terminal" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -2483,7 +2478,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Alternate Reality Devices" offset="0x198" visible="true" elementSize="0xB8">
+	<tagblock name="Alternate Reality Devices" offset="0x184" visible="true" elementSize="0xB8">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
@@ -2682,8 +2677,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<color32 name="Tertiary Color" offset="0x64" alpha="true" visible="true" />
 		<color32 name="Quaternary Color" offset="0x68" alpha="true" visible="true" />
 		<comment title="Device Data" />
-		<int16 name="Power Group" offset="0x6C" visible="true" />
-		<int16 name="Position Group" offset="0x6E" visible="true" />
+		<int16 name="Power Group Index" offset="0x6C" visible="true" />
+		<int16 name="Position Group Index" offset="0x6E" visible="true" />
 		<flags32 name="Device Flags" offset="0x70" visible="true">
 			<bit name="Initially Open (1.0)" index="0" />
 			<bit name="Initially Off (0.0)" index="1" />
@@ -2719,12 +2714,12 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Bit 31" index="31" />
 		</flags32>
 		<comment title="ARG Data" />
-		<ascii name="Tap Script Name" offset="0x74" visible="true" length="0x20" />
-		<ascii name="Hold Script Name" offset="0x94" visible="true" length="0x20" />
+		<ascii name="Tap Script Name" offset="0x74" visible="true" size="0x20" />
+		<ascii name="Hold Script Name" offset="0x94" visible="true" size="0x20" />
 		<int16 name="Tap Script Index" offset="0xB4" visible="true" />
 		<int16 name="Hold Script Index" offset="0xB6" visible="true" />
 	</tagblock>
-	<tagblock name="Alternate Reality Device Palette" offset="0x1A4" visible="true" elementSize="0x30">
+	<tagblock name="Alternate Reality Device Palette" offset="0x190" visible="true" elementSize="0x30">
 		<tagRef name="ARG Device" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -2735,7 +2730,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Controls" offset="0x1B0" visible="true" elementSize="0x7C">
+	<tagblock name="Controls" offset="0x19C" visible="true" elementSize="0x7C">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
@@ -2934,8 +2929,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<color32 name="Tertiary Color" offset="0x64" alpha="true" visible="true" />
 		<color32 name="Quaternary Color" offset="0x68" alpha="true" visible="true" />
 		<comment title="Device Data" />
-		<int16 name="Power Group" offset="0x6C" visible="true" />
-		<int16 name="Position Group" offset="0x6E" visible="true" />
+		<int16 name="Power Group Index" offset="0x6C" visible="true" />
+		<int16 name="Position Group Index" offset="0x6E" visible="true" />
 		<flags32 name="Device Flags" offset="0x70" visible="true">
 			<bit name="Initially Open (1.0)" index="0" />
 			<bit name="Initially Off (0.0)" index="1" />
@@ -2974,10 +2969,10 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<flags32 name="Control Flags" offset="0x74" visible="true">
 			<bit name="Usable From Both Sides" index="0" />
 		</flags32>
-		<int16 name="Unknown" offset="0x78" visible="true" />
+		<int16 name="Custom Object Name Index" offset="0x78" visible="true" />
 		<int16 name="Unknown" offset="0x7A" visible="false" />
 	</tagblock>
-	<tagblock name="Control Palette" offset="0x1BC" visible="true" elementSize="0x30">
+	<tagblock name="Control Palette" offset="0x1A8" visible="true" elementSize="0x30">
 		<tagRef name="Control" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -2988,7 +2983,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Sound Scenery" offset="0x1C8" visible="true" elementSize="0x70">
+	<tagblock name="Sound Scenery" offset="0x1B4" visible="true" elementSize="0x70">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
@@ -3185,7 +3180,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<ranged name="Override Cone Angle Bounds" offset="0x64" visible="true" />
 		<float32 name="Override Outer Cone Gain" offset="0x6C" visible="true" />
 	</tagblock>
-	<tagblock name="Sound Scenery Palette" offset="0x1D4" visible="true" elementSize="0x30">
+	<tagblock name="Sound Scenery Palette" offset="0x1C0" visible="true" elementSize="0x30">
 		<tagRef name="Sound Scenery" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -3196,7 +3191,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Giants" offset="0x1E0" visible="true" elementSize="0x84">
+	<tagblock name="Giants" offset="0x1CC" visible="true" elementSize="0x84">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
@@ -3415,7 +3410,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<int16 name="Pathfinding Object Index" offset="0x2" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Giant Palette" offset="0x1EC" visible="true" elementSize="0x30">
+	<tagblock name="Giant Palette" offset="0x1D8" visible="true" elementSize="0x30">
 		<tagRef name="Giant" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -3426,7 +3421,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Effect Scenery" offset="0x1F8" visible="true" elementSize="0x54">
+	<tagblock name="Effect Scenery" offset="0x1E4" visible="true" elementSize="0x54">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
@@ -3613,7 +3608,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</flags16>
 		<int16 name="Unknown" offset="0x52" visible="false" />
 	</tagblock>
-	<tagblock name="Effect Scenery Palette" offset="0x204" visible="true" elementSize="0x30">
+	<tagblock name="Effect Scenery Palette" offset="0x1F0" visible="true" elementSize="0x30">
 		<tagRef name="Effect Scenery" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -3624,7 +3619,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Light Volumes" offset="0x210" visible="true" elementSize="0x8C">
+	<tagblock name="Light Volumes" offset="0x1FC" visible="true" elementSize="0x8C">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
@@ -3811,8 +3806,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</flags16>
 		<int16 name="Unknown" offset="0x52" visible="false" />
 		<comment title="Device Data" />
-		<int16 name="Power Group" offset="0x54" visible="true" />
-		<int16 name="Position Group" offset="0x56" visible="true" />
+		<int16 name="Power Group Index" offset="0x54" visible="true" />
+		<int16 name="Position Group Index" offset="0x56" visible="true" />
 		<flags32 name="Device Flags" offset="0x58" visible="true">
 			<bit name="Initially Open (1.0)" index="0" />
 			<bit name="Initially Off (0.0)" index="1" />
@@ -3875,7 +3870,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<float32 name="Falloff Distance" offset="0x84" visible="true" />
 		<float32 name="Cutoff Distance" offset="0x88" visible="true" />
 	</tagblock>
-	<tagblock name="Light Volumes Palette" offset="0x21C" visible="true" elementSize="0x30">
+	<tagblock name="Light Volumes Palette" offset="0x208" visible="true" elementSize="0x30">
 		<tagRef name="Light Volume" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -3886,7 +3881,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Map Variant Vehicles" offset="0x228" visible="true" elementSize="0x30">
+	<tagblock name="Map Variant Vehicles" offset="0x214" visible="true" elementSize="0x30">
 		<tagRef name="Object" offset="0x0" visible="true" />
 		<stringId name="Display Name" offset="0x10" visible="true" />
 		<int32 name="Maximum Allowed" offset="0x14" visible="true" tooltip="if this is &lt;= 0, these are 'unlimited' (up to a reasonable code-defined maximum)" />
@@ -3897,7 +3892,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Map Variant Weapons" offset="0x234" visible="true" elementSize="0x30">
+	<tagblock name="Map Variant Weapons" offset="0x220" visible="true" elementSize="0x30">
 		<tagRef name="Object" offset="0x0" visible="true" />
 		<stringId name="Display Name" offset="0x10" visible="true" />
 		<int32 name="Maximum Allowed" offset="0x14" visible="true" tooltip="if this is &lt;= 0, these are 'unlimited' (up to a reasonable code-defined maximum)" />
@@ -3908,7 +3903,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Map Variant Equipment" offset="0x240" visible="true" elementSize="0x30">
+	<tagblock name="Map Variant Equipment" offset="0x22C" visible="true" elementSize="0x30">
 		<tagRef name="Object" offset="0x0" visible="true" />
 		<stringId name="Display Name" offset="0x10" visible="true" />
 		<int32 name="Maximum Allowed" offset="0x14" visible="true" tooltip="if this is &lt;= 0, these are 'unlimited' (up to a reasonable code-defined maximum)" />
@@ -3919,7 +3914,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Map Variant Scenery" offset="0x24C" visible="true" elementSize="0x30">
+	<tagblock name="Map Variant Scenery" offset="0x238" visible="true" elementSize="0x30">
 		<tagRef name="Object" offset="0x0" visible="true" />
 		<stringId name="Display Name" offset="0x10" visible="true" />
 		<int32 name="Maximum Allowed" offset="0x14" visible="true" tooltip="if this is &lt;= 0, these are 'unlimited' (up to a reasonable code-defined maximum)" />
@@ -3930,7 +3925,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Map Variant Teleporters" offset="0x258" visible="true" elementSize="0x30">
+	<tagblock name="Map Variant Teleporters" offset="0x244" visible="true" elementSize="0x30">
 		<tagRef name="Object" offset="0x0" visible="true" />
 		<stringId name="Display Name" offset="0x10" visible="true" />
 		<int32 name="Maximum Allowed" offset="0x14" visible="true" tooltip="if this is &lt;= 0, these are 'unlimited' (up to a reasonable code-defined maximum)" />
@@ -3941,7 +3936,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Map Variant Goal Objects" offset="0x264" visible="true" elementSize="0x30">
+	<tagblock name="Map Variant Goal Objects" offset="0x250" visible="true" elementSize="0x30">
 		<tagRef name="Object" offset="0x0" visible="true" />
 		<stringId name="Display Name" offset="0x10" visible="true" />
 		<int32 name="Maximum Allowed" offset="0x14" visible="true" tooltip="if this is &lt;= 0, these are 'unlimited' (up to a reasonable code-defined maximum)" />
@@ -3952,7 +3947,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Map Variant Spawning" offset="0x270" visible="true" elementSize="0x30">
+	<tagblock name="Map Variant Spawning" offset="0x25C" visible="true" elementSize="0x30">
 		<tagRef name="Object" offset="0x0" visible="true" />
 		<stringId name="Display Name" offset="0x10" visible="true" />
 		<int32 name="Maximum Allowed" offset="0x14" visible="true" tooltip="if this is &lt;= 0, these are 'unlimited' (up to a reasonable code-defined maximum)" />
@@ -3963,7 +3958,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Soft Ceilings" offset="0x27C" visible="true" elementSize="0xC">
+	<tagblock name="Soft Ceilings" offset="0x268" visible="true" elementSize="0xC">
 		<flags16 name="Flags" offset="0x0" visible="true">
 			<bit name="Ignore Bipeds" index="0" />
 			<bit name="Ignore Vehicles" index="1" />
@@ -3984,8 +3979,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</enum16>
 		<int16 name="Unknown" offset="0xA" visible="false" />
 	</tagblock>
-	<tagblock name="Player Starting Profile" offset="0x288" visible="true" elementSize="0x58">
-		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+	<tagblock name="Player Starting Profile" offset="0x274" visible="true" elementSize="0x58">
+		<ascii name="Name" offset="0x0" visible="true" size="0x20" />
 		<float32 name="Starting Health Damage" offset="0x20" visible="true" />
 		<float32 name="Starting Shield Damage" offset="0x24" visible="true" />
 		<tagRef name="Primary Weapon" offset="0x28" visible="true" />
@@ -4001,7 +3996,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Editor Folder Index" offset="0x54" visible="true" />
 		<int16 name="Unknown" offset="0x56" visible="false" />
 	</tagblock>
-	<tagblock name="Player Starting Locations" offset="0x294" visible="true" elementSize="0x1C">
+	<tagblock name="Player Starting Locations" offset="0x280" visible="true" elementSize="0x1C">
 		<point3 name="Position" offset="0x0" visible="true" />
 		<degree2 name="Facing" offset="0xC" visible="true" />
 		<int16 name="Insertion Point Index" offset="0x14" visible="true" />
@@ -4009,7 +4004,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Editor Folder Index" offset="0x18" visible="true" />
 		<int16 name="Unknown" offset="0x1A" visible="false" />
 	</tagblock>
-	<tagblock name="Trigger Volumes" offset="0x2A0" visible="true" elementSize="0x7C">
+	<tagblock name="Trigger Volumes" offset="0x28C" visible="true" elementSize="0x7C">
 		<comment title="Naming">the name of the trigger volume specifies what kind of volume it is:
 'zone_set:'
 'begin_zone_set:'
@@ -4057,10 +4052,10 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 		<int16 name="Kill Trigger Volume Index" offset="0x78" visible="true" />
 		<int16 name="Editor Folder Index" offset="0x7A" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x2AC" visible="false" />
-	<undefined name="Unknown" offset="0x2B0" visible="false" />
-	<undefined name="Unknown" offset="0x2B4" visible="false" />
-	<tagblock name="Zone Set Switch Trigger Volumes" offset="0x2B8" visible="true" elementSize="0xC">
+	<undefined name="Unknown" offset="0x298" visible="false" />
+	<undefined name="Unknown" offset="0x29C" visible="false" />
+	<undefined name="Unknown" offset="0x2A0" visible="false" />
+	<tagblock name="Zone Set Switch Trigger Volumes" offset="0x2A4" visible="true" elementSize="0xC">
 		<flags16 name="Flags" offset="0x0" visible="true">
 			<bit name="Teleport Vehicles" index="0" />
 		</flags16>
@@ -4070,6 +4065,11 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 		<int16 name="Unknown" offset="0x8" visible="true" />
 		<int16 name="Unknown" offset="0xA" visible="true" />
 	</tagblock>
+	<undefined name="Unknown" offset="0x2B0" visible="false" />
+	<undefined name="Unknown" offset="0x2B4" visible="false" />
+	<undefined name="Unknown" offset="0x2B8" visible="false" />
+	<undefined name="Unknown" offset="0x2BC" visible="false" />
+	<undefined name="Unknown" offset="0x2C0" visible="false" />
 	<undefined name="Unknown" offset="0x2C4" visible="false" />
 	<undefined name="Unknown" offset="0x2C8" visible="false" />
 	<undefined name="Unknown" offset="0x2CC" visible="false" />
@@ -4116,12 +4116,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 	<undefined name="Unknown" offset="0x370" visible="false" />
 	<undefined name="Unknown" offset="0x374" visible="false" />
 	<undefined name="Unknown" offset="0x378" visible="false" />
-	<undefined name="Unknown" offset="0x37C" visible="false" />
-	<undefined name="Unknown" offset="0x380" visible="false" />
-	<undefined name="Unknown" offset="0x384" visible="false" />
-	<undefined name="Unknown" offset="0x388" visible="false" />
-	<undefined name="Unknown" offset="0x38C" visible="false" />
-	<tagblock name="Decals" offset="0x390" visible="true" elementSize="0x24">
+	<tagblock name="Decals" offset="0x37C" visible="true" elementSize="0x24">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int8 name="Yaw" offset="0x2" visible="true" />
 		<int8 name="Pitch" offset="0x3" visible="true" />
@@ -4129,24 +4124,24 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 		<point3 name="Position" offset="0x14" visible="true" />
 		<float32 name="Scale" offset="0x20" visible="true" />
 	</tagblock>
-	<tagblock name="Decal Palette" offset="0x39C" visible="true" elementSize="0x10">
+	<tagblock name="Decals Palette" offset="0x388" visible="true" elementSize="0x10">
 		<tagRef name="Decal" offset="0x0" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x3A8" visible="false" />
-	<undefined name="Unknown" offset="0x3AC" visible="false" />
-	<undefined name="Unknown" offset="0x3B0" visible="false" />
-	<tagblock name="Style Palette" offset="0x3B4" visible="true" elementSize="0x10">
+	<undefined name="Unknown" offset="0x394" visible="false" />
+	<undefined name="Unknown" offset="0x398" visible="false" />
+	<undefined name="Unknown" offset="0x39C" visible="false" />
+	<tagblock name="Style Palette" offset="0x3A0" visible="true" elementSize="0x10">
 		<tagRef name="Style" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Squad Groups" offset="0x3C0" visible="true" elementSize="0x28">
-		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+	<tagblock name="Squad Groups" offset="0x3AC" visible="true" elementSize="0x28">
+		<ascii name="Name" offset="0x0" visible="true" size="0x20" />
 		<int16 name="Parent Index" offset="0x20" visible="true" />
 		<int16 name="Initial Objective Index" offset="0x22" visible="true" />
 		<int16 name="Unknown" offset="0x24" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x26" visible="true" />
 	</tagblock>
-	<tagblock name="Squads" offset="0x3CC" visible="true" elementSize="0x6C">
-		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+	<tagblock name="Squads" offset="0x3B8" visible="true" elementSize="0x6C">
+		<ascii name="Name" offset="0x0" visible="true" size="0x20" />
 		<flags32 name="Flags" offset="0x20" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Blind" index="1" />
@@ -4228,7 +4223,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 				<option name="Flying" value="0x2" />
 			</enum16>
 			<int16 name="Placement Script Index" offset="0x36" visible="true" />
-			<ascii name="Placement Script Name" offset="0x38" visible="true" length="0x20" />
+			<ascii name="Placement Script Name" offset="0x38" visible="true" size="0x20" />
 			<stringid name="Activity Name" offset="0x58" visible="true" />
 			<int16 name="Point Set Index" offset="0x5C" visible="true" />
 			<enum16 name="Patrol Mode" offset="0x5E" visible="true">
@@ -4278,7 +4273,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 					<option name="Captured" value="0x1E" />
 				</enum16>
 				<int16 name="Activity Variant" offset="0x12" visible="true" />
-				<ascii name="Command Script Name" offset="0x14" visible="true" length="0x20" />
+				<ascii name="Command Script Name" offset="0x14" visible="true" size="0x20" />
 				<int16 name="Command Script Index" offset="0x34" visible="true" />
 				<int16 name="Unknown" offset="0x36" visible="false" />
 			</tagblock>
@@ -4354,7 +4349,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<int16 name="Emitter Vehicle Index" offset="0x52" visible="true" />
 			<int16 name="Giant Body Index" offset="0x54" visible="true" />
 			<int16 name="Biped Body Index" offset="0x56" visible="true" />
-			<ascii name="Placement Script Name" offset="0x58" visible="true" length="0x20" />
+			<ascii name="Placement Script Name" offset="0x58" visible="true" size="0x20" />
 			<int16 name="Placement Script Index" offset="0x78" visible="true" />
 			<int16 name="Unknown" offset="0x7A" visible="false" />
 			<stringId name="Activity Name" offset="0x7C" visible="true" />
@@ -4406,7 +4401,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 					<option name="Captured" value="0x1E" />
 				</enum16>
 				<int16 name="Activity Variant" offset="0x12" visible="true" />
-				<ascii name="Command Script Name" offset="0x14" visible="true" length="0x20" />
+				<ascii name="Command Script Name" offset="0x14" visible="true" size="0x20" />
 				<int16 name="Command Script Index" offset="0x34" visible="true" />
 				<int16 name="Unknown" offset="0x36" visible="false" />
 			</tagblock>
@@ -4572,7 +4567,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 					<option name="Captured" value="0x1E" />
 				</enum16>
 				<int16 name="Activity Variant" offset="0x12" visible="true" />
-				<ascii name="Command Script Name" offset="0x14" visible="true" length="0x20" />
+				<ascii name="Command Script Name" offset="0x14" visible="true" size="0x20" />
 				<int16 name="Command Script Index" offset="0x34" visible="true" />
 				<int16 name="Unknown" offset="0x36" visible="false" />
 			</tagblock>
@@ -4726,14 +4721,14 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 					<option name="Captured" value="0x1E" />
 				</enum16>
 				<int16 name="Activity Variant" offset="0x12" visible="true" />
-				<ascii name="Command Script Name" offset="0x14" visible="true" length="0x20" />
+				<ascii name="Command Script Name" offset="0x14" visible="true" size="0x20" />
 				<int16 name="Command Script Index" offset="0x34" visible="true" />
 				<int16 name="Unknown" offset="0x36" visible="false" />
 			</tagblock>
 		</tagblock>
 	</tagblock>
-	<tagblock name="Zones" offset="0x3D8" visible="true" elementSize="0x3C">
-		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+	<tagblock name="Zones" offset="0x3C4" visible="true" elementSize="0x3C">
+		<ascii name="Name" offset="0x0" visible="true" size="0x20" />
 		<flags32 name="BSPs" offset="0x20" visible="true">
 			<bit name="BSP 0" index="0" />
 			<bit name="BSP 1" index="1" />
@@ -4799,7 +4794,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<undefined name="Unknown" offset="0x24" visible="false" />
 		</tagblock>
 		<tagblock name="Areas" offset="0x30" visible="true" elementSize="0xA8">
-			<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+			<ascii name="Name" offset="0x0" visible="true" size="0x20" />
 			<flags32 name="Area Flags" offset="0x20" visible="true">
 				<bit name="Vehicle Area" index="0" />
 				<bit name="Perch" index="1" />
@@ -4875,7 +4870,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<undefined name="Unknown" offset="0xA4" visible="false" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Unknown" offset="0x3E4" visible="false" elementSize="0x2C">
+	<tagblock name="Unknown" offset="0x3D0" visible="false" elementSize="0x2C">
 		<stringid name="Unknown" offset="0x0" visible="false" />
 		<tagblock name="Unknown" offset="0x4" visible="false" elementSize="0x4">
 			<undefined name="Unknown" offset="0x0" visible="false" />
@@ -4899,16 +4894,16 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 		</tagblock>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x3F0" visible="false" />
-	<undefined name="Unknown" offset="0x3F4" visible="false" />
-	<undefined name="Unknown" offset="0x3F8" visible="false" />
-	<tagblock name="Character Palette" offset="0x3FC" visible="true" elementSize="0x10">
+	<undefined name="Unknown" offset="0x3DC" visible="false" />
+	<undefined name="Unknown" offset="0x3E0" visible="false" />
+	<undefined name="Unknown" offset="0x3E4" visible="false" />
+	<tagblock name="Character Palette" offset="0x3E8" visible="true" elementSize="0x10">
 		<tagRef name="Character" offset="0x0" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x408" visible="false" />
-	<undefined name="Unknown" offset="0x40C" visible="false" />
-	<undefined name="Unknown" offset="0x410" visible="false" />
-	<tagblock name="AI Pathfinding Data" offset="0x414" visible="false" elementSize="0x6C">
+	<undefined name="Unknown" offset="0x3F4" visible="false" />
+	<undefined name="Unknown" offset="0x3F8" visible="false" />
+	<undefined name="Unknown" offset="0x3FC" visible="false" />
+	<tagblock name="AI Pathfinding Data" offset="0x400" visible="false" elementSize="0x6C">
 		<tagblock name="Unknown" offset="0x0" visible="false" elementSize="0x24">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
@@ -5032,12 +5027,12 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<undefined name="Unknown" offset="0x0" visible="false" />
 		</tagblock>
 	</tagblock>
-	<undefined name="Unknown" offset="0x420" visible="false" />
-	<undefined name="Unknown" offset="0x424" visible="false" />
-	<undefined name="Unknown" offset="0x428" visible="false" />
-	<dataRef name="Script Strings" offset="0x42C" visible="true" />
-	<tagblock name="Scripts" offset="0x440" visible="true" elementSize="0x34">
-		<ascii name="Script Name" offset="0x0" visible="true" length="0x20" />
+	<undefined name="Unknown" offset="0x40C" visible="false" />
+	<undefined name="Unknown" offset="0x410" visible="false" />
+	<undefined name="Unknown" offset="0x414" visible="false" />
+	<dataRef name="Script Strings" offset="0x418" visible="true" />
+	<tagblock name="Scripts" offset="0x42C" visible="true" elementSize="0x34">
+		<ascii name="Script Name" offset="0x0" visible="true" size="0x20" />
 		<enum16 name="Script Type" offset="0x20" visible="true">
 			<option name="Startup" value="0x0" />
 			<option name="Dormant" value="0x1" />
@@ -5135,7 +5130,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 		</enum16>
 		<datum name="Root Expression" offset="0x24" visible="true" />
 		<tagblock name="Parameters" offset="0x28" visible="true" elementSize="0x24">
-			<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+			<ascii name="Name" offset="0x0" visible="true" size="0x20" />
 			<enum16 name="Type" offset="0x20" visible="true">
 				<option name="unparsed" value="0x0" />
 				<option name="special_form" value="0x1" />
@@ -5226,8 +5221,8 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<int16 name="Unknown" offset="0x22" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Globals" offset="0x44C" visible="true" elementSize="0x28">
-		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+	<tagblock name="Globals" offset="0x438" visible="true" elementSize="0x28">
+		<ascii name="Name" offset="0x0" visible="true" size="0x20" />
 		<enum16 name="Type" offset="0x20" visible="true">
 			<option name="unparsed" value="0x0" />
 			<option name="special_form" value="0x1" />
@@ -5318,17 +5313,17 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 		<int16 name="Unknown" offset="0x22" visible="true" />
 		<datum name="Initialization Expression" offset="0x24" visible="true" />
 	</tagblock>
-	<tagblock name="Script References" offset="0x458" visible="true" elementSize="0x10">
+	<tagblock name="Script References" offset="0x444" visible="true" elementSize="0x10">
 		<tagRef name="Reference" offset="0x0" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x464" visible="false" />
-	<undefined name="Unknown" offset="0x468" visible="false" />
-	<undefined name="Unknown" offset="0x46C" visible="false" />
-	<tagblock name="Scripting Data" offset="0x470" visible="true" elementSize="0x84">
+	<undefined name="Unknown" offset="0x450" visible="false" />
+	<undefined name="Unknown" offset="0x454" visible="false" />
+	<undefined name="Unknown" offset="0x458" visible="false" />
+	<tagblock name="Scripting Data" offset="0x45C" visible="true" elementSize="0x84">
 		<tagblock name="Point Sets" offset="0x0" visible="true" elementSize="0x38">
-			<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+			<ascii name="Name" offset="0x0" visible="true" size="0x20" />
 			<tagblock name="Points" offset="0x20" visible="true" elementSize="0x3C">
-				<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+				<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 				<point3 name="Position" offset="0x20" visible="true" />
 				<int16 name="Reference Frame" offset="0x2C" visible="true" />
 				<int16 name="BSP Index" offset="0x2E" visible="true" />
@@ -5405,7 +5400,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 		<undefined name="Unknown" offset="0x7C" visible="false" />
 		<undefined name="Unknown" offset="0x80" visible="false" />
 	</tagblock>
-	<tagblock name="Cutscene Flags" offset="0x47C" visible="true" elementSize="0x20">
+	<tagblock name="Cutscene Flags" offset="0x468" visible="true" elementSize="0x20">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<stringid name="Name" offset="0x4" visible="true" />
 		<point3 name="Position" offset="0x8" visible="true" />
@@ -5413,7 +5408,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 		<int16 name="Editor Folder Index" offset="0x1C" visible="true" />
 		<int16 name="Unknown" offset="0x1E" visible="false" />
 	</tagblock>
-	<tagblock name="Cutscene Camera Points" offset="0x488" visible="true" elementSize="0x40">
+	<tagblock name="Cutscene Camera Points" offset="0x474" visible="true" elementSize="0x40">
 		<flags16 name="Flags" offset="0x0" visible="true">
 			<bit name="Edit As Relative" index="0" />
 		</flags16>
@@ -5423,12 +5418,12 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<option name="Dolly" value="0x2" />
 			<option name="Ignore Target Updates" value="0x3" />
 		</enum16>
-		<ascii name="Name" offset="0x4" visible="true" length="0x20" />
+		<ascii name="Name" offset="0x4" visible="true" size="0x20" />
 		<int32 name="Unknown" offset="0x24" visible="false" />
 		<point3 name="Position" offset="0x28" visible="true" />
 		<degree3 name="Orientation" offset="0x34" visible="true" />
 	</tagblock>
-	<tagblock name="Cutscene Titles" offset="0x494" visible="true" elementSize="0x28">
+	<tagblock name="Cutscene Titles" offset="0x480" visible="true" elementSize="0x28">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<rect16 name="Text Bounds" offset="0x4" visible="true" />
 		<enum16 name="Horizontal Justification" offset="0xC" visible="true">
@@ -5463,9 +5458,9 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 		<float32 name="Uptime" offset="0x20" visible="true" />
 		<float32 name="Fade Out Time" offset="0x24" visible="true" />
 	</tagblock>
-	<tagRef name="Custom Object Name Strings" offset="0x4A0" visible="true" />
-	<tagRef name="Chapter Title Strings" offset="0x4B0" visible="true" />
-	<tagblock name="Scenario Resources" offset="0x4C0" visible="false" elementSize="0x28">
+	<tagRef name="Custom Object Name Strings" offset="0x48C" visible="true" />
+	<tagRef name="Chapter Title Strings" offset="0x49C" visible="true" />
+	<tagblock name="Scenario Resources" offset="0x4AC" visible="false" elementSize="0x28">
 		<int32 name="Unknown" offset="0x0" visible="false" />
 		<tagblock name="Script Source" offset="0x4" visible="false" elementSize="0x10">
 			<tagRef name="HS Source File" offset="0x0" visible="false" />
@@ -5510,7 +5505,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<tagRef name="Cubemap Resource" offset="0x15C" visible="false" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Unit Seats Mapping" offset="0x4CC" visible="true" elementSize="0xC">
+	<tagblock name="Unit Seats Mapping" offset="0x4B8" visible="true" elementSize="0xC">
 		<tagref name="Unit" offset="0x0" withGroup="false" visible="true" />
 		<flags32 name="Seats" offset="0x4" visible="true">
 			<bit name="Seat 0" index="0" />
@@ -5581,13 +5576,13 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<bit name="Seat 63" index="31" />
 		</flags32>
 	</tagblock>
-	<tagblock name="Scenario Kill Triggers" offset="0x4D8" visible="true" elementSize="0x2">
+	<tagblock name="Scenario Kill Triggers" offset="0x4C4" visible="true" elementSize="0x2">
 		<int16 name="Trigger Volume Index" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Scenario Safe Zone Triggers" offset="0x4E4" visible="true" elementSize="0x2">
+	<tagblock name="Scenario Safe Zone Triggers" offset="0x4D0" visible="true" elementSize="0x2">
 		<int16 name="Trigger Volume Index" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Script Expressions" offset="0x4F0" visible="true" elementSize="0x18">
+	<tagblock name="Script Expressions" offset="0x4DC" visible="true" elementSize="0x18">
 		<uint16 name="Salt" offset="0x0" visible="true" />
 		<uint16 name="Opcode" offset="0x2" visible="true" />
 		<enum16 name="Value Type" offset="0x4" visible="true">
@@ -5705,20 +5700,20 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 		<int16 name="Line Number" offset="0x14" visible="true" />
 		<int16 name="Unknown" offset="0x16" visible="false" />
 	</tagblock>
+	<undefined name="Unknown" offset="0x4E8" visible="false" />
+	<undefined name="Unknown" offset="0x4EC" visible="false" />
+	<undefined name="Unknown" offset="0x4F0" visible="false" />
+	<undefined name="Unknown" offset="0x4F4" visible="false" />
+	<undefined name="Unknown" offset="0x4F8" visible="false" />
 	<undefined name="Unknown" offset="0x4FC" visible="false" />
-	<undefined name="Unknown" offset="0x500" visible="false" />
-	<undefined name="Unknown" offset="0x504" visible="false" />
-	<undefined name="Unknown" offset="0x508" visible="false" />
-	<undefined name="Unknown" offset="0x50C" visible="false" />
-	<undefined name="Unknown" offset="0x510" visible="false" />
-	<tagblock name="Background Sound Environment Palette" offset="0x514" visible="true" elementSize="0x58">
+	<tagblock name="Background Sound Environment Palette" offset="0x500" visible="true" elementSize="0x58">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<tagRef name="Sound Environment" offset="0x4" visible="true" />
 		<int32 name="Unknown" offset="0x14" visible="false" />
 		<float32 name="Cutoff Distance" offset="0x18" visible="true" />
 		<float32 name="Interpolation Speed" offset="0x1C" visible="true" />
 		<tagRef name="Background Sound" offset="0x20" visible="true" />
-		<tagRef name="Inside Cluster Sound" offset="0x30" visible="true" />
+		<tagRef name="Inside Cluster Sound" offset="0x30" visible="true" tooltip="play only when player is inside cluster." />
 		<float32 name="Cutoff Distance" offset="0x40" visible="true" />
 		<flags32 name="Scale Flags" offset="0x44" visible="true">
 			<bit name="Bit 0" index="0" />
@@ -5759,14 +5754,14 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 		<float32 name="Exterior Scale" offset="0x50" visible="true" />
 		<float32 name="Interpolation Speed" offset="0x54" visible="true" />
 	</tagblock>
+	<undefined name="Unknown" offset="0x50C" visible="false" />
+	<undefined name="Unknown" offset="0x510" visible="false" />
+	<undefined name="Unknown" offset="0x514" visible="false" />
+	<undefined name="Unknown" offset="0x518" visible="false" />
+	<undefined name="Unknown" offset="0x51C" visible="false" />
 	<undefined name="Unknown" offset="0x520" visible="false" />
-	<undefined name="Unknown" offset="0x524" visible="false" />
-	<undefined name="Unknown" offset="0x528" visible="false" />
-	<undefined name="Unknown" offset="0x52C" visible="false" />
-	<undefined name="Unknown" offset="0x530" visible="false" />
-	<undefined name="Unknown" offset="0x534" visible="false" />
-	<tagblock name="Unknown" offset="0x538" visible="false" elementSize="0x78" align="0x10">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+	<tagblock name="Unknown" offset="0x524" visible="false" elementSize="0x78" align="0x10">
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
@@ -5790,24 +5785,15 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 		<undefined name="Unknown" offset="0x70" visible="false" />
 		<undefined name="Unknown" offset="0x74" visible="false" />
 	</tagblock>
-	<tagblock name="Fog" offset="0x544" visible="true" elementSize="0x8">
+	<tagblock name="Fog" offset="0x530" visible="true" elementSize="0x8">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int16 name="Unknown" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x550" visible="false" />
-	<undefined name="Unknown" offset="0x554" visible="false" />
-	<undefined name="Unknown" offset="0x558" visible="false" />
-	<undefined name="Unknown" offset="0x55C" visible="false" />
-	<undefined name="Unknown" offset="0x560" visible="false" />
-	<undefined name="Unknown" offset="0x564" visible="false" />
-	<undefined name="Unknown" offset="0x568" visible="false" />
-	<undefined name="Unknown" offset="0x56C" visible="false" />
-	<undefined name="Unknown" offset="0x570" visible="false" />
-	<undefined name="Unknown" offset="0x574" visible="false" />
-	<undefined name="Unknown" offset="0x578" visible="false" />
-	<undefined name="Unknown" offset="0x57C" visible="false" />
-	<tagblock name="Scenario Cluster Data" offset="0x580" visible="true" elementSize="0x68">
+	<undefined name="Unknown" offset="0x53C" visible="false" />
+	<undefined name="Unknown" offset="0x540" visible="false" />
+	<undefined name="Unknown" offset="0x544" visible="false" />
+	<tagblock name="Scenario Cluster Data" offset="0x548" visible="true" elementSize="0x68">
 		<tagRef name="BSP" offset="0x0" visible="true" />
 		<tagblock name="Background Sound Environments" offset="0x10" visible="true" elementSize="0x4">
 			<int16 name="Background Sound Environment Index" offset="0x0" visible="true" />
@@ -5838,42 +5824,43 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<int16 name="Unknown" offset="0x2" visible="false" />
 		</tagblock>
 	</tagblock>
-	<undefined name="Unknown" offset="0x58C" visible="false" />
-	<undefined name="Unknown" offset="0x590" visible="false" />
-	<undefined name="Unknown" offset="0x594" visible="false" />
-	<int32 name="Object Salts 1" offset="0x598" visible="false" />
-	<int32 name="Object Salts 2" offset="0x59C" visible="false" />
-	<int32 name="Object Salts 3" offset="0x5A0" visible="false" />
-	<int32 name="Object Salts 4" offset="0x5A4" visible="false" />
-	<int32 name="Object Salts 5" offset="0x5A8" visible="false" />
-	<int32 name="Object Salts 6" offset="0x5AC" visible="false" />
-	<int32 name="Object Salts 7" offset="0x5B0" visible="false" />
-	<int32 name="Object Salts 8" offset="0x5B4" visible="false" />
-	<int32 name="Object Salts 9" offset="0x5B8" visible="false" />
-	<int32 name="Object Salts 10" offset="0x5BC" visible="false" />
-	<int32 name="Object Salts 11" offset="0x5C0" visible="false" />
-	<int32 name="Object Salts 12" offset="0x5C4" visible="false" />
-	<int32 name="Object Salts 13" offset="0x5C8" visible="false" />
-	<int32 name="Object Salts 14" offset="0x5CC" visible="false" />
-	<int32 name="Object Salts 15" offset="0x5D0" visible="false" />
-	<int32 name="Object Salts 16" offset="0x5D4" visible="false" />
-	<int32 name="Object Salts 17" offset="0x5D8" visible="false" />
-	<int32 name="Object Salts 18" offset="0x5DC" visible="false" />
-	<int32 name="Object Salts 19" offset="0x5E0" visible="false" />
-	<int32 name="Object Salts 20" offset="0x5E4" visible="false" />
-	<int32 name="Object Salts 21" offset="0x5E8" visible="false" />
-	<int32 name="Object Salts 22" offset="0x5EC" visible="false" />
-	<int32 name="Object Salts 23" offset="0x5F0" visible="false" />
-	<int32 name="Object Salts 24" offset="0x5F4" visible="false" />
-	<int32 name="Object Salts 25" offset="0x5F8" visible="false" />
-	<int32 name="Object Salts 26" offset="0x5FC" visible="false" />
-	<int32 name="Object Salts 27" offset="0x600" visible="false" />
-	<int32 name="Object Salts 28" offset="0x604" visible="false" />
-	<int32 name="Object Salts 29" offset="0x608" visible="false" />
-	<int32 name="Object Salts 30" offset="0x60C" visible="false" />
-	<int32 name="Object Salts 31" offset="0x610" visible="false" />
-	<int32 name="Object Salts 32" offset="0x614" visible="false" />
-	<tagblock name="Spawn Data" offset="0x618" visible="true" elementSize="0x6C">
+	<undefined name="Unknown" offset="0x554" visible="false" />
+	<undefined name="Unknown" offset="0x558" visible="false" />
+	<undefined name="Unknown" offset="0x55C" visible="false" />
+	<int32 name="Object Salts 1" offset="0x560" visible="false" />
+	<int32 name="Object Salts 2" offset="0x564" visible="false" />
+	<int32 name="Object Salts 3" offset="0x568" visible="false" />
+	<int32 name="Object Salts 4" offset="0x56C" visible="false" />
+	<int32 name="Object Salts 5" offset="0x570" visible="false" />
+	<int32 name="Object Salts 6" offset="0x574" visible="false" />
+	<int32 name="Object Salts 7" offset="0x578" visible="false" />
+	<int32 name="Object Salts 8" offset="0x57C" visible="false" />
+	<int32 name="Object Salts 9" offset="0x580" visible="false" />
+	<int32 name="Object Salts 10" offset="0x584" visible="false" />
+	<int32 name="Object Salts 11" offset="0x588" visible="false" />
+	<int32 name="Object Salts 12" offset="0x58C" visible="false" />
+	<int32 name="Object Salts 13" offset="0x590" visible="false" />
+	<int32 name="Object Salts 14" offset="0x594" visible="false" />
+	<int32 name="Object Salts 15" offset="0x598" visible="false" />
+	<int32 name="Object Salts 16" offset="0x59C" visible="false" />
+	<int32 name="Object Salts 17" offset="0x5A0" visible="false" />
+	<int32 name="Object Salts 18" offset="0x5A4" visible="false" />
+	<int32 name="Object Salts 19" offset="0x5A8" visible="false" />
+	<int32 name="Object Salts 20" offset="0x5AC" visible="false" />
+	<int32 name="Object Salts 21" offset="0x5B0" visible="false" />
+	<int32 name="Object Salts 22" offset="0x5B4" visible="false" />
+	<int32 name="Object Salts 23" offset="0x5B8" visible="false" />
+	<int32 name="Object Salts 24" offset="0x5BC" visible="false" />
+	<int32 name="Object Salts 25" offset="0x5C0" visible="false" />
+	<int32 name="Object Salts 26" offset="0x5C4" visible="false" />
+	<int32 name="Object Salts 27" offset="0x5C8" visible="false" />
+	<int32 name="Object Salts 28" offset="0x5CC" visible="false" />
+	<int32 name="Object Salts 29" offset="0x5D0" visible="false" />
+	<int32 name="Object Salts 30" offset="0x5D4" visible="false" />
+	<int32 name="Object Salts 31" offset="0x5D8" visible="false" />
+	<int32 name="Object Salts 32" offset="0x5DC" visible="false" />
+	<tagblock name="Spawn Data" offset="0x5E0" visible="true" elementSize="0x6C">
+		<comment title="Dynamic Spawn">Non-0 values here overload what appears in multiplayer_globals.</comment>
 		<float32 name="Dynamic Spawn Lower Height" offset="0x0" visible="true" />
 		<float32 name="Dynamic Spawn Upper Height" offset="0x4" visible="true" />
 		<float32 name="Game Object Reset Height" offset="0x8" visible="true" />
@@ -5900,6 +5887,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<float32 name="Weight" offset="0xC" visible="true" />
 		</tagblock>
 		<tagblock name="Static Respawn Zones" offset="0x54" visible="true" elementSize="0x30">
+			<comment title="Static Spawn Zones">Lower and upper heights can be left at 0, in which case they use defaults. Leaving relevant teams empty means all teams; leaving all games empty means all games.</comment>
 			<stringid name="Name" offset="0x0" visible="true" />
 			<flags32 name="Relevant Teams" offset="0x4" visible="true">
 				<bit name="Red" index="0" />
@@ -5988,6 +5976,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<float32 name="Weight" offset="0x2C" visible="true" />
 		</tagblock>
 		<tagblock name="Static Initial Spawn Zones" offset="0x60" visible="true" elementSize="0x30">
+			<comment title="Static Spawn Zones">Lower and upper heights can be left at 0, in which case they use defaults. Leaving relevant teams empty means all teams; leaving all games empty means all games.</comment>
 			<stringid name="Name" offset="0x0" visible="true" />
 			<flags32 name="Relevant Teams" offset="0x4" visible="true">
 				<bit name="Red" index="0" />
@@ -6076,8 +6065,8 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<float32 name="Weight" offset="0x2C" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagRef name="Sound Effects Collection" offset="0x624" visible="true" />
-	<tagblock name="Crates" offset="0x634" visible="true" elementSize="0xB0">
+	<tagRef name="Sound Effect Collection" offset="0x5EC" visible="true" />
+	<tagblock name="Crates" offset="0x5FC" visible="true" elementSize="0xB0">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
@@ -6351,7 +6340,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<float32 name="Boundary Shape -Height" offset="0xA8" visible="true" />
 		<float32 name="Respawn Weight" offset="0xAC" visible="true" />
 	</tagblock>
-	<tagblock name="Crate Palette" offset="0x640" visible="true" elementSize="0x30">
+	<tagblock name="Crates Palette" offset="0x608" visible="true" elementSize="0x30">
 		<tagRef name="Crate" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -6362,10 +6351,10 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Flock Palette" offset="0x64C" visible="true" elementSize="0x10">
+	<tagblock name="Flock Palette" offset="0x614" visible="true" elementSize="0x10">
 		<tagRef name="Flock" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Flocks" offset="0x658" visible="true" elementSize="0x48">
+	<tagblock name="Flocks" offset="0x620" visible="true" elementSize="0x48">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int16 name="Flock Palette Index" offset="0x4" visible="true" />
 		<int16 name="BSP Index" offset="0x6" visible="true" />
@@ -6412,11 +6401,11 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<range16 name="Boid Count" offset="0x42" visible="true" />
 		<int16 name="Unknown" offset="0x46" visible="false" />
 	</tagblock>
-	<tagRef name="Subtitle Strings" offset="0x664" visible="true" />
-	<undefined name="Unknown" offset="0x674" visible="false" />
-	<undefined name="Unknown" offset="0x678" visible="false" />
-	<undefined name="Unknown" offset="0x67C" visible="false" />
-	<tagblock name="Creature Palette" offset="0x680" visible="true" elementSize="0x30">
+	<tagRef name="Subtitle Strings" offset="0x62C" visible="true" />
+	<undefined name="Unknown" offset="0x63C" visible="false" />
+	<undefined name="Unknown" offset="0x640" visible="false" />
+	<undefined name="Unknown" offset="0x644" visible="false" />
+	<tagblock name="Creatures Palette" offset="0x648" visible="true" elementSize="0x30">
 		<tagRef name="Creature" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -6427,18 +6416,16 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Editor Folders" offset="0x68C" visible="true" elementSize="0x104">
+	<tagblock name="Editor Folders" offset="0x654" visible="true" elementSize="0x104">
 		<int32 name="Parent Folder" offset="0x0" visible="true" />
-		<ascii name="Name" offset="0x4" length="0x100" visible="true" />
+		<ascii name="Name" offset="0x4" size="0x100" visible="true" />
 	</tagblock>
-	<tagRef name="Territory Location Name Strings" offset="0x698" visible="true" />
-	<undefined name="Unknown" offset="0x6A8" visible="false" />
-	<undefined name="Unknown" offset="0x6AC" visible="false" />
-	<tagblock name="Mission Dialogue" offset="0x6B0" visible="true" elementSize="0x10">
+	<tagRef name="Territory Location Name Strings" offset="0x660" visible="true" />
+	<tagblock name="Mission Dialogue" offset="0x670" visible="true" elementSize="0x10">
 		<tagRef name="Mission Dialogue" offset="0x0" visible="true" />
 	</tagblock>
-	<tagRef name="Objective Strings" offset="0x6BC" visible="true" />
-	<tagblock name="Interpolators" offset="0x6CC" visible="true" elementSize="0x24">
+	<tagRef name="Objective Strings" offset="0x67C" visible="true" />
+	<tagblock name="Interpolators" offset="0x68C" visible="true" elementSize="0x24">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<stringid name="Accelerator Name" offset="0x4" visible="true" />
 		<stringid name="Multiplier Name" offset="0x8" visible="true" />
@@ -6446,19 +6433,19 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Unknown" offset="0x20" visible="false" />
 		<int16 name="Unknown" offset="0x22" visible="false" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x6D8" visible="false" />
-	<undefined name="Unknown" offset="0x6DC" visible="false" />
-	<undefined name="Unknown" offset="0x6E0" visible="false" />
-	<undefined name="Unknown" offset="0x6E4" visible="false" />
-	<undefined name="Unknown" offset="0x6E8" visible="false" />
-	<undefined name="Unknown" offset="0x6EC" visible="false" />
-	<tagRef name="Default Camera FX" offset="0x6F0" visible="true" />
-	<tagRef name="Default Screen FX" offset="0x700" visible="true" />
-	<tagRef name="Sky Parameters" offset="0x710" visible="true" />
-	<tagRef name="Global Lighting" offset="0x720" visible="true" />
-	<tagRef name="Lightmap" offset="0x730" visible="true" />
-	<tagRef name="Performace Throttles" offset="0x740" visible="true" />
-	<tagblock name="Unknown Objects" offset="0x750" visible="true" elementSize="0x10">
+	<undefined name="Unknown" offset="0x698" visible="false" />
+	<undefined name="Unknown" offset="0x69C" visible="false" />
+	<undefined name="Unknown" offset="0x6A0" visible="false" />
+	<undefined name="Unknown" offset="0x6A4" visible="false" />
+	<undefined name="Unknown" offset="0x6A8" visible="false" />
+	<undefined name="Unknown" offset="0x6AC" visible="false" />
+	<tagRef name="Default Camera FX" offset="0x6B0" visible="true" />
+	<tagRef name="Default Screen FX" offset="0x6C0" visible="true" />
+	<tagRef name="Sky Parameters" offset="0x6D0" visible="true" />
+	<tagRef name="Global Lighting" offset="0x6E0" visible="true" />
+	<tagRef name="Lightmap" offset="0x6F0" visible="true" />
+	<tagRef name="Performace Throttles" offset="0x700" visible="true" />
+	<tagblock name="Unknown Objects" offset="0x710" visible="true" elementSize="0x10">
 		<datum name="Unique ID" offset="0x0" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x4" visible="true" />
 		<enum8 name="Type" offset="0x6" visible="true">
@@ -6494,7 +6481,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Unknown" offset="0xC" visible="false" />
 		<int16 name="Unknown" offset="0xE" visible="false" />
 	</tagblock>
-	<tagblock name="AI Objectives" offset="0x75C" visible="true" elementSize="0x24">
+	<tagblock name="AI Objectives" offset="0x71C" visible="true" elementSize="0x24">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -6534,9 +6521,9 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<undefined name="Unknown" offset="0x1C" visible="false" />
 			<undefined name="Unknown" offset="0x20" visible="false" />
 			<undefined name="Unknown" offset="0x24" visible="false" />
-			<ascii name="Command Script Name 1" offset="0x28" length="0x20" visible="true" />
-			<ascii name="Command Script Name 2" offset="0x48" length="0x20" visible="true" />
-			<ascii name="Command Script Name 3" offset="0x68" length="0x20" visible="true" />
+			<ascii name="Command Script Name 1" offset="0x28" size="0x20" visible="true" />
+			<ascii name="Command Script Name 2" offset="0x48" size="0x20" visible="true" />
+			<ascii name="Command Script Name 3" offset="0x68" size="0x20" visible="true" />
 			<int16 name="Command Script Index 1" offset="0x88" visible="true" />
 			<int16 name="Command Script Index 2" offset="0x8A" visible="true" />
 			<int16 name="Command Script Index 3" offset="0x8C" visible="true" />
@@ -6554,8 +6541,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<int16 name="Next Role" offset="0xAC" visible="true" />
 			<int16 name="Parent Role" offset="0xAE" visible="true" />
 			<tagblock name="Conditions" offset="0xB0" visible="true" elementSize="0x124">
-				<ascii name="Name" offset="0x0" length="0x20" visible="true" />
-				<ascii name="Condition" offset="0x20" length="0x100" visible="true" />
+				<ascii name="Name" offset="0x0" size="0x20" visible="true" />
+				<ascii name="Condition" offset="0x20" size="0x100" visible="true" />
 				<int16 name="Unknown" offset="0x120" visible="false" />
 				<int16 name="Unknown" offset="0x122" visible="false" />
 			</tagblock>
@@ -6639,7 +6626,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			</tagblock>
 		</tagblock>
 	</tagblock>
-	<tagblock name="Designer Zonesets" offset="0x768" visible="true" elementSize="0xC8">
+	<tagblock name="Designer Zonesets" offset="0x728" visible="true" elementSize="0xC8">
 		<comment title="Designer Zonesets">This block is essentially leftover import data and is only useful as a reference to where something is loaded. Modifying anything in this block won't change anything.</comment>
 		<stringid name="Name" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
@@ -6692,21 +6679,21 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<int16 name="Palette Index" offset="0x0" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Unknown" offset="0x774" visible="false" elementSize="0x4">
+	<tagblock name="Unknown" offset="0x734" visible="false" elementSize="0x4">
 		<int16 name="Unknown" offset="0x0" visible="false" />
 		<int16 name="Unknown" offset="0x2" visible="false" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x780" visible="false" />
-	<undefined name="Unknown" offset="0x784" visible="false" />
-	<undefined name="Unknown" offset="0x788" visible="false" />
-	<tagblock name="Cinematics" offset="0x78C" visible="true" elementSize="0x10">
+	<undefined name="Unknown" offset="0x740" visible="false" />
+	<undefined name="Unknown" offset="0x744" visible="false" />
+	<undefined name="Unknown" offset="0x748" visible="false" />
+	<tagblock name="Cinematics" offset="0x74C" visible="true" elementSize="0x10">
 		<tagRef name="Cinematics" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Cinematic Lighting" offset="0x798" visible="true" elementSize="0x14">
+	<tagblock name="Cinematic Lighting" offset="0x758" visible="true" elementSize="0x14">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<tagRef name="Cinematic Light" offset="0x4" visible="true" />
 	</tagblock>
-	<tagblock name="Override Player Representations" offset="0x7A4" visible="true" elementSize="0x6C">
+	<tagblock name="Override Player Representations" offset="0x764" visible="true" elementSize="0x6C">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<int8 name="Unknown" offset="0x4" visible="false" />
 		<int8 name="Unknown" offset="0x5" visible="false" />
@@ -6720,7 +6707,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<tagRef name="Binoculars Zoom Out Sound" offset="0x4C" visible="true" />
 		<tagRef name="Combat Dialogue" offset="0x5C" visible="true" />
 	</tagblock>
-	<tagblock name="Campaign Metagame" offset="0x7B0" visible="true" elementSize="0x1C">
+	<tagblock name="Campaign Metagame" offset="0x770" visible="true" elementSize="0x1C">
 		<tagblock name="Time Bonuses" offset="0x0" visible="true" elementSize="0x8">
 			<float32 name="Time" offset="0x0" visible="true" tooltip="if you finish in under this time you get the following bonus" />
 			<float32 name="Score Multiplier" offset="0x4" visible="true" />
@@ -6732,7 +6719,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<float32 name="Par Score" offset="0x4" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Soft Surfaces" offset="0x7BC" visible="true" elementSize="0x18">
+	<tagblock name="Soft Surfaces" offset="0x77C" visible="true" elementSize="0x18">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<float32 name="Class Biped" offset="0x4" visible="true" tooltip="max - .2f" />
 		<float32 name="Class Dead Biped" offset="0x8" visible="true" tooltip="max - .09f" />
@@ -6740,36 +6727,36 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<float32 name="Class Debris" offset="0x10" visible="true" tooltip="max - .04f" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0x7C8" visible="false" elementSize="0x10">
+	<tagblock name="Unknown" offset="0x788" visible="false" elementSize="0x10">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<int16 name="Unknown" offset="0xC" visible="false" />
 		<int16 name="Unknown" offset="0xE" visible="false" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x7D4" visible="false" />
-	<undefined name="Unknown" offset="0x7D8" visible="false" />
-	<undefined name="Unknown" offset="0x7DC" visible="false" />
-	<tagblock name="Unknown" offset="0x7E0" visible="false" elementSize="0x14">
+	<undefined name="Unknown" offset="0x794" visible="false" />
+	<undefined name="Unknown" offset="0x798" visible="false" />
+	<undefined name="Unknown" offset="0x79C" visible="false" />
+	<tagblock name="Unknown" offset="0x7A0" visible="false" elementSize="0x14">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<stringid name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0x7EC" visible="false" elementSize="0x10">
+	<tagblock name="Unknown" offset="0x7AC" visible="false" elementSize="0x10">
 		<tagRef name="Unknown" offset="0x0" visible="false" />
 	</tagblock>
-	<tagRef name="Mission Vision Mode Effect" offset="0x7F8" visible="true" />
-	<tagRef name="Mission Vision Mode Theater Effect" offset="0x808" visible="true" />
-	<tagRef name="Mission Vision Mode" offset="0x818" visible="true" />
+	<tagRef name="Mission Vision Mode Effect" offset="0x7B8" visible="true" />
+	<tagRef name="Mission Vision Mode Theater Effect" offset="0x7C8" visible="true" />
+	<tagRef name="Mission Vision Mode" offset="0x7D8" visible="true" />
 	<comment title="Structured Interop Resource">The resource referenced in the block contains data for every beam, cntl, effe, and ltvl tag.</comment>
-	<tagblock name="Structured Buffer Interops" offset="0x828" visible="true" elementSize="0x8">
+	<tagblock name="Structured Buffer Interops" offset="0x7E8" visible="true" elementSize="0x8">
 		<datum name="[zone] Structured Buffer Interop Asset Datum" offset="0x0" visible="true" />
 		<int32 name="Useless Padding" offset="0x4" visible="false" />
 	</tagblock>
-	<tagblock name="Scavenger Hunt Objects" offset="0x834" visible="true" elementSize="0x24">
-		<ascii name="Exported Name" offset="0x0" length="0x20" visible="true" />
+	<tagblock name="Scavenger Hunt Objects" offset="0x7F4" visible="true" elementSize="0x24">
+		<ascii name="Exported Name" offset="0x0" size="0x20" visible="true" />
 		<int16 name="Name Index" offset="0x20" visible="true" />
 		<int16 name="Unknown" offset="0x22" visible="false" />
 	</tagblock>

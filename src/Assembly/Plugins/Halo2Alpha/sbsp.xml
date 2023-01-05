@@ -4,9 +4,9 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
-	<uint32 name="Import Info" offset="0x0" visible="false" />
-	<uint32 name="Import Info" offset="0x4" visible="false" />
-	<uint32 name="Import Info" offset="0x8" visible="false" />
+	<uint32 name="Import Info Block" offset="0x0" visible="false" />
+	<uint32 name="Import Info Block" offset="0x4" visible="false" />
+	<uint32 name="Import Info Block" offset="0x8" visible="false" />
 	<int32 name="BSP Checksum" offset="0xC" visible="true" />
 	<tagblock name="Collision Materials" offset="0x10" visible="true" elementSize="0x24">
 		<tagRef name="Old Shader" offset="0x0" visible="true" />
@@ -73,11 +73,11 @@
 		</tagblock>
 		<int32 name="Unknown" offset="0x60" visible="false" />
 	</tagblock>
-	<float32 name="Vehicle Floor" offset="0x28" visible="true" />
-	<float32 name="Vehicle Ceiling" offset="0x2C" visible="true" />
-	<uint32 name="Nodes" offset="0x30" visible="false" />
-	<uint32 name="Nodes" offset="0x34" visible="false" />
-	<uint32 name="Nodes" offset="0x38" visible="false" />
+	<float32 name="Vehicle Floor" offset="0x28" visible="true" tooltip="height below which vehicles get pushed up by an unstoppable force." />
+	<float32 name="Vehicle Ceiling" offset="0x2C" visible="true" tooltip="height above which vehicles get pushed down by an unstoppable force." />
+	<uint32 name="Unused Nodes Block" offset="0x30" visible="false" />
+	<uint32 name="Unused Nodes Block" offset="0x34" visible="false" />
+	<uint32 name="Unused Nodes Block" offset="0x38" visible="false" />
 	<tagblock name="Leaves" offset="0x3C" visible="true" elementSize="0x8">
 		<int16 name="Cluster" offset="0x0" visible="true" />
 		<int16 name="Surface Reference Count" offset="0x2" visible="true" />
@@ -126,18 +126,18 @@
 	<undefined name="Unknown" offset="0xC0" visible="false" />
 	<undefined name="Unknown" offset="0xC4" visible="false" />
 	<tagblock name="Detail Objects" offset="0xC8" visible="false" elementSize="0x34">
-		<uint32 name="Cells" offset="0x0" visible="false" />
-		<uint32 name="Cells" offset="0x4" visible="false" />
-		<uint32 name="Cells" offset="0x8" visible="false" />
-		<uint32 name="Instances" offset="0xC" visible="false" />
-		<uint32 name="Instances" offset="0x10" visible="false" />
-		<uint32 name="Instances" offset="0x14" visible="false" />
-		<uint32 name="Counts" offset="0x18" visible="false" />
-		<uint32 name="Counts" offset="0x1C" visible="false" />
-		<uint32 name="Counts" offset="0x20" visible="false" />
-		<uint32 name="Z Reference Vectors" offset="0x24" visible="false" />
-		<uint32 name="Z Reference Vectors" offset="0x28" visible="false" />
-		<uint32 name="Z Reference Vectors" offset="0x2C" visible="false" />
+		<uint32 name="Cells Block" offset="0x0" visible="false" />
+		<uint32 name="Cells Block" offset="0x4" visible="false" />
+		<uint32 name="Cells Block" offset="0x8" visible="false" />
+		<uint32 name="Instances Block" offset="0xC" visible="false" />
+		<uint32 name="Instances Block" offset="0x10" visible="false" />
+		<uint32 name="Instances Block" offset="0x14" visible="false" />
+		<uint32 name="Counts Block" offset="0x18" visible="false" />
+		<uint32 name="Counts Block" offset="0x1C" visible="false" />
+		<uint32 name="Counts Block" offset="0x20" visible="false" />
+		<uint32 name="Z Reference Vectors Block" offset="0x24" visible="false" />
+		<uint32 name="Z Reference Vectors Block" offset="0x28" visible="false" />
+		<uint32 name="Z Reference Vectors Block" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 	</tagblock>
 	<tagblock name="Clusters" offset="0xD4" visible="true" elementSize="0x110">
@@ -149,7 +149,8 @@
 		<uint16 name="Opaque Point Count" offset="0xA" visible="true" />
 		<uint16 name="Opaque Vertex Count" offset="0xC" visible="true" />
 		<uint16 name="Opaque Part Count" offset="0xE" visible="true" />
-		<uint16 name="Opaque Maximum Nodes/Vertex" offset="0x10" visible="true" />
+		<uint8 name="Opaque Maximum Nodes/Vertex" offset="0x10" visible="true" />
+		<uint8 name="Transparent Maximum Nodes/Vertex" offset="0x11" visible="true" />
 		<uint16 name="Shadow-Casting Rigid Triangle Count" offset="0x12" visible="true" />
 		<enum16 name="Geometry Classification" offset="0x14" visible="true">
 			<option name="Worldspace" value="0x0" />
@@ -162,29 +163,29 @@
 			<bit name="Compressed Position" index="0" />
 			<bit name="Compressed Texcoord" index="1" />
 			<bit name="Compressed Secondary Texcoord" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
 		</flags16>
 		<undefined name="Unknown" offset="0x18" visible="false" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
-		<int32 name="Unknown" offset="0x28" visible="false" />
-		<int32 name="Unknown" offset="0x2C" visible="false" />
-		<int32 name="Unknown" offset="0x30" visible="false" />
-		<int32 name="Unknown" offset="0x34" visible="false" />
-		<tagref name="Owner Tag" offset="0x38" visible="true" />
+		<int32 name="Resource Block Offset" offset="0x28" visible="true" />
+		<uint32 name="Resource Block Size" offset="0x2C" visible="true" />
+		<uint32 name="Section Data Size" offset="0x30" visible="true" />
+		<uint32 name="Resource Data Size" offset="0x34" visible="true" />
+		<tagblock name="Resources" offset="0x38" visible="true" elementSize="0x10">
+			<enum8 name="Type" offset="0x0" visible="true">
+				<option name="Tag Block" value="0x0" />
+				<option name="Tag Data" value="0x1" />
+				<option name="Vertex Buffer" value="0x2" />
+			</enum8>
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<int16 name="Primary Locator" offset="0x4" visible="true" />
+			<int16 name="Secondary Locator" offset="0x6" visible="true" />
+			<uint32 name="Resource Data Size" offset="0x8" visible="true" />
+			<uint32 name="Resource Data Offset" offset="0xC" visible="true" />
+		</tagblock>
+		<tagref name="Owner Tag" offset="0x44" withGroup="false" visible="true" />
 		<int16 name="Owner Tag Section Offset" offset="0x48" visible="true" />
 		<int16 name="Unknown" offset="0x4A" visible="false" />
 		<int32 name="Unknown" offset="0x4C" visible="false" />
@@ -277,10 +278,10 @@
 	<undefined name="Unknown" offset="0x120" visible="false" />
 	<undefined name="Unknown" offset="0x124" visible="false" />
 	<tagblock name="Background Sound Palette" offset="0x128" visible="true" elementSize="0x74">
-		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+		<ascii name="Name" offset="0x0" visible="true" size="0x20" />
 		<tagRef name="Background Sound" offset="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
-		<ascii name="Scale Function" offset="0x34" length="0x20" visible="true" />
+		<ascii name="Scale Function" offset="0x34" size="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x54" visible="false" />
 		<undefined name="Unknown" offset="0x58" visible="false" />
 		<undefined name="Unknown" offset="0x5C" visible="false" />
@@ -291,7 +292,7 @@
 		<undefined name="Unknown" offset="0x70" visible="false" />
 	</tagblock>
 	<tagblock name="Sound Environment Palette" offset="0x134" visible="true" elementSize="0x50">
-		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+		<ascii name="Name" offset="0x0" visible="true" size="0x20" />
 		<tagRef name="Sound Environment" offset="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
@@ -307,11 +308,10 @@
 	<undefined name="Unknown" offset="0x158" visible="false" />
 	<undefined name="Unknown" offset="0x15C" visible="false" />
 	<tagblock name="Runtime Decals" offset="0x160" visible="true" elementSize="0x10">
-		<float32 name="Unknown" offset="0x0" visible="true" />
-		<float32 name="Unknown" offset="0x4" visible="true" />
-		<float32 name="Unknown" offset="0x8" visible="true" />
-		<int16 name="Unknown" offset="0xC" visible="false" />
-		<int16 name="Unknown" offset="0xE" visible="false" />
+		<point3 name="Position" offset="0x0" visible="true" />
+		<int16 name="Decal Type" offset="0xC" visible="true" />
+		<int8 name="Yaw" offset="0xE" visible="true" />
+		<int8 name="Pitch" offset="0xF" visible="true" />
 	</tagblock>
 	<tagblock name="Environment Object Palette" offset="0x16C" visible="true" elementSize="0x24">
 		<tagRef name="Definition" offset="0x0" visible="true" />
@@ -330,36 +330,17 @@
 			<bit name="Sound Scenery" index="10" />
 			<bit name="Crate" index="11" />
 			<bit name="Creature" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
 		</flags32>
 	</tagblock>
 	<tagblock name="Environment Objects" offset="0x178" visible="true" elementSize="0x68">
-		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+		<ascii name="Name" offset="0x0" visible="true" size="0x20" />
 		<vector4 name="Rotation" offset="0x20" visible="true" />
 		<point3 name="Translation" offset="0x30" visible="true" />
 		<int16 name="Palette Index" offset="0x3C" visible="true" />
 		<int16 name="Unknown" offset="0x3E" visible="false" />
-		<int32 name="Unique ID" offset="0x40" visible="true" />
-		<ascii name="Exported Object Type" offset="0x44" length="0x4" />
-		<ascii name="Scenario Object Name" offset="0x48" length="0x20" visible="true" />
+		<datum name="Unique ID" offset="0x40" visible="true" />
+		<ascii name="Exported Object Type" offset="0x44" size="0x4" visible="true" />
+		<ascii name="Scenario Object Name" offset="0x48" size="0x20" visible="true" />
 	</tagblock>
 	<undefined name="Unknown" offset="0x184" visible="false" />
 	<undefined name="Unknown" offset="0x188" visible="false" />

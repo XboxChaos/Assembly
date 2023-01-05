@@ -347,7 +347,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			else if (oldAddress != 0 && oldCount > 0)
 			{
 				// Block was cached - just free it
-				_allocator.Free(expand, oldCount * layout.Size);
+				_allocator.Free(expand, (uint)(oldCount * layout.Size));
 			}
 
 			uint cont = _expander.Contract(newAddress);

@@ -429,7 +429,7 @@ namespace Blamite.Blam.SecondGen
 
 			var segment = StringArea.Segments[0];
 
-			int newSize = _stringIDs.Count * 0x80;
+			uint newSize = (uint)_stringIDs.Count * 0x80;
 
 			if (segment.ActualSize < newSize)
 				segment.Resize(newSize, stream);

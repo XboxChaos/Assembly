@@ -119,12 +119,9 @@
 	<tagblock name="Early Mover Oriented Bounding Box" offset="0xA4" visible="true" elementSize="0x2C">
 		<stringid name="Node Name" offset="0x0" visible="true" tooltip="empty means object space" />
 		<int32 name="Runtime Node Index" offset="0x4" visible="true" />
-		<float32 name="X0" offset="0x8" visible="true" />
-		<float32 name="X1" offset="0xC" visible="true" />
-		<float32 name="Y0" offset="0x10" visible="true" />
-		<float32 name="Y1" offset="0x14" visible="true" />
-		<float32 name="Z0" offset="0x18" visible="true" />
-		<float32 name="Z1" offset="0x1C" visible="true" />
+		<rangef name="x" offset="0x8" visible="true" />
+		<rangef name="y" offset="0x10" visible="true" />
+		<rangef name="z" offset="0x18" visible="true" />
 		<degree3 name="Angles" offset="0x20" visible="true" />
 	</tagblock>
 	<tagRef name="Creation Effect" offset="0xB0" visible="true" />
@@ -393,7 +390,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<bit name="Cannot Open Doors Automatically" index="13" />
 		<bit name="Melee Attackers Cannot Attach" index="14" />
 		<bit name="Not Instantly Killed By Melee" index="15" />
-		<bit name="Flashlight Power Doesnt Transfer To Weapon" index="16" />
+		<bit name="Flashlight Power Doesn't Transfer To Weapon" index="16" />
 		<bit name="Runs Around Flaming" index="17" />
 		<bit name="Top Level For AOE Damage" index="18" />
 		<bit name="Special Cinematic Unit" index="19" />
@@ -1203,10 +1200,10 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 	<float32 name="Height Crouching" offset="0x630" visible="true" />
 	<float32 name="Radius" offset="0x634" visible="true" />
 	<float32 name="Mass" offset="0x638" visible="true" />
-	<stringId name="Living Material Name" offset="0x63C" visible="true" tooltip="collision material used when character is alive" />
-	<stringId name="Dead Material Name" offset="0x640" visible="true" tooltip="collision material used when character is dead" />
-	<int16 name="Living Material Global Index" offset="0x644" visible="true" />
-	<int16 name="Dead Material Global Index" offset="0x646" visible="true" />
+	<stringId name="Living Global Material Name" offset="0x63C" visible="true" tooltip="collision material used when character is alive" />
+	<stringId name="Dead Global Material Name" offset="0x640" visible="true" tooltip="collision material used when character is dead" />
+	<int16 name="Living Global Material Index" offset="0x644" visible="true" />
+	<int16 name="Dead Global Material Index" offset="0x646" visible="true" />
 	<tagblock name="Dead Sphere Shapes" offset="0x648" visible="true" elementSize="0x70" align="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int8 name="Material Index" offset="0x4" visible="true" />
@@ -1214,7 +1211,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 			<bit name="Supresses Effects" index="0" />
 			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
 		</flags8>
-		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<int16 name="Global Material Index" offset="0x6" visible="true" />
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
@@ -1301,7 +1298,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 			<bit name="Supresses Effects" index="0" />
 			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
 		</flags8>
-		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<int16 name="Global Material Index" offset="0x6" visible="true" />
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
@@ -1361,7 +1358,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 			<bit name="Supresses Effects" index="0" />
 			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
 		</flags8>
-		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<int16 name="Global Material Index" offset="0x6" visible="true" />
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
@@ -1449,11 +1446,11 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 	<degree name="Uphill Cutoff Angle" offset="0x67C" visible="true" />
 	<float32 name="Downhill Velocity Scale" offset="0x680" visible="true" />
 	<float32 name="Uphill Velocity Scale" offset="0x684" visible="true" />
-	<float32 name="Minimum Normal k" offset="0x688" visible="true" />
-	<float32 name="Downhill k0" offset="0x68C" visible="true" />
-	<float32 name="Downhill k1" offset="0x690" visible="true" />
-	<float32 name="Uphill k0" offset="0x694" visible="true" />
-	<float32 name="Uphill k1" offset="0x698" visible="true" />
+	<float32 name="Cosine Maximum Slope Angle" offset="0x688" visible="true" />
+	<float32 name="Negative Sine Downhill Falloff Angle" offset="0x68C" visible="true" />
+	<float32 name="Negative Sine Downhill Cutoff Angle" offset="0x690" visible="true" />
+	<float32 name="Sine Uphill Falloff Angle" offset="0x694" visible="true" />
+	<float32 name="Sine Uphill Cutoff Angle" offset="0x698" visible="true" />
 	<degree name="Climb Inflection Angle" offset="0x69C" visible="true" tooltip="angle for bipeds at which climb direction changes between up and down" />
 	<float32 name="Airborne Reaction Time Scale" offset="0x6A0" visible="true" tooltip="scale on the time for the entity to realize it is airborne" />
 	<float32 name="Ground Adhesion Velocity Scale" offset="0x6A4" visible="true" tooltip="scale on velocity with which the entity is pushed back into its ground plane (set to -1 to lock to ground)" />

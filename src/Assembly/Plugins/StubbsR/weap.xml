@@ -28,7 +28,9 @@
 	<point3 name="Bounding Offset" offset="0x8" visible="true" />
 	<point3 name="Origin Offset" offset="0x14" visible="true" />
 	<float32 name="Acceleration Scale" offset="0x20" visible="true" tooltip="marine 1.0, grunt 1.4, elite 0.9, hunter 0.5, etc." />
-	<int32 name="Unknown" offset="0x24" visible="true" />
+	<flags32 name="Runtime Flags" offset="0x24" visible="true">
+		<bit name="Scales Change Colors" index="0" />
+	</flags32>
 	<tagRef name="Model" offset="0x28" visible="true" />
 	<tagRef name="Animation Graph" offset="0x3C" visible="true" />
 	<undefined name="Unknown" offset="0x50" visible="false" />
@@ -171,7 +173,7 @@
 	<int16 name="Forced Shader Permutation Index" offset="0x156" visible="true" />
 	<tagblock name="Attachments" offset="0x158" visible="true" elementSize="0x4C">
 		<tagRef name="Type" offset="0x0" visible="true" />
-		<ascii name="Marker" offset="0x14" length="0x20" visible="true" />
+		<ascii name="Marker" offset="0x14" size="0x20" visible="true" />
 		<enum16 name="Primary Scale" offset="0x34" visible="true">
 			<option name="None" value="0x0" />
 			<option name="A Out" value="0x1" />
@@ -371,11 +373,11 @@
 		<undefined name="Unknown" offset="0x12C" visible="false" />
 		<undefined name="Unknown" offset="0x130" visible="false" />
 		<undefined name="Unknown" offset="0x134" visible="false" />
-		<float32 name="Unknown" offset="0x138" visible="false" />
-		<undefined name="Unknown" offset="0x13C" visible="false" />
-		<undefined name="Unknown" offset="0x140" visible="false" />
-		<float32 name="Unknown" offset="0x144" visible="false" />
-		<ascii name="Usage" offset="0x148" length="0x20" visible="true" />
+		<float32 name="Inverse Bounds" offset="0x138" visible="true" />
+		<float32 name="Inverse Sawtooth" offset="0x13C" visible="true" />
+		<float32 name="Inverse Step" offset="0x140" visible="true" />
+		<float32 name="Inverse Period" offset="0x144" visible="true" />
+		<ascii name="Usage" offset="0x148" size="0x20" visible="true" />
 	</tagblock>
 	<tagblock name="Change Colors" offset="0x194" visible="true" elementSize="0x34">
 		<enum16 name="Darken By" offset="0x0" visible="true">
@@ -422,7 +424,7 @@
 	</tagblock>
 	<comment title="ITEM" />
 	<flags32 name="Flags" offset="0x1BC" visible="true">
-		<bit name="Always Maintains Z Up" index="0" />
+		<bit name="Always Maintains z Up" index="0" />
 		<bit name="Destroyed By Explosions" index="1" />
 		<bit name="Unaffected By Gravity" index="2" />
 	</flags32>
@@ -540,11 +542,11 @@ Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
 		<bit name="Detonates When Dropped" index="10" />
 		<bit name="Cannot Fire At Maximum Age" index="11" />
 		<bit name="Secondary Trigger Overrides Grenades" index="12" />
-		<bit name="(OBSOLETE)Does Not Depower Active Camo In Multilplayer" index="13" />
+		<bit name="Does Not Depower Active Camo In Multilplayer" index="13" tooltip="obsolete" />
 		<bit name="Enables Integrated Night Vision" index="14" />
 		<bit name="Ais Use Weapon Melee Damage" index="15" />
 	</flags32>
-	<ascii name="Label" offset="0x35C" length="0x20" visible="true" tooltip="the string used to match this weapon to an animation mode in the unit carrying it" />
+	<ascii name="Label" offset="0x35C" size="0x20" visible="true" tooltip="the string used to match this weapon to an animation mode in the unit carrying it" />
 	<enum16 name="Secondary Trigger Mode" offset="0x37C" visible="true">
 		<option name="Normal" value="0x0" />
 		<option name="Slaved To Primary" value="0x1" />
@@ -721,7 +723,6 @@ Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
 		<option name="Needler" value="0x2" />
 		<option name="Plasma Pistol" value="0x3" />
 		<option name="Plasma Rifle" value="0x4" />
-		<option name="Rocket Launcher" value="0x5" />
 	</enum16>
 	<tagblock name="Predicted Resources" offset="0x570" visible="true" elementSize="0x8">
 		<enum16 name="Type" offset="0x0" visible="true">
@@ -781,7 +782,6 @@ Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
 			<bit name="Projectile Vector Cannot Be Adjusted" index="11" tooltip="projectiles fired by this weapon cannot have their direction adjusted by the AI to hit the target" />
 			<bit name="Projectiles Have Identical Error" index="12" />
 			<bit name="Projectile Is Client-Side Only" index="13" />
-			<bit name="Use Unit Adjust Projectile Ray From Halo 1" index="14" tooltip="by default, the engine now uses the logic found in later Halos to address projectile bugs. This flag forces the original H1 behavior" />
 		</flags32>
 		<comment title="Firing" />
 		<rangef name="Rounds Per Second" offset="0x4" visible="true" tooltip="the number of firing effects created per second" />
@@ -795,12 +795,7 @@ Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
 		<int16 name="Minimum Rounds Loaded" offset="0x24" visible="true" tooltip="the minimum number of rounds necessary to fire the weapon" />
 		<int16 name="Rounds Between Tracers" offset="0x26" visible="true" tooltip="the number of non-tracer rounds fired between tracers" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
-		<comment title="Prediction Properties">what the behavior of this barrel is in a predicted network game</comment>
-		<enum16 name="Prediction Type" offset="0x2C" visible="true">
-			<option name="None" value="0x0" />
-			<option name="Continuous" value="0x1" />
-			<option name="Instant" value="0x2" />
-		</enum16>
+		<int16 name="Unknown" offset="0x2C" visible="false" />
 		<enum16 name="Firing Noise" offset="0x2E" visible="true" tooltip="how loud this weapon appears to the AI">
 			<option name="Silent" value="0x0" />
 			<option name="Medium" value="0x1" />
@@ -824,7 +819,7 @@ Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
 		</enum16>
 		<int16 name="Unknown" offset="0x52" visible="false" />
 		<float32 name="Charged Illumination" offset="0x54" visible="true" tooltip="the amount of illumination given off when the weapon is fully charged" />
-		<float32 name="Spew Time" offset="0x58" visible="true" tooltip="length of time the weapon will spew (fire continuously) while discharging" />
+		<float32 name="Spew Time" offset="0x58" visible="true" tooltip="the length of time the weapon will spew (fire continuously) while discharging" />
 		<tagRef name="Charging Effect" offset="0x5C" visible="true" tooltip="the charging effect is created once when the trigger begins to charge" />
 		<comment title="Projectile" />
 		<enum16 name="Distribution Function" offset="0x70" visible="true">
@@ -859,12 +854,12 @@ Blurred permutations are called '$primary-blur' and '$secondary-blur'.</comment>
 		<undefined name="Unknown" offset="0xEC" visible="false" />
 		<undefined name="Unknown" offset="0xF0" visible="false" />
 		<undefined name="Unknown" offset="0xF4" visible="false" />
-		<float32 name="Unknown" offset="0xF8" visible="false" />
-		<float32 name="Unknown" offset="0xFC" visible="false" />
-		<float32 name="Unknown" offset="0x100" visible="false" />
-		<float32 name="Unknown" offset="0x104" visible="false" />
-		<float32 name="Unknown" offset="0x108" visible="false" />
-		<float32 name="Unknown" offset="0x10C" visible="false" />
+		<float32 name="Illumination Recovery Rate" offset="0xF8" visible="true" />
+		<float32 name="Ejection Port Recovery Rate" offset="0xFC" visible="true" />
+		<float32 name="Rate Of Fire Acceleration Rate" offset="0x100" visible="true" />
+		<float32 name="Rate Of Fire Deceleration Rate" offset="0x104" visible="true" />
+		<float32 name="Error Acceleration Rate" offset="0x108" visible="true" />
+		<float32 name="Error Deceleration Rate" offset="0x10C" visible="true" />
 		<tagblock name="Firing Effects" offset="0x110" visible="true" elementSize="0x9C" tooltip="firing effects determine what happens when this trigger is fired">
 			<int16 name="Shot Count Lower Bound" offset="0x0" visible="true" tooltip="the minimum number of times this firing effect will be used, once it has been chosen" />
 			<int16 name="Shot Count Upper Bound" offset="0x2" visible="true" tooltip="the maximum number of times this firing effect will be used, once it has been chosen" />

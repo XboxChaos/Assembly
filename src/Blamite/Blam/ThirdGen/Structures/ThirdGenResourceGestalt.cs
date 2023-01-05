@@ -247,7 +247,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			if (size <= 0 || address == 0)
 				return new byte[0];
 
-			int offset = _metaArea.PointerToOffset(expand);
+			uint offset = _metaArea.PointerToOffset(expand);
 			reader.SeekTo(offset);
 			return reader.ReadBlock(size);
 		}
@@ -257,7 +257,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			long newAddress = 0;
 			if (buffer.Length > 0)
 			{
-				newAddress = _allocator.Allocate(buffer.Length, 0x10, stream);
+				newAddress = _allocator.Allocate((uint)buffer.Length, 0x10, stream);
 				stream.SeekTo(_metaArea.PointerToOffset(newAddress));
 				stream.WriteBlock(buffer);
 			}
@@ -659,7 +659,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			else if (oldAddress != 0 && oldCount > 0)
 			{
 				// Block was cached - just free it
-				_allocator.Free(oldExpand, oldCount*layout.Size);
+				_allocator.Free(oldExpand, (uint)(oldCount*layout.Size));
 			}
 
 			uint cont = _expander.Contract(newAddress);
@@ -729,7 +729,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			else if (oldAddress != 0 && oldCount > 0)
 			{
 				// Block was cached - just free it
-				_allocator.Free(oldExpand, oldCount*layout.Size);
+				_allocator.Free(oldExpand, (uint)(oldCount*layout.Size));
 			}
 
 			uint cont = _expander.Contract(newAddress);
@@ -750,7 +750,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			foreach (StructureValueCollection entry in entries)
 				FreeResource(entry);
 
-			int size = count*layout.Size;
+			uint size = (uint)(count*layout.Size);
 			if (expand >= 0 && size > 0)
 				_allocator.Free(expand, size);
 		}
@@ -765,7 +765,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		private void FreeInfoBuffer(StructureValueCollection values)
 		{
-			var buffsize = (int)values.GetInteger("resource info buffer size");
+			var buffsize = (uint)values.GetInteger("resource info buffer size");
 			uint buffaddr = (uint)values.GetInteger("resource info buffer address");
 
 			long expand = _expander.Expand(buffaddr);
@@ -791,7 +791,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			long expand = _expander.Expand(address);
 
 			StructureLayout layout = _buildInfo.Layouts.GetLayout(layoutName);
-			int size = count * layout.Size;
+			uint size = (uint)(count * layout.Size);
 			if (expand >= 0 && size > 0)
 				_allocator.Free(expand, size);
 		}

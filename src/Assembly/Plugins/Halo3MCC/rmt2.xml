@@ -6,27 +6,45 @@
 	</revisions>
 	<tagRef name="Vertex Shader" offset="0x0" visible="true" />
 	<tagRef name="Pixel Shader" offset="0x10" visible="true" />
-	<uint32 name="Available Entry Points" offset="0x20" visible="true" />
+	<flags32 name="Available Entry Points" offset="0x20" visible="true">
+		<bit name="Default" index="0" />
+		<bit name="Albedo" index="1" />
+		<bit name="Static Default" index="2" />
+		<bit name="Static Per Pixel" index="3" />
+		<bit name="Static Per Vertex" index="4" />
+		<bit name="Static Sh" index="5" />
+		<bit name="Static Prt Ambient" index="6" />
+		<bit name="Static Prt Linear" index="7" />
+		<bit name="Static Prt Quadratic" index="8" />
+		<bit name="Dynamic Light" index="9" />
+		<bit name="Shadow Generate" index="10" />
+		<bit name="Shadow Apply" index="11" />
+		<bit name="Active Camo" index="12" />
+		<bit name="Lightmap Debug Mode" index="13" />
+		<bit name="Vertex Color Lighting" index="14" />
+		<bit name="Water Tessellation" index="15" />
+		<bit name="Water Shading" index="16" />
+		<bit name="Dynamic Light Cinematic" index="17" />
+	</flags32>
 	<tagblock name="Entry Points" offset="0x24" visible="true" elementSize="0x2">
 		<uint16 name="Block Index Data" offset="0x0" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
 	</tagblock>
-	<tagblock name="Passes" offset="0x30" visible="false" elementSize="0x20">
-		<uint16 name="Unknown" offset="0x0" visible="false" />
-		<uint16 name="Unknown" offset="0x2" visible="false" />
-		<uint16 name="Unknown" offset="0x4" visible="false" />
-		<uint16 name="Unknown" offset="0x6" visible="false" />
-		<uint16 name="Unknown" offset="0x8" visible="false" />
-		<uint16 name="Unknown" offset="0xA" visible="false" />
-		<uint16 name="Unknown" offset="0xC" visible="false" />
-		<uint16 name="Unknown" offset="0xE" visible="false" />
-		<uint16 name="Unknown" offset="0x10" visible="false" />
-		<uint16 name="Unknown" offset="0x12" visible="false" />
-		<uint16 name="Unknown" offset="0x14" visible="false" />
-		<uint16 name="Unknown" offset="0x16" visible="false" />
-		<uint16 name="Unknown" offset="0x18" visible="false" />
-		<uint16 name="Unknown" offset="0x1A" visible="false" />
-		<uint16 name="Unknown" offset="0x1C" visible="false" />
-		<uint16 name="Unknown" offset="0x1E" visible="false" />
+	<tagblock name="Passes" offset="0x30" visible="true" elementSize="0x20">
+		<uint16 name="Bitmaps" offset="0x0" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+		<uint16 name="Vertex Real Constants" offset="0x2" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+		<uint16 name="Vertex Integer Constants" offset="0x4" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+		<uint16 name="Vertex Boolean Constants" offset="0x6" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+		<uint16 name="Pixel Real Constants" offset="0x8" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+		<uint16 name="Pixel Integer Constants" offset="0xA" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+		<uint16 name="Pixel Boolean Constants" offset="0xC" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+		<uint16 name="Extern Bitmaps" offset="0xE" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+		<uint16 name="Extern Vertex Real Constants" offset="0x10" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+		<uint16 name="Extern Vertex Integer Constants" offset="0x12" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+		<uint16 name="Extern Pixel Real Constants" offset="0x14" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+		<uint16 name="Extern Pixel Integer Constants" offset="0x16" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+		<int16 name="Pixel Parameters Size" offset="0x18" visible="true" />
+		<int16 name="Vertex Parameters Size" offset="0x1A" visible="true" />
+		<int32 name="Alpha Blend Mode" offset="0x1C" visible="true" />
 	</tagblock>
 	<tagblock name="Routing Info" offset="0x3C" visible="true" elementSize="0x4">
 		<uint16 name="Destination Index" offset="0x0" visible="true" tooltip="D3D constant index or sampler index" />
@@ -45,7 +63,63 @@
 	<tagblock name="Textures" offset="0x6C" visible="true" elementSize="0x4">
 		<stringid name="Parameter Name" offset="0x0" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x78" visible="false" />
-	<undefined name="Unknown" offset="0x7C" visible="false" />
-	<undefined name="Unknown" offset="0x80" visible="false" />
+	<tagblock name="Other Platforms" offset="0x78" visible="true" elementSize="0x78">
+		<tagRef name="Vertex Shader" offset="0x0" visible="true" />
+		<tagRef name="Pixel Shader" offset="0x10" visible="true" />
+		<flags32 name="Available Entry Points" offset="0x20" visible="true">
+			<bit name="Default" index="0" />
+			<bit name="Albedo" index="1" />
+			<bit name="Static Default" index="2" />
+			<bit name="Static Per Pixel" index="3" />
+			<bit name="Static Per Vertex" index="4" />
+			<bit name="Static Sh" index="5" />
+			<bit name="Static Prt Ambient" index="6" />
+			<bit name="Static Prt Linear" index="7" />
+			<bit name="Static Prt Quadratic" index="8" />
+			<bit name="Dynamic Light" index="9" />
+			<bit name="Shadow Generate" index="10" />
+			<bit name="Shadow Apply" index="11" />
+			<bit name="Active Camo" index="12" />
+			<bit name="Lightmap Debug Mode" index="13" />
+			<bit name="Vertex Color Lighting" index="14" />
+			<bit name="Water Tessellation" index="15" />
+			<bit name="Water Shading" index="16" />
+			<bit name="Dynamic Light Cinematic" index="17" />
+		</flags32>
+		<tagblock name="Entry Points" offset="0x24" visible="true" elementSize="0x2">
+			<uint16 name="Block Index Data" offset="0x0" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+		</tagblock>
+		<tagblock name="Passes" offset="0x30" visible="true" elementSize="0x1C">
+			<uint16 name="Bitmaps" offset="0x0" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+			<uint16 name="Vertex Real Constants" offset="0x2" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+			<uint16 name="Vertex Integer Constants" offset="0x4" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+			<uint16 name="Vertex Boolean Constants" offset="0x6" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+			<uint16 name="Pixel Real Constants" offset="0x8" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+			<uint16 name="Pixel Integer Constants" offset="0xA" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+			<uint16 name="Pixel Boolean Constants" offset="0xC" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+			<uint16 name="Extern Bitmaps" offset="0xE" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+			<uint16 name="Extern Vertex Real Constants" offset="0x10" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+			<uint16 name="Extern Vertex Integer Constants" offset="0x12" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+			<uint16 name="Extern Pixel Real Constants" offset="0x14" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+			<uint16 name="Extern Pixel Integer Constants" offset="0x16" visible="true" tooltip="divide by 1024 for count, remainder is start index" />
+			<int32 name="Alpha Blend Mode" offset="0x18" visible="true" />
+		</tagblock>
+		<tagblock name="Routing Info" offset="0x3C" visible="true" elementSize="0x4">
+			<uint16 name="Destination Index" offset="0x0" visible="true" tooltip="D3D constant index or sampler index" />
+			<uint8 name="Source Index" offset="0x2" visible="true" tooltip="into constant tables below, unless this is an extern parameter" />
+			<uint8 name="Type Specific" offset="0x3" visible="true" tooltip="bitmap flags or shader component mask" />
+		</tagblock>
+		<tagblock name="Float Constants" offset="0x48" visible="true" elementSize="0x4">
+			<stringid name="Parameter Name" offset="0x0" visible="true" />
+		</tagblock>
+		<tagblock name="Integer Constants" offset="0x54" visible="true" elementSize="0x4">
+			<stringid name="Parameter Name" offset="0x0" visible="true" />
+		</tagblock>
+		<tagblock name="Boolean Constants" offset="0x60" visible="true" elementSize="0x4">
+			<stringid name="Parameter Name" offset="0x0" visible="true" />
+		</tagblock>
+		<tagblock name="Textures" offset="0x6C" visible="true" elementSize="0x4">
+			<stringid name="Parameter Name" offset="0x0" visible="true" />
+		</tagblock>
+	</tagblock>
 </plugin>

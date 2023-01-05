@@ -13,7 +13,7 @@ namespace Blamite.IO
 		/// <param name="sizeAlignment">A power of two which the size must be a multiple of (e.g. 0x1000 = 4kb-aligned).</param>
 		/// <param name="resizeOrigin">The origin at which to insert/remove data in the segment.</param>
 		/// <returns>A FileSegment wrapping the defined segment.</returns>
-		public static FileSegment WrapSegment(this FileSegmenter segmenter, int offset, int size, int sizeAlignment,
+		public static FileSegment WrapSegment(this FileSegmenter segmenter, uint offset, uint size, int sizeAlignment,
 			SegmentResizeOrigin resizeOrigin)
 		{
 			return new FileSegment(segmenter.DefineSegment(offset, size, sizeAlignment, resizeOrigin), segmenter);
@@ -28,7 +28,7 @@ namespace Blamite.IO
 		/// <param name="sizeAlignment">A power of two which the size must be a multiple of (e.g. 0x1000 = 4kb-aligned).</param>
 		/// <param name="resizeOrigin">The origin at which to insert/remove data in the segment.</param>
 		/// <returns>The segment's ID number which can be used to retrieve information about it.</returns>
-		public static FileSegment WrapSegment(this FileSegmenter segmenter, int offset, int size, int offsetAlignment,
+		public static FileSegment WrapSegment(this FileSegmenter segmenter, uint offset, uint size, int offsetAlignment,
 			int sizeAlignment, SegmentResizeOrigin resizeOrigin)
 		{
 			return new FileSegment(segmenter.DefineSegment(offset, size, offsetAlignment, sizeAlignment, resizeOrigin), segmenter);
@@ -40,7 +40,7 @@ namespace Blamite.IO
 		/// </summary>
 		/// <param name="offset">The offset of the end of the file.</param>
 		/// <returns>The segment's ID number which can be used to retrieve information about it.</returns>
-		public static FileSegment WrapEOF(this FileSegmenter segmenter, int offset)
+		public static FileSegment WrapEOF(this FileSegmenter segmenter, uint offset)
 		{
 			return new FileSegment(segmenter.DefineEOF(offset), segmenter);
 		}
@@ -51,7 +51,7 @@ namespace Blamite.IO
 		/// <param name="offset">The offset of the end of the file.</param>
 		/// <param name="alignment">The file's size alignment.</param>
 		/// <returns>The segment's ID number which can be used to retrieve information about it.</returns>
-		public static FileSegment WrapEOF(this FileSegmenter segmenter, int offset, int alignment)
+		public static FileSegment WrapEOF(this FileSegmenter segmenter, uint offset, int alignment)
 		{
 			return new FileSegment(segmenter.DefineEOF(offset, alignment), segmenter);
 		}

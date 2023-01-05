@@ -17,7 +17,6 @@
 	<flags16 name="Flags" offset="0x3E" visible="true">
 		<bit name="Cortana Hack" index="0" tooltip="sort cortana in front of other transparent geometry" />
 		<bit name="Use Demo UI" index="1" tooltip="uses alternate UI collection for demo" />
-		<bit name="Disable Color Correction" index="2" tooltip="disable ntsc to srgb color space conversion for content authored for srgb" />
 	</flags16>
 	<tagblock name="Child Scenarios" offset="0x40" visible="true" elementSize="0x20">
 		<tagRef name="Child Scenario" offset="0x0" visible="true" />
@@ -27,6 +26,7 @@
 		<undefined name="Unknown" offset="0x1C" visible="false" />
 	</tagblock>
 	<degree name="Local North" offset="0x4C" visible="true" />
+	<!--theres a block in here-->
 	<undefined name="Unknown" offset="0x50" visible="false" />
 	<undefined name="Unknown" offset="0x54" visible="false" />
 	<undefined name="Unknown" offset="0x58" visible="false" />
@@ -81,7 +81,7 @@
 			<bit name="Additive" index="2" />
 			<bit name="Always Active" index="3" tooltip="function does not deactivate when at or below lower bound" />
 		</flags32>
-		<ascii name="Name" offset="0x4" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x4" size="0x20" visible="true" />
 		<float32 name="Period" offset="0x24" visible="true" tooltip="this is the period for the above function (lower values make the function oscillate quickly, higher values make it oscillate slowly)" />
 		<int16 name="Scale Period By Index" offset="0x28" visible="true" tooltip="multiply this function by the above period" />
 		<enum16 name="Function" offset="0x2A" visible="true">
@@ -212,7 +212,7 @@
 	<undefined name="Unknown" offset="0x1FC" visible="false" />
 	<undefined name="Unknown" offset="0x200" visible="false" />
 	<tagblock name="Object Names" offset="0x204" visible="true" elementSize="0x24">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<enum16 name="Type" offset="0x20" visible="true">
 			<option name="Null" value="0xFFFF" />
 			<option name="Biped" value="0x0" />
@@ -242,7 +242,24 @@
 		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
-		<int16 name="Unknown" offset="0x20" visible="true" />
+		<flags16 name="BSP Flags" offset="0x20" visible="true">
+			<bit name="Index 0" index="0" />
+			<bit name="Index 1" index="1" />
+			<bit name="Index 2" index="2" />
+			<bit name="Index 3" index="3" />
+			<bit name="Index 4" index="4" />
+			<bit name="Index 5" index="5" />
+			<bit name="Index 6" index="6" />
+			<bit name="Index 7" index="7" />
+			<bit name="Index 8" index="8" />
+			<bit name="Index 9" index="9" />
+			<bit name="Index 10" index="10" />
+			<bit name="Index 11" index="11" />
+			<bit name="Index 12" index="12" />
+			<bit name="Index 13" index="13" />
+			<bit name="Index 14" index="14" />
+			<bit name="Index 15" index="15" />
+		</flags16>
 		<int16 name="Unknown" offset="0x22" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
@@ -277,7 +294,25 @@
 		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
+		<flags16 name="BSP Flags" offset="0x20" visible="true">
+			<bit name="Index 0" index="0" />
+			<bit name="Index 1" index="1" />
+			<bit name="Index 2" index="2" />
+			<bit name="Index 3" index="3" />
+			<bit name="Index 4" index="4" />
+			<bit name="Index 5" index="5" />
+			<bit name="Index 6" index="6" />
+			<bit name="Index 7" index="7" />
+			<bit name="Index 8" index="8" />
+			<bit name="Index 9" index="9" />
+			<bit name="Index 10" index="10" />
+			<bit name="Index 11" index="11" />
+			<bit name="Index 12" index="12" />
+			<bit name="Index 13" index="13" />
+			<bit name="Index 14" index="14" />
+			<bit name="Index 15" index="15" />
+		</flags16>
+		<int16 name="Unknown" offset="0x22" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
@@ -325,7 +360,25 @@
 		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
+		<flags16 name="BSP Flags" offset="0x20" visible="true">
+			<bit name="Index 0" index="0" />
+			<bit name="Index 1" index="1" />
+			<bit name="Index 2" index="2" />
+			<bit name="Index 3" index="3" />
+			<bit name="Index 4" index="4" />
+			<bit name="Index 5" index="5" />
+			<bit name="Index 6" index="6" />
+			<bit name="Index 7" index="7" />
+			<bit name="Index 8" index="8" />
+			<bit name="Index 9" index="9" />
+			<bit name="Index 10" index="10" />
+			<bit name="Index 11" index="11" />
+			<bit name="Index 12" index="12" />
+			<bit name="Index 13" index="13" />
+			<bit name="Index 14" index="14" />
+			<bit name="Index 15" index="15" />
+		</flags16>
+		<int16 name="Unknown" offset="0x22" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
@@ -392,7 +445,24 @@
 		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
-		<int16 name="Unknown" offset="0x20" visible="false" />
+		<flags16 name="BSP Flags" offset="0x20" visible="true">
+			<bit name="Index 0" index="0" />
+			<bit name="Index 1" index="1" />
+			<bit name="Index 2" index="2" />
+			<bit name="Index 3" index="3" />
+			<bit name="Index 4" index="4" />
+			<bit name="Index 5" index="5" />
+			<bit name="Index 6" index="6" />
+			<bit name="Index 7" index="7" />
+			<bit name="Index 8" index="8" />
+			<bit name="Index 9" index="9" />
+			<bit name="Index 10" index="10" />
+			<bit name="Index 11" index="11" />
+			<bit name="Index 12" index="12" />
+			<bit name="Index 13" index="13" />
+			<bit name="Index 14" index="14" />
+			<bit name="Index 15" index="15" />
+		</flags16>
 		<flags16 name="Misc Flags" offset="0x22" visible="true">
 			<bit name="Initially At Rest (Doesn't Fall)" index="0" />
 			<bit name="Bit 1" index="1" />
@@ -423,7 +493,25 @@
 		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
+		<flags16 name="BSP Flags" offset="0x20" visible="true">
+			<bit name="Index 0" index="0" />
+			<bit name="Index 1" index="1" />
+			<bit name="Index 2" index="2" />
+			<bit name="Index 3" index="3" />
+			<bit name="Index 4" index="4" />
+			<bit name="Index 5" index="5" />
+			<bit name="Index 6" index="6" />
+			<bit name="Index 7" index="7" />
+			<bit name="Index 8" index="8" />
+			<bit name="Index 9" index="9" />
+			<bit name="Index 10" index="10" />
+			<bit name="Index 11" index="11" />
+			<bit name="Index 12" index="12" />
+			<bit name="Index 13" index="13" />
+			<bit name="Index 14" index="14" />
+			<bit name="Index 15" index="15" />
+		</flags16>
+		<int16 name="Unknown" offset="0x22" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
@@ -457,7 +545,7 @@
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Device Groups" offset="0x288" visible="true" elementSize="0x34">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<float32 name="Initial Value" offset="0x20" visible="true" />
 		<flags32 name="Flags" offset="0x24" visible="true">
 			<bit name="Can Change Only Once" index="0" />
@@ -478,7 +566,25 @@
 		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
+		<flags16 name="BSP Flags" offset="0x20" visible="true">
+			<bit name="Index 0" index="0" />
+			<bit name="Index 1" index="1" />
+			<bit name="Index 2" index="2" />
+			<bit name="Index 3" index="3" />
+			<bit name="Index 4" index="4" />
+			<bit name="Index 5" index="5" />
+			<bit name="Index 6" index="6" />
+			<bit name="Index 7" index="7" />
+			<bit name="Index 8" index="8" />
+			<bit name="Index 9" index="9" />
+			<bit name="Index 10" index="10" />
+			<bit name="Index 11" index="11" />
+			<bit name="Index 12" index="12" />
+			<bit name="Index 13" index="13" />
+			<bit name="Index 14" index="14" />
+			<bit name="Index 15" index="15" />
+		</flags16>
+		<int16 name="Unknown" offset="0x22" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<int16 name="Power Group Index" offset="0x28" visible="true" />
 		<int16 name="Position Group Index" offset="0x2A" visible="true" />
@@ -522,7 +628,25 @@
 		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
+		<flags16 name="BSP Flags" offset="0x20" visible="true">
+			<bit name="Index 0" index="0" />
+			<bit name="Index 1" index="1" />
+			<bit name="Index 2" index="2" />
+			<bit name="Index 3" index="3" />
+			<bit name="Index 4" index="4" />
+			<bit name="Index 5" index="5" />
+			<bit name="Index 6" index="6" />
+			<bit name="Index 7" index="7" />
+			<bit name="Index 8" index="8" />
+			<bit name="Index 9" index="9" />
+			<bit name="Index 10" index="10" />
+			<bit name="Index 11" index="11" />
+			<bit name="Index 12" index="12" />
+			<bit name="Index 13" index="13" />
+			<bit name="Index 14" index="14" />
+			<bit name="Index 15" index="15" />
+		</flags16>
+		<int16 name="Unknown" offset="0x22" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<int16 name="Power Group Index" offset="0x28" visible="true" />
 		<int16 name="Position Group Index" offset="0x2A" visible="true" />
@@ -536,7 +660,7 @@
 		<flags32 name="Control Flags" offset="0x30" visible="true">
 			<bit name="Usable From Both Sides" index="0" />
 		</flags32>
-		<int16 name="Unknown" offset="0x34" visible="true" />
+		<int16 name="Custom Object Name Index" offset="0x34" visible="true" />
 		<int16 name="Unknown" offset="0x36" visible="false" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
 		<undefined name="Unknown" offset="0x3C" visible="false" />
@@ -564,7 +688,25 @@
 		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
+		<flags16 name="BSP Flags" offset="0x20" visible="true">
+			<bit name="Index 0" index="0" />
+			<bit name="Index 1" index="1" />
+			<bit name="Index 2" index="2" />
+			<bit name="Index 3" index="3" />
+			<bit name="Index 4" index="4" />
+			<bit name="Index 5" index="5" />
+			<bit name="Index 6" index="6" />
+			<bit name="Index 7" index="7" />
+			<bit name="Index 8" index="8" />
+			<bit name="Index 9" index="9" />
+			<bit name="Index 10" index="10" />
+			<bit name="Index 11" index="11" />
+			<bit name="Index 12" index="12" />
+			<bit name="Index 13" index="13" />
+			<bit name="Index 14" index="14" />
+			<bit name="Index 15" index="15" />
+		</flags16>
+		<int16 name="Unknown" offset="0x22" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<int16 name="Power Group Index" offset="0x28" visible="true" />
 		<int16 name="Position Group Index" offset="0x2A" visible="true" />
@@ -607,7 +749,25 @@
 		<int16 name="Desired Permutation" offset="0x6" visible="true" tooltip="if non-zero, will try to use model permutations with names that end in that number, e.g. 7 would pick &quot;body-7&quot; and &quot;head-7&quot;" />
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
+		<flags16 name="BSP Flags" offset="0x20" visible="true">
+			<bit name="Index 0" index="0" />
+			<bit name="Index 1" index="1" />
+			<bit name="Index 2" index="2" />
+			<bit name="Index 3" index="3" />
+			<bit name="Index 4" index="4" />
+			<bit name="Index 5" index="5" />
+			<bit name="Index 6" index="6" />
+			<bit name="Index 7" index="7" />
+			<bit name="Index 8" index="8" />
+			<bit name="Index 9" index="9" />
+			<bit name="Index 10" index="10" />
+			<bit name="Index 11" index="11" />
+			<bit name="Index 12" index="12" />
+			<bit name="Index 13" index="13" />
+			<bit name="Index 14" index="14" />
+			<bit name="Index 15" index="15" />
+		</flags16>
+		<int16 name="Unknown" offset="0x22" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 	</tagblock>
 	<tagblock name="Sound Scenery Palette" offset="0x2E8" visible="true" elementSize="0x30">
@@ -643,7 +803,7 @@
 	<undefined name="Unknown" offset="0x340" visible="false" />
 	<undefined name="Unknown" offset="0x344" visible="false" />
 	<tagblock name="Player Starting Profile" offset="0x348" visible="true" elementSize="0x68">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<float32 name="Starting Health Modifier" offset="0x20" visible="true" />
 		<float32 name="Starting Shield Modifier" offset="0x24" visible="true" />
 		<tagRef name="Primary Weapon" offset="0x28" visible="true" />
@@ -672,71 +832,71 @@
 		<int16 name="BSP Index" offset="0x12" visible="true" />
 		<enum16 name="Type 0" offset="0x14" visible="true">
 			<option name="None" value="0x0" />
-			<option name="Ctf" value="0x1" />
+			<option name="CTF" value="0x1" />
 			<option name="Slayer" value="0x2" />
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
 			<option name="Terminator" value="0x6" />
 			<option name="Stub" value="0x7" />
-			<option name="Ignored1" value="0x8" />
-			<option name="Ignored2" value="0x9" />
-			<option name="Ignored3" value="0xA" />
-			<option name="Ignored4" value="0xB" />
+			<option name="Ignored 1" value="0x8" />
+			<option name="Ignored 2" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
 			<option name="All Games" value="0xC" />
-			<option name="All Except Ctf" value="0xD" />
-			<option name="All Except Race &amp; Ctf" value="0xE" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except Race And CTF" value="0xE" />
 		</enum16>
 		<enum16 name="Type 1" offset="0x16" visible="true">
 			<option name="None" value="0x0" />
-			<option name="Ctf" value="0x1" />
+			<option name="CTF" value="0x1" />
 			<option name="Slayer" value="0x2" />
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
 			<option name="Terminator" value="0x6" />
 			<option name="Stub" value="0x7" />
-			<option name="Ignored1" value="0x8" />
-			<option name="Ignored2" value="0x9" />
-			<option name="Ignored3" value="0xA" />
-			<option name="Ignored4" value="0xB" />
+			<option name="Ignored 1" value="0x8" />
+			<option name="Ignored 2" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
 			<option name="All Games" value="0xC" />
-			<option name="All Except Ctf" value="0xD" />
-			<option name="All Except Race &amp; Ctf" value="0xE" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except Race And CTF" value="0xE" />
 		</enum16>
 		<enum16 name="Type 2" offset="0x18" visible="true">
 			<option name="None" value="0x0" />
-			<option name="Ctf" value="0x1" />
+			<option name="CTF" value="0x1" />
 			<option name="Slayer" value="0x2" />
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
 			<option name="Terminator" value="0x6" />
 			<option name="Stub" value="0x7" />
-			<option name="Ignored1" value="0x8" />
-			<option name="Ignored2" value="0x9" />
-			<option name="Ignored3" value="0xA" />
-			<option name="Ignored4" value="0xB" />
+			<option name="Ignored 1" value="0x8" />
+			<option name="Ignored 2" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
 			<option name="All Games" value="0xC" />
-			<option name="All Except Ctf" value="0xD" />
-			<option name="All Except Race &amp; Ctf" value="0xE" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except Race And CTF" value="0xE" />
 		</enum16>
 		<enum16 name="Type 3" offset="0x1A" visible="true">
 			<option name="None" value="0x0" />
-			<option name="Ctf" value="0x1" />
+			<option name="CTF" value="0x1" />
 			<option name="Slayer" value="0x2" />
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
 			<option name="Terminator" value="0x6" />
 			<option name="Stub" value="0x7" />
-			<option name="Ignored1" value="0x8" />
-			<option name="Ignored2" value="0x9" />
-			<option name="Ignored3" value="0xA" />
-			<option name="Ignored4" value="0xB" />
+			<option name="Ignored 1" value="0x8" />
+			<option name="Ignored 2" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
 			<option name="All Games" value="0xC" />
-			<option name="All Except Ctf" value="0xD" />
-			<option name="All Except Race &amp; Ctf" value="0xE" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except Race And CTF" value="0xE" />
 		</enum16>
 		<undefined name="Unknown" offset="0x1C" visible="false" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
@@ -746,22 +906,19 @@
 		<undefined name="Unknown" offset="0x30" visible="false" />
 	</tagblock>
 	<tagblock name="Trigger Volumes" offset="0x360" visible="true" elementSize="0x60">
-		<int32 name="Unknown" offset="0x0" visible="false" />
-		<ascii name="Name" offset="0x4" length="0x20" visible="true" />
-		<float32 name="Unknown" offset="0x24" visible="true" />
-		<float32 name="Unknown" offset="0x28" visible="true" />
-		<float32 name="Unknown" offset="0x2C" visible="true" />
-		<float32 name="Unknown" offset="0x30" visible="true" />
-		<float32 name="Unknown" offset="0x34" visible="true" />
-		<float32 name="Unknown" offset="0x38" visible="true" />
-		<float32 name="Unknown" offset="0x3C" visible="true" />
-		<float32 name="Unknown" offset="0x40" visible="true" />
-		<float32 name="Unknown" offset="0x44" visible="true" />
+		<int16 name="Runtime Unknown" offset="0x0" visible="true" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<ascii name="Name" offset="0x4" size="0x20" visible="true" />
+		<float32 name="Parameters 0" offset="0x24" visible="true" />
+		<float32 name="Parameters 1" offset="0x28" visible="true" />
+		<float32 name="Parameters 2" offset="0x2C" visible="true" />
+		<vector3 name="Forward" offset="0x30" visible="true" />
+		<vector3 name="Up" offset="0x3C" visible="true" />
 		<point3 name="Position" offset="0x48" visible="true" />
 		<point3 name="Extents" offset="0x54" visible="true" />
 	</tagblock>
 	<tagblock name="Recorded Animations" offset="0x36C" visible="true" elementSize="0x40">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<int8 name="Version" offset="0x20" visible="true" />
 		<int8 name="Raw Animation Data" offset="0x21" visible="true" />
 		<int8 name="Unit Control Data Version" offset="0x22" visible="true" />
@@ -775,8 +932,8 @@
 		<point3 name="Position" offset="0x0" visible="true" />
 		<degree name="Facing" offset="0xC" visible="true" />
 		<enum16 name="Type" offset="0x10" visible="true">
-			<option name="Ctf - Flag" value="0x0" />
-			<option name="Ctf - Vehicle" value="0x1" tooltip="unused" />
+			<option name="CTF - Flag" value="0x0" />
+			<option name="CTF - Vehicle" value="0x1" tooltip="unused" />
 			<option name="Oddball - Ball Spawn" value="0x2" />
 			<option name="Race - Track" value="0x3" />
 			<option name="Race - Vehicle" value="0x4" />
@@ -792,7 +949,7 @@
 * Hill index</comment>
 		<int16 name="Usage ID" offset="0x12" visible="true" />
 		<tagRef name="Weapon Group" offset="0x14" visible="true" />
-		<comment title="Ctf - Flag">Place one flag for each team (usage id)</comment>
+		<comment title="CTF - Flag">Place one flag for each team (usage id)</comment>
 		<comment title="Oddball - Ball Spawn">Begin with player index (usage id) set to 0, which will be the first spawn, incrementing up to 15.
 They will be spawned incrementally as well.
 For best results, 0 should be in a team-neutral location, with each ball located on the opposite side of the map from the previous ball</comment>
@@ -845,71 +1002,71 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 		</flags32>
 		<enum16 name="Type 0" offset="0x4" visible="true">
 			<option name="None" value="0x0" />
-			<option name="Ctf" value="0x1" />
+			<option name="CTF" value="0x1" />
 			<option name="Slayer" value="0x2" />
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
 			<option name="Terminator" value="0x6" />
 			<option name="Stub" value="0x7" />
-			<option name="Ignored1" value="0x8" />
-			<option name="Ignored2" value="0x9" />
-			<option name="Ignored3" value="0xA" />
-			<option name="Ignored4" value="0xB" />
+			<option name="Ignored 1" value="0x8" />
+			<option name="Ignored 2" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
 			<option name="All Games" value="0xC" />
-			<option name="All Except Ctf" value="0xD" />
-			<option name="All Except Race &amp; Ctf" value="0xE" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except Race And CTF" value="0xE" />
 		</enum16>
 		<enum16 name="Type 1" offset="0x6" visible="true">
 			<option name="None" value="0x0" />
-			<option name="Ctf" value="0x1" />
+			<option name="CTF" value="0x1" />
 			<option name="Slayer" value="0x2" />
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
 			<option name="Terminator" value="0x6" />
 			<option name="Stub" value="0x7" />
-			<option name="Ignored1" value="0x8" />
-			<option name="Ignored2" value="0x9" />
-			<option name="Ignored3" value="0xA" />
-			<option name="Ignored4" value="0xB" />
+			<option name="Ignored 1" value="0x8" />
+			<option name="Ignored 2" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
 			<option name="All Games" value="0xC" />
-			<option name="All Except Ctf" value="0xD" />
-			<option name="All Except Race &amp; Ctf" value="0xE" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except Race And CTF" value="0xE" />
 		</enum16>
 		<enum16 name="Type 2" offset="0x8" visible="true">
 			<option name="None" value="0x0" />
-			<option name="Ctf" value="0x1" />
+			<option name="CTF" value="0x1" />
 			<option name="Slayer" value="0x2" />
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
 			<option name="Terminator" value="0x6" />
 			<option name="Stub" value="0x7" />
-			<option name="Ignored1" value="0x8" />
-			<option name="Ignored2" value="0x9" />
-			<option name="Ignored3" value="0xA" />
-			<option name="Ignored4" value="0xB" />
+			<option name="Ignored 1" value="0x8" />
+			<option name="Ignored 2" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
 			<option name="All Games" value="0xC" />
-			<option name="All Except Ctf" value="0xD" />
-			<option name="All Except Race &amp; Ctf" value="0xE" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except Race And CTF" value="0xE" />
 		</enum16>
 		<enum16 name="Type 3" offset="0xA" visible="true">
 			<option name="None" value="0x0" />
-			<option name="Ctf" value="0x1" />
+			<option name="CTF" value="0x1" />
 			<option name="Slayer" value="0x2" />
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
 			<option name="Terminator" value="0x6" />
 			<option name="Stub" value="0x7" />
-			<option name="Ignored1" value="0x8" />
-			<option name="Ignored2" value="0x9" />
-			<option name="Ignored3" value="0xA" />
-			<option name="Ignored4" value="0xB" />
+			<option name="Ignored 1" value="0x8" />
+			<option name="Ignored 2" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
 			<option name="All Games" value="0xC" />
-			<option name="All Except Ctf" value="0xD" />
-			<option name="All Except Race &amp; Ctf" value="0xE" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except Race And CTF" value="0xE" />
 		</enum16>
 		<int16 name="Team Index" offset="0xC" visible="true" tooltip="0=red, 1=blue" />
 		<int16 name="Spawn Time" offset="0xE" visible="true" tooltip="0 means default to item collection time" />
@@ -944,75 +1101,75 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 	<tagblock name="Starting Equipment" offset="0x390" visible="true" elementSize="0xCC">
 		<flags32 name="Flags" offset="0x0" visible="true">
 			<bit name="No Grenades" index="0" />
-			<bit name="Plasma Grenades" index="1" />
+			<bit name="Plasma Grenades Only" index="1" tooltip="transfer all other grenade counts into plasma's" />
 		</flags32>
 		<enum16 name="Type 0" offset="0x4" visible="true">
 			<option name="None" value="0x0" />
-			<option name="Ctf" value="0x1" />
+			<option name="CTF" value="0x1" />
 			<option name="Slayer" value="0x2" />
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
 			<option name="Terminator" value="0x6" />
 			<option name="Stub" value="0x7" />
-			<option name="Ignored1" value="0x8" />
-			<option name="Ignored2" value="0x9" />
-			<option name="Ignored3" value="0xA" />
-			<option name="Ignored4" value="0xB" />
+			<option name="Ignored 1" value="0x8" />
+			<option name="Ignored 2" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
 			<option name="All Games" value="0xC" />
-			<option name="All Except Ctf" value="0xD" />
-			<option name="All Except Race &amp; Ctf" value="0xE" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except Race And CTF" value="0xE" />
 		</enum16>
 		<enum16 name="Type 1" offset="0x6" visible="true">
 			<option name="None" value="0x0" />
-			<option name="Ctf" value="0x1" />
+			<option name="CTF" value="0x1" />
 			<option name="Slayer" value="0x2" />
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
 			<option name="Terminator" value="0x6" />
 			<option name="Stub" value="0x7" />
-			<option name="Ignored1" value="0x8" />
-			<option name="Ignored2" value="0x9" />
-			<option name="Ignored3" value="0xA" />
-			<option name="Ignored4" value="0xB" />
+			<option name="Ignored 1" value="0x8" />
+			<option name="Ignored 2" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
 			<option name="All Games" value="0xC" />
-			<option name="All Except Ctf" value="0xD" />
-			<option name="All Except Race &amp; Ctf" value="0xE" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except Race And CTF" value="0xE" />
 		</enum16>
 		<enum16 name="Type 2" offset="0x8" visible="true">
 			<option name="None" value="0x0" />
-			<option name="Ctf" value="0x1" />
+			<option name="CTF" value="0x1" />
 			<option name="Slayer" value="0x2" />
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
 			<option name="Terminator" value="0x6" />
 			<option name="Stub" value="0x7" />
-			<option name="Ignored1" value="0x8" />
-			<option name="Ignored2" value="0x9" />
-			<option name="Ignored3" value="0xA" />
-			<option name="Ignored4" value="0xB" />
+			<option name="Ignored 1" value="0x8" />
+			<option name="Ignored 2" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
 			<option name="All Games" value="0xC" />
-			<option name="All Except Ctf" value="0xD" />
-			<option name="All Except Race &amp; Ctf" value="0xE" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except Race And CTF" value="0xE" />
 		</enum16>
 		<enum16 name="Type 3" offset="0xA" visible="true">
 			<option name="None" value="0x0" />
-			<option name="Ctf" value="0x1" />
+			<option name="CTF" value="0x1" />
 			<option name="Slayer" value="0x2" />
 			<option name="Oddball" value="0x3" />
 			<option name="King Of The Hill" value="0x4" />
 			<option name="Race" value="0x5" />
 			<option name="Terminator" value="0x6" />
 			<option name="Stub" value="0x7" />
-			<option name="Ignored1" value="0x8" />
-			<option name="Ignored2" value="0x9" />
-			<option name="Ignored3" value="0xA" />
-			<option name="Ignored4" value="0xB" />
+			<option name="Ignored 1" value="0x8" />
+			<option name="Ignored 2" value="0x9" />
+			<option name="Ignored 3" value="0xA" />
+			<option name="Ignored 4" value="0xB" />
 			<option name="All Games" value="0xC" />
-			<option name="All Except Ctf" value="0xD" />
-			<option name="All Except Race &amp; Ctf" value="0xE" />
+			<option name="All Except CTF" value="0xD" />
+			<option name="All Except Race And CTF" value="0xE" />
 		</enum16>
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
@@ -1047,9 +1204,9 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 	</tagblock>
 	<tagblock name="BSP Switch Trigger Volumes" offset="0x39C" visible="true" elementSize="0x8">
 		<int16 name="Trigger Volume Index" offset="0x0" visible="true" />
-		<int16 name="Source" offset="0x2" visible="true" />
-		<int16 name="Destination" offset="0x4" visible="true" />
-		<int16 name="Unknown" offset="0x6" visible="false" />
+		<int16 name="Source Index" offset="0x2" visible="true" />
+		<int16 name="Destination Index" offset="0x4" visible="true" />
+		<int16 name="Runtime Unknown" offset="0x6" visible="true" />
 	</tagblock>
 	<tagblock name="Decals" offset="0x3A8" visible="true" elementSize="0x10">
 		<int16 name="Decal Type Index" offset="0x0" visible="true" />
@@ -1057,7 +1214,7 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 		<int8 name="Pitch[-127,127]" offset="0x3" visible="true" />
 		<point3 name="Position" offset="0x4" visible="true" />
 	</tagblock>
-	<tagblock name="Decal Palette" offset="0x3B4" visible="true" elementSize="0x10">
+	<tagblock name="Decals Palette" offset="0x3B4" visible="true" elementSize="0x10">
 		<tagRef name="Reference" offset="0x0" visible="true" />
 	</tagblock>
 	<tagblock name="Detail Object Collection Palette" offset="0x3C0" visible="true" elementSize="0x30">
@@ -1096,7 +1253,7 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 		<tagRef name="Reference" offset="0x0" visible="true" />
 	</tagblock>
 	<tagblock name="Encounters" offset="0x42C" visible="true" elementSize="0xB0">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<flags32 name="Flags" offset="0x20" visible="true">
 			<bit name="Not Initially Created" index="0" />
 			<bit name="Respawn Enabled" index="1" />
@@ -1107,19 +1264,18 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 			<bit name="Manual BSP Index Specified" index="6" />
 		</flags32>
 		<enum16 name="Team Index" offset="0x24" visible="true">
-			<option name="0 / Default By Unit" value="0x0" />
-			<option name="1 / Player" value="0x1" />
-			<option name="2 / Human" value="0x2" />
-			<option name="3 / Covenant" value="0x3" />
-			<option name="4 / Flood" value="0x4" />
-			<option name="5 / Sentinel" value="0x5" />
-			<option name="6 / Unused6" value="0x6" />
-			<option name="7 / Unused7" value="0x7" />
-			<option name="8 / Unused8" value="0x8" />
-			<option name="9 / Unused9" value="0x9" />
+			<option name="Default By Unit" value="0x0" />
+			<option name="Player" value="0x1" />
+			<option name="Human" value="0x2" />
+			<option name="Covenant" value="0x3" />
+			<option name="Flood" value="0x4" />
+			<option name="Sentinel" value="0x5" />
+			<option name="Unused6" value="0x6" />
+			<option name="Unused7" value="0x7" />
+			<option name="Unused8" value="0x8" />
+			<option name="Unused9" value="0x9" />
 		</enum16>
-		<int8 name="Unknown" offset="0x26" visible="false" />
-		<int8 name="Unknown" offset="0x27" visible="false" />
+		<int16 name="One" offset="0x26" visible="true" />
 		<enum16 name="Search Behavior" offset="0x28" visible="true">
 			<option name="Normal" value="0x0" />
 			<option name="Never" value="0x1" />
@@ -1146,9 +1302,9 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 		<undefined name="Unknown" offset="0x74" visible="false" />
 		<undefined name="Unknown" offset="0x78" visible="false" />
 		<int16 name="Unknown" offset="0x7C" visible="false" />
-		<int16 name="Unknown" offset="0x7E" visible="false" />
+		<int16 name="Computed BSP Index" offset="0x7E" visible="true" />
 		<tagblock name="Squads" offset="0x80" visible="true" elementSize="0xE8">
-			<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+			<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 			<int16 name="Actor Type Index" offset="0x20" visible="true" />
 			<int16 name="Platoon Index" offset="0x22" visible="true" />
 			<enum16 name="Initial State" offset="0x24" visible="true" tooltip="state that this actor starts in">
@@ -1441,7 +1597,8 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 				<int8 name="Unknown" offset="0x1F" visible="false" />
 				<undefined name="Unknown" offset="0x20" visible="false" />
 				<undefined name="Unknown" offset="0x24" visible="false" />
-				<undefined name="Unknown" offset="0x28" visible="false" />
+				<int16 name="Cluster Index" offset="0x28" visible="true" />
+				<int16 name="Unknown" offset="0x2A" visible="false" />
 				<undefined name="Unknown" offset="0x2C" visible="false" />
 				<undefined name="Unknown" offset="0x30" visible="false" />
 				<undefined name="Unknown" offset="0x34" visible="false" />
@@ -1455,7 +1612,7 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 			<tagblock name="Starting Locations" offset="0xD0" visible="true" elementSize="0x1C">
 				<point3 name="Position" offset="0x0" visible="true" />
 				<degree name="Facing" offset="0xC" visible="true" />
-				<int16 name="Unknown" offset="0x10" visible="false" />
+				<int16 name="Cluster Index" offset="0x10" visible="true" />
 				<int8 name="Sequence ID" offset="0x12" visible="true" tooltip="which move position sequence we can use (zero = no specific sequences)" />
 				<flags8 name="Flags" offset="0x13" visible="true">
 					<bit name="Required" index="0" />
@@ -1496,7 +1653,7 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 			<undefined name="Unknown" offset="0xE4" visible="false" />
 		</tagblock>
 		<tagblock name="Platoons" offset="0x8C" visible="true" elementSize="0xAC">
-			<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+			<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 			<flags32 name="Flags" offset="0x20" visible="true">
 				<bit name="Flee When Maneuvering" index="0" />
 				<bit name="Say 'Advancing' When Maneuver" index="1" />
@@ -1591,10 +1748,9 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 				<option name="Y" value="0x18" />
 				<option name="Z" value="0x19" />
 			</enum16>
-			<int16 name="Unknown" offset="0xE" visible="false" />
+			<int16 name="Cluster Index" offset="0xE" visible="true" />
 			<undefined name="Unknown" offset="0x10" visible="false" />
-			<int16 name="Unknown" offset="0x14" visible="false" />
-			<int16 name="Unknown" offset="0x16" visible="false" />
+			<int32 name="Surface Index" offset="0x14" visible="true" />
 		</tagblock>
 		<tagblock name="Player Starting Locations" offset="0xA4" visible="true" elementSize="0x34">
 			<point3 name="Position" offset="0x0" visible="true" />
@@ -1603,71 +1759,71 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 			<int16 name="BSP Index" offset="0x12" visible="true" />
 			<enum16 name="Type 0" offset="0x14" visible="true">
 				<option name="None" value="0x0" />
-				<option name="Ctf" value="0x1" />
+				<option name="CTF" value="0x1" />
 				<option name="Slayer" value="0x2" />
 				<option name="Oddball" value="0x3" />
 				<option name="King Of The Hill" value="0x4" />
 				<option name="Race" value="0x5" />
 				<option name="Terminator" value="0x6" />
 				<option name="Stub" value="0x7" />
-				<option name="Ignored1" value="0x8" />
-				<option name="Ignored2" value="0x9" />
-				<option name="Ignored3" value="0xA" />
-				<option name="Ignored4" value="0xB" />
+				<option name="Ignored 1" value="0x8" />
+				<option name="Ignored 2" value="0x9" />
+				<option name="Ignored 3" value="0xA" />
+				<option name="Ignored 4" value="0xB" />
 				<option name="All Games" value="0xC" />
-				<option name="All Except Ctf" value="0xD" />
-				<option name="All Except Race &amp; Ctf" value="0xE" />
+				<option name="All Except CTF" value="0xD" />
+				<option name="All Except Race And CTF" value="0xE" />
 			</enum16>
 			<enum16 name="Type 1" offset="0x16" visible="true">
 				<option name="None" value="0x0" />
-				<option name="Ctf" value="0x1" />
+				<option name="CTF" value="0x1" />
 				<option name="Slayer" value="0x2" />
 				<option name="Oddball" value="0x3" />
 				<option name="King Of The Hill" value="0x4" />
 				<option name="Race" value="0x5" />
 				<option name="Terminator" value="0x6" />
 				<option name="Stub" value="0x7" />
-				<option name="Ignored1" value="0x8" />
-				<option name="Ignored2" value="0x9" />
-				<option name="Ignored3" value="0xA" />
-				<option name="Ignored4" value="0xB" />
+				<option name="Ignored 1" value="0x8" />
+				<option name="Ignored 2" value="0x9" />
+				<option name="Ignored 3" value="0xA" />
+				<option name="Ignored 4" value="0xB" />
 				<option name="All Games" value="0xC" />
-				<option name="All Except Ctf" value="0xD" />
-				<option name="All Except Race &amp; Ctf" value="0xE" />
+				<option name="All Except CTF" value="0xD" />
+				<option name="All Except Race And CTF" value="0xE" />
 			</enum16>
 			<enum16 name="Type 2" offset="0x18" visible="true">
 				<option name="None" value="0x0" />
-				<option name="Ctf" value="0x1" />
+				<option name="CTF" value="0x1" />
 				<option name="Slayer" value="0x2" />
 				<option name="Oddball" value="0x3" />
 				<option name="King Of The Hill" value="0x4" />
 				<option name="Race" value="0x5" />
 				<option name="Terminator" value="0x6" />
 				<option name="Stub" value="0x7" />
-				<option name="Ignored1" value="0x8" />
-				<option name="Ignored2" value="0x9" />
-				<option name="Ignored3" value="0xA" />
-				<option name="Ignored4" value="0xB" />
+				<option name="Ignored 1" value="0x8" />
+				<option name="Ignored 2" value="0x9" />
+				<option name="Ignored 3" value="0xA" />
+				<option name="Ignored 4" value="0xB" />
 				<option name="All Games" value="0xC" />
-				<option name="All Except Ctf" value="0xD" />
-				<option name="All Except Race &amp; Ctf" value="0xE" />
+				<option name="All Except CTF" value="0xD" />
+				<option name="All Except Race And CTF" value="0xE" />
 			</enum16>
 			<enum16 name="Type 3" offset="0x1A" visible="true">
 				<option name="None" value="0x0" />
-				<option name="Ctf" value="0x1" />
+				<option name="CTF" value="0x1" />
 				<option name="Slayer" value="0x2" />
 				<option name="Oddball" value="0x3" />
 				<option name="King Of The Hill" value="0x4" />
 				<option name="Race" value="0x5" />
 				<option name="Terminator" value="0x6" />
 				<option name="Stub" value="0x7" />
-				<option name="Ignored1" value="0x8" />
-				<option name="Ignored2" value="0x9" />
-				<option name="Ignored3" value="0xA" />
-				<option name="Ignored4" value="0xB" />
+				<option name="Ignored 1" value="0x8" />
+				<option name="Ignored 2" value="0x9" />
+				<option name="Ignored 3" value="0xA" />
+				<option name="Ignored 4" value="0xB" />
 				<option name="All Games" value="0xC" />
-				<option name="All Except Ctf" value="0xD" />
-				<option name="All Except Race &amp; Ctf" value="0xE" />
+				<option name="All Except CTF" value="0xD" />
+				<option name="All Except Race And CTF" value="0xE" />
 			</enum16>
 			<undefined name="Unknown" offset="0x1C" visible="false" />
 			<undefined name="Unknown" offset="0x20" visible="false" />
@@ -1678,7 +1834,7 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 		</tagblock>
 	</tagblock>
 	<tagblock name="Command Lists" offset="0x438" visible="true" elementSize="0x60">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<flags32 name="Flags" offset="0x20" visible="true">
 			<bit name="Allow Initiative" index="0" tooltip="lets an actor decide to stop following its commands and attack an enemy" />
 			<bit name="Allow Targeting" index="1" tooltip="lets an actor shoot at enemies while following its commands" />
@@ -1690,7 +1846,7 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<int16 name="Manual BSP Index" offset="0x2C" visible="true" tooltip="structure bsp index that this encounter belongs to... ignored unless 'manual bsp index' flag is checked. if this flag is not checked, the structure bsp is found automatically (may fail in areas of overlapping geometry)" />
-		<int16 name="Unknown" offset="0x2E" visible="false" />
+		<int16 name="Computed BSP Index" offset="0x2E" visible="true" />
 		<tagblock name="Commands" offset="0x30" visible="true" elementSize="0x20">
 			<enum16 name="Atom Type" offset="0x0" visible="true">
 				<option name="Pause" value="0x0" />
@@ -1737,7 +1893,7 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 		</tagblock>
 		<tagblock name="Points" offset="0x3C" visible="true" elementSize="0x14">
 			<point3 name="Position" offset="0x0" visible="true" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
+			<int32 name="Surface Index" offset="0xC" visible="true" />
 			<undefined name="Unknown" offset="0x10" visible="false" />
 		</tagblock>
 		<undefined name="Unknown" offset="0x48" visible="false" />
@@ -1748,24 +1904,24 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 		<undefined name="Unknown" offset="0x5C" visible="false" />
 	</tagblock>
 	<tagblock name="AI Animation References" offset="0x444" visible="true" elementSize="0x3C">
-		<ascii name="Animation Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Animation Name" offset="0x0" size="0x20" visible="true" />
 		<tagRef name="Animation Graph" offset="0x20" visible="true" tooltip="leave this blank to use the unit's normal animation graph" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
 	</tagblock>
 	<tagblock name="AI Script References" offset="0x450" visible="true" elementSize="0x28">
-		<ascii name="Script Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Script Name" offset="0x0" size="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 	</tagblock>
 	<tagblock name="AI Recording References" offset="0x45C" visible="true" elementSize="0x28">
-		<ascii name="Recording Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Recording Name" offset="0x0" size="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 	</tagblock>
 	<tagblock name="AI Conversations" offset="0x468" visible="true" elementSize="0x74">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<flags16 name="Flags" offset="0x20" visible="true">
 			<bit name="Stop If Death" index="0" tooltip="this conversation will be aborted if any participant dies" />
 			<bit name="Stop If Damaged" index="1" tooltip="an actor will abort this conversation if they are damaged" />
@@ -1828,14 +1984,14 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 			<undefined name="Unknown" offset="0xC" visible="false" />
 			<undefined name="Unknown" offset="0x10" visible="false" />
 			<undefined name="Unknown" offset="0x14" visible="false" />
-			<int16 name="Unknown" offset="0x18" visible="false" />
-			<int16 name="Unknown" offset="0x1A" visible="false" />
-			<int16 name="Unknown" offset="0x1C" visible="false" />
-			<int16 name="Unknown" offset="0x1E" visible="false" />
-			<int16 name="Unknown" offset="0x20" visible="false" />
-			<int16 name="Unknown" offset="0x22" visible="false" />
-			<ascii name="Encounter Name" offset="0x24" length="0x20" visible="true" />
-			<int16 name="Unknown" offset="0x44" visible="false" />
+			<int16 name="Variants 0" offset="0x18" visible="false" />
+			<int16 name="Variants 1" offset="0x1A" visible="false" />
+			<int16 name="Variants 2" offset="0x1C" visible="false" />
+			<int16 name="Variants 3" offset="0x1E" visible="false" />
+			<int16 name="Variants 4" offset="0x20" visible="false" />
+			<int16 name="Variants 5" offset="0x22" visible="false" />
+			<ascii name="Encounter Name" offset="0x24" size="0x20" visible="true" />
+			<int16 name="Encounter Index" offset="0x44" visible="true" />
 			<int16 name="Unknown" offset="0x46" visible="false" />
 			<undefined name="Unknown" offset="0x48" visible="false" />
 			<undefined name="Unknown" offset="0x4C" visible="false" />
@@ -1876,7 +2032,7 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 	<dataref name="Script Syntax Data" offset="0x474" visible="true" />
 	<dataref name="Script String Data" offset="0x488" visible="true" />
 	<tagblock name="Scripts" offset="0x49C" visible="true" elementSize="0x5C">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<enum16 name="Script Type" offset="0x20" visible="true">
 			<option name="Startup" value="0x0" />
 			<option name="Dormant" value="0x1" />
@@ -1917,23 +2073,25 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 			<option name="actor_variant" value="0x1D" />
 			<option name="damage_effect" value="0x1E" />
 			<option name="object_definition" value="0x1F" />
-			<option name="game_difficulty" value="0x20" />
-			<option name="team" value="0x21" />
-			<option name="ai_default_state" value="0x22" />
-			<option name="actor_type" value="0x23" />
-			<option name="hud_corner" value="0x24" />
-			<option name="object" value="0x25" />
-			<option name="unit" value="0x26" />
-			<option name="vehicle" value="0x27" />
-			<option name="weapon" value="0x28" />
-			<option name="device" value="0x29" />
-			<option name="scenery" value="0x2A" />
-			<option name="object_name" value="0x2B" />
-			<option name="unit_name" value="0x2C" />
-			<option name="vehicle_name" value="0x2D" />
-			<option name="weapon_name" value="0x2E" />
-			<option name="device_name" value="0x2F" />
-			<option name="scenery_name" value="0x30" />
+			<option name="image_effect" value="0x20" />
+			<option name="game_difficulty" value="0x21" />
+			<option name="team" value="0x22" />
+			<option name="ai_default_state" value="0x23" />
+			<option name="actor_type" value="0x24" />
+			<option name="hud_corner" value="0x25" />
+			<option name="disguise_type" value="0x26" />
+			<option name="object" value="0x27" />
+			<option name="unit" value="0x28" />
+			<option name="vehicle" value="0x29" />
+			<option name="weapon" value="0x2A" />
+			<option name="device" value="0x2B" />
+			<option name="scenery" value="0x2C" />
+			<option name="object_name" value="0x2D" />
+			<option name="unit_name" value="0x2E" />
+			<option name="vehicle_name" value="0x2F" />
+			<option name="weapon_name" value="0x30" />
+			<option name="device_name" value="0x31" />
+			<option name="scenery_name" value="0x32" />
 		</enum16>
 		<datum name="Root Expression Index" offset="0x24" visible="true" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
@@ -1951,7 +2109,7 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 		<undefined name="Unknown" offset="0x58" visible="false" />
 	</tagblock>
 	<tagblock name="Globals" offset="0x4A8" visible="true" elementSize="0x5C">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<enum16 name="Type" offset="0x20" visible="true">
 			<option name="unparsed" value="0x0" />
 			<option name="special_form" value="0x1" />
@@ -1985,23 +2143,25 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 			<option name="actor_variant" value="0x1D" />
 			<option name="damage_effect" value="0x1E" />
 			<option name="object_definition" value="0x1F" />
-			<option name="game_difficulty" value="0x20" />
-			<option name="team" value="0x21" />
-			<option name="ai_default_state" value="0x22" />
-			<option name="actor_type" value="0x23" />
-			<option name="hud_corner" value="0x24" />
-			<option name="object" value="0x25" />
-			<option name="unit" value="0x26" />
-			<option name="vehicle" value="0x27" />
-			<option name="weapon" value="0x28" />
-			<option name="device" value="0x29" />
-			<option name="scenery" value="0x2A" />
-			<option name="object_name" value="0x2B" />
-			<option name="unit_name" value="0x2C" />
-			<option name="vehicle_name" value="0x2D" />
-			<option name="weapon_name" value="0x2E" />
-			<option name="device_name" value="0x2F" />
-			<option name="scenery_name" value="0x30" />
+			<option name="image_effect" value="0x20" />
+			<option name="game_difficulty" value="0x21" />
+			<option name="team" value="0x22" />
+			<option name="ai_default_state" value="0x23" />
+			<option name="actor_type" value="0x24" />
+			<option name="hud_corner" value="0x25" />
+			<option name="disguise_type" value="0x26" />
+			<option name="object" value="0x27" />
+			<option name="unit" value="0x28" />
+			<option name="vehicle" value="0x29" />
+			<option name="weapon" value="0x2A" />
+			<option name="device" value="0x2B" />
+			<option name="scenery" value="0x2C" />
+			<option name="object_name" value="0x2D" />
+			<option name="unit_name" value="0x2E" />
+			<option name="vehicle_name" value="0x2F" />
+			<option name="weapon_name" value="0x30" />
+			<option name="device_name" value="0x31" />
+			<option name="scenery_name" value="0x32" />
 		</enum16>
 		<int16 name="Unknown" offset="0x22" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
@@ -2029,7 +2189,7 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 		<tagRef name="Reference" offset="0x18" visible="true" />
 	</tagblock>
 	<tagblock name="Source Files" offset="0x4C0" visible="true" elementSize="0x34">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<dataref name="Source" offset="0x20" visible="true" />
 	</tagblock>
 	<undefined name="Unknown" offset="0x4CC" visible="false" />
@@ -2040,7 +2200,7 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 	<undefined name="Unknown" offset="0x4E0" visible="false" />
 	<tagblock name="Cutscene Flags" offset="0x4E4" visible="true" elementSize="0x5C">
 		<undefined name="Unknown" offset="0x0" visible="false" />
-		<ascii name="Name" offset="0x4" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x4" size="0x20" visible="true" />
 		<point3 name="Position" offset="0x24" visible="true" />
 		<degree2 name="Facing" offset="0x30" visible="true" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
@@ -2055,7 +2215,7 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 	</tagblock>
 	<tagblock name="Cutscene Camera Points" offset="0x4F0" visible="true" elementSize="0x68">
 		<undefined name="Unknown" offset="0x0" visible="false" />
-		<ascii name="Name" offset="0x4" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x4" size="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<point3 name="Position" offset="0x28" visible="true" />
 		<degree3 name="Orientation" offset="0x34" visible="true" />
@@ -2071,35 +2231,24 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 		<undefined name="Unknown" offset="0x64" visible="false" />
 	</tagblock>
 	<tagblock name="Cutscene Titles" offset="0x4FC" visible="true" elementSize="0x104">
-		<int32 name="Unknown" offset="0x0" visible="false" />
-		<ascii name="Name" offset="0x4" length="0x20" visible="true" />
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<ascii name="Name" offset="0x4" size="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<rect16 name="Text Bounds (On Screen)" offset="0x28" visible="true" />
 		<int16 name="String Index" offset="0x30" visible="true" />
-		<enum16 name="Style" offset="0x32" visible="true">
-			<option name="Plain" value="0x0" />
-			<option name="Bold" value="0x1" />
-			<option name="Italics" value="0x2" />
-			<option name="Condensed" value="0x3" />
-			<option name="Underlined" value="0x4" />
-		</enum16>
+		<int16 name="Unknown" offset="0x32" visible="false" />
 		<enum16 name="Justification" offset="0x34" visible="true">
 			<option name="Left" value="0x0" />
 			<option name="Right" value="0x1" />
 			<option name="Center" value="0x2" />
 		</enum16>
 		<int16 name="Unknown" offset="0x36" visible="false" />
-		<flags32 name="Text Flags" offset="0x38" visible="true">
-			<bit name="Wrap Horizontally" index="0" />
-			<bit name="Wrap Vertically" index="1" />
-			<bit name="Center Vertically" index="2" />
-			<bit name="Bottom Justify" index="3" />
-		</flags32>
+		<undefined name="Unknown" offset="0x38" visible="false" />
 		<color32 name="Text Color" offset="0x3C" alpha="true" visible="true" />
 		<color32 name="Shadow Color" offset="0x40" alpha="true" visible="true" />
-		<float32 name="Fade In Time" offset="0x44" visible="true" />
-		<float32 name="Up Time" offset="0x48" visible="true" />
-		<float32 name="Fade Out Time" offset="0x4C" visible="true" />
+		<float32 name="Fade In Time" offset="0x44" visible="true" tooltip="seconds" />
+		<float32 name="Up Time" offset="0x48" visible="true" tooltip="seconds" />
+		<float32 name="Fade Out Time" offset="0x4C" visible="true" tooltip="seconds" />
 		<tagRef name="Unknown" offset="0x50" visible="true" />
 		<undefined name="Unknown" offset="0x60" visible="false" />
 		<undefined name="Unknown" offset="0x64" visible="false" />
@@ -2174,9 +2323,9 @@ The hill represented by index 0 is the default in non-moving hill mode</comment>
 	<tagRef name="Ingame Help Text" offset="0x584" visible="true" />
 	<tagRef name="HUD Messages" offset="0x594" visible="true" />
 	<tagblock name="Structure BSPs" offset="0x5A4" visible="true" elementSize="0x20">
-		<uint32 name="Unknown" offset="0x0" visible="true" />
-		<uint32 name="Unknown" offset="0x4" visible="true" />
-		<uint32 name="Unknown" offset="0x8" visible="true" />
+		<uint32 name="Structure BSP Offset" offset="0x0" visible="true" />
+		<uint32 name="Structure BSP Size" offset="0x4" visible="true" />
+		<uint32 name="Structure BSP Address" offset="0x8" visible="true" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<tagRef name="Structure BSP" offset="0x10" visible="true" />
 	</tagblock>

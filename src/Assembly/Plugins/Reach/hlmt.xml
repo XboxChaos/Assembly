@@ -73,7 +73,7 @@
 			<int16 name="Parent Variant Index" offset="0x6" visible="true" />
 			<tagblock name="Permutations" offset="0x8" visible="true" elementSize="0x24">
 				<stringid name="Permutation Name" offset="0x0" visible="true" />
-				<int8 name="Model Permutation Index" offset="0x4" visible="true" />
+				<int8 name="Runtime Model Permutation Index" offset="0x4" visible="true" />
 				<flags8 name="Flags" offset="0x5" visible="true">
 					<bit name="Copy States To All Permutations" index="0" />
 				</flags8>
@@ -81,7 +81,7 @@
 				<float32 name="Probability" offset="0x8" visible="true" />
 				<tagblock name="States" offset="0xC" visible="true" elementSize="0xC">
 					<stringid name="Permutation Name" offset="0x0" visible="true" />
-					<int8 name="Permutation Index" offset="0x4" visible="true" />
+					<int8 name="Runtime Model Permutation Index" offset="0x4" visible="true" />
 					<flags8 name="Property Flags" offset="0x5" visible="true">
 						<bit name="Blurred" index="0" />
 						<bit name="Hella Blurred" index="1" />
@@ -97,11 +97,11 @@
 					</enum16>
 					<float32 name="Initial Probability" offset="0x8" visible="true" />
 				</tagblock>
-				<int8 name="Runtime Permutation Index" offset="0x18" visible="true" />
-				<int8 name="Runtime Permutation Index" offset="0x19" visible="true" />
-				<int8 name="Runtime Permutation Index" offset="0x1A" visible="true" />
-				<int8 name="Runtime Permutation Index" offset="0x1B" visible="true" />
-				<int8 name="Runtime Permutation Index" offset="0x1C" visible="true" />
+				<int8 name="Runtime State Permutation Index 0" offset="0x18" visible="true" />
+				<int8 name="Runtime State Permutation Index 1" offset="0x19" visible="true" />
+				<int8 name="Runtime State Permutation Index 2" offset="0x1A" visible="true" />
+				<int8 name="Runtime State Permutation Index 3" offset="0x1B" visible="true" />
+				<int8 name="Runtime State Permutation Index 4" offset="0x1C" visible="true" />
 				<int8 name="Unknown" offset="0x1D" visible="false" />
 				<int16 name="Unknown" offset="0x1E" visible="false" />
 				<undefined name="Unknown" offset="0x20" visible="false" />
@@ -290,8 +290,8 @@
 		<stringid name="Material Name" offset="0x0" visible="true" />
 		<int16 name="Unknown" offset="0x4" visible="true" />
 		<int16 name="Damage Section Index" offset="0x6" visible="true" />
-		<int16 name="Collision Material Index" offset="0x8" visible="true" />
-		<int16 name="Damager Material Index" offset="0xA" visible="true" />
+		<int16 name="Collision Global Material Index" offset="0x8" visible="true" />
+		<int16 name="Damage Global Material Index" offset="0xA" visible="true" />
 		<stringid name="Global Material Name" offset="0xC" visible="true" />
 		<int16 name="Global Material Index" offset="0x10" visible="true" />
 		<int16 name="Unknown" offset="0x12" visible="false" />
@@ -300,8 +300,8 @@
 		<stringid name="Material Name" offset="0x0" visible="true" />
 		<int16 name="Unknown" offset="0x4" visible="true" />
 		<int16 name="Damage Section Index" offset="0x6" visible="true" />
-		<int16 name="Collision Material Index" offset="0x8" visible="true" />
-		<int16 name="Damager Material Index" offset="0xA" visible="true" />
+		<int16 name="Collision Global Material Index" offset="0x8" visible="true" />
+		<int16 name="Damage Global Material Index" offset="0xA" visible="true" />
 		<stringid name="Global Material Name" offset="0xC" visible="true" />
 		<int16 name="Global Material Index" offset="0x10" visible="true" />
 		<int16 name="Unknown" offset="0x12" visible="false" />
@@ -326,7 +326,7 @@
 			<bit name="Orphan From Postprocess Autogen" index="15" tooltip="check this to take control of the new damage info tag block" />
 			<bit name="Only Damaged By Boarding Damage" index="16" />
 		</flags32>
-		<stringid name="Global Indirect Material Name" offset="0x4" visible="true" tooltip="absorbes AOE or child damage" />
+		<stringid name="Indirect Global Material Name" offset="0x4" visible="true" tooltip="absorbes AOE or child damage" />
 		<int16 name="Indirect Damage Section Index" offset="0x8" visible="true" tooltip="absorbes AOE or child damage" />
 		<int16 name="Unknown" offset="0xA" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
@@ -528,7 +528,7 @@
 		<undefined name="Unknown" offset="0x78" visible="false" />
 		<comment title="Shield" />
 		<float32 name="Maximum Shield Vitality" offset="0x7C" visible="true" tooltip="the default initial and maximum shield vitality of this object" />
-		<stringid name="Global Shield Material Name" offset="0x80" visible="true" />
+		<stringid name="Shield Global Material Name" offset="0x80" visible="true" />
 		<float32 name="Minimum Stun Damage" offset="0x84" visible="true" tooltip="the minimum damage required to stun this object's shields" />
 		<float32 name="Stun Time" offset="0x88" visible="true" tooltip="the length of time the shields stay stunned (do not recharge) after taking damage" />
 		<float32 name="Recharge Time" offset="0x8C" visible="true" tooltip="the length of time it would take for the shields to fully recharge after being completely depleted" />
@@ -671,8 +671,8 @@
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
 		</tagblock>
-		<int16 name="Global Shield Material Index" offset="0xE4" visible="true" />
-		<int16 name="Global Indirect Material Index" offset="0xE6" visible="true" />
+		<int16 name="Shield Global Material Index" offset="0xE4" visible="true" />
+		<int16 name="Indirect Global Material Index" offset="0xE6" visible="true" />
 		<float32 name="Shield Recharge Velocity" offset="0xE8" visible="true" />
 		<float32 name="Overcharge Velocity" offset="0xEC" visible="true" />
 		<float32 name="Health Recharge Velocity" offset="0xF0" visible="true" />
@@ -723,7 +723,7 @@
 		<bit name="Passes Area Damage To Children" index="4" />
 	</flags32>
 	<float32 name="Maximum Vitality" offset="0xD0" visible="true" tooltip="value of zero implies 'damage sections' should be empty" />
-	<stringid name="Indirect Material Name" offset="0xD4" visible="true" tooltip="absorbes AOE or child damage" />
+	<stringid name="Indirect Global Material Name" offset="0xD4" visible="true" tooltip="absorbes AOE or child damage" />
 	<int16 name="Indirect Damage Section Index" offset="0xD8" visible="true" tooltip="absorbes AOE or child damage" />
 	<int16 name="Shielded State Damage Section Index" offset="0xDA" visible="true" tooltip="the model's shielded/unshielded state reflects the depletion of this damage section" />
 	<enum8 name="Collision Damage Reporting Type" offset="0xDC" visible="true">
@@ -932,7 +932,7 @@
 			<bit name="Bit 31" index="31" />
 		</flags32>
 		<float32 name="Vitality Percentage" offset="0x8" visible="true" tooltip="percentage of total object vitality" />
-		<stringid name="Shield Material Name" offset="0xC" visible="true" tooltip="set this to make this damage section a shield" />
+		<stringid name="Shield Global Material Name" offset="0xC" visible="true" tooltip="set this to make this damage section a shield" />
 		<float32 name="Stun Time" offset="0x10" visible="true" />
 		<float32 name="Minimum Stun Damage" offset="0x14" visible="true" tooltip="the minimum damage required to stun this object's health" />
 		<float32 name="Recharge Time" offset="0x18" visible="true" />
@@ -1073,7 +1073,7 @@
 		<float32 name="Recharge Velocity" offset="0xA8" visible="true" />
 		<float32 name="Overcharge Velocity" offset="0xAC" visible="true" />
 		<int16 name="Resurrection Restored Region Index" offset="0xB0" visible="true" />
-		<int16 name="Global Shield Material Index" offset="0xB2" visible="true" />
+		<int16 name="Shield Global Material Index" offset="0xB2" visible="true" />
 	</tagblock>
 	<tagblock name="Damage Constraints" offset="0xEC" visible="true" elementSize="0x14">
 		<stringid name="Physics Model Constraint Name" offset="0x0" visible="true" />
@@ -1097,7 +1097,7 @@
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 	</tagblock>
-	<int16 name="Runtime Indirect Material Index" offset="0x104" visible="true" />
+	<int16 name="Indirect Global Material Index" offset="0x104" visible="true" />
 	<int16 name="Unknown" offset="0x106" visible="false" />
 	<tagblock name="Old Targets" offset="0x108" visible="true" elementSize="0x24">
 		<stringid name="Marker Name" offset="0x0" visible="true" tooltip="multiple markers become multiple spheres of the same radius" />

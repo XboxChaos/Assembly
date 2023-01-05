@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo3Alpha" baseSize="0x50">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+		<revision author="Lord Zedd" version="2">match with beta</revision>
+	</revisions>
+	<flags16 name="Flags" offset="0x0" visible="true">
+		<bit name="Bit 0" index="0" />
+		<bit name="Loops" index="1" />
+		<bit name="Loops - Oscillate" index="2" />
+		<bit name="Bit 3" index="3" />
+	</flags16>
+	<int16 name="Unknown" offset="0x2" visible="false" />
+	<tagblock name="Position" offset="0x4" visible="true" elementSize="0x20">
+		<tagblock name="Animation" offset="0x0" visible="true" elementSize="0x10">
+			<int32 name="Frame Number" offset="0x0" visible="true" />
+			<float32 name="Position X" offset="0x4" visible="true" />
+			<float32 name="Position Y" offset="0x8" visible="true" />
+			<float32 name="Position Z" offset="0xC" visible="true" />
+		</tagblock>
+		<dataRef name="Function" offset="0xC" visible="true" />
+	</tagblock>
+	<tagblock name="Rotation" offset="0x10" visible="true" elementSize="0x20">
+		<tagblock name="Animation" offset="0x0" visible="true" elementSize="0x10">
+			<int32 name="Frame Number" offset="0x0" visible="true" />
+			<degree name="X Angle" offset="0x4" visible="true" />
+			<degree name="Y Angle" offset="0x8" visible="true" />
+			<degree name="Z Angle" offset="0xC" visible="true" />
+		</tagblock>
+		<dataRef name="Function" offset="0xC" visible="true" />
+	</tagblock>
+	<tagblock name="Size" offset="0x1C" visible="true" elementSize="0x20">
+		<tagblock name="Animation" offset="0x0" visible="true" elementSize="0xC">
+			<int32 name="Frame Number" offset="0x0" visible="true" />
+			<float32 name="Stretch X" offset="0x4" visible="true" />
+			<float32 name="Stretch Y" offset="0x8" visible="true" />
+		</tagblock>
+		<dataRef name="Unknown" offset="0xC" visible="false" />
+	</tagblock>
+	<tagblock name="Color" offset="0x28" visible="true" elementSize="0x20">
+		<tagblock name="Animation" offset="0x0" visible="true" elementSize="0x8">
+			<int32 name="Frame Number" offset="0x0" visible="true" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+		</tagblock>
+		<comment title="Color Function">Color 1 - x05 (11th character)
+Color 2 - x09 (19th character)
+Color 3 - x13 (27th character)
+Color 4 - x17 (35th character)
+If a tag uses 2 colors, x05 and x17. If 3 colors x05, x09, and x17.</comment>
+		<dataRef name="Function" offset="0xC" visible="true" />
+	</tagblock>
+	<tagblock name="Alpha" offset="0x34" visible="true" elementSize="0x20">
+		<tagblock name="Animation" offset="0x0" visible="true" elementSize="0x8">
+			<int32 name="Frame Number" offset="0x0" visible="true" />
+			<float32 name="Alpha" offset="0x4" visible="true" />
+		</tagblock>
+		<dataRef name="Function" offset="0xC" visible="true" />
+	</tagblock>
+	<comment title="Custom Scalar">This animation affects nothing visually, instead it has its current value copied to a specific Output Scalar in the Render Data block of the widget containing this animation. This value will not output as text.</comment>
+	<tagblock name="Custom Scalar" offset="0x40" visible="true" elementSize="0x20">
+		<tagblock name="Animation" offset="0x0" visible="true" elementSize="0x8">
+			<int32 name="Frame Number" offset="0x0" visible="true" />
+			<float32 name="Value" offset="0x4" visible="true" />
+		</tagblock>
+		<dataRef name="Function" offset="0xC" visible="true" />
+	</tagblock>
+	<int32 name="Number of Frames" offset="0x4C" visible="true" />
+</plugin>

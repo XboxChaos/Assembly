@@ -986,14 +986,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			using (var stream = _fileManager.OpenReadWrite())
 			{
 				// Reallocate the block
-				newAddress = _cache.Allocator.Reallocate(oldAddress, (int)oldSize, (int)newSize, (uint)field.Align, stream);
+				newAddress = _cache.Allocator.Reallocate(oldAddress, (uint)oldSize, (uint)newSize, (uint)field.Align, stream);
 				_cache.SaveChanges(stream);
 
 				// If the block was made larger, zero extra data and null tagrefs
 				if (newAddress != 0 && newSize > oldSize)
 				{
 					stream.SeekTo(_cache.MetaArea.PointerToOffset(newAddress) + oldSize);
-					StreamUtil.Fill(stream, 0, (int)(newSize - oldSize));
+					StreamUtil.Fill(stream, 0, (uint)(newSize - oldSize));
 
 					var tagRefLayout = _buildInfo.Layouts.GetLayout("tag reference");
 					var groupOffset = tagRefLayout.GetFieldOffset("tag group magic");
@@ -1095,7 +1095,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			using (var stream = _fileManager.OpenReadWrite())
 			{
 				// Reallocate the block
-				newAddress = _cache.Allocator.Allocate(size, stream);
+				newAddress = _cache.Allocator.Allocate((uint)size, stream);
 				_cache.SaveChanges(stream);
 
 				//copy data
@@ -1149,7 +1149,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			using (var stream = _fileManager.OpenReadWrite())
 			{
 				// Allocate a new block as to not potentially disturb shared uses
-				newAddress = _cache.Allocator.Allocate(newLength.Value, stream);
+				newAddress = _cache.Allocator.Allocate((uint)newLength.Value, stream);
 				_cache.SaveChanges(stream);
 			}
 
@@ -1205,7 +1205,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			using (var stream = _fileManager.OpenReadWrite())
 			{
 				// Allocate the data
-				newAddress = _cache.Allocator.Allocate(size, stream);
+				newAddress = _cache.Allocator.Allocate((uint)size, stream);
 				_cache.SaveChanges(stream);
 		
 				//copy data

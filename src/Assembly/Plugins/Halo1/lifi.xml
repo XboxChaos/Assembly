@@ -27,7 +27,9 @@
 	<point3 name="Bounding Offset" offset="0x8" visible="true" />
 	<point3 name="Origin Offset" offset="0x14" visible="true" />
 	<float32 name="Acceleration Scale" offset="0x20" visible="true" tooltip="marine 1.0, grunt 1.4, elite 0.9, hunter 0.5, etc." />
-	<int32 name="Unknown" offset="0x24" visible="true" />
+	<flags32 name="Runtime Flags" offset="0x24" visible="true">
+		<bit name="Scales Change Colors" index="0" />
+	</flags32>
 	<tagRef name="Model" offset="0x28" visible="true" />
 	<tagRef name="Animation Graph" offset="0x38" visible="true" />
 	<undefined name="Unknown" offset="0x48" visible="false" />
@@ -170,7 +172,7 @@
 	<int16 name="Forced Shader Permutation Index" offset="0x13E" visible="true" />
 	<tagblock name="Attachments" offset="0x140" visible="true" elementSize="0x48">
 		<tagRef name="Type" offset="0x0" visible="true" />
-		<ascii name="Marker" offset="0x10" length="0x20" visible="true" />
+		<ascii name="Marker" offset="0x10" size="0x20" visible="true" />
 		<enum16 name="Primary Scale" offset="0x30" visible="true">
 			<option name="None" value="0x0" />
 			<option name="A Out" value="0x1" />
@@ -370,11 +372,11 @@
 		<undefined name="Unknown" offset="0x12C" visible="false" />
 		<undefined name="Unknown" offset="0x130" visible="false" />
 		<undefined name="Unknown" offset="0x134" visible="false" />
-		<float32 name="Unknown" offset="0x138" visible="false" />
-		<undefined name="Unknown" offset="0x13C" visible="false" />
-		<undefined name="Unknown" offset="0x140" visible="false" />
-		<float32 name="Unknown" offset="0x144" visible="false" />
-		<ascii name="Usage" offset="0x148" length="0x20" visible="true" />
+		<float32 name="Inverse Bounds" offset="0x138" visible="true" />
+		<float32 name="Inverse Sawtooth" offset="0x13C" visible="true" />
+		<float32 name="Inverse Step" offset="0x140" visible="true" />
+		<float32 name="Inverse Period" offset="0x144" visible="true" />
+		<ascii name="Usage" offset="0x148" size="0x20" visible="true" />
 	</tagblock>
 	<tagblock name="Change Colors" offset="0x164" visible="true" elementSize="0x2C">
 		<enum16 name="Darken By" offset="0x0" visible="true">
@@ -498,13 +500,13 @@
 	<undefined name="Unknown" offset="0x268" visible="false" />
 	<undefined name="Unknown" offset="0x26C" visible="false" />
 	<undefined name="Unknown" offset="0x270" visible="false" />
-	<float32 name="Unknown" offset="0x274" visible="false" />
-	<float32 name="Unknown" offset="0x278" visible="false" />
-	<float32 name="Unknown" offset="0x27C" visible="false" />
-	<float32 name="Unknown" offset="0x280" visible="false" />
-	<float32 name="Unknown" offset="0x284" visible="false" />
-	<float32 name="Unknown" offset="0x288" visible="false" />
-	<float32 name="Unknown" offset="0x28C" visible="false" />
+	<float32 name="Inverse Power Acceleration Time" offset="0x274" visible="true" />
+	<float32 name="Inverse Power Transition Time" offset="0x278" visible="true" />
+	<float32 name="Inverse Depowered Position Acceleration Time" offset="0x27C" visible="true" />
+	<float32 name="Inverse Depowered Position Transition Time" offset="0x280" visible="true" />
+	<float32 name="Inverse Position Acceleration Time" offset="0x284" visible="true" />
+	<float32 name="Inverse Position Transition Time" offset="0x288" visible="true" />
+	<float32 name="Delay Time Ticks" offset="0x28C" visible="true" />
 	<comment title="LIGHT FIXTURE" />
 	<undefined name="Unknown" offset="0x290" visible="false" />
 	<undefined name="Unknown" offset="0x294" visible="false" />

@@ -5,9 +5,13 @@
 		<revision author="-DeToX-" version="1">Added MSG2 Size to Plugin</revision>
 		<revision author="plushiefire" version="2">Added color selection and What is possibly Scale</revision>
 	</revisions>
+	<comment title="Light Volume">Light volumes are rendered as a sequence of glowy sprites, just like in Metal Gear Solid 2. Each instance of the light volume is rendered separately; this allows, for example, a narrow bright white volume to be overlaid on top of a fuzzy wide colored volume, or anything else you want!</comment>
 	<float32 name="Falloff Distance From Camera" offset="0x0" visible="true" />
 	<float32 name="Cutoff Distance From Camera" offset="0x4" visible="true" />
 	<tagblock name="Volumes" offset="0x8" visible="true" elementSize="0x98">
+		<comment title="Volume">If no bitmap is selected, the default glow bitmap will be used. Sprite count controls how many sprites are used to render this volume. Using more sprites will result in a smoother and brighter effect, at a slight performance penalty. Don't touch the flags unless you know what you're doing (they should be off by default).
+
+Be careful with the 'fuzzy' flag! It should be used on very wide light volumes to make them blend smoothly into solid geometry rather than "cutting" into the zbuffer. Using this feature will make light volumes several times slower when they fill a large portion of the screen.</comment>
 		<flags32 name="Flags" offset="0x0" visible="true">
 			<bit name="Force Linear Radius Function" index="0" />
 			<bit name="Force Linear Offset" index="1" />
@@ -18,19 +22,37 @@
 		</flags32>
 		<tagRef name="Bitmap" offset="0x4" visible="true" />
 		<int32 name="Sprite Count" offset="0xC" visible="true" />
-		<dataRef name="Offset" offset="0x10" visible="true" />
-		<dataRef name="Radius" offset="0x18" visible="true" />
-		<dataRef name="Brightness" offset="0x20" visible="true" />
-		<dataRef name="Color" offset="0x28" visible="true" />
-		<dataRef name="Facing" offset="0x30" visible="true" />
+		<comment title="Offset">This function controls the offset along the projected forward axis of the light volume. The output range of this function is the distance in WORLD UNITS from the origin where the first and last sprite are rendered. The input to this function is the fractional value (from 0 to 1) along the projected axis. Using a transition function such as "late" will result in more sprites being bunched up towards the origin and spaced further apart near the end.
+
+Note that this and other functions in this tag have a range-input, which is controlled by the output of the FACING function below.</comment>
+		<dataRef name="Function" offset="0x10" visible="true" />
+		<comment title="Radius">This function controls the radius in WORLD UNITS of each sprite along the projected forward axis. Using a smaller min value and a larger max value results in a light volume that looks like a cone.</comment>
+		<dataRef name="Function" offset="0x18" visible="true" />
+		<comment title="Brightness">This function controls the overall brightness (in [0,1]) of each sprite along the projected forward axis. Note that since the sprites are additive, they will be brighter in areas where they overlap more even if this function is constant, so it may be useful to use the brightness function to compensate for this.</comment>
+		<dataRef name="Function" offset="0x20" visible="true" />
+		<comment title="Color">This function controls the color of each sprite along the projected forward axis. Color is multiplied by brightness to produce the final color that will be applied to the sprite.</comment>
+		<dataRef name="Function" offset="0x28" visible="true" />
+		<comment title="Facing">The input to this function is the facing angle between the light volume and the camera. Zero represents facing towards (parallel) or away from the camera and 1.0 represents facing perpendicular to the camera.
+
+The output of this function is fed into the range-input of the functions above.</comment>
+		<dataRef name="Function" offset="0x30" visible="true" />
 		<tagblock name="Aspect" offset="0x38" visible="true" elementSize="0x1C">
-			<dataRef name="Along-Axis Scale" offset="0x0" visible="true" />
-			<dataRef name="Away-From-Axis Scale" offset="0x8" visible="true" />
+			<comment title="Scale Factors">These function control the screenspace aspect ratio of each sprite relative to the projected forward axis. Note that there is no range-input to these functions, because it would not make sense to stretch sprites when the light volume is facing directly towards or away from the camera (which way would we stretch them?)</comment>
+			<comment title="Along-Axis Scale">Values higher than 1 along the axis will cause sprites to elongate and overlap more regardless of the orientation of the light volume, whereas values lower than 1 will cause sprite separation.</comment>
+			<dataRef name="Function" offset="0x0" visible="true" />
+			<comment title="Away-From-Axis Scale">Values higher than 1 away from the axis will cause the light volume to appear thicker.</comment>
+			<dataRef name="Function" offset="0x8" visible="true" />
+			<comment title="Parallel Scale">When the light volume is viewed directly towards (parallel) or away from the camera, the scale factors above are interpolated towards this constant value. The threshold angle controls when the light volume is considered to be 100% parallel for these computations. The exponent controls how quickly the transition from using the perpendicular scale factors to using the parallel scale factor happens, e.g.:
+
+* exponent=0.0 -&gt; perpendicular scale factors will always be used unless below threshold angle
+* exponent=0.1 -&gt; transition quickly as viewing angle becomes perpendicular
+* exponent=1.0 -&gt; transition smoothly between perpendicular and parallel
+* exponent=9.0 -&gt; transition quickly as viewing angle becomes parallel</comment>
 			<float32 name="Parallel Scale" offset="0x10" visible="true" />
-			<float32 name="Parallel Threshold Angle" offset="0x14" visible="true" />
+			<degree name="Parallel Threshold Angle" offset="0x14" visible="true" />
 			<float32 name="Parallel Exponent" offset="0x18" visible="true" />
 		</tagblock>
-		<float32 name="Radius Frac Minimum" offset="0x40" visible="true" />
+		<float32 name="Radius Fraction Minimum" offset="0x40" visible="true" />
 		<float32 name="DEPRECATED X-Step Exponent" offset="0x44" visible="true" />
 		<int32 name="DEPRECATED X-Buffer Length" offset="0x48" visible="true" />
 		<int32 name="X-Buffer Spacing" offset="0x4C" visible="true" />

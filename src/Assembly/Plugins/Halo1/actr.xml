@@ -86,9 +86,9 @@
 	<float32 name="Combat Perception Time" offset="0x60" visible="true" tooltip="time required to acknowledge a visible enemy when we are already in combat or searching for them" />
 	<float32 name="Guard Perception Time" offset="0x64" visible="true" tooltip="time required to acknowledge a visible enemy when we have been alerted" />
 	<float32 name="Non-Combat Perception Time" offset="0x68" visible="true" tooltip="time required to acknowledge a visible enemy when we are not alerted" />
-	<undefined name="Unknown" offset="0x6C" visible="false" />
-	<undefined name="Unknown" offset="0x70" visible="false" />
-	<undefined name="Unknown" offset="0x74" visible="false" />
+	<float32 name="Inverse Combat Perception Time" offset="0x6C" visible="true" />
+	<float32 name="Inverse Guard Perception Time" offset="0x70" visible="true" />
+	<float32 name="Inverse Non-Combat Perception Time" offset="0x74" visible="true" />
 	<undefined name="Unknown" offset="0x78" visible="false" />
 	<undefined name="Unknown" offset="0x7C" visible="false" />
 	<comment title="Movement" />
@@ -100,7 +100,7 @@
 	<float32 name="Stationary Movement Distance" offset="0x94" visible="true" tooltip="movement distance which is considered 'stationary' for considering whether we crouch" />
 	<float32 name="Free-Flying Sidestep" offset="0x98" visible="true" tooltip="distance which we allow sidestepping for flying units" />
 	<degree name="Begin Moving Angle" offset="0x9C" visible="true" tooltip="we must be facing this close to our target before we start applying the throttle (default" />
-	<undefined name="Unknown" offset="0xA0" visible="false" />
+	<float32 name="Cosine Begin Moving Angle" offset="0xA0" visible="true" />
 	<comment title="Looking" />
 	<degree2 name="Maximum Aiming Deviation" offset="0xA4" visible="true" tooltip="how far we can turn our weapon" />
 	<degree2 name="Maximum Looking Deviation" offset="0xAC" visible="true" tooltip="how far we can turn our head" />
@@ -122,11 +122,9 @@
 	<rangef name="Combat Idle Looking" offset="0x11C" visible="true" tooltip="rate at which we change look around randomly when searching or in combat" />
 	<undefined name="Unknown" offset="0x124" visible="false" />
 	<undefined name="Unknown" offset="0x128" visible="false" />
-	<undefined name="Unknown" offset="0x12C" visible="false" />
-	<undefined name="Unknown" offset="0x130" visible="false" />
-	<undefined name="Unknown" offset="0x134" visible="false" />
-	<undefined name="Unknown" offset="0x138" visible="false" />
-	<tagRef name="DO NOT USE" offset="0x13C" visible="true" />
+	<degree2 name="Cosine Maximum Aiming Deviation" offset="0x12C" visible="true" />
+	<degree2 name="Cosine Maximum Looking Deviation" offset="0x134" visible="true" />
+	<tagRef name="DO NOT USE Weapon" offset="0x13C" visible="true" tooltip="unused ranged" />
 	<undefined name="Unknown" offset="0x14C" visible="false" />
 	<undefined name="Unknown" offset="0x150" visible="false" />
 	<undefined name="Unknown" offset="0x154" visible="false" />
@@ -194,7 +192,7 @@
 	<undefined name="Unknown" offset="0x24C" visible="false" />
 	<undefined name="Unknown" offset="0x250" visible="false" />
 	<undefined name="Unknown" offset="0x254" visible="false" />
-	<tagRef name="DO NOT USE" offset="0x258" visible="true" />
+	<tagRef name="DO NOT USE Projectile" offset="0x258" visible="true" tooltip="unused grenade" />
 	<comment title="Unopposable" />
 	<enum16 name="Unreachable Danger Trigger" offset="0x268" visible="true" tooltip="danger level of an unreachable enemy which will trigger a retreat if it continues over time">
 		<option name="Never" value="0x0" />
@@ -404,7 +402,7 @@ an enemy damaging us: 2.0</comment>
 	<undefined name="Unknown" offset="0x4AC" visible="false" />
 	<undefined name="Unknown" offset="0x4B0" visible="false" />
 	<undefined name="Unknown" offset="0x4B4" visible="false" />
-	<tagRef name="DO NOT USE" offset="0x4B8" visible="true" />
+	<tagRef name="DO NOT USE Major Upgrade" offset="0x4B8" visible="true" tooltip="unused" />
 	<undefined name="Unknown" offset="0x4C8" visible="false" />
 	<undefined name="Unknown" offset="0x4CC" visible="false" />
 	<undefined name="Unknown" offset="0x4D0" visible="false" />

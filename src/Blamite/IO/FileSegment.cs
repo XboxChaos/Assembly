@@ -29,7 +29,7 @@ namespace Blamite.IO
 		/// <summary>
 		///     Gets the offset of the start of the segment in the file.
 		/// </summary>
-		public int Offset
+		public uint Offset
 		{
 			get { return _segmenter.GetSegmentOffset(ID); }
 		}
@@ -37,7 +37,7 @@ namespace Blamite.IO
 		/// <summary>
 		///     Gets the size of the segment.
 		/// </summary>
-		public int Size
+		public uint Size
 		{
 			get { return _segmenter.GetSegmentSize(ID); }
 		}
@@ -45,7 +45,7 @@ namespace Blamite.IO
 		/// <summary>
 		///     Gets how much space the segment actually takes up in the file.
 		/// </summary>
-		public int ActualSize
+		public uint ActualSize
 		{
 			get { return _segmenter.GetSegmentActualSize(ID); }
 		}
@@ -69,7 +69,7 @@ namespace Blamite.IO
 		/// <param name="newSize">The minimum amount of space that the segment must occupy.</param>
 		/// <param name="stream">The stream to write padding to.</param>
 		/// <returns>The new size of the segment after alignment has been applied.</returns>
-		public int Resize(int newSize, IStream stream)
+		public uint Resize(uint newSize, IStream stream)
 		{
 			return _segmenter.ResizeSegment(ID, newSize, stream);
 		}

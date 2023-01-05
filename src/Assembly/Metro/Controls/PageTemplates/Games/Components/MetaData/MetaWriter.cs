@@ -184,7 +184,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			var values = new StructureValueCollection();
 
-			bool isValid = _cache.MetaArea.ContainsBlockPointer(field.FirstElementAddress, (int)(field.Length * field.ElementSize));
+			bool isValid = _cache.MetaArea.ContainsBlockPointer(field.FirstElementAddress, (uint)(field.Length * field.ElementSize));
 
 			values.SetInteger("entry count", isValid ? (uint)field.Length : 0);
 
@@ -212,10 +212,26 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				case StringType.UTF16:
 					_writer.WriteUTF16(field.Value);
 					break;
+
+				case StringType.Hex:
+					{
+						// Build the data
+						byte[] buffer = new byte[field.Size];
+						byte[] bytes = FunctionHelpers.HexStringToBytes(field.Value);
+
+						Array.Copy(bytes, buffer, bytes.Length > field.Size ? field.Size : bytes.Length);
+						_writer.WriteBlock(buffer, 0, buffer.Length);
+						break;
+					}
 			}
 		}
 
 		public void VisitStringID(StringIDData field)
+		{
+			HandleStringID(field, field.Offset);
+		}
+
+		private void HandleStringID(StringIDData field, uint offset)
 		{
 			SeekToOffset(field.Offset);
 			if (_stringIdTrie.Contains(field.Value))
@@ -238,13 +254,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void VisitRawData(RawData field)
 		{
 			SeekToOffset(field.Offset);
-			_writer.WriteBlock(FunctionHelpers.HexStringToBytes(field.Value), 0, field.Length);
+
+			// Build the data
+			byte[] buffer = new byte[field.Length];
+			byte[] bytes = FunctionHelpers.HexStringToBytes(field.Value);
+
+			Array.Copy(bytes, buffer, bytes.Length > field.Length ? field.Length : bytes.Length);
+			_writer.WriteBlock(buffer, 0, buffer.Length);
 		}
 
 		public void VisitDataRef(DataRef field)
 		{
 			var values = new StructureValueCollection();
-			bool isValid = _cache.MetaArea.ContainsBlockPointer(field.DataAddress, field.Length);
+			bool isValid = _cache.MetaArea.ContainsBlockPointer(field.DataAddress, (uint)field.Length);
 			values.SetInteger("size", isValid ? (uint)field.Length : 0);
 
 			uint cont = _cache.PointerExpander.Contract(field.DataAddress);
@@ -485,6 +507,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_writer.WriteUInt32((uint)(field.Salt << 16) | field.Index);
 		}
 
+		public void VisitOldStringID(OldStringIDData field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteAscii(field.Value, 0x1C);
+			HandleStringID(field, field.Offset + 0x1C);
+		}
+
 		public void WriteFields(IList<MetaField> fields)
 		{
 			foreach (MetaField t in fields)
@@ -504,7 +533,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void WriteTagBlockChildren(TagBlockData field)
 		{
 			if (field.CurrentIndex < 0 || !field.HasChildren ||
-				!_cache.MetaArea.ContainsBlockPointer(field.FirstElementAddress, (int)(field.Length * field.ElementSize)))
+				!_cache.MetaArea.ContainsBlockPointer(field.FirstElementAddress, (uint)(field.Length * field.ElementSize)))
 				return;
 
 			// Get the base address and convert it to an offset if we're writing to the file

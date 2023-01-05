@@ -71,7 +71,7 @@ namespace Blamite.Blam
 		/// <param name="baseSize">The size of the data to initially allocate for the tag.</param>
 		/// <param name="stream">The stream to write to.</param>
 		/// <returns>The tag that was added.</returns>
-		public abstract ITag AddTag(int groupMagic, int baseSize, IStream stream);
+		public abstract ITag AddTag(int groupMagic, uint baseSize, IStream stream);
 
 		/// <summary>
 		///     Adds a tag to the table and allocates space for its base data.
@@ -80,7 +80,7 @@ namespace Blamite.Blam
 		/// <param name="baseSize">The size of the data to initially allocate for the tag.</param>
 		/// <param name="stream">The stream to write to.</param>
 		/// <returns>The tag that was added.</returns>
-		public ITag AddTag(ITagGroup tagGroup, int baseSize, IStream stream)
+		public ITag AddTag(ITagGroup tagGroup, uint baseSize, IStream stream)
 		{
 			return AddTag(tagGroup.Magic, baseSize, stream);
 		}
@@ -92,7 +92,7 @@ namespace Blamite.Blam
 		/// <param name="baseSize">The size of the data to initially allocate for the tag.</param>
 		/// <param name="stream">The stream to write to.</param>
 		/// <returns>The tag that was added.</returns>
-		public ITag AddTag(string groupName, int baseSize, IStream stream)
+		public ITag AddTag(string groupName, uint baseSize, IStream stream)
 		{
 			return AddTag(CharConstant.FromString(groupName), baseSize, stream);
 		}

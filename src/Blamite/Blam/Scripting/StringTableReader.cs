@@ -12,7 +12,7 @@ namespace Blamite.Blam.Scripting
 			_requestedStrings.Add(offset);
 		}
 
-		public void ReadRequestedStrings(IReader reader, int tableOffset, CachedStringTable output)
+		public void ReadRequestedStrings(IReader reader, uint tableOffset, CachedStringTable output)
 		{
 			uint lastEnd = 0;
 			foreach (uint offset in _requestedStrings)

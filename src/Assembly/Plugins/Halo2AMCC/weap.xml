@@ -132,7 +132,7 @@
 	<tagRef name="Generic Name List" offset="0x58" visible="true" />
 	<tagRef name="Generic Service Tag List" offset="0x68" visible="true" />
 	<tagblock name="Source Sidecar" offset="0x78" visible="true" elementSize="0x100">
-		<ascii name="Sidecar Path" offset="0x0" length="0x100" visible="true" />
+		<ascii name="Sidecar Path" offset="0x0" size="0x100" visible="true" />
 	</tagblock>
 	<stringid name="Default Model Variant" offset="0x84" visible="true" />
 	<tagRef name="Model" offset="0x88" visible="true" />
@@ -142,12 +142,9 @@
 	<tagblock name="Early Mover Oriented Bounding Box" offset="0xC8" visible="true" elementSize="0x2C">
 		<stringid name="Node Name" offset="0x0" visible="true" tooltip="empty means object space" />
 		<int32 name="Runtime Node Index" offset="0x4" visible="true" />
-		<float32 name="X0" offset="0x8" visible="true" />
-		<float32 name="X1" offset="0xC" visible="true" />
-		<float32 name="Y0" offset="0x10" visible="true" />
-		<float32 name="Y1" offset="0x14" visible="true" />
-		<float32 name="Z0" offset="0x18" visible="true" />
-		<float32 name="Z1" offset="0x1C" visible="true" />
+		<rangef name="x" offset="0x8" visible="true" />
+		<rangef name="y" offset="0x10" visible="true" />
+		<rangef name="z" offset="0x18" visible="true" />
 		<degree3 name="Angles" offset="0x20" visible="true" />
 	</tagblock>
 	<tagRef name="Creation Effect" offset="0xD4" visible="true" />
@@ -902,7 +899,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<tagRef name="Chambering Effect" offset="0x58" visible="true" />
 		<tagRef name="Chambering Damage Effect" offset="0x68" visible="true" />
 		<tagblock name="Magazines" offset="0x78" visible="true" elementSize="0x14">
-			<int16 name="Rounds" offset="0x0" visible="true" tooltip="0 for max" />
+			<int16 name="Rounds" offset="0x0" visible="true" tooltip="0 for maximum" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagRef name="Equipment" offset="0x4" visible="true" />
 		</tagblock>
@@ -1216,8 +1213,8 @@ Where input value 'X' produces output value 'Y'</comment>
 		<float32 name="Overload Time" offset="0x180" visible="true" tooltip="the next trigger fires this often while holding down this trigger" />
 		<comment title="Angle Change (Recoil)" />
 		<ranged name="Angle Change Per Shot" offset="0x184" visible="true" tooltip="angle change per shot of the weapon during firing" />
-		<float32 name="Angle Change Acceleration Time" offset="0x18C" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve its final angle per shot" />
-		<float32 name="Angle Change Deceleration Time" offset="0x190" visible="true" tooltip="the continuous idle time it takes for the weapon to return its initial angle per shot" />
+		<float32 name="Angle Change Acceleration Time" offset="0x18C" visible="true" tooltip="the continuous firing time it takes for the weapon to achieve its final angle change per shot" />
+		<float32 name="Angle Change Deceleration Time" offset="0x190" visible="true" tooltip="the continuous idle time it takes for the weapon to return to its initial angle change per shot" />
 		<enum16 name="Angle Change Function" offset="0x194" visible="true" tooltip="function used to scale between initial and final angle change per shot">
 			<option name="Linear" value="0x0" />
 			<option name="Early" value="0x1" />
@@ -1225,8 +1222,8 @@ Where input value 'X' produces output value 'Y'</comment>
 			<option name="Late" value="0x3" />
 			<option name="Very Late" value="0x4" />
 			<option name="Cosine" value="0x5" />
-			<option name="Zero" value="0x6" />
-			<option name="One" value="0x7" />
+			<option name="One" value="0x6" />
+			<option name="Zero" value="0x7" />
 		</enum16>
 		<int16 name="Unknown" offset="0x196" visible="false" />
 		<float32 name="Angle Change Acceleration Rate" offset="0x198" visible="true" />

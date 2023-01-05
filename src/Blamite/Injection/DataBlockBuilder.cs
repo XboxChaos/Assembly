@@ -305,6 +305,10 @@ namespace Blamite.Injection
 		{
 		}
 
+		public void VisitHexString(string name, uint offset, bool visible, int size, uint pluginLine, string tooltip)
+		{
+		}
+
 		public void VisitColorInt(string name, uint offset, bool visible, bool alpha, uint pluginLine, string tooltip)
 		{
 		}
@@ -434,6 +438,11 @@ namespace Blamite.Injection
 			}
 		}
 
+		public void VisitOldStringID(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			ReadReferences(offset, ReadOldStringId);
+		}
+
 		private void ReadReferences(uint offset, Action<DataBlock, uint> processor)
 		{
 			var blocks = _blockStack.Peek();
@@ -458,6 +467,19 @@ namespace Blamite.Injection
 			if (str == null) return;
 
 			var fixup = new DataBlockStringIDFixup(str, (int) offset);
+			block.StringIDFixups.Add(fixup);
+		}
+
+		private void ReadOldStringId(DataBlock block, uint offset)
+		{
+			SeekToOffset(block, offset + 0x1C);
+			var sid = new StringID(_reader.ReadUInt32());
+			if (sid == StringID.Null) return;
+
+			var str = _cacheFile.StringIDs.GetString(sid);
+			if (str == null) return;
+
+			var fixup = new DataBlockStringIDFixup(str, (int)offset);
 			block.StringIDFixups.Add(fixup);
 		}
 
@@ -526,7 +548,7 @@ namespace Blamite.Injection
 
 			long expand = _cacheFile.PointerExpander.Expand(pointer);
 
-			if (size <= 0 || !_cacheFile.MetaArea.ContainsBlockPointer(expand, size)) return;
+			if (size <= 0 || !_cacheFile.MetaArea.ContainsBlockPointer(expand, (uint)size)) return;
 
 			// Read the block and create a fixup for it
 			ReadDataBlock(expand, size, 1, align, false);
@@ -544,7 +566,7 @@ namespace Blamite.Injection
 
 			long expand = _cacheFile.PointerExpander.Expand(pointer);
 
-			if (count <= 0 || !_cacheFile.MetaArea.ContainsBlockPointer(expand, (int) (count*entrySize))) return;
+			if (count <= 0 || !_cacheFile.MetaArea.ContainsBlockPointer(expand, (uint) (count*entrySize))) return;
 
 			var newBlock = ReadDataBlock(expand, (int)entrySize, count, align, sort);
 
@@ -613,7 +635,7 @@ namespace Blamite.Injection
 
 			int length = _dataRefLayout.Size * refCount + (polyart ? refCount * 4 : 0);
 
-			if (!_cacheFile.MetaArea.ContainsBlockPointer(expand, length)) return;
+			if (!_cacheFile.MetaArea.ContainsBlockPointer(expand, (uint)length)) return;
 
 			var newBlock = ReadDataBlock(expand, length, 1, 16, false);
 			for (int i = 0; i < refCount; i++)

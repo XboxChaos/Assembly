@@ -28,7 +28,9 @@
 	<point3 name="Bounding Offset" offset="0x8" visible="true" />
 	<point3 name="Origin Offset" offset="0x14" visible="true" />
 	<float32 name="Acceleration Scale" offset="0x20" visible="true" tooltip="marine 1.0, grunt 1.4, elite 0.9, hunter 0.5, etc." />
-	<int32 name="Unknown" offset="0x24" visible="true" />
+	<flags32 name="Runtime Flags" offset="0x24" visible="true">
+		<bit name="Scales Change Colors" index="0" />
+	</flags32>
 	<tagRef name="Model" offset="0x28" visible="true" />
 	<tagRef name="Animation Graph" offset="0x3C" visible="true" />
 	<undefined name="Unknown" offset="0x50" visible="false" />
@@ -171,7 +173,7 @@
 	<int16 name="Forced Shader Permutation Index" offset="0x156" visible="true" />
 	<tagblock name="Attachments" offset="0x158" visible="true" elementSize="0x4C">
 		<tagRef name="Type" offset="0x0" visible="true" />
-		<ascii name="Marker" offset="0x14" length="0x20" visible="true" />
+		<ascii name="Marker" offset="0x14" size="0x20" visible="true" />
 		<enum16 name="Primary Scale" offset="0x34" visible="true">
 			<option name="None" value="0x0" />
 			<option name="A Out" value="0x1" />
@@ -371,11 +373,11 @@
 		<undefined name="Unknown" offset="0x12C" visible="false" />
 		<undefined name="Unknown" offset="0x130" visible="false" />
 		<undefined name="Unknown" offset="0x134" visible="false" />
-		<float32 name="Unknown" offset="0x138" visible="false" />
-		<undefined name="Unknown" offset="0x13C" visible="false" />
-		<undefined name="Unknown" offset="0x140" visible="false" />
-		<float32 name="Unknown" offset="0x144" visible="false" />
-		<ascii name="Usage" offset="0x148" length="0x20" visible="true" />
+		<float32 name="Inverse Bounds" offset="0x138" visible="true" />
+		<float32 name="Inverse Sawtooth" offset="0x13C" visible="true" />
+		<float32 name="Inverse Step" offset="0x140" visible="true" />
+		<float32 name="Inverse Period" offset="0x144" visible="true" />
+		<ascii name="Usage" offset="0x148" size="0x20" visible="true" />
 	</tagblock>
 	<tagblock name="Change Colors" offset="0x194" visible="true" elementSize="0x34">
 		<enum16 name="Darken By" offset="0x0" visible="true">
@@ -422,7 +424,7 @@
 	</tagblock>
 	<comment title="ITEM" />
 	<flags32 name="Flags" offset="0x1BC" visible="true">
-		<bit name="Always Maintains Z Up" index="0" />
+		<bit name="Always Maintains z Up" index="0" />
 		<bit name="Destroyed By Explosions" index="1" />
 		<bit name="Unaffected By Gravity" index="2" />
 	</flags32>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin game="Halo2" baseSize="0x78">
+<plugin game="Halo2MCC" baseSize="0x78">
 	<revisions>
 		<revision author="Lord Zedd" version="1">k</revision>
 	</revisions>
@@ -83,10 +83,10 @@ azimuth:
 		<int8 name="Gain" offset="0x4" visible="true" />
 		<int8 name="Permutation Info Index" offset="0x5" visible="true" />
 		<int16 name="Language Neutral Time" offset="0x6" visible="true" />
-		<tagblock name="Languages" offset="0x8" visible="true" elementSize="0x8">
-			<uint32 name="Sample Size" offset="0x0" visible="false" />
-			<int16 name="First Chunk Index" offset="0x4" visible="false" />
-			<int16 name="Chunk Count" offset="0x6" visible="false" />
+		<tagblock name="Localized Chunks Info" offset="0x8" visible="true" elementSize="0x8">
+			<uint32 name="Sample Size" offset="0x0" visible="true" />
+			<int16 name="First Chunk Index" offset="0x4" visible="true" />
+			<int16 name="Chunk Count" offset="0x6" visible="true" />
 		</tagblock>
 	</tagblock>
 	<tagblock name="Custom Playbacks" offset="0x38" visible="true" elementSize="0x34">
@@ -252,27 +252,27 @@ for stereo sounds:
 	</tagblock>
 	<tagblock name="Permutation Chunks" offset="0x60" visible="true" elementSize="0x8">
 		<tagblock name="Languages" offset="0x0" visible="true" elementSize="0x10">
-			<int32 name="File Offset" offset="0x0" visible="false" />
-			<int16 name="Compressed Size?" offset="0x4" visible="false" />
-			<int16 name="Flags?" offset="0x6" visible="false" />
-			<int32 name="Uncompressed Size" offset="0x8" visible="false" />
-			<int32 name="Runtime Index" offset="0xC" visible="false" />
+			<int32 name="File Offset" offset="0x0" visible="true" />
+			<int16 name="Compressed Size?" offset="0x4" visible="true" />
+			<int16 name="Flags?" offset="0x6" visible="true" />
+			<int32 name="Uncompressed Size" offset="0x8" visible="true" />
+			<int32 name="Runtime Index" offset="0xC" visible="true" />
 		</tagblock>
 	</tagblock>
 	<tagblock name="Promotions" offset="0x68" visible="true" elementSize="0x1C">
 		<tagblock name="Rules" offset="0x0" visible="true" elementSize="0x10">
 			<int16 name="Pitch Range Index" offset="0x0" visible="true" />
 			<int16 name="Maximum Playing Count" offset="0x2" visible="true" />
-			<float32 name="Suppression Time" offset="0x4" visible="true" />
+			<float32 name="Suppression Time" offset="0x4" visible="true" tooltip="time from when first permutation plays to when another sound from an equal or lower promotion can play" />
 			<int32 name="Unknown" offset="0x8" visible="false" />
 			<int32 name="Unknown" offset="0xC" visible="false" />
 		</tagblock>
 		<tagblock name="Runtime Timers" offset="0x8" visible="true" elementSize="0x4">
 			<int32 name="Unknown" offset="0x0" visible="true" />
 		</tagblock>
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
+		<int32 name="Runtime Active Promotion Index" offset="0x10" visible="true" />
+		<int32 name="Runtime Last Promotion Time" offset="0x14" visible="true" />
+		<int32 name="Runtime Suppression Timeout" offset="0x18" visible="true" />
 	</tagblock>
 	<tagblock name="Extra Info" offset="0x70" visible="true" elementSize="0x14C">
 		<tagblock name="Encoded Permutation Section" offset="0x0" visible="true" elementSize="0x10">

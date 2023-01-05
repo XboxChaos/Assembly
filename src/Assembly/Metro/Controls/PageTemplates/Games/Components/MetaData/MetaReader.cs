@@ -207,6 +207,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				case StringType.UTF16:
 					field.Value = _reader.ReadUTF16(field.Size);
 					break;
+
+				case StringType.Hex:
+					field.Value = FunctionHelpers.BytesToHexString(_reader.ReadBlock(field.Size));
+					break;
 			}
 		}
 
@@ -233,7 +237,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 			long expanded = _cache.PointerExpander.Expand(pointer);
 
-			if (length > 0 && _cache.MetaArea.ContainsBlockPointer(expanded, length))
+			if (length > 0 && _cache.MetaArea.ContainsBlockPointer(expanded, (uint)length))
 			{
 				field.DataAddress = expanded;
 				field.Length = length;
@@ -443,7 +447,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			long expanded = _cache.PointerExpander.Expand(pointer);
 
 			// Make sure the pointer looks valid
-			if (length < 0 || !_cache.MetaArea.ContainsBlockPointer(expanded, (int) (length*field.ElementSize)))
+			if (length < 0 || !_cache.MetaArea.ContainsBlockPointer(expanded, (uint) (length*field.ElementSize)))
 			{
 				length = 0;
 				pointer = 0;
@@ -492,6 +496,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			field.Index = (ushort)(value & 0xFFFF);
 		}
 
+		public void VisitOldStringID(OldStringIDData field)
+		{
+			//we dont care about the string portion
+			SeekToOffset(field.Offset + 0x1C);
+			field.Value = _cache.StringIDs.GetString(new StringID(_reader.ReadUInt32()));
+		}
+
 		public void VisitTagBlockEntry(WrappedTagBlockEntry field)
 		{
 		}
@@ -504,7 +515,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			{
 				valueField.FieldAddress = BaseOffset + valueField.Offset;
 				if (_type == LoadType.File)
-					valueField.FieldAddress = _cache.MetaArea.OffsetToPointer((int)valueField.FieldAddress);
+					valueField.FieldAddress = _cache.MetaArea.OffsetToPointer((uint)valueField.FieldAddress);
 			}
 
 			// Read its contents if it hasn't changed (or if change detection is disabled)

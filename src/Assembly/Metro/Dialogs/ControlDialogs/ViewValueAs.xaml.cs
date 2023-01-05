@@ -44,7 +44,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			_fields = fields;
 			_cacheOffsetOriginal = _cacheOffset = cacheOffset;
 
-			_memOffset = _cacheFile.MetaArea.OffsetToPointer((int)_cacheOffset);
+			_memOffset = _cacheFile.MetaArea.OffsetToPointer((uint)_cacheOffset);
 
 			// Set Textboxes
 			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
@@ -111,7 +111,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 				success = uint.TryParse(txtOffset.Text, out offset);
 			}
 
-			if (!success || !_cacheFile.MetaArea.ContainsOffset((int)offset))
+			if (!success || !_cacheFile.MetaArea.ContainsOffset((uint)offset))
 			{
 				MetroMessageBox.Show(
 					"Invalid offset.",
@@ -122,7 +122,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			_cacheOffset = offset;
 
 			//Update the other textbox
-			_memOffset = _cacheFile.MetaArea.OffsetToPointer((int)_cacheOffset);
+			_memOffset = _cacheFile.MetaArea.OffsetToPointer((uint)_cacheOffset);
 			txtMemOffset.Text = "0x" + _memOffset.ToString("X");
 
 			RefreshMeta();
@@ -176,7 +176,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		private void btnReset_Click(object sender, RoutedEventArgs e)
 		{
 			_cacheOffset = _cacheOffsetOriginal;
-			_memOffset = _cacheFile.MetaArea.OffsetToPointer((int)_cacheOffset);
+			_memOffset = _cacheFile.MetaArea.OffsetToPointer((uint)_cacheOffset);
 
 			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
 			txtMemOffset.Text = "0x" + _memOffset.ToString("X");
@@ -186,7 +186,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		private void btnDown_Click(object sender, RoutedEventArgs e)
 		{
 			_cacheOffset -= GetSkip();
-			_memOffset = _cacheFile.MetaArea.OffsetToPointer((int)_cacheOffset);
+			_memOffset = _cacheFile.MetaArea.OffsetToPointer((uint)_cacheOffset);
 
 			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
 			txtMemOffset.Text = "0x" + _memOffset.ToString("X");
@@ -196,7 +196,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		private void btnUp_Click(object sender, RoutedEventArgs e)
 		{
 			_cacheOffset += GetSkip();
-			_memOffset = _cacheFile.MetaArea.OffsetToPointer((int)_cacheOffset);
+			_memOffset = _cacheFile.MetaArea.OffsetToPointer((uint)_cacheOffset);
 
 			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
 			txtMemOffset.Text = "0x" + _memOffset.ToString("X");

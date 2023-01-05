@@ -718,7 +718,7 @@ namespace Blamite.Blam.Resources.Sounds
 			if (size <= 0 || address == 0)
 				return new byte[0];
 
-			int offset = _metaArea.PointerToOffset(expand);
+			uint offset = _metaArea.PointerToOffset(expand);
 			reader.SeekTo(offset);
 			return reader.ReadBlock(size);
 		}
@@ -852,7 +852,7 @@ namespace Blamite.Blam.Resources.Sounds
 			long newAddress = 0;
 			if (buffer.Length > 0)
 			{
-				newAddress = _allocator.Allocate(buffer.Length, stream);
+				newAddress = _allocator.Allocate((uint)buffer.Length, stream);
 				stream.SeekTo(_metaArea.PointerToOffset(newAddress));
 				stream.WriteBlock(buffer);
 			}
@@ -972,7 +972,7 @@ namespace Blamite.Blam.Resources.Sounds
 		}
 		private void FreeExtraInfoBuffer(StructureValueCollection basevalues)
 		{
-			var buffsize = (int)basevalues.GetInteger("encoded data size");
+			var buffsize = (uint)basevalues.GetInteger("encoded data size");
 			uint buffaddr = (uint)basevalues.GetInteger("encoded data pointer");
 
 			long expand = _expander.Expand(buffaddr);
@@ -1186,9 +1186,9 @@ namespace Blamite.Blam.Resources.Sounds
 			int oldCount = (int)values.GetInteger("number of chunks");
 			long oldAddress = _expander.Expand((uint)values.GetInteger("chunk table address"));
 
-			_allocator.Free(oldAddress, oldCount * layout.Size);
+			_allocator.Free(oldAddress, (uint)(oldCount * layout.Size));
 
-			long newAddress = _allocator.Allocate(layout.Size * entries.Count, 0x10, stream);
+			long newAddress = _allocator.Allocate((uint)(layout.Size * entries.Count), 0x10, stream);
 			TagBlockWriter.WriteTagBlock(entries, newAddress, layout, _metaArea, stream);
 
 			uint contr = _expander.Contract(newAddress);
@@ -1689,9 +1689,9 @@ namespace Blamite.Blam.Resources.Sounds
 
 			int oldCount = (int)values.GetInteger("number of pitch ranges");
 			long oldAddress = _expander.Expand((uint)values.GetInteger("pitch range table address"));
-			_allocator.Free(oldAddress, oldCount * layout.Size);
+			_allocator.Free(oldAddress, (uint)(oldCount * layout.Size));
 
-			long newAddress = _allocator.Allocate(layout.Size * entries.Count, 0x10, stream);
+			long newAddress = _allocator.Allocate((uint)(layout.Size * entries.Count), 0x10, stream);
 			TagBlockWriter.WriteTagBlock(entries, newAddress, layout, _metaArea, stream);
 
 			uint contr = _expander.Contract(newAddress);
@@ -1730,9 +1730,9 @@ namespace Blamite.Blam.Resources.Sounds
 			int oldCount = (int)values.GetInteger("number of runtime permutation flags");
 			long oldAddress = _expander.Expand((uint)values.GetInteger("runtime permutation flag table address"));
 
-			_allocator.Free(oldAddress, oldCount * layout.Size);
+			_allocator.Free(oldAddress, (uint)(oldCount * layout.Size));
 
-			long newAddress = _allocator.Allocate(layout.Size * count, 0x10, stream);
+			long newAddress = _allocator.Allocate((uint)(layout.Size * count), 0x10, stream);
 			stream.SeekTo(_metaArea.PointerToOffset(newAddress));
 			stream.WriteBlock(new byte[layout.Size * count]);
 
@@ -1924,7 +1924,7 @@ namespace Blamite.Blam.Resources.Sounds
 				entry.SetInteger("rule table address", ruleNewAddress);
 
 				//timers are set at runtime so we just need an empty block the same count as rules
-				int timerlength = timerlayout.Size * ruleEntries.Count;
+				uint timerlength = (uint)(timerlayout.Size * ruleEntries.Count);
 				long timerNewAddress = _allocator.Allocate(timerlength, 0x10, stream);
 				stream.SeekTo(_metaArea.PointerToOffset(timerNewAddress));
 				stream.WriteBlock(new byte[timerlength]);
@@ -1941,7 +1941,7 @@ namespace Blamite.Blam.Resources.Sounds
 				entries.Add(entry);
 			}
 
-			long newAddress = _allocator.Allocate(layout.Size * entries.Count, 0x10, stream);
+			long newAddress = _allocator.Allocate((uint)(layout.Size * entries.Count), 0x10, stream);
 			TagBlockWriter.WriteTagBlock(entries, newAddress, layout, _metaArea, stream);
 
 			uint contr = _expander.Contract(newAddress);
@@ -1985,7 +1985,7 @@ namespace Blamite.Blam.Resources.Sounds
 			long expand = _expander.Expand(address);
 
 			StructureLayout layout = _buildInfo.Layouts.GetLayout(layoutName);
-			int size = count * layout.Size;
+			uint size = (uint)(count * layout.Size);
 			if (expand >= 0 && size > 0)
 				_allocator.Free(expand, size);
 		}

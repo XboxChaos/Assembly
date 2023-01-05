@@ -10,10 +10,10 @@ namespace Blamite.IO
 		private readonly bool _baseBottomResizes;
 		private readonly FileSegmentGroup _baseGroup;
 		private readonly FileSegment _baseSegment;
-		private readonly int _baseSegmentDelta;
-		private readonly int _originalBaseSize;
+		private readonly uint _baseSegmentDelta;
+		private readonly uint _originalBaseSize;
 
-		private SegmentPointer(FileSegment baseSegment, FileSegmentGroup baseGroup, int baseSegmentDelta)
+		private SegmentPointer(FileSegment baseSegment, FileSegmentGroup baseGroup, uint baseSegmentDelta)
 		{
 			_baseSegment = baseSegment;
 			_baseGroup = baseGroup;
@@ -28,7 +28,7 @@ namespace Blamite.IO
 		/// <param name="fileOffset">The file offset to create a SegmentPointer to.</param>
 		/// <param name="baseGroup">The segment group containing the file offset.</param>
 		/// <returns>The SegmentPointer corresponding to the file offset.</returns>
-		public static SegmentPointer FromOffset(int fileOffset, FileSegmentGroup baseGroup)
+		public static SegmentPointer FromOffset(uint fileOffset, FileSegmentGroup baseGroup)
 		{
 			if (baseGroup.Segments.Count == 0)
 				throw new ArgumentException("Cannot create a SegmentPointer from an empty group");
@@ -37,7 +37,7 @@ namespace Blamite.IO
 			if (baseSegment == null)
 				throw new ArgumentException("Cannot create a SegmentPointer from an invalid offset");
 
-			int baseSegmentDelta = fileOffset - baseSegment.Offset;
+			uint baseSegmentDelta = fileOffset - baseSegment.Offset;
 			return new SegmentPointer(baseSegment, baseGroup, baseSegmentDelta);
 		}
 
@@ -56,7 +56,7 @@ namespace Blamite.IO
 			if (baseSegment == null)
 				throw new ArgumentException("Cannot create a SegmentPointer from an invalid pointer");
 
-			int baseSegmentDelta = baseGroup.PointerToOffset(pointer) - baseSegment.Offset;
+			uint baseSegmentDelta = baseGroup.PointerToOffset(pointer) - baseSegment.Offset;
 			return new SegmentPointer(baseSegment, baseGroup, baseSegmentDelta);
 		}
 
@@ -64,10 +64,10 @@ namespace Blamite.IO
 		///     Gets the file offset corresponding to the SegmentPointer.
 		/// </summary>
 		/// <returns>The file offset corresponding to the SegmentPointer.</returns>
-		public int AsOffset()
+		public uint AsOffset()
 		{
 			if (_baseBottomResizes)
-				return _baseSegment.Offset + _baseSegment.Size - _originalBaseSize + _baseSegmentDelta;
+				return (uint)(_baseSegment.Offset + _baseSegment.Size - _originalBaseSize + _baseSegmentDelta);
 			// Account for data inserted at the beginning
 			return _baseSegment.Offset + _baseSegmentDelta;
 		}

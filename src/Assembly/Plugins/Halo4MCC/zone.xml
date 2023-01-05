@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin game="Halo4MCC" baseSize="0x22C">
+<plugin game="Halo4MCC" baseSize="0x234">
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
 	</revisions>
-	<enum16 name="Map Type" offset="0x0" visible="true">
-		<option name="Single Player" value="0x0" />
+	<enum16 name="Scenario Type" offset="0x0" visible="true">
+		<option name="Solo" value="0x0" />
 		<option name="Multiplayer" value="0x1" />
 		<option name="Main Menu" value="0x2" />
 	</enum16>
 	<int16 name="Flags" offset="0x2" visible="false" />
 	<tagblock name="Resource Types" offset="0x4" visible="true" elementSize="0x20" align="0x8">
-		<raw name="GUID" offset="0x0" size="0x10" visible="true" />
+		<hexstring name="GUID" offset="0x0" size="0x10" visible="true" />
 		<int16 name="Unknown" offset="0x10" visible="true" />
 		<int16 name="Unknown" offset="0x12" visible="true" />
 		<stringid name="Name" offset="0x14" visible="true" />
@@ -20,14 +20,14 @@
 		<int16 name="Unknown" offset="0x1E" visible="true" />
 	</tagblock>
 	<tagblock name="Resource Structure Types" offset="0x10" visible="true" elementSize="0x14" align="0x8">
-		<raw name="GUID" offset="0x0" size="0x10" visible="true" />
+		<hexstring name="GUID" offset="0x0" size="0x10" visible="true" />
 		<stringid name="Name" offset="0x10" visible="true" />
 	</tagblock>
 	<tagblock name="Compression Codecs" offset="0x1C" visible="true" elementSize="0x10">
-		<raw name="GUID" offset="0x0" size="0x10" visible="true" />
+		<hexstring name="GUID" offset="0x0" size="0x10" visible="true" />
 	</tagblock>
 	<tagblock name="External Cache References" offset="0x28" visible="true" elementSize="0x108">
-		<ascii name="Map Path" offset="0x0" visible="true" length="0x100" />
+		<ascii name="Map Path" offset="0x0" visible="true" size="0x100" />
 		<int16 name="Unknown" offset="0x100" visible="false" />
 		<int16 name="Unknown" offset="0x102" visible="false" />
 		<undefined name="Unknown" offset="0x104" visible="false" />
@@ -43,9 +43,9 @@
 		<int32 name="Compressed Block Size" offset="0xC" visible="true" />
 		<int32 name="Uncompressed Block Size" offset="0x10" visible="true" />
 		<int32 name="CRC Checksum" offset="0x14" visible="true" />
-		<raw name="Entire Buffer Hash" offset="0x18" size="0x14" visible="true" />
-		<raw name="First Chunk Hash" offset="0x2C" size="0x14" visible="true" />
-		<raw name="Last Chunk Hash" offset="0x40" size="0x14" visible="true" />
+		<hexstring name="Entire Buffer Hash" offset="0x18" size="0x14" visible="true" />
+		<hexstring name="First Chunk Hash" offset="0x2C" size="0x14" visible="true" />
+		<hexstring name="Last Chunk Hash" offset="0x40" size="0x14" visible="true" />
 		<int16 name="Block Asset Count" offset="0x54" visible="true" />
 		<int16 name="Unknown Index" offset="0x56" visible="true" />
 	</tagblock>
@@ -2721,6 +2721,8 @@ If a bit is enabled then that member will be loaded.</comment>
 		<int32 name="First Value" offset="0x4" visible="true" />
 		<int32 name="Second Value" offset="0x8" visible="true" />
 	</tagblock>
-	<int32 name="Campaign ID" offset="0x224" visible="true" />
-	<int32 name="Map ID" offset="0x228" visible="true" />
+	<undefined name="Unknown" offset="0x224" visible="false" />
+	<undefined name="Unknown" offset="0x228" visible="false" />
+	<undefined name="Unknown" offset="0x22C" visible="false" />
+	<undefined name="Unknown" offset="0x230" visible="false" />
 </plugin>

@@ -26,7 +26,7 @@ namespace Assembly.Helpers.Net.Sockets
                         {
                             foreach (var action in memory.Actions)
                             {
-                                if (cacheFile.MetaArea.ContainsBlockPointer(action.Position, action.Buffer.Length))
+                                if (cacheFile.MetaArea.ContainsBlockPointer(action.Position, (uint)action.Buffer.Length))
                                 {
                                     metaStream.SeekTo(action.Position);
                                     metaStream.WriteBlock(action.Buffer);

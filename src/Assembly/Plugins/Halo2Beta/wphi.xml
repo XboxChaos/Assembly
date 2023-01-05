@@ -54,8 +54,8 @@
 		<int16 name="Unknown" offset="0x2" visible="false" />
 		<enum16 name="Can Use On Map Type" offset="0x4" visible="true">
 			<option name="Any" value="0x0" />
-			<option name="Solo" value="0x1" />
-			<option name="Multiplayer" value="0x2" />
+			<option name="Fullscreen" value="0x1" />
+			<option name="Splitscreen" value="0x2" />
 		</enum16>
 		<int16 name="Unknown" offset="0x6" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -71,7 +71,6 @@
 		<flags16 name="Scaling Flags" offset="0x30" visible="true">
 			<bit name="Don't Scale Offset" index="0" />
 			<bit name="Don't Scale Size" index="1" />
-			<bit name="Use High Res Scale" index="2" />
 		</flags16>
 		<int16 name="Unknown" offset="0x32" visible="false" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
@@ -115,8 +114,7 @@
 			<undefined name="Unknown" offset="0x1C" visible="false" />
 			<undefined name="Unknown" offset="0x20" visible="false" />
 			<undefined name="Unknown" offset="0x24" visible="false" />
-			<comment title="Anchors">
-where you want the origin of the texture.
+			<comment title="Anchors">where you want the origin of the texture.
 *"texture" uses the texture coordinates supplied
 *"screen" uses the origin of the screen as the origin of the texture</comment>
 			<enum16 name="Primary Anchor" offset="0x28" visible="true">
@@ -235,8 +233,7 @@ where you want the origin of the texture.
 				<undefined name="Unknown" offset="0x34" visible="false" />
 				<undefined name="Unknown" offset="0x38" visible="false" />
 				<undefined name="Unknown" offset="0x3C" visible="false" />
-				<comment title="Source/Destination">
-These describe the relationship that causes the effect.
+				<comment title="Source/Destination">These describe the relationship that causes the effect.
 * destination type is the type of variable you want to be effected
 * destination tells which texture map (or geometry offset) to apply it to
 * source says which value to look at when computing the effect</comment>
@@ -371,8 +368,8 @@ These describe the relationship that causes the effect.
 		<int16 name="Unknown" offset="0x2" visible="false" />
 		<enum16 name="Can Use On Map Type" offset="0x4" visible="true">
 			<option name="Any" value="0x0" />
-			<option name="Solo" value="0x1" />
-			<option name="Multiplayer" value="0x2" />
+			<option name="Fullscreen" value="0x1" />
+			<option name="Splitscreen" value="0x2" />
 		</enum16>
 		<int16 name="Unknown" offset="0x6" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -388,7 +385,6 @@ These describe the relationship that causes the effect.
 		<flags16 name="Scaling Flags" offset="0x30" visible="true">
 			<bit name="Don't Scale Offset" index="0" />
 			<bit name="Don't Scale Size" index="1" />
-			<bit name="Use High Res Scale" index="2" />
 		</flags16>
 		<int16 name="Unknown" offset="0x32" visible="false" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
@@ -408,7 +404,7 @@ These describe the relationship that causes the effect.
 			<bit name="...More Colors For HSV Interpolation" index="3" />
 			<bit name="Invert Interpolation" index="4" />
 		</flags8>
-		<int8 name="Minumum Meter Value" offset="0x69" visible="true" />
+		<int8 name="Minimum Meter Value" offset="0x69" visible="true" />
 		<int16 name="Sequence Index" offset="0x6A" visible="true" />
 		<int8 name="Alpha Multiplier" offset="0x6C" visible="true" />
 		<int8 name="Alpha Bias" offset="0x6D" visible="true" />
@@ -445,8 +441,8 @@ These describe the relationship that causes the effect.
 		<int16 name="Unknown" offset="0x2" visible="false" />
 		<enum16 name="Can Use On Map Type" offset="0x4" visible="true">
 			<option name="Any" value="0x0" />
-			<option name="Solo" value="0x1" />
-			<option name="Multiplayer" value="0x2" />
+			<option name="Fullscreen" value="0x1" />
+			<option name="Splitscreen" value="0x2" />
 		</enum16>
 		<int16 name="Unknown" offset="0x6" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -462,7 +458,6 @@ These describe the relationship that causes the effect.
 		<flags16 name="Scaling Flags" offset="0x30" visible="true">
 			<bit name="Don't Scale Offset" index="0" />
 			<bit name="Don't Scale Size" index="1" />
-			<bit name="Use High Res Scale" index="2" />
 		</flags16>
 		<int16 name="Unknown" offset="0x32" visible="false" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
@@ -506,19 +501,18 @@ These describe the relationship that causes the effect.
 		<undefined name="Unknown" offset="0x98" visible="false" />
 		<undefined name="Unknown" offset="0x9C" visible="false" />
 	</tagblock>
-	<comment title="Crosshairs">
-Crosshairs always go in the center of the screen.
+	<comment title="Crosshairs">Crosshairs always go in the center of the screen.
 Crosshairs can be attached to one of four different states:
 
 * Aim: Default crosshair. Frame 0 is the default state, frame 1 is the auto-aim state (frame rate ignored)
-* Zoom: Zoom overlay. Each zoom level has a corresponding frame (frame rate ignored)
+* Zoom Overlay: Each zoom level has a corresponding frame (frame rate ignored)
 * Charge: Charging overlay. If you wish to display an animation for charging, put it here.
 * Flash: Similar to charging, but for low ammo/batter/heat states
 * Reload/Overheat: Similar to charging, but for reloading/overheating</comment>
 	<tagblock name="Crosshairs" offset="0x84" visible="true" elementSize="0x68">
 		<enum16 name="Crosshair Type" offset="0x0" visible="true">
 			<option name="Aim" value="0x0" />
-			<option name="Zoom" value="0x1" />
+			<option name="Zoom Overlay" value="0x1" />
 			<option name="Charge" value="0x2" />
 			<option name="Should Reload" value="0x3" />
 			<option name="Flash Heat" value="0x4" />
@@ -540,8 +534,8 @@ Crosshairs can be attached to one of four different states:
 		<int16 name="Unknown" offset="0x2" visible="false" />
 		<enum16 name="Can Use On Map Type" offset="0x4" visible="true">
 			<option name="Any" value="0x0" />
-			<option name="Solo" value="0x1" />
-			<option name="Multiplayer" value="0x2" />
+			<option name="Fullscreen" value="0x1" />
+			<option name="Splitscreen" value="0x2" />
 		</enum16>
 		<int16 name="Unknown" offset="0x6" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -559,7 +553,6 @@ Crosshairs can be attached to one of four different states:
 			<flags16 name="Scaling Flags" offset="0xC" visible="true">
 				<bit name="Don't Scale Offset" index="0" />
 				<bit name="Don't Scale Size" index="1" />
-				<bit name="Use High Res Scale" index="2" />
 			</flags16>
 			<int16 name="Unknown" offset="0xE" visible="false" />
 			<undefined name="Unknown" offset="0x10" visible="false" />
@@ -623,8 +616,8 @@ Crosshairs can be attached to one of four different states:
 		<int16 name="Unknown" offset="0x2" visible="false" />
 		<enum16 name="Can Use On Map Type" offset="0x4" visible="true">
 			<option name="Any" value="0x0" />
-			<option name="Solo" value="0x1" />
-			<option name="Multiplayer" value="0x2" />
+			<option name="Fullscreen" value="0x1" />
+			<option name="Splitscreen" value="0x2" />
 		</enum16>
 		<int16 name="Unknown" offset="0x6" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -642,7 +635,6 @@ Crosshairs can be attached to one of four different states:
 			<flags16 name="Scaling Flags" offset="0xC" visible="true">
 				<bit name="Don't Scale Offset" index="0" />
 				<bit name="Don't Scale Size" index="1" />
-				<bit name="Use High Res Scale" index="2" />
 			</flags16>
 			<int16 name="Unknown" offset="0xE" visible="false" />
 			<undefined name="Unknown" offset="0x10" visible="false" />
@@ -700,7 +692,27 @@ Crosshairs can be attached to one of four different states:
 		<undefined name="Unknown" offset="0x60" visible="false" />
 		<undefined name="Unknown" offset="0x64" visible="false" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x9C" visible="false" />
+	<flags32 name="Crosshair Types" offset="0x9C" visible="true">
+		<bit name="Aim" index="0" />
+		<bit name="Zoom Overlay" index="1" />
+		<bit name="Charge" index="2" />
+		<bit name="Should Reload" index="3" />
+		<bit name="Flash Heat" index="4" />
+		<bit name="Flash Total Ammo" index="5" />
+		<bit name="Flash Battery" index="6" />
+		<bit name="Reload Overheat" index="7" />
+		<bit name="Flash When Firing And No Ammo" index="8" />
+		<bit name="Flash When Throwing And No Grenade" index="9" />
+		<bit name="Low Ammo And None Left To Reload" index="10" />
+		<bit name="Should Reload Secondary Trigger" index="11" />
+		<bit name="Flash Secondary Total Ammo" index="12" />
+		<bit name="Flash Secondary Reload" index="13" />
+		<bit name="Flash When Firing Secondary Trigger With No Ammo" index="14" />
+		<bit name="Low Secondary Ammo And None Left To Reload" index="15" />
+		<bit name="Primary Trigger Ready" index="16" />
+		<bit name="Secondary Trigger Ready" index="17" />
+		<bit name="Flash When Firing With Depleted Battery" index="18" />
+	</flags32>
 	<undefined name="Unknown" offset="0xA0" visible="false" />
 	<undefined name="Unknown" offset="0xA4" visible="false" />
 	<undefined name="Unknown" offset="0xA8" visible="false" />

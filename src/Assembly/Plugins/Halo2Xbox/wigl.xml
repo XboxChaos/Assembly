@@ -1,0 +1,688 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo2Xbox" baseSize="0x1C4">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="Iron_Forge" version="1">Added basic layout of plugin...</revision>
+		<revision author="neodos" version="2">Found header text,buttons coords, auto typing text settings, blur colorn blur blending speed, transition settings tagblocks, text headers font types, changed layout on dialogs,found window type, aesthetics=button palette, keyboard button effects...</revision>
+	</revisions>
+	<int16 name="Unknown" offset="0x0" visible="false" />
+	<int16 name="Unknown" offset="0x2" visible="false" />
+	<undefined name="Unknown" offset="0x4" visible="false" />
+	<undefined name="Unknown" offset="0x8" visible="false" />
+	<undefined name="Unknown" offset="0xC" visible="false" />
+	<undefined name="Unknown" offset="0x10" visible="false" />
+	<undefined name="Unknown" offset="0x14" visible="false" />
+	<undefined name="Unknown" offset="0x18" visible="false" />
+	<undefined name="Unknown" offset="0x1C" visible="false" />
+	<undefined name="Unknown" offset="0x20" visible="false" />
+	<undefined name="Unknown" offset="0x24" visible="false" />
+	<undefined name="Unknown" offset="0x28" visible="false" />
+	<undefined name="Unknown" offset="0x2C" visible="false" />
+	<undefined name="Unknown" offset="0x30" visible="false" />
+	<undefined name="Unknown" offset="0x34" visible="false" />
+	<undefined name="Unknown" offset="0x38" visible="false" />
+	<undefined name="Unknown" offset="0x3C" visible="false" />
+	<undefined name="Unknown" offset="0x40" visible="false" />
+	<comment title="UI Rendering Globals">miscellaneous rendering globals, more below...</comment>
+	<float32 name="Overlayed Screen Alpha Mod" offset="0x44" visible="true" />
+	<int16 name="Inc. Text Update Period" offset="0x48" visible="true" />
+	<int16 name="Inc. Text Block Character" offset="0x4A" visible="true" />
+	<float32 name="Callout Text Scale" offset="0x4C" visible="true" />
+	<colorf name="Progress Bar Color" offset="0x50" alpha="true" visible="true" />
+	<float32 name="Near Clip Plane Distance" offset="0x60" visible="true" />
+	<float32 name="Projection Plane Distance" offset="0x64" visible="true" />
+	<float32 name="Far Clip Plane Distance" offset="0x68" visible="true" />
+	<comment title="Overlayed UI Color">This is the color of the overlayed ui effect; the alpha component is the maximum opacity</comment>
+	<colorf name="Overlayed Interface Color" offset="0x6C" alpha="true" visible="true" />
+	<undefined name="Unknown" offset="0x7C" visible="false" />
+	<undefined name="Unknown" offset="0x80" visible="false" />
+	<undefined name="Unknown" offset="0x84" visible="false" />
+	<comment title="Displayed Errors">For each error condition displayed in the UI, set the title and description string ids here</comment>
+	<tagblock name="Errors" offset="0x88" visible="true" elementSize="0x28">
+		<stringid name="Category Name" offset="0x0" visible="true" />
+		<flags16 name="Flags" offset="0x4" visible="true">
+			<bit name="Use Large Dialog" index="0" />
+		</flags16>
+		<enum8 name="Default Button" offset="0x6" visible="true">
+			<option name="No Default" value="0x0" />
+			<option name="Default Ok" value="0x1" />
+			<option name="Default Cancel" value="0x2" />
+		</enum8>
+		<int8 name="Unknown" offset="0x7" visible="false" />
+		<tagRef name="String Tag" offset="0x8" visible="true" />
+		<stringid name="Default Title" offset="0x10" visible="true" />
+		<stringid name="Default Message" offset="0x14" visible="true" />
+		<stringid name="Default Ok" offset="0x18" visible="true" />
+		<stringid name="Default Cancel" offset="0x1C" visible="true" />
+		<tagblock name="Error Block" offset="0x20" visible="true" elementSize="0x18">
+			<enum32 name="Error" offset="0x0" visible="true">
+				<option name="Unknown" value="0x0" />
+				<option name="Generic" value="0x1" />
+				<option name="Generic Networking" value="0x2" />
+				<option name="System Link Generic Join Failure" value="0x3" />
+				<option name="System Link No Network Connection" value="0x4" />
+				<option name="System Link Connection Lost" value="0x5" />
+				<option name="Network Game Oos" value="0x6" />
+				<option name="Xbox Live Sign Out Confirmation" value="0x7" />
+				<option name="Confirm Revert To Last Save" value="0x8" />
+				<option name="Confirm Quit Without Save" value="0x9" />
+				<option name="Confirm Delete Player Profile" value="0xA" />
+				<option name="Confirm Delete Variant File" value="0xB" />
+				<option name="Player Profile Creation Failed" value="0xC" />
+				<option name="Variant Profile Creation Failed" value="0xD" />
+				<option name="Playlist Creation Failed" value="0xE" />
+				<option name="Core File Load Failed" value="0xF" />
+				<option name="MU Removed During Player Profile Save" value="0x10" />
+				<option name="MU Removed During Variant Save" value="0x11" />
+				<option name="MU Removed During Playlist Save" value="0x12" />
+				<option name="Message Saving To MU" value="0x13" />
+				<option name="Message Saving File" value="0x14" />
+				<option name="Message Creating Player Profile" value="0x15" />
+				<option name="Message Creating Variant Profile" value="0x16" />
+				<option name="Message Saving Checkpoint" value="0x17" />
+				<option name="Failed To Load Player Profile" value="0x18" />
+				<option name="Failed To Load Variant" value="0x19" />
+				<option name="Failed To Load Playlist" value="0x1A" />
+				<option name="Failed To Load Save Game" value="0x1B" />
+				<option name="Controller1 Removed" value="0x1C" />
+				<option name="Controller2 Removed" value="0x1D" />
+				<option name="Controller3 Removed" value="0x1E" />
+				<option name="Controller4 Removed" value="0x1F" />
+				<option name="Need More Free Blocks To Save" value="0x20" />
+				<option name="Maximum Saved Game Files Already Exist" value="0x21" />
+				<option name="Dirty Disk" value="0x22" />
+				<option name="XBLive Cannot Access Service" value="0x23" />
+				<option name="XBLive Title Update Required" value="0x24" />
+				<option name="XBLive Servers Too Busy" value="0x25" />
+				<option name="XBLive Duplicate Logon" value="0x26" />
+				<option name="XBLive Account Management Required" value="0x27" />
+				<option name="Warning XBLive Recommended Messages Available" value="0x28" />
+				<option name="XBLive Invalid Match Session" value="0x29" />
+				<option name="Warning XBLive Poor Network Performance" value="0x2A" />
+				<option name="Not Enough Open Slots To Join Match Session" value="0x2B" />
+				<option name="XBLive Corrupt Download Content" value="0x2C" />
+				<option name="Confirm XBLive Corrupt Saved Game File Removal" value="0x2D" />
+				<option name="XBLive Invalid User Account" value="0x2E" />
+				<option name="Confirm Boot Clan Member" value="0x2F" />
+				<option name="Confirm Controller Sign Out" value="0x30" />
+				<option name="Beta XBLive Service QOS Report" value="0x31" />
+				<option name="Beta Feature Disabled" value="0x32" />
+				<option name="Beta Network Connection Required" value="0x33" />
+				<option name="Confirm Friend Removal" value="0x34" />
+				<option name="Confirm Boot To Dash" value="0x35" />
+				<option name="Confirm Launch Xdemos" value="0x36" />
+				<option name="Confirm Exit Game Session" value="0x37" />
+				<option name="XBLive Connection To Xbox Live Lost" value="0x38" />
+				<option name="XBLive Message Send Failure" value="0x39" />
+				<option name="Network Link Lost" value="0x3A" />
+				<option name="Network Link Required" value="0x3B" />
+				<option name="XBLive Invalid Passcode" value="0x3C" />
+				<option name="Join Aborted" value="0x3D" />
+				<option name="Join Session Not Found" value="0x3E" />
+				<option name="Join QOS Failure" value="0x3F" />
+				<option name="Join Data Decode Failure" value="0x40" />
+				<option name="Join Game Full" value="0x41" />
+				<option name="Join Game Closed" value="0x42" />
+				<option name="Join Version Mismatch" value="0x43" />
+				<option name="Join Failed Unknown Reason" value="0x44" />
+				<option name="Join Failed Friend In Matchmade Game" value="0x45" />
+				<option name="Player Profile Name Must Be Unique" value="0x46" />
+				<option name="Variant Name Must Be Unique" value="0x47" />
+				<option name="Playlist Name Must Be Unique" value="0x48" />
+				<option name="Saved Film Name Must Be Unique" value="0x49" />
+				<option name="No Free Slots Player Profile" value="0x4A" />
+				<option name="No Free Slots Variant" value="0x4B" />
+				<option name="No Free Slots Playlist" value="0x4C" />
+				<option name="No Free Slots Saved Film" value="0x4D" />
+				<option name="Need More Space For Player Profile" value="0x4E" />
+				<option name="Need More Space For Variant" value="0x4F" />
+				<option name="Need More Space For Playlist" value="0x50" />
+				<option name="Need More Space For Saved Film" value="0x51" />
+				<option name="Cannot Set Privileges On Member Whose Data Not Known" value="0x52" />
+				<option name="Can't Delete Default Profile" value="0x53" />
+				<option name="Can't Delete Default Variant" value="0x54" />
+				<option name="Can't Delete Default Playlist" value="0x55" />
+				<option name="Can't Delete Default Saved Film" value="0x56" />
+				<option name="Can't Delete Profile In Use" value="0x57" />
+				<option name="Player Profile Name Must Have Alphanumeric Characters" value="0x58" />
+				<option name="Variant Name Must Have Alphanumeric Characters" value="0x59" />
+				<option name="Playlist Name Must Have Alphanumeric Characters" value="0x5A" />
+				<option name="Saved Film Name Must Have Alphanumeric Characters" value="0x5B" />
+				<option name="Teams Not A Member" value="0x5C" />
+				<option name="Teams Insufficient Privileges" value="0x5D" />
+				<option name="Teams Server Busy" value="0x5E" />
+				<option name="Teams Team Full" value="0x5F" />
+				<option name="Teams Member Pending" value="0x60" />
+				<option name="Teams Too Many Requests" value="0x61" />
+				<option name="Teams User Already Exists" value="0x62" />
+				<option name="Teams User Not Found" value="0x63" />
+				<option name="Teams User Teams Full" value="0x64" />
+				<option name="Teams No Task" value="0x65" />
+				<option name="Teams Too Many Teams" value="0x66" />
+				<option name="Teams Team Already Exists" value="0x67" />
+				<option name="Teams Team Not Found" value="0x68" />
+				<option name="Teams Name Contains Bad Words" value="0x69" />
+				<option name="Teams Description Contains Bad Words" value="0x6A" />
+				<option name="Teams Motto Contains Bad Words" value="0x6B" />
+				<option name="Teams URL Contains Bad Words" value="0x6C" />
+				<option name="Teams No Admin" value="0x6D" />
+				<option name="Teams Cannot Set Privileges On Member Whose Data Not Known" value="0x6E" />
+				<option name="Live Unknown" value="0x6F" />
+				<option name="Confirm Delete Profile" value="0x70" />
+				<option name="Confirm Delete Playlist" value="0x71" />
+				<option name="Confirm Delete Saved Film" value="0x72" />
+				<option name="Confirm Live Sign Out" value="0x73" />
+				<option name="Confirm Confirm Friend Removal" value="0x74" />
+				<option name="Confirm Promotion To Superuser" value="0x75" />
+				<option name="Warn No More Clan Superusers" value="0x76" />
+				<option name="Confirm Corrupt Profile" value="0x77" />
+				<option name="Confirm Xbox Live Sign Out" value="0x78" />
+				<option name="Confirm Corrupt Game Variant" value="0x79" />
+				<option name="Confirm Leave Clan" value="0x7A" />
+				<option name="Confirm Corrupt Playlist" value="0x7B" />
+				<option name="Can't Join Gameinvite Without Signon" value="0x7C" />
+				<option name="Confirm Proceed To Crossgame Invite" value="0x7D" />
+				<option name="Confirm Decline Crossgame Invite" value="0x7E" />
+				<option name="Warn Insert CD For Crossgame Invite" value="0x7F" />
+				<option name="Need More Space For Saved Game" value="0x80" />
+				<option name="Saved Game Cannot Be Loaded" value="0x81" />
+				<option name="Confirm Controller Signout With Guests" value="0x82" />
+				<option name="Warning Party Closed" value="0x83" />
+				<option name="Warning Party Required" value="0x84" />
+				<option name="Warning Party Full" value="0x85" />
+				<option name="Warning Player In MM Game" value="0x86" />
+				<option name="XBLive Failed To Sign In" value="0x87" />
+				<option name="Can't Sign Out Master With Guests" value="0x88" />
+				<option name="Obsolete Dot Command" value="0x89" />
+				<option name="Not Unlocked" value="0x8A" />
+				<option name="Confirm Leave Lobby" value="0x8B" />
+				<option name="Confirm Party Leader Leave Matchmaking" value="0x8C" />
+				<option name="Confirm Single Box Leave Matchmaking" value="0x8D" />
+				<option name="Invalid Clan Name" value="0x8E" />
+				<option name="Player List Full" value="0x8F" />
+				<option name="Blocked By Player" value="0x90" />
+				<option name="Friend Pending" value="0x91" />
+				<option name="Too Many Requests" value="0x92" />
+				<option name="Player Already In List" value="0x93" />
+				<option name="Gamertag Not Found" value="0x94" />
+				<option name="Cannot Message Self" value="0x95" />
+				<option name="Warning Last Overlord Can't Leave Clan" value="0x96" />
+				<option name="Confirm Boot Player" value="0x97" />
+				<option name="Confirm Party Member Leave PCR" value="0x98" />
+				<option name="Cannot Sign In During Countdown" value="0x99" />
+				<option name="XBL Invalid User" value="0x9A" />
+				<option name="XBL User Not Authorized" value="0x9B" />
+				<option name="OBSOLETE" value="0x9C" />
+				<option name="OBSOLETE2" value="0x9D" />
+				<option name="XBL Banned Xbox" value="0x9E" />
+				<option name="XBL Banned User" value="0x9F" />
+				<option name="XBL Banned Title" value="0xA0" />
+				<option name="Confirm Exit Game Session Leader" value="0xA1" />
+				<option name="Message Objectionable Content" value="0xA2" />
+				<option name="Confirm Enter Downloader" value="0xA3" />
+				<option name="Confirm Block User" value="0xA4" />
+				<option name="Confirm Negative Feedback" value="0xA5" />
+				<option name="Confirm Change Clan Member Level" value="0xA6" />
+				<option name="Blank Gamertag" value="0xA7" />
+				<option name="Confirm Save &amp; Quit Game" value="0xA8" />
+				<option name="Can't Join During Matchmaking" value="0xA9" />
+				<option name="Confirm Restart Level" value="0xAA" />
+				<option name="Matchmaking Failure Generic" value="0xAB" />
+				<option name="Matchmaking Failure Missing Content" value="0xAC" />
+				<option name="Matchmaking Failure Aborted" value="0xAD" />
+				<option name="Matchmaking Failure Membership Changed" value="0xAE" />
+				<option name="Confirm End Game Session" value="0xAF" />
+				<option name="Confirm Exit Game Session Only Player" value="0xB0" />
+				<option name="Confirm Exit Game Session Xbox Live Ranked Leader" value="0xB1" />
+				<option name="Confirm Exit Game Session Xbox Live Ranked" value="0xB2" />
+				<option name="Confirm Exit Game Session Xbox Live Leader" value="0xB3" />
+				<option name="Confirm Exit Game Session Xbox Live Only Player" value="0xB4" />
+				<option name="Confirm Exit Game Session Xbox Live" value="0xB5" />
+				<option name="Recipient's List Full" value="0xB6" />
+				<option name="Confirm Quit Campaign (No Save)" value="0xB7" />
+				<option name="XBLive Connection To Xbox Live Lost Save And Quit" value="0xB8" />
+				<option name="Booted From Session" value="0xB9" />
+				<option name="Confirm Exit Game Session Xbox Live Guest" value="0xBA" />
+				<option name="Confirm Exit Game Session Xbox Live Ranked Only Player" value="0xBB" />
+				<option name="Confirm Exit Game Session Xbox Live Unranked Only Player" value="0xBC" />
+				<option name="Confirm Exit Game Session Xbox Live Unranked Leader" value="0xBD" />
+				<option name="Confirm Exit Game Session Xbox Live Unranked" value="0xBE" />
+				<option name="Can't Join Friend While In Matchmade Game" value="0xBF" />
+			</enum32>
+			<flags16 name="Flags" offset="0x4" visible="true">
+				<bit name="Use Large Dialog" index="0" />
+			</flags16>
+			<enum8 name="Default Button" offset="0x6" visible="true">
+				<option name="No Default" value="0x0" />
+				<option name="Default Ok" value="0x1" />
+				<option name="Default Cancel" value="0x2" />
+			</enum8>
+			<int8 name="Unknown" offset="0x7" visible="false" />
+			<stringid name="Title" offset="0x8" visible="true" />
+			<stringid name="Message" offset="0xC" visible="true" />
+			<stringid name="Ok" offset="0x10" visible="true" />
+			<stringid name="Cancel" offset="0x14" visible="true" />
+		</tagblock>
+	</tagblock>
+	<tagRef name="Cursor Sound" offset="0x90" visible="true" tooltip="This is the sound that plays as you tab through items" />
+	<tagRef name="Selection Sound" offset="0x98" visible="true" tooltip="This is the sound that plays when an item is selected" />
+	<tagRef name="Error Sound" offset="0xA0" visible="true" tooltip="This is the sound that plays to alert the user that something went wrong" />
+	<tagRef name="Advancing Sound" offset="0xA8" visible="true" tooltip="This is the sound that plays when advancing to a new screen" />
+	<tagRef name="Retreating Sound" offset="0xB0" visible="true" tooltip="This is the sound that plays when retreating to a previous screen" />
+	<tagRef name="Initial Login Sound" offset="0xB8" visible="true" tooltip="This is the sound that plays when advancing past the initial login screen" />
+	<tagRef name="VKBD Cursor Sound" offset="0xC0" visible="true" tooltip="This is the sound that plays when cursoring in the vkeyboard" />
+	<tagRef name="VKBD Character Insertion Sound" offset="0xC8" visible="true" tooltip="This is the sound that plays when selecting buttons in the vkeyboard" />
+	<tagRef name="Online Notification Sound" offset="0xD0" visible="true" tooltip="This is the sound that plays when you receive an online notification" />
+	<tagRef name="Tabbed View Pane Tabbing Sound" offset="0xD8" visible="true" tooltip="This is the sound that plays when tabbing thru views in a tabbed view pane (eg, online menu)" />
+	<tagRef name="Pregame Countdown Timer Sound" offset="0xE0" visible="true" tooltip="This is the sound that plays as the countdown timer progresses" />
+	<tagRef name="Unknown" offset="0xE8" visible="true" />
+	<tagRef name="Matchmaking Advance Sound" offset="0xF0" visible="true" tooltip="This is the sound that plays as matchmaking enters the final stage" />
+	<tagRef name="Unknown" offset="0xF8" visible="true" />
+	<tagRef name="Unknown" offset="0x100" visible="true" />
+	<tagRef name="Unknown" offset="0x108" visible="true" />
+	<comment title="Global Bitmaps">Sprite sequences for global ui bitmaps, as follows:
+1) vkeyboard cursor</comment>
+	<tagRef name="Global Bitmaps Tag" offset="0x110" visible="true" />
+	<tagRef name="Unicode String List Tag" offset="0x118" visible="true" tooltip="Global UI Text goes here" />
+	<tagblock name="Screen Animations" offset="0x120" visible="true" elementSize="0x2C" tooltip="Animations used by screen definitions for transitions and ambient animating">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="Unused" index="0" />
+		</flags32>
+		<comment title="Primary Intro Transition">Defines the primary intro transitional animation</comment>
+		<int32 name="Animation Period" offset="0x4" visible="true" />
+		<tagblock name="Keyframes" offset="0x8" visible="true" elementSize="0x14">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<float32 name="Alpha" offset="0x4" visible="true" />
+			<point3 name="Position" offset="0x8" visible="true" />
+		</tagblock>
+		<comment title="Primary Outro Transition">Defines the primary outro transitional animation</comment>
+		<int32 name="Animation Period" offset="0x10" visible="true" />
+		<tagblock name="Keyframes" offset="0x14" visible="true" elementSize="0x14">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<float32 name="Alpha" offset="0x4" visible="true" />
+			<point3 name="Position" offset="0x8" visible="true" />
+		</tagblock>
+		<comment title="Ambient Animation">Defines the ambient animation</comment>
+		<int32 name="Animation Period" offset="0x1C" visible="true" />
+		<enum16 name="Ambient Animation Looping Style" offset="0x20" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Reverse Loop" value="0x1" />
+			<option name="Loop" value="0x2" />
+			<option name="Don't Loop" value="0x3" />
+		</enum16>
+		<int16 name="Unknown" offset="0x22" visible="false" />
+		<tagblock name="Keyframes" offset="0x24" visible="true" elementSize="0x14">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<float32 name="Alpha" offset="0x4" visible="true" />
+			<point3 name="Position" offset="0x8" visible="true" />
+		</tagblock>
+	</tagblock>
+	<tagblock name="Polygonal Shape Groups" offset="0x128" visible="true" elementSize="0x18" tooltip="Define the various groups of shape-objects for use on any ui screens here">
+		<comment title="Unused Debug Geometry Shapes">This is the old way</comment>
+		<tagblock name="Shapes" offset="0x0" visible="true" elementSize="0x30">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Unused" index="0" />
+			</flags32>
+			<enum16 name="Animation Index" offset="0x4" visible="true">
+				<option name="None" value="0x0" />
+				<option name="00" value="0x1" />
+				<option name="01" value="0x2" />
+				<option name="02" value="0x3" />
+				<option name="03" value="0x4" />
+				<option name="04" value="0x5" />
+				<option name="05" value="0x6" />
+				<option name="06" value="0x7" />
+				<option name="07" value="0x8" />
+				<option name="08" value="0x9" />
+				<option name="09" value="0xA" />
+				<option name="10" value="0xB" />
+				<option name="11" value="0xC" />
+				<option name="12" value="0xD" />
+				<option name="13" value="0xE" />
+				<option name="14" value="0xF" />
+				<option name="15" value="0x10" />
+				<option name="16" value="0x11" />
+				<option name="17" value="0x12" />
+				<option name="18" value="0x13" />
+				<option name="19" value="0x14" />
+				<option name="20" value="0x15" />
+				<option name="21" value="0x16" />
+				<option name="22" value="0x17" />
+				<option name="23" value="0x18" />
+				<option name="24" value="0x19" />
+				<option name="25" value="0x1A" />
+				<option name="26" value="0x1B" />
+				<option name="27" value="0x1C" />
+				<option name="28" value="0x1D" />
+				<option name="29" value="0x1E" />
+				<option name="30" value="0x1F" />
+				<option name="31" value="0x20" />
+				<option name="32" value="0x21" />
+				<option name="33" value="0x22" />
+				<option name="34" value="0x23" />
+				<option name="35" value="0x24" />
+				<option name="36" value="0x25" />
+				<option name="37" value="0x26" />
+				<option name="38" value="0x27" />
+				<option name="39" value="0x28" />
+				<option name="40" value="0x29" />
+				<option name="41" value="0x2A" />
+				<option name="42" value="0x2B" />
+				<option name="43" value="0x2C" />
+				<option name="44" value="0x2D" />
+				<option name="45" value="0x2E" />
+				<option name="46" value="0x2F" />
+				<option name="47" value="0x30" />
+				<option name="48" value="0x31" />
+				<option name="49" value="0x32" />
+				<option name="50" value="0x33" />
+				<option name="51" value="0x34" />
+				<option name="52" value="0x35" />
+				<option name="53" value="0x36" />
+				<option name="54" value="0x37" />
+				<option name="55" value="0x38" />
+				<option name="56" value="0x39" />
+				<option name="57" value="0x3A" />
+				<option name="58" value="0x3B" />
+				<option name="59" value="0x3C" />
+				<option name="60" value="0x3D" />
+				<option name="61" value="0x3E" />
+				<option name="62" value="0x3F" />
+				<option name="63" value="0x40" />
+			</enum16>
+			<int16 name="Intro Animation Delay Milliseconds" offset="0x6" visible="true" />
+			<colorf name="Color" offset="0x8" alpha="true" visible="true" />
+			<tagblock name="Points" offset="0x18" visible="true" elementSize="0x4">
+				<point16 name="Coordinates" offset="0x0" visible="true" />
+			</tagblock>
+			<int16 name="Render Depth Bias" offset="0x20" visible="true" />
+			<int16 name="Unknown" offset="0x22" visible="false" />
+			<undefined name="Unknown" offset="0x24" visible="false" />
+			<undefined name="Unknown" offset="0x28" visible="false" />
+			<undefined name="Unknown" offset="0x2C" visible="false" />
+		</tagblock>
+		<comment title="Model-Light Groups">Specify commonly used model/light groups here</comment>
+		<tagblock name="Model Scene Blocks" offset="0x8" visible="true" elementSize="0x4C">
+			<comment title="NOTE On Coordinate Systems">Halo y-axis=ui z-axis, and Halo z-axis=ui y-axis.
+As a convention, let's always place objects in the ui scenario such that they are facing in the '-y' direction, and the camera such that is is facing the '+y' direction.
+This way the ui animation for models (which gets applied to the camera) will always be consisitent.</comment>
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Unused" index="0" />
+			</flags32>
+			<enum16 name="Animation Index" offset="0x4" visible="true">
+				<option name="None" value="0x0" />
+				<option name="00" value="0x1" />
+				<option name="01" value="0x2" />
+				<option name="02" value="0x3" />
+				<option name="03" value="0x4" />
+				<option name="04" value="0x5" />
+				<option name="05" value="0x6" />
+				<option name="06" value="0x7" />
+				<option name="07" value="0x8" />
+				<option name="08" value="0x9" />
+				<option name="09" value="0xA" />
+				<option name="10" value="0xB" />
+				<option name="11" value="0xC" />
+				<option name="12" value="0xD" />
+				<option name="13" value="0xE" />
+				<option name="14" value="0xF" />
+				<option name="15" value="0x10" />
+				<option name="16" value="0x11" />
+				<option name="17" value="0x12" />
+				<option name="18" value="0x13" />
+				<option name="19" value="0x14" />
+				<option name="20" value="0x15" />
+				<option name="21" value="0x16" />
+				<option name="22" value="0x17" />
+				<option name="23" value="0x18" />
+				<option name="24" value="0x19" />
+				<option name="25" value="0x1A" />
+				<option name="26" value="0x1B" />
+				<option name="27" value="0x1C" />
+				<option name="28" value="0x1D" />
+				<option name="29" value="0x1E" />
+				<option name="30" value="0x1F" />
+				<option name="31" value="0x20" />
+				<option name="32" value="0x21" />
+				<option name="33" value="0x22" />
+				<option name="34" value="0x23" />
+				<option name="35" value="0x24" />
+				<option name="36" value="0x25" />
+				<option name="37" value="0x26" />
+				<option name="38" value="0x27" />
+				<option name="39" value="0x28" />
+				<option name="40" value="0x29" />
+				<option name="41" value="0x2A" />
+				<option name="42" value="0x2B" />
+				<option name="43" value="0x2C" />
+				<option name="44" value="0x2D" />
+				<option name="45" value="0x2E" />
+				<option name="46" value="0x2F" />
+				<option name="47" value="0x30" />
+				<option name="48" value="0x31" />
+				<option name="49" value="0x32" />
+				<option name="50" value="0x33" />
+				<option name="51" value="0x34" />
+				<option name="52" value="0x35" />
+				<option name="53" value="0x36" />
+				<option name="54" value="0x37" />
+				<option name="55" value="0x38" />
+				<option name="56" value="0x39" />
+				<option name="57" value="0x3A" />
+				<option name="58" value="0x3B" />
+				<option name="59" value="0x3C" />
+				<option name="60" value="0x3D" />
+				<option name="61" value="0x3E" />
+				<option name="62" value="0x3F" />
+				<option name="63" value="0x40" />
+			</enum16>
+			<int16 name="Intro Animation Delay Milliseconds" offset="0x6" visible="true" />
+			<int16 name="Render Depth Bias" offset="0x8" visible="true" />
+			<int16 name="Unknown" offset="0xA" visible="false" />
+			<tagblock name="Objects" offset="0xC" visible="true" elementSize="0x20">
+				<ascii name="Name" offset="0x0" size="0x20" visible="true" />
+			</tagblock>
+			<tagblock name="Lights" offset="0x14" visible="true" elementSize="0x20">
+				<ascii name="Name" offset="0x0" size="0x20" visible="true" />
+			</tagblock>
+			<vector3 name="Animation Scale Factor" offset="0x1C" visible="true" />
+			<point3 name="Camera Position" offset="0x28" visible="true" />
+			<float32 name="FOV Degrees" offset="0x34" visible="true" />
+			<rect16 name="UI Viewport" offset="0x38" visible="true" />
+			<stringid name="Unused Intro Animation" offset="0x40" visible="true" />
+			<stringid name="Unused Outro Animation" offset="0x44" visible="true" />
+			<stringid name="Unused Ambient Animation" offset="0x48" visible="true" />
+		</tagblock>
+		<comment title="Bitmaps">Specify more flavor bitmaps here</comment>
+		<tagblock name="Bitmap Blocks" offset="0x10" visible="true" elementSize="0x38">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Ignore For List Skin Size Calculation" index="0" />
+				<bit name="Swap On Relative List Position" index="1" />
+				<bit name="Render As Progress Bar" index="2" />
+			</flags32>
+			<enum16 name="Animation Index" offset="0x4" visible="true">
+				<option name="None" value="0x0" />
+				<option name="00" value="0x1" />
+				<option name="01" value="0x2" />
+				<option name="02" value="0x3" />
+				<option name="03" value="0x4" />
+				<option name="04" value="0x5" />
+				<option name="05" value="0x6" />
+				<option name="06" value="0x7" />
+				<option name="07" value="0x8" />
+				<option name="08" value="0x9" />
+				<option name="09" value="0xA" />
+				<option name="10" value="0xB" />
+				<option name="11" value="0xC" />
+				<option name="12" value="0xD" />
+				<option name="13" value="0xE" />
+				<option name="14" value="0xF" />
+				<option name="15" value="0x10" />
+				<option name="16" value="0x11" />
+				<option name="17" value="0x12" />
+				<option name="18" value="0x13" />
+				<option name="19" value="0x14" />
+				<option name="20" value="0x15" />
+				<option name="21" value="0x16" />
+				<option name="22" value="0x17" />
+				<option name="23" value="0x18" />
+				<option name="24" value="0x19" />
+				<option name="25" value="0x1A" />
+				<option name="26" value="0x1B" />
+				<option name="27" value="0x1C" />
+				<option name="28" value="0x1D" />
+				<option name="29" value="0x1E" />
+				<option name="30" value="0x1F" />
+				<option name="31" value="0x20" />
+				<option name="32" value="0x21" />
+				<option name="33" value="0x22" />
+				<option name="34" value="0x23" />
+				<option name="35" value="0x24" />
+				<option name="36" value="0x25" />
+				<option name="37" value="0x26" />
+				<option name="38" value="0x27" />
+				<option name="39" value="0x28" />
+				<option name="40" value="0x29" />
+				<option name="41" value="0x2A" />
+				<option name="42" value="0x2B" />
+				<option name="43" value="0x2C" />
+				<option name="44" value="0x2D" />
+				<option name="45" value="0x2E" />
+				<option name="46" value="0x2F" />
+				<option name="47" value="0x30" />
+				<option name="48" value="0x31" />
+				<option name="49" value="0x32" />
+				<option name="50" value="0x33" />
+				<option name="51" value="0x34" />
+				<option name="52" value="0x35" />
+				<option name="53" value="0x36" />
+				<option name="54" value="0x37" />
+				<option name="55" value="0x38" />
+				<option name="56" value="0x39" />
+				<option name="57" value="0x3A" />
+				<option name="58" value="0x3B" />
+				<option name="59" value="0x3C" />
+				<option name="60" value="0x3D" />
+				<option name="61" value="0x3E" />
+				<option name="62" value="0x3F" />
+				<option name="63" value="0x40" />
+			</enum16>
+			<int16 name="Intro Animation Delay Milliseconds" offset="0x6" visible="true" />
+			<enum16 name="Bitmap Blend Method" offset="0x8" visible="true">
+				<option name="Standard" value="0x0" />
+				<option name="Multiply" value="0x1" />
+				<option name="UNUSED" value="0x2" />
+			</enum16>
+			<int16 name="Initial Sprite Frame" offset="0xA" visible="true" />
+			<point16 name="Top-Left" offset="0xC" visible="true" />
+			<float32 name="Horizontal Texture Wraps/Second" offset="0x10" visible="true" />
+			<float32 name="Vertical Texture Wraps/Second" offset="0x14" visible="true" />
+			<tagRef name="Bitmap Tag" offset="0x18" visible="true" />
+			<int16 name="Render Depth Bias" offset="0x20" visible="true" />
+			<int16 name="Unknown" offset="0x22" visible="false" />
+			<float32 name="Sprite Animation Speed FPS" offset="0x24" visible="true" />
+			<point16 name="Progress Bottom-Left" offset="0x28" visible="true" />
+			<stringid name="String Identifier" offset="0x2C" visible="true" />
+			<vector2 name="Render Scale" offset="0x30" visible="true" />
+		</tagblock>
+	</tagblock>
+	<tagblock name="Persistant Background Animations" offset="0x130" visible="true" elementSize="0x10" tooptip="These are the animations used by elements that live in the persistant background">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<int32 name="Animation Period" offset="0x4" visible="true" />
+		<tagblock name="Interpolated Keyframes" offset="0x8" visible="true" elementSize="0x14">
+			<int32 name="Start Transition Index" offset="0x0" visible="true" />
+			<float32 name="Alpha" offset="0x4" visible="true" />
+			<point3 name="Position" offset="0x8" visible="true" />
+		</tagblock>
+	</tagblock>
+	<comment title="List Skins">These define the visual appearances (skins) available for UI lists
+They are expected to be entered in the following order:
+0) default
+1) squad lobby player list
+2) settings list
+3) playlist entry list
+4) variants list
+5) game browser list
+6) online player menu
+7) game setup menu
+8) playlist contents display
+9) profile picker
+10) mp map list
+11) main menu</comment>
+	<tagblock name="List Item Skins" offset="0x138" visible="true" elementSize="0x8">
+		<tagRef name="List Item Skins" offset="0x0" visible="true" />
+	</tagblock>
+	<comment title="Additional UI Strings">These are for specific purposes as noted</comment>
+	<tagRef name="Button Key Type Strings" offset="0x140" visible="true" />
+	<tagRef name="Game Type Strings" offset="0x148" visible="true" />
+	<tagRef name="Unknown" offset="0x150" visible="true" />
+	<comment title="Skill To Rank Mapping Table" />
+	<tagblock name="Skill Mappings" offset="0x158" visible="true" elementSize="0x4">
+		<range16 name="Skill Bounds" offset="0x0" visible="true" />
+	</tagblock>
+	<comment title="WINDOW PARAMETERS">Various settings for different sized UI windows</comment>
+	<enum16 name="Full Screen Header Text Font" offset="0x160" visible="true">
+		<option name="Terminal" value="0x0" />
+		<option name="Body Text" value="0x1" />
+		<option name="Title" value="0x2" />
+		<option name="Super Large Font" value="0x3" />
+		<option name="Large Body Text" value="0x4" />
+		<option name="Split Screen HUD Message" value="0x5" />
+		<option name="Full Screen HUD Message" value="0x6" />
+		<option name="English Body Text" value="0x7" />
+		<option name="HUD Number Text" value="0x8" />
+		<option name="Subtitle Font" value="0x9" />
+		<option name="Main Menu Font" value="0xA" />
+	</enum16>
+	<enum16 name="Large Dialog Header Text Font" offset="0x162" visible="true">
+		<option name="Terminal" value="0x0" />
+		<option name="Body Text" value="0x1" />
+		<option name="Title" value="0x2" />
+		<option name="Super Large Font" value="0x3" />
+		<option name="Large Body Text" value="0x4" />
+		<option name="Split Screen HUD Message" value="0x5" />
+		<option name="Full Screen HUD Message" value="0x6" />
+		<option name="English Body Text" value="0x7" />
+		<option name="HUD Number Text" value="0x8" />
+		<option name="Subtitle Font" value="0x9" />
+		<option name="Main Menu Font" value="0xA" />
+	</enum16>
+	<enum16 name="Half Dialog Header Text Font" offset="0x164" visible="true">
+		<option name="Terminal" value="0x0" />
+		<option name="Body Text" value="0x1" />
+		<option name="Title" value="0x2" />
+		<option name="Super Large Font" value="0x3" />
+		<option name="Large Body Text" value="0x4" />
+		<option name="Split Screen HUD Message" value="0x5" />
+		<option name="Full Screen HUD Message" value="0x6" />
+		<option name="English Body Text" value="0x7" />
+		<option name="HUD Number Text" value="0x8" />
+		<option name="Subtitle Font" value="0x9" />
+		<option name="Main Menu Font" value="0xA" />
+	</enum16>
+	<enum16 name="Quarter Dialog Header Text Font" offset="0x166" visible="true">
+		<option name="Terminal" value="0x0" />
+		<option name="Body Text" value="0x1" />
+		<option name="Title" value="0x2" />
+		<option name="Super Large Font" value="0x3" />
+		<option name="Large Body Text" value="0x4" />
+		<option name="Split Screen HUD Message" value="0x5" />
+		<option name="Full Screen HUD Message" value="0x6" />
+		<option name="English Body Text" value="0x7" />
+		<option name="HUD Number Text" value="0x8" />
+		<option name="Subtitle Font" value="0x9" />
+		<option name="Main Menu Font" value="0xA" />
+	</enum16>
+	<colorf name="Default Text Color" offset="0x168" alpha="true" visible="true" />
+	<rect16 name="Full Screen Header Text Bounds" offset="0x178" visible="true" />
+	<rect16 name="Full Screen Button Key Text Bounds" offset="0x180" visible="true" />
+	<rect16 name="Large Dialog Header Text Bounds" offset="0x188" visible="true" />
+	<rect16 name="Large Dialog Button Key Text Bounds" offset="0x190" visible="true" />
+	<rect16 name="Half Dialog Header Text Bounds" offset="0x198" visible="true" />
+	<rect16 name="Half Dialog Button Key Text Bounds" offset="0x1A0" visible="true" />
+	<rect16 name="Quarter Dialog Header Text Bounds" offset="0x1A8" visible="true" />
+	<rect16 name="Quarter Dialog Button Key Text Bounds" offset="0x1B0" visible="true" />
+	<comment title="Main Menu Music">Looping sound that plays while the main menu is active</comment>
+	<tagRef name="Main Menu Music" offset="0x1B8" visible="true" />
+	<int32 name="Music Fade Time" offset="0x1C0" visible="true" />
+</plugin>

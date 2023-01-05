@@ -105,23 +105,23 @@
 	<tagRef name="Promotion Sound" offset="0x70" visible="true" />
 	<int16 name="Promotion Count" offset="0x80" visible="true" tooltip="when there are this many instances of the sound, promote to the new sound." />
 	<int16 name="Unknown" offset="0x82" visible="false" />
-	<int32 name="Unknown" offset="0x84" visible="false" />
+	<int32 name="Maximum Play Time" offset="0x84" visible="true" />
 	<undefined name="Unknown" offset="0x88" visible="false" />
 	<undefined name="Unknown" offset="0x8C" visible="false" />
-	<undefined name="Unknown" offset="0x90" visible="false" />
-	<undefined name="Unknown" offset="0x94" visible="false" />
+	<int32 name="Unknown" offset="0x90" visible="false" />
+	<int32 name="Unknown" offset="0x94" visible="false" />
 	<tagblock name="Pitch Ranges" offset="0x98" visible="true" elementSize="0x48" tooltip="pitch ranges allow multiple samples to represent the same sound at different pitches">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" tooltip="the name of the imported pitch range directory" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" tooltip="the name of the imported pitch range directory" />
 		<comment title="Pitch Control">these settings control what pitches this set of samples represents. if there is only one pitch range, all three values are ignored.</comment>
 		<float32 name="Natural Pitch" offset="0x20" visible="true" tooltip="the apparent pitch when these samples are played at their recorded pitch." />
 		<rangef name="Bend Bounds" offset="0x24" visible="true" tooltip="the range of pitches that will be represented using this sample. this should always contain the natural pitch." />
 		<int16 name="Actual Permutation Count" offset="0x2C" visible="true" />
 		<int16 name="Unknown" offset="0x2E" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
+		<float32 name="Playback Rate" offset="0x30" visible="true" />
+		<int32 name="Unknown" offset="0x34" visible="false" />
+		<int32 name="Unknown" offset="0x38" visible="false" />
 		<tagblock name="Permutations" offset="0x3C" visible="true" elementSize="0x7C" tooltip="permutations represent equivalent variations of this sound.">
-			<ascii name="Name" offset="0x0" length="0x20" visible="true" tooltip="name of the file from which this sample was imported" />
+			<ascii name="Name" offset="0x0" size="0x20" visible="true" tooltip="name of the file from which this sample was imported" />
 			<float32 name="Skip Fraction" offset="0x20" visible="true" tooltip="fraction of requests to play this permutation that are ignored (a different permutation is selected.)" />
 			<float32 name="Gain" offset="0x24" visible="true" tooltip="fraction of recorded volume to play at." />
 			<enum16 name="Compression" offset="0x28" visible="true">
@@ -131,18 +131,18 @@
 				<option name="OGG" value="0x3" />
 			</enum16>
 			<int16 name="Next Permutation Index" offset="0x2A" visible="true" />
-			<undefined name="Unknown" offset="0x2C" visible="false" />
+			<uint32 name="Samples Pointer" offset="0x2C" visible="true" />
 			<undefined name="Unknown" offset="0x30" visible="false" />
-			<tagref name="Tag" offset="0x34" withGroup="false" visible="true" />
-			<undefined name="Unknown" offset="0x38" visible="false" />
-			<tagref name="Tag" offset="0x3C" withGroup="false" visible="true" />
+			<tagref name="Datum" offset="0x34" withGroup="false" visible="true" />
+			<int32 name="Buffer Size" offset="0x38" visible="true" />
+			<tagref name="Datum" offset="0x3C" withGroup="false" visible="true" />
 			<int32 name="Sample Size" offset="0x40" visible="true" />
 			<undefined name="Unknown" offset="0x44" visible="false" />
 			<uint32 name="Sample Offset" offset="0x48" visible="true" />
 			<undefined name="Unknown" offset="0x4C" visible="false" />
 			<undefined name="Unknown" offset="0x50" visible="false" />
 			<dataref name="Mouth Data" offset="0x54" visible="true" />
-			<dataref name="Unknown" offset="0x68" visible="true" />
+			<dataref name="Subtitle Data" offset="0x68" visible="true" />
 		</tagblock>
 	</tagblock>
 </plugin>

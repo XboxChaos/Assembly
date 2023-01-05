@@ -13,22 +13,22 @@ namespace Blamite.Blam.FirstGen
 			_mask = mask;
 		}
 
-		public int PointerToOffset(long pointer)
+		public uint PointerToOffset(long pointer)
 		{
 			return PointerToOffset(pointer, _metaSegment.Offset);
 		}
 
-		public int PointerToOffset(long pointer, int areaStartOffset)
+		public uint PointerToOffset(long pointer, uint areaStartOffset)
 		{
-			return (int)(pointer - _mask + areaStartOffset);
+			return (uint)(pointer - _mask + areaStartOffset);
 		}
 
-		public long OffsetToPointer(int offset)
+		public long OffsetToPointer(uint offset)
 		{
 			return OffsetToPointer(offset, _metaSegment.Offset);
 		}
 
-		public long OffsetToPointer(int offset, int areaStartOffset)
+		public long OffsetToPointer(uint offset, uint areaStartOffset)
 		{
 			return (uint)(offset - areaStartOffset + _mask);
 		}

@@ -4,34 +4,57 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
+	<comment title="Link To Render Model" />
 	<tagRef name="Render Model" offset="0x0" visible="true" />
-	<undefined name="Unknown" offset="0x10" visible="false" />
-	<undefined name="Unknown" offset="0x14" visible="false" />
-	<undefined name="Unknown" offset="0x18" visible="false" />
-	<int32 name="Unknown" offset="0x1C" visible="false" />
-	<tagblock name="Locations?" offset="0x20" visible="true" elementSize="0x8">
-		<stringId name="Name" offset="0x0" visible="true" />
-		<int16 name="Unknown" offset="0x4" visible="false" />
-		<int16 name="Unknown" offset="0x6" visible="false" />
+	<tagblock name="Render Model Permutation Names" offset="0x10" visible="true" elementSize="0x4">
+		<stringid name="Name" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0x2C" visible="true" elementSize="0x70">
-		<int16 name="Unknown" offset="0x0" visible="false" />
-		<int16 name="Unknown" offset="0x2" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<float32 name="Unknown" offset="0x8" visible="false" />
-		<float32 name="Unknown" offset="0xC" visible="false" />
-		<float32 name="Unknown" offset="0x10" visible="false" />
-		<dataRef name="Unknown" offset="0x14" visible="true" />
-		<float32 name="Unknown" offset="0x28" visible="false" />
-		<dataRef name="Unknown" offset="0x2C" visible="true" />
-		<float32 name="Unknown" offset="0x40" visible="false" />
-		<float32 name="Unknown" offset="0x44" visible="false" />
-		<float32 name="Unknown" offset="0x48" visible="false" />
-		<float32 name="Unknown" offset="0x4C" visible="false" />
-		<float32 name="Unknown" offset="0x50" visible="false" />
-		<float32 name="Unknown" offset="0x54" visible="false" />
-		<float32 name="Unknown" offset="0x58" visible="false" />
-		<float32 name="Unknown" offset="0x5C" visible="false" />
-		<tagRef name="Effect" offset="0x60" visible="true" />
+	<int32 name="Render Model Permutation Name Valid Count" offset="0x1C" visible="true" />
+	<tagblock name="Muffin Markers" offset="0x20" visible="true" elementSize="0x8" tooltip="defines where muffins appear, how often, and which types">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int16 name="Muffinage Chance" offset="0x4" visible="true" tooltip="how often muffins will appear on this marker" />
+		<flags16 name="Allowed Muffin Types" offset="0x6" visible="true">
+			<bit name="Index 0" index="0" />
+			<bit name="Index 1" index="1" />
+			<bit name="Index 2" index="2" />
+			<bit name="Index 3" index="3" />
+			<bit name="Index 4" index="4" />
+			<bit name="Index 5" index="5" />
+			<bit name="Index 6" index="6" />
+			<bit name="Index 7" index="7" />
+			<bit name="Index 8" index="8" />
+			<bit name="Index 9" index="9" />
+			<bit name="Index 10" index="10" />
+			<bit name="Index 11" index="11" />
+			<bit name="Index 12" index="12" />
+			<bit name="Index 13" index="13" />
+			<bit name="Index 14" index="14" />
+			<bit name="Index 15" index="15" />
+		</flags16>
+	</tagblock>
+	<tagblock name="Muffin Types" offset="0x2C" visible="true" elementSize="0x70">
+		<int16 name="Mesh Index" offset="0x0" visible="true" />
+		<flags16 name="Flags" offset="0x2" visible="true">
+			<bit name="Disable For Debug" index="0" />
+			<bit name="Jump To Marker On Transition" index="1" tooltip="forces the muffins to the new marker location when they are transferred to a new model, may cause popping if the markers aren't aligned" />
+		</flags16>
+		<rangef name="Spawn Delay" offset="0x4" visible="true" tooltip="how long to wait before spawning these muffins" />
+		<comment title="SCALE">animates the size of the muffin</comment>
+		<rangef name="Random Scale" offset="0xC" visible="true" />
+		<comment title="Initial Growth" />
+		<dataref name="Function" offset="0x14" visible="true" />
+		<float32 name="Growth Time" offset="0x28" visible="true" />
+		<comment title="Periodic Noise" />
+		<dataref name="Function" offset="0x2C" visible="true" />
+		<comment title="JIGGLE" />
+		<float32 name="Jiggle" offset="0x40" visible="true" tooltip="how much the muffin jiggles (0 = perfectly rigid, 1 = full jiggle, subject to parameters below)" />
+		<float32 name="Jiggle Spring Length" offset="0x44" visible="true" tooltip="spring length affects how the spring reacts to the model moving (this should be approximately how far the muffin sticks out from the model)" />
+		<float32 name="Jiggle Spring Strength" offset="0x48" visible="true" tooltip="spring strength affects how fast the muffins jiggle (higher numbers jiggle faster)" />
+		<float32 name="Jiggle Velocity Damp" offset="0x4C" visible="true" tooltip="velocity damp affects how long the muffins jiggle (the higher numbers jiggle exponentially longer, 1.0 will never stop jiggling)" />
+		<float32 name="Jiggle Max Velocity" offset="0x50" visible="true" tooltip="this just clamps how fast the muffin can jiggle, to keep it from exploding" />
+		<comment title="DEATH">... and then you will be dead.</comment>
+		<rangef name="Lifetime" offset="0x54" visible="true" tooltip="how long before the muffins die" />
+		<float32 name="Immortality Chance" offset="0x5C" visible="true" tooltip="the chance that any give muffin of this type will live forever" />
+		<tagRef name="Death Effect" offset="0x60" visible="true" />
 	</tagblock>
 </plugin>

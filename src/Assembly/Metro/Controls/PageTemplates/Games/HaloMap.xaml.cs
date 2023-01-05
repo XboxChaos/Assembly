@@ -2394,7 +2394,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				return;
 			}
 
-			int baseSize = 0;
+			uint baseSize = 0;
 			using (var pluginReader = XmlReader.Create(pluginPath))
 			{
 				//redundant stuff from AssemblyPluginLoader so I don't have to create an instance
@@ -2406,9 +2406,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					string str = pluginReader.Value;
 
 					if (str.StartsWith("0x"))
-						baseSize = int.Parse(str.Substring(2), NumberStyles.HexNumber);
+						baseSize = uint.Parse(str.Substring(2), NumberStyles.HexNumber);
 					else
-						baseSize = int.Parse(str);
+						baseSize = uint.Parse(str);
 				}
 			}
 
@@ -2452,7 +2452,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				long newOffset = _cacheFile.MetaArea.PointerToOffset(newAddr);
 
 				stream.SeekTo(origOffset);
-				byte[] data = stream.ReadBlock(baseSize);
+				byte[] data = stream.ReadBlock((int)baseSize);
 				stream.SeekTo(newOffset);
 				stream.WriteBlock(data);
 
@@ -2547,7 +2547,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				return;
 			}
 
-			int origLength = _cacheFile.StringIDDataTable.Size;
+			uint origLength = _cacheFile.StringIDDataTable.Size;
 
 			using (var stream = _mapManager.OpenReadWrite())
 			{
@@ -2580,7 +2580,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				_cacheFile.SaveChanges(stream);
 			}
 
-			int result = origLength - _cacheFile.StringIDDataTable.Size;
+			uint result = origLength - _cacheFile.StringIDDataTable.Size;
 
 			MetroMessageBox.Show("Free StringIDs", "A total of " + result + " bytes were freed.");
 				

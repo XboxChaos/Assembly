@@ -281,5 +281,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			return new DegreeData(Name, Offset, FieldAddress, Type, _radian, PluginLine, ToolTip);
 		}
+
+		public override string AsString()
+		{
+			return string.Format("{0} | {1} | {2}", Type, Name, Value);
+		}
+
+		public override object GetAsJson()
+		{
+			return Value;
+		}
 	}
 }

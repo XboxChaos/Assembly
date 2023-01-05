@@ -30,7 +30,7 @@ namespace Blamite.IO
 	/// </summary>
 	public class SegmentResizedEventArgs : EventArgs
 	{
-		public SegmentResizedEventArgs(int segmentId, int oldSize, int newSize, SegmentResizeOrigin origin)
+		public SegmentResizedEventArgs(int segmentId, uint oldSize, uint newSize, SegmentResizeOrigin origin)
 		{
 			SegmentID = segmentId;
 			OldSize = oldSize;
@@ -46,12 +46,12 @@ namespace Blamite.IO
 		/// <summary>
 		///     Gets the old size of the segment.
 		/// </summary>
-		public int OldSize { get; private set; }
+		public uint OldSize { get; private set; }
 
 		/// <summary>
 		///     Gets the new size of the segment.
 		/// </summary>
-		public int NewSize { get; private set; }
+		public uint NewSize { get; private set; }
 
 		/// <summary>
 		///     The origin at which the segment was resized.
@@ -66,7 +66,7 @@ namespace Blamite.IO
 	{
 		private readonly int _defaultOffsetAlign = 1;
 		private readonly List<InternalSegment> _segmentsById = new List<InternalSegment>();
-		private readonly SortedList<int, InternalSegment> _segmentsByOffset = new SortedList<int, InternalSegment>();
+		private readonly SortedList<uint, InternalSegment> _segmentsByOffset = new SortedList<uint, InternalSegment>();
 
 		/// <summary>
 		///     Constructs a new FileSegmenter with a default offset alignment of 1.
@@ -105,7 +105,7 @@ namespace Blamite.IO
 		/// <param name="sizeAlignment">A power of two which the size must be a multiple of (e.g. 0x1000 = 4kb-aligned).</param>
 		/// <param name="resizeOrigin">The origin at which to insert/remove data in the segment.</param>
 		/// <returns>The segment's ID number which can be used to retrieve information about it.</returns>
-		public int DefineSegment(int offset, int size, int sizeAlignment, SegmentResizeOrigin resizeOrigin)
+		public int DefineSegment(uint offset, uint size, int sizeAlignment, SegmentResizeOrigin resizeOrigin)
 		{
 			return DefineSegment(offset, size, _defaultOffsetAlign, sizeAlignment, resizeOrigin);
 		}
@@ -119,12 +119,12 @@ namespace Blamite.IO
 		/// <param name="sizeAlignment">A power of two which the size must be a multiple of (e.g. 0x1000 = 4kb-aligned).</param>
 		/// <param name="resizeOrigin">The origin at which to insert/remove data in the segment.</param>
 		/// <returns>The segment's ID number which can be used to retrieve information about it.</returns>
-		public int DefineSegment(int offset, int size, int offsetAlignment, int sizeAlignment,
+		public int DefineSegment(uint offset, uint size, int offsetAlignment, int sizeAlignment,
 			SegmentResizeOrigin resizeOrigin)
 		{
-			if (offset != Align(offset, offsetAlignment))
+			if (offset != Align(offset, (uint)offsetAlignment))
 				throw new ArgumentException("The segment offset is not aligned to the given alignment.");
-			if (size != Align(size, sizeAlignment))
+			if (size != Align((uint)size, (uint)sizeAlignment))
 				throw new ArgumentException("The segment size is not aligned to the given alignment.");
 			if (_segmentsByOffset.ContainsKey(offset))
 				throw new ArgumentException("A segment has already been defined at the given offset.");
@@ -153,7 +153,7 @@ namespace Blamite.IO
 		/// </summary>
 		/// <param name="offset">The offset of the end of the file.</param>
 		/// <returns>The segment's ID number which can be used to retrieve information about it.</returns>
-		public int DefineEOF(int offset)
+		public int DefineEOF(uint offset)
 		{
 			return DefineSegment(offset, 0, _defaultOffsetAlign, 1, SegmentResizeOrigin.None);
 		}
@@ -164,7 +164,7 @@ namespace Blamite.IO
 		/// <param name="offset">The offset of the end of the file.</param>
 		/// <param name="alignment">The file's size alignment.</param>
 		/// <returns>The segment's ID number which can be used to retrieve information about it.</returns>
-		public int DefineEOF(int offset, int alignment)
+		public int DefineEOF(uint offset, int alignment)
 		{
 			return DefineSegment(offset, 0, alignment, 1, SegmentResizeOrigin.None);
 		}
@@ -174,7 +174,7 @@ namespace Blamite.IO
 		/// </summary>
 		/// <param name="id">The ID of the segment to get the offset of.</param>
 		/// <returns>The segment's offset.</returns>
-		public int GetSegmentOffset(int id)
+		public uint GetSegmentOffset(int id)
 		{
 			return GetSegmentFromID(id).Offset;
 		}
@@ -184,7 +184,7 @@ namespace Blamite.IO
 		/// </summary>
 		/// <param name="id">The ID of the segment to get the size of.</param>
 		/// <returns>The segment's size.</returns>
-		public int GetSegmentSize(int id)
+		public uint GetSegmentSize(int id)
 		{
 			return GetSegmentFromID(id).Size;
 		}
@@ -194,7 +194,7 @@ namespace Blamite.IO
 		/// </summary>
 		/// <param name="id">The ID of the segment to get the actual size of.</param>
 		/// <returns>The actual size of the segment.</returns>
-		public int GetSegmentActualSize(int id)
+		public uint GetSegmentActualSize(int id)
 		{
 			return GetSegmentFromID(id).ActualSize;
 		}
@@ -216,18 +216,18 @@ namespace Blamite.IO
 		/// <param name="newSize">The minimum amount of space that the segment must occupy.</param>
 		/// <param name="stream">The stream to write padding to.</param>
 		/// <returns>The new size of the segment after alignment has been applied.</returns>
-		public int ResizeSegment(int id, int newSize, IStream stream)
+		public uint ResizeSegment(int id, uint newSize, IStream stream)
 		{
 			InternalSegment segment = GetSegmentFromID(id);
 
-			int oldSize = segment.Size;
+			uint oldSize = segment.Size;
 			if (newSize == oldSize)
 				return oldSize;
 
 			// Change the size of the segment
-			int oldActualSize = segment.ActualSize;
-			int oldSegmentEnd = segment.Offset + segment.ActualSize;
-			segment.Size = Align(newSize, segment.SizeAlignment);
+			uint oldActualSize = segment.ActualSize;
+			uint oldSegmentEnd = segment.Offset + segment.ActualSize;
+			segment.Size = Align((uint)newSize, (uint)segment.SizeAlignment);
 			segment.ActualSize = Math.Max(segment.Size, segment.ActualSize);
 
 			// Recalculate the segment offsets,
@@ -235,7 +235,7 @@ namespace Blamite.IO
 			RecalculateOffsets();
 			RecalculateActualSizes();
 
-			int resizeOffset;
+			uint resizeOffset;
 			switch (segment.ResizeOrigin)
 			{
 				case SegmentResizeOrigin.Beginning:
@@ -283,7 +283,7 @@ namespace Blamite.IO
 			{
 				InternalSegment thisSegment = segments[i];
 				InternalSegment prevSegment = segments[i - 1];
-				thisSegment.Offset = Align(prevSegment.Offset + prevSegment.ActualSize, thisSegment.OffsetAlignment);
+				thisSegment.Offset = Align(prevSegment.Offset + (uint)prevSegment.ActualSize, (uint)thisSegment.OffsetAlignment);
 			}
 		}
 
@@ -323,7 +323,7 @@ namespace Blamite.IO
 		/// <param name="val">The value to align.</param>
 		/// <param name="alignment">The power of two that the value must be a multiple of.</param>
 		/// <returns>The aligned value.</returns>
-		private static int Align(int val, int alignment)
+		private static uint Align(uint val, uint alignment)
 		{
 			return (val + alignment - 1) & ~(alignment - 1);
 		}
@@ -331,9 +331,9 @@ namespace Blamite.IO
 		private class InternalSegment
 		{
 			public int ID { get; set; }
-			public int Offset { get; set; }
-			public int Size { get; set; }
-			public int ActualSize { get; set; }
+			public uint Offset { get; set; }
+			public uint Size { get; set; }
+			public uint ActualSize { get; set; }
 			public int OffsetAlignment { get; set; }
 			public int SizeAlignment { get; set; }
 			public SegmentResizeOrigin ResizeOrigin { get; set; }

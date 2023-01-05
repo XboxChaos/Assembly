@@ -444,8 +444,8 @@ namespace Blamite.Compression
 			if (headerLayout.HasField("flags"))
 				headerValues.SetInteger("_header_flags_", (ulong)headerLayout.GetFieldOffset("flags"));
 
-			var metaOffset = (int)headerValues.GetInteger("meta offset");
-			var metaSize = (int)headerValues.GetInteger("meta size");
+			uint metaOffset = (uint)headerValues.GetInteger("meta offset");
+			var metaSize = (uint)headerValues.GetInteger("meta size");
 			uint metaOffsetMask = (uint)headerValues.GetInteger("meta offset mask");
 
 			var metaSegment = new FileSegment(

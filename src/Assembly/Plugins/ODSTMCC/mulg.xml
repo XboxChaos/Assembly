@@ -4,43 +4,63 @@
 	<revisions>
 		<revision author="Lord Zedd" version="1">blah</revision>
 	</revisions>
-	<tagblock name="Universal" offset="0x0" visible="true" elementSize="0xA8">
-		<tagRef name="Random Player Names" offset="0x0" visible="true" />
-		<tagRef name="Team Names" offset="0x10" visible="true" />
-		<tagblock name="Team Colors" offset="0x20" visible="true" elementSize="0xC">
+	<tagblock name="Universal" offset="0x0" visible="true" elementSize="0xD0">
+		<tagRef name="Multiplayer Zone Required Resources" offset="0x0" visible="true" />
+		<tagRef name="Random Player Names" offset="0x10" visible="true" />
+		<tagRef name="Team Names" offset="0x20" visible="true" />
+		<tagblock name="Team Colors" offset="0x30" visible="true" elementSize="0xC">
 			<colorf name="Color" offset="0x0" alpha="false" visible="true" />
 		</tagblock>
-		<tagRef name="Multiplayer Text" offset="0x2C" visible="true" />
-		<tagRef name="Sandbox Text" offset="0x3C" visible="true" />
-		<tagRef name="Sandbox Object Properties Values" offset="0x4C" visible="true" />
-		<tagblock name="Game Variant Weapons" offset="0x5C" visible="true" elementSize="0x18">
+		<tagblock name="Customized Characters" offset="0x3C" visible="true" elementSize="0x10">
+			<stringid name="Character Name" offset="0x0" visible="true" />
+			<tagblock name="Customized Areas" offset="0x4" visible="true" elementSize="0x10">
+				<stringid name="Area Name" offset="0x0" visible="true" />
+				<tagblock name="Customized Selection" offset="0x4" visible="true" elementSize="0x14">
+					<stringid name="Selection Name" offset="0x0" visible="true" />
+					<stringid name="Selection Description" offset="0x4" visible="true" />
+					<tagblock name="Customized Bits" offset="0x8" visible="true" elementSize="0x8">
+						<stringId name="Region Name" offset="0x0" visible="true" />
+						<stringId name="Permutation Name" offset="0x4" visible="true" />
+					</tagblock>
+				</tagblock>
+			</tagblock>
+		</tagblock>
+		<tagRef name="Multiplayer Text" offset="0x48" visible="true" />
+		<tagRef name="Sandbox Text" offset="0x58" visible="true" />
+		<tagRef name="Sandbox Object Properties Values" offset="0x68" visible="true" />
+		<tagblock name="Weapon Selections" offset="0x78" visible="true" elementSize="0x18">
 			<stringId name="Name" offset="0x0" visible="true" />
-			<float32 name="Random Chance" offset="0x4" visible="true" />
+			<float32 name="Random Weapon Set Weight" offset="0x4" visible="true" />
 			<tagRef name="Weapon" offset="0x8" visible="true" />
 		</tagblock>
-		<tagblock name="Game Variant Vehicles" offset="0x68" visible="true" elementSize="0x14">
+		<tagblock name="Vehicle Selections" offset="0x84" visible="true" elementSize="0x14">
 			<stringId name="Name" offset="0x0" visible="true" />
 			<tagRef name="Vehicle" offset="0x4" visible="true" />
 		</tagblock>
-		<tagblock name="Game Variant Equipment" offset="0x74" visible="true" elementSize="0x14">
+		<tagblock name="Grenade Selections" offset="0x90" visible="true" elementSize="0x14">
 			<stringid name="Name" offset="0x0" visible="true" />
 			<tagRef name="Grenade" offset="0x4" visible="true" />
 		</tagblock>
-		<tagblock name="Weapon Sets" offset="0x80" visible="true" elementSize="0x10">
+		<tagblock name="Equipment Selections" offset="0x9C" visible="true" elementSize="0x18">
 			<stringId name="Name" offset="0x0" visible="true" />
-			<tagblock name="Substitutions" offset="0x4" visible="true" elementSize="0x8">
-				<stringId name="Original Weapon" offset="0x0" visible="true" />
-				<stringId name="Substituted Weapon" offset="0x4" visible="true" />
+			<float32 name="Random Weight" offset="0x4" visible="true" />
+			<tagRef name="Eqipment" offset="0x8" visible="true" />
+		</tagblock>
+		<tagblock name="Weapon Sets" offset="0xA8" visible="true" elementSize="0x10">
+			<stringId name="Name" offset="0x0" visible="true" />
+			<tagblock name="Remap Table" offset="0x4" visible="true" elementSize="0x8">
+				<stringId name="Placed Object Name" offset="0x0" visible="true" />
+				<stringId name="Remapped Object Name" offset="0x4" visible="true" />
 			</tagblock>
 		</tagblock>
-		<tagblock name="Vehicle Sets" offset="0x8C" visible="true" elementSize="0x10">
+		<tagblock name="Vehicle Sets" offset="0xB4" visible="true" elementSize="0x10">
 			<stringId name="Name" offset="0x0" visible="true" />
-			<tagblock name="Substitutions" offset="0x4" visible="true" elementSize="0x8">
-				<stringId name="Original Vehicle" offset="0x0" visible="true" />
-				<stringId name="Substituted Vehicle" offset="0x4" visible="true" />
+			<tagblock name="Remap Table" offset="0x4" visible="true" elementSize="0x8">
+				<stringId name="Placed Object Name" offset="0x0" visible="true" />
+				<stringId name="Remapped Object Name" offset="0x4" visible="true" />
 			</tagblock>
 		</tagblock>
-		<tagRef name="Game Engine Settings" offset="0x98" visible="true" />
+		<tagRef name="Game Engine Settings" offset="0xC0" visible="true" />
 	</tagblock>
 	<tagblock name="Runtime" offset="0xC" visible="true" elementSize="0x27C">
 		<tagRef name="Editor Biped" offset="0x0" visible="true" />
@@ -1409,7 +1429,7 @@ And medals don't display because "chud_survival_objective_text" doesn't support 
 		<tagRef name="Scoreboard Emblem Bitmap" offset="0x12C" visible="true" />
 		<tagRef name="Scoreboard Dead Emblem Bitmap" offset="0x13C" visible="true" />
 		<tagRef name="Hill Shader" offset="0x14C" visible="true" />
-		<tagRef name="Null Intro UI" offset="0x15C" visible="true" />
+		<tagRef name="Pregame Intro UI" offset="0x15C" visible="true" />
 		<tagRef name="CTF Intro UI" offset="0x16C" visible="true" />
 		<tagRef name="Slayer Intro UI" offset="0x17C" visible="true" />
 		<tagRef name="Oddball Intro UI" offset="0x18C" visible="true" />

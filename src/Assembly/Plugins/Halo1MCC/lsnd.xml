@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo1MCC" baseSize="0x54">
+	<revisions>
+		<revision author="Lord Zedd" version="1">ayy lmao</revision>
+	</revisions>
+	<flags32 name="Flags" offset="0x0" visible="true">
+		<bit name="Deafening To AIs" index="0" tooltip="when used as a background stereo track, causes nearby AIs to be unable to hear" />
+		<bit name="Not A Loop" index="1" tooltip="this is a collection of permutations strung together that should play once then stop." />
+		<bit name="Stops Music" index="2" tooltip="all other music loops will stop when this one starts." />
+		<bit name="Siege Of The Madrigal" index="3" tooltip="this is the SOM music" />
+	</flags32>
+	<comment title="When Scale Is ZERO">as the sound's input scale changes from zero to one, these modifiers move between the two values specified here. the sound will play using the current scale modifier multiplied by the value specified below. (0 values are ignored.)</comment>
+	<float32 name="Zero Detail Sound Period" offset="0x4" visible="true" />
+	<float32 name="Zero Runtime Unknown" offset="0x8" visible="true" />
+	<float32 name="Zero Runtime Unknown" offset="0xC" visible="true" />
+	<comment title="When Scale Is ONE">as the sound's input scale changes from zero to one, these modifiers move between the two values specified here. the sound will play using the current scale modifier multiplied by the value specified below. (0 values are ignored.)</comment>
+	<float32 name="One Detail Sound Period" offset="0x10" visible="true" />
+	<float32 name="One Runtime Unknown" offset="0x14" visible="true" />
+	<float32 name="One Runtime Unknown" offset="0x18" visible="true" />
+	<int32 name="Runtime Unknown" offset="0x1C" visible="true" />
+	<float32 name="Maximum Distance" offset="0x20" visible="true" />
+	<undefined name="Unknown" offset="0x24" visible="false" />
+	<undefined name="Unknown" offset="0x28" visible="false" />
+	<tagRef name="Continuous Damage Effect" offset="0x2C" visible="true" />
+	<tagblock name="Tracks" offset="0x3C" visible="true" elementSize="0xA0" tooltip="tracks play in parallel and loop continuously for the duration of the looping sound.">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="Fade In At Start" index="0" tooltip="the loop sound should fade in while the start sound is playing." />
+			<bit name="Fade Out At Stop" index="1" tooltip="the loop sound should fade out while the stop sound is playing." />
+			<bit name="Fade In Alternate" index="2" tooltip="when the sound changes to the alternate version, cross fade between the main and alternate loop." />
+		</flags32>
+		<float32 name="Gain" offset="0x4" visible="true" />
+		<float32 name="Fade In Duration" offset="0x8" visible="true" />
+		<float32 name="Fade Out Duration" offset="0xC" visible="true" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<tagRef name="Start" offset="0x30" visible="true" />
+		<tagRef name="Loop" offset="0x40" visible="true" />
+		<tagRef name="End" offset="0x50" visible="true" />
+		<undefined name="Unknown" offset="0x60" visible="false" />
+		<undefined name="Unknown" offset="0x64" visible="false" />
+		<undefined name="Unknown" offset="0x68" visible="false" />
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+		<undefined name="Unknown" offset="0x78" visible="false" />
+		<undefined name="Unknown" offset="0x7C" visible="false" />
+		<tagRef name="Alternate Loop" offset="0x80" visible="true" />
+		<tagRef name="Alternate End" offset="0x90" visible="true" />
+	</tagblock>
+	<tagblock name="Detail Sounds" offset="0x48" visible="true" elementSize="0x68" tooltip="detail sounds play at random throughout the duration of the looping sound.">
+		<tagRef name="Sound" offset="0x0" visible="true" />
+		<comment title="Frequency Of Play" />
+		<rangef name="Random Period Bounds" offset="0x10" visible="true" tooltip="the time between successive playings of this sound will be randomly selected from this range." />
+		<float32 name="Gain" offset="0x18" visible="true" />
+		<flags32 name="Flags" offset="0x1C" visible="true">
+			<bit name="Don't Play With Alternate" index="0" />
+			<bit name="Don't Play Without Alternate" index="1" />
+		</flags32>
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<comment title="Random Spatialization">if the sound specified above is not stereo it will be randomly spatialized according to the following constraints. if both lower and upper bounds are zero for any of the following fields, the sound's position will be randomly selected from all possible directions or distances.</comment>
+		<ranged name="Yaw Bounds" offset="0x50" visible="true" tooltip="the sound's position along the horizon will be randomly selected from this range." />
+		<ranged name="Pitch Bounds" offset="0x58" visible="true" tooltip="the sound's position above (positive values) or below (negative values) the horizon will be randomly selected from this range." />
+		<rangef name="Distance Bounds" offset="0x60" visible="true" tooltip="the sound's distance (from its spatialized looping sound or from the listener if the looping sound is stereo) will be randomly selected from this range." />
+	</tagblock>
+</plugin>

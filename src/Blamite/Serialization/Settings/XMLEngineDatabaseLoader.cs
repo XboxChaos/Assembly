@@ -44,7 +44,7 @@ namespace Blamite.Serialization.Settings
 				string name = XMLUtil.GetStringAttribute(elem, "name");
 				string build = XMLUtil.GetStringAttribute(elem, "build");
 				var version = XMLUtil.GetNumericAttribute(elem, "version");
-				var versionAlt = XMLUtil.GetNumericAttribute(elem, "version", -1);
+				var versionAlt = XMLUtil.GetNumericAttribute(elem, "versionAlt", -1);
 				string inherits = XMLUtil.GetStringAttribute(elem, "inherits", null);
 				SettingsGroup settings = loader.LoadSettingsGroup(elem);
 				if (!string.IsNullOrWhiteSpace(inherits))

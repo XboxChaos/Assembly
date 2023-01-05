@@ -8,37 +8,40 @@
 		<revision author="Lord Zedd" version="4">Updated some things</revision>
 	</revisions>
 	<flags16 name="Flags" offset="0x0" visible="true">
-		<bit name="Bit 0" index="0" />
-		<bit name="Loops" index="1" />
-		<bit name="Loops - Oscillate" index="2" />
-		<bit name="Bit 3" index="3" />
+		<bit name="Spline" index="0" />
+		<bit name="Loop" index="1" />
+		<bit name="Loop Seesaw" index="2" />
+		<bit name="Do Not Correct Translation" index="3" />
 	</flags16>
 	<int16 name="Unknown" offset="0x2" visible="false" />
 	<tagblock name="Position" offset="0x4" visible="true" elementSize="0x20">
-		<tagblock name="Animation" offset="0x0" visible="true" elementSize="0x10">
-			<int32 name="Frame Number" offset="0x0" visible="true" />
+		<tagblock name="Keyframes" offset="0x0" visible="true" elementSize="0x10">
+			<int32 name="Time Offset" offset="0x0" visible="true" />
 			<point3 name="Position" offset="0x4" visible="true" />
 		</tagblock>
 		<dataRef name="Function" offset="0xC" visible="true" />
 	</tagblock>
 	<tagblock name="Rotation" offset="0x10" visible="true" elementSize="0x20">
-		<tagblock name="Animation" offset="0x0" visible="true" elementSize="0x10">
-			<int32 name="Frame Number" offset="0x0" visible="true" />
-			<degree3 name="Angle" offset="0x4" visible="true" />
+		<tagblock name="Keyframes" offset="0x0" visible="true" elementSize="0x10">
+			<int32 name="Time Offset" offset="0x0" visible="true" />
+			<degree3 name="Angles" offset="0x4" visible="true" />
 		</tagblock>
 		<dataRef name="Function" offset="0xC" visible="true" />
 	</tagblock>
-	<tagblock name="Size" offset="0x1C" visible="true" elementSize="0x20">
-		<tagblock name="Animation" offset="0x0" visible="true" elementSize="0xC">
-			<int32 name="Frame Number" offset="0x0" visible="true" />
-			<point2 name="Stretch" offset="0x4" visible="true" />
+	<tagblock name="Scale" offset="0x1C" visible="true" elementSize="0x20">
+		<tagblock name="Keyframes" offset="0x0" visible="true" elementSize="0xC">
+			<int32 name="Time Offset" offset="0x0" visible="true" />
+			<point2 name="Scale" offset="0x4" visible="true" />
 		</tagblock>
-		<dataRef name="Unknown" offset="0xC" visible="false" />
+		<dataRef name="Function" offset="0xC" visible="true" />
 	</tagblock>
 	<tagblock name="Color" offset="0x28" visible="true" elementSize="0x20">
-		<tagblock name="Animation" offset="0x0" visible="true" elementSize="0x8">
-			<int32 name="Frame Number" offset="0x0" visible="true" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
+		<tagblock name="Keyframes" offset="0x0" visible="true" elementSize="0x8">
+			<int32 name="Time Offset" offset="0x0" visible="true" />
+			<enum16 name="Color Source" offset="0x4" visible="true">
+				<option name="Taco" value="0x0" />
+			</enum16>
+			<int16 name="Unknown" offset="0x6" visible="false" />
 		</tagblock>
 		<comment title="Color Function">Color 1 - x05 (11th character)
 Color 2 - x09 (19th character)
@@ -48,27 +51,26 @@ If a tag uses 2 colors, x05 and x17. If 3 colors x05, x09, and x17.</comment>
 		<dataRef name="Function" offset="0xC" visible="true" />
 	</tagblock>
 	<tagblock name="Alpha" offset="0x34" visible="true" elementSize="0x20">
-		<tagblock name="Animation" offset="0x0" visible="true" elementSize="0x8">
-			<int32 name="Frame Number" offset="0x0" visible="true" />
-			<float32 name="Alpha" offset="0x4" visible="true" />
+		<tagblock name="Keyframes" offset="0x0" visible="true" elementSize="0x8">
+			<int32 name="Time Offset" offset="0x0" visible="true" />
+			<float32 name="Scalar Value" offset="0x4" visible="true" />
 		</tagblock>
 		<dataRef name="Function" offset="0xC" visible="true" />
 	</tagblock>
-	<comment title="Custom Scalar">This animation affects nothing visually, instead it has its current value copied to a specific Output Scalar in the Render Data block of the widget containing this animation. This value will not output as text.</comment>
-	<tagblock name="Custom Scalar" offset="0x40" visible="true" elementSize="0x20">
-		<tagblock name="Animation" offset="0x0" visible="true" elementSize="0x8">
-			<int32 name="Frame Number" offset="0x0" visible="true" />
-			<float32 name="Value" offset="0x4" visible="true" />
+	<tagblock name="Flash" offset="0x40" visible="true" elementSize="0x20" tooltip="This animation affects nothing visually, instead it has its current value copied to a specific Output Scalar in the Render Data block of the widget containing this animation. This value will not output as text.">
+		<tagblock name="Keyframes" offset="0x0" visible="true" elementSize="0x8">
+			<int32 name="Time Offset" offset="0x0" visible="true" />
+			<float32 name="Scalar Value" offset="0x4" visible="true" />
 		</tagblock>
 		<dataRef name="Function" offset="0xC" visible="true" />
 	</tagblock>
-	<tagblock name="Texture Coordinates" offset="0x4C" visible="true" elementSize="0x20">
-		<tagblock name="Animation" offset="0x0" visible="true" elementSize="0x14">
-			<int32 name="Frame Number" offset="0x0" visible="true" />
-			<point2 name="Movement 1" offset="0x4" visible="true" />
-			<point2 name="Movement 2" offset="0xC" visible="true" />
+	<tagblock name="Texture" offset="0x4C" visible="true" elementSize="0x20">
+		<tagblock name="Keyframes" offset="0x0" visible="true" elementSize="0x14">
+			<int32 name="Time Offset" offset="0x0" visible="true" />
+			<vector2 name="Texture Scale" offset="0x4" visible="true" />
+			<vector2 name="Texture Offset" offset="0xC" visible="true" />
 		</tagblock>
 		<dataRef name="Function" offset="0xC" visible="true" />
 	</tagblock>
-	<int32 name="Number of Frames" offset="0x58" visible="true" />
+	<int32 name="Runtime Period Milliseconds" offset="0x58" visible="true" />
 </plugin>

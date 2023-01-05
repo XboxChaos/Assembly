@@ -29,7 +29,7 @@
 		<bit name="Does Not Cause Collision Damage" index="5" />
 		<bit name="Early Mover" index="6" />
 		<bit name="Early Mover Localized Physics" index="7" />
-		<bit name="Use Static Massive Lightmap Sample" index="8" tooltip="cast a ton of rays once and store the results for lighting" />
+		<bit name="Use Static Massive Lightmap Sample" index="8" tooltip="cast a lot of rays once and store the results for lighting" />
 		<bit name="Object Scales Attachments" index="9" />
 		<bit name="Inherits Player's Appearance" index="10" />
 		<bit name="Dead Bipeds Can't Localize" index="11" />
@@ -203,7 +203,7 @@
 	<undefined name="Unknown" offset="0x10C" visible="false" />
 	<undefined name="Unknown" offset="0x110" visible="false" />
 	<undefined name="Unknown" offset="0x114" visible="false" />
-	<comment title="Applying Collision Damage">For things that want to cause more or less collision damage</comment>
+	<comment title="Applying Collision Damage">for things that want to cause more or less collision damage</comment>
 	<float32 name="Apply Collision Damage Scale" offset="0x118" visible="true" tooltip="0 means 1. 1 is standard scale. Some things may want to apply more damage" />
 	<comment title="Game Collision Damage Parameters">0 - means take default value from globals.globals</comment>
 	<rangef name="Game Acceleration" offset="0x11C" visible="true" tooltip="0-oo" />
@@ -215,8 +215,7 @@
 	<int16 name="Unknown" offset="0x13E" visible="false" />
 	<tagblock name="Attachments" offset="0x140" visible="true" elementSize="0x48">
 		<tagRef name="Type" offset="0x0" visible="true" />
-		<ascii name="Marker" offset="0x10" length="0x1C" visible="true" />
-		<stringid name="Marker" offset="0x2C" visible="true" />
+		<oldstringid name="Marker" offset="0x10" visible="true" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<enum16 name="Change Color" offset="0x34" visible="true">
 			<option name="None" value="0x0" />
@@ -373,11 +372,11 @@
 		<option name="Unused15" value="0xF" />
 	</enum16>
 	<enum16 name="Constant Sound Volume" offset="0x182" visible="true">
-		<option name="Silent" value="0x0" tooltip="ai will not respond to this sound" />
+		<option name="Silent" value="0x0" />
 		<option name="Medium" value="0x1" />
 		<option name="Loud" value="0x2" />
 		<option name="Shout" value="0x3" />
-		<option name="Quiet" value="0x4" tooltip="ai can hear this sound at any range" />
+		<option name="Quiet" value="0x4" />
 	</enum16>
 	<float32 name="Rider Damage Fraction" offset="0x184" visible="true" tooltip="what percent damage applied to us gets applied to our children (i.e., riders)" />
 	<tagRef name="Integrated Light Toggle" offset="0x188" visible="true" />
@@ -424,10 +423,8 @@
 	<degree name="Camera Field of View" offset="0x1A0" visible="true" />
 	<float32 name="Camera Stiffness" offset="0x1A4" visible="true" />
 	<comment title="Unit Camera" />
-	<ascii name="Camera Marker Name" offset="0x1A8" length="0x1C" visible="true" />
-	<stringid name="Camera Marker Name" offset="0x1C4" visible="true" />
-	<ascii name="Camera Submerged Marker Name" offset="0x1C8" length="0x1C" visible="true" />
-	<stringId name="Camera Submerged Marker Name" offset="0x1E4" visible="true" />
+	<oldstringid name="Camera Marker Name" offset="0x1A8" visible="true" />
+	<oldstringid name="Camera Submerged Marker Name" offset="0x1C8" visible="true" />
 	<degree name="Pitch Auto-Level" offset="0x1E8" visible="true" />
 	<ranged name="Pitch Range" offset="0x1EC" visible="true" />
 	<tagblock name="Camera Tracks" offset="0x1F4" visible="true" elementSize="0x1C">
@@ -498,7 +495,8 @@
 		<option name="Covenant Plasma" value="0x1" />
 	</enum16>
 	<int16 name="Grenade Count" offset="0x2E6" visible="true" />
-	<undefined name="Unknown" offset="0x2E8" visible="true" />
+	<int16 name="Soft Ping Interrupt Ticks" offset="0x2E8" visible="true" />
+	<int16 name="Hard Ping Interrupt Ticks" offset="0x2EA" visible="true" />
 	<tagblock name="Powered Seats" offset="0x2EC" visible="true" elementSize="0x44">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<float32 name="Driver Powerup Time" offset="0x4" visible="true" />
@@ -549,10 +547,8 @@
 			<bit name="Gunner (Player Only)" index="18" />
 			<bit name="Invisible Under Major Damage" index="19" />
 		</flags32>
-		<ascii name="Seat Animation" offset="0x4" length="0x1C" visible="true" />
-		<stringid name="Seat Animation" offset="0x20" visible="true" />
-		<ascii name="Seat Marker Name" offset="0x24" length="0x1C" visible="true" />
-		<stringid name="Seat Marker Name" offset="0x40" visible="true" />
+		<oldstringid name="Seat Animation" offset="0x4" visible="true" />
+		<oldstringid name="Seat Marker Name" offset="0x24" visible="true" />
 		<stringid name="Entry Marker(s) Name" offset="0x44" visible="true" />
 		<undefined name="Unknown" offset="0x48" visible="false" />
 		<undefined name="Unknown" offset="0x4C" visible="false" />
@@ -588,10 +584,8 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<undefined name="Unknown" offset="0xA4" visible="false" />
 		<undefined name="Unknown" offset="0xA8" visible="false" />
 		<comment title="Seat Camera" />
-		<ascii name="Camera Marker Name" offset="0xAC" length="0x1C" visible="true" />
-		<stringid name="Camera Marker Name" offset="0xC8" visible="true" />
-		<ascii name="Camera Submerged Marker Name" offset="0xCC" length="0x1C" visible="true" />
-		<stringid name="Camera Submerged Marker Name" offset="0xE8" visible="true" />
+		<oldstringid name="Camera Marker Name" offset="0xAC" visible="true" />
+		<oldstringid name="Camera Submerged Marker Name" offset="0xCC" visible="true" />
 		<degree name="Pitch Auto-Level" offset="0xEC" visible="true" />
 		<ranged name="Pitch Range" offset="0xF0" visible="true" />
 		<tagblock name="Camera Tracks" offset="0xF8" visible="true" elementSize="0x1C">
@@ -676,7 +670,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 	<float32 name="Speed Acceleration" offset="0x334" visible="true" />
 	<float32 name="Speed Deceleration" offset="0x338" visible="true" />
 	<float32 name="Maximum Left Turn" offset="0x33C" visible="true" />
-	<float32 name="Maximum Right Turn (negative)" offset="0x340" visible="true" />
+	<float32 name="Maximum Right Turn (Negative)" offset="0x340" visible="true" />
 	<float32 name="Wheel Circumference" offset="0x344" visible="true" />
 	<float32 name="Turn Rate" offset="0x348" visible="true" />
 	<float32 name="Blur Speed" offset="0x34C" visible="true" />
@@ -837,7 +831,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
-		<stringId name="Collision Material Name" offset="0x3C" visible="true" />
+		<stringId name="Collision Global Material Name" offset="0x3C" visible="true" />
 		<int16 name="Collision Global Material Index" offset="0x40" visible="true" />
 		<enum16 name="Model State Destroyed" offset="0x42" visible="true" tooltip="only need point can destroy flag set">
 			<option name="Default" value="0x0" />

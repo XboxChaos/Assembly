@@ -174,5 +174,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			return new RangeDegreeData(Name, Offset, FieldAddress, Type, RadianMin, RadianMax, PluginLine, ToolTip);
 		}
+
+		public override string AsString()
+		{
+			return string.Format("{0} | {1} | {2} {3}", Type, Name, Min, Max);
+		}
+
+		public override object GetAsJson()
+		{
+			Dictionary<string, object> dict = new Dictionary<string, object>();
+			dict["Min"] = Min;
+			dict["Max"] = Max;
+
+			return dict;
+		}
 	}
 }

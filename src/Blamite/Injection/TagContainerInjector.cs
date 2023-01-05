@@ -219,7 +219,7 @@ namespace Blamite.Injection
 					return DatumIndex.Null;
 			}
 
-			ITag newTag = _cacheFile.Tags.AddTag(tag.Group, tagData.Data.Length, stream);
+			ITag newTag = _cacheFile.Tags.AddTag(tag.Group, (uint)tagData.Data.Length, stream);
 			_tagIndices[tag] = newTag.Index;
 			_cacheFile.FileNames.SetTagName(newTag, tag.Name + tagnameuniqifier);
 
@@ -258,7 +258,7 @@ namespace Blamite.Injection
 				return newAddress;
 
 			// Allocate space for it and write it to the file
-			newAddress = _cacheFile.Allocator.Allocate(block.Data.Length, (uint)block.Alignment, stream);
+			newAddress = _cacheFile.Allocator.Allocate((uint)block.Data.Length, (uint)block.Alignment, stream);
 			SegmentPointer location = SegmentPointer.FromPointer(newAddress, _cacheFile.MetaArea);
 			WriteDataBlock(block, location, stream);
 			return newAddress;

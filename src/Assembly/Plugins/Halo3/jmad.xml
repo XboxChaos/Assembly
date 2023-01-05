@@ -19,8 +19,7 @@
 		<bit name="Bit 3" index="3" />
 		<bit name="Written To Cache" index="4" />
 		<bit name="Animation Data Reordered" index="5" />
-		<bit name="Bit 6" index="6" />
-		<bit name="Bit 7" index="7" />
+		<bit name="Ready For Use" index="6" />
 	</flags8>
 	<int16 name="Animation Codec Pack" offset="0x12" visible="true" />
 	<tagblock name="Skeleton Nodes" offset="0x14" visible="true" elementSize="0x20">
@@ -52,10 +51,9 @@
 			<bit name="Left Arm Only" index="1" />
 			<bit name="Right Arm Only" index="2" />
 			<bit name="First-Person Only" index="3" />
-			<bit name="Third-Person Only" index="4" />
-			<bit name="Forward Only" index="5" />
-			<bit name="Reverse Only" index="6" />
-			<bit name="FP No Aged Weapons" index="7" />
+			<bit name="Forward Only" index="4" />
+			<bit name="Reverse Only" index="5" />
+			<bit name="FP No Aged Weapons" index="6" />
 		</flags16>
 		<int16 name="Unknown" offset="0x12" visible="false" />
 	</tagblock>
@@ -66,10 +64,9 @@
 			<bit name="Left Arm Only" index="1" />
 			<bit name="Right Arm Only" index="2" />
 			<bit name="First-Person Only" index="3" />
-			<bit name="Third-Person Only" index="4" />
-			<bit name="Forward Only" index="5" />
-			<bit name="Reverse Only" index="6" />
-			<bit name="FP No Aged Weapons" index="7" />
+			<bit name="Forward Only" index="4" />
+			<bit name="Reverse Only" index="5" />
+			<bit name="FP No Aged Weapons" index="6" />
 		</flags16>
 		<int16 name="Unknown" offset="0x12" visible="false" />
 	</tagblock>
@@ -108,16 +105,8 @@
 			<bit name="Disable Look Screen" index="5" />
 			<bit name="Disable Transition Adjustment" index="6" />
 			<bit name="Force Weapon ik On" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
 		</flags16>
-		<int8 name="Blend Screen" offset="0xC" visible="true" />
+		<int8 name="Blend Screen Index" offset="0xC" visible="true" />
 		<enum8 name="Desired Compression" offset="0xD" visible="true">
 			<option name="Best Score" value="0x0" />
 			<option name="Best Compression" value="0x1" />
@@ -136,7 +125,7 @@
 		</enum8>
 		<uint8 name="Node Count" offset="0xF" visible="true" />
 		<int16 name="Frame Count" offset="0x10" visible="true" />
-		<enum8 name="Type" offset="0x12" visible="true">
+		<enum8 name="Animation Type" offset="0x12" visible="true">
 			<option name="Base" value="0x0" />
 			<option name="Overlay" value="0x1" />
 			<option name="Replacement" value="0x2" />
@@ -151,71 +140,50 @@
 			<bit name="Do Not Monitor Changes" index="0" />
 			<bit name="Verify Sound Events" index="1" />
 			<bit name="Do Not Inherit For Player Graphs" index="2" />
-			<bit name="Has Errors Or Warnings" index="3" />
-			<bit name="Keep Raw Data In Tag" index="4" />
-			<bit name="Allow Ball-Roll On Foot" index="5" tooltip="prevents foot-ik from settling" />
 		</flags16>
 		<flags16 name="Internal Flags" offset="0x16" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="World Relative" index="1" />
 			<bit name="Bit 2" index="2" />
 			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
+			<bit name="Resource Group" index="4" />
 			<bit name="Compression Disabled" index="5" />
 			<bit name="Old Production Checksum" index="6" />
 			<bit name="Valid Production Checksum" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
 		</flags16>
 		<int32 name="Node List Checksum" offset="0x18" visible="true" />
 		<int32 name="Production Checksum" offset="0x1C" visible="true" />
-		<int16 name="Unknown" offset="0x20" visible="false" />
-		<int16 name="Unknown" offset="0x22" visible="false" />
+		<int16 name="Importer Version" offset="0x20" visible="true" />
+		<int16 name="Compressor Version" offset="0x22" visible="true" />
 		<int16 name="Parent Animation Index" offset="0x24" visible="true" />
 		<int16 name="Next Animation Index" offset="0x26" visible="true" />
-		<int16 name="Raw Information Group Index" offset="0x28" visible="true" />
-		<int16 name="Raw Information Member Index" offset="0x2A" visible="true" />
+		<int16 name="Resource Group Index" offset="0x28" visible="true" />
+		<int16 name="Resource Group Member Index" offset="0x2A" visible="true" />
 		<tagblock name="Frame Events" offset="0x2C" visible="true" elementSize="0x4">
 			<enum16 name="Type" offset="0x0" visible="true">
-				<option name="None" value="0x0" />
-				<option name="Primary Keyframe" value="0x1" />
-				<option name="Secondary Keyframe" value="0x2" />
-				<option name="Tertiary Keyframe" value="0x3" />
-				<option name="Left Foot" value="0x4" />
-				<option name="Right Foot" value="0x5" />
-				<option name="Allow Interruption" value="0x6" />
-				<option name="Do Not Allow Interruption" value="0x7" />
-				<option name="Both-Feet Shuffle" value="0x8" />
-				<option name="Body Impact" value="0x9" />
-				<option name="Left Foot Lock" value="0xA" />
-				<option name="Left Foot Unlock" value="0xB" />
-				<option name="Right Foot Lock" value="0xC" />
-				<option name="Right Foot Unlock" value="0xD" />
-				<option name="Blend Range Marker" value="0xE" />
-				<option name="Stride Expansion" value="0xF" />
-				<option name="Stride Contraction" value="0x10" />
-				<option name="Ragdoll Keyframe" value="0x11" />
-				<option name="Drop Weapon Keyframe" value="0x12" />
-				<option name="Match A" value="0x13" />
-				<option name="Match B" value="0x14" />
-				<option name="Match C" value="0x15" />
-				<option name="Match D" value="0x16" />
+				<option name="Primary Keyframe" value="0x0" />
+				<option name="Secondary Keyframe" value="0x1" />
+				<option name="Left Foot" value="0x2" />
+				<option name="Right Foot" value="0x3" />
+				<option name="Allow Interruption" value="0x4" />
+				<option name="Transition A" value="0x5" />
+				<option name="Transition B" value="0x6" />
+				<option name="Transition C" value="0x7" />
+				<option name="Transition D" value="0x8" />
+				<option name="Both-Feet Shuffle" value="0x9" />
+				<option name="Body Impact" value="0xA" />
+				<option name="Left Back Foot" value="0xB" />
+				<option name="Right Back Foot" value="0xC" />
 			</enum16>
 			<int16 name="Frame" offset="0x2" visible="true" />
 		</tagblock>
 		<tagblock name="Sound Events" offset="0x38" visible="true" elementSize="0x8">
-			<int16 name="Sound" offset="0x0" visible="true" />
+			<int16 name="Sound Index" offset="0x0" visible="true" />
 			<int16 name="Frame" offset="0x2" visible="true" />
 			<stringid name="Marker Name" offset="0x4" visible="true" />
 		</tagblock>
 		<tagblock name="Effect Events" offset="0x44" visible="true" elementSize="0x8">
-			<int16 name="Effect" offset="0x0" visible="true" />
+			<int16 name="Effect Index" offset="0x0" visible="true" />
 			<int16 name="Frame" offset="0x2" visible="true" />
 			<stringid name="Marker Name" offset="0x4" visible="true" />
 		</tagblock>
@@ -268,33 +236,33 @@
 				<tagblock name="Actions" offset="0x4" visible="true" elementSize="0x8" sort="true">
 					<stringId name="Label" offset="0x0" visible="true" />
 					<int16 name="Graph Index" offset="0x4" visible="true" />
-					<int16 name="Animation" offset="0x6" visible="true" />
+					<int16 name="Animation Index" offset="0x6" visible="true" />
 				</tagblock>
 				<tagblock name="Overlays" offset="0x10" visible="true" elementSize="0x8" sort="true">
 					<stringId name="Label" offset="0x0" visible="true" />
 					<int16 name="Graph Index" offset="0x4" visible="true" />
-					<int16 name="Animation" offset="0x6" visible="true" />
+					<int16 name="Animation Index" offset="0x6" visible="true" />
 				</tagblock>
 				<tagblock name="Death and Damage" offset="0x1C" visible="true" elementSize="0x10" sort="true">
 					<stringId name="Label" offset="0x0" visible="true" />
 					<tagblock name="Directions" offset="0x4" visible="true" elementSize="0xC">
 						<tagblock name="Regions" offset="0x0" visible="true" elementSize="0x4">
 							<int16 name="Graph Index" offset="0x0" visible="true" />
-							<int16 name="Animation" offset="0x2" visible="true" />
+							<int16 name="Animation Index" offset="0x2" visible="true" />
 						</tagblock>
 					</tagblock>
 				</tagblock>
 				<tagblock name="Transitions" offset="0x28" visible="true" elementSize="0x18" sort="true">
-					<stringid name="Full Name" offset="0x0" visible="true" />
+					<stringid name="Full Name" offset="0x0" visible="true" tooltip="name of the mode &amp; state of the source" />
 					<stringid name="State Name" offset="0x4" visible="true" tooltip="name of the state this transition starts in" />
 					<int16 name="Unknown" offset="0x8" visible="false" />
-					<int8 name="Index A" offset="0xA" visible="true" />
-					<int8 name="Index B" offset="0xB" visible="true" />
+					<int8 name="Index A" offset="0xA" visible="true" tooltip="first level sub-index into state" />
+					<int8 name="Index B" offset="0xB" visible="true" tooltip="second level sub-index into state" />
 					<tagblock name="Destinations" offset="0xC" visible="true" elementSize="0x14">
-						<stringid name="Full Name" offset="0x0" visible="true" />
+						<stringid name="Full Name" offset="0x0" visible="true" tooltip="name of the mode &amp; state this transitions to" />
 						<stringid name="Mode Name" offset="0x4" visible="true" tooltip="name of the mode this transition ends in" />
 						<stringid name="State Name" offset="0x8" visible="true" tooltip="name of the state this transition ends in" />
-						<enum8 name="Frame Event Link" offset="0xC" visible="true">
+						<enum8 name="Frame Event Link" offset="0xC" visible="true" tooltip="which frame event to link to">
 							<option name="No Keyframe" value="0x0" />
 							<option name="Keyframe Type A" value="0x1" />
 							<option name="Keyframe Type B" value="0x2" />
@@ -302,10 +270,10 @@
 							<option name="Keyframe Type D" value="0x4" />
 						</enum8>
 						<int8 name="Unknown" offset="0xD" visible="false" />
-						<int8 name="Index A" offset="0xE" visible="true" />
-						<int8 name="Index B" offset="0xF" visible="true" />
+						<int8 name="Index A" offset="0xE" visible="true" tooltip="first level sub-index into state" />
+						<int8 name="Index B" offset="0xF" visible="true" tooltip="second level sub-index into state" />
 						<int16 name="Graph Index" offset="0x10" visible="true" />
-						<int16 name="Animation" offset="0x12" visible="true" />
+						<int16 name="Animation Index" offset="0x12" visible="true" />
 					</tagblock>
 				</tagblock>
 			</tagblock>
@@ -330,7 +298,7 @@
 	<tagblock name="Vehicle Suspension" offset="0x68" visible="true" elementSize="0x28">
 		<stringid name="Label" offset="0x0" visible="true" />
 		<int16 name="Graph Index" offset="0x4" visible="true" />
-		<int16 name="Animation" offset="0x6" visible="true" />
+		<int16 name="Animation Index" offset="0x6" visible="true" />
 		<stringid name="Marker Name" offset="0x8" visible="true" tooltip="this marker should be parented to the vehicle root node" />
 		<float32 name="Mass Point Offset" offset="0xC" visible="true" tooltip="distance along the vehicle's up direction to move the wheel from the marker location" />
 		<float32 name="Full Extension Ground Depth" offset="0x10" visible="true" />
@@ -344,7 +312,7 @@
 	<tagblock name="Object Overlays" offset="0x74" visible="true" elementSize="0x14">
 		<stringid name="Label" offset="0x0" visible="true" />
 		<int16 name="Graph Index" offset="0x4" visible="true" />
-		<int16 name="Animation" offset="0x6" visible="true" />
+		<int16 name="Animation Index" offset="0x6" visible="true" />
 		<int16 name="Unknown" offset="0x8" visible="false" />
 		<enum16 name="Function Controls" offset="0xA" visible="true">
 			<option name="Frame" value="0x0" />

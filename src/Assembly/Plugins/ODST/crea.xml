@@ -108,12 +108,9 @@
 	<tagRef name="Collision Damage" offset="0x54" visible="true" tooltip="only set this tag if you want to override the default collision damage values in globals.globals" />
 	<tagblock name="Early Mover Oriented Bounding Box" offset="0x64" visible="true" elementSize="0x28">
 		<stringid name="Node Name" offset="0x0" visible="true" tooltip="empty means object space" />
-		<float32 name="X0" offset="0x4" visible="true" />
-		<float32 name="X1" offset="0x8" visible="true" />
-		<float32 name="Y0" offset="0xC" visible="true" />
-		<float32 name="Y1" offset="0x10" visible="true" />
-		<float32 name="Z0" offset="0x14" visible="true" />
-		<float32 name="Z1" offset="0x18" visible="true" />
+		<rangef name="x" offset="0x4" visible="true" />
+		<rangef name="y" offset="0xC" visible="true" />
+		<rangef name="z" offset="0x14" visible="true" />
 		<degree3 name="Angles" offset="0x1C" visible="true" />
 	</tagblock>
 	<tagRef name="Creation Effect" offset="0x70" visible="true" />
@@ -472,10 +469,10 @@ Certain flags applicable only to certain object types, should be self evident</c
 	<float32 name="Height Crouching" offset="0x124" visible="true" />
 	<float32 name="Radius" offset="0x128" visible="true" />
 	<float32 name="Mass" offset="0x12C" visible="true" />
-	<stringId name="Living Material Name" offset="0x130" visible="true" tooltip="collision material used when character is alive" />
-	<stringId name="Dead Material Name" offset="0x134" visible="true" tooltip="collision material used when character is dead" />
-	<int16 name="Living Material Global Index" offset="0x138" visible="true" />
-	<int16 name="Dead Material Global Index" offset="0x13A" visible="true" />
+	<stringId name="Living Global Material Name" offset="0x130" visible="true" tooltip="collision material used when character is alive" />
+	<stringId name="Dead Global Material Name" offset="0x134" visible="true" tooltip="collision material used when character is dead" />
+	<int16 name="Living Global Material Index" offset="0x138" visible="true" />
+	<int16 name="Dead Global Material Index" offset="0x13A" visible="true" />
 	<tagblock name="Dead Sphere Shapes" offset="0x13C" visible="true" elementSize="0x70" align="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int8 name="Material Index" offset="0x4" visible="true" />
@@ -483,7 +480,7 @@ Certain flags applicable only to certain object types, should be self evident</c
 			<bit name="Supresses Effects" index="0" />
 			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
 		</flags8>
-		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<int16 name="Global Material Index" offset="0x6" visible="true" />
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
@@ -570,7 +567,7 @@ Certain flags applicable only to certain object types, should be self evident</c
 			<bit name="Supresses Effects" index="0" />
 			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
 		</flags8>
-		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<int16 name="Global Material Index" offset="0x6" visible="true" />
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
@@ -630,7 +627,7 @@ Certain flags applicable only to certain object types, should be self evident</c
 			<bit name="Supresses Effects" index="0" />
 			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
 		</flags8>
-		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<int16 name="Global Material Index" offset="0x6" visible="true" />
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
@@ -718,11 +715,11 @@ Certain flags applicable only to certain object types, should be self evident</c
 	<degree name="Uphill Cutoff Angle" offset="0x170" visible="true" />
 	<float32 name="Downhill Velocity Scale" offset="0x174" visible="true" />
 	<float32 name="Uphill Velocity Scale" offset="0x178" visible="true" />
-	<float32 name="Minimum Normal k" offset="0x17C" visible="true" />
-	<float32 name="Downhill k0" offset="0x180" visible="true" />
-	<float32 name="Downhill k1" offset="0x184" visible="true" />
-	<float32 name="Uphill k0" offset="0x188" visible="true" />
-	<float32 name="Uphill k1" offset="0x18C" visible="true" />
+	<float32 name="Cosine Maximum Slope Angle" offset="0x17C" visible="true" />
+	<float32 name="Negative Sine Downhill Falloff Angle" offset="0x180" visible="true" />
+	<float32 name="Negative Sine Downhill Cutoff Angle" offset="0x184" visible="true" />
+	<float32 name="Sine Uphill Falloff Angle" offset="0x188" visible="true" />
+	<float32 name="Sine Uphill Cutoff Angle" offset="0x18C" visible="true" />
 	<degree name="Climb Inflection Angle" offset="0x190" visible="true" tooltip="angle for bipeds at which climb direction changes between up and down" />
 	<float32 name="Airborne Reaction Time Scale" offset="0x194" visible="true" tooltip="scale on the time for the entity to realize it is airborne" />
 	<float32 name="Ground Adhesion Velocity Scale" offset="0x198" visible="true" tooltip="scale on velocity with which the entity is pushed back into its ground plane (set to -1 to lock to ground)" />

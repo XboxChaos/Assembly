@@ -52,7 +52,7 @@
 	<undefined name="Unknown" offset="0x98" visible="false" />
 	<undefined name="Unknown" offset="0x9C" visible="false" />
 	<tagblock name="Unknown" offset="0xA0" visible="true" elementSize="0x40">
-		<ascii name="Unknown" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Unknown" offset="0x0" size="0x20" visible="true" />
 		<float32 name="Unknown" offset="0x20" visible="false" />
 		<float32 name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
@@ -63,7 +63,7 @@
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 	</tagblock>
 	<tagblock name="Markers" offset="0xB4" visible="true" elementSize="0x48">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<int16 name="Magic Identifier" offset="0x20" visible="true" tooltip="lies, this is unused padding" />
 		<int16 name="Unknown" offset="0x22" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
@@ -80,7 +80,7 @@
 		</tagblock>
 	</tagblock>
 	<tagblock name="Nodes" offset="0xC8" visible="true" elementSize="0x9C">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<int16 name="Next Sibling Node Index" offset="0x20" visible="true" />
 		<int16 name="First Child Node Index" offset="0x22" visible="true" />
 		<int16 name="Parent Node Index" offset="0x24" visible="true" />
@@ -103,9 +103,10 @@
 		<point3 name="Inverse Position" offset="0x90" visible="true" />
 	</tagblock>
 	<tagblock name="Regions" offset="0xDC" visible="true" elementSize="0x54">
-		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
+		<int16 name="Permutation Number" offset="0x24" visible="true" />
+		<int16 name="Unknown" offset="0x26" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
@@ -113,7 +114,7 @@
 		<undefined name="Unknown" offset="0x38" visible="false" />
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<tagblock name="Permutations" offset="0x40" visible="true" elementSize="0x60">
-			<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+			<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 			<flags32 name="Flags" offset="0x20" visible="true">
 				<bit name="Cannot Be Chosen Randomly" index="0" />
 			</flags32>
@@ -131,7 +132,7 @@
 			<int16 name="Super High Index" offset="0x48" visible="true" />
 			<int16 name="Unknown" offset="0x4A" visible="false" />
 			<tagblock name="Markers" offset="0x4C" visible="true" elementSize="0x50" tooltip="import markers, will automagically be postprocessed to model_marker_instance_block">
-				<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+				<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 				<int16 name="Node Index" offset="0x20" visible="true" />
 				<int16 name="Unknown" offset="0x22" visible="false" />
 				<vector4 name="Rotation" offset="0x24" visible="true" />
@@ -194,19 +195,23 @@
 				<int16 name="Vertex1 Index" offset="0x2" visible="true" />
 				<int16 name="Vertex2 Index" offset="0x4" visible="true" />
 			</tagblock>
-			<int32 name="Unknown" offset="0x5C" visible="false" />
-			<int32 name="Unknown" offset="0x60" visible="false" />
-			<int32 name="Unknown" offset="0x64" visible="false" />
-			<int32 name="Unknown" offset="0x68" visible="false" />
-			<int32 name="Unknown" offset="0x6C" visible="false" />
-			<int32 name="Unknown" offset="0x70" visible="false" />
-			<int32 name="Unknown" offset="0x74" visible="false" />
-			<int32 name="Unknown" offset="0x78" visible="false" />
+			<int32 name="Runtime Unknown Required" offset="0x5C" visible="true" />
+			<int32 name="Triangle Count" offset="0x60" visible="true" />
+			<int64 name="Triangle Offset" offset="0x64" visible="true" />
+			<int64 name="Triangle Offset 2" offset="0x6C" visible="true" />
+			<enum16 name="Vertex Type" offset="0x74" visible="true">
+				<option name="Structure BSP Uncompressed Rendered Vertices" value="0x0" />
+				<option name="Structure BSP Compressed Rendered Vertices" value="0x1" />
+				<option name="Structure BSP Uncompressed Lightmap Vertices" value="0x2" />
+				<option name="Structure BSP Compressed Lightmap Vertices" value="0x3" />
+				<option name="Model Uncompressed" value="0x4" />
+				<option name="Model Compressed" value="0x5" />
+			</enum16>
+			<int16 name="Unknown" offset="0x76" visible="false" />
+			<int32 name="Vertex Count" offset="0x78" visible="true" />
 			<int32 name="Unknown" offset="0x7C" visible="false" />
-			<int32 name="Unknown" offset="0x80" visible="false" />
-			<int32 name="Unknown" offset="0x84" visible="false" />
-			<int32 name="Unknown" offset="0x88" visible="false" />
-			<int32 name="Unknown" offset="0x8C" visible="false" />
+			<uint64 name="Vertex Pointer" offset="0x80" visible="true" />
+			<int64 name="Vertex Offset" offset="0x88" visible="true" />
 		</tagblock>
 	</tagblock>
 	<tagblock name="Shaders" offset="0x104" visible="true" elementSize="0x24">

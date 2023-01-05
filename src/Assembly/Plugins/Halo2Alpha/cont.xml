@@ -6,13 +6,13 @@
 		<revision author="Dragon" version="2">named some fields</revision>
 	</revisions>
 	<flags16 name="Flags" offset="0x0" visible="true">
-		<bit name="First point unfaded" index="0" />
-		<bit name="Last point unfaded" index="1" />
-		<bit name="Points start pinned to media" index="2" />
-		<bit name="Points start pinned to ground" index="3" />
-		<bit name="Points always pinned to media" index="4" />
-		<bit name="Points always pinned to ground" index="5" />
-		<bit name="Edge effects fade slowly" index="6" />
+		<bit name="First Point Unfaded" index="0" />
+		<bit name="Last Point Unfaded" index="1" />
+		<bit name="Points Start Pinned To Media" index="2" />
+		<bit name="Points Start Pinned To Ground" index="3" />
+		<bit name="Points Always Pinned To Media" index="4" />
+		<bit name="Points Always Pinned To Ground" index="5" />
+		<bit name="Edge Effect Fades Slowly" index="6" />
 		<bit name="Don't Inherit Object Change Color" index="7" />
 	</flags16>
 	<flags16 name="Scale Flags" offset="0x2" visible="true" tooltip="these flags determine which fields are scaled by the contrail density">
@@ -22,17 +22,17 @@
 		<bit name="Point Velocity Cone Angle" index="3" />
 		<bit name="Inherited Velocity Fraction" index="4" />
 		<bit name="Sequence Animation Rate" index="5" />
-		<bit name="Texture Scale U" index="6" />
-		<bit name="Texture Scale V" index="7" />
-		<bit name="Texture Animation U" index="8" />
-		<bit name="Texture Animation V" index="9" />
+		<bit name="Texture Scale u" index="6" />
+		<bit name="Texture Scale v" index="7" />
+		<bit name="Texture Animation u" index="8" />
+		<bit name="Texture Animation v" index="9" />
 	</flags16>
 	<float32 name="Point Generation Rate" offset="0x4" visible="true" tooltip="this many points are generated per second" />
 	<rangef name="Point Velocity" offset="0x8" visible="true" tooltip="velocity added to each point's initial velocity" />
 	<degree name="Point Velocity Cone Angle" offset="0x10" visible="true" tooltip="initial velocity is inside the cone defined by the marker's forward vector and this angle" />
 	<float32 name="Inherited Velocity Fraction" offset="0x14" visible="true" tooltip="fraction of parent object's velocity that is inherited by contrail points." />
 	<enum16 name="Render Type" offset="0x18" visible="true" tooltip="this specifies how the contrail is oriented in space">
-		<option name="Verticle Orientation" value="0x0" />
+		<option name="Vertical Orientation" value="0x0" />
 		<option name="Horizontal Orientation" value="0x1" />
 		<option name="Media Mapped" value="0x2" />
 		<option name="Ground Mapped" value="0x3" />
@@ -40,10 +40,10 @@
 		<option name="Double Marker Linked" value="0x5" />
 	</enum16>
 	<int16 name="Unknown" offset="0x1A" visible="false" />
-	<float32 name="Texture Repeats U" offset="0x1C" visible="true" tooltip="texture repeats per contrail segment" />
-	<float32 name="Texture Repeats V" offset="0x20" visible="true" tooltip="texture repeats across contrail width" />
-	<float32 name="Texture Animation U" offset="0x24" visible="true" tooltip="the texture along the contrail is animated by this value" />
-	<float32 name="Texture Animation V" offset="0x28" visible="true" tooltip="the texture across the contrail is animated by this value" />
+	<float32 name="Texture Repeats u" offset="0x1C" visible="true" tooltip="texture repeats per contrail segment" />
+	<float32 name="Texture Repeats v" offset="0x20" visible="true" tooltip="texture repeats across contrail width" />
+	<float32 name="Texture Animation u" offset="0x24" visible="true" tooltip="the texture along the contrail is animated by this value" />
+	<float32 name="Texture Animation v" offset="0x28" visible="true" tooltip="the texture across the contrail is animated by this value" />
 	<float32 name="Texture Animation Rate" offset="0x2C" visible="true" />
 	<tagref name="Bitmap" offset="0x30" visible="true" />
 	<int16 name="First Sequence Index" offset="0x40" visible="true" />
@@ -73,7 +73,7 @@
 	<undefined name="Unknown" offset="0x9C" visible="false" />
 	<undefined name="Unknown" offset="0xA0" visible="false" />
 	<undefined name="Unknown" offset="0xA4" visible="false" />
-	<undefined name="Unknown" offset="0xA8" visible="false" />
+	<int32 name="Runtime Unknown Required" offset="0xA8" visible="true" />
 	<flags16 name="Shader Flags" offset="0xAC" visible="true">
 		<bit name="Sort Bias" index="0" />
 		<bit name="Nonlinear Tint" index="1" />
@@ -87,7 +87,7 @@
 		<option name="Subtract" value="0x4" />
 		<option name="Component Min" value="0x5" />
 		<option name="Component Max" value="0x6" />
-		<option name="Alpha-Multiply-Add" value="0x7" />
+		<option name="Alpha-Multiply Add" value="0x7" />
 	</enum16>
 	<enum16 name="Framebuffer Fade Mode" offset="0xB0" visible="true">
 		<option name="None" value="0x0" />
@@ -110,13 +110,13 @@
 	<enum16 name="Anchor" offset="0xE0" visible="true">
 		<option name="With Primary" value="0x0" />
 		<option name="With Screen Space" value="0x1" />
-		<option name="ZSprite" value="0x2" />
+		<option name="z Sprite" value="0x2" />
 	</enum16>
 	<flags16 name="Flags" offset="0xE2" visible="true">
 		<bit name="Unfiltered" index="0" />
 	</flags16>
 	<int16 name="Unknown" offset="0xE4" visible="false" />
-	<enum16 name="U-Animation Function" offset="0xE6" visible="true">
+	<enum16 name="u Animation Function" offset="0xE6" visible="true">
 		<option name="One" value="0x0" />
 		<option name="Zero" value="0x1" />
 		<option name="Cosine" value="0x2" />
@@ -130,11 +130,11 @@
 		<option name="Wander" value="0xA" />
 		<option name="Spark" value="0xB" />
 	</enum16>
-	<float32 name="U-Animation Period" offset="0xE8" visible="true" tooltip="0 defaults to 1" />
-	<float32 name="U-Animation Phase" offset="0xEC" visible="true" />
-	<float32 name="U-Animation Scale" offset="0xF0" visible="true" tooltip="0 defaults to 1" />
+	<float32 name="u Animation Period" offset="0xE8" visible="true" tooltip="0 defaults to 1" />
+	<float32 name="u Animation Phase" offset="0xEC" visible="true" />
+	<float32 name="u Animation Scale" offset="0xF0" visible="true" tooltip="0 defaults to 1" />
 	<int16 name="Unknown" offset="0xF4" visible="false" />
-	<enum16 name="V-Animation Function" offset="0xF6" visible="true">
+	<enum16 name="v Animation Function" offset="0xF6" visible="true">
 		<option name="One" value="0x0" />
 		<option name="Zero" value="0x1" />
 		<option name="Cosine" value="0x2" />
@@ -148,9 +148,9 @@
 		<option name="Wander" value="0xA" />
 		<option name="Spark" value="0xB" />
 	</enum16>
-	<float32 name="V-Animation Period" offset="0xF8" visible="true" tooltip="0 defaults to 1" />
-	<float32 name="V-Animation Phase" offset="0xFC" visible="true" />
-	<float32 name="V-Animation Scale" offset="0x100" visible="true" tooltip="0 defaults to 1" />
+	<float32 name="v Animation Period" offset="0xF8" visible="true" tooltip="0 defaults to 1" />
+	<float32 name="v Animation Phase" offset="0xFC" visible="true" />
+	<float32 name="v Animation Scale" offset="0x100" visible="true" tooltip="0 defaults to 1" />
 	<int16 name="Unknown" offset="0x104" visible="false" />
 	<enum16 name="Rotation-Animation Function" offset="0x106" visible="true">
 		<option name="One" value="0x0" />
@@ -166,12 +166,12 @@
 		<option name="Wander" value="0xA" />
 		<option name="Spark" value="0xB" />
 	</enum16>
-	<float32 name="Rotation-Animation Period" offset="0x108" visible="true" tooltip="0 defaults to 1" />
-	<float32 name="Rotation-Animation Phase" offset="0x10C" visible="true" />
-	<float32 name="Rotation-Animation Scale" offset="0x110" visible="true" tooltip="0 defaults to 360" />
+	<float32 name="Rotation Animation Period" offset="0x108" visible="true" tooltip="0 defaults to 1" />
+	<float32 name="Rotation Animation Phase" offset="0x10C" visible="true" />
+	<float32 name="Rotation Animation Scale" offset="0x110" visible="true" tooltip="0 defaults to 360" />
 	<point2 name="Rotation-Animation Center" offset="0x114" visible="true" />
 	<undefined name="Unknown" offset="0x11C" visible="false" />
-	<float32 name="ZSprite Radius Scale" offset="0x120" visible="true" />
+	<float32 name="z Sprite Radius Scale" offset="0x120" visible="true" />
 	<undefined name="Unknown" offset="0x124" visible="false" />
 	<undefined name="Unknown" offset="0x128" visible="false" />
 	<undefined name="Unknown" offset="0x12C" visible="false" />

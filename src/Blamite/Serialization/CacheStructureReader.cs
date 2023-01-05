@@ -35,7 +35,7 @@ namespace Blamite.Serialization
 			else
 			{
 				var elements = new StructureValueCollection[count];
-				int blockOffset = _cache.MetaArea.PointerToOffset(expandedPointer);
+				uint blockOffset = _cache.MetaArea.PointerToOffset(expandedPointer);
 				_reader.SeekTo(blockOffset);
 				for (int i = 0; i < count; i++)
 				{

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin game="Reach" baseSize="0x60">
+<plugin game="ReachMCC" baseSize="0x60">
 	<revisions>
 		<revision author="Lord Zedd" version="1">Blah.</revision>
 	</revisions>
@@ -42,18 +42,15 @@
 	<float32 name="Continue If Within" offset="0xC" visible="true" />
 	<float32 name="Death Delay" offset="0x10" visible="true" />
 	<int16 name="Loop Start Event Index" offset="0x14" visible="true" />
-	<enum8 name="Priority" offset="0x16" visible="true">
-		<option name="Low" value="0x0" />
-		<option name="Normal" value="0x1" />
-		<option name="Above Normal" value="0x2" />
-		<option name="High" value="0x3" />
-		<option name="Very High" value="0x4" />
-		<option name="Essential" value="0x5" />
+	<int16 name="Local Location 0" offset="0x16" visible="true" />
+	<int16 name="Local Location 1" offset="0x18" visible="true" />
+	<enum8 name="Priority" offset="0x1A" visible="true">
+		<option name="Normal" value="0x0" />
+		<option name="High" value="0x1" />
+		<option name="Essential" value="0x2" />
 	</enum8>
-	<int8 name="Unknown" offset="0x17" visible="false" />
-	<int16 name="Unknown" offset="0x18" visible="true" />
-	<int16 name="Unknown" offset="0x1A" visible="true" />
-	<undefined name="Unknown" offset="0x1C" visible="true" />
+	<int8 name="Unknown" offset="0x1B" visible="false" />
+	<float32 name="Danger Radius" offset="0x1C" visible="true" />
 	<tagblock name="Locations" offset="0x20" visible="true" elementSize="0x8">
 		<comment title="MARKER NAMES">In addition to the marker in the render model there are several special marker names:
 
@@ -358,8 +355,8 @@ The location of the last detonated projectile, in case the parent object is a we
 			<flags32 name="Flags" offset="0x24" visible="true">
 				<bit name="Particles Freeze When Offscreen" index="0" />
 				<bit name="Particles Continue As Usual When Offscreen" index="1" />
-				<bit name="Lod Always 1.0" index="2" />
-				<bit name="Lod Same In Splitscreen" index="3" />
+				<bit name="LOD Always 1.0" index="2" />
+				<bit name="LOD Same In Splitscreen" index="3" />
 				<bit name="Disabled In Any Splitscreen" index="4" />
 				<!--bit name="Disabled In 3- And 4-Way Splitscreen" index="5" /-->
 				<bit name="Disabled For Debugging" index="5" />
@@ -435,7 +432,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -459,7 +456,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -488,7 +485,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -536,7 +533,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -560,7 +557,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -589,7 +586,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -637,7 +634,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -661,7 +658,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -690,7 +687,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -739,7 +736,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -763,7 +760,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -792,7 +789,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -841,7 +838,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -865,7 +862,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -894,7 +891,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -943,7 +940,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -967,7 +964,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -996,7 +993,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1045,7 +1042,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1069,7 +1066,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1098,7 +1095,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1147,7 +1144,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1171,7 +1168,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1200,7 +1197,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1249,7 +1246,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1273,7 +1270,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1302,7 +1299,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1370,7 +1367,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					</flags8>
 					<int8 name="Unknown" offset="0x3" visible="false" />
 					<tagblock name="Parameters" offset="0x4" visible="true" elementSize="0x24">
-						<int32 name="Parameter Id" offset="0x0" visible="true" />
+						<int32 name="Parameter ID" offset="0x0" visible="true" />
 						<enum8 name="Input Variable" offset="0x4" visible="true">
 							<option name="Particle Age" value="0x0" />
 							<option name="System Age" value="0x1" />
@@ -1383,7 +1380,7 @@ The location of the last detonated projectile, in case the parent object is a we
 							<option name="System Correlation 1" value="0x8" />
 							<option name="System Correlation 2" value="0x9" />
 							<option name="Particle Emission Time" value="0xA" />
-							<option name="Location Lod" value="0xB" />
+							<option name="Location LOD" value="0xB" />
 							<option name="Game Time" value="0xC" />
 							<option name="Effect A Scale" value="0xD" />
 							<option name="Effect B Scale" value="0xE" />
@@ -1407,7 +1404,7 @@ The location of the last detonated projectile, in case the parent object is a we
 							<option name="System Correlation 1" value="0x8" />
 							<option name="System Correlation 2" value="0x9" />
 							<option name="Particle Emission Time" value="0xA" />
-							<option name="Location Lod" value="0xB" />
+							<option name="Location LOD" value="0xB" />
 							<option name="Game Time" value="0xC" />
 							<option name="Effect A Scale" value="0xD" />
 							<option name="Effect B Scale" value="0xE" />
@@ -1436,7 +1433,7 @@ The location of the last detonated projectile, in case the parent object is a we
 							<option name="System Correlation 1" value="0x8" />
 							<option name="System Correlation 2" value="0x9" />
 							<option name="Particle Emission Time" value="0xA" />
-							<option name="Location Lod" value="0xB" />
+							<option name="Location LOD" value="0xB" />
 							<option name="Game Time" value="0xC" />
 							<option name="Effect A Scale" value="0xD" />
 							<option name="Effect B Scale" value="0xE" />
@@ -1490,7 +1487,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1514,7 +1511,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1543,7 +1540,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1591,7 +1588,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1615,7 +1612,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1644,7 +1641,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1693,7 +1690,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1717,7 +1714,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1746,7 +1743,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1795,7 +1792,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1819,7 +1816,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1848,7 +1845,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1897,7 +1894,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1921,7 +1918,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1950,7 +1947,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -1999,7 +1996,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -2023,7 +2020,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -2052,7 +2049,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -2101,7 +2098,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -2125,7 +2122,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -2154,7 +2151,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -2200,7 +2197,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -2224,7 +2221,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -2253,7 +2250,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -2302,7 +2299,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -2326,7 +2323,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />
@@ -2355,7 +2352,7 @@ The location of the last detonated projectile, in case the parent object is a we
 					<option name="System Correlation 1" value="0x8" />
 					<option name="System Correlation 2" value="0x9" />
 					<option name="Particle Emission Time" value="0xA" />
-					<option name="Location Lod" value="0xB" />
+					<option name="Location LOD" value="0xB" />
 					<option name="Game Time" value="0xC" />
 					<option name="Effect A Scale" value="0xD" />
 					<option name="Effect B Scale" value="0xE" />

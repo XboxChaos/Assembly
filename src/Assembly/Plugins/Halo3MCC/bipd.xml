@@ -29,24 +29,24 @@
 	<flags16 name="Flags" offset="0x2" visible="true">
 		<bit name="Does Not Cast Shadow" index="0" />
 		<bit name="Search Cardinal Direction Lightmaps on Failure" index="1" />
-		<bit name="Bit 2" index="2" />
+		<bit name="Preserves Initial Damage Owner" index="2" />
 		<bit name="Not A Pathfinding Obstacle" index="3" />
-		<bit name="Extension Of Parent" index="4" tooltip="object uses parent's markers" />
+		<bit name="Extension Of Parent" index="4" tooltip="object passes all function values to parent and uses parent's markers" />
 		<bit name="Does Not Cause Collision Damage" index="5" />
 		<bit name="Early Mover" index="6" />
 		<bit name="Early Mover Localized Physics" index="7" />
 		<bit name="Use Static Massive Lightmap Sample" index="8" />
 		<bit name="Object Scales Attachments" index="9" />
 		<bit name="Inherits Player's Appearance" index="10" />
-		<bit name="Dead Bipeds Can't Localize" index="11" />
-		<bit name="Attach To Clusters By Dynamic Sphere" index="12" />
+		<bit name="Non Physical In Map Editor" index="11" />
+		<bit name="Attach To Clusters By Dynamic Sphere" index="12" tooltip="use this for the mac gun on spacestation" />
 		<bit name="Effects Created By This Object Do Not Spawn Objects In Multiplayer" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
+		<bit name="Does Not Collide With Camera" index="14" tooltip="specificly the flying observer camera" />
+		<bit name="Damage Not Blocked By Obstructions" index="15" tooltip="AOE damage being applied to this object does not test for obstrutions." />
 	</flags16>
 	<float32 name="Bounding Radius" offset="0x4" visible="true" tooltip="If you edit this field manually, beware that the render model is no longer respected for radius calculation and that you need to set the bounding offset as well." />
 	<point3 name="Bounding Offset" offset="0x8" visible="true" />
-	<float32 name="Acceleration Scale" offset="0x14" visible="true" />
+	<float32 name="Acceleration Scale" offset="0x14" visible="true" tooltip="marine 1.0, grunt 1.4, elite 0.9, hunter 0.5, etc." />
 	<enum16 name="Lightmap Shadow Mode" offset="0x18" visible="true">
 		<option name="Default" value="0x0" />
 		<option name="Never" value="0x1" />
@@ -110,51 +110,22 @@
 	<tagRef name="Collision Damage" offset="0x54" visible="true" tooltip="only set this tag if you want to override the default collision damage values in globals.globals" />
 	<tagblock name="Early Mover Oriented Bounding Box" offset="0x64" visible="true" elementSize="0x28">
 		<stringid name="Node Name" offset="0x0" visible="true" tooltip="empty means object space" />
-		<float32 name="X0" offset="0x4" visible="true" />
-		<float32 name="X1" offset="0x8" visible="true" />
-		<float32 name="Y0" offset="0xC" visible="true" />
-		<float32 name="Y1" offset="0x10" visible="true" />
-		<float32 name="Z0" offset="0x14" visible="true" />
-		<float32 name="Z1" offset="0x18" visible="true" />
+		<rangef name="x" offset="0x4" visible="true" />
+		<rangef name="y" offset="0xC" visible="true" />
+		<rangef name="z" offset="0x14" visible="true" />
 		<degree3 name="Angles" offset="0x1C" visible="true" />
 	</tagblock>
 	<tagRef name="Creation Effect" offset="0x70" visible="true" />
 	<tagRef name="Material Effects" offset="0x80" visible="true" />
 	<tagRef name="Melee Sound" offset="0x90" visible="true" tooltip="this is the sound that is made when I am meleed. This overrides the sweetener sound of my material." />
 	<tagblock name="AI Properties" offset="0xA0" visible="true" elementSize="0x10">
-		<flags32 name="Flags" offset="0x0" visible="true">
+		<flags32 name="AI Flags" offset="0x0" visible="true">
 			<bit name="Destroyable Cover" index="0" />
 			<bit name="Pathfinding Ignore When Dead" index="1" />
 			<bit name="Dynamic Cover" index="2" />
 			<bit name="Non Flight-Blocking" index="3" />
 			<bit name="Dynamic Cover From Centre" index="4" />
 			<bit name="Has Corner Markers" index="5" />
-			<bit name="Idle When Flying" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
 		</flags32>
 		<stringId name="AI Type Name" offset="0x4" visible="true" tooltip="used for combat dialogue, etc." />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -184,34 +155,8 @@
 			<bit name="Mapping Does Not Controls Active" index="1" tooltip="the curve mapping can make the function active/inactive" />
 			<bit name="Always Active" index="2" tooltip="function does not deactivate when at or below lower bound" />
 			<bit name="Random Time Offset" index="3" tooltip="function offsets periodic function input by random value between 0 and 1" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
+			<bit name="Always Exports Value" index="4" tooltip="when this function is deactivated, it still exports its value" />
+			<bit name="Turn Off With Uses Magnitude" index="5" tooltip="the function will be turned off if the value of the turns_off_with function is 0" />
 		</flags32>
 		<stringId name="Import Name" offset="0x4" visible="true" tooltip="if you leave this field blank then you can set this function's input value with the hs_function object_set_function_variable" />
 		<stringId name="Export Name" offset="0x8" visible="true" />
@@ -227,17 +172,13 @@
 	<tagblock name="Attachments" offset="0xBC" visible="true" elementSize="0x20">
 		<tagRef name="Type" offset="0x0" visible="true" />
 		<stringid name="Marker" offset="0x10" visible="true" />
-		<enum8 name="Change Color" offset="0x14" visible="true">
+		<enum16 name="Change Color" offset="0x14" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Primary" value="0x1" />
 			<option name="Secondary" value="0x2" />
 			<option name="Tertiary" value="0x3" />
 			<option name="Quaternary" value="0x4" />
-		</enum8>
-		<flags8 name="Flags" offset="0x15" visible="true">
-			<bit name="Force Always On" index="0" tooltip="when this flag is clear we only create the attachment when the function object function is active or set to empty string" />
-			<bit name="Effect Size Scale From Object Scale" index="1" />
-		</flags8>
+		</enum16>
 		<int16 name="Unknown" offset="0x16" visible="false" />
 		<stringid name="Primary Scale" offset="0x18" visible="true" />
 		<stringid name="Secondary Scale" offset="0x1C" visible="true" />
@@ -267,7 +208,7 @@
 	<tagblock name="Predicted Resources" offset="0xE0" visible="false" elementSize="0x0">
 	</tagblock>
 	<tagblock name="Multiplayer Object" offset="0xEC" visible="true" elementSize="0xC4">
-		<flags16 name="Engine Flags" offset="0x0" visible="true" tooltip="Set which game engines you desire this object to appear in">
+		<flags16 name="Game Engine Flags" offset="0x0" visible="true" tooltip="Set which game engines you desire this object to appear in">
 			<bit name="Capture The Flag" index="0" />
 			<bit name="Slayer" index="1" />
 			<bit name="Oddball" index="2" />
@@ -277,7 +218,7 @@
 			<bit name="Assault" index="6" />
 			<bit name="VIP" index="7" />
 			<bit name="Infection" index="8" />
-			<bit name="Bit 9" index="9" />
+			<bit name="Target Training" index="9" />
 		</flags16>
 		<comment title="TYPE AND FLAGS">Type pertains to how you want the game engine to handle this object
 Certain flags applicable only to certain object types, should be self evident</comment>
@@ -296,18 +237,18 @@ Certain flags applicable only to certain object types, should be self evident</c
 			<option name="Teleporter Receiver" value="0xB" />
 			<option name="Player Spawn Location" value="0xC" />
 			<option name="Player Respawn Zone" value="0xD" />
-			<option name="Hold Spawn Objective" value="0xE" />
-			<option name="Capture Spawn Objective" value="0xF" />
-			<option name="Hold Destination Objective" value="0x10" />
-			<option name="Capture Destination Objective" value="0x11" />
-			<option name="Hill Objective" value="0x12" />
-			<option name="Infection Haven Objective" value="0x13" />
-			<option name="Territory Objective" value="0x14" />
-			<option name="VIP Boundary Objective" value="0x15" />
-			<option name="VIP Destination Objective" value="0x16" />
-			<option name="Juggernaut Destination Objective" value="0x17" />
+			<option name="Oddball Spawn Location" value="0xE" />
+			<option name="CTF Flag Spawn Location" value="0xF" />
+			<option name="Target Spawn Location" value="0x10" />
+			<option name="CTF Flag Return Area" value="0x11" />
+			<option name="Koth Hill Area" value="0x12" />
+			<option name="Infection Safe Area" value="0x13" />
+			<option name="Territory Area" value="0x14" />
+			<option name="VIP Influence Area" value="0x15" />
+			<option name="VIP Destination Zone" value="0x16" />
+			<option name="Juggernaut Destination Zone" value="0x17" />
 		</enum8>
-		<flags8 name="Teleporter Flags" offset="0x3" visible="true">
+		<flags8 name="Teleporter Passability" offset="0x3" visible="true">
 			<bit name="Disallow Players" index="0" />
 			<bit name="Allow Light Land Vehicles" index="1" />
 			<bit name="Allow Heavy Land Vehicles" index="2" />
@@ -316,21 +257,9 @@ Certain flags applicable only to certain object types, should be self evident</c
 		</flags8>
 		<flags16 name="Flags" offset="0x4" visible="true">
 			<bit name="Only Visible In Editor" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
+			<bit name="Valid Initial Player Spawn" index="1" />
+			<bit name="Fixed Boundary Orientation" index="2" />
+			<bit name="Candy Monitor Should Ignore" index="3" />
 		</flags16>
 		<enum8 name="Boundary Shape" offset="0x6" visible="true">
 			<option name="Unused" value="0x0" />
@@ -349,15 +278,15 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<float32 name="Boundary +Height" offset="0x14" visible="true" />
 		<float32 name="Boundary -Height" offset="0x18" visible="true" />
 		<comment title="RESPAWN ZONE DATA">These are respawn zone weights, used only for respawn zones</comment>
-		<float32 name="Unknown Weight" offset="0x1C" visible="true" />
-		<float32 name="Unknown Weight" offset="0x20" visible="true" />
-		<float32 name="Unknown Weight" offset="0x24" visible="true" />
+		<float32 name="Normal Weight" offset="0x1C" visible="true" />
+		<float32 name="Flag Away Weight" offset="0x20" visible="true" />
+		<float32 name="Flag At Home Weight" offset="0x24" visible="true" />
 		<comment title="MARKER DATA">These fields are only used for defining certain, special markers to use for positional locations if the default position (object origin) is not sufficient</comment>
 		<stringid name="Boundary Center Marker" offset="0x28" visible="true" />
 		<stringid name="Spawned Object Marker Name" offset="0x2C" visible="true" />
 		<comment title="SPAWNED OBJECT">If this object is intended to spawn something, the object it spawns should be specified here</comment>
 		<tagref name="Spawned Object" offset="0x30" visible="true" tooltip="If this object is intended to spawn something, the object it spawns should be specified here" />
-		<stringid name="Boundary Material (Not Yet Implemented)" offset="0x40" visible="true" />
+		<stringid name="Boundary Material" offset="0x40" visible="true" tooltip="Not Yet Implemented" />
 		<tagref name="Default Boundary Standard Shader" offset="0x44" visible="true" />
 		<tagref name="Default Boundary Opaque Shader" offset="0x54" visible="true" />
 		<tagref name="Sphere Standard Shader" offset="0x64" visible="true" />
@@ -386,21 +315,19 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<bit name="Cannot Open Doors Automatically" index="14" />
 		<bit name="Melee Attackers Cannot Attach" index="15" />
 		<bit name="Not Instantly Killed By Melee" index="16" />
-		<bit name="Shield Sapping" index="17" />
+		<bit name="Flashlight Power Doesn't Transfer To Weapon" index="17" />
 		<bit name="Runs Around Flaming" index="18" />
-		<bit name="Inconsequential" index="19" />
+		<bit name="Top Level For AOE Damage" index="19" />
 		<bit name="Special Cinematic Unit" index="20" />
 		<bit name="Ignored By Autoaiming" index="21" />
 		<bit name="Shields Fry Infection Forms" index="22" />
-		<bit name="Can Dual Wield" index="23" />
+		<bit name="Bit 23" index="23" />
 		<bit name="Bit 24" index="24" />
 		<bit name="Acts As Gunner For Parent" index="25" />
 		<bit name="Controlled By Parent Gunner" index="26" />
 		<bit name="Parent's Primary Weapon" index="27" />
 		<bit name="Unit Has Boost" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Bit 31" index="31" />
+		<bit name="Allow Aim While Opening Or Closing" index="29" />
 	</flags32>
 	<enum16 name="Default Team" offset="0xFC" visible="true">
 		<option name="Default" value="0x0" />
@@ -421,11 +348,11 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<option name="Unused15" value="0xF" />
 	</enum16>
 	<enum16 name="Constant Sound Volume" offset="0xFE" visible="true">
-		<option name="Silent" value="0x0" tooltip="ai will not respond to this sound" />
+		<option name="Silent" value="0x0" />
 		<option name="Medium" value="0x1" />
 		<option name="Loud" value="0x2" />
 		<option name="Shout" value="0x3" />
-		<option name="Quiet" value="0x4" tooltip="ai can hear this sound at any range" />
+		<option name="Quiet" value="0x4" />
 	</enum16>
 	<tagblock name="Campaign Metagame Bucket" offset="0x100" visible="true" elementSize="0x8">
 		<flags8 name="Flags" offset="0x0" visible="true">
@@ -480,22 +407,7 @@ Certain flags applicable only to certain object types, should be self evident</c
 	<float32 name="Camera Stiffness" offset="0x120" visible="true" />
 	<comment title="Unit Camera" />
 	<flags16 name="Flags" offset="0x124" visible="true">
-		<bit name="Bit 0" index="0" />
-		<bit name="Bit 1" index="1" />
-		<bit name="Bit 2" index="2" />
-		<bit name="Bit 3" index="3" />
-		<bit name="Bit 4" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Bit 6" index="6" />
-		<bit name="Bit 7" index="7" />
-		<bit name="Bit 8" index="8" />
-		<bit name="Bit 9" index="9" />
-		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
+		<bit name="Pitch Bounds Absolute Space" index="0" />
 	</flags16>
 	<int16 name="Unknown" offset="0x126" visible="false" />
 	<stringId name="Camera Marker Name" offset="0x128" visible="true" />
@@ -509,25 +421,30 @@ Certain flags applicable only to certain object types, should be self evident</c
 	<degree name="Pitch Maximum Spring" offset="0x14C" visible="true" />
 	<degree name="Spring Velocity" offset="0x150" visible="true" />
 	<tagblock name="Camera Acceleration" offset="0x154" visible="true" elementSize="0x4C">
-		<float32 name="Unknown" offset="0x0" visible="true" />
-		<float32 name="Unknown" offset="0x4" visible="true" />
-		<float32 name="Unknown" offset="0x8" visible="true" />
-		<float32 name="Unknown" offset="0xC" visible="true" />
-		<float32 name="Unknown" offset="0x10" visible="true" />
-		<float32 name="Unknown" offset="0x14" visible="true" />
-		<float32 name="Unknown" offset="0x18" visible="true" />
-		<float32 name="Unknown" offset="0x1C" visible="true" />
-		<float32 name="Unknown" offset="0x20" visible="true" />
-		<float32 name="Unknown" offset="0x24" visible="true" />
-		<float32 name="Unknown" offset="0x28" visible="true" />
-		<float32 name="Unknown" offset="0x2C" visible="true" />
-		<float32 name="Unknown" offset="0x30" visible="true" />
-		<float32 name="Unknown" offset="0x34" visible="true" />
-		<float32 name="Unknown" offset="0x38" visible="true" />
-		<float32 name="Unknown" offset="0x3C" visible="true" />
-		<float32 name="Unknown" offset="0x40" visible="true" />
-		<float32 name="Unknown" offset="0x44" visible="true" />
-		<float32 name="Unknown" offset="0x48" visible="true" />
+		<comment title="Camera Scale X MIN(Scale X POWER((K X X), Power), Maximum)" />
+		<comment title="Velocity i" />
+		<float32 name="k" offset="0x0" visible="true" />
+		<float32 name="Scale" offset="0x4" visible="true" />
+		<float32 name="Power" offset="0x8" visible="true" />
+		<float32 name="Maximum" offset="0xC" visible="true" />
+		<float32 name="Camera Scale (Axial)" offset="0x10" visible="true" tooltip="scale factor used when this acceleration component is along the axis of the forward vector of the camera" />
+		<float32 name="Camera Scale (Perpendicular)" offset="0x14" visible="true" tooltip="scale factor used when this acceleration component is perpendicular to the camera" />
+		<comment title="Velocity j" />
+		<float32 name="k" offset="0x18" visible="true" />
+		<float32 name="Scale" offset="0x1C" visible="true" />
+		<float32 name="Power" offset="0x20" visible="true" />
+		<float32 name="Maximum" offset="0x24" visible="true" />
+		<float32 name="Camera Scale (Axial)" offset="0x28" visible="true" tooltip="scale factor used when this acceleration component is along the axis of the forward vector of the camera" />
+		<float32 name="Camera Scale (Perpendicular)" offset="0x2C" visible="true" tooltip="scale factor used when this acceleration component is perpendicular to the camera" />
+		<comment title="Velocity k" />
+		<float32 name="k" offset="0x30" visible="true" />
+		<float32 name="Scale" offset="0x34" visible="true" />
+		<float32 name="Power" offset="0x38" visible="true" />
+		<float32 name="Maximum" offset="0x3C" visible="true" />
+		<float32 name="Camera Scale (Axial)" offset="0x40" visible="true" tooltip="scale factor used when this acceleration component is along the axis of the forward vector of the camera" />
+		<float32 name="Camera Scale (Perpendicular)" offset="0x44" visible="true" tooltip="scale factor used when this acceleration component is perpendicular to the camera" />
+		<comment title="Maximum Offset Velocity" />
+		<float32 name="Maximum Displacment Velocity" offset="0x48" visible="true" />
 	</tagblock>
 	<vector3 name="Acceleration Range" offset="0x160" visible="true" />
 	<float32 name="Acceleration Action Scale" offset="0x16C" visible="true" />
@@ -537,9 +454,9 @@ Certain flags applicable only to certain object types, should be self evident</c
 	<float32 name="Soft Ping Interrupt Time" offset="0x178" visible="true" />
 	<float32 name="Hard Ping Threshold" offset="0x17C" visible="true" />
 	<float32 name="Hard Ping Interrupt Time" offset="0x180" visible="true" />
-	<float32 name="Feign Death Threshold" offset="0x184" visible="true" />
-	<float32 name="Feign Death Time" offset="0x188" visible="true" />
-	<float32 name="Distance Of Evade Animation" offset="0x18C" visible="true" tooltip="this must be set to tell the AI how far it should expect our evade animation to move us" />
+	<float32 name="Hard Death Threshold" offset="0x184" visible="true" />
+	<float32 name="Feign Death Threshold" offset="0x188" visible="true" />
+	<float32 name="Feign Death Time" offset="0x18C" visible="true" />
 	<float32 name="Distance Of Dive Animation" offset="0x190" visible="true" tooltip="this must be set to tell the AI how far it should expect our dive animation to move us" />
 	<float32 name="Stunned Movement Threshold" offset="0x194" visible="true" tooltip="if we take this much damage in a short space of time we will play our 'stunned movement' animations" />
 	<float32 name="Feign Death Chance" offset="0x198" visible="true" />
@@ -572,8 +489,8 @@ Certain flags applicable only to certain object types, should be self evident</c
 	<enum16 name="Item Owner Size" offset="0x25A" visible="true">
 		<option name="Small" value="0x0" />
 		<option name="Medium" value="0x1" />
-		<option name="Large" value="0x2" />
-		<option name="Huge" value="0x3" />
+		<option name="Player" value="0x2" />
+		<option name="Large" value="0x3" />
 	</enum16>
 	<tagblock name="Postures" offset="0x25C" visible="true" elementSize="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
@@ -633,13 +550,12 @@ Certain flags applicable only to certain object types, should be self evident</c
 			<bit name="Allows Exit And Detach" index="22" />
 			<bit name="Blocks Headshots" index="23" />
 			<bit name="Exits To Ground" index="24" />
-			<bit name="Bit 25" index="25" />
+			<bit name="Closes Early, Opens Late" index="25" />
 			<bit name="Forward From Attachment" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
+			<bit name="Disallow AI Shooting" index="27" />
+			<bit name="Closes Early, Opens Early" index="28" />
+			<bit name="Closes Late, Opens Late" index="29" />
 			<bit name="Prevents Weapon Stowing" index="30" />
-			<bit name="Bit 31" index="31" />
 		</flags32>
 		<stringId name="Seat Animation" offset="0x4" visible="true" />
 		<stringId name="Seat Marker Name" offset="0x8" visible="true" />
@@ -676,22 +592,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<float32 name="Speed Exponent" offset="0x64" visible="true" tooltip="if &gt;0, t is then modified by raising to this exponent and result is used to linearly interpolate yaw/pitch rates" />
 		<comment title="Seat Camera" />
 		<flags16 name="Flags" offset="0x68" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
+			<bit name="Pitch Bounds Absolute Space" index="0" />
 		</flags16>
 		<int16 name="Unknown" offset="0x6A" visible="false" />
 		<stringId name="Camera Marker Name" offset="0x6C" visible="true" />
@@ -705,25 +606,30 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<degree name="Pitch Maximum Spring" offset="0x90" visible="true" />
 		<degree name="Spring Velocity" offset="0x94" visible="true" />
 		<tagblock name="Camera Acceleration" offset="0x98" visible="true" elementSize="0x4C">
-			<float32 name="Unknown" offset="0x0" visible="true" />
-			<float32 name="Unknown" offset="0x4" visible="true" />
-			<float32 name="Unknown" offset="0x8" visible="true" />
-			<float32 name="Unknown" offset="0xC" visible="true" />
-			<float32 name="Unknown" offset="0x10" visible="true" />
-			<float32 name="Unknown" offset="0x14" visible="true" />
-			<float32 name="Unknown" offset="0x18" visible="true" />
-			<float32 name="Unknown" offset="0x1C" visible="true" />
-			<float32 name="Unknown" offset="0x20" visible="true" />
-			<float32 name="Unknown" offset="0x24" visible="true" />
-			<float32 name="Unknown" offset="0x28" visible="true" />
-			<float32 name="Unknown" offset="0x2C" visible="true" />
-			<float32 name="Unknown" offset="0x30" visible="true" />
-			<float32 name="Unknown" offset="0x34" visible="true" />
-			<float32 name="Unknown" offset="0x38" visible="true" />
-			<float32 name="Unknown" offset="0x3C" visible="true" />
-			<float32 name="Unknown" offset="0x40" visible="true" />
-			<float32 name="Unknown" offset="0x44" visible="true" />
-			<float32 name="Unknown" offset="0x48" visible="true" />
+			<comment title="Camera Scale X MIN(Scale X POWER((K X X), Power), Maximum)" />
+			<comment title="Velocity i" />
+			<float32 name="k" offset="0x0" visible="true" />
+			<float32 name="Scale" offset="0x4" visible="true" />
+			<float32 name="Power" offset="0x8" visible="true" />
+			<float32 name="Maximum" offset="0xC" visible="true" />
+			<float32 name="Camera Scale (Axial)" offset="0x10" visible="true" tooltip="scale factor used when this acceleration component is along the axis of the forward vector of the camera" />
+			<float32 name="Camera Scale (Perpendicular)" offset="0x14" visible="true" tooltip="scale factor used when this acceleration component is perpendicular to the camera" />
+			<comment title="Velocity j" />
+			<float32 name="k" offset="0x18" visible="true" />
+			<float32 name="Scale" offset="0x1C" visible="true" />
+			<float32 name="Power" offset="0x20" visible="true" />
+			<float32 name="Maximum" offset="0x24" visible="true" />
+			<float32 name="Camera Scale (Axial)" offset="0x28" visible="true" tooltip="scale factor used when this acceleration component is along the axis of the forward vector of the camera" />
+			<float32 name="Camera Scale (Perpendicular)" offset="0x2C" visible="true" tooltip="scale factor used when this acceleration component is perpendicular to the camera" />
+			<comment title="Velocity k" />
+			<float32 name="k" offset="0x30" visible="true" />
+			<float32 name="Scale" offset="0x34" visible="true" />
+			<float32 name="Power" offset="0x38" visible="true" />
+			<float32 name="Maximum" offset="0x3C" visible="true" />
+			<float32 name="Camera Scale (Axial)" offset="0x40" visible="true" tooltip="scale factor used when this acceleration component is along the axis of the forward vector of the camera" />
+			<float32 name="Camera Scale (Perpendicular)" offset="0x44" visible="true" tooltip="scale factor used when this acceleration component is perpendicular to the camera" />
+			<comment title="Maximum Offset Velocity" />
+			<float32 name="Maximum Displacment Velocity" offset="0x48" visible="true" />
 		</tagblock>
 		<tagblock name="Unit HUD Interface" offset="0xA4" visible="true" elementSize="0x10">
 			<tagRef name="Unit HUD Interface" offset="0x0" visible="true" />
@@ -754,37 +660,18 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 	<degree name="Moving Turning Speed" offset="0x30C" visible="true" />
 	<flags32 name="Flags" offset="0x310" visible="true">
 		<bit name="Turns Without Animating" index="0" />
-		<bit name="Passes Through Other Bipeds" index="1" />
+		<bit name="Bit 1" index="1" />
 		<bit name="Immune To Falling Damage" index="2" />
-		<bit name="Rotate While Airborne" index="3" />
-		<bit name="Uses Limp Body Physics" index="4" />
+		<bit name="Bit 3" index="3" />
+		<bit name="Bit 4" index="4" />
 		<bit name="Bit 5" index="5" />
 		<bit name="Random Speed Increase" index="6" />
 		<bit name="Bit 7" index="7" />
 		<bit name="Spawn Death Children On Destroy" index="8" />
-		<bit name="Stunned By EMP Damage" index="9" />
+		<bit name="Stunned By Emp Damage" index="9" />
 		<bit name="Dead Physics When Stunned" index="10" />
 		<bit name="Always Ragdoll When Dead" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
-		<bit name="Bit 16" index="16" />
-		<bit name="Bit 17" index="17" />
-		<bit name="Bit 18" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Bit 20" index="20" />
-		<bit name="Bit 21" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Bit 25" index="25" />
-		<bit name="Bit 26" index="26" />
-		<bit name="Bit 27" index="27" />
-		<bit name="Bit 28" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Bit 31" index="31" />
+		<bit name="Snaps Turns" index="12" />
 	</flags32>
 	<degree name="Stationary Turning Threshold" offset="0x314" visible="true" />
 	<float32 name="Jump Velocity" offset="0x318" visible="true" />
@@ -809,35 +696,6 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<bit name="Locked By Human Targeting" index="0" />
 		<bit name="Locked By Plasma Targeting" index="1" />
 		<bit name="Always Locked By Plasma Targeting" index="2" />
-		<bit name="Bit 3" index="3" />
-		<bit name="Bit 4" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Bit 6" index="6" />
-		<bit name="Bit 7" index="7" />
-		<bit name="Bit 8" index="8" />
-		<bit name="Bit 9" index="9" />
-		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
-		<bit name="Bit 16" index="16" />
-		<bit name="Bit 17" index="17" />
-		<bit name="Bit 18" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Bit 20" index="20" />
-		<bit name="Bit 21" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Bit 25" index="25" />
-		<bit name="Bit 26" index="26" />
-		<bit name="Bit 27" index="27" />
-		<bit name="Bit 28" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Bit 31" index="31" />
 	</flags32>
 	<float32 name="Lock-On Distance" offset="0x364" visible="true" />
 	<int16 name="Physics Control Node Index" offset="0x368" visible="true" />
@@ -856,48 +714,22 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<bit name="Flying" index="4" />
 		<bit name="Not Physical" index="5" />
 		<bit name="Dead Character Collision Group" index="6" />
-		<bit name="Bit 7" index="7" />
-		<bit name="Never Rests" index="8" />
-		<bit name="Bit 9" index="9" />
-		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
-		<bit name="Bit 16" index="16" />
-		<bit name="Bit 17" index="17" />
-		<bit name="Bit 18" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Bit 20" index="20" />
-		<bit name="Bit 21" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Bit 25" index="25" />
-		<bit name="Bit 26" index="26" />
-		<bit name="Bit 27" index="27" />
-		<bit name="Bit 28" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Bit 31" index="31" />
+		<bit name="Suppress Ground Planes On Bipeds" index="7" />
 	</flags32>
 	<float32 name="Height Standing" offset="0x390" visible="true" />
 	<float32 name="Height Crouching" offset="0x394" visible="true" />
 	<float32 name="Radius" offset="0x398" visible="true" />
 	<float32 name="Mass" offset="0x39C" visible="true" />
-	<stringId name="Living Material Name" offset="0x3A0" visible="true" tooltip="collision material used when character is alive" />
-	<stringId name="Dead Material Name" offset="0x3A4" visible="true" tooltip="collision material used when character is dead" />
-	<int16 name="Living Material Global Index" offset="0x3A8" visible="true" />
-	<int16 name="Dead Material Global Index" offset="0x3AA" visible="true" />
+	<stringId name="Living Global Material Name" offset="0x3A0" visible="true" tooltip="collision material used when character is alive" />
+	<stringId name="Dead Global Material Name" offset="0x3A4" visible="true" tooltip="collision material used when character is dead" />
+	<int16 name="Living Global Material Index" offset="0x3A8" visible="true" />
+	<int16 name="Dead Global Material Index" offset="0x3AA" visible="true" />
 	<tagblock name="Dead Sphere Shapes" offset="0x3AC" visible="true" elementSize="0xA0" align="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<int8 name="Material Index" offset="0x4" visible="true" />
-		<flags8 name="Material Flags" offset="0x5" visible="true">
-			<bit name="Supresses Effects" index="0" />
-			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
-		</flags8>
-		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<int16 name="Material Index" offset="0x4" visible="true" />
+		<flags16 name="Flags" offset="0x6" visible="true">
+			<bit name="Unused" index="0" />
+		</flags16>
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
@@ -986,12 +818,10 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 	</tagblock>
 	<tagblock name="Pill Shapes" offset="0x3B8" visible="true" elementSize="0x70" align="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<int8 name="Material Index" offset="0x4" visible="true" />
-		<flags8 name="Material Flags" offset="0x5" visible="true">
-			<bit name="Supresses Effects" index="0" />
-			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
-		</flags8>
-		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<int16 name="Material Index" offset="0x4" visible="true" />
+		<flags16 name="Flags" offset="0x6" visible="true">
+			<bit name="Unused" index="0" />
+		</flags16>
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
@@ -1048,12 +878,10 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 	</tagblock>
 	<tagblock name="Sphere Shapes" offset="0x3C4" visible="true" elementSize="0xA0" align="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<int8 name="Material Index" offset="0x4" visible="true" />
-		<flags8 name="Material Flags" offset="0x5" visible="true">
-			<bit name="Supresses Effects" index="0" />
-			<bit name="Force Enable Collision With Player" index="1" tooltip="enables collision with the player regardless of the collision group" />
-		</flags8>
-		<int16 name="Material Global Index" offset="0x6" visible="true" />
+		<int16 name="Material Index" offset="0x4" visible="true" />
+		<flags16 name="Flags" offset="0x6" visible="true">
+			<bit name="Unused" index="0" />
+		</flags16>
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
@@ -1148,11 +976,11 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 	<degree name="Uphill Cutoff Angle" offset="0x3E0" visible="true" />
 	<float32 name="Downhill Velocity Scale" offset="0x3E4" visible="true" />
 	<float32 name="Uphill Velocity Scale" offset="0x3E8" visible="true" />
-	<float32 name="Minimum Normal k" offset="0x3EC" visible="true" />
-	<float32 name="Downhill k0" offset="0x3F0" visible="true" />
-	<float32 name="Downhill k1" offset="0x3F4" visible="true" />
-	<float32 name="Uphill k0" offset="0x3F8" visible="true" />
-	<float32 name="Uphill k1" offset="0x3FC" visible="true" />
+	<float32 name="Cosine Maximum Slope Angle" offset="0x3EC" visible="true" />
+	<float32 name="Negative Sine Downhill Falloff Angle" offset="0x3F0" visible="true" />
+	<float32 name="Negative Sine Downhill Cutoff Angle" offset="0x3F4" visible="true" />
+	<float32 name="Sine Uphill Falloff Angle" offset="0x3F8" visible="true" />
+	<float32 name="Sine Uphill Cutoff Angle" offset="0x3FC" visible="true" />
 	<degree name="Climb Inflection Angle" offset="0x400" visible="true" tooltip="angle for bipeds at which climb direction changes between up and down" />
 	<float32 name="Airborne Reaction Time Scale" offset="0x404" visible="true" tooltip="scale on the time for the entity to realize it is airborne" />
 	<float32 name="Ground Adhesion Velocity Scale" offset="0x408" visible="true" tooltip="scale on velocity with which the entity is pushed back into its ground plane (set to -1 to lock to ground)" />
