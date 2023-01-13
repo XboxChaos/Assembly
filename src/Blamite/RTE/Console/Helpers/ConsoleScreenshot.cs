@@ -28,25 +28,25 @@ namespace Blamite.RTE.Console.Helpers
 		public ConsoleScreenshot(ConsoleFormattedResponse formatted)
 		{
 			var pitch = formatted.FindNumberValue("pitch");
-			Pitch = pitch.HasValue ? (int)pitch.Value : -1;
+			Pitch = pitch.HasValue ? (int)pitch.Value : 0;
 
 			var width = formatted.FindNumberValue("width");
-			Width = width.HasValue ? (int)width.Value : -1;
+			Width = width.HasValue ? (int)width.Value : 0;
 
 			var height = formatted.FindNumberValue("height");
-			Height = height.HasValue ? (int)height.Value : -1;
+			Height = height.HasValue ? (int)height.Value : 0;
 
 			var format = formatted.FindNumberValue("format");
 			Format = format.HasValue ? format.Value : 0;
 
 			var offsetx = formatted.FindNumberValue("offsetx");
-			OffsetX = offsetx.HasValue ? (int)offsetx.Value : -1;
+			OffsetX = offsetx.HasValue ? (int)offsetx.Value : 0;
 
 			var offsety = formatted.FindNumberValue("offsety");
-			OffsetY = offsety.HasValue ? (int)offsety.Value : -1;
+			OffsetY = offsety.HasValue ? (int)offsety.Value : 0;
 
 			var buffersize = formatted.FindNumberValue("framebuffersize");
-			FrameBufferSize = buffersize.HasValue ? (int)buffersize.Value : -1;
+			FrameBufferSize = buffersize.HasValue ? (int)buffersize.Value : 0;
 
 			var screenwidth = formatted.FindNumberValue("sw");
 			ScreenWidth = screenwidth.HasValue ? (int)screenwidth.Value : -1;
@@ -55,35 +55,30 @@ namespace Blamite.RTE.Console.Helpers
 			ScreenHeight = screenheight.HasValue ? (int)screenheight.Value : -1;
 
 			var colorspace = formatted.FindNumberValue("colorspace");
-			ColorSpace = colorspace.HasValue ? (int)colorspace.Value : -1;
+			ColorSpace = colorspace.HasValue ? (int)colorspace.Value : 0;
 		}
 
 		public Bitmap ConvertToBitmap(bool resize)
 		{
 			//convert pixels according to the format
-			uint format = Format & 0xFFF;
+			bool tiled = (Format & 0x100) > 0;
+			int format = (int)(Format & 0x3F);
+
 			int realWidth = Pitch / 4;
 			byte[] data = Data;
 
-			if ((format & 0x100) > 0)
-			{
+			if (tiled)
 				data = ImageTools.ConvertTiledToLinear(data, realWidth, Height);
 
-				if (format == 0x1B6)
-				{
-					data = ImageTools.ConvertA2R10G10B10ToA8R8G8B8(data, realWidth, Height);
-				}
-				else if (format == 0x186)
-				{
-					data = ImageTools.FlipA8R8G8B8(data, realWidth, Height);
-				}
-				else
-				{
-					//do nothing? og uses 0x1E that doesn't require any postproc
-				}
-			}
-			else
-				data = ImageTools.PostProcA8R8G8B8(data);
+			if (format == 0x6)
+				data = ImageTools.FlipA8R8G8B8(data, realWidth, Height);
+			else if (format == 0x36)
+				data = ImageTools.ConvertA2R10G10B10AS16ToA8R8G8B8(data, realWidth, Height);
+
+			//are other formats used? I hope not!
+			//OG xbox uses 0x1E which is plain little endian 8888 so no work is needed unlike 360
+
+			data = ImageTools.PostProcA8R8G8B8(data);
 
 			Bitmap image = PixelsToBitmap.Convert(data, Pitch, Width, Height);
 
