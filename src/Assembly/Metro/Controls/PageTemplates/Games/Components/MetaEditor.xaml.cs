@@ -293,7 +293,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 				case RTEConnectionType.ConsoleXbox360:
 					MetroMessageBox.Show("Connection Error",
-						"Unable to connect to your Xbox 360 console. Make sure that XBDM is enabled, you have the Xbox 360 SDK installed, and that your console's IP has been set correctly.");
+						"Unable to connect to your Xbox 360 console. Make sure that XBDM is enabled and that your console's IP has been set correctly.");
 					break;
 
 				case RTEConnectionType.LocalProcess32:
