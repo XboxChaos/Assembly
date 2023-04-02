@@ -12,14 +12,14 @@ namespace Assembly.Metro.Dialogs
 		/// <param name="ex">The exception to pass into the dialog.</param>
 		public static void Show(Exception ex)
 		{
-			// Run it though the dictionary, see if it can be made more user-friendlyKK
+			// Run it though the dictionary, see if it can be made more user-friendly
 
 			ex = ExceptionDictionary.GetFriendlyException(ex);
 
-			if (App.AssemblyStorage.AssemblySettings.HomeWindow != null)
+			if (App.AssemblyStorage?.AssemblySettings.HomeWindow != null)
 				App.AssemblyStorage.AssemblySettings.HomeWindow.ShowMask();
 
-			ControlDialogs.Exception exceptionDialog = App.AssemblyStorage.AssemblySettings.HomeWindow != null
+			ControlDialogs.Exception exceptionDialog = App.AssemblyStorage?.AssemblySettings.HomeWindow != null
 				? new ControlDialogs.Exception(ex)
 				{
 					Owner = App.AssemblyStorage.AssemblySettings.HomeWindow,
@@ -28,7 +28,7 @@ namespace Assembly.Metro.Dialogs
 				: new ControlDialogs.Exception(ex);
 			exceptionDialog.ShowDialog();
 
-			if (App.AssemblyStorage.AssemblySettings.HomeWindow != null)
+			if (App.AssemblyStorage?.AssemblySettings.HomeWindow != null)
 				App.AssemblyStorage.AssemblySettings.HomeWindow.HideMask();
 		}
 	}
