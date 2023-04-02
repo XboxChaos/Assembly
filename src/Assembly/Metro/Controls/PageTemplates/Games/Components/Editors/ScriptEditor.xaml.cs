@@ -583,7 +583,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             while (true)
             {
                 await Task.WhenAll(FindGlobalNamesAsync(txtScript.Text), FindScriptNamesAsync(txtScript.Text));
-                await Task.Delay(interval, cancellationToken);
+                await Task.Delay(interval, cancellationToken).ContinueWith(t=> { });
             }
         }
 
