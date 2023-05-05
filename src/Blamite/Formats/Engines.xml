@@ -19,7 +19,7 @@
 		<engineInfo>
 			<generation>{"first", "second", "third"}</generation> - The engine generation of the cache file.
 			<endian>{"little", "big"}</endian> - The endianness of the cache file.
-			<segmentAlignment>{number}</segmentAlignment> - The alignment that sections of the cache file stick to.
+			<segmentAlignment>{number}</segmentAlignment> - The alignment that sections of the cache file stick to. Default if not present is 0x1000.
 			<expandMagic>{number}</expandMagic> - The number used by MCC in compacting various addresses. {compressedAddr << 2 + expandMagic}
 			<encryption>
 				<tagNameKey>{key}</tagNameKey> - Used to decrypt tag names in engines where they are encrypted.
@@ -31,6 +31,8 @@
 			<usesStringHashes>{"true", "false"}</usesStringHashes> - Whether hashes inside the globals tag should be updated upon modification to localizations. Because for some reason giving hashes when they shipped as 0's can crash. Default if not present is true.
 			<usesRawHashes>{"true", "false"}</usesRawHashes> - Whether hashes inside the play or zone tags are fully implemented or some/all are 0'd. This aids in making sure the relevant option in the Import dialog is checked/unchecked by default as tag injection optimizations use hashes to reduce redundant pages. Default if not present is true.
 			<optimizedShaders>{"true", "false"}</optimizedShaders> - Whether the shaders in each map are stripped down to only shaders used by that specific cache file. This aids in making sure the relevant option in the Import dialog is checked/unchecked by default as if shaders are optimized then you can't trust the existing shader during tag injection and must rename/inject the new shader to prevent ingame issues. Default if not present is false.
+			<tagSegmentAlignment>{number}</tagSegmentAlignment> - The alignment that the tag sections of the cache file stick to. Used for Third Gen. Default if not present is 0x10000 which applies to everything but an early H3 build.
+			<reverseChecksum>{"true", "false"}</reverseChecksum> - This will flip the endianness of the checksum when writing. Default if not present is false. Only seen in alpha/beta H3.
 		</engineInfo>
 
 		<pokingInfo>
@@ -395,6 +397,7 @@
 			<generation>third</generation>
 			<endian>big</endian>
 			<segmentAlignment>0x800</segmentAlignment>
+			<reverseChecksum>true</reverseChecksum>
 		</engineInfo>
 		<pokingInfo>
 			<platform>xbox360</platform>
@@ -404,6 +407,25 @@
 			<localeSymbols type="localeSymbols" path="Formats/Halo3Beta/H3B_LocaleSymbols.xml" />
 			<scripting type="scripting" path="Formats/Halo3Beta/H3B_Scripting.xml" />
 			<layouts type="layouts" path="Formats/Halo3Beta/Layouts" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 3 Playtest" version="9" build="05241.06.09.21.1534.first_playt" inherits="Halo 3 Beta">
+		<shortName>H3Play</shortName>
+		<plugins>Halo3PreAlpha</plugins>
+		<fallbackPlugins>Halo3Beta</fallbackPlugins>
+		<engineInfo>
+			<generation>third</generation>
+			<endian>big</endian>
+			<!--This alignment may be wrong but a sample size of 1 doesn't help-->
+			<segmentAlignment>0x200</segmentAlignment>
+			<tagSegmentAlignment>0x1000</tagSegmentAlignment>
+		</engineInfo>
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo3Alpha/H3P_StringIDs.xml" />
+			<localeSymbols type="localeSymbols" path="Formats/Halo3Alpha/H3A_LocaleSymbols.xml" />
+			<scripting type="scripting" path="Formats/Halo3Alpha/H3A_Scripting.xml" />
+			<layouts type="layouts" path="Formats/Halo3Alpha/LayoutsPlaytest" />
 		</databases>
 	</engine>
 
