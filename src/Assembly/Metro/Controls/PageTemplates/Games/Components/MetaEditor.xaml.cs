@@ -248,7 +248,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 				if (showActionDialog)
 					MetroMessageBox.Show("Tag Saved", "The changes have been saved back to the original file." +
-						(_buildInfo.UsesCompression && _cache.Engine == EngineType.SecondGeneration ? "\r\n\r\nNote: This file must be compressed from the Tools menu before attempting to load ingame." : ""));
+						(_buildInfo.UsesCompression && _cache.Engine == EngineType.SecondGeneration ? "\r\n\r\nNote: This file may need to be compressed from the Tools menu before attempting to load ingame." : ""));
 			}
 			else if (_rteProvider != null)
 			{

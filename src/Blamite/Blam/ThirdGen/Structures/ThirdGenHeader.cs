@@ -300,7 +300,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			CalculateStringGroup(values, segmenter);
 
-			Checksum = (uint)values.GetInteger("checksum");
+			Checksum = (uint)values.GetIntegerOrDefault("checksum", 0);
 		}
 
 		private void LoadInteropData(StructureValueCollection headerValues)

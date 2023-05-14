@@ -51,14 +51,19 @@ namespace Blamite.Blam.FirstGen.Structures
 
 		public uint Checksum { get; set; }
 
-		private uint _saved_meta_size_hack = 0;
+		private uint _bsp_size_hack = 0;
 
 		public StructureValueCollection Serialize()
 		{
 			var result = new StructureValueCollection();
 			result.SetInteger("file size", FileSize);
 			result.SetInteger("meta offset", (uint)MetaArea.Offset);
-			result.SetInteger("meta size", _saved_meta_size_hack);
+
+			if (_bsp_size_hack > 0)
+				result.SetInteger("meta size", MetaArea.Size + _bsp_size_hack);
+			else
+				result.SetInteger("meta size", MetaArea.VirtualSize);
+
 			result.SetString("internal name", InternalName);
 			result.SetString("build string", BuildString);
 			result.SetInteger("type", (uint)Type);
@@ -80,10 +85,6 @@ namespace Blamite.Blam.FirstGen.Structures
 			else
 				metaSize = (uint)values.GetInteger("meta size");
 
-			// store the stock meta size since xbox's size is virtual
-			//todo: figure out how this is calculated instead of doing a hack
-			_saved_meta_size_hack = (uint)values.GetInteger("meta size");
-
 			var metaSegment = new FileSegment(
 				segmenter.DefineSegment(metaOffset, metaSize, 0x4, SegmentResizeOrigin.Beginning), segmenter);
 
@@ -94,6 +95,10 @@ namespace Blamite.Blam.FirstGen.Structures
 				metaOffsetMask = (uint)(values.GetInteger("tag table offset") - values.GetInteger("meta header size"));
 
 			MetaArea = new FileSegmentGroup(new MetaOffsetConverter(metaSegment, metaOffsetMask));
+
+			// Until proper BSP support is merged in, we have to math the BSP size.
+			if (values.HasInteger("xbox bsp mask"))
+				_bsp_size_hack = (uint)MetaArea.PointerMask - (uint)values.GetInteger("xbox bsp mask");
 
 			IndexHeaderLocation = MetaArea.AddSegment(metaSegment);
 
@@ -121,17 +126,10 @@ namespace Blamite.Blam.FirstGen.Structures
 				StringIDIndexTableLocation = SegmentPointer.FromOffset(StringIDIndexTable.Offset, StringArea);
 				StringIDDataLocation = SegmentPointer.FromOffset(StringIDData.Offset, StringArea);
 			}
-			else
-			{
-				//dummy
-				StringIDCount = 0;
-				StringIDData = _eofSegment;
-				StringIDIndexTable = _eofSegment;
-			}
 
 			InternalName = values.GetString("internal name");
 
-			Checksum = (uint)values.GetInteger("checksum");
+			Checksum = (uint)values.GetIntegerOrDefault("checksum", 0);
 
 			// dummy partition
 			Partitions = new Partition[1];
