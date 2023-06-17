@@ -266,7 +266,8 @@ namespace Blamite.Blam.FirstGen
 				values.SetInteger("meta header size", (ulong)_buildInfo.Layouts.GetLayout("meta header").Size);
 				values.SetInteger("tag table offset", (ulong)tagTableOffset);
 			}
-			
+
+			values.SetInteger("true filesize", (uint)reader.Length);
 
 			return new FirstGenHeader(values, _buildInfo, _segmenter);
 		}

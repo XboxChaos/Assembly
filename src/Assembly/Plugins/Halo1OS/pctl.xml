@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo1OS" baseSize="0x68">
+	<revisions>
+		<revision author="Lord Zedd" version="1">ayy lmao</revision>
+	</revisions>
+	<undefined name="Unknown" offset="0x0" visible="false" />
+	<undefined name="Unknown" offset="0x4" visible="false" />
+	<undefined name="Unknown" offset="0x8" visible="false" />
+	<undefined name="Unknown" offset="0xC" visible="false" />
+	<undefined name="Unknown" offset="0x10" visible="false" />
+	<undefined name="Unknown" offset="0x14" visible="false" />
+	<undefined name="Unknown" offset="0x18" visible="false" />
+	<undefined name="Unknown" offset="0x1C" visible="false" />
+	<undefined name="Unknown" offset="0x20" visible="false" />
+	<undefined name="Unknown" offset="0x24" visible="false" />
+	<undefined name="Unknown" offset="0x28" visible="false" />
+	<undefined name="Unknown" offset="0x2C" visible="false" />
+	<undefined name="Unknown" offset="0x30" visible="false" />
+	<undefined name="Unknown" offset="0x34" visible="false" />
+	<comment title="System Behavior">These settings affect the behavior of the system's origin.</comment>
+	<tagRef name="Point Physics" offset="0x38" visible="true" />
+	<enum16 name="System Update Physics" offset="0x48" visible="true">
+		<option name="Default" value="0x0" />
+		<option name="Explosion" value="0x1" />
+	</enum16>
+	<int16 name="Unknown" offset="0x4A" visible="false" />
+	<flags32 name="Physics Flags" offset="0x4C" visible="true">
+	</flags32>
+	<tagblock name="Physics Constants" offset="0x50" visible="true" elementSize="0x4">
+		<float32 name="k" offset="0x0" visible="true" tooltip="The meaning of this constant depends on the selected physics creation/update function." />
+	</tagblock>
+	<tagblock name="Particle Types" offset="0x5C" visible="true" elementSize="0x80">
+		<ascii name="Name" offset="0x0" size="0x20" visible="true" />
+		<flags32 name="Flags" offset="0x20" visible="true">
+			<bit name="Type States Loop" index="0" />
+			<bit name="... Forward/Backward" index="1" />
+			<bit name="Particle States Loop" index="2" />
+			<bit name="... Forward/Backward" index="3" />
+			<bit name="Particles Die In Water" index="4" />
+			<bit name="Particles Die In Air" index="5" />
+			<bit name="Particles Die On Ground" index="6" />
+			<bit name="Rotational Sprites Animate Sideways" index="7" tooltip="if the complex sprite mode is rotational and this flag is set, the sideways sequence is contains an animation rather than a set of permutations." />
+			<bit name="Disabled" index="8" />
+			<bit name="Tint By Effect Color" index="9" />
+			<bit name="Initial Count Scales With Effect" index="10" />
+			<bit name="Minimum Count Scales With Effect" index="11" />
+			<bit name="Creation Rate Scales With Effect" index="12" />
+			<bit name="Scale Scales With Effect" index="13" />
+			<bit name="Animation Rate Scales With Effect" index="14" />
+			<bit name="Rotation Rate Scales With Effect" index="15" />
+			<bit name="Don't Draw In First Person" index="16" />
+			<bit name="Don't Draw In Third Person" index="17" />
+		</flags32>
+		<int16 name="Initial Particle Count" offset="0x24" visible="true" />
+		<int16 name="Unknown" offset="0x26" visible="false" />
+		<enum16 name="Complex Sprite Render Modes" offset="0x28" visible="true">
+			<option name="Simple" value="0x0" />
+			<option name="Rotational" value="0x1" />
+		</enum16>
+		<int16 name="Unknown" offset="0x2A" visible="false" />
+		<float32 name="Radius" offset="0x2C" visible="true" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<enum16 name="Particle Creation Physics" offset="0x54" visible="true" tooltip="This controls the initial placement of particles.">
+			<option name="Default" value="0x0" />
+			<option name="Explosion" value="0x1" />
+			<option name="Jet" value="0x2" />
+		</enum16>
+		<int16 name="Unknown" offset="0x56" visible="false" />
+		<flags32 name="Physics Flags" offset="0x58" visible="true">
+		</flags32>
+		<tagblock name="Physics Constants" offset="0x5C" visible="true" elementSize="0x4">
+			<float32 name="k" offset="0x0" visible="true" tooltip="The meaning of this constant depends on the selected physics creation/update function." />
+		</tagblock>
+		<tagblock name="States" offset="0x68" visible="true" elementSize="0xC0">
+			<ascii name="Name" offset="0x0" size="0x20" visible="true" />
+			<rangef name="Duration Bounds" offset="0x20" visible="true" tooltip="Time in this state." />
+			<rangef name="Transition Time Bounds" offset="0x28" visible="true" tooltip="Time spent in transition to next state." />
+			<undefined name="Unknown" offset="0x30" visible="false" />
+			<float32 name="Scale Multiplier" offset="0x34" visible="true" tooltip="This value will be multiplied into the scale computed by the particles' state." />
+			<float32 name="Animation Rate Multiplier" offset="0x38" visible="true" tooltip="This value will be multiplied into the animation rate computed by the particles' state." />
+			<float32 name="Rotation Rate Multiplier" offset="0x3C" visible="true" tooltip="This value will be multiplied into the rotation rate computed by the particles' state." />
+			<colorf name="Color Multiplier" offset="0x40" alpha="true" visible="true" tooltip="This value will be multiplied into the color computed by the particles' state." />
+			<float32 name="Radius Multiplier" offset="0x50" visible="true" tooltip="This value will be multiplied into the radius computed by the type." />
+			<float32 name="Minimum Particle Count" offset="0x54" visible="true" />
+			<float32 name="Particle Creation Rate" offset="0x58" visible="true" />
+			<undefined name="Unknown" offset="0x5C" visible="false" />
+			<undefined name="Unknown" offset="0x60" visible="false" />
+			<undefined name="Unknown" offset="0x64" visible="false" />
+			<undefined name="Unknown" offset="0x68" visible="false" />
+			<undefined name="Unknown" offset="0x6C" visible="false" />
+			<undefined name="Unknown" offset="0x70" visible="false" />
+			<undefined name="Unknown" offset="0x74" visible="false" />
+			<undefined name="Unknown" offset="0x78" visible="false" />
+			<undefined name="Unknown" offset="0x7C" visible="false" />
+			<undefined name="Unknown" offset="0x80" visible="false" />
+			<undefined name="Unknown" offset="0x84" visible="false" />
+			<undefined name="Unknown" offset="0x88" visible="false" />
+			<undefined name="Unknown" offset="0x8C" visible="false" />
+			<undefined name="Unknown" offset="0x90" visible="false" />
+			<undefined name="Unknown" offset="0x94" visible="false" />
+			<undefined name="Unknown" offset="0x98" visible="false" />
+			<undefined name="Unknown" offset="0x9C" visible="false" />
+			<undefined name="Unknown" offset="0xA0" visible="false" />
+			<undefined name="Unknown" offset="0xA4" visible="false" />
+			<undefined name="Unknown" offset="0xA8" visible="false" />
+			<undefined name="Unknown" offset="0xAC" visible="false" />
+			<enum16 name="Particle Creation Physics" offset="0xB0" visible="true" tooltip="This controls the placement of particles created during this state.">
+				<option name="Default" value="0x0" />
+				<option name="Explosion" value="0x1" />
+				<option name="Jet" value="0x2" />
+			</enum16>
+			<enum16 name="Particle Update Physics" offset="0xB2" visible="true" tooltip="This controls the motion of particles during this state.">
+				<option name="Default" value="0x0" />
+			</enum16>
+			<tagblock name="Physics Constants" offset="0xB4" visible="true" elementSize="0x4">
+				<float32 name="k" offset="0x0" visible="true" tooltip="The meaning of this constant depends on the selected physics creation/update function." />
+			</tagblock>
+		</tagblock>
+		<tagblock name="Particle States" offset="0x74" visible="true" elementSize="0x178">
+			<ascii name="Name" offset="0x0" size="0x20" visible="true" />
+			<rangef name="Duration Bounds" offset="0x20" visible="true" tooltip="Time in this state." />
+			<rangef name="Transition Time Bounds" offset="0x28" visible="true" tooltip="Time spent in transition to next state." />
+			<tagRef name="Bitmaps" offset="0x30" visible="true" />
+			<int16 name="Sequence Index" offset="0x40" visible="true" />
+			<int16 name="Unknown" offset="0x42" visible="false" />
+			<undefined name="Unknown" offset="0x44" visible="false" />
+			<rangef name="Scale" offset="0x48" visible="true" tooltip="Apparent size of the particles." />
+			<rangef name="Animation Rate" offset="0x50" visible="true" tooltip="Rate of sprite animation." />
+			<ranged name="Rotation Rate" offset="0x58" visible="true" tooltip="Rate of texture rotation." />
+			<colorf name="Color 1" offset="0x60" alpha="true" visible="true" tooltip="Particle will have a random color in the range determined by these two colors." />
+			<colorf name="Color 2" offset="0x70" alpha="true" visible="true" tooltip="Particle will have a random color in the range determined by these two colors." />
+			<float32 name="Radius Multiplier" offset="0x80" visible="true" tooltip="This value will be multiplied into the radius computed by the type." />
+			<tagRef name="Point Physics" offset="0x84" visible="true" />
+			<undefined name="Unknown" offset="0x94" visible="false" />
+			<undefined name="Unknown" offset="0x98" visible="false" />
+			<undefined name="Unknown" offset="0x9C" visible="false" />
+			<undefined name="Unknown" offset="0xA0" visible="false" />
+			<undefined name="Unknown" offset="0xA4" visible="false" />
+			<undefined name="Unknown" offset="0xA8" visible="false" />
+			<undefined name="Unknown" offset="0xAC" visible="false" />
+			<undefined name="Unknown" offset="0xB0" visible="false" />
+			<undefined name="Unknown" offset="0xB4" visible="false" />
+			<undefined name="Unknown" offset="0xB8" visible="false" />
+			<undefined name="Unknown" offset="0xBC" visible="false" />
+			<undefined name="Unknown" offset="0xC0" visible="false" />
+			<undefined name="Unknown" offset="0xC4" visible="false" />
+			<undefined name="Unknown" offset="0xC8" visible="false" />
+			<undefined name="Unknown" offset="0xCC" visible="false" />
+			<undefined name="Unknown" offset="0xD0" visible="false" />
+			<undefined name="Unknown" offset="0xD4" visible="false" />
+			<undefined name="Unknown" offset="0xD8" visible="false" />
+			<int32 name="Runtime Unknown Required" offset="0xDC" visible="true" />
+			<flags16 name="Shader Flags" offset="0xE0" visible="true">
+				<bit name="Sort Bias" index="0" />
+				<bit name="Nonlinear Tint" index="1" />
+				<bit name="Don't Overdraw FP Weapon" index="2" />
+			</flags16>
+			<enum16 name="Framebuffer Blend Function" offset="0xE2" visible="true">
+				<option name="Alpha Blend" value="0x0" />
+				<option name="Multiply" value="0x1" />
+				<option name="Double Multiply" value="0x2" />
+				<option name="Add" value="0x3" />
+				<option name="Subtract" value="0x4" />
+				<option name="Component Min" value="0x5" />
+				<option name="Component Max" value="0x6" />
+				<option name="Alpha-Multiply Add" value="0x7" />
+			</enum16>
+			<enum16 name="Framebuffer Fade Mode" offset="0xE4" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Fade When Perpendicular" value="0x1" />
+				<option name="Fade When Parallel" value="0x2" />
+			</enum16>
+			<flags16 name="Map Flags" offset="0xE6" visible="true">
+				<bit name="Unfiltered" index="0" />
+			</flags16>
+			<tagblock name="Shader Extension" offset="0xE8" visible="true" elementSize="0x30">
+				<undefined name="Unknown" offset="0x0" visible="false" />
+				<comment title="Fade Controls">Controls the softness of an effect</comment>
+				<float32 name="Depth Fade Distance" offset="0x4" visible="true" />
+				<float32 name="Camera Fade Distance" offset="0x8" visible="true" />
+				<undefined name="Unknown" offset="0xC" visible="false" />
+				<undefined name="Unknown" offset="0x10" visible="false" />
+				<undefined name="Unknown" offset="0x14" visible="false" />
+				<undefined name="Unknown" offset="0x18" visible="false" />
+				<undefined name="Unknown" offset="0x1C" visible="false" />
+				<undefined name="Unknown" offset="0x20" visible="false" />
+				<undefined name="Unknown" offset="0x24" visible="false" />
+				<undefined name="Unknown" offset="0x28" visible="false" />
+				<undefined name="Unknown" offset="0x2C" visible="false" />
+			</tagblock>
+			<undefined name="Unknown" offset="0xF4" visible="false" />
+			<undefined name="Unknown" offset="0xF8" visible="false" />
+			<undefined name="Unknown" offset="0xFC" visible="false" />
+			<undefined name="Unknown" offset="0x100" visible="false" />
+			<comment title="Secondary Map">Optional multitextured second map</comment>
+			<tagRef name="Bitmap" offset="0x104" visible="true" />
+			<enum16 name="Anchor" offset="0x114" visible="true">
+				<option name="With Primary" value="0x0" />
+				<option name="With Screen Space" value="0x1" />
+				<option name="Zsprite" value="0x2" />
+			</enum16>
+			<flags16 name="Flags" offset="0x116" visible="true">
+				<bit name="Unfiltered" index="0" />
+			</flags16>
+			<enum16 name="U-Animation Source" offset="0x118" visible="true">
+				<option name="None" value="0x0" />
+				<option name="A Out" value="0x1" />
+				<option name="B Out" value="0x2" />
+				<option name="C Out" value="0x3" />
+				<option name="D Out" value="0x4" />
+			</enum16>
+			<enum16 name="U-Animation Function" offset="0x11A" visible="true">
+				<option name="One" value="0x0" />
+				<option name="Zero" value="0x1" />
+				<option name="Cosine" value="0x2" />
+				<option name="Cosine (Variable Period)" value="0x3" />
+				<option name="Diagonal Wave" value="0x4" />
+				<option name="Diagonal Wave (Variable Period)" value="0x5" />
+				<option name="Slide" value="0x6" />
+				<option name="Slide (Variable Period)" value="0x7" />
+				<option name="Noise" value="0x8" />
+				<option name="Jitter" value="0x9" />
+				<option name="Wander" value="0xA" />
+				<option name="Spark" value="0xB" />
+			</enum16>
+			<float32 name="U-Animation Period" offset="0x11C" visible="true" tooltip="0 defaults to 1" />
+			<float32 name="U-Animation Phase" offset="0x120" visible="true" />
+			<float32 name="U-Animation Scale" offset="0x124" visible="true" tooltip="0 defaults to 1" />
+			<enum16 name="V-Animation Source" offset="0x128" visible="true">
+				<option name="None" value="0x0" />
+				<option name="A Out" value="0x1" />
+				<option name="B Out" value="0x2" />
+				<option name="C Out" value="0x3" />
+				<option name="D Out" value="0x4" />
+			</enum16>
+			<enum16 name="V-Animation Function" offset="0x12A" visible="true">
+				<option name="One" value="0x0" />
+				<option name="Zero" value="0x1" />
+				<option name="Cosine" value="0x2" />
+				<option name="Cosine (Variable Period)" value="0x3" />
+				<option name="Diagonal Wave" value="0x4" />
+				<option name="Diagonal Wave (Variable Period)" value="0x5" />
+				<option name="Slide" value="0x6" />
+				<option name="Slide (Variable Period)" value="0x7" />
+				<option name="Noise" value="0x8" />
+				<option name="Jitter" value="0x9" />
+				<option name="Wander" value="0xA" />
+				<option name="Spark" value="0xB" />
+			</enum16>
+			<float32 name="V-Animation Period" offset="0x12C" visible="true" tooltip="0 defaults to 1" />
+			<float32 name="V-Animation Phase" offset="0x130" visible="true" />
+			<float32 name="V-Animation Scale" offset="0x134" visible="true" tooltip="0 defaults to 1" />
+			<enum16 name="Rotation-Animation Source" offset="0x138" visible="true">
+				<option name="None" value="0x0" />
+				<option name="A Out" value="0x1" />
+				<option name="B Out" value="0x2" />
+				<option name="C Out" value="0x3" />
+				<option name="D Out" value="0x4" />
+			</enum16>
+			<enum16 name="Rotation-Animation Function" offset="0x13A" visible="true">
+				<option name="One" value="0x0" />
+				<option name="Zero" value="0x1" />
+				<option name="Cosine" value="0x2" />
+				<option name="Cosine (Variable Period)" value="0x3" />
+				<option name="Diagonal Wave" value="0x4" />
+				<option name="Diagonal Wave (Variable Period)" value="0x5" />
+				<option name="Slide" value="0x6" />
+				<option name="Slide (Variable Period)" value="0x7" />
+				<option name="Noise" value="0x8" />
+				<option name="Jitter" value="0x9" />
+				<option name="Wander" value="0xA" />
+				<option name="Spark" value="0xB" />
+			</enum16>
+			<float32 name="Rotation-Animation Period" offset="0x13C" visible="true" tooltip="0 defaults to 1" />
+			<float32 name="Rotation-Animation Phase" offset="0x140" visible="true" />
+			<float32 name="Rotation-Animation Scale" offset="0x144" visible="true" tooltip="0 defaults to 360" />
+			<point2 name="Rotation-Animation Center" offset="0x148" visible="true" />
+			<undefined name="Unknown" offset="0x150" visible="false" />
+			<float32 name="Zsprite Radius Scale" offset="0x154" visible="true" />
+			<undefined name="Unknown" offset="0x158" visible="false" />
+			<undefined name="Unknown" offset="0x15C" visible="false" />
+			<undefined name="Unknown" offset="0x160" visible="false" />
+			<undefined name="Unknown" offset="0x164" visible="false" />
+			<undefined name="Unknown" offset="0x168" visible="false" />
+			<tagblock name="Physics Constants" offset="0x16C" visible="true" elementSize="0x4">
+				<float32 name="k" offset="0x0" visible="true" tooltip="The meaning of this constant depends on the selected physics creation/update function." />
+			</tagblock>
+		</tagblock>
+	</tagblock>
+</plugin>

@@ -73,7 +73,12 @@ namespace Blamite.Blam.FirstGen.Structures
 
 		private void Load(StructureValueCollection values, FileSegmenter segmenter)
 		{
-			_eofSegment = segmenter.WrapEOF((uint)values.GetInteger("file size"));
+			//some opensauce maps were found to have the size set to 0.
+			uint filesize = (uint)values.GetInteger("file size");
+			if (filesize == 0)
+				filesize = (uint)values.GetInteger("true filesize");
+
+			_eofSegment = segmenter.WrapEOF(filesize);
 
 			uint metaOffset = (uint)values.GetInteger("meta offset");
 
