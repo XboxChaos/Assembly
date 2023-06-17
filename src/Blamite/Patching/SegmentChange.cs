@@ -7,7 +7,7 @@ namespace Blamite.Patching
 	/// </summary>
 	public class SegmentChange
 	{
-		public SegmentChange(uint oldOffset, int oldActualSize, uint newOffset, int newActualSize, bool resizeAtEnd)
+		public SegmentChange(uint oldOffset, uint oldActualSize, uint newOffset, uint newActualSize, bool resizeAtEnd)
 		{
 			OldOffset = oldOffset;
 			OldSize = oldActualSize;
@@ -26,7 +26,7 @@ namespace Blamite.Patching
 		/// <summary>
 		///     The old size of the segment including padding.
 		/// </summary>
-		public int OldSize { get; set; }
+		public uint OldSize { get; set; }
 
 		/// <summary>
 		///     The offset of the segment in the file after all segments have been resized.
@@ -36,7 +36,7 @@ namespace Blamite.Patching
 		/// <summary>
 		///     The new size of the segment including padding.
 		/// </summary>
-		public int NewSize { get; set; }
+		public uint NewSize { get; set; }
 
 		/// <summary>
 		///     True if extra data should be added at the end of the segment when resized,

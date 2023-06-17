@@ -147,7 +147,7 @@ namespace Blamite.Blam.Scripting
 
 			uint tableAddr = (uint)values.GetInteger("script string table address");
 			long expand = _expander.Expand(tableAddr);
-			int tableOffset = _metaArea.PointerToOffset(expand);
+			uint tableOffset = _metaArea.PointerToOffset(expand);
 
 			var result = new CachedStringTable();
 			stringReader.ReadRequestedStrings(reader, tableOffset, result);

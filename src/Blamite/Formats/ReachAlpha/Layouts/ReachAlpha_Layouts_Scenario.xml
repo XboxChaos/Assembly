@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layouts>
+	<!-- Scenario meta -->
+	<layout for="scnr">
+		<int32 name="number of script objects" offset="0xFC" />
+		<uint32 name="script object table address" offset="0x100" />
+
+		<int32 name="script string table size" offset="0x3F4" />
+		<uint32 name="script string table address" offset="0x400" />
+
+		<int32 name="number of scripts" offset="0x408" />
+		<uint32 name="script table address" offset="0x40C" />
+
+		<int32 name="number of script globals" offset="0x414" />
+		<uint32 name="script global table address" offset="0x418" />
+
+		<int32 name="number of script expressions" offset="0x4D0" />
+		<uint32 name="script expression table address" offset="0x4D4" />
+
+    <int32 name="number of script tag references" offset="0x420" />
+    <uint32 name="script tag references table address" offset="0x424" />
+	</layout>
+
+	<layout for="script element" size="0x18">
+		<int32 name="name index" offset="0x0" />
+		<int16 name="execution type" offset="0x4" />
+		<int16 name="return type" offset="0x6" />
+		<int32 name="first expression index" offset="0x8" />
+		<int32 name="number of parameters" offset="0xC" />
+		<uint32 name="address of parameter list" offset="0x10" />
+		<uint32 name="unknown" offset="0x14" />
+	</layout>
+
+	<layout for="script parameter element" size="0x24">
+		<asciiz name="name" offset="0x0" />
+		<int16 name="type" offset="0x20" />
+	</layout>
+
+	<layout for="script global element" size="0x28">
+		<asciiz name="name" offset="0x0" />
+		<int16 name="type" offset="0x20" />
+		<uint16 name="unknown" offset="0x22" />
+		<uint32 name="expression index" offset="0x24" />
+	</layout>
+
+	<layout for="script expression element" size="0x18">
+		<uint16 name="datum index salt" offset="0x0" />
+		<uint16 name="opcode" offset="0x2" />
+		<int16 name="value type" offset="0x4" />
+		<int16 name="expression type" offset="0x6" />
+		<uint32 name="next expression index" offset="0x8" />
+		<uint32 name="string table offset" offset="0xC" />
+		<uint32 name="value" offset="0x10" />
+		<int16 name="source line" offset="0x14" />
+	</layout>
+</layouts>

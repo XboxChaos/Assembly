@@ -88,7 +88,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			{
 				case 0://file
 					{
-						long addr = _cache.MetaArea.OffsetToPointer((int)action);
+						long addr = _cache.MetaArea.OffsetToPointer((uint)action);
 						switch (cbOutputType.SelectedIndex)
 						{
 							case 0://file

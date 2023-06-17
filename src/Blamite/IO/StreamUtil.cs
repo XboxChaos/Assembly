@@ -101,7 +101,7 @@ namespace Blamite.IO
 		/// <param name="stream">The stream to insert space into.</param>
 		/// <param name="size">The size of the space to insert.</param>
 		/// <param name="fill">The byte to fill the inserted space with. See <see cref="Fill" />.</param>
-		public static void Insert(IStream stream, int size, byte fill)
+		public static void Insert(IStream stream, uint size, byte fill)
 		{
 			if (size == 0)
 				return;
@@ -123,7 +123,7 @@ namespace Blamite.IO
 		/// <param name="writer">The IWriter to fill a section of.</param>
 		/// <param name="b">The byte to fill the section with.</param>
 		/// <param name="size">The size of the section to fill.</param>
-		public static void Fill(IWriter writer, byte b, int size)
+		public static void Fill(IWriter writer, byte b, uint size)
 		{
 			if (size == 0)
 				return;
@@ -188,7 +188,7 @@ namespace Blamite.IO
 
 			// Push the data back by that amount
 			stream.SeekTo(offset);
-			Insert(stream, minSpace, 0);
+			Insert(stream, (uint)minSpace, 0);
 
 			return minSpace;
 		}

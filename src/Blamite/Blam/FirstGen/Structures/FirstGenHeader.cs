@@ -15,7 +15,7 @@ namespace Blamite.Blam.FirstGen.Structures
 		public int HeaderSize { get; private set; }
 		public uint FileSize
 		{
-			get { return (uint)_eofSegment.Offset; }
+			get { return _eofSegment.Offset; }
 		}
 
 		public CacheFileType Type { get; private set; }
@@ -51,14 +51,19 @@ namespace Blamite.Blam.FirstGen.Structures
 
 		public uint Checksum { get; set; }
 
-		private uint _saved_meta_size_hack = 0;
+		private uint _bsp_size_hack = 0;
 
 		public StructureValueCollection Serialize()
 		{
 			var result = new StructureValueCollection();
 			result.SetInteger("file size", FileSize);
 			result.SetInteger("meta offset", (uint)MetaArea.Offset);
-			result.SetInteger("meta size", _saved_meta_size_hack);
+
+			if (_bsp_size_hack > 0)
+				result.SetInteger("meta size", MetaArea.Size + _bsp_size_hack);
+			else
+				result.SetInteger("meta size", MetaArea.VirtualSize);
+
 			result.SetString("internal name", InternalName);
 			result.SetString("build string", BuildString);
 			result.SetInteger("type", (uint)Type);
@@ -68,21 +73,22 @@ namespace Blamite.Blam.FirstGen.Structures
 
 		private void Load(StructureValueCollection values, FileSegmenter segmenter)
 		{
-			_eofSegment = segmenter.WrapEOF((int)values.GetInteger("file size"));
+			//some opensauce maps were found to have the size set to 0.
+			uint filesize = (uint)values.GetInteger("file size");
+			if (filesize == 0)
+				filesize = (uint)values.GetInteger("true filesize");
 
-			var metaOffset = (int)values.GetInteger("meta offset");
+			_eofSegment = segmenter.WrapEOF(filesize);
 
-			int metaSize;
+			uint metaOffset = (uint)values.GetInteger("meta offset");
+
+			uint metaSize;
 			if (values.HasInteger("tag data offset"))
 			{
-				metaSize = (int)values.GetInteger("tag data offset") + (int)values.GetInteger("tag data size");
+				metaSize = (uint)values.GetInteger("tag data offset") + (uint)values.GetInteger("tag data size");
 			}
 			else
-				metaSize = (int)values.GetInteger("meta size");
-
-			// store the stock meta size since xbox's size is virtual
-			//todo: figure out how this is calculated instead of doing a hack
-			_saved_meta_size_hack = (uint)values.GetInteger("meta size");
+				metaSize = (uint)values.GetInteger("meta size");
 
 			var metaSegment = new FileSegment(
 				segmenter.DefineSegment(metaOffset, metaSize, 0x4, SegmentResizeOrigin.Beginning), segmenter);
@@ -95,25 +101,29 @@ namespace Blamite.Blam.FirstGen.Structures
 
 			MetaArea = new FileSegmentGroup(new MetaOffsetConverter(metaSegment, metaOffsetMask));
 
+			// Until proper BSP support is merged in, we have to math the BSP size.
+			if (values.HasInteger("xbox bsp mask"))
+				_bsp_size_hack = (uint)MetaArea.PointerMask - (uint)values.GetInteger("xbox bsp mask");
+
 			IndexHeaderLocation = MetaArea.AddSegment(metaSegment);
 
 			Type = (CacheFileType)values.GetInteger("type");
 			var headerGroup = new FileSegmentGroup();
-			headerGroup.AddSegment(segmenter.WrapSegment(0, HeaderSize, 1, SegmentResizeOrigin.None));
+			headerGroup.AddSegment(segmenter.WrapSegment(0, (uint)HeaderSize, 1, SegmentResizeOrigin.None));
 
 			//h2 alpha forcing this to be shoved in
 			if (values.HasInteger("string table count"))
 			{
 				StringIDCount = (int)values.GetInteger("string table count");
-				var sidDataSize = (int)values.GetInteger("string table size");
-				StringIDData = segmenter.WrapSegment((int)values.GetInteger("string table offset"), sidDataSize, 1,
+				var sidDataSize = (uint)values.GetInteger("string table size");
+				StringIDData = segmenter.WrapSegment((uint)values.GetInteger("string table offset"), sidDataSize, 1,
 					SegmentResizeOrigin.End);
-				StringIDIndexTable = segmenter.WrapSegment((int)values.GetInteger("string index table offset"), StringIDCount * 4, 4,
+				StringIDIndexTable = segmenter.WrapSegment((uint)values.GetInteger("string index table offset"), (uint)StringIDCount * 4, 4,
 					SegmentResizeOrigin.End);
 
 				StringArea = new FileSegmentGroup();
 				if (values.HasInteger("string block offset"))
-					StringArea.AddSegment(segmenter.WrapSegment((int)values.GetInteger("string block offset"), StringIDCount * 0x80, 0x80,
+					StringArea.AddSegment(segmenter.WrapSegment((uint)values.GetInteger("string block offset"), (uint)StringIDCount * 0x80, 0x80,
 						SegmentResizeOrigin.End));
 				StringArea.AddSegment(StringIDIndexTable);
 				StringArea.AddSegment(StringIDData);
@@ -121,17 +131,10 @@ namespace Blamite.Blam.FirstGen.Structures
 				StringIDIndexTableLocation = SegmentPointer.FromOffset(StringIDIndexTable.Offset, StringArea);
 				StringIDDataLocation = SegmentPointer.FromOffset(StringIDData.Offset, StringArea);
 			}
-			else
-			{
-				//dummy
-				StringIDCount = 0;
-				StringIDData = _eofSegment;
-				StringIDIndexTable = _eofSegment;
-			}
 
 			InternalName = values.GetString("internal name");
 
-			Checksum = (uint)values.GetInteger("checksum");
+			Checksum = (uint)values.GetIntegerOrDefault("checksum", 0);
 
 			// dummy partition
 			Partitions = new Partition[1];

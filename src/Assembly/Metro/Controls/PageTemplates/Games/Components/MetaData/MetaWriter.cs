@@ -184,7 +184,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			var values = new StructureValueCollection();
 
-			bool isValid = _cache.MetaArea.ContainsBlockPointer(field.FirstElementAddress, (int)(field.Length * field.ElementSize));
+			bool isValid = _cache.MetaArea.ContainsBlockPointer(field.FirstElementAddress, (uint)(field.Length * field.ElementSize));
 
 			values.SetInteger("entry count", isValid ? (uint)field.Length : 0);
 
@@ -266,7 +266,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void VisitDataRef(DataRef field)
 		{
 			var values = new StructureValueCollection();
-			bool isValid = _cache.MetaArea.ContainsBlockPointer(field.DataAddress, field.Length);
+			bool isValid = _cache.MetaArea.ContainsBlockPointer(field.DataAddress, (uint)field.Length);
 			values.SetInteger("size", isValid ? (uint)field.Length : 0);
 
 			uint cont = _cache.PointerExpander.Contract(field.DataAddress);
@@ -533,7 +533,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void WriteTagBlockChildren(TagBlockData field)
 		{
 			if (field.CurrentIndex < 0 || !field.HasChildren ||
-				!_cache.MetaArea.ContainsBlockPointer(field.FirstElementAddress, (int)(field.Length * field.ElementSize)))
+				!_cache.MetaArea.ContainsBlockPointer(field.FirstElementAddress, (uint)(field.Length * field.ElementSize)))
 				return;
 
 			// Get the base address and convert it to an offset if we're writing to the file

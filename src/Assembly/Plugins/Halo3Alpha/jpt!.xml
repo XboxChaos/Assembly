@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo3Alpha" baseSize="0xD4">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+		<revision author="Lord Zedd" version="2">match with beta</revision>
+	</revisions>
+	<rangef name="Radius" offset="0x0" visible="true" />
+	<float32 name="Cutoff Scale" offset="0x8" visible="true" />
+	<flags32 name="Flags" offset="0xC" visible="true">
+		<bit name="Don't Scale Damage By Distance" index="0" />
+		<bit name="Area Damage Players Only" index="1" tooltip="area of effect damage only affects players" />
+		<bit name="Affects Model Targets" index="2" tooltip="distribute the damage amongst the model targets. this is the default behavior for aoe damage, but can be set here for direct damage." />
+		<bit name="Explosive Area Of Effect" index="3" />
+	</flags32>
+	<enum16 name="Side Effect" offset="0x10" visible="true">
+		<option name="None" value="0x0" />
+		<option name="Harmless" value="0x1" />
+		<option name="Lethal To The Unsuspecting" value="0x2" />
+		<option name="EMP" value="0x3" />
+	</enum16>
+	<enum16 name="Category" offset="0x12" visible="true">
+		<option name="None" value="0x0" />
+		<option name="Falling" value="0x1" />
+		<option name="Bullet" value="0x2" />
+		<option name="Grenade" value="0x3" />
+		<option name="High Explosive" value="0x4" />
+		<option name="Sniper" value="0x5" />
+		<option name="Melee" value="0x6" />
+		<option name="Flame" value="0x7" />
+		<option name="Mounted Weapon" value="0x8" />
+		<option name="Vehicle" value="0x9" />
+		<option name="Plasma" value="0xA" />
+		<option name="Needle" value="0xB" />
+		<option name="Shotgun" value="0xC" />
+	</enum16>
+	<flags32 name="Flags" offset="0x14" visible="true">
+		<bit name="Does Not Hurt Owner" index="0" />
+		<bit name="Can Cause Headshots" index="1" />
+		<bit name="Pings Resistant Units" index="2" />
+		<bit name="Does Not Hurt Friends" index="3" tooltip="affects aoe only" />
+		<bit name="Does Not Ping Units" index="4" />
+		<bit name="Detonates Explosives" index="5" />
+		<bit name="Only Hurts Shields" index="6" />
+		<bit name="Causes Flaming Death" index="7" />
+		<bit name="Damage Indicators Always Point Down" index="8" />
+		<bit name="Skips Shields" index="9" />
+		<bit name="Only Hurts One Infection Form" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Infection Form Pop" index="12" />
+		<bit name="Ignore Seat Scale For Direct Damage" index="13" />
+		<bit name="Forces Hard Ping" index="14" />
+		<bit name="Does Not Hurt Players" index="15" />
+		<bit name="Bit 16" index="16" />
+		<bit name="Bit 17" index="17" />
+		<bit name="Bit 18" index="18" />
+		<bit name="Bit 19" index="19" />
+		<bit name="Bit 20" index="20" />
+		<bit name="Bit 21" index="21" />
+		<bit name="Bit 22" index="22" />
+		<bit name="Bit 23" index="23" />
+		<bit name="Bit 24" index="24" />
+		<bit name="Bit 25" index="25" />
+		<bit name="Bit 26" index="26" />
+		<bit name="Bit 27" index="27" />
+		<bit name="Bit 28" index="28" />
+		<bit name="Bit 29" index="29" />
+		<bit name="Bit 30" index="30" />
+		<bit name="Bit 31" index="31" />
+	</flags32>
+	<float32 name="Area Of Effect Core Radius" offset="0x18" visible="true" tooltip="if &gt;0 then higher fidelity obstruction collision checks are performed. This field has no other ramifications." />
+	<float32 name="Damage Lower Bound" offset="0x1C" visible="true" />
+	<rangef name="Damage Upper Bound" offset="0x20" visible="true" />
+	<degree name="Damage Inner Cone Angle" offset="0x28" visible="true" />
+	<degree name="Damage Outer Cone Angle" offset="0x2C" visible="true" />
+	<float32 name="Active Camouflage Damage" offset="0x30" visible="true" tooltip="how much more visible this damage makes a player who is active camouflaged" />
+	<float32 name="Stun" offset="0x34" visible="true" tooltip="amount of stun added to damaged unit" />
+	<float32 name="Maximum Stun" offset="0x38" visible="true" tooltip="damaged unit's stun will never exceed this amount" />
+	<float32 name="Stun Time" offset="0x3C" visible="true" tooltip="duration of stun due to this damage" />
+	<float32 name="Instantaneous Acceleration" offset="0x40" visible="true" />
+	<comment title="Rider Damage Scales" />
+	<float32 name="Rider Direct Damage Scale" offset="0x44" visible="true" />
+	<float32 name="Rider Maximum Transfer Damage Scale" offset="0x48" visible="true" />
+	<float32 name="Rider Minimum Transfer Damage Scale" offset="0x4C" visible="true" />
+	<stringid name="General Damage" offset="0x50" visible="true" />
+	<stringid name="Specific Damage" offset="0x54" visible="true" />
+	<float32 name="AI Stun Radius" offset="0x58" visible="true" />
+	<rangef name="AI Stun Bounds" offset="0x5C" visible="true" />
+	<float32 name="Shake Radius" offset="0x64" visible="true" />
+	<float32 name="EMP Radius" offset="0x68" visible="true" />
+	<tagblock name="Player Responses" offset="0x6C" visible="true" elementSize="0x70">
+		<enum16 name="Response Type" offset="0x0" visible="true">
+			<option name="Shielded" value="0x0" />
+			<option name="Unshielded" value="0x1" />
+			<option name="All" value="0x2" />
+		</enum16>
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<comment title="Screen Flash" />
+		<enum16 name="Type" offset="0x4" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Lighten" value="0x1" />
+			<option name="Darken" value="0x2" />
+			<option name="Max" value="0x3" />
+			<option name="Min" value="0x4" />
+			<option name="Invert" value="0x5" />
+			<option name="Tint" value="0x6" />
+		</enum16>
+		<enum16 name="Priority" offset="0x6" visible="true">
+			<option name="Low" value="0x0" />
+			<option name="Medium" value="0x1" />
+			<option name="High" value="0x2" />
+		</enum16>
+		<float32 name="Duration" offset="0x8" visible="true" />
+		<enum16 name="Fade Function" offset="0xC" visible="true">
+			<option name="Linear" value="0x0" />
+			<option name="Late" value="0x1" />
+			<option name="Very Late" value="0x2" />
+			<option name="Early" value="0x3" />
+			<option name="Very Early" value="0x4" />
+			<option name="Cosine" value="0x5" />
+			<option name="Zero" value="0x6" />
+			<option name="One" value="0x7" />
+		</enum16>
+		<int16 name="Unknown" offset="0xE" visible="false" />
+		<float32 name="Maximum Intensity" offset="0x10" visible="true" />
+		<float32 name="Color Alpha" offset="0x14" visible="true" />
+		<float32 name="Color Red" offset="0x18" visible="true" />
+		<float32 name="Color Green" offset="0x1C" visible="true" />
+		<float32 name="Color Blue" offset="0x20" visible="true" />
+		<comment title="Vibration" />
+		<float32 name="Low Frequency Vibration Duration" offset="0x24" visible="true" />
+		<dataRef name="Low Frequency Vibration Function" offset="0x28" visible="true" />
+		<float32 name="High Frequency Vibration Duration" offset="0x3C" visible="true" />
+		<dataRef name="High Frequency Vibration Function" offset="0x40" visible="true" />
+		<comment title="Sound Effect" />
+		<stringid name="Effect Name" offset="0x54" visible="true" />
+		<float32 name="Duration" offset="0x58" visible="true" />
+		<dataRef name="Effect Scale Function" offset="0x5C" visible="true" />
+	</tagblock>
+	<comment title="Temporary Camera Impulse" />
+	<float32 name="Duration" offset="0x78" visible="true" />
+	<enum16 name="Fade Function" offset="0x7C" visible="true">
+		<option name="Linear" value="0x0" />
+		<option name="Late" value="0x1" />
+		<option name="Very Late" value="0x2" />
+		<option name="Early" value="0x3" />
+		<option name="Very Early" value="0x4" />
+		<option name="Cosine" value="0x5" />
+		<option name="Zero" value="0x6" />
+		<option name="One" value="0x7" />
+	</enum16>
+	<int16 name="Unknown" offset="0x7E" visible="false" />
+	<degree name="Rotation" offset="0x80" visible="true" />
+	<float32 name="Pushback" offset="0x84" visible="true" />
+	<float32 name="Jitter min" offset="0x88" visible="true" />
+	<float32 name="Jitter max" offset="0x8C" visible="true" />
+	<comment title="Camera Shaking" />
+	<float32 name="Duration" offset="0x90" visible="true" />
+	<enum16 name="Falloff Function" offset="0x94" visible="true">
+		<option name="Linear" value="0x0" />
+		<option name="Late" value="0x1" />
+		<option name="Very Late" value="0x2" />
+		<option name="Early" value="0x3" />
+		<option name="Very Early" value="0x4" />
+		<option name="Cosine" value="0x5" />
+		<option name="Zero" value="0x6" />
+		<option name="One" value="0x7" />
+	</enum16>
+	<int16 name="Unknown" offset="0x96" visible="false" />
+	<float32 name="Random Translation" offset="0x98" visible="true" />
+	<degree name="Random Rotation" offset="0x9C" visible="true" />
+	<enum16 name="Wobble Function" offset="0xA0" visible="true">
+		<option name="One" value="0x0" />
+		<option name="Zero" value="0x1" />
+		<option name="Cosine" value="0x2" />
+		<option name="Cosine (Variable Period)" value="0x3" />
+		<option name="Diagonal Wave" value="0x4" />
+		<option name="Diagonal Wave (Variable Period)" value="0x5" />
+		<option name="Slide" value="0x6" />
+		<option name="Slide (Variable Period)" value="0x7" />
+		<option name="Noise" value="0x8" />
+		<option name="Jitter" value="0x9" />
+		<option name="Wander" value="0xA" />
+		<option name="Spark" value="0xB" />
+	</enum16>
+	<int16 name="Unknown" offset="0xA2" visible="false" />
+	<float32 name="Wobble Function Period" offset="0xA4" visible="true" />
+	<float32 name="Wobble Weight" offset="0xA8" visible="true" />
+	<comment title="Sound" />
+	<tagRef name="Sound" offset="0xAC" visible="true" />
+	<comment title="Breaking Effect">Controls particle velocities when a damage effect shatters a materal.
+
+All particles created within 'forward radius' will be kicked along the
+damage direction with a speed equivalent to 'forward velocity' at the
+epicenter of the damage and 0 at the outer radius. 'Forward exponent'
+is used to modify the velocity scale. A low exponent (like 0.5) means that
+particles between the epicenter and the radius will be kicked out with a speed
+closer to 'forward velocity' than if a higher exponent (like 2.0) was used
+
+The outward fields work in a similar way, except instead of kicking along the
+damage direction, they get kick away from the damage epicenter.</comment>
+	<float32 name="Forward Velocity" offset="0xBC" visible="true" />
+	<float32 name="Forward Radius" offset="0xC0" visible="true" />
+	<float32 name="Forward Exponent" offset="0xC4" visible="true" />
+	<float32 name="Outward Velocity" offset="0xC8" visible="true" />
+	<float32 name="Outward Radius" offset="0xCC" visible="true" />
+	<float32 name="Outward Exponent" offset="0xD0" visible="true" />
+</plugin>

@@ -53,6 +53,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 	public partial class MetaEditor : UserControl
 	{
 		public static RoutedCommand ViewValueAsCommand = new RoutedCommand();
+		public static RoutedCommand ContentViewValueAsCommand = new RoutedCommand();
 		public static RoutedCommand GoToPlugin = new RoutedCommand();
 		private readonly EngineDescription _buildInfo;
 		private readonly ICacheFile _cache;
@@ -247,7 +248,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 				if (showActionDialog)
 					MetroMessageBox.Show("Tag Saved", "The changes have been saved back to the original file." +
-						(_buildInfo.UsesCompression && _cache.Engine == EngineType.SecondGeneration ? "\r\n\r\nNote: This file must be compressed from the Tools menu before attempting to load ingame." : ""));
+						(_buildInfo.UsesCompression && _cache.Engine == EngineType.SecondGeneration ? "\r\n\r\nNote: This file may need to be compressed from the Tools menu before attempting to load ingame." : ""));
 			}
 			else if (_rteProvider != null)
 			{
@@ -607,6 +608,53 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			{
 				IList<MetaField> viewValueAsFields = LoadViewValueAsPlugin();
 				var offset = (uint) _cache.MetaArea.PointerToOffset(field.FieldAddress);
+				MetroViewValueAs.Show(_cache, _buildInfo, _fileManager, viewValueAsFields, offset);
+			}
+		}
+
+		private void ContentViewValueAsCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			ValueField field = GetValueField(e.Source);
+			e.CanExecute = false;
+			if (field != null)
+			{
+				Type type = field.GetType();
+				if (type == typeof(TagBlockData) ||
+					type == typeof(DataRef))
+					e.CanExecute = true;
+			}
+		}
+
+		private void ContentViewValueAsCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			ValueField field = GetValueField(e.Source);
+			if (field != null)
+			{
+				IList<MetaField> viewValueAsFields = LoadViewValueAsPlugin();
+				Type type = field.GetType();
+				long address;
+
+				if (type == typeof(TagBlockData))
+				{
+					address = ((TagBlockData)field).FirstElementAddress;
+				}
+				else if (type == typeof(DataRef))
+				{
+					address = ((DataRef)field).DataAddress;
+				}
+				else
+				{
+					// this should never occur but might as well default to the field address
+					address = field.FieldAddress;
+				}
+
+				if (!_cache.MetaArea.ContainsPointer(address))
+				{
+					MetroMessageBox.Show("View Value As", "This field has an invalid address. Cannot open a View Value As window for it.");
+					return;
+				}
+
+				var offset = _cache.MetaArea.PointerToOffset(address);
 				MetroViewValueAs.Show(_cache, _buildInfo, _fileManager, viewValueAsFields, offset);
 			}
 		}
@@ -987,14 +1035,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			using (var stream = _fileManager.OpenReadWrite())
 			{
 				// Reallocate the block
-				newAddress = _cache.Allocator.Reallocate(oldAddress, (int)oldSize, (int)newSize, (uint)field.Align, stream);
+				newAddress = _cache.Allocator.Reallocate(oldAddress, (uint)oldSize, (uint)newSize, (uint)field.Align, stream);
 				_cache.SaveChanges(stream);
 
 				// If the block was made larger, zero extra data and null tagrefs
 				if (newAddress != 0 && newSize > oldSize)
 				{
 					stream.SeekTo(_cache.MetaArea.PointerToOffset(newAddress) + oldSize);
-					StreamUtil.Fill(stream, 0, (int)(newSize - oldSize));
+					StreamUtil.Fill(stream, 0, (uint)(newSize - oldSize));
 
 					var tagRefLayout = _buildInfo.Layouts.GetLayout("tag reference");
 					var groupOffset = tagRefLayout.GetFieldOffset("tag group magic");
@@ -1096,7 +1144,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			using (var stream = _fileManager.OpenReadWrite())
 			{
 				// Reallocate the block
-				newAddress = _cache.Allocator.Allocate(size, stream);
+				newAddress = _cache.Allocator.Allocate((uint)size, stream);
 				_cache.SaveChanges(stream);
 
 				//copy data
@@ -1150,7 +1198,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			using (var stream = _fileManager.OpenReadWrite())
 			{
 				// Allocate a new block as to not potentially disturb shared uses
-				newAddress = _cache.Allocator.Allocate(newLength.Value, stream);
+				newAddress = _cache.Allocator.Allocate((uint)newLength.Value, stream);
 				_cache.SaveChanges(stream);
 			}
 
@@ -1206,7 +1254,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			using (var stream = _fileManager.OpenReadWrite())
 			{
 				// Allocate the data
-				newAddress = _cache.Allocator.Allocate(size, stream);
+				newAddress = _cache.Allocator.Allocate((uint)size, stream);
 				_cache.SaveChanges(stream);
 		
 				//copy data

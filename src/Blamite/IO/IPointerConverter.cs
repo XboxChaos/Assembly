@@ -11,7 +11,7 @@
 		/// </summary>
 		/// <param name="pointer">The pointer to convert.</param>
 		/// <returns>The pointer's equivalent file offset.</returns>
-		int PointerToOffset(long pointer);
+		uint PointerToOffset(long pointer);
 
 		/// <summary>
 		///     Converts a pointer to a file offset pointing to an area in the file.
@@ -19,7 +19,7 @@
 		/// <param name="pointer">The pointer to convert.</param>
 		/// <param name="areaStartOffset">The file offset of the start of the area in the file that the pointer points to.</param>
 		/// <returns>The pointer's equivalent file offset.</returns>
-		int PointerToOffset(long pointer, int areaStartOffset);
+		uint PointerToOffset(long pointer, uint areaStartOffset);
 
 		/// <summary>
 		///     Converts a file offset to a pointer.
@@ -27,7 +27,7 @@
 		/// </summary>
 		/// <param name="offset">The offset to convert.</param>
 		/// <returns>The offset's equivalent pointer.</returns>
-		long OffsetToPointer(int offset);
+		long OffsetToPointer(uint offset);
 
 		/// <summary>
 		///     Converts a file offset from an area of the file to a pointer.
@@ -35,6 +35,6 @@
 		/// <param name="offset">The file offset to convert.</param>
 		/// <param name="areaStartOffset">The start offset of the area in the file that the pointer should point to.</param>
 		/// <returns>The offset's equivalent pointer.</returns>
-		long OffsetToPointer(int offset, int areaStartOffset);
+		long OffsetToPointer(uint offset, uint areaStartOffset);
 	}
 }

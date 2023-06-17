@@ -28,7 +28,7 @@ namespace Blamite.Blam
                                           FirstGenTagTable tags) : base()
         {
 
-            int[] offsets = ReadOffsets(tags, tags.Count);
+            uint[] offsets = ReadOffsets(tags, tags.Count);
 
             // TODO (Dragon): this is kind of hacky now and uses the original reader
             //                rather than a StringReader
@@ -36,7 +36,7 @@ namespace Blamite.Blam
             reader.SeekTo(0);
             for (int i = 0; i < offsets.Length; i++)
             {
-                if (offsets[i] == -1)
+                if (offsets[i] == 0xFFFFFFFF)
                     base.Add(null);
                 else
                 {
@@ -58,9 +58,9 @@ namespace Blamite.Blam
             throw new NotImplementedException();
         }
 
-        private int[] ReadOffsets(FirstGenTagTable tags, int count)
+        private uint[] ReadOffsets(FirstGenTagTable tags, int count)
         {
-            var offsets = new int[count];
+            var offsets = new uint[count];
             int i = 0;
             foreach (FirstGenTag tag in tags)
             {

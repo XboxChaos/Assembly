@@ -92,12 +92,18 @@
 												                CanExecute="ViewValueAsCommand_CanExecute"
 												                Executed="ViewValueAsCommand_Executed" />
 
+													<CommandBinding Command="{x:Static local:MetaEditor.ContentViewValueAsCommand}"
+												                CanExecute="ContentViewValueAsCommand_CanExecute"
+												                Executed="ContentViewValueAsCommand_Executed" />
+
 													<CommandBinding Command="{x:Static local:MetaEditor.GoToPlugin}"
 												                CanExecute="GoToPlugin_CanExecute"
 												                Executed="GoToPlugin_Executed" />
 												</ContextMenu.CommandBindings>
 												<MenuItem Header="View Value As..."
 											          Command="{x:Static local:MetaEditor.ViewValueAsCommand}" CommandParameter="{Binding}" />
+												<MenuItem Header="View Value As... (On Contents)"
+											          Command="{x:Static local:MetaEditor.ContentViewValueAsCommand}" CommandParameter="{Binding}" />
 												<MenuItem Header="Go to plugin line..." Command="{x:Static local:MetaEditor.GoToPlugin}"
 											          CommandParameter="{Binding}" />
 											</ContextMenu>
@@ -147,7 +153,7 @@
 							<Border BorderThickness="1" Background="#1b1b1c" BorderBrush="#333337">
 								<StackPanel>
 									<MenuItem x:Name="btnPluginRevisionViewer" Header="View Revision Info..." Foreground="White" ToolTip="View who researched the plugin and what they did. (Ctrl + Shift + R)" Click="btnPluginRevisionViewer_Click"/>
-									<MenuItem x:Name="btnDumpTag" Header="Dump Tag As..." Foreground="White" ToolTip="Dumps all fields as json or text to a file. It is recommended to save any changes before using this." Click="btnDumpTag_Click"/>
+									<MenuItem x:Name="btnDumpTag" Header="Dump Tag As..." Foreground="White" ToolTip="Dumps all fields as json or text to a file. It is recommended to reload the tag before using this, as cached block data can give incorrect results. Save any changes first of course!" Click="btnDumpTag_Click"/>
 									<Separator/>
 									
 									<MenuItem x:Name="cbShowInvisibles" Header="Show Invisibles" IsCheckable="True" Foreground="White" Checked="cbShowInvisibles_Altered" Unchecked="cbShowInvisibles_Altered" ToolTip="Toggles display of plugin fields that aren't visible by default. (Auto Reload)"/>

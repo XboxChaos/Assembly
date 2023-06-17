@@ -71,7 +71,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			// Wrap the groups stored in the cache file and sort them
 			foreach (LocalizedStringList group in _currentPack.StringLists)
 			{
-				string name = _cache.FileNames.GetTagName(group.SourceTag);
+				string name = _cache.FileNames.GetTagName(group.SourceTag) ?? group.SourceTag.Index.ToString();
 				_groups.Add(new NamedStringList {Name = name, Base = group});
 			}
 			_groups.Sort((g1, g2) => g1.Name.CompareTo(g2.Name));

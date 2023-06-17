@@ -53,13 +53,13 @@ namespace Blamite.Blam.SecondGen.Localization
 			if (StringCount > 0)
 			{
 				// Index table offset, segment, and pointer
-				int localeIndexTableOffset = localeArea.PointerToOffset((uint)values.GetInteger("locale index table offset"));
-				LocaleIndexTable = segmenter.WrapSegment(localeIndexTableOffset, StringCount*8, 8, SegmentResizeOrigin.End);
+				uint localeIndexTableOffset = localeArea.PointerToOffset((uint)values.GetInteger("locale index table offset"));
+				LocaleIndexTable = segmenter.WrapSegment(localeIndexTableOffset, (uint)StringCount*8, 8, SegmentResizeOrigin.End);
 				LocaleIndexTableLocation = localeArea.AddSegment(LocaleIndexTable);
 
 				// Data offset, segment, and pointer
-				int localeDataOffset = localeArea.PointerToOffset((uint)values.GetInteger("locale data index offset"));
-				var localeDataSize = (int) values.GetInteger("locale table size");
+				uint localeDataOffset = localeArea.PointerToOffset((uint)values.GetInteger("locale data index offset"));
+				var localeDataSize = (uint) values.GetInteger("locale table size");
 				LocaleData = segmenter.WrapSegment(localeDataOffset, localeDataSize, _sizeAlign, SegmentResizeOrigin.End);
 				LocaleDataLocation = localeArea.AddSegment(LocaleData);
 			}
@@ -117,14 +117,14 @@ namespace Blamite.Blam.SecondGen.Localization
 				stringData.SetLength(dataSize);
 
 				// Make sure there's free space for the offset table and then write it to the file
-				LocaleIndexTable.Resize((int) offsetData.Length, stream);
+				LocaleIndexTable.Resize((uint) offsetData.Length, stream);
 				stream.SeekTo(LocaleIndexTableLocation.AsOffset());
 				stream.WriteBlock(offsetData.ToArray(), 0, (int) offsetData.Length);
 
 				byte[] strings = stringData.ToArray();
 
 				// Make sure there's free space for the string data and then write it to the file
-				LocaleData.Resize(dataSize, stream);
+				LocaleData.Resize((uint)dataSize, stream);
 				stream.SeekTo(LocaleDataLocation.AsOffset());
 				stream.WriteBlock(strings, 0, dataSize);
 
@@ -152,7 +152,7 @@ namespace Blamite.Blam.SecondGen.Localization
 		{
 			// Read the string data
 			reader.SeekTo(LocaleDataLocation.AsOffset());
-			byte[] stringData = reader.ReadBlock(LocaleData.Size);
+			byte[] stringData = reader.ReadBlock((int)LocaleData.Size);
 
 			return stringData;
 		}

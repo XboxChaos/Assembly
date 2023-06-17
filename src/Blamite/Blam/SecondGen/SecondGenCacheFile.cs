@@ -274,7 +274,7 @@ namespace Blamite.Blam.SecondGen
 			{
 				//header didn't contain a scenario path yet, but later engines do so might as well grab it
 				ITag scenario = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
-				_header.ScenarioName = _fileNames.GetTagName(scenario.Index);
+				_header.ScenarioName = _fileNames.GetTagName(scenario.Index) ?? scenario.Index.ToString();
 			}
 		}
 
@@ -292,7 +292,7 @@ namespace Blamite.Blam.SecondGen
 				StructureLayout tagElementLayout = _buildInfo.Layouts.GetLayout("tag element");
 
 				uint indexHeaderOffset = (uint)values.GetInteger("meta offset");
-				
+
 				reader.SeekTo(indexHeaderOffset + indexHeaderLayout.GetFieldOffset("tag table offset"));
 				uint tagTableAddress = reader.ReadUInt32();
 
@@ -312,6 +312,8 @@ namespace Blamite.Blam.SecondGen
 				uint firstTagAddress = reader.ReadUInt32();
 
 				values.SetInteger("xbox meta offset mask", firstTagAddress - (uint)values.GetInteger("tag data offset"));
+
+				values.SetInteger("xbox bsp mask", primaryMask - indexHeaderOffset);
 			}
 
 			return new SecondGenHeader(values, _buildInfo, _segmenter);
@@ -405,7 +407,7 @@ namespace Blamite.Blam.SecondGen
 					if (hs != null)
 					{
 						ScriptFiles = new IScriptFile[1];
-						ScriptFiles[0] = new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, _buildInfo, StringIDs, _expander, Allocator);
+						ScriptFiles[0] = new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index) ?? hs.Index.ToString(), MetaArea, _buildInfo, StringIDs, _expander, Allocator); ;
 					}
 				}
 			}
@@ -429,7 +431,7 @@ namespace Blamite.Blam.SecondGen
 
 			var segment = StringArea.Segments[0];
 
-			int newSize = _stringIDs.Count * 0x80;
+			uint newSize = (uint)_stringIDs.Count * 0x80;
 
 			if (segment.ActualSize < newSize)
 				segment.Resize(newSize, stream);
@@ -451,6 +453,10 @@ namespace Blamite.Blam.SecondGen
 			// Update tagname and stringid info (so. ugly.)
 			_header.FileNameCount = _fileNames.Count;
 			_header.StringIDCount = _stringIDs.Count;
+
+			// increase the length of the file to match updated header values in cases of legacy modded maps
+			if (writer.BaseStream.Length < _header.FileSize)
+				writer.BaseStream.SetLength(_header.FileSize);
 
 			StructureLayout headerLayout = _buildInfo.Layouts.GetLayout("header");
 			writer.SeekTo(0);

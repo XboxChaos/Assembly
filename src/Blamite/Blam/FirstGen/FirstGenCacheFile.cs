@@ -220,28 +220,26 @@ namespace Blamite.Blam.FirstGen
 
 		private void Load(IReader reader)
 		{
-			_header = LoadHeader(reader, out uint mask);
-			_tags = LoadTagTable(reader, mask);
+			_header = LoadHeader(reader, out uint primaryMask);
+			_tags = LoadTagTable(reader, primaryMask);
 			_fileNames = LoadFileNames(reader);
 			
 			_stringIDs = LoadStringIDs(reader);
 
 			//header doesn't contain a scenario path, but later engines do so might as well grab it
 			ITag scenario = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
-			_header.ScenarioName = _fileNames.GetTagName(scenario.Index);
+			_header.ScenarioName = _fileNames.GetTagName(scenario.Index) ?? scenario.Index.ToString();
 
 			LoadScriptFiles();
 		}
 
-		private FirstGenHeader LoadHeader(IReader reader, out uint mask)
+		private FirstGenHeader LoadHeader(IReader reader, out uint primaryMask)
 		{
-			mask = 0;
+			primaryMask = 0;
 			reader.SeekTo(0);
 			StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("header"));
 
-			// hack to pack meta header size for metaOffsetMask calculation
-			var oldReadPos = reader.Position;
-
+			//h2 alpha
 			if (values.HasInteger("tag data offset"))
 			{
 				//oh boy
@@ -249,17 +247,17 @@ namespace Blamite.Blam.FirstGen
 				StructureLayout tagElementLayout = _buildInfo.Layouts.GetLayout("tag element");
 
 				uint indexHeaderOffset = (uint)values.GetInteger("meta offset");
-				reader.SeekTo(indexHeaderOffset);
-				uint firstVal = reader.ReadUInt32();
 				reader.SeekTo(indexHeaderOffset + indexHeaderLayout.GetFieldOffset("tag table offset"));
 				uint tagTableAddress = reader.ReadUInt32();
-				mask = firstVal - (uint)indexHeaderLayout.Size;
-				uint tagTableOffset = tagTableAddress - mask + indexHeaderOffset;
+
+				primaryMask = tagTableAddress - (uint)indexHeaderLayout.Size;
+				uint tagTableOffset = tagTableAddress - primaryMask + indexHeaderOffset;
 
 				reader.SeekTo(tagTableOffset + tagElementLayout.GetFieldOffset("offset"));
 				uint firstTagAddress = reader.ReadUInt32();
 
 				values.SetInteger("xbox meta offset mask", firstTagAddress - (uint)values.GetInteger("tag data offset"));
+				values.SetInteger("xbox bsp mask", primaryMask - indexHeaderOffset);
 			}
 			else
 			{
@@ -268,7 +266,8 @@ namespace Blamite.Blam.FirstGen
 				values.SetInteger("meta header size", (ulong)_buildInfo.Layouts.GetLayout("meta header").Size);
 				values.SetInteger("tag table offset", (ulong)tagTableOffset);
 			}
-			
+
+			values.SetInteger("true filesize", (uint)reader.Length);
 
 			return new FirstGenHeader(values, _buildInfo, _segmenter);
 		}
@@ -312,7 +311,7 @@ namespace Blamite.Blam.FirstGen
 					if (hs != null)
 					{
 						ScriptFiles = new IScriptFile[1];
-						ScriptFiles[0] = new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, _buildInfo, StringIDs, _expander, Allocator);
+						ScriptFiles[0] = new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index) ?? hs.Index.ToString(), MetaArea, _buildInfo, StringIDs, _expander, Allocator);
 					}
 				}
 			}

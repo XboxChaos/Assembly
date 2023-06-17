@@ -29,6 +29,9 @@ namespace Blamite.Blam
 			_indexTable = indexTable;
 			_data = data;
 
+			if (indexTable == null)
+				return;
+
 			int[] offsets = ReadOffsets(reader, indexTable, count);
 			IReader stringReader = DecryptData(reader, data, key);
 
@@ -128,7 +131,7 @@ namespace Blamite.Blam
 		{
 			// I'm assuming here that the official cache files don't intern strings
 			// Doing that might be a possibility even if they don't, but, meh
-			_indexTable.Resize(_strings.Count*4, stream);
+			_indexTable.Resize((uint)_strings.Count*4, stream);
 			stream.SeekTo(_indexTable.Offset);
 			int currentOffset = 0;
 			foreach (string str in _strings)
@@ -169,7 +172,7 @@ namespace Blamite.Blam
 					data = AES.Encrypt(data, 0, (int)buffer.Length, _key.Key, _key.IV);
 
 				// Resize the data area and write it in
-				_data.Resize((int)buffer.Length, stream);
+				_data.Resize((uint)buffer.Length, stream);
 				stream.SeekTo(_data.Offset);
 				stream.WriteBlock(data, 0, (int)buffer.Length);
 			}
@@ -178,7 +181,7 @@ namespace Blamite.Blam
 		private IReader DecryptData(IReader reader, FileSegment dataLocation, AESKey key)
 		{
 			reader.SeekTo(dataLocation.Offset);
-			byte[] data = reader.ReadBlock(AES.AlignSize(dataLocation.Size));
+			byte[] data = reader.ReadBlock(AES.AlignSize((int)dataLocation.Size));
 			if (key != null)
 				data = AES.Decrypt(data, key.Key, key.IV);
 			return new EndianReader(new MemoryStream(data), Endian.BigEndian);
