@@ -11,7 +11,7 @@ using Assembly.Helpers.Native;
 using Assembly.Helpers.Net;
 using Assembly.Helpers.PostGeneration;
 using Assembly.Metro.Dialogs;
-using Blamite.RTE.Console.Helpers;
+using Blamite.RTE.Console.Native;
 
 namespace Assembly.Metro.Controls.PageTemplates.Tools
 {
@@ -95,7 +95,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 					screenshotFileName = Path.GetTempFileName();
 					screenshotPng = Path.GetTempFileName();
 
-					ConsoleScreenshot shot = App.AssemblyStorage.AssemblySettings.XeConsole.GetScreenshot();
+					Screenshot shot = App.AssemblyStorage.AssemblySettings.XeConsole.GetScreenshot();
 					Bitmap bitmap = shot.ConvertToBitmap(App.AssemblyStorage.AssemblySettings.XdkResizeImages);
 
 					if (bitmap == null)

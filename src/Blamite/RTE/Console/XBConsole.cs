@@ -7,13 +7,13 @@ namespace Blamite.RTE.Console
 	/// <summary>
 	/// An original Xbox console.
 	/// </summary>
-	public class XBConsole : BaseConsole
+	public class XbConsole : XConsole
 	{
 		public override Endian Endianness { get { return Endian.LittleEndian; } }
 		public override int Port { get { return 731; } }
 		public override RTEConnectionType ConnectionType { get { return RTEConnectionType.ConsoleXbox; } }
 
-		public XBConsole(string identifier) : base(identifier) { }
+		public XbConsole(string identifier) : base(identifier) { }
 
 		internal override byte[] ReadMemoryInternal(uint address, uint length, out uint bytesRead)
 		{

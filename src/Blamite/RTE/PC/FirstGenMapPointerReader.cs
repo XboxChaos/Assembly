@@ -5,7 +5,7 @@ using System;
 
 namespace Blamite.RTE.PC
 {
-	public class FirstGenMapPointerReader : BaseMapPointerReader
+	public class FirstGenMapPointerReader : MapPointerReader
 	{
 		public FirstGenMapPointerReader(ProcessMemoryStream processStream, EngineDescription engineInfo, PokingInformation info)
 		{

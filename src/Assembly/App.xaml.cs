@@ -71,8 +71,8 @@ namespace Assembly
 			JumpLists.UpdateJumplists();
 
 			// Create XBDM Instances
-			AssemblyStorage.AssemblySettings.XeConsole = new XEConsole(AssemblyStorage.AssemblySettings.XeConsoleNameIp);
-			AssemblyStorage.AssemblySettings.XbConsole = new XBConsole(AssemblyStorage.AssemblySettings.XbConsoleNameIp);
+			AssemblyStorage.AssemblySettings.XeConsole = new XeConsole(AssemblyStorage.AssemblySettings.XeConsoleNameIp);
+			AssemblyStorage.AssemblySettings.XbConsole = new XbConsole(AssemblyStorage.AssemblySettings.XbConsoleNameIp);
 
 			// Try and delete all temp data
 			VariousFunctions.EmptyUpdaterLocations();

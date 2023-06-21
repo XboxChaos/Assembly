@@ -19,12 +19,12 @@ namespace Blamite.RTE
 		LocalProcess64
 	}
 
-	public abstract class BaseRTEProvider
+	public abstract class RTEProvider
 	{
 		protected readonly EngineDescription _buildInfo;
 		protected bool _hadToGuessVersion = false;
 
-		protected BaseRTEProvider(EngineDescription engine)
+		protected RTEProvider(EngineDescription engine)
 		{
 			_buildInfo = engine;
 		}

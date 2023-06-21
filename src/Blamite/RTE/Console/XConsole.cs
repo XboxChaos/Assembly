@@ -1,11 +1,10 @@
 ﻿using Blamite.IO;
-using Blamite.RTE;
+using Blamite.RTE.Console.Native;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
-using Blamite.RTE.Console.Helpers;
 using System.Net;
 
 namespace Blamite.RTE.Console
@@ -29,7 +28,7 @@ namespace Blamite.RTE.Console
 	/// <summary>
 	/// Base class for communicating with an Xbox/360 console over network.
 	/// </summary>
-	public abstract class BaseConsole
+	public abstract class XConsole
 	{
 		public abstract Endian Endianness { get; }
 		internal TcpClient _tcpc;
@@ -42,7 +41,7 @@ namespace Blamite.RTE.Console
 
 		public ConsoleMemoryStream MemoryStream { get; }
 
-		public BaseConsole(string identifier)
+		public XConsole(string identifier)
 		{
 			UpdateIdentifier(identifier);
 			MemoryStream = new ConsoleMemoryStream(this);
@@ -181,7 +180,7 @@ namespace Blamite.RTE.Console
 		/// </summary>
 		/// <param name="freezeDuring">Whether to send additional stop and go commands to improve screenshot quality</param>
 		/// <returns>A container object for the screenshot, or null.</returns>
-		public ConsoleScreenshot GetScreenshot(bool freezeDuring = false)
+		public Screenshot GetScreenshot(bool freezeDuring = false)
 		{
 			if (!Connect())
 				return null;
@@ -190,7 +189,7 @@ namespace Blamite.RTE.Console
 			if (freezeDuring)
 				StopInternal();
 
-			ConsoleScreenshot shot = GetScreenshotInternal();
+			Screenshot shot = GetScreenshotInternal();
 
 			// Start the Console
 			if (freezeDuring)
@@ -273,7 +272,7 @@ namespace Blamite.RTE.Console
 			return true;
 		}
 
-		protected ConsoleScreenshot GetScreenshotInternal()
+		protected Screenshot GetScreenshotInternal()
 		{
 			if (!TrySendCommand("screenshot"))
 				return null;
@@ -287,10 +286,10 @@ namespace Blamite.RTE.Console
 
 				string combinedInfo = ReadStringFromStream(br);
 
-				ConsoleFormattedResponse resp = new ConsoleFormattedResponse();
+				FormattedResponse resp = new FormattedResponse();
 				resp.ParseNumberValues(combinedInfo);
 
-				ConsoleScreenshot shot = new ConsoleScreenshot(resp);
+				Screenshot shot = new Screenshot(resp);
 				uint length = (uint)shot.FrameBufferSize;
 
 				byte[] binary = RecieveBinary(length);
@@ -305,7 +304,7 @@ namespace Blamite.RTE.Console
 		{
 			string[] info = SendListCommand("xbeinfo running");
 
-			ConsoleFormattedResponse resp = new ConsoleFormattedResponse();
+			FormattedResponse resp = new FormattedResponse();
 			resp.ParseNumberValues(info[0]);
 			resp.ParseStringValue(info[1]);
 

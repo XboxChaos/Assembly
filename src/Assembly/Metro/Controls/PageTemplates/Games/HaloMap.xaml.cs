@@ -65,7 +65,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private Settings.MapInfoDockSide _dockSide;
 		private ObservableCollection<HeaderValue> _headerDetails = new ObservableCollection<HeaderValue>();
 		private IStreamManager _mapManager;
-		private BaseRTEProvider _rteProvider;
+		private RTEProvider _rteProvider;
 		private Trie _stringIdTrie;
 		private List<TagEntry> _tagEntries = new List<TagEntry>();
 		private Settings.TagOpenMode _tagOpenMode;
@@ -265,7 +265,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					StatusUpdater.Update("Added To Recents");
 				}));
 
-				App.AssemblyStorage.AssemblyNetworkPoke.Maps.Add(new Tuple<ICacheFile, BaseRTEProvider>(_cacheFile, _rteProvider));
+				App.AssemblyStorage.AssemblyNetworkPoke.Maps.Add(new Tuple<ICacheFile, RTEProvider>(_cacheFile, _rteProvider));
 
 				/*ITag dice = _cacheFile.Tags[0x0102];
 				IRenderModel diceModel = _cacheFile.ResourceMetaLoader.LoadRenderModelMeta(dice, reader);
@@ -2483,7 +2483,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			List<TabItem> tabs = contentTabs.Items.OfType<TabItem>().ToList();
 
-			App.AssemblyStorage.AssemblyNetworkPoke.Maps.Remove(new Tuple<ICacheFile, BaseRTEProvider>(_cacheFile, _rteProvider));
+			App.AssemblyStorage.AssemblyNetworkPoke.Maps.Remove(new Tuple<ICacheFile, RTEProvider>(_cacheFile, _rteProvider));
 
 			ExternalTabsClose(tabs, false);
 

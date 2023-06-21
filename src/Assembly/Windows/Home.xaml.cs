@@ -26,7 +26,7 @@ using Assembly.Metro.Dialogs;
 using Xceed.Wpf.AvalonDock.Layout;
 using Blamite.Blam.ThirdGen;
 using Blamite.IO;
-using Blamite.RTE.Console.Helpers;
+using Blamite.RTE.Console.Native;
 using Blamite.RTE.Console;
 using Microsoft.Win32;
 using XboxChaos.Models;
@@ -251,7 +251,7 @@ namespace Assembly.Windows
 			Bitmap image;
 			try
 			{
-				ConsoleScreenshot shot = App.AssemblyStorage.AssemblySettings.XbConsole.GetScreenshot(App.AssemblyStorage.AssemblySettings.XdkScreenshotFreeze);
+				Screenshot shot = App.AssemblyStorage.AssemblySettings.XbConsole.GetScreenshot(App.AssemblyStorage.AssemblySettings.XdkScreenshotFreeze);
 
 				if (shot != null)
 				{
@@ -301,7 +301,7 @@ namespace Assembly.Windows
 			Bitmap image;
 			try
 			{
-				ConsoleScreenshot shot = App.AssemblyStorage.AssemblySettings.XeConsole.GetScreenshot(App.AssemblyStorage.AssemblySettings.XdkScreenshotFreeze);
+				Screenshot shot = App.AssemblyStorage.AssemblySettings.XeConsole.GetScreenshot(App.AssemblyStorage.AssemblySettings.XdkScreenshotFreeze);
 				if (shot != null)
 				{
 					image = shot.ConvertToBitmap(App.AssemblyStorage.AssemblySettings.XdkResizeImages);

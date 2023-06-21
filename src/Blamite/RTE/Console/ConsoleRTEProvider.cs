@@ -3,15 +3,15 @@ using Blamite.IO;
 
 namespace Blamite.RTE.Console
 {
-	public class ConsoleRTEProvider : BaseRTEProvider
+	public class ConsoleRTEProvider : RTEProvider
 	{
-		private readonly BaseConsole _console;
+		private readonly XConsole _console;
 
 		/// <summary>
 		///     Constructs a new ConsoleRTEProvider based off of an BaseConsole object.
 		/// </summary>
 		/// <param name="console">The BaseConsole object to use to interact with the console.</param>
-		public ConsoleRTEProvider(BaseConsole console) : base(null)
+		public ConsoleRTEProvider(XConsole console) : base(null)
 		{
 			_console = console;
 		}

@@ -5,7 +5,7 @@ using System;
 
 namespace Blamite.RTE.PC
 {
-	public class SecondGenMapPointerReader : BaseMapPointerReader
+	public class SecondGenMapPointerReader : MapPointerReader
 	{
 		private long _mapSharedMagicAddress;
 

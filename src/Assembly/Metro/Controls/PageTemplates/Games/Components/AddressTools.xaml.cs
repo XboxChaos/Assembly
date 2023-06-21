@@ -16,7 +16,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 	public partial class AddressTools
 	{
 		private readonly ICacheFile _cache;
-		private BaseRTEProvider realtime;
+		private RTEProvider realtime;
 
 		public AddressTools(ICacheFile cache, EngineDescription buildInfo)
 		{

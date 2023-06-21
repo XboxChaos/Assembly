@@ -4,7 +4,7 @@ using Blamite.RTE;
 
 namespace Assembly.Helpers.Net.Sockets
 {
-    public class SocketRTEProvider : BaseRTEProvider
+    public class SocketRTEProvider : RTEProvider
     {
         private IPokeSessionManager _sessionManager;
         public string ExeName { get; set; }

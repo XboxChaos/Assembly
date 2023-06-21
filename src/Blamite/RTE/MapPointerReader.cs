@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Blamite.RTE
 {
-	public abstract class BaseMapPointerReader
+	public abstract class MapPointerReader
 	{
 		protected long _baseAddress;
 		protected long _mapHeaderAddress;

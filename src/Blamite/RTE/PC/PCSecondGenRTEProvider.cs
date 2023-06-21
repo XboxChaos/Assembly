@@ -8,7 +8,7 @@ using System.IO;
 
 namespace Blamite.RTE.PC
 {
-	public class PCSecondGenRTEProvider : BaseRTEProvider
+	public class PCSecondGenRTEProvider : RTEProvider
 	{
 		/// <summary>
 		///     Constructs a new SecondGenRTEProvider.

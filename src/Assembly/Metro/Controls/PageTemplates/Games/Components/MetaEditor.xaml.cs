@@ -59,7 +59,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private readonly IStreamManager _fileManager;
 		private readonly MetaContainer _parentMetaContainer;
 		private readonly Dictionary<MetaField, int> _resultIndices = new Dictionary<MetaField, int>();
-		private readonly BaseRTEProvider _rteProvider;
+		private readonly RTEProvider _rteProvider;
 		private readonly Timer _searchTimer;
 		private readonly Trie _stringIdTrie;
 		private readonly TagHierarchy _tags;
@@ -75,7 +75,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private TagEntry _tag;
 
 		public MetaEditor(EngineDescription buildInfo, TagEntry tag, MetaContainer parentContainer, TagHierarchy tags,
-			ICacheFile cache, IStreamManager streamManager, BaseRTEProvider rteProvider, Trie stringIDTrie)
+			ICacheFile cache, IStreamManager streamManager, RTEProvider rteProvider, Trie stringIDTrie)
 		{
 			InitializeComponent();
 

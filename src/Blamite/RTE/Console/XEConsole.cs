@@ -8,13 +8,13 @@ namespace Blamite.RTE.Console
 	/// <summary>
 	/// An Xbox 360 console.
 	/// </summary>
-	public class XEConsole : BaseConsole
+	public class XeConsole : XConsole
 	{
 		public override Endian Endianness { get { return Endian.BigEndian; } }
 		public override int Port { get { return 730; } }
 		public override RTEConnectionType ConnectionType { get { return RTEConnectionType.ConsoleXbox360; } }
 
-		public XEConsole(string identifier) : base(identifier) { }
+		public XeConsole(string identifier) : base(identifier) { }
 
 		internal override byte[] ReadMemoryInternal(uint address, uint length, out uint bytesRead)
 		{

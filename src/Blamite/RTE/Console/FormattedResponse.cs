@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Blamite.RTE.Console.Helpers
+namespace Blamite.RTE.Console
 {
 	/// <summary>
 	/// Parses and indexes a specific type of response recieved from a xbox/360 console.
 	/// </summary>
-	public class ConsoleFormattedResponse
+	public class FormattedResponse
 	{
 		private Dictionary<string, uint> _numberValues;
 		private Dictionary<string, string> _stringValues;
 
-		public ConsoleFormattedResponse()
+		public FormattedResponse()
 		{
 			_numberValues = new Dictionary<string, uint>();
 			_stringValues = new Dictionary<string, string>();

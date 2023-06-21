@@ -166,8 +166,8 @@ namespace Assembly.Helpers
 		private bool _startpageShowRecentsMap = true;
 		private bool _startpageShowRecentsMapInfo = true;
 		private bool _startpageShowRecentsCampaign = true;
-		private XEConsole _xeConsole;
-		private XBConsole _xbConsole;
+		private XeConsole _xeConsole;
+		private XbConsole _xbConsole;
 		private bool _xdkAutoSave;
 		private string _xeConsoleNameIp = "192.168.0.1";
 		private string _xbConsoleNameIp = "192.168.0.1";
@@ -701,7 +701,7 @@ namespace Assembly.Helpers
 		/// <summary>
 		/// </summary>
 		[JsonIgnore]
-		public XEConsole XeConsole
+		public XeConsole XeConsole
 		{
 			get { return _xeConsole; }
 			set { SetField(ref _xeConsole, value, "XeConsole"); }
@@ -710,7 +710,7 @@ namespace Assembly.Helpers
 		/// <summary>
 		/// </summary>
 		[JsonIgnore]
-		public XBConsole XbConsole
+		public XbConsole XbConsole
 		{
 			get { return _xbConsole; }
 			set { SetField(ref _xbConsole, value, "XbConsole"); }
@@ -886,7 +886,7 @@ namespace Assembly.Helpers
 	{
 		private bool _isConnected;
 		private bool _isServer;
-		private List<Tuple<ICacheFile, BaseRTEProvider>> _maps = new List<Tuple<ICacheFile, BaseRTEProvider>>();
+		private List<Tuple<ICacheFile, RTEProvider>> _maps = new List<Tuple<ICacheFile, RTEProvider>>();
 		private IPokeSessionManager _pokeSessionManager = null;
 		private SocketRTEProvider _networkProvider = null;
 		private ObservableCollection<string> _clients = new ObservableCollection<string>();
@@ -907,7 +907,7 @@ namespace Assembly.Helpers
 			set { SetField(ref _isServer, value, "IsServer");  }
 		}
 
-		public List<Tuple<ICacheFile, BaseRTEProvider>> Maps
+		public List<Tuple<ICacheFile, RTEProvider>> Maps
 		{
 			get { return _maps; }
 			set { SetField(ref _maps, value, "Maps"); }

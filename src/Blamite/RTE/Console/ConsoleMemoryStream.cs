@@ -7,13 +7,13 @@ namespace Blamite.RTE.Console
 	public class ConsoleMemoryStream : Stream
 	{
 		// Private Modifiers
-		private readonly BaseConsole _console;
+		private readonly XConsole _console;
 		private uint? _cachedAddress;
 		private byte[] _cachedData;
 
 		private Timer _staleTimer;
 
-		public ConsoleMemoryStream(BaseConsole console)
+		public ConsoleMemoryStream(XConsole console)
 		{
 			_console = console;
 			Position = 0;

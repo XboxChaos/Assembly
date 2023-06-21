@@ -9,9 +9,9 @@ namespace Blamite.RTE
 	public class RTEStreamManager : IStreamManager
 	{
 		private readonly ICacheFile _cacheFile;
-		private readonly BaseRTEProvider _provider;
+		private readonly RTEProvider _provider;
 
-		public RTEStreamManager(BaseRTEProvider provider, ICacheFile cacheFile)
+		public RTEStreamManager(RTEProvider provider, ICacheFile cacheFile)
 		{
 			_provider = provider;
 			_cacheFile = cacheFile;
