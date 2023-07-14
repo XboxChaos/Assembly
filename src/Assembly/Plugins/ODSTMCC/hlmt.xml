@@ -15,7 +15,7 @@
 	<float32 name="Shadow Fade Distance" offset="0x4C" visible="true" tooltip="NOTE this is only a maximum distance, shadows may fade closer when you exceed the shadow budget, you should balance the total shadows in a scene" />
 	<float32 name="Instance Disappear Distance" offset="0x50" visible="true" />
 	<tagRef name="LOD Render Model" offset="0x54" visible="true" />
-	<tagblock name="Variants" offset="0x64" visible="true" elementSize="0x50">
+	<tagblock name="Variants" offset="0x64" visible="true" elementSize="0x48">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<tagRef name="Variant Dialogue" offset="0x4" visible="true" />
 		<stringid name="Default Dialog Effect" offset="0x14" visible="true" />
@@ -49,7 +49,7 @@
 		<int8 name="Runtime Model Region 13 Index" offset="0x29" visible="true" />
 		<int8 name="Runtime Model Region 14 Index" offset="0x2A" visible="true" />
 		<int8 name="Runtime Model Region 15 Index" offset="0x2B" visible="true" />
-		<tagblock name="Regions" offset="0x2C" visible="true" elementSize="0x18">
+		<tagblock name="Regions" offset="0x2C" visible="true" elementSize="0x14">
 			<stringid name="Region Name" offset="0x0" visible="true" />
 			<int8 name="Runtime Model Region Index" offset="0x4" visible="true" />
 			<flags8 name="Runtime Flags" offset="0x5" visible="true">
@@ -63,7 +63,7 @@
 				<bit name="Bit 7" index="7" />
 			</flags8>
 			<int16 name="Parent Variant Index" offset="0x6" visible="true" />
-			<tagblock name="Permutations" offset="0x8" visible="true" elementSize="0x24">
+			<tagblock name="Permutations" offset="0x8" visible="true" elementSize="0x18">
 				<stringid name="Permutation Name" offset="0x0" visible="true" />
 				<int8 name="Runtime Model Permutation Index" offset="0x4" visible="true" />
 				<flags8 name="Flags" offset="0x5" visible="true">
@@ -91,30 +91,7 @@
 					<stringId name="Looping Effect Marker Name" offset="0x18" visible="true" />
 					<float32 name="Initial Probability" offset="0x1C" visible="true" />
 				</tagblock>
-				<int8 name="Runtime State Permutation Index 0" offset="0x18" visible="true" />
-				<int8 name="Runtime State Permutation Index 1" offset="0x19" visible="true" />
-				<int8 name="Runtime State Permutation Index 2" offset="0x1A" visible="true" />
-				<int8 name="Runtime State Permutation Index 3" offset="0x1B" visible="true" />
-				<int8 name="Runtime State Permutation Index 4" offset="0x1C" visible="true" />
-				<int8 name="Unknown" offset="0x1D" visible="false" />
-				<int16 name="Unknown" offset="0x1E" visible="false" />
-				<undefined name="Unknown" offset="0x20" visible="false" />
 			</tagblock>
-			<enum16 name="Sort Order" offset="0x14" visible="true" tooltip="negative values mean closer to the camera">
-				<option name="No Sorting" value="0x0" />
-				<option name="-5 (Closest)" value="0x1" />
-				<option name="-4" value="0x2" />
-				<option name="-3" value="0x3" />
-				<option name="-2" value="0x4" />
-				<option name="-1" value="0x5" />
-				<option name="0 (Same As Model)" value="0x6" />
-				<option name="1" value="0x7" />
-				<option name="2" value="0x8" />
-				<option name="3" value="0x9" />
-				<option name="4" value="0xA" />
-				<option name="5 (Farthest)" value="0xB" />
-			</enum16>
-			<int16 name="Unknown" offset="0x16" visible="false" />
 		</tagblock>
 		<tagblock name="Objects" offset="0x38" visible="true" elementSize="0x1C">
 			<stringId name="Parent Marker" offset="0x0" visible="true" />
@@ -123,8 +100,6 @@
 			<tagRef name="Child Object" offset="0xC" visible="true" />
 		</tagblock>
 		<int32 name="Instance Group Index" offset="0x44" visible="true" tooltip="selects an instance group for this variant" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
 	</tagblock>
 	<tagblock name="Region Sort" offset="0x70" visible="true" elementSize="0x4">
 		<stringid name="Name" offset="0x0" visible="true" />
@@ -288,7 +263,7 @@
 		<int16 name="Global Material Index" offset="0x10" visible="true" />
 		<int16 name="Unknown" offset="0x12" visible="false" />
 	</tagblock>
-	<tagblock name="New Damage Info" offset="0x94" visible="true" elementSize="0x100">
+	<tagblock name="New Damage Info" offset="0x94" visible="true" elementSize="0xA4">
 		<flags32 name="Flags" offset="0x0" visible="true">
 			<bit name="Takes Shield Damage For Children" index="0" />
 			<bit name="Takes Body Damage For Children" index="1" />
@@ -310,9 +285,7 @@
 		</flags32>
 		<stringid name="Indirect Global Material Name" offset="0x4" visible="true" tooltip="absorbes AOE or child damage" />
 		<int16 name="Indirect Damage Section Index" offset="0x8" visible="true" tooltip="absorbes AOE or child damage" />
-		<int16 name="Unknown" offset="0xA" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<enum8 name="Collision Damage Reporting Type" offset="0x10" visible="true">
+		<enum8 name="Collision Damage Reporting Type" offset="0xA" visible="true">
 			<option name="Guardians" value="0x0" />
 			<option name="Falling Damage" value="0x1" />
 			<option name="Collision" value="0x2" />
@@ -376,7 +349,7 @@
 			<option name="Silenced SMG" value="0x3C" />
 			<option name="Automag" value="0x3D" />
 		</enum8>
-		<enum8 name="Response Damage Reporting Type" offset="0x11" visible="true">
+		<enum8 name="Response Damage Reporting Type" offset="0xB" visible="true">
 			<option name="Guardians" value="0x0" />
 			<option name="Falling Damage" value="0x1" />
 			<option name="Collision" value="0x2" />
@@ -440,45 +413,23 @@
 			<option name="Silenced SMG" value="0x3C" />
 			<option name="Automag" value="0x3D" />
 		</enum8>
-		<int16 name="Unknown" offset="0x12" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
 		<comment title="Body" />
-		<float32 name="Maximum Vitality" offset="0x28" visible="true" />
-		<float32 name="Minimum Stun Damage" offset="0x2C" visible="true" tooltip="the minimum damage required to stun this object's health" />
-		<float32 name="Stun Time" offset="0x30" visible="true" tooltip="the length of time the health stay stunned (do not recharge) after taking damage" />
-		<float32 name="Recharge Time" offset="0x34" visible="true" tooltip="the length of time it would take for the shields to fully recharge after being completely depleted" />
-		<float32 name="Recharge Fraction" offset="0x38" visible="true" tooltip="0 defaults to 1 - to what maximum level the body health will be allowed to recharge" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
-		<undefined name="Unknown" offset="0x50" visible="false" />
-		<undefined name="Unknown" offset="0x54" visible="false" />
-		<undefined name="Unknown" offset="0x58" visible="false" />
-		<undefined name="Unknown" offset="0x5C" visible="false" />
-		<undefined name="Unknown" offset="0x60" visible="false" />
-		<undefined name="Unknown" offset="0x64" visible="false" />
-		<undefined name="Unknown" offset="0x68" visible="false" />
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<undefined name="Unknown" offset="0x70" visible="false" />
-		<undefined name="Unknown" offset="0x74" visible="false" />
-		<undefined name="Unknown" offset="0x78" visible="false" />
+		<float32 name="Maximum Vitality" offset="0xC" visible="true" />
+		<float32 name="Minimum Stun Damage" offset="0x10" visible="true" tooltip="the minimum damage required to stun this object's health" />
+		<float32 name="Stun Time" offset="0x14" visible="true" tooltip="the length of time the health stay stunned (do not recharge) after taking damage" />
+		<float32 name="Recharge Time" offset="0x18" visible="true" tooltip="the length of time it would take for the shields to fully recharge after being completely depleted" />
+		<float32 name="Recharge Fraction" offset="0x1C" visible="true" tooltip="0 defaults to 1 - to what maximum level the body health will be allowed to recharge" />
 		<comment title="Shield" />
-		<float32 name="Maximum Shield Vitality" offset="0x7C" visible="true" tooltip="the default initial and maximum shield vitality of this object" />
-		<stringid name="Shield Global Material Name" offset="0x80" visible="true" />
-		<float32 name="Minimum Stun Damage" offset="0x84" visible="true" tooltip="the minimum damage required to stun this object's shields" />
-		<float32 name="Stun Time" offset="0x88" visible="true" tooltip="the length of time the shields stay stunned (do not recharge) after taking damage" />
-		<float32 name="Recharge Time" offset="0x8C" visible="true" tooltip="the length of time it would take for the shields to fully recharge after being completely depleted" />
-		<float32 name="Shield Damaged Threshold" offset="0x90" visible="true" />
-		<tagRef name="Shield Damaged Effect" offset="0x94" visible="true" />
-		<tagRef name="Shield Depleted Effect" offset="0xA4" visible="true" />
-		<tagRef name="Shield Recharging Effect" offset="0xB4" visible="true" />
-		<tagblock name="Damage Sections" offset="0xC4" visible="true" elementSize="0x44">
+		<float32 name="Maximum Shield Vitality" offset="0x20" visible="true" tooltip="the default initial and maximum shield vitality of this object" />
+		<stringid name="Shield Global Material Name" offset="0x24" visible="true" />
+		<float32 name="Minimum Stun Damage" offset="0x28" visible="true" tooltip="the minimum damage required to stun this object's shields" />
+		<float32 name="Stun Time" offset="0x2C" visible="true" tooltip="the length of time the shields stay stunned (do not recharge) after taking damage" />
+		<float32 name="Recharge Time" offset="0x30" visible="true" tooltip="the length of time it would take for the shields to fully recharge after being completely depleted" />
+		<float32 name="Shield Damaged Threshold" offset="0x34" visible="true" />
+		<tagRef name="Shield Damaged Effect" offset="0x38" visible="true" />
+		<tagRef name="Shield Depleted Effect" offset="0x48" visible="true" />
+		<tagRef name="Shield Recharging Effect" offset="0x58" visible="true" />
+		<tagblock name="Damage Sections" offset="0x68" visible="true" elementSize="0x2C">
 			<stringid name="Name" offset="0x0" visible="true" />
 			<flags32 name="Flags" offset="0x4" visible="true">
 				<bit name="Absorbs Body Damage" index="0" tooltip="damage to this section does not count against body vitality" />
@@ -585,31 +536,21 @@
 				<stringid name="Destroyed Child Object Marker Name" offset="0x80" visible="true" tooltip="when this response fires, any children objects created at the supplied marker name will be destroyed" />
 				<float32 name="Total Damage Threshold" offset="0x84" visible="true" tooltip="scale on total damage section vitality" />
 			</tagblock>
-			<uint32 name="null block here 1" offset="0x18" visible="false" />
-			<uint32 name="null block here 1" offset="0x1C" visible="false" />
-			<uint32 name="null block here 1" offset="0x20" visible="false" />
-			<uint32 name="null block here 2" offset="0x24" visible="false" />
-			<uint32 name="null block here 2" offset="0x28" visible="false" />
-			<uint32 name="null block here 2" offset="0x2C" visible="false" />
-			<float32 name="Stun Time" offset="0x30" visible="true" />
-			<float32 name="Recharge Time" offset="0x34" visible="true" />
-			<float32 name="Runtime Recharge Velocity" offset="0x38" visible="true" />
-			<stringid name="Resurrection Restored Region Name" offset="0x3C" visible="true" />
-			<int16 name="Ressurection Restored Region Runtime Index" offset="0x40" visible="true" />
-			<int16 name="Unknown" offset="0x42" visible="false" />
+			<float32 name="Stun Time" offset="0x18" visible="true" />
+			<float32 name="Recharge Time" offset="0x1C" visible="true" />
+			<float32 name="Runtime Recharge Velocity" offset="0x20" visible="true" />
+			<stringid name="Resurrection Restored Region Name" offset="0x24" visible="true" />
+			<int16 name="Ressurection Restored Region Runtime Index" offset="0x28" visible="true" />
+			<int16 name="Unknown" offset="0x2A" visible="false" />
 		</tagblock>
-		<tagblock name="Nodes" offset="0xD0" visible="true" elementSize="0x10">
+		<tagblock name="Nodes" offset="0x74" visible="true" elementSize="0x2">
 			<int16 name="Runtime Damage Part" offset="0x0" visible="true" />
-			<int16 name="Unknown" offset="0x2" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
 		</tagblock>
-		<int16 name="Shield Global Material Index" offset="0xDC" visible="true" />
-		<int16 name="Indirect Global Material Index" offset="0xDE" visible="true" />
-		<float32 name="Shield Recharge Velocity" offset="0xE0" visible="true" />
-		<float32 name="Health Recharge Velocity" offset="0xE4" visible="true" />
-		<tagblock name="Damage Seats" offset="0xE8" visible="true" elementSize="0x20">
+		<int16 name="Shield Global Material Index" offset="0x80" visible="true" />
+		<int16 name="Indirect Global Material Index" offset="0x82" visible="true" />
+		<float32 name="Shield Recharge Velocity" offset="0x84" visible="true" />
+		<float32 name="Health Recharge Velocity" offset="0x88" visible="true" />
+		<tagblock name="Damage Seats" offset="0x8C" visible="true" elementSize="0x20">
 			<stringid name="Seat Label" offset="0x0" visible="true" />
 			<float32 name="Direct Damage Scale" offset="0x4" visible="true" tooltip="0==no damage, 1==full damage" />
 			<float32 name="Damage Transfer Fall-Off Radius" offset="0x8" visible="true" />
@@ -631,7 +572,7 @@
 				<float32 name="Major Minimum Transfer Scale" offset="0x28" visible="true" />
 			</tagblock>
 		</tagblock>
-		<tagblock name="Damage Constraints" offset="0xF4" visible="true" elementSize="0x14">
+		<tagblock name="Damage Constraints" offset="0x98" visible="true" elementSize="0x14">
 			<stringid name="Physics Model Constraint Name" offset="0x0" visible="true" />
 			<stringid name="Damage Constraint Name" offset="0x4" visible="true" />
 			<stringid name="Damage Constraint Group Name" offset="0x8" visible="true" />

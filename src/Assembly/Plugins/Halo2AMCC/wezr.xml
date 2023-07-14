@@ -20,7 +20,7 @@
 				<bit name="Explosive Damage Resistance" index="8" />
 				<bit name="Wheelman Armor Vehicle Stun Time Modifier" index="9" />
 				<bit name="Wheelman Armor Vehicle Recharge Time Modifier" index="10" />
-				<bit name="Wheelman Armor Vehicle EMP Disabled Time Modifier" index="11" />
+				<bit name="Wheelman Armor Vehicle Emp Disabled Time Modifier" index="11" />
 				<bit name="Fall Damage Multiplier" index="12" />
 			</flags32>
 			<comment title="Damage Resistance">Any damage taken is divided by this number. If you put -1, that means "invulnerable".</comment>
@@ -262,20 +262,26 @@
 				<option name="False" value="0x1" />
 				<option name="True" value="0x2" />
 			</enum8>
-			<int16 name="Unknown" offset="0x1A" visible="false" />
+			<enum8 name="Vehicle Exit Disabled" offset="0x1A" visible="true">
+				<option name="Unchanged" value="0x0" />
+				<option name="False" value="0x1" />
+				<option name="True" value="0x2" />
+			</enum8>
+			<int8 name="Unknown" offset="0x1B" visible="false" />
 		</tagblock>
 		<tagblock name="Appearance Traits" offset="0x28" visible="true" elementSize="0x10">
+			<comment title="Death Effect/Attached Effect">Type any string from the relevant sections of multiplayer/megalo/multiplayer_effects.multiplayereffects.</comment>
 			<stringid name="Death Effect" offset="0x0" visible="true" />
-			<stringid name="Looping Effect" offset="0x4" visible="true" />
+			<stringid name="Attached Effect" offset="0x4" visible="true" />
 			<enum8 name="Active Camo" offset="0x8" visible="true">
 				<option name="Unchanged" value="0x0" />
-				<option name="Disabled" value="0x1" />
-				<option name="Enabled" value="0x2" />
-				<option name="Poor Camo" value="0x3" />
-				<option name="Good Camo" value="0x4" />
-				<option name="Best Camo" value="0x5" />
+				<option name="Off" value="0x1" />
+				<option name="Poor" value="0x2" />
+				<option name="Good" value="0x3" />
+				<option name="Excellent" value="0x4" />
+				<option name="Invisible" value="0x5" />
 			</enum8>
-			<enum8 name="Forced Primary Color" offset="0x9" visible="true">
+			<enum8 name="Primary Color" offset="0x9" visible="true">
 				<option name="Unchanged" value="0x0" />
 				<option name="Red" value="0x1" />
 				<option name="Orange" value="0x2" />
@@ -294,7 +300,7 @@
 				<option name="Dark Red" value="0xF" />
 				<option name="Infection" value="0x10" />
 			</enum8>
-			<enum8 name="Forced Secondary Color" offset="0xA" visible="true">
+			<enum8 name="Secondary Color" offset="0xA" visible="true">
 				<option name="Unchanged" value="0x0" />
 				<option name="Red" value="0x1" />
 				<option name="Orange" value="0x2" />
@@ -315,25 +321,24 @@
 			</enum8>
 			<enum8 name="Waypoint" offset="0xB" visible="true">
 				<option name="Unchanged" value="0x0" />
-				<option name="Disabled" value="0x1" />
-				<option name="Allies Only" value="0x2" />
+				<option name="Off" value="0x1" />
+				<option name="Allies" value="0x2" />
 				<option name="All" value="0x3" />
 			</enum8>
-			<enum8 name="Show Gamertag" offset="0xC" visible="true">
+			<enum8 name="Gamertag Visible" offset="0xC" visible="true">
 				<option name="Unchanged" value="0x0" />
-				<option name="Disabled" value="0x1" />
-				<option name="Allies Only" value="0x2" />
+				<option name="Off" value="0x1" />
+				<option name="Allies" value="0x2" />
 				<option name="All" value="0x3" />
 			</enum8>
 			<enum8 name="Aura" offset="0xD" visible="true">
 				<option name="Unchanged" value="0x0" />
-				<option name="Disabled" value="0x1" />
-				<option name="Team" value="0x2" />
+				<option name="Off" value="0x1" />
+				<option name="Team Color" value="0x2" />
 				<option name="Black" value="0x3" />
 				<option name="White" value="0x4" />
 			</enum8>
-			<int8 name="Unknown" offset="0xE" visible="false" />
-			<int8 name="Unknown" offset="0xF" visible="false" />
+			<int16 name="Unknown" offset="0xE" visible="false" />
 		</tagblock>
 		<tagblock name="Sensor Traits" offset="0x34" visible="true" elementSize="0x14">
 			<flags32 name="Should Apply Trait" offset="0x0" visible="true">
@@ -852,28 +857,31 @@
 				<bit name="Dead Player Voice Enabled" index="7" />
 			</flags32>
 		</tagblock>
-		<tagblock name="Map Overrides" offset="0x38" visible="true" elementSize="0x3C">
+		<tagblock name="Map Overrides" offset="0x38" visible="true" elementSize="0x48">
 			<stringid name="Base Player Trait Profile" offset="0x0" visible="true" />
 			<stringid name="Weapon Set" offset="0x4" visible="true" />
-			<stringid name="Vehicle Set" offset="0x8" visible="true" />
-			<stringid name="Equipment Set" offset="0xC" visible="true" />
-			<stringid name="Damage Boost Primary Trait Profile" offset="0x10" visible="true" />
-			<stringid name="Speed Boost Primary Trait Profile" offset="0x14" visible="true" />
-			<stringid name="Overshield Primary Trait Profile" offset="0x18" visible="true" />
-			<stringid name="Custom Powerup Primary Trait Profile" offset="0x1C" visible="true" />
-			<uint8 name="Damage Boost Primary Trait Duration" offset="0x20" visible="true" />
-			<uint8 name="Speed Boost Primary Trait Duration" offset="0x21" visible="true" />
-			<uint8 name="Overshield Primary Trait Duration" offset="0x22" visible="true" />
-			<uint8 name="Custom Powerup Primary Trait Duration" offset="0x23" visible="true" />
-			<stringid name="Damage Boost Secondary Trait Profile" offset="0x24" visible="true" />
-			<stringid name="Speed Boost Secondary Trait Profile" offset="0x28" visible="true" />
-			<stringid name="Overshield Secondary Trait Profile" offset="0x2C" visible="true" />
-			<stringid name="Custom Powerup Secondary Trait Profile" offset="0x30" visible="true" />
-			<uint8 name="Damage Boost Secondary Trait Duration" offset="0x34" visible="true" />
-			<uint8 name="Speed Boost Secondary Trait Duration" offset="0x35" visible="true" />
-			<uint8 name="Overshield Secondary Trait Duration" offset="0x36" visible="true" />
-			<uint8 name="Custom Powerup Secondary Trait Duration" offset="0x37" visible="true" />
-			<flags8 name="Flags" offset="0x38" visible="true">
+			<stringid name="Light Vehicle Set" offset="0x8" visible="true" />
+			<stringid name="Tank Set" offset="0xC" visible="true" />
+			<stringid name="Aircraft Set" offset="0x10" visible="true" />
+			<stringid name="Turret Set" offset="0x14" visible="true" />
+			<stringid name="Equipment Set" offset="0x18" visible="true" />
+			<stringid name="Speed Boost Primary Trait Profile" offset="0x1C" visible="true" />
+			<stringid name="Camo Primary Trait Profile" offset="0x20" visible="true" />
+			<stringid name="Overshield Primary Trait Profile" offset="0x24" visible="true" />
+			<stringid name="Custom Powerup Primary Trait Profile" offset="0x28" visible="true" />
+			<uint8 name="Speed Boost Primary Trait Duration" offset="0x2C" visible="true" />
+			<uint8 name="Camo Primary Trait Duration" offset="0x2D" visible="true" />
+			<uint8 name="Overshield Primary Trait Duration" offset="0x2E" visible="true" />
+			<uint8 name="Custom Powerup Primary Trait Duration" offset="0x2F" visible="true" />
+			<stringid name="Speed Boost Secondary Trait Profile" offset="0x30" visible="true" />
+			<stringid name="Camo Secondary Trait Profile" offset="0x34" visible="true" />
+			<stringid name="Overshield Secondary Trait Profile" offset="0x38" visible="true" />
+			<stringid name="Custom Powerup Secondary Trait Profile" offset="0x3C" visible="true" />
+			<uint8 name="Speed Boost Secondary Trait Duration" offset="0x40" visible="true" />
+			<uint8 name="Camo Secondary Trait Duration" offset="0x41" visible="true" />
+			<uint8 name="Overshield Secondary Trait Duration" offset="0x42" visible="true" />
+			<uint8 name="Custom Powerup Secondary Trait Duration" offset="0x43" visible="true" />
+			<flags8 name="Flags" offset="0x44" visible="true">
 				<bit name="Grenades On Map" index="0" />
 				<bit name="Shortcuts On Map" index="1" />
 				<bit name="Abilities On Map" index="2" />
@@ -881,9 +889,9 @@
 				<bit name="Turrets On Map" index="4" />
 				<bit name="Indestructible Vehicles" index="5" />
 			</flags8>
-			<int8 name="Unknown" offset="0x39" visible="false" />
-			<int8 name="Unknown" offset="0x3A" visible="false" />
-			<int8 name="Unknown" offset="0x3B" visible="false" />
+			<int8 name="Unknown" offset="0x45" visible="false" />
+			<int8 name="Unknown" offset="0x46" visible="false" />
+			<int8 name="Unknown" offset="0x47" visible="false" />
 		</tagblock>
 		<tagblock name="Teams" offset="0x44" visible="true" elementSize="0xC4">
 			<enum8 name="Model Override" offset="0x0" visible="true">

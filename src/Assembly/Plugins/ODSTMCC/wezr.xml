@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin game="ODSTMCC" baseSize="0x94">
+<plugin game="ODSTMCC" baseSize="0xAC">
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
@@ -23,6 +23,7 @@
 				<option name="1000%" value="0xA" />
 				<option name="2000%" value="0xB" />
 				<option name="Invulnerable" value="0xC" />
+				<option name="Invulnerable Including Assassinations" value="0xD" />
 			</enum8>
 			<enum8 name="Shield Multiplier" offset="0x1" visible="true">
 				<option name="Unchanged" value="0x0" />
@@ -1274,5 +1275,195 @@
 		<int16 name="Duration" offset="0x78" visible="true" />
 		<int16 name="Unknown" offset="0x7A" visible="false" />
 		<undefined name="Unknown" offset="0x7C" visible="false" />
+	</tagblock>
+	<tagblock name="Gun Game Variants" offset="0x94" visible="true" elementSize="0x74">
+		<stringId name="Localizable Name" offset="0x0" visible="true" />
+		<stringId name="Localizable Description" offset="0x4" visible="true" />
+		<tagblock name="Miscellaneous Options" offset="0x8" visible="true" elementSize="0x8">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Teams Enabled" index="0" />
+			</flags32>
+			<int8 name="Round Time Limit" offset="0x4" visible="true" />
+			<int8 name="Number of Rounds" offset="0x5" visible="true" />
+			<int8 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<enum8 name="Round Reset" offset="0x7" visible="true">
+				<option name="Nothing" value="0x0" />
+				<option name="Players Only" value="0x1" />
+				<option name="Everything" value="0x2" />
+			</enum8>
+		</tagblock>
+		<tagblock name="Respawn Options" offset="0x14" visible="true" elementSize="0x10">
+			<flags16 name="Flags" offset="0x0" visible="true">
+				<bit name="Inherit Respawn Time" index="0" />
+				<bit name="Respawn With Teammate" index="1" />
+				<bit name="Respawn At Location" index="2" />
+				<bit name="Respawn On Kills" index="3" />
+			</flags16>
+			<int8 name="Lives Per Round" offset="0x2" visible="true" />
+			<int8 name="Team Lives Per Round" offset="0x3" visible="true" />
+			<int8 name="Respawn Time" offset="0x4" visible="true" />
+			<int8 name="Suicide Penalty" offset="0x5" visible="true" />
+			<int8 name="Betrayal Penalty" offset="0x6" visible="true" />
+			<int8 name="Respawn Growth" offset="0x7" visible="true" />
+			<stringId name="Respawn Player Traits Name" offset="0x8" visible="true" />
+			<int8 name="Respawn Player Traits Duration" offset="0xC" visible="true" />
+			<int8 name="Unknown" offset="0xD" visible="false" />
+			<int16 name="Unknown" offset="0xE" visible="false" />
+		</tagblock>
+		<tagblock name="Social Options" offset="0x20" visible="true" elementSize="0x4">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Observers Enabled" index="0" />
+				<bit name="Team Changing Enabled" index="1" />
+				<bit name="Team Changing Balancing Only" index="2" />
+				<bit name="Friendly Fire Enabled" index="3" />
+				<bit name="Betrayal Booting Enabled" index="4" />
+				<bit name="Enemy Voice Enabled" index="5" />
+				<bit name="Open Channel Voice Enabled" index="6" />
+				<bit name="Dead Player Voice Enabled" index="7" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Map Override Options" offset="0x2C" visible="true" elementSize="0x20">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Grenades On Map" index="0" />
+				<bit name="Indestructible Vehicles" index="1" />
+			</flags32>
+			<stringId name="Player Traits Name" offset="0x4" visible="true" />
+			<stringId name="Weapon Set Name" offset="0x8" visible="true" />
+			<stringid name="Vehicle Set Name" offset="0xC" visible="true" />
+			<stringId name="Red Powerup Traits Name" offset="0x10" visible="true" />
+			<stringId name="Blue Powerup Traits Name" offset="0x14" visible="true" />
+			<stringId name="Yellow Powerup Traits Name" offset="0x18" visible="true" />
+			<int8 name="Red Powerup Duration" offset="0x1C" visible="true" />
+			<int8 name="Blue Powerup Duration" offset="0x1D" visible="true" />
+			<int8 name="Yellow Powerup Duration" offset="0x1E" visible="true" />
+			<int8 name="Unknown" offset="0x1F" visible="false" />
+		</tagblock>
+		<flags16 name="Flags" offset="0x38" visible="true">
+			<bit name="Allow Tier Skipping" index="0" tooltip="allows the player to earn more than points per weapon from a single kill" />
+			<bit name="Disable Tier Syncing" index="1" tooltip="players will only sync to the current tier upon spawn" />
+		</flags16>
+		<int16 name="Score To Win" offset="0x3A" visible="true" />
+		<enum16 name="Team Scoring" offset="0x3C" visible="true">
+			<option name="Sum" value="0x0" />
+			<option name="Minimum" value="0x1" />
+			<option name="Maximum" value="0x2" />
+		</enum16>
+		<int8 name="Points Per Weapon" offset="0x3E" visible="true" />
+		<enum8 name="Tier Sharing" offset="0x3F" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Team" value="0x1" />
+			<option name="Global" value="0x2" />
+		</enum8>
+		<int8 name="Kill Points" offset="0x40" visible="true" />
+		<int8 name="Assist Points" offset="0x41" visible="true" />
+		<int8 name="Headshot Bonus Points" offset="0x42" visible="true" />
+		<int8 name="Betrayal Points" offset="0x43" visible="true" />
+		<int8 name="Suicide Points" offset="0x44" visible="true" />
+		<enum8 name="Standard Kill Behavior" offset="0x45" visible="true">
+			<option name="Downgrades Dead Player" value="0x0" />
+			<option name="Upgrades Killing Player" value="0x1" />
+			<option name="Both Ways" value="0x2" tooltip="downgrades the dead player and upgrades the killing player" />
+			<option name="None" value="0x3" tooltip="no points are awarded to either player" />
+		</enum8>
+		<enum8 name="Melee Kill Behavior" offset="0x46" visible="true">
+			<option name="Downgrades Dead Player" value="0x0" />
+			<option name="Upgrades Killing Player" value="0x1" />
+			<option name="Both Ways" value="0x2" tooltip="downgrades the dead player and upgrades the killing player" />
+			<option name="None" value="0x3" tooltip="no points are awarded to either player" />
+		</enum8>
+		<enum8 name="Assassination Kill Behavior" offset="0x47" visible="true">
+			<option name="Downgrades Dead Player" value="0x0" />
+			<option name="Upgrades Killing Player" value="0x1" />
+			<option name="Both Ways" value="0x2" tooltip="downgrades the dead player and upgrades the killing player" />
+			<option name="None" value="0x3" tooltip="no points are awarded to either player" />
+		</enum8>
+		<enum8 name="Grenade Stick Kill Behavior" offset="0x48" visible="true">
+			<option name="Downgrades Dead Player" value="0x0" />
+			<option name="Upgrades Killing Player" value="0x1" />
+			<option name="Both Ways" value="0x2" tooltip="downgrades the dead player and upgrades the killing player" />
+			<option name="None" value="0x3" tooltip="no points are awarded to either player" />
+		</enum8>
+		<int8 name="Unknown" offset="0x49" visible="false" />
+		<int16 name="Weapon Upgrade Seconds" offset="0x4A" visible="true" tooltip="seconds after which the player (or shared tier), is upgraded to the next tier. -1 for never" />
+		<tagblock name="Weapon Tier Properties" offset="0x4C" visible="true" elementSize="0x14">
+			<stringid name="Primary Weapon" offset="0x0" visible="true" />
+			<stringid name="Secondary Weapon" offset="0x4" visible="true" tooltip="this is the dual-wielded secondary weapon. only valid if both weapons are dual-wieldable" />
+			<stringid name="Backpack Weapon" offset="0x8" visible="true" />
+			<stringid name="Equipment" offset="0xC" visible="true" />
+			<int8 name="Fragmentation Grenade Count" offset="0x10" visible="true" />
+			<int8 name="Plasma Grenade Count" offset="0x11" visible="true" />
+			<int8 name="Claymore Grenade Count" offset="0x12" visible="true" />
+			<int8 name="Firebomb Grenade Count" offset="0x13" visible="true" />
+		</tagblock>
+		<stringid name="Final Tier Traits Name" offset="0x58" visible="true" />
+		<stringid name="Leader Player Traits Name" offset="0x5C" visible="true" />
+		<stringid name="One Kill In A Row Player Traits Name" offset="0x60" visible="true" />
+		<stringid name="Two Kills In A Row Player Traits Name" offset="0x64" visible="true" />
+		<stringid name="Three Kills In A Row Player Traits Name" offset="0x68" visible="true" />
+		<stringid name="Four Kills In A Row Player Traits Name" offset="0x6C" visible="true" />
+		<stringid name="Five Kills In A Row Player Traits Name" offset="0x70" visible="true" />
+	</tagblock>
+	<tagblock name="Campaign Variants" offset="0xA0" visible="true" elementSize="0x38">
+		<stringId name="Localizable Name" offset="0x0" visible="true" />
+		<stringId name="Localizable Description" offset="0x4" visible="true" />
+		<tagblock name="Miscellaneous Options" offset="0x8" visible="true" elementSize="0x8">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Teams Enabled" index="0" />
+			</flags32>
+			<int8 name="Round Time Limit" offset="0x4" visible="true" />
+			<int8 name="Number of Rounds" offset="0x5" visible="true" />
+			<int8 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<enum8 name="Round Reset" offset="0x7" visible="true">
+				<option name="Nothing" value="0x0" />
+				<option name="Players Only" value="0x1" />
+				<option name="Everything" value="0x2" />
+			</enum8>
+		</tagblock>
+		<tagblock name="Respawn Options" offset="0x14" visible="true" elementSize="0x10">
+			<flags16 name="Flags" offset="0x0" visible="true">
+				<bit name="Inherit Respawn Time" index="0" />
+				<bit name="Respawn With Teammate" index="1" />
+				<bit name="Respawn At Location" index="2" />
+				<bit name="Respawn On Kills" index="3" />
+			</flags16>
+			<int8 name="Lives Per Round" offset="0x2" visible="true" />
+			<int8 name="Team Lives Per Round" offset="0x3" visible="true" />
+			<int8 name="Respawn Time" offset="0x4" visible="true" />
+			<int8 name="Suicide Penalty" offset="0x5" visible="true" />
+			<int8 name="Betrayal Penalty" offset="0x6" visible="true" />
+			<int8 name="Respawn Growth" offset="0x7" visible="true" />
+			<stringId name="Respawn Player Traits Name" offset="0x8" visible="true" />
+			<int8 name="Respawn Player Traits Duration" offset="0xC" visible="true" />
+			<int8 name="Unknown" offset="0xD" visible="false" />
+			<int16 name="Unknown" offset="0xE" visible="false" />
+		</tagblock>
+		<tagblock name="Social Options" offset="0x20" visible="true" elementSize="0x4">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Observers Enabled" index="0" />
+				<bit name="Team Changing Enabled" index="1" />
+				<bit name="Team Changing Balancing Only" index="2" />
+				<bit name="Friendly Fire Enabled" index="3" />
+				<bit name="Betrayal Booting Enabled" index="4" />
+				<bit name="Enemy Voice Enabled" index="5" />
+				<bit name="Open Channel Voice Enabled" index="6" />
+				<bit name="Dead Player Voice Enabled" index="7" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Map Override Options" offset="0x2C" visible="true" elementSize="0x20">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Grenades On Map" index="0" />
+				<bit name="Indestructible Vehicles" index="1" />
+			</flags32>
+			<stringId name="Player Traits Name" offset="0x4" visible="true" />
+			<stringId name="Weapon Set Name" offset="0x8" visible="true" />
+			<stringid name="Vehicle Set Name" offset="0xC" visible="true" />
+			<stringId name="Red Powerup Traits Name" offset="0x10" visible="true" />
+			<stringId name="Blue Powerup Traits Name" offset="0x14" visible="true" />
+			<stringId name="Yellow Powerup Traits Name" offset="0x18" visible="true" />
+			<int8 name="Red Powerup Duration" offset="0x1C" visible="true" />
+			<int8 name="Blue Powerup Duration" offset="0x1D" visible="true" />
+			<int8 name="Yellow Powerup Duration" offset="0x1E" visible="true" />
+			<int8 name="Unknown" offset="0x1F" visible="false" />
+		</tagblock>
 	</tagblock>
 </plugin>

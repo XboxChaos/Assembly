@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin game="Halo3MCC" baseSize="0x280">
-	<!-- Automatically generated plugin -->
+<plugin game="Halo3MCC" baseSize="0x26C">
 	<revisions>
 		<revision author="Lord Zedd" version="1">k</revision>
 	</revisions>
@@ -29,14 +28,12 @@
 		<bit name="Does Not Cause Collision Damage" index="5" />
 		<bit name="Early Mover" index="6" />
 		<bit name="Early Mover Localized Physics" index="7" />
-		<bit name="Use Static Massive Lightmap Sample" index="8" />
-		<bit name="Object Scales Attachments" index="9" />
-		<bit name="Inherits Player's Appearance" index="10" />
-		<bit name="Non Physical In Map Editor" index="11" />
-		<bit name="Attach To Clusters By Dynamic Sphere" index="12" tooltip="use this for the mac gun on spacestation" />
-		<bit name="Effects Created By This Object Do Not Spawn Objects In Multiplayer" index="13" />
-		<bit name="Does Not Collide With Camera" index="14" tooltip="specificly the flying observer camera" />
-		<bit name="Damage Not Blocked By Obstructions" index="15" tooltip="AOE damage being applied to this object does not test for obstrutions." />
+		<bit name="Object Scales Attachments" index="8" />
+		<bit name="Non Physical In Map Editor" index="9" />
+		<bit name="Attach To Clusters By Dynamic Sphere" index="10" tooltip="use this for the mac gun on spacestation" />
+		<bit name="Effects Created By This Object Do Not Spawn Objects In Multiplayer" index="11" />
+		<bit name="Does Not Collide With Camera" index="12" tooltip="specificly the flying observer camera" />
+		<bit name="Damage Not Blocked By Obstructions" index="13" tooltip="AOE damage being applied to this object does not test for obstrutions." />
 	</flags16>
 	<float32 name="Bounding Radius" offset="0x4" visible="true" tooltip="If you edit this field manually, beware that the render model is no longer respected for radius calculation and that you need to set the bounding offset as well." />
 	<point3 name="Bounding Offset" offset="0x8" visible="true" />
@@ -112,7 +109,7 @@
 	<tagRef name="Creation Effect" offset="0x70" visible="true" />
 	<tagRef name="Material Effects" offset="0x80" visible="true" />
 	<tagRef name="Melee Sound" offset="0x90" visible="true" tooltip="this is the sound that is made when I am meleed. This overrides the sweetener sound of my material." />
-	<tagblock name="AI Properties" offset="0xA0" visible="true" elementSize="0x10">
+	<tagblock name="AI Properties" offset="0xA0" visible="true" elementSize="0xC">
 		<flags32 name="AI Flags" offset="0x0" visible="true">
 			<bit name="Destroyable Cover" index="0" />
 			<bit name="Pathfinding Ignore When Dead" index="1" />
@@ -122,8 +119,7 @@
 			<bit name="Has Corner Markers" index="5" />
 		</flags32>
 		<stringId name="AI Type Name" offset="0x4" visible="true" tooltip="used for combat dialogue, etc." />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<enum16 name="AI Size" offset="0xC" visible="true">
+		<enum16 name="AI Size" offset="0x8" visible="true">
 			<option name="Default" value="0x0" />
 			<option name="Tiny" value="0x1" />
 			<option name="Small" value="0x2" />
@@ -132,7 +128,7 @@
 			<option name="Huge" value="0x5" />
 			<option name="Immobile" value="0x6" />
 		</enum16>
-		<enum16 name="Leap Jump Speed" offset="0xE" visible="true">
+		<enum16 name="Leap Jump Speed" offset="0xA" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Down" value="0x1" />
 			<option name="Step" value="0x2" />
@@ -187,21 +183,18 @@
 			<colorf name="Color Upper Bound" offset="0x10" alpha="false" visible="true" />
 			<stringId name="Variant Name" offset="0x1C" visible="true" tooltip="if empty, may be used by any model variant" />
 		</tagblock>
-		<tagblock name="Functions" offset="0xC" visible="true" elementSize="0x28">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<flags32 name="Scale Flags" offset="0x4" visible="true">
+		<tagblock name="Functions" offset="0xC" visible="true" elementSize="0x24">
+			<flags32 name="Scale Flags" offset="0x0" visible="true">
 				<bit name="Blend In HSV" index="0" tooltip="blends colors in hsv rather than rgb space" />
 				<bit name="...More Colors" index="1" tooltip="blends colors through more hues (goes the long way around the color wheel)" />
 			</flags32>
-			<colorf name="Color Lower Bound" offset="0x8" alpha="false" visible="true" />
-			<colorf name="Color Upper Bound" offset="0x14" alpha="false" visible="true" />
-			<stringid name="Darken By" offset="0x20" visible="true" />
-			<stringid name="Scale By" offset="0x24" visible="true" />
+			<colorf name="Color Lower Bound" offset="0x4" alpha="false" visible="true" />
+			<colorf name="Color Upper Bound" offset="0x10" alpha="false" visible="true" />
+			<stringid name="Darken By" offset="0x1C" visible="true" />
+			<stringid name="Scale By" offset="0x20" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Predicted Resources" offset="0xE0" visible="false" elementSize="0x0">
-	</tagblock>
-	<tagblock name="Multiplayer Object" offset="0xEC" visible="true" elementSize="0xC4">
+	<tagblock name="Multiplayer Object" offset="0xE0" visible="true" elementSize="0xC4">
 		<flags16 name="Game Engine Flags" offset="0x0" visible="true" tooltip="Set which game engines you desire this object to appear in">
 			<bit name="Capture The Flag" index="0" />
 			<bit name="Slayer" index="1" />
@@ -290,51 +283,47 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<tagref name="Box Standard Shader" offset="0xA4" visible="true" />
 		<tagref name="Box Opaque Shader" offset="0xB4" visible="true" />
 	</tagblock>
+	<tagblock name="Health Packs" offset="0xEC" visible="true" elementSize="0x10">
+		<tagRef name="Health Pack Equipment" offset="0x0" visible="true" tooltip="MUST be an equipment tag that implements the &quot;Health Pack&quot; block" />
+	</tagblock>
 	<comment title="ITEM" />
 	<flags32 name="Flags" offset="0xF8" visible="true">
 		<bit name="Always Maintains z Up" index="0" />
-		<bit name="Destroyed by Explosions" index="1" />
-		<bit name="Unaffected by Gravity" index="2" />
-		<bit name="Crate Style Collision Filter" index="3" />
+		<bit name="Crate Style Collision Filter" index="1" />
 	</flags32>
-	<int16 name="OLD Message Index" offset="0xFC" visible="true" />
-	<int16 name="Sort Order" offset="0xFE" visible="true" />
-	<float32 name="OLD Multiplayer On-Ground Scale" offset="0x100" visible="true" />
-	<float32 name="OLD Campaign On-Ground Scale" offset="0x104" visible="true" />
-	<stringId name="Pickup Message" offset="0x108" visible="true" />
-	<stringId name="Swap Message" offset="0x10C" visible="true" />
-	<stringId name="Dual Pickup Message" offset="0x110" visible="true" />
-	<stringId name="Dual Swap Message" offset="0x114" visible="true" />
-	<stringId name="Picked Up Message" offset="0x118" visible="true" />
-	<stringId name="Switch-To Message" offset="0x11C" visible="true" />
-	<stringId name="Switch-To From AI Message" offset="0x120" visible="true" />
-	<stringid name="Notify Empty Message" offset="0x124" visible="true" />
-	<tagRef name="Collision Sound" offset="0x128" visible="true" />
-	<tagblock name="Predicted Bitmaps" offset="0x138" visible="false" elementSize="0x10">
-		<tagRef name="Bitmap" offset="0x0" visible="false" />
-	</tagblock>
-	<tagRef name="Detonation Damage Effect" offset="0x144" visible="true" />
-	<rangef name="Detonation Delay" offset="0x154" visible="true" />
-	<tagRef name="Detonating Effect" offset="0x15C" visible="true" />
-	<tagRef name="Detonation Effect" offset="0x16C" visible="true" />
+	<stringId name="Pickup Message" offset="0xFC" visible="true" />
+	<stringId name="Swap Message" offset="0x100" visible="true" />
+	<stringId name="Dual Pickup Message" offset="0x104" visible="true" />
+	<stringId name="Dual Swap Message" offset="0x108" visible="true" />
+	<stringId name="Picked Up Message" offset="0x10C" visible="true" />
+	<stringId name="Switch-To Message" offset="0x110" visible="true" />
+	<stringId name="Switch-To From AI Message" offset="0x114" visible="true" />
+	<stringid name="Notify Empty Message" offset="0x118" visible="true" />
+	<uint32 name="Private Use Font Icon" offset="0x11C" visible="true" tooltip="private use character for the item's icon" />
+	<uint32 name="Private Use Font Icon (Dual)" offset="0x120" visible="true" tooltip="private use character for the item's left-hand icon" />
+	<tagRef name="Detonation Damage Effect" offset="0x124" visible="true" />
+	<rangef name="Detonation Delay" offset="0x134" visible="true" />
+	<tagRef name="Detonating Effect" offset="0x13C" visible="true" />
+	<tagRef name="Detonation Effect" offset="0x14C" visible="true" />
 	<comment title="Item Scale Settings">because grenades look better as coconuts. 0==1</comment>
-	<float32 name="Campaign Ground Scale" offset="0x17C" visible="true" />
-	<float32 name="Multiplayer Ground Scale" offset="0x180" visible="true" />
-	<float32 name="Small Unit Armed Scale" offset="0x184" visible="true" />
-	<float32 name="Small Unit Stowed Scale" offset="0x188" visible="true" />
-	<float32 name="Medium Unit Armed Scale" offset="0x18C" visible="true" />
-	<float32 name="Medium Unit Stowed Scale" offset="0x190" visible="true" />
-	<float32 name="Player Unit Armed Scale" offset="0x194" visible="true" />
-	<float32 name="Player Unit Stowed Scale" offset="0x198" visible="true" />
-	<float32 name="Large Unit Armed Scale" offset="0x19C" visible="true" />
-	<float32 name="Large Unit Stowed Scale" offset="0x1A0" visible="true" />
-	<float32 name="Grounded Friction Length" offset="0x1A4" visible="true" />
-	<float32 name="Grounded Friction Unknown" offset="0x1A8" visible="true" />
+	<float32 name="Campaign Ground Scale" offset="0x15C" visible="true" />
+	<float32 name="Multiplayer Ground Scale" offset="0x160" visible="true" />
+	<float32 name="Small Unit Armed Scale" offset="0x164" visible="true" />
+	<float32 name="Small Unit Stowed Scale" offset="0x168" visible="true" />
+	<float32 name="Medium Unit Armed Scale" offset="0x16C" visible="true" />
+	<float32 name="Medium Unit Stowed Scale" offset="0x170" visible="true" />
+	<float32 name="Player Unit Armed Scale" offset="0x174" visible="true" />
+	<float32 name="Player Unit Stowed Scale" offset="0x178" visible="true" />
+	<float32 name="Large Unit Armed Scale" offset="0x17C" visible="true" />
+	<float32 name="Large Unit Stowed Scale" offset="0x180" visible="true" />
+	<comment title="Damping Settings">how much do we damp the velocity when the item is in contact with a slow</comment>
+	<float32 name="Grounded Angular Damping" offset="0x184" visible="true" tooltip="~30 == complete damping, 0 == defaults" />
+	<float32 name="Grounded Linear Damping" offset="0x188" visible="true" tooltip="~30 == complete damping, 0 == defaults" />
 	<comment title="EQUIPMENT" />
-	<float32 name="Duration" offset="0x1AC" visible="true" />
-	<float32 name="Phantom Volume Activation Time" offset="0x1B0" visible="true" tooltip="time in seconds for the phantom volumes on this object to start accelerating things in them" />
-	<int16 name="Charges" offset="0x1B4" visible="true" tooltip="-1 means unlimited charges, 0 means fire on creation" />
-	<flags16 name="Flags" offset="0x1B6" visible="true">
+	<float32 name="Duration" offset="0x18C" visible="true" />
+	<float32 name="Phantom Volume Activation Time" offset="0x190" visible="true" tooltip="time in seconds for the phantom volumes on this object to start accelerating things in them" />
+	<int16 name="Charges" offset="0x194" visible="true" tooltip="-1 means unlimited charges, 0 means fire on creation" />
+	<flags16 name="Flags" offset="0x196" visible="true">
 		<bit name="Pathfinding Obstacle" index="0" />
 		<bit name="Gravity Lift Collision Group" index="1" />
 		<bit name="Equipment Is Dangerous To AI" index="2" />
@@ -342,11 +331,11 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<bit name="Never Dropped By AI" index="4" tooltip="if an actor dies while carrying this, it gets deleted immediately. does not affect dropping by players" />
 	</flags16>
 	<comment title="AI">Settings which the AI use to know how they should react to this equipment</comment>
-	<float32 name="Danger Radius" offset="0x1B8" visible="true" tooltip="How large a danger zone we should create around this equipment (0 means no danger zone)" />
-	<float32 name="Minimum Deployment Distance" offset="0x1BC" visible="true" tooltip="How far does my target have to be for me to throw this at them?" />
-	<float32 name="Awareness Time" offset="0x1C0" visible="true" tooltip="How long I should go unnoticed by nearby enemies" />
+	<float32 name="Danger Radius" offset="0x198" visible="true" tooltip="How large a danger zone we should create around this equipment (0 means no danger zone)" />
+	<float32 name="Minimum Deployment Distance" offset="0x19C" visible="true" tooltip="How far does my target have to be for me to throw this at them?" />
+	<float32 name="Awareness Time" offset="0x1A0" visible="true" tooltip="How long I should go unnoticed by nearby enemies" />
 	<comment title="Type Definitions" />
-	<tagblock name="Super Shield" offset="0x1C4" visible="true" elementSize="0x3C">
+	<tagblock name="Super Shield" offset="0x1A4" visible="true" elementSize="0x3C">
 		<float32 name="Shield Recharge Delay Scale" offset="0x0" visible="true" tooltip="0.0f defaults to 1.0f" />
 		<float32 name="Shield Recharge Rate Scale" offset="0x4" visible="true" tooltip="0.0f defaults to 1.0f" />
 		<float32 name="Shield Ceiling Scale" offset="0x8" visible="true" tooltip="0.0f defaults to 1.0f" />
@@ -354,14 +343,14 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<tagRef name="Overcharge Effect" offset="0x1C" visible="true" />
 		<tagRef name="Overcharge Damage Effect" offset="0x2C" visible="true" />
 	</tagblock>
-	<tagblock name="Multiplayer Powerup" offset="0x1D0" visible="true" elementSize="0x4">
+	<tagblock name="Multiplayer Powerup" offset="0x1B0" visible="true" elementSize="0x4">
 		<enum32 name="Flavor" offset="0x0" visible="true">
 			<option name="Red Powerup" value="0x0" />
 			<option name="Blue Powerup" value="0x1" />
 			<option name="Yellow Powerup" value="0x2" />
 		</enum32>
 	</tagblock>
-	<tagblock name="Spawner" offset="0x1DC" visible="true" elementSize="0x34">
+	<tagblock name="Spawner" offset="0x1BC" visible="true" elementSize="0x34">
 		<tagRef name="Spawned Object" offset="0x0" visible="true" />
 		<tagRef name="Spawned Effect" offset="0x10" visible="true" />
 		<float32 name="Spawn Radius" offset="0x20" visible="true" tooltip="distance from players eyeball on the z-plane that this effect spawns" />
@@ -375,7 +364,7 @@ Certain flags applicable only to certain object types, should be self evident</c
 		</enum16>
 		<int16 name="Unknown" offset="0x32" visible="false" />
 	</tagblock>
-	<tagblock name="Proximity Mine" offset="0x1E8" visible="true" elementSize="0x30">
+	<tagblock name="Proximity Mine" offset="0x1C8" visible="true" elementSize="0x30">
 		<tagRef name="Explosion Effect" offset="0x0" visible="true" />
 		<tagRef name="Explosion Damage Effect" offset="0x10" visible="true" />
 		<float32 name="Arm Time" offset="0x20" visible="true" tooltip="time before it becomes a proximity mine" />
@@ -383,21 +372,21 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<float32 name="Trigger Time" offset="0x28" visible="true" tooltip="seconds object moving at trigger velocity takes to trigger explosion. This will smooth out sensitivity to velocity noise" />
 		<float32 name="Trigger Velocity" offset="0x2C" visible="true" tooltip="WU/sec at which we trigger explosion" />
 	</tagblock>
-	<tagblock name="Motion Tracker Noise" offset="0x1F4" visible="true" elementSize="0x10">
+	<tagblock name="Motion Tracker Noise" offset="0x1D4" visible="true" elementSize="0x10">
 		<float32 name="Arm Time" offset="0x0" visible="true" tooltip="time before it starts making noise" />
 		<float32 name="Noise Radius" offset="0x4" visible="true" tooltip="radius in WU that the noise extends to." />
 		<int32 name="Noise Count" offset="0x8" visible="true" tooltip="number of noise points that are generated" />
 		<float32 name="Flash Radius" offset="0xC" visible="true" tooltip="radius in WU that the damage flash noise extends to." />
 	</tagblock>
-	<tagblock name="Showme" offset="0x200" visible="true" elementSize="0x4">
+	<tagblock name="Showme" offset="0x1E0" visible="true" elementSize="0x4">
 		<comment title="THIS BLOCK HAS NO CODE AND WILL CRASH" />
 		<float32 name="Showme Radius" offset="0x0" visible="true" tooltip="radius in WU that the showme extends to." />
 	</tagblock>
-	<tagblock name="Invisibility Mode" offset="0x20C" visible="true" elementSize="0x8">
+	<tagblock name="Invisibility Mode" offset="0x1EC" visible="true" elementSize="0x8">
 		<float32 name="Invisible Time" offset="0x0" visible="true" />
 		<float32 name="Transition Time" offset="0x4" visible="true" />
 	</tagblock>
-	<tagblock name="Invincibility Mode" offset="0x218" visible="true" elementSize="0x3C">
+	<tagblock name="Invincibility Mode" offset="0x1F8" visible="true" elementSize="0x3C">
 		<stringid name="Invincibility Global Material Name" offset="0x0" visible="true" />
 		<int16 name="Invincibility Global Material Index" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
@@ -406,12 +395,16 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<tagRef name="Active Effect" offset="0x1C" visible="true" />
 		<tagRef name="Deactivation Effect" offset="0x2C" visible="true" />
 	</tagblock>
-	<tagblock name="Tree Of Life" offset="0x224" visible="true" elementSize="0x4">
+	<tagblock name="Tree Of Life" offset="0x204" visible="true" elementSize="0x4">
 		<float32 name="Phantom Volumes Make My Life Easy" offset="0x0" visible="true" />
 	</tagblock>
-	<tagRef name="HUD Interface" offset="0x230" visible="true" />
-	<tagRef name="Pickup Sound" offset="0x240" visible="true" />
-	<tagRef name="Activation Effect" offset="0x250" visible="true" />
-	<tagRef name="Active Effect" offset="0x260" visible="true" />
-	<tagRef name="Deactivation Effect" offset="0x270" visible="true" />
+	<tagblock name="Health Pack" offset="0x210" visible="true" elementSize="0x8">
+		<float32 name="Health Amount" offset="0x0" visible="true" />
+		<float32 name="Shield Amount" offset="0x4" visible="true" />
+	</tagblock>
+	<tagRef name="HUD Interface" offset="0x21C" visible="true" />
+	<tagRef name="Pickup Sound" offset="0x22C" visible="true" />
+	<tagRef name="Activation Effect" offset="0x23C" visible="true" />
+	<tagRef name="Active Effect" offset="0x24C" visible="true" />
+	<tagRef name="Deactivation Effect" offset="0x25C" visible="true" />
 </plugin>

@@ -1384,30 +1384,15 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<float32 name="Radius" offset="0x4" visible="true" />
 		<float32 name="Power" offset="0x8" visible="true" />
 	</tagblock>
-	<tagblock name="IWHBYDaddy" offset="0x340" visible="true" elementSize="0x60">
+	<tagblock name="IWHBYDaddy" offset="0x340" visible="true" elementSize="0x18">
 		<tagRef name="Child Object" offset="0x0" visible="true" />
-		<flags16 name="Flags" offset="0x10" visible="true">
+		<flags32 name="Visibility Flags" offset="0x10" visible="true">
 			<bit name="Inactive Unstowed" index="0" />
 			<bit name="Inactive Stowed" index="1" />
 			<bit name="Active Unstowed" index="2" />
 			<bit name="Active Stowed" index="3" />
-			<bit name="Warming Up Unstowed" index="4" />
-			<bit name="Warming Up Stowed" index="5" />
-			<bit name="Cooling Down Unstowed" index="6" />
-			<bit name="Cooling Down Stowed" index="7" />
-			<bit name="Shield Vitality Tied To Energy" index="8" tooltip="as energy goes down, the shield vitality will as well" />
-		</flags16>
-		<int16 name="Unknown" offset="0x12" visible="false" />
+		</flags32>
 		<float32 name="Shield Damage To Energy Scale" offset="0x14" visible="true" tooltip="scale factor for energy gain from shield damage to child. Damage is normalized, so if this value is -1.0 then the equipment will lose all its energy when its child's shield is depleted." />
-		<float32 name="Starting Warm Up Object Scale" offset="0x18" visible="true" tooltip="if &gt;0 (and warm up time is &gt;0), object size will scale up from this up to 1.0 over course of warm up time and down over cooldown time" />
-		<point3 name="Offset From Parent" offset="0x1C" visible="true" tooltip="the root of the child is offset by this amount from the root of the parent biped" />
-		<float32 name="Vertical Offset In World Space" offset="0x28" visible="true" tooltip="used to adjust hight per biped, regardless of aim direction" />
-		<rangef name="Pitch" offset="0x2C" visible="true" tooltip="the min and max pitch that the child will follow as you aim up and down. -90 to 90" />
-		<float32 name="Visual Activation Time" offset="0x34" visible="true" />
-		<tagRef name="Spawn Effect" offset="0x38" visible="true" />
-		<stringid name="Spawn Effect Marker" offset="0x48" visible="true" />
-		<tagRef name="Despawn Effect" offset="0x4C" visible="true" />
-		<stringid name="Despawn Effect Marker" offset="0x5C" visible="true" />
 	</tagblock>
 	<uint32 name="Unknown" offset="0x34C" visible="false" />
 	<uint32 name="Unknown" offset="0x350" visible="false" />
@@ -1415,16 +1400,10 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<tagblock name="Super Jump" offset="0x358" visible="true" elementSize="0x14">
 		<dataref name="Energy To Jump Function" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Ammo Pack" offset="0x364" visible="true" elementSize="0x24">
+	<tagblock name="Ammo Pack" offset="0x364" visible="true" elementSize="0xC">
 		<float32 name="Energy Change Per Clip Added" offset="0x0" visible="true" />
 		<int32 name="Extra Frags" offset="0x4" visible="true" />
 		<int32 name="Extra Plasma" offset="0x8" visible="true" />
-		<int32 name="Extra Grenade 3" offset="0xC" visible="true" />
-		<int32 name="Extra Grenade 4" offset="0x10" visible="true" />
-		<int32 name="Extra Grenade 5" offset="0x14" visible="true" />
-		<int32 name="Extra Grenade 6" offset="0x18" visible="true" />
-		<int32 name="Extra Grenade 7" offset="0x1C" visible="true" />
-		<int32 name="Extra Grenade 8" offset="0x20" visible="true" />
 	</tagblock>
 	<tagblock name="Power Fist" offset="0x370" visible="true" elementSize="0x40">
 		<tagRef name="Melee Damage" offset="0x0" visible="true" />

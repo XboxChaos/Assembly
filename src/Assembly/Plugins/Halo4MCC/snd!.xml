@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo4MCC" baseSize="0x48">
+	<revisions>
+		<revision author="Lord Zedd" version="1">Portin without generation</revision>
+		<revision author="Lord Zedd" version="2">Standardized</revision>
+	</revisions>
+	<flags32 name="Flags" offset="0x0" visible="true">
+		<bit name="Never Obstruct" index="0" tooltip="disable occlusion/obstruction for this sound" />
+		<bit name="Use Huge Sound Transmission" index="1" />
+		<bit name="Link Count To Owner Unit" index="2" />
+		<bit name="Don't Use Lipsync Data" index="3" />
+		<bit name="Instant Sound Propagation" index="4" />
+		<bit name="Optional Player Sound Event" index="5" />
+		<bit name="Has Lipsync Data" index="6" />
+		<bit name="Is Deterministic" index="7" />
+		<bit name="Is External Source" index="8" />
+		<bit name="Override External Source Event" index="9" />
+		<bit name="Use Don't Play Time" index="10" />
+		<bit name="Delay Start If Sound Bank Not Loaded" index="11" />
+		<bit name="Use Fallback Only For DVD" index="12" />
+		<bit name="Has Subtitle" index="13" />
+		<bit name="Ignore Node Transform" index="14" tooltip="use this if you're getting wacky spatialization (such as scorpion cannon)" />
+		<bit name="Radio Combo Voice" index="15" />
+		<bit name="Cinematic Allow Tails To Play Out" index="16" />
+	</flags32>
+	<flags32 name="Import Flags" offset="0x4" visible="true">
+		<bit name="Duplicate Directory Name" index="0" />
+		<bit name="Cut To Block Size" index="1" />
+		<bit name="Use Markers" index="2" />
+		<bit name="Use Layer Markers" index="3" />
+	</flags32>
+	<flags32 name="XSync Flags" offset="0x8" visible="true">
+		<bit name="Processed Language Times" index="0" />
+		<bit name="Optimized Facial Animation" index="1" />
+	</flags32>
+	<uint32 name="Event Name Hash" offset="0xC" visible="true" />
+	<uint32 name="Player Event Name Hash" offset="0x10" visible="true" />
+	<uint32 name="Fallback Event Name Hash" offset="0x14" visible="true" />
+	<float32 name="Maximum Radius" offset="0x18" visible="true" />
+	<float32 name="Maximum Duration" offset="0x1C" visible="true" />
+	<float32 name="Don't Play Time" offset="0x20" visible="true" />
+	<int32 name="Hidden Runtime Info Index" offset="0x24" visible="true" />
+	<tagref name="Soundbank" offset="0x28" visible="true" />
+	<tagblock name="Lipsync Info" offset="0x38" visible="true" elementSize="0x1C">
+		<int32 name="Number of Usable Facial Animations" offset="0x0" visible="true" />
+		<tagblock name="Deterministic Event Info" offset="0x4" visible="true" elementSize="0x10">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Campaign Only" index="0" />
+				<bit name="Exclude From Certain Missions" index="1" />
+				<bit name="Exclude From M10" index="2" />
+				<bit name="Exclude From M20" index="3" />
+				<bit name="Exclude From M30" index="4" />
+				<bit name="Exclude From M40" index="5" />
+				<bit name="Exclude From M60" index="6" />
+				<bit name="Exclude From M70" index="7" />
+				<bit name="Exclude From M80" index="8" />
+				<bit name="Exclude From M90" index="9" />
+			</flags32>
+			<stringid name="Voice File Path" offset="0x4" visible="true" />
+			<float32 name="Event Duration" offset="0x8" visible="true" />
+			<float32 name="Skip Fraction" offset="0xC" visible="true" tooltip="Percent this file will be skipped when picked. 0 is always, 0.99 is almost never" />
+		</tagblock>
+		<tagblock name="Facial Animation Resource Languages" offset="0x10" visible="true" elementSize="0x8">
+			<datum name="[zone] Asset Datum" offset="0x0" visible="true" />
+			<int32 name="Useless Padding" offset="0x4" visible="false" />
+		</tagblock>
+	</tagblock>
+	<int32 name="Deterministic Flag Index" offset="0x44" visible="true" />
+</plugin>

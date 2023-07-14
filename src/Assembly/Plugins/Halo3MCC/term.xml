@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo3MCC" baseSize="0x2D0">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+		<revision author="Lord Zedd" version="2">Portin'</revision>
+		<revision author="Lord Zedd" version="3">thanks h5</revision>
+	</revisions>
+	<enum16 name="Object Type" offset="0x0" visible="true" tooltip="changing this would not be wise">
+		<option name="Biped" value="0x0" />
+		<option name="Vehicle" value="0x1" />
+		<option name="Weapon" value="0x2" />
+		<option name="Equipment" value="0x3" />
+		<option name="Terminal" value="0x4" />
+		<option name="Projectile" value="0x5" />
+		<option name="Scenery" value="0x6" />
+		<option name="Machine" value="0x7" />
+		<option name="Control" value="0x8" />
+		<option name="Sound Scenery" value="0x9" />
+		<option name="Crate" value="0xA" />
+		<option name="Creature" value="0xB" />
+		<option name="Giant" value="0xC" />
+		<option name="Effect Scenery" value="0xD" />
+	</enum16>
+	<flags16 name="Flags" offset="0x2" visible="true">
+		<bit name="Does Not Cast Shadow" index="0" />
+		<bit name="Search Cardinal Direction Lightmaps on Failure" index="1" />
+		<bit name="Preserves Initial Damage Owner" index="2" />
+		<bit name="Not A Pathfinding Obstacle" index="3" />
+		<bit name="Extension Of Parent" index="4" tooltip="object passes all function values to parent and uses parent's markers" />
+		<bit name="Does Not Cause Collision Damage" index="5" />
+		<bit name="Early Mover" index="6" />
+		<bit name="Early Mover Localized Physics" index="7" />
+		<bit name="Object Scales Attachments" index="8" />
+		<bit name="Non Physical In Map Editor" index="9" />
+		<bit name="Attach To Clusters By Dynamic Sphere" index="10" tooltip="use this for the mac gun on spacestation" />
+		<bit name="Effects Created By This Object Do Not Spawn Objects In Multiplayer" index="11" />
+		<bit name="Does Not Collide With Camera" index="12" tooltip="specificly the flying observer camera" />
+		<bit name="Damage Not Blocked By Obstructions" index="13" tooltip="AOE damage being applied to this object does not test for obstrutions." />
+	</flags16>
+	<float32 name="Bounding Radius" offset="0x4" visible="true" tooltip="If you edit this field manually, beware that the render model is no longer respected for radius calculation and that you need to set the bounding offset as well." />
+	<point3 name="Bounding Offset" offset="0x8" visible="true" />
+	<float32 name="Acceleration Scale" offset="0x14" visible="true" tooltip="marine 1.0, grunt 1.4, elite 0.9, hunter 0.5, etc." />
+	<enum16 name="Lightmap Shadow Mode" offset="0x18" visible="true">
+		<option name="Default" value="0x0" />
+		<option name="Never" value="0x1" />
+		<option name="Always" value="0x2" />
+		<option name="Blur" value="0x3" />
+	</enum16>
+	<enum8 name="Sweetener Size" offset="0x1A" visible="true">
+		<option name="Default" value="0x0" />
+		<option name="Small" value="0x1" />
+		<option name="Medium" value="0x2" />
+		<option name="Large" value="0x3" />
+	</enum8>
+	<enum8 name="Water Density" offset="0x1B" visible="true">
+		<option name="Default" value="0x0" />
+		<option name="Super Floater" value="0x1" />
+		<option name="Floater" value="0x2" />
+		<option name="Neutral" value="0x3" />
+		<option name="Sinker" value="0x4" />
+		<option name="Super Sinker" value="0x5" />
+		<option name="None" value="0x6" />
+	</enum8>
+	<flags32 name="Runtime Flags" offset="0x1C" visible="true">
+		<bit name="Runtime Change Colors Allowed" index="0" />
+		<bit name="Bit 1" index="1" />
+		<bit name="Bit 2" index="2" />
+		<bit name="Bit 3" index="3" />
+		<bit name="Bit 4" index="4" />
+		<bit name="Bit 5" index="5" />
+		<bit name="Bit 6" index="6" />
+		<bit name="Bit 7" index="7" />
+		<bit name="Bit 8" index="8" />
+		<bit name="Bit 9" index="9" />
+		<bit name="Bit 10" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
+		<bit name="Bit 16" index="16" />
+		<bit name="Bit 17" index="17" />
+		<bit name="Bit 18" index="18" />
+		<bit name="Bit 19" index="19" />
+		<bit name="Bit 20" index="20" />
+		<bit name="Bit 21" index="21" />
+		<bit name="Bit 22" index="22" />
+		<bit name="Bit 23" index="23" />
+		<bit name="Bit 24" index="24" />
+		<bit name="Bit 25" index="25" />
+		<bit name="Bit 26" index="26" />
+		<bit name="Bit 27" index="27" />
+		<bit name="Bit 28" index="28" />
+		<bit name="Bit 29" index="29" />
+		<bit name="Bit 30" index="30" />
+		<bit name="Bit 31" index="31" />
+	</flags32>
+	<float32 name="Dynamic Light Sphere Radius" offset="0x20" visible="true" tooltip="sphere to use for dynamic lights and shadows. only used if not 0" />
+	<point3 name="Dynamic Light Sphere Offset" offset="0x24" visible="true" tooltip="only used if radius not 0" />
+	<stringId name="Default Model Variant" offset="0x30" visible="true" />
+	<tagRef name="Model" offset="0x34" visible="true" />
+	<tagRef name="Crate Object" offset="0x44" visible="true" />
+	<tagRef name="Collision Damage" offset="0x54" visible="true" tooltip="only set this tag if you want to override the default collision damage values in globals.globals" />
+	<tagblock name="Early Mover Oriented Bounding Box" offset="0x64" visible="true" elementSize="0x28">
+		<stringid name="Node Name" offset="0x0" visible="true" tooltip="empty means object space" />
+		<rangef name="x" offset="0x4" visible="true" />
+		<rangef name="y" offset="0xC" visible="true" />
+		<rangef name="z" offset="0x14" visible="true" />
+		<degree3 name="Angles" offset="0x1C" visible="true" />
+	</tagblock>
+	<tagRef name="Creation Effect" offset="0x70" visible="true" />
+	<tagRef name="Material Effects" offset="0x80" visible="true" />
+	<tagRef name="Melee Sound" offset="0x90" visible="true" tooltip="this is the sound that is made when I am meleed. This overrides the sweetener sound of my material." />
+	<tagblock name="AI Properties" offset="0xA0" visible="true" elementSize="0xC">
+		<flags32 name="AI Flags" offset="0x0" visible="true">
+			<bit name="Destroyable Cover" index="0" />
+			<bit name="Pathfinding Ignore When Dead" index="1" />
+			<bit name="Dynamic Cover" index="2" />
+			<bit name="Non Flight-Blocking" index="3" />
+			<bit name="Dynamic Cover From Centre" index="4" />
+			<bit name="Has Corner Markers" index="5" />
+		</flags32>
+		<stringId name="AI Type Name" offset="0x4" visible="true" tooltip="used for combat dialogue, etc." />
+		<enum16 name="AI Size" offset="0x8" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Tiny" value="0x1" />
+			<option name="Small" value="0x2" />
+			<option name="Medium" value="0x3" />
+			<option name="Large" value="0x4" />
+			<option name="Huge" value="0x5" />
+			<option name="Immobile" value="0x6" />
+		</enum16>
+		<enum16 name="Leap Jump Speed" offset="0xA" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Down" value="0x1" />
+			<option name="Step" value="0x2" />
+			<option name="Crouch" value="0x3" />
+			<option name="Stand" value="0x4" />
+			<option name="Storey" value="0x5" />
+			<option name="Tower" value="0x6" />
+			<option name="Infinite" value="0x7" />
+		</enum16>
+	</tagblock>
+	<tagblock name="Functions" offset="0xAC" visible="true" elementSize="0x2C">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="Invert" index="0" tooltip="result of function is one minus actual result" />
+			<bit name="Mapping Does Not Controls Active" index="1" tooltip="the curve mapping can make the function active/inactive" />
+			<bit name="Always Active" index="2" tooltip="function does not deactivate when at or below lower bound" />
+			<bit name="Random Time Offset" index="3" tooltip="function offsets periodic function input by random value between 0 and 1" />
+			<bit name="Always Exports Value" index="4" tooltip="when this function is deactivated, it still exports its value" />
+			<bit name="Turn Off With Uses Magnitude" index="5" tooltip="the function will be turned off if the value of the turns_off_with function is 0" />
+		</flags32>
+		<stringId name="Import Name" offset="0x4" visible="true" tooltip="if you leave this field blank then you can set this function's input value with the hs_function object_set_function_variable" />
+		<stringId name="Export Name" offset="0x8" visible="true" />
+		<stringId name="Turn Off With" offset="0xC" visible="true" tooltip="if the specified function is off, so is this function" />
+		<float32 name="Minimum Value" offset="0x10" visible="true" tooltip="function must exceed this value (after mapping) to be active 0. means do nothing" />
+		<dataRef name="Default Function" offset="0x14" visible="true" />
+		<stringid name="Scale By" offset="0x28" visible="true" />
+	</tagblock>
+	<int16 name="HUD Text Message Index" offset="0xB8" visible="true" />
+	<flags16 name="Secondary Flags" offset="0xBA" visible="true">
+		<bit name="Does Not Affect Projectile Aiming" index="0" />
+	</flags16>
+	<tagblock name="Attachments" offset="0xBC" visible="true" elementSize="0x20">
+		<tagRef name="Type" offset="0x0" visible="true" />
+		<stringid name="Marker" offset="0x10" visible="true" />
+		<enum16 name="Change Color" offset="0x14" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Primary" value="0x1" />
+			<option name="Secondary" value="0x2" />
+			<option name="Tertiary" value="0x3" />
+			<option name="Quaternary" value="0x4" />
+		</enum16>
+		<int16 name="Unknown" offset="0x16" visible="false" />
+		<stringid name="Primary Scale" offset="0x18" visible="true" />
+		<stringid name="Secondary Scale" offset="0x1C" visible="true" />
+	</tagblock>
+	<tagblock name="Widgets" offset="0xC8" visible="true" elementSize="0x10">
+		<tagRef name="Type" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Change Colors" offset="0xD4" visible="true" elementSize="0x18">
+		<tagblock name="Initial Permutations" offset="0x0" visible="true" elementSize="0x20">
+			<float32 name="Weight" offset="0x0" visible="true" />
+			<colorf name="Color Lower Bound" offset="0x4" alpha="false" visible="true" />
+			<colorf name="Color Upper Bound" offset="0x10" alpha="false" visible="true" />
+			<stringId name="Variant Name" offset="0x1C" visible="true" tooltip="if empty, may be used by any model variant" />
+		</tagblock>
+		<tagblock name="Functions" offset="0xC" visible="true" elementSize="0x24">
+			<flags32 name="Scale Flags" offset="0x0" visible="true">
+				<bit name="Blend In HSV" index="0" tooltip="blends colors in hsv rather than rgb space" />
+				<bit name="...More Colors" index="1" tooltip="blends colors through more hues (goes the long way around the color wheel)" />
+			</flags32>
+			<colorf name="Color Lower Bound" offset="0x4" alpha="false" visible="true" />
+			<colorf name="Color Upper Bound" offset="0x10" alpha="false" visible="true" />
+			<stringid name="Darken By" offset="0x1C" visible="true" />
+			<stringid name="Scale By" offset="0x20" visible="true" />
+		</tagblock>
+	</tagblock>
+	<tagblock name="Multiplayer Object" offset="0xE0" visible="true" elementSize="0xC4">
+		<flags16 name="Game Engine Flags" offset="0x0" visible="true" tooltip="Set which game engines you desire this object to appear in">
+			<bit name="Capture The Flag" index="0" />
+			<bit name="Slayer" index="1" />
+			<bit name="Oddball" index="2" />
+			<bit name="King Of The Hill" index="3" />
+			<bit name="Juggernaut" index="4" />
+			<bit name="Territories" index="5" />
+			<bit name="Assault" index="6" />
+			<bit name="VIP" index="7" />
+			<bit name="Infection" index="8" />
+			<bit name="Target Training" index="9" />
+		</flags16>
+		<comment title="TYPE AND FLAGS">Type pertains to how you want the game engine to handle this object
+Certain flags applicable only to certain object types, should be self evident</comment>
+		<enum8 name="Type" offset="0x2" visible="true">
+			<option name="Ordinary" value="0x0" />
+			<option name="Weapon" value="0x1" />
+			<option name="Grenade" value="0x2" />
+			<option name="Projectile" value="0x3" />
+			<option name="Powerup" value="0x4" />
+			<option name="Equipment" value="0x5" />
+			<option name="Light Land Vehicle" value="0x6" />
+			<option name="Heavy Land Vehicle" value="0x7" />
+			<option name="Flying Vehicle" value="0x8" />
+			<option name="Teleporter 2Way" value="0x9" />
+			<option name="Teleporter Sender" value="0xA" />
+			<option name="Teleporter Receiver" value="0xB" />
+			<option name="Player Spawn Location" value="0xC" />
+			<option name="Player Respawn Zone" value="0xD" />
+			<option name="Oddball Spawn Location" value="0xE" />
+			<option name="CTF Flag Spawn Location" value="0xF" />
+			<option name="Target Spawn Location" value="0x10" />
+			<option name="CTF Flag Return Area" value="0x11" />
+			<option name="Koth Hill Area" value="0x12" />
+			<option name="Infection Safe Area" value="0x13" />
+			<option name="Territory Area" value="0x14" />
+			<option name="VIP Influence Area" value="0x15" />
+			<option name="VIP Destination Zone" value="0x16" />
+			<option name="Juggernaut Destination Zone" value="0x17" />
+		</enum8>
+		<flags8 name="Teleporter Passability" offset="0x3" visible="true">
+			<bit name="Disallow Players" index="0" />
+			<bit name="Allow Light Land Vehicles" index="1" />
+			<bit name="Allow Heavy Land Vehicles" index="2" />
+			<bit name="Allow Flying Vehicles" index="3" />
+			<bit name="Allow Projectiles" index="4" />
+		</flags8>
+		<flags16 name="Flags" offset="0x4" visible="true">
+			<bit name="Only Visible In Editor" index="0" />
+			<bit name="Valid Initial Player Spawn" index="1" />
+			<bit name="Fixed Boundary Orientation" index="2" />
+			<bit name="Candy Monitor Should Ignore" index="3" />
+		</flags16>
+		<enum8 name="Boundary Shape" offset="0x6" visible="true">
+			<option name="Unused" value="0x0" />
+			<option name="Sphere" value="0x1" />
+			<option name="Cylinder" value="0x2" />
+			<option name="Box" value="0x3" />
+		</enum8>
+		<enum8 name="Spawn Timer Type" offset="0x7" visible="true">
+			<option name="Starts On Death" value="0x0" />
+			<option name="Starts On Disturbance" value="0x1" />
+		</enum8>
+		<int16 name="Default Spawn Time" offset="0x8" visible="true" />
+		<int16 name="Default Abandonment Time" offset="0xA" visible="true" />
+		<float32 name="Boundary Width/Radius" offset="0xC" visible="true" />
+		<float32 name="Boundary Box Length" offset="0x10" visible="true" />
+		<float32 name="Boundary +Height" offset="0x14" visible="true" />
+		<float32 name="Boundary -Height" offset="0x18" visible="true" />
+		<comment title="RESPAWN ZONE DATA">These are respawn zone weights, used only for respawn zones</comment>
+		<float32 name="Normal Weight" offset="0x1C" visible="true" />
+		<float32 name="Flag Away Weight" offset="0x20" visible="true" />
+		<float32 name="Flag At Home Weight" offset="0x24" visible="true" />
+		<comment title="MARKER DATA">These fields are only used for defining certain, special markers to use for positional locations if the default position (object origin) is not sufficient</comment>
+		<stringid name="Boundary Center Marker" offset="0x28" visible="true" />
+		<stringid name="Spawned Object Marker Name" offset="0x2C" visible="true" />
+		<comment title="SPAWNED OBJECT">If this object is intended to spawn something, the object it spawns should be specified here</comment>
+		<tagref name="Spawned Object" offset="0x30" visible="true" tooltip="If this object is intended to spawn something, the object it spawns should be specified here" />
+		<stringid name="Boundary Material" offset="0x40" visible="true" tooltip="Not Yet Implemented" />
+		<tagref name="Default Boundary Standard Shader" offset="0x44" visible="true" />
+		<tagref name="Default Boundary Opaque Shader" offset="0x54" visible="true" />
+		<tagref name="Sphere Standard Shader" offset="0x64" visible="true" />
+		<tagref name="Sphere Opaque Shader" offset="0x74" visible="true" />
+		<tagref name="Cylinder Standard Shader" offset="0x84" visible="true" />
+		<tagref name="Cylinder Opaque Shader" offset="0x94" visible="true" />
+		<tagref name="Box Standard Shader" offset="0xA4" visible="true" />
+		<tagref name="Box Opaque Shader" offset="0xB4" visible="true" />
+	</tagblock>
+	<tagblock name="Health Packs" offset="0xEC" visible="true" elementSize="0x10">
+		<tagRef name="Health Pack Equipment" offset="0x0" visible="true" tooltip="MUST be an equipment tag that implements the &quot;Health Pack&quot; block" />
+	</tagblock>
+	<comment title="DEVICE" />
+	<flags32 name="Flags" offset="0xF8" visible="true">
+		<bit name="Position Loops" index="0" />
+		<bit name="Bit 1" index="1" />
+		<bit name="Allow Interpolation" index="2" />
+	</flags32>
+	<float32 name="Power Transition Time" offset="0xFC" visible="true" />
+	<float32 name="Power Acceleration Time" offset="0x100" visible="true" />
+	<float32 name="Position Transition Time" offset="0x104" visible="true" />
+	<float32 name="Position Acceleration Time" offset="0x108" visible="true" />
+	<float32 name="Depowered Position Transition Time" offset="0x10C" visible="true" />
+	<float32 name="Depowered Position Acceleration Time" offset="0x110" visible="true" />
+	<flags16 name="Lightmap Flags" offset="0x114" visible="true">
+		<bit name="Don't Use In Lightmap" index="0" />
+		<bit name="Don't Use In Lightprobe" index="1" />
+	</flags16>
+	<int16 name="Unknown" offset="0x116" visible="false" />
+	<tagRef name="Open (Up)" offset="0x118" visible="true" />
+	<tagRef name="Close (Down)" offset="0x128" visible="true" />
+	<tagRef name="Opened" offset="0x138" visible="true" />
+	<tagRef name="Closed" offset="0x148" visible="true" />
+	<tagRef name="Depowered" offset="0x158" visible="true" />
+	<tagRef name="Repowered" offset="0x168" visible="true" />
+	<float32 name="Delay Time" offset="0x178" visible="true" />
+	<tagRef name="Delay Effect" offset="0x17C" visible="true" />
+	<float32 name="Automatic Activation Radius" offset="0x18C" visible="true" />
+	<comment title="TERMINAL" />
+	<undefined name="Unknown" offset="0x190" visible="false" />
+	<stringid name="Action String" offset="0x194" visible="true" />
+	<int16 name="Terminal Number" offset="0x198" visible="true" />
+	<int16 name="Unknown" offset="0x19A" visible="false" />
+	<float32 name="Exposure" offset="0x19C" visible="true" tooltip="set the exposure to the this when viewing terminal" />
+	<tagRef name="Activation Sound" offset="0x1A0" visible="true" />
+	<tagRef name="Deactivation Sound" offset="0x1B0" visible="true" />
+	<tagRef name="Translation Sound" offset="0x1C0" visible="true" />
+	<tagRef name="Untranslation Sound" offset="0x1D0" visible="true" />
+	<tagRef name="Error Sound" offset="0x1E0" visible="true" />
+	<comment title="Easy Difficulty" />
+	<tagRef name="Dummy Strings" offset="0x1F0" visible="true" />
+	<tagRef name="Real Strings" offset="0x200" visible="true" />
+	<flags16 name="Dummy Content" offset="0x210" visible="true">
+		<bit name="Military" index="0" />
+		<bit name="Public" index="1" />
+		<bit name="Private" index="2" />
+		<bit name="Librarian (Lower)" index="3" />
+		<bit name="Didact" index="4" />
+		<bit name="Mendicant" index="5" />
+		<bit name="Aggressive" index="6" />
+		<bit name="Gravemind (Lower)" index="7" />
+		<bit name="Fleet (Double)" index="8" />
+		<bit name="Spark (Lower)" index="9" />
+	</flags16>
+	<flags16 name="Real Content" offset="0x212" visible="true">
+		<bit name="Military" index="0" />
+		<bit name="Public" index="1" />
+		<bit name="Private" index="2" />
+		<bit name="Librarian (Lower)" index="3" />
+		<bit name="Didact" index="4" />
+		<bit name="Mendicant" index="5" />
+		<bit name="Aggressive" index="6" />
+		<bit name="Gravemind (Lower)" index="7" />
+		<bit name="Fleet (Double)" index="8" />
+		<bit name="Spark (Lower)" index="9" />
+	</flags16>
+	<enum16 name="Dummy Image Frame" offset="0x214" visible="true">
+		<option name="None" value="0xFFFFFFFF" />
+		<option name="term_1.blf" value="0x0" />
+		<option name="term_2.blf" value="0x1" />
+		<option name="term_3.blf" value="0x2" />
+		<option name="term_4.blf" value="0x3" />
+		<option name="term_5.blf" value="0x4" />
+		<option name="term_6.blf" value="0x5" />
+		<option name="term_7.blf" value="0x6" />
+		<option name="term_8.blf" value="0x7" />
+	</enum16>
+	<enum16 name="Real Image Frame" offset="0x216" visible="true">
+		<option name="None" value="0xFFFFFFFF" />
+		<option name="term_1.blf" value="0x0" />
+		<option name="term_2.blf" value="0x1" />
+		<option name="term_3.blf" value="0x2" />
+		<option name="term_4.blf" value="0x3" />
+		<option name="term_5.blf" value="0x4" />
+		<option name="term_6.blf" value="0x5" />
+		<option name="term_7.blf" value="0x6" />
+		<option name="term_8.blf" value="0x7" />
+	</enum16>
+	<tagRef name="Error Strings" offset="0x218" visible="true" />
+	<comment title="Normal Difficulty" />
+	<tagRef name="Dummy Strings" offset="0x228" visible="true" />
+	<tagRef name="Real Strings" offset="0x238" visible="true" />
+	<flags16 name="Dummy Content" offset="0x248" visible="true">
+		<bit name="Military" index="0" />
+		<bit name="Public" index="1" />
+		<bit name="Private" index="2" />
+		<bit name="Librarian (Lower)" index="3" />
+		<bit name="Didact" index="4" />
+		<bit name="Mendicant" index="5" />
+		<bit name="Aggressive" index="6" />
+		<bit name="Gravemind (Lower)" index="7" />
+		<bit name="Fleet (Double)" index="8" />
+		<bit name="Spark (Lower)" index="9" />
+	</flags16>
+	<flags16 name="Real Content" offset="0x24A" visible="true">
+		<bit name="Military" index="0" />
+		<bit name="Public" index="1" />
+		<bit name="Private" index="2" />
+		<bit name="Librarian (Lower)" index="3" />
+		<bit name="Didact" index="4" />
+		<bit name="Mendicant" index="5" />
+		<bit name="Aggressive" index="6" />
+		<bit name="Gravemind (Lower)" index="7" />
+		<bit name="Fleet (Double)" index="8" />
+		<bit name="Spark (Lower)" index="9" />
+	</flags16>
+	<enum16 name="Dummy Image Frame" offset="0x24C" visible="true">
+		<option name="None" value="0xFFFFFFFF" />
+		<option name="term_1.blf" value="0x0" />
+		<option name="term_2.blf" value="0x1" />
+		<option name="term_3.blf" value="0x2" />
+		<option name="term_4.blf" value="0x3" />
+		<option name="term_5.blf" value="0x4" />
+		<option name="term_6.blf" value="0x5" />
+		<option name="term_7.blf" value="0x6" />
+		<option name="term_8.blf" value="0x7" />
+	</enum16>
+	<enum16 name="Real Image Frame" offset="0x24E" visible="true">
+		<option name="None" value="0xFFFFFFFF" />
+		<option name="term_1.blf" value="0x0" />
+		<option name="term_2.blf" value="0x1" />
+		<option name="term_3.blf" value="0x2" />
+		<option name="term_4.blf" value="0x3" />
+		<option name="term_5.blf" value="0x4" />
+		<option name="term_6.blf" value="0x5" />
+		<option name="term_7.blf" value="0x6" />
+		<option name="term_8.blf" value="0x7" />
+	</enum16>
+	<tagRef name="Error Strings" offset="0x250" visible="true" />
+	<comment title="Heroic Difficulty" />
+	<tagRef name="Dummy Strings" offset="0x260" visible="true" />
+	<tagRef name="Real Strings" offset="0x270" visible="true" />
+	<flags16 name="Dummy Content" offset="0x280" visible="true">
+		<bit name="Military" index="0" />
+		<bit name="Public" index="1" />
+		<bit name="Private" index="2" />
+		<bit name="Librarian (Lower)" index="3" />
+		<bit name="Didact" index="4" />
+		<bit name="Mendicant" index="5" />
+		<bit name="Aggressive" index="6" />
+		<bit name="Gravemind (Lower)" index="7" />
+		<bit name="Fleet (Double)" index="8" />
+		<bit name="Spark (Lower)" index="9" />
+	</flags16>
+	<flags16 name="Real Content" offset="0x282" visible="true">
+		<bit name="Military" index="0" />
+		<bit name="Public" index="1" />
+		<bit name="Private" index="2" />
+		<bit name="Librarian (Lower)" index="3" />
+		<bit name="Didact" index="4" />
+		<bit name="Mendicant" index="5" />
+		<bit name="Aggressive" index="6" />
+		<bit name="Gravemind (Lower)" index="7" />
+		<bit name="Fleet (Double)" index="8" />
+		<bit name="Spark (Lower)" index="9" />
+	</flags16>
+	<enum16 name="Dummy Image Frame" offset="0x284" visible="true">
+		<option name="None" value="0xFFFFFFFF" />
+		<option name="term_1.blf" value="0x0" />
+		<option name="term_2.blf" value="0x1" />
+		<option name="term_3.blf" value="0x2" />
+		<option name="term_4.blf" value="0x3" />
+		<option name="term_5.blf" value="0x4" />
+		<option name="term_6.blf" value="0x5" />
+		<option name="term_7.blf" value="0x6" />
+		<option name="term_8.blf" value="0x7" />
+	</enum16>
+	<enum16 name="Real Image Frame" offset="0x286" visible="true">
+		<option name="None" value="0xFFFFFFFF" />
+		<option name="term_1.blf" value="0x0" />
+		<option name="term_2.blf" value="0x1" />
+		<option name="term_3.blf" value="0x2" />
+		<option name="term_4.blf" value="0x3" />
+		<option name="term_5.blf" value="0x4" />
+		<option name="term_6.blf" value="0x5" />
+		<option name="term_7.blf" value="0x6" />
+		<option name="term_8.blf" value="0x7" />
+	</enum16>
+	<tagRef name="Error Strings" offset="0x288" visible="true" />
+	<comment title="Legendary Difficulty" />
+	<tagRef name="Dummy Strings" offset="0x298" visible="true" />
+	<tagRef name="Real Strings" offset="0x2A8" visible="true" />
+	<flags16 name="Dummy Content" offset="0x2B8" visible="true">
+		<bit name="Military" index="0" />
+		<bit name="Public" index="1" />
+		<bit name="Private" index="2" />
+		<bit name="Librarian (Lower)" index="3" />
+		<bit name="Didact" index="4" />
+		<bit name="Mendicant" index="5" />
+		<bit name="Aggressive" index="6" />
+		<bit name="Gravemind (Lower)" index="7" />
+		<bit name="Fleet (Double)" index="8" />
+		<bit name="Spark (Lower)" index="9" />
+	</flags16>
+	<flags16 name="Real Content" offset="0x2BA" visible="true">
+		<bit name="Military" index="0" />
+		<bit name="Public" index="1" />
+		<bit name="Private" index="2" />
+		<bit name="Librarian (Lower)" index="3" />
+		<bit name="Didact" index="4" />
+		<bit name="Mendicant" index="5" />
+		<bit name="Aggressive" index="6" />
+		<bit name="Gravemind (Lower)" index="7" />
+		<bit name="Fleet (Double)" index="8" />
+		<bit name="Spark (Lower)" index="9" />
+	</flags16>
+	<enum16 name="Dummy Image Frame" offset="0x2BC" visible="true">
+		<option name="None" value="0xFFFFFFFF" />
+		<option name="term_1.blf" value="0x0" />
+		<option name="term_2.blf" value="0x1" />
+		<option name="term_3.blf" value="0x2" />
+		<option name="term_4.blf" value="0x3" />
+		<option name="term_5.blf" value="0x4" />
+		<option name="term_6.blf" value="0x5" />
+		<option name="term_7.blf" value="0x6" />
+		<option name="term_8.blf" value="0x7" />
+	</enum16>
+	<enum16 name="Real Image Frame" offset="0x2BE" visible="true">
+		<option name="None" value="0xFFFFFFFF" />
+		<option name="term_1.blf" value="0x0" />
+		<option name="term_2.blf" value="0x1" />
+		<option name="term_3.blf" value="0x2" />
+		<option name="term_4.blf" value="0x3" />
+		<option name="term_5.blf" value="0x4" />
+		<option name="term_6.blf" value="0x5" />
+		<option name="term_7.blf" value="0x6" />
+		<option name="term_8.blf" value="0x7" />
+	</enum16>
+	<tagRef name="Error Strings" offset="0x2C0" visible="true" />
+</plugin>

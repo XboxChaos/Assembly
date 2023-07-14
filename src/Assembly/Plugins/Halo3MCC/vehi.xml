@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin game="Halo3MCC" baseSize="0x44C">
+<plugin game="Halo3MCC" baseSize="0x3FC">
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
@@ -35,14 +35,12 @@
 		<bit name="Does Not Cause Collision Damage" index="5" />
 		<bit name="Early Mover" index="6" />
 		<bit name="Early Mover Localized Physics" index="7" />
-		<bit name="Use Static Massive Lightmap Sample" index="8" />
-		<bit name="Object Scales Attachments" index="9" />
-		<bit name="Inherits Player's Appearance" index="10" />
-		<bit name="Non Physical In Map Editor" index="11" />
-		<bit name="Attach To Clusters By Dynamic Sphere" index="12" tooltip="use this for the mac gun on spacestation" />
-		<bit name="Effects Created By This Object Do Not Spawn Objects In Multiplayer" index="13" />
-		<bit name="Does Not Collide With Camera" index="14" tooltip="specificly the flying observer camera" />
-		<bit name="Damage Not Blocked By Obstructions" index="15" tooltip="AOE damage being applied to this object does not test for obstrutions." />
+		<bit name="Object Scales Attachments" index="8" />
+		<bit name="Non Physical In Map Editor" index="9" />
+		<bit name="Attach To Clusters By Dynamic Sphere" index="10" tooltip="use this for the mac gun on spacestation" />
+		<bit name="Effects Created By This Object Do Not Spawn Objects In Multiplayer" index="11" />
+		<bit name="Does Not Collide With Camera" index="12" tooltip="specificly the flying observer camera" />
+		<bit name="Damage Not Blocked By Obstructions" index="13" tooltip="AOE damage being applied to this object does not test for obstrutions." />
 	</flags16>
 	<float32 name="Bounding Radius" offset="0x4" visible="true" tooltip="If you edit this field manually, beware that the render model is no longer respected for radius calculation and that you need to set the bounding offset as well." />
 	<point3 name="Bounding Offset" offset="0x8" visible="true" />
@@ -118,7 +116,7 @@
 	<tagRef name="Creation Effect" offset="0x70" visible="true" />
 	<tagRef name="Material Effects" offset="0x80" visible="true" />
 	<tagRef name="Melee Sound" offset="0x90" visible="true" tooltip="this is the sound that is made when I am meleed. This overrides the sweetener sound of my material." />
-	<tagblock name="AI Properties" offset="0xA0" visible="true" elementSize="0x10">
+	<tagblock name="AI Properties" offset="0xA0" visible="true" elementSize="0xC">
 		<flags32 name="AI Flags" offset="0x0" visible="true">
 			<bit name="Destroyable Cover" index="0" />
 			<bit name="Pathfinding Ignore When Dead" index="1" />
@@ -128,8 +126,7 @@
 			<bit name="Has Corner Markers" index="5" />
 		</flags32>
 		<stringId name="AI Type Name" offset="0x4" visible="true" tooltip="used for combat dialogue, etc." />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<enum16 name="AI Size" offset="0xC" visible="true">
+		<enum16 name="AI Size" offset="0x8" visible="true">
 			<option name="Default" value="0x0" />
 			<option name="Tiny" value="0x1" />
 			<option name="Small" value="0x2" />
@@ -138,7 +135,7 @@
 			<option name="Huge" value="0x5" />
 			<option name="Immobile" value="0x6" />
 		</enum16>
-		<enum16 name="Leap Jump Speed" offset="0xE" visible="true">
+		<enum16 name="Leap Jump Speed" offset="0xA" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Down" value="0x1" />
 			<option name="Step" value="0x2" />
@@ -193,21 +190,18 @@
 			<colorf name="Color Upper Bound" offset="0x10" alpha="false" visible="true" />
 			<stringId name="Variant Name" offset="0x1C" visible="true" tooltip="if empty, may be used by any model variant" />
 		</tagblock>
-		<tagblock name="Functions" offset="0xC" visible="true" elementSize="0x28">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<flags32 name="Scale Flags" offset="0x4" visible="true">
+		<tagblock name="Functions" offset="0xC" visible="true" elementSize="0x24">
+			<flags32 name="Scale Flags" offset="0x0" visible="true">
 				<bit name="Blend In HSV" index="0" tooltip="blends colors in hsv rather than rgb space" />
 				<bit name="...More Colors" index="1" tooltip="blends colors through more hues (goes the long way around the color wheel)" />
 			</flags32>
-			<colorf name="Color Lower Bound" offset="0x8" alpha="false" visible="true" />
-			<colorf name="Color Upper Bound" offset="0x14" alpha="false" visible="true" />
-			<stringid name="Darken By" offset="0x20" visible="true" />
-			<stringid name="Scale By" offset="0x24" visible="true" />
+			<colorf name="Color Lower Bound" offset="0x4" alpha="false" visible="true" />
+			<colorf name="Color Upper Bound" offset="0x10" alpha="false" visible="true" />
+			<stringid name="Darken By" offset="0x1C" visible="true" />
+			<stringid name="Scale By" offset="0x20" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Predicted Resources" offset="0xE0" visible="false" elementSize="0x0">
-	</tagblock>
-	<tagblock name="Multiplayer Object" offset="0xEC" visible="true" elementSize="0xC4">
+	<tagblock name="Multiplayer Object" offset="0xE0" visible="true" elementSize="0xC4">
 		<flags16 name="Game Engine Flags" offset="0x0" visible="true" tooltip="Set which game engines you desire this object to appear in">
 			<bit name="Capture The Flag" index="0" />
 			<bit name="Slayer" index="1" />
@@ -296,38 +290,33 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<tagref name="Box Standard Shader" offset="0xA4" visible="true" />
 		<tagref name="Box Opaque Shader" offset="0xB4" visible="true" />
 	</tagblock>
+	<tagblock name="Health Packs" offset="0xEC" visible="true" elementSize="0x10">
+		<tagRef name="Health Pack Equipment" offset="0x0" visible="true" tooltip="MUST be an equipment tag that implements the &quot;Health Pack&quot; block" />
+	</tagblock>
 	<comment title="UNIT" />
 	<flags32 name="Flags" offset="0xF8" visible="true">
 		<bit name="Circular Aiming" index="0" />
 		<bit name="Destroyed After Dying" index="1" />
-		<bit name="Half-Speed Interpolation" index="2" />
-		<bit name="Fires From Camera" index="3" />
-		<bit name="Entrance Inside Bounding Sphere" index="4" />
-		<bit name="Doesn't Show Readied Weapon" index="5" />
-		<bit name="Causes Passenger Dialogue" index="6" />
-		<bit name="Resists Pings" index="7" />
-		<bit name="Melee Attack Is Fatal" index="8" />
-		<bit name="Don't Reface During Pings" index="9" />
-		<bit name="Has No Aiming" index="10" />
-		<bit name="Simple Creature" index="11" />
-		<bit name="Impact Melee Attaches To Unit" index="12" />
-		<bit name="Impact Melee Dies On Shields" index="13" />
-		<bit name="Cannot Open Doors Automatically" index="14" />
-		<bit name="Melee Attackers Cannot Attach" index="15" />
-		<bit name="Not Instantly Killed By Melee" index="16" />
-		<bit name="Flashlight Power Doesn't Transfer To Weapon" index="17" />
-		<bit name="Runs Around Flaming" index="18" />
-		<bit name="Top Level For AOE Damage" index="19" />
-		<bit name="Special Cinematic Unit" index="20" />
-		<bit name="Ignored By Autoaiming" index="21" />
-		<bit name="Shields Fry Infection Forms" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Acts As Gunner For Parent" index="25" />
-		<bit name="Controlled By Parent Gunner" index="26" />
-		<bit name="Parent's Primary Weapon" index="27" />
-		<bit name="Unit Has Boost" index="28" />
-		<bit name="Allow Aim While Opening Or Closing" index="29" />
+		<bit name="Fires From Camera" index="2" />
+		<bit name="Doesn't Show Readied Weapon" index="3" />
+		<bit name="Causes Passenger Dialogue" index="4" />
+		<bit name="Resists Pings" index="5" />
+		<bit name="Melee Attack Is Fatal" index="6" />
+		<bit name="Don't Reface During Pings" index="7" />
+		<bit name="Has No Aiming" index="8" />
+		<bit name="Simple Creature" index="9" />
+		<bit name="Cannot Open Doors Automatically" index="10" />
+		<bit name="Not Instantly Killed By Melee" index="11" />
+		<bit name="Flashlight Power Doesnt Transfer To Weapon" index="12" />
+		<bit name="Top Level For AOE Damage" index="13" />
+		<bit name="Special Cinematic Unit" index="14" />
+		<bit name="Ignored By Autoaiming" index="15" />
+		<bit name="Use Velocity As Acceleration" index="16" />
+		<bit name="Acts As Gunner For Parent" index="17" />
+		<bit name="Controlled By Parent Gunner" index="18" />
+		<bit name="Parent's Primary Weapon" index="19" />
+		<bit name="Unit Has Boost" index="20" />
+		<bit name="Allow Aim While Opening Or Closing" index="21" />
 	</flags32>
 	<enum16 name="Default Team" offset="0xFC" visible="true">
 		<option name="Default" value="0x0" />
@@ -402,25 +391,23 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<int16 name="Point Count" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
 	</tagblock>
-	<tagRef name="Integrated Light Toggle" offset="0x10C" visible="true" />
-	<degree name="Camera Field of View" offset="0x11C" visible="true" />
-	<float32 name="Camera Stiffness" offset="0x120" visible="true" />
+	<degree name="Camera Field of View" offset="0x10C" visible="true" />
 	<comment title="Unit Camera" />
-	<flags16 name="Flags" offset="0x124" visible="true">
+	<flags16 name="Flags" offset="0x110" visible="true">
 		<bit name="Pitch Bounds Absolute Space" index="0" />
 	</flags16>
-	<int16 name="Unknown" offset="0x126" visible="false" />
-	<stringId name="Camera Marker Name" offset="0x128" visible="true" />
-	<stringId name="Camera Submerged Marker Name" offset="0x12C" visible="true" />
-	<degree name="Pitch Auto-Level" offset="0x130" visible="true" />
-	<ranged name="Pitch Range" offset="0x134" visible="true" />
-	<tagblock name="Camera Tracks" offset="0x13C" visible="true" elementSize="0x10">
+	<int16 name="Unknown" offset="0x112" visible="false" />
+	<stringId name="Camera Marker Name" offset="0x114" visible="true" />
+	<stringId name="Camera Submerged Marker Name" offset="0x118" visible="true" />
+	<degree name="Pitch Auto-Level" offset="0x11C" visible="true" />
+	<ranged name="Pitch Range" offset="0x120" visible="true" />
+	<tagblock name="Camera Tracks" offset="0x128" visible="true" elementSize="0x10">
 		<tagRef name="Track" offset="0x0" visible="true" />
 	</tagblock>
-	<degree name="Pitch Minimum Spring" offset="0x148" visible="true" />
-	<degree name="Pitch Maximum Spring" offset="0x14C" visible="true" />
-	<degree name="Spring Velocity" offset="0x150" visible="true" />
-	<tagblock name="Camera Acceleration" offset="0x154" visible="true" elementSize="0x4C">
+	<degree name="Pitch Minimum Spring" offset="0x134" visible="true" />
+	<degree name="Pitch Maximum Spring" offset="0x138" visible="true" />
+	<degree name="Spring Velocity" offset="0x13C" visible="true" />
+	<tagblock name="Camera Acceleration" offset="0x140" visible="true" elementSize="0x4C">
 		<comment title="Camera Scale X MIN(Scale X POWER((K X X), Power), Maximum)" />
 		<comment title="Velocity i" />
 		<float32 name="k" offset="0x0" visible="true" />
@@ -446,66 +433,50 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<comment title="Maximum Offset Velocity" />
 		<float32 name="Maximum Displacment Velocity" offset="0x48" visible="true" />
 	</tagblock>
-	<vector3 name="Acceleration Range" offset="0x160" visible="true" />
-	<float32 name="Acceleration Action Scale" offset="0x16C" visible="true" />
-	<float32 name="Acceleration Attach Scale" offset="0x170" visible="true" />
+	<vector3 name="Acceleration Range" offset="0x14C" visible="true" />
+	<float32 name="Acceleration Action Scale" offset="0x158" visible="true" />
+	<float32 name="Acceleration Attach Scale" offset="0x15C" visible="true" />
 	<comment title="Pings" />
-	<float32 name="Soft Ping Threshold" offset="0x174" visible="true" />
-	<float32 name="Soft Ping Interrupt Time" offset="0x178" visible="true" />
-	<float32 name="Hard Ping Threshold" offset="0x17C" visible="true" />
-	<float32 name="Hard Ping Interrupt Time" offset="0x180" visible="true" />
-	<float32 name="Hard Death Threshold" offset="0x184" visible="true" />
-	<float32 name="Feign Death Threshold" offset="0x188" visible="true" />
-	<float32 name="Feign Death Time" offset="0x18C" visible="true" />
-	<float32 name="Distance Of Dive Animation" offset="0x190" visible="true" tooltip="this must be set to tell the AI how far it should expect our dive animation to move us" />
-	<float32 name="Stunned Movement Threshold" offset="0x194" visible="true" tooltip="if we take this much damage in a short space of time we will play our 'stunned movement' animations" />
-	<float32 name="Feign Death Chance" offset="0x198" visible="true" />
-	<float32 name="Feign Repeat Chance" offset="0x19C" visible="true" />
-	<tagRef name="Spawned Turret Character" offset="0x1A0" visible="true" tooltip="automatically created character when this unit is driven" />
-	<range16 name="Spawned Actor Count" offset="0x1B0" visible="true" tooltip="number of actors which we spawn" />
-	<float32 name="Spawned Velocity" offset="0x1B4" visible="true" tooltip="velocity at which we throw spawned actors" />
+	<float32 name="Soft Ping Threshold" offset="0x160" visible="true" />
+	<float32 name="Soft Ping Interrupt Time" offset="0x164" visible="true" />
+	<float32 name="Hard Ping Threshold" offset="0x168" visible="true" />
+	<float32 name="Hard Ping Interrupt Time" offset="0x16C" visible="true" />
+	<float32 name="Hard Death Threshold" offset="0x170" visible="true" />
+	<float32 name="Distance Of Dive Animation" offset="0x174" visible="true" tooltip="this must be set to tell the AI how far it should expect our dive animation to move us" />
+	<tagRef name="Spawned Turret Character" offset="0x178" visible="true" tooltip="automatically created character when this unit is driven" />
 	<comment title="Aiming/Looking" />
-	<degree name="Aiming Velocity Maximum" offset="0x1B8" visible="true" />
-	<degree name="Aiming Acceleration Maximum" offset="0x1BC" visible="true" />
-	<float32 name="Casual Aiming Modifier" offset="0x1C0" visible="true" />
-	<degree name="Looking Velocity Maximum" offset="0x1C4" visible="true" />
-	<degree name="Looking Acceleration Maximum" offset="0x1C8" visible="true" />
-	<stringid name="Right Hand Node" offset="0x1CC" visible="true" tooltip="where the primary weapon is attached" />
-	<stringid name="Left Hand Node" offset="0x1D0" visible="true" tooltip="where the seconday weapon is attached (for dual-pistol modes)" />
-	<stringid name="Preferred Gun Node" offset="0x1D4" visible="true" tooltip="if found, use this gun marker" />
-	<tagRef name="Melee Damage" offset="0x1D8" visible="true" />
-	<tagRef name="Boarding Melee Damage" offset="0x1E8" visible="true" />
-	<tagRef name="Boarding Melee Response" offset="0x1F8" visible="true" />
-	<tagRef name="Eviction Melee Damage" offset="0x208" visible="true" />
-	<tagRef name="Eviction Melee Response" offset="0x218" visible="true" />
-	<tagRef name="Landing Melee Damage" offset="0x228" visible="true" />
-	<tagRef name="Flurry Melee Damage" offset="0x238" visible="true" />
-	<tagRef name="Obstacle Smash Damage" offset="0x248" visible="true" />
-	<enum16 name="Motion Sensor Blip Size" offset="0x258" visible="true">
+	<degree name="Aiming Velocity Maximum" offset="0x188" visible="true" />
+	<degree name="Aiming Acceleration Maximum" offset="0x18C" visible="true" />
+	<float32 name="Casual Aiming Modifier" offset="0x190" visible="true" />
+	<degree name="Looking Velocity Maximum" offset="0x194" visible="true" />
+	<degree name="Looking Acceleration Maximum" offset="0x198" visible="true" />
+	<stringid name="Right Hand Node" offset="0x19C" visible="true" tooltip="where the primary weapon is attached" />
+	<stringid name="Left Hand Node" offset="0x1A0" visible="true" tooltip="where the seconday weapon is attached (for dual-pistol modes)" />
+	<stringid name="Preferred Gun Node" offset="0x1A4" visible="true" tooltip="if found, use this gun marker" />
+	<tagRef name="Melee Damage" offset="0x1A8" visible="true" />
+	<tagRef name="Boarding Melee Damage" offset="0x1B8" visible="true" />
+	<tagRef name="Boarding Melee Response" offset="0x1C8" visible="true" />
+	<tagRef name="Eviction Melee Damage" offset="0x1D8" visible="true" />
+	<tagRef name="Eviction Melee Response" offset="0x1E8" visible="true" />
+	<tagRef name="Landing Melee Damage" offset="0x1F8" visible="true" />
+	<tagRef name="Flurry Melee Damage" offset="0x208" visible="true" />
+	<tagRef name="Obstacle Smash Damage" offset="0x218" visible="true" />
+	<enum16 name="Motion Sensor Blip Size" offset="0x228" visible="true">
 		<option name="Medium" value="0x0" />
 		<option name="Small" value="0x1" />
 		<option name="Large" value="0x2" />
 	</enum16>
-	<enum16 name="Item Owner Size" offset="0x25A" visible="true">
+	<enum16 name="Item Owner Size" offset="0x22A" visible="true">
 		<option name="Small" value="0x0" />
 		<option name="Medium" value="0x1" />
 		<option name="Player" value="0x2" />
 		<option name="Large" value="0x3" />
 	</enum16>
-	<tagblock name="Postures" offset="0x25C" visible="true" elementSize="0x10">
-		<stringid name="Name" offset="0x0" visible="true" />
-		<vector3 name="Pill Offset" offset="0x4" visible="true" />
-	</tagblock>
-	<tagblock name="HUD Interfaces" offset="0x268" visible="true" elementSize="0x10">
+	<tagblock name="HUD Interfaces" offset="0x22C" visible="true" elementSize="0x10">
 		<tagRef name="Unit HUD Interface" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Dialogue Variants" offset="0x274" visible="true" elementSize="0x14">
-		<int16 name="Variant Number" offset="0x0" visible="true" tooltip="variant number to use this dialogue with (must match the suffix in the permutations on the unit's model)" />
-		<int16 name="Unknown" offset="0x2" visible="false" />
-		<tagRef name="Dialogue" offset="0x4" visible="true" />
-	</tagblock>
-	<float32 name="Grenade Velocity" offset="0x280" visible="true" />
-	<enum16 name="Grenade Type" offset="0x284" visible="true">
+	<float32 name="Grenade Velocity" offset="0x238" visible="true" />
+	<enum16 name="Grenade Type" offset="0x23C" visible="true">
 		<option name="Human Fragmentation" value="0x0" />
 		<option name="Covenant Plasma" value="0x1" />
 		<option name="Brute Spike" value="0x2" />
@@ -515,15 +486,15 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<option name="Grenade Type 6" value="0x6" />
 		<option name="Grenade Type 7" value="0x7" />
 	</enum16>
-	<int16 name="Grenade Count" offset="0x286" visible="true" />
-	<tagblock name="Powered Seats" offset="0x288" visible="true" elementSize="0x8">
+	<int16 name="Grenade Count" offset="0x23E" visible="true" />
+	<tagblock name="Powered Seats" offset="0x240" visible="true" elementSize="0x8">
 		<float32 name="Driver Powerup Time" offset="0x0" visible="true" />
 		<float32 name="Driver Powerdown Time" offset="0x4" visible="true" />
 	</tagblock>
-	<tagblock name="Weapons" offset="0x294" visible="true" elementSize="0x10">
+	<tagblock name="Weapons" offset="0x24C" visible="true" elementSize="0x10">
 		<tagRef name="Weapon" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Seats" offset="0x2A0" visible="true" elementSize="0xE4">
+	<tagblock name="Seats" offset="0x258" visible="true" elementSize="0xD4">
 		<flags32 name="Flags" offset="0x0" visible="true">
 			<bit name="Invisible" index="0" tooltip="completely enclosed by vehicle" />
 			<bit name="Locked" index="1" tooltip="when occupied, prevents enemies from entering locked seats" />
@@ -636,28 +607,25 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		</tagblock>
 		<stringId name="Enter Seat String" offset="0xB0" visible="true" />
 		<ranged name="Yaw" offset="0xB4" visible="true" />
-		<tagRef name="Built-In Gunner" offset="0xBC" visible="true" />
-		<float32 name="Entry Radius" offset="0xCC" visible="true" tooltip="how close to the entry marker a unit must be" />
-		<degree name="Entry Marker Cone Angle" offset="0xD0" visible="true" tooltip="angle from marker forward the unit must be" />
-		<degree name="Entry Marker Facing Angle" offset="0xD4" visible="true" tooltip="angle from unit facing the marker must be" />
-		<float32 name="Maximum Relative Velocity" offset="0xD8" visible="true" />
-		<stringid name="Invisible Seat Region" offset="0xDC" visible="true" />
-		<int32 name="Invisible Seat Region Index" offset="0xE0" visible="true" />
+		<float32 name="Entry Radius" offset="0xBC" visible="true" tooltip="how close to the entry marker a unit must be" />
+		<degree name="Entry Marker Cone Angle" offset="0xC0" visible="true" tooltip="angle from marker forward the unit must be" />
+		<degree name="Entry Marker Facing Angle" offset="0xC4" visible="true" tooltip="angle from unit facing the marker must be" />
+		<float32 name="Maximum Relative Velocity" offset="0xC8" visible="true" />
+		<stringid name="Invisible Seat Region" offset="0xCC" visible="true" />
+		<int32 name="Invisible Seat Region Index" offset="0xD0" visible="true" />
 	</tagblock>
-	<float32 name="EMP Disabled Time" offset="0x2AC" visible="true" />
-	<tagRef name="EMP Disabled Effect" offset="0x2B0" visible="true" />
-	<tagRef name="Boost Collision Damage" offset="0x2C0" visible="true" />
-	<float32 name="Boost Peak Power" offset="0x2D0" visible="true" />
-	<float32 name="Boost Rise Power" offset="0x2D4" visible="true" />
-	<float32 name="Boost Peak Time" offset="0x2D8" visible="true" />
-	<float32 name="Boost Fall Power" offset="0x2DC" visible="true" />
-	<float32 name="Boost Dead Time" offset="0x2E0" visible="true" />
-	<float32 name="Lipsync Attack Weight" offset="0x2E4" visible="true" />
-	<float32 name="Lipsync Decay Weight" offset="0x2E8" visible="true" />
-	<tagRef name="Exit And Detach Damage" offset="0x2EC" visible="true" />
-	<tagRef name="Exit And Detach Weapon" offset="0x2FC" visible="true" />
+	<float32 name="EMP Disabled Time" offset="0x264" visible="true" />
+	<tagRef name="EMP Disabled Effect" offset="0x268" visible="true" />
+	<tagRef name="Boost Collision Damage" offset="0x278" visible="true" />
+	<float32 name="Boost Peak Power" offset="0x288" visible="true" />
+	<float32 name="Boost Rise Power" offset="0x28C" visible="true" />
+	<float32 name="Boost Peak Time" offset="0x290" visible="true" />
+	<float32 name="Boost Fall Power" offset="0x294" visible="true" />
+	<float32 name="Boost Dead Time" offset="0x298" visible="true" />
+	<tagRef name="Exit And Detach Damage" offset="0x29C" visible="true" />
+	<tagRef name="Exit And Detach Weapon" offset="0x2AC" visible="true" />
 	<comment title="VEHICLE" />
-	<flags32 name="Flags" offset="0x30C" visible="true">
+	<flags32 name="Flags" offset="0x2BC" visible="true">
 		<bit name="No Friction With Driver" index="0" />
 		<bit name="Can Trigger Automatic Opening Doors" index="1" />
 		<bit name="Autoaim When Teamless" index="2" />
@@ -671,10 +639,10 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<bit name="Causes Collision Damage" index="10" />
 		<bit name="Huge Vehicle Physics Group" index="11" />
 		<bit name="Enable Wheelie-Popping Hack" index="12" />
-		<bit name="Ai Auto Turret" index="13" />
+		<bit name="AI Auto Turret" index="13" />
 	</flags32>
 	<comment title="Physics Type">define one of the following blocks for the type of physics you wish this vehicle to have.</comment>
-	<tagblock name="Human Tank Type" offset="0x310" visible="true" elementSize="0x58">
+	<tagblock name="Human Tank Type" offset="0x2C0" visible="true" elementSize="0x58">
 		<degree name="Forward Arc" offset="0x0" visible="true" tooltip="outside of this arc the vehicle reverse direciton, around 110 degrees seems to be nice..." />
 		<float32 name="Forward Turn Scale" offset="0x4" visible="true" tooltip="think of this as oversteer" />
 		<float32 name="Reverse Turn Scale" offset="0x8" visible="true" tooltip="think of this as oversteer" />
@@ -717,7 +685,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<float32 name="Wheel Circumferance" offset="0x50" visible="true" />
 		<float32 name="Gravity Adjust" offset="0x54" visible="true" tooltip="0-1 fraction by which we scale gravity that is not along the ground plane" />
 	</tagblock>
-	<tagblock name="Human Jeep Type" offset="0x31C" visible="true" elementSize="0x40">
+	<tagblock name="Human Jeep Type" offset="0x2CC" visible="true" elementSize="0x40">
 		<comment title="Steering Overdampening">when the steering is off by more than the cusp angle the steering will overcompensate more and more. when it is less, it overcompensates less and less. the exponent should be something in the neighborhood of 2.0</comment>
 		<degree name="Overdampen Cusp Angle" offset="0x0" visible="true" />
 		<float32 name="Overdampen Exponent" offset="0x4" visible="true" />
@@ -752,7 +720,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<float32 name="Wheel Circumferance" offset="0x38" visible="true" />
 		<float32 name="Gravity Adjust" offset="0x3C" visible="true" tooltip="0-1 fraction by which we scale gravity that is not along the ground plane" />
 	</tagblock>
-	<tagblock name="Human Plane Type" offset="0x328" visible="true" elementSize="0x4C">
+	<tagblock name="Human Plane Type" offset="0x2D8" visible="true" elementSize="0x4C">
 		<float32 name="Maximum Forward Speed" offset="0x0" visible="true" />
 		<float32 name="Maximum Reverse Speed" offset="0x4" visible="true" />
 		<float32 name="Speed Acceleration" offset="0x8" visible="true" />
@@ -774,7 +742,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<float32 name="Interpolation Scale" offset="0x44" visible="true" tooltip="how much we interpolate between steering poses. 1= heavy interp. of steering animations" />
 		<degree name="Maximum Angle" offset="0x48" visible="true" tooltip="max animated steering angle change allowed per tick. non-zero= max angle delta per frame" />
 	</tagblock>
-	<tagblock name="Alien Scout Type" offset="0x334" visible="true" elementSize="0x70">
+	<tagblock name="Alien Scout Type" offset="0x2E4" visible="true" elementSize="0x70">
 		<comment title="Steering Overdampening">when the steering is off by more than the cusp angle the steering will overcompensate more and more. when it is less, it overcompensates less and less. the exponent should be something in the neighborhood of 2.0</comment>
 		<degree name="Overdampen Cusp Angle" offset="0x0" visible="true" />
 		<float32 name="Overdampen Exponent" offset="0x4" visible="true" />
@@ -816,7 +784,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<float32 name="Interpolation Scale" offset="0x68" visible="true" tooltip="how much we interpolate between steering poses. 1= heavy interp. of steering animations" />
 		<degree name="Maximum Angle" offset="0x6C" visible="true" tooltip="max animated steering angle change allowed per tick. non-zero= max angle delta per frame" />
 	</tagblock>
-	<tagblock name="Alien Fighter Type" offset="0x340" visible="true" elementSize="0x64">
+	<tagblock name="Alien Fighter Type" offset="0x2F0" visible="true" elementSize="0x64">
 		<comment title="Steering Overdampening">when the steering is off by more than the cusp angle the steering will overcompensate more and more. when it is less, it overcompensates less and less. the exponent should be something in the neighborhood of 2.0</comment>
 		<degree name="Overdampen Cusp Angle" offset="0x0" visible="true" />
 		<float32 name="Overdampen Exponent" offset="0x4" visible="true" />
@@ -849,10 +817,10 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<float32 name="Cruising Throttle" offset="0x5C" visible="true" />
 		<float32 name="Dive Speed Scale" offset="0x60" visible="true" />
 	</tagblock>
-	<tagblock name="Turret Type" offset="0x34C" visible="true" elementSize="0x4">
+	<tagblock name="Turret Type" offset="0x2FC" visible="true" elementSize="0x4">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 	</tagblock>
-	<tagblock name="Mantis Type" offset="0x358" visible="true" elementSize="0xAC">
+	<tagblock name="Mantis Type" offset="0x308" visible="true" elementSize="0xAC">
 		<comment title="Steering Overdampening">when the steering is off by more than the cusp angle the steering will overcompensate more and more. when it is less, it overcompensates less and less. the exponent should be something in the neighborhood of 2.0</comment>
 		<degree name="Overdampen Cusp Angle" offset="0x0" visible="true" />
 		<float32 name="Overdampen Exponent" offset="0x4" visible="true" />
@@ -945,7 +913,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<float32 name="Jump Leg Set Distance" offset="0xA4" visible="true" tooltip="WU, amount foot moves up to get ready to jump" />
 		<float32 name="Jump Leg Distance" offset="0xA8" visible="true" tooltip="WU, amount foot moves down when jumping" />
 	</tagblock>
-	<tagblock name="VTOL Type" offset="0x364" visible="true" elementSize="0x74">
+	<tagblock name="VTOL Type" offset="0x314" visible="true" elementSize="0x74">
 		<degree name="Maximum Left Turn" offset="0x0" visible="true" />
 		<degree name="Maximum Right Turn (Negative)" offset="0x4" visible="true" />
 		<degree name="Turn Rate" offset="0x8" visible="true" />
@@ -977,7 +945,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<degree name="Render Lift Angles Acceleration" offset="0x68" visible="true" tooltip="how fast can the engine animations accelerate their turn in degrees/SQR(sec)" />
 		<rangef name="Propeller Rotation Speed" offset="0x6C" visible="true" tooltip="cycles per second idle to full throttle" />
 	</tagblock>
-	<tagblock name="Chopper Type" offset="0x370" visible="true" elementSize="0x70">
+	<tagblock name="Chopper Type" offset="0x320" visible="true" elementSize="0x70">
 		<comment title="Steering Overdampening">when the steering is off by more than the cusp angle the steering will overcompensate more and more. when it is less, it overcompensates less and less. the exponent should be something in the neighborhood of 2.0</comment>
 		<degree name="Overdampen Cusp Angle" offset="0x0" visible="true" />
 		<float32 name="Overdampen Exponent" offset="0x4" visible="true" />
@@ -1024,7 +992,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<float32 name="Wheel Acceleration" offset="0x68" visible="true" tooltip="acceleration of the wheel towards the engine speed" />
 		<float32 name="Gyroscopic Damping" offset="0x6C" visible="true" tooltip="0==none, 30==damn near full damping" />
 	</tagblock>
-	<tagblock name="Guardian Type" offset="0x37C" visible="true" elementSize="0x30">
+	<tagblock name="Guardian Type" offset="0x32C" visible="true" elementSize="0x30">
 		<comment title="Steering Overdampening">when the steering is off by more than the cusp angle the steering will overcompensate more and more. when it is less, it overcompensates less and less. the exponent should be something in the neighborhood of 2.0</comment>
 		<degree name="Overdampen Cusp Angle" offset="0x0" visible="true" />
 		<float32 name="Overdampen Exponent" offset="0x4" visible="true" />
@@ -1040,24 +1008,24 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<float32 name="Anti-Gravity Force z Offset" offset="0x2C" visible="true" />
 	</tagblock>
 	<comment title="Friction And Antigravity Points" />
-	<flags32 name="Flags" offset="0x388" visible="true">
+	<flags32 name="Flags" offset="0x338" visible="true">
 		<bit name="Invalid" index="0" />
 	</flags32>
-	<float32 name="Ground Friction" offset="0x38C" visible="true" tooltip="for friction based vehicles only" />
-	<float32 name="Ground Depth" offset="0x390" visible="true" tooltip="for friction based vehicles only" />
-	<float32 name="Ground Damp Factor" offset="0x394" visible="true" tooltip="for friction based vehicles only" />
-	<float32 name="Ground Moving Friction" offset="0x398" visible="true" tooltip="for friction based vehicles only" />
-	<float32 name="Ground Maximum Slope 0" offset="0x39C" visible="true" tooltip="degrees 0-90" />
-	<float32 name="Ground Maximum Slope 1" offset="0x3A0" visible="true" tooltip="degrees 0-90. and greater than slope 0" />
-	<float32 name="Maximum Normal Force Contribution" offset="0x3A4" visible="true" tooltip="0 defaults to 3, this prevents the physics from becoming unstable when hucked against a surface" />
-	<float32 name="Anti Gravity Bank Lift" offset="0x3A8" visible="true" tooltip="lift per WU." />
-	<float32 name="Steering Bank Reaction Scale" offset="0x3AC" visible="true" tooltip="how quickly we bank when we steer" />
-	<float32 name="Gravity Scale" offset="0x3B0" visible="true" tooltip="value of 0 defaults to 1. .5 is half gravity" />
-	<float32 name="Radius" offset="0x3B4" visible="true" />
-	<float32 name="Maximum Update Distance" offset="0x3B8" visible="true" tooltip="WU. if a friciton point moves more than this distance it must update" />
-	<float32 name="Maximum Update Period" offset="0x3BC" visible="true" tooltip="Seconds. a friction point of this vehicle must update a least this often when controlled by a local player." />
-	<float32 name="Maximum Remote Update Period" offset="0x3C0" visible="true" tooltip="Seconds. a friction point of this vehicle must update a least this often when controlled by an ai or remote player." />
-	<tagblock name="Anti Gravity Points" offset="0x3C4" visible="true" elementSize="0x4C">
+	<float32 name="Ground Friction" offset="0x33C" visible="true" tooltip="for friction based vehicles only" />
+	<float32 name="Ground Depth" offset="0x340" visible="true" tooltip="for friction based vehicles only" />
+	<float32 name="Ground Damp Factor" offset="0x344" visible="true" tooltip="for friction based vehicles only" />
+	<float32 name="Ground Moving Friction" offset="0x348" visible="true" tooltip="for friction based vehicles only" />
+	<float32 name="Ground Maximum Slope 0" offset="0x34C" visible="true" tooltip="degrees 0-90" />
+	<float32 name="Ground Maximum Slope 1" offset="0x350" visible="true" tooltip="degrees 0-90. and greater than slope 0" />
+	<float32 name="Maximum Normal Force Contribution" offset="0x354" visible="true" tooltip="0 defaults to 3, this prevents the physics from becoming unstable when hucked against a surface" />
+	<float32 name="Anti Gravity Bank Lift" offset="0x358" visible="true" tooltip="lift per WU." />
+	<float32 name="Steering Bank Reaction Scale" offset="0x35C" visible="true" tooltip="how quickly we bank when we steer" />
+	<float32 name="Gravity Scale" offset="0x360" visible="true" tooltip="value of 0 defaults to 1. .5 is half gravity" />
+	<float32 name="Radius" offset="0x364" visible="true" />
+	<float32 name="Maximum Update Distance" offset="0x368" visible="true" tooltip="WU. if a friciton point moves more than this distance it must update" />
+	<float32 name="Maximum Update Period" offset="0x36C" visible="true" tooltip="Seconds. a friction point of this vehicle must update a least this often when controlled by a local player." />
+	<float32 name="Maximum Remote Update Period" offset="0x370" visible="true" tooltip="Seconds. a friction point of this vehicle must update a least this often when controlled by an ai or remote player." />
+	<tagblock name="Anti Gravity Points" offset="0x374" visible="true" elementSize="0x4C">
 		<stringid name="Marker Name" offset="0x0" visible="true" />
 		<flags32 name="Flags" offset="0x4" visible="true">
 			<bit name="Gets Damage From Region" index="0" />
@@ -1081,7 +1049,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<float32 name="Major Damage Error" offset="0x44" visible="true" />
 		<float32 name="Destroyed State Error" offset="0x48" visible="true" />
 	</tagblock>
-	<tagblock name="Friction Points" offset="0x3D0" visible="true" elementSize="0x4C">
+	<tagblock name="Friction Points" offset="0x380" visible="true" elementSize="0x4C">
 		<stringId name="Marker Name" offset="0x0" visible="true" />
 		<flags32 name="Flags" offset="0x4" visible="true">
 			<bit name="Gets Damage From Region" index="0" />
@@ -1120,7 +1088,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<stringId name="Region Name" offset="0x44" visible="true" tooltip="only need point can destroy flag set" />
 		<int32 name="Region Index" offset="0x48" visible="true" />
 	</tagblock>
-	<tagblock name="Phantom Shapes" offset="0x3DC" visible="true" elementSize="0x3C0" align="0x10">
+	<tagblock name="Phantom Shapes" offset="0x38C" visible="true" elementSize="0x3C0" align="0x10">
 		<comment title="List" />
 		<uint64 name="Runtime Code Pointer" offset="0x0" visible="true" tooltip="becomes a pointer in memory at runtime. don't poke me" />
 		<int16 name="Size" offset="0x8" visible="true" />
@@ -1299,7 +1267,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<undefined name="Unknown" offset="0x3B8" visible="false" />
 		<undefined name="Unknown" offset="0x3BC" visible="false" />
 	</tagblock>
-	<enum8 name="Player Training Vehicle Type" offset="0x3E8" visible="true">
+	<enum8 name="Player Training Vehicle Type" offset="0x398" visible="true">
 		<option name="None" value="0x0" />
 		<option name="Warthog" value="0x1" />
 		<option name="Warthog Turret" value="0x2" />
@@ -1308,22 +1276,22 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<option name="Tank" value="0x5" />
 		<option name="Wraith" value="0x6" />
 	</enum8>
-	<enum8 name="Vehicle Size" offset="0x3E9" visible="true" tooltip="The size determine what kind of seats in larger vehicles it may occupy (i.e. small or large cargo seats)">
+	<enum8 name="Vehicle Size" offset="0x399" visible="true" tooltip="The size determine what kind of seats in larger vehicles it may occupy (i.e. small or large cargo seats)">
 		<option name="Small" value="0x0" />
 		<option name="Large" value="0x1" />
 	</enum8>
-	<int8 name="Complex Suspension Sample Count" offset="0x3EA" visible="true" tooltip="How many additional raycasts to perform per side of a tire." />
-	<int8 name="Unknown" offset="0x3EB" visible="false" />
-	<float32 name="Minimum Flipping Angular Velocity" offset="0x3EC" visible="true" />
-	<float32 name="Maximum Flipping Angular Velocity" offset="0x3F0" visible="true" />
-	<float32 name="Crouch Transition Time" offset="0x3F4" visible="true" />
-	<float32 name="Unknown" offset="0x3F8" visible="true" />
-	<float32 name="Seat Entrance Acceleration Scale" offset="0x3FC" visible="true" tooltip="how much do we scale the force the biped the applies down on the seat when he enters. 0 == no acceleration" />
-	<float32 name="Seat Exit Acceleration Scale" offset="0x400" visible="true" tooltip="how much do we scale the force the biped the applies down on the seat when he exits. 0 == no acceleration" />
-	<float32 name="Blur Speed" offset="0x404" visible="true" />
-	<stringid name="Flip Message" offset="0x408" visible="true" />
-	<tagRef name="Suspension Sound" offset="0x40C" visible="true" />
-	<tagRef name="Special Effect" offset="0x41C" visible="true" />
-	<tagRef name="Driver Boost Damage Effect or Response" offset="0x42C" visible="true" />
-	<tagRef name="Rider Boost Damage Effect or Response" offset="0x43C" visible="true" />
+	<int8 name="Complex Suspension Sample Count" offset="0x39A" visible="true" tooltip="How many additional raycasts to perform per side of a tire." />
+	<int8 name="Unknown" offset="0x39B" visible="false" />
+	<float32 name="Minimum Flipping Angular Velocity" offset="0x39C" visible="true" />
+	<float32 name="Maximum Flipping Angular Velocity" offset="0x3A0" visible="true" />
+	<float32 name="Crouch Transition Time" offset="0x3A4" visible="true" />
+	<float32 name="Unknown" offset="0x3A8" visible="true" />
+	<float32 name="Seat Entrance Acceleration Scale" offset="0x3AC" visible="true" tooltip="how much do we scale the force the biped the applies down on the seat when he enters. 0 == no acceleration" />
+	<float32 name="Seat Exit Acceleration Scale" offset="0x3B0" visible="true" tooltip="how much do we scale the force the biped the applies down on the seat when he exits. 0 == no acceleration" />
+	<float32 name="Blur Speed" offset="0x3B4" visible="true" />
+	<stringid name="Flip Message" offset="0x3B8" visible="true" />
+	<tagRef name="Suspension Sound" offset="0x3BC" visible="true" />
+	<tagRef name="Special Effect" offset="0x3CC" visible="true" />
+	<tagRef name="Driver Boost Damage Effect or Response" offset="0x3DC" visible="true" />
+	<tagRef name="Rider Boost Damage Effect or Response" offset="0x3EC" visible="true" />
 </plugin>

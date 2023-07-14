@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin game="ODSTMCC" baseSize="0x800">
+<plugin game="ODSTMCC" baseSize="0x7FC">
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Lord Zedd" version="1">k</revision>
@@ -44,16 +44,15 @@
 		<tagRef name="Structure Design" offset="0x10" visible="true" />
 		<tagRef name="Structure Lighting" offset="0x20" visible="true" />
 		<enum32 name="Size Class" offset="0x30" visible="true" tooltip="Tells lightmapper desired res for structure bitmaps. Numbers in parenthesis are final sizes after compression">
-			<option name="32x32" value="0x0" />
-			<option name="64x64" value="0x1" />
-			<option name="128x128" value="0x2" />
-			<option name="256x256 - 0.4 Meg (0.3 Meg 256X256)" value="0x3" />
-			<option name="512x512 - 1.5 Meg (1 Meg 512X512)" value="0x4" />
-			<option name="768x768 - 3.4 Meg (2.25 Meg 768X768)" value="0x5" />
-			<option name="1024x1024 - 6 Meg (4 Meg 1024X1024)" value="0x6" />
-			<option name="1280x1280 - 9.4 Meg (6.3 Meg 1280X1280)" value="0x7" />
-			<option name="1536x1536 - 13.5 Meg (9 Meg 1536X1536)" value="0x8" />
-			<option name="1792x1792 - 18.4 Meg (12.3 Meg 1792X1792)" value="0x9" />
+			<option name="1024x1024" value="0x0" />
+			<option name="768x768" value="0x1" />
+			<option name="512x512" value="0x2" />
+			<option name="1536x1536" value="0x3" />
+			<option name="256x256" value="0x4" />
+			<option name="384x384" value="0x5" />
+			<option name="2048x2048" value="0x6" />
+			<option name="3072x3072" value="0x7" />
+			<option name="4096x4096" value="0x8" />
 		</enum32>
 		<float32 name="Hacky Ambient Minimum Luminance" offset="0x34" visible="true" />
 		<float32 name="Direct/Draft Ambient Minimum Luminance" offset="0x38" visible="true" />
@@ -245,8 +244,10 @@
 			<tagblock name="Unknown" offset="0x3C" visible="false" elementSize="0x4">
 				<undefined name="Unknown" offset="0x0" visible="false" />
 			</tagblock>
-			<tagblock name="Clusters" offset="0x48" visible="false" elementSize="0x4">
-				<undefined name="Unknown" offset="0x0" visible="false" />
+			<tagblock name="Clusters" offset="0x48" visible="false" elementSize="0xC">
+				<tagblock name="Clusters" offset="0x0" visible="true" elementSize="0x1">
+					<int8 name="Cluster Indices" offset="0x0" visible="true" />
+				</tagblock>
 			</tagblock>
 		</tagblock>
 		<tagblock name="Portal To Device Mapping" offset="0x20" visible="true" elementSize="0x18">
@@ -314,7 +315,7 @@
 			<int16 name="Room Index" offset="0x0" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Zone Sets" offset="0x74" visible="true" elementSize="0x24">
+	<tagblock name="Zone Sets" offset="0x74" visible="true" elementSize="0x28">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<int32 name="PVS Index" offset="0x4" visible="true" />
 		<flags32 name="Flags" offset="0x8" visible="true">
@@ -489,6 +490,8 @@
 		</flags32>
 		<int32 name="Hint Previous Zone Set Index" offset="0x1C" visible="true" />
 		<int32 name="Audibility Index" offset="0x20" visible="true" />
+		<int16 name="Chocolate Mountain Override Index" offset="0x24" visible="true" />
+		<int16 name="Unknown" offset="0x26" visible="false" />
 	</tagblock>
 	<tagblock name="Lighting Zone Sets" offset="0x80" visible="true" elementSize="0xC">
 		<stringid name="Name" offset="0x0" visible="true" />
@@ -561,7 +564,7 @@
 			<bit name="Index 31" index="31" />
 		</flags32>
 	</tagblock>
-	<tagblock name="Campaign Players" offset="0x8C" visible="true" elementSize="0x4">
+	<tagblock name="Campaign Players" offset="0x8C" visible="true" elementSize="0x4" tooltip="specify enough names for the all coop players in campaign. These names will be used to match with names of player representations in globals.globals">
 		<stringId name="Player Representation Name" offset="0x0" visible="true" />
 	</tagblock>
 	<dataref name="Editor Scenario Data" offset="0x98" visible="true" />
@@ -598,37 +601,15 @@
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
-			<bit name="Not On Easy" index="1" />
-			<bit name="Not On Normal" index="2" />
-			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Environment Object" index="4" />
-			<bit name="Lock Transform To Environment Object" index="5" />
-			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Environment Object" index="7" />
-			<bit name="Create At Rest" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
+			<bit name="Lock Type To Environment Object" index="1" />
+			<bit name="Lock Transform To Environment Object" index="2" />
+			<bit name="Never Placed" index="3" />
+			<bit name="Lock Name to Environment Object" index="4" />
+			<bit name="Create At Rest" index="5" />
+			<bit name="Store Orientations" index="6" />
+			<bit name="PVS Bound" index="7" />
+			<bit name="Startup" index="8" />
+			<bit name="Render As Default In Vision Mode" index="9" />
 		</flags32>
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
@@ -873,53 +854,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<float32 name="Boundary Shape -Height" offset="0xAC" visible="true" />
 		<float32 name="Respawn Weight" offset="0xB0" visible="true" />
 	</tagblock>
-	<tagblock name="Scenery Palette" offset="0xDC" visible="true" elementSize="0x30">
+	<tagblock name="Scenery Palette" offset="0xDC" visible="true" elementSize="0x10">
 		<tagRef name="Scenery" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Bipeds" offset="0xE8" visible="true" elementSize="0x74">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
-			<bit name="Not On Easy" index="1" />
-			<bit name="Not On Normal" index="2" />
-			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Environment Object" index="4" />
-			<bit name="Lock Transform To Environment Object" index="5" />
-			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Environment Object" index="7" />
-			<bit name="Create At Rest" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
+			<bit name="Lock Type To Environment Object" index="1" />
+			<bit name="Lock Transform To Environment Object" index="2" />
+			<bit name="Never Placed" index="3" />
+			<bit name="Lock Name to Environment Object" index="4" />
+			<bit name="Create At Rest" index="5" />
+			<bit name="Store Orientations" index="6" />
+			<bit name="PVS Bound" index="7" />
+			<bit name="Startup" index="8" />
+			<bit name="Render As Default In Vision Mode" index="9" />
 		</flags32>
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
@@ -1090,53 +1041,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<bit name="Not Enterable by Player" index="2" />
 		</flags32>
 	</tagblock>
-	<tagblock name="Biped Palette" offset="0xF4" visible="true" elementSize="0x30">
+	<tagblock name="Biped Palette" offset="0xF4" visible="true" elementSize="0x10">
 		<tagRef name="Biped" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Vehicles" offset="0x100" visible="true" elementSize="0xA8">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
-			<bit name="Not On Easy" index="1" />
-			<bit name="Not On Normal" index="2" />
-			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Environment Object" index="4" />
-			<bit name="Lock Transform To Environment Object" index="5" />
-			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Environment Object" index="7" />
-			<bit name="Create At Rest" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
+			<bit name="Lock Type To Environment Object" index="1" />
+			<bit name="Lock Transform To Environment Object" index="2" />
+			<bit name="Never Placed" index="3" />
+			<bit name="Lock Name to Environment Object" index="4" />
+			<bit name="Create At Rest" index="5" />
+			<bit name="Store Orientations" index="6" />
+			<bit name="PVS Bound" index="7" />
+			<bit name="Startup" index="8" />
+			<bit name="Render As Default In Vision Mode" index="9" />
 		</flags32>
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
@@ -1369,53 +1290,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<float32 name="Boundary Shape -Height" offset="0xA0" visible="true" />
 		<float32 name="Respawn Weight" offset="0xA4" visible="true" />
 	</tagblock>
-	<tagblock name="Vehicle Palette" offset="0x10C" visible="true" elementSize="0x30">
+	<tagblock name="Vehicle Palette" offset="0x10C" visible="true" elementSize="0x10">
 		<tagRef name="Vehicle" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Equipment" offset="0x118" visible="true" elementSize="0x8C">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
-			<bit name="Not On Easy" index="1" />
-			<bit name="Not On Normal" index="2" />
-			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Environment Object" index="4" />
-			<bit name="Lock Transform To Environment Object" index="5" />
-			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Environment Object" index="7" />
-			<bit name="Create At Rest" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
+			<bit name="Lock Type To Environment Object" index="1" />
+			<bit name="Lock Transform To Environment Object" index="2" />
+			<bit name="Never Placed" index="3" />
+			<bit name="Lock Name to Environment Object" index="4" />
+			<bit name="Create At Rest" index="5" />
+			<bit name="Store Orientations" index="6" />
+			<bit name="PVS Bound" index="7" />
+			<bit name="Startup" index="8" />
+			<bit name="Render As Default In Vision Mode" index="9" />
 		</flags32>
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
@@ -1635,53 +1526,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<float32 name="Boundary Shape -Height" offset="0x84" visible="true" />
 		<float32 name="Respawn Weight" offset="0x88" visible="true" />
 	</tagblock>
-	<tagblock name="Equipment Palette" offset="0x124" visible="true" elementSize="0x30">
+	<tagblock name="Equipment Palette" offset="0x124" visible="true" elementSize="0x10">
 		<tagRef name="Equipment" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Weapons" offset="0x130" visible="true" elementSize="0xA8">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
-			<bit name="Not On Easy" index="1" />
-			<bit name="Not On Normal" index="2" />
-			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Environment Object" index="4" />
-			<bit name="Lock Transform To Environment Object" index="5" />
-			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Environment Object" index="7" />
-			<bit name="Create At Rest" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
+			<bit name="Lock Type To Environment Object" index="1" />
+			<bit name="Lock Transform To Environment Object" index="2" />
+			<bit name="Never Placed" index="3" />
+			<bit name="Lock Name to Environment Object" index="4" />
+			<bit name="Create At Rest" index="5" />
+			<bit name="Store Orientations" index="6" />
+			<bit name="PVS Bound" index="7" />
+			<bit name="Startup" index="8" />
+			<bit name="Render As Default In Vision Mode" index="9" />
 		</flags32>
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
@@ -1915,16 +1776,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<float32 name="Boundary Shape -Height" offset="0xA0" visible="true" />
 		<float32 name="Respawn Weight" offset="0xA4" visible="true" />
 	</tagblock>
-	<tagblock name="Weapon Palette" offset="0x13C" visible="true" elementSize="0x30">
+	<tagblock name="Weapon Palette" offset="0x13C" visible="true" elementSize="0x10">
 		<tagRef name="Weapon" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Device Groups" offset="0x148" visible="true" elementSize="0x2C">
 		<ascii name="Name" offset="0x0" visible="true" size="0x20" />
@@ -1940,37 +1793,15 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
-			<bit name="Not On Easy" index="1" />
-			<bit name="Not On Normal" index="2" />
-			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Environment Object" index="4" />
-			<bit name="Lock Transform To Environment Object" index="5" />
-			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Environment Object" index="7" />
-			<bit name="Create At Rest" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
+			<bit name="Lock Type To Environment Object" index="1" />
+			<bit name="Lock Transform To Environment Object" index="2" />
+			<bit name="Never Placed" index="3" />
+			<bit name="Lock Name to Environment Object" index="4" />
+			<bit name="Create At Rest" index="5" />
+			<bit name="Store Orientations" index="6" />
+			<bit name="PVS Bound" index="7" />
+			<bit name="Startup" index="8" />
+			<bit name="Render As Default In Vision Mode" index="9" />
 		</flags32>
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
@@ -2218,53 +2049,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</enum16>
 		<int16 name="Unknown" offset="0x86" visible="true" />
 	</tagblock>
-	<tagblock name="Machine Palette" offset="0x160" visible="true" elementSize="0x30">
+	<tagblock name="Machine Palette" offset="0x160" visible="true" elementSize="0x10">
 		<tagRef name="Machine" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Terminals" offset="0x16C" visible="true" elementSize="0x78">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
-			<bit name="Not On Easy" index="1" />
-			<bit name="Not On Normal" index="2" />
-			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Environment Object" index="4" />
-			<bit name="Lock Transform To Environment Object" index="5" />
-			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Environment Object" index="7" />
-			<bit name="Create At Rest" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
+			<bit name="Lock Type To Environment Object" index="1" />
+			<bit name="Lock Transform To Environment Object" index="2" />
+			<bit name="Never Placed" index="3" />
+			<bit name="Lock Name to Environment Object" index="4" />
+			<bit name="Create At Rest" index="5" />
+			<bit name="Store Orientations" index="6" />
+			<bit name="PVS Bound" index="7" />
+			<bit name="Startup" index="8" />
+			<bit name="Render As Default In Vision Mode" index="9" />
 		</flags32>
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
@@ -2467,53 +2268,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<comment title="Terminal Data" />
 		<undefined name="Unknown" offset="0x74" visible="true" />
 	</tagblock>
-	<tagblock name="Terminal Palette" offset="0x178" visible="true" elementSize="0x30">
+	<tagblock name="Terminal Palette" offset="0x178" visible="true" elementSize="0x10">
 		<tagRef name="Terminal" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Alternate Reality Devices" offset="0x184" visible="true" elementSize="0xB8">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
-			<bit name="Not On Easy" index="1" />
-			<bit name="Not On Normal" index="2" />
-			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Environment Object" index="4" />
-			<bit name="Lock Transform To Environment Object" index="5" />
-			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Environment Object" index="7" />
-			<bit name="Create At Rest" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
+			<bit name="Lock Type To Environment Object" index="1" />
+			<bit name="Lock Transform To Environment Object" index="2" />
+			<bit name="Never Placed" index="3" />
+			<bit name="Lock Name to Environment Object" index="4" />
+			<bit name="Create At Rest" index="5" />
+			<bit name="Store Orientations" index="6" />
+			<bit name="PVS Bound" index="7" />
+			<bit name="Startup" index="8" />
+			<bit name="Render As Default In Vision Mode" index="9" />
 		</flags32>
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
@@ -2719,53 +2490,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Tap Script Index" offset="0xB4" visible="true" />
 		<int16 name="Hold Script Index" offset="0xB6" visible="true" />
 	</tagblock>
-	<tagblock name="Alternate Reality Device Palette" offset="0x190" visible="true" elementSize="0x30">
+	<tagblock name="Alternate Reality Device Palette" offset="0x190" visible="true" elementSize="0x10">
 		<tagRef name="ARG Device" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Controls" offset="0x19C" visible="true" elementSize="0x7C">
+	<tagblock name="Controls" offset="0x19C" visible="true" elementSize="0x78">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
-			<bit name="Not On Easy" index="1" />
-			<bit name="Not On Normal" index="2" />
-			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Environment Object" index="4" />
-			<bit name="Lock Transform To Environment Object" index="5" />
-			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Environment Object" index="7" />
-			<bit name="Create At Rest" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
+			<bit name="Lock Type To Environment Object" index="1" />
+			<bit name="Lock Transform To Environment Object" index="2" />
+			<bit name="Never Placed" index="3" />
+			<bit name="Lock Name to Environment Object" index="4" />
+			<bit name="Create At Rest" index="5" />
+			<bit name="Store Orientations" index="6" />
+			<bit name="PVS Bound" index="7" />
+			<bit name="Startup" index="8" />
+			<bit name="Render As Default In Vision Mode" index="9" />
 		</flags32>
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
@@ -2969,56 +2710,24 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<flags32 name="Control Flags" offset="0x74" visible="true">
 			<bit name="Usable From Both Sides" index="0" />
 		</flags32>
-		<int16 name="Custom Object Name Index" offset="0x78" visible="true" />
-		<int16 name="Unknown" offset="0x7A" visible="false" />
 	</tagblock>
-	<tagblock name="Control Palette" offset="0x1A8" visible="true" elementSize="0x30">
+	<tagblock name="Control Palette" offset="0x1A8" visible="true" elementSize="0x10">
 		<tagRef name="Control" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Sound Scenery" offset="0x1B4" visible="true" elementSize="0x70">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
-			<bit name="Not On Easy" index="1" />
-			<bit name="Not On Normal" index="2" />
-			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Environment Object" index="4" />
-			<bit name="Lock Transform To Environment Object" index="5" />
-			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Environment Object" index="7" />
-			<bit name="Create At Rest" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
+			<bit name="Lock Type To Environment Object" index="1" />
+			<bit name="Lock Transform To Environment Object" index="2" />
+			<bit name="Never Placed" index="3" />
+			<bit name="Lock Name to Environment Object" index="4" />
+			<bit name="Create At Rest" index="5" />
+			<bit name="Store Orientations" index="6" />
+			<bit name="PVS Bound" index="7" />
+			<bit name="Startup" index="8" />
+			<bit name="Render As Default In Vision Mode" index="9" />
 		</flags32>
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
@@ -3180,53 +2889,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<ranged name="Override Cone Angle Bounds" offset="0x64" visible="true" />
 		<float32 name="Override Outer Cone Gain" offset="0x6C" visible="true" />
 	</tagblock>
-	<tagblock name="Sound Scenery Palette" offset="0x1C0" visible="true" elementSize="0x30">
+	<tagblock name="Sound Scenery Palette" offset="0x1C0" visible="true" elementSize="0x10">
 		<tagRef name="Sound Scenery" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Giants" offset="0x1CC" visible="true" elementSize="0x84">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
-			<bit name="Not On Easy" index="1" />
-			<bit name="Not On Normal" index="2" />
-			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Environment Object" index="4" />
-			<bit name="Lock Transform To Environment Object" index="5" />
-			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Environment Object" index="7" />
-			<bit name="Create At Rest" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
+			<bit name="Lock Type To Environment Object" index="1" />
+			<bit name="Lock Transform To Environment Object" index="2" />
+			<bit name="Never Placed" index="3" />
+			<bit name="Lock Name to Environment Object" index="4" />
+			<bit name="Create At Rest" index="5" />
+			<bit name="Store Orientations" index="6" />
+			<bit name="PVS Bound" index="7" />
+			<bit name="Startup" index="8" />
+			<bit name="Render As Default In Vision Mode" index="9" />
 		</flags32>
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
@@ -3410,53 +3089,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<int16 name="Pathfinding Object Index" offset="0x2" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Giant Palette" offset="0x1D8" visible="true" elementSize="0x30">
+	<tagblock name="Giant Palette" offset="0x1D8" visible="true" elementSize="0x10">
 		<tagRef name="Giant" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Effect Scenery" offset="0x1E4" visible="true" elementSize="0x54">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
-			<bit name="Not On Easy" index="1" />
-			<bit name="Not On Normal" index="2" />
-			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Environment Object" index="4" />
-			<bit name="Lock Transform To Environment Object" index="5" />
-			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Environment Object" index="7" />
-			<bit name="Create At Rest" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
+			<bit name="Lock Type To Environment Object" index="1" />
+			<bit name="Lock Transform To Environment Object" index="2" />
+			<bit name="Never Placed" index="3" />
+			<bit name="Lock Name to Environment Object" index="4" />
+			<bit name="Create At Rest" index="5" />
+			<bit name="Store Orientations" index="6" />
+			<bit name="PVS Bound" index="7" />
+			<bit name="Startup" index="8" />
+			<bit name="Render As Default In Vision Mode" index="9" />
 		</flags32>
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
@@ -3608,53 +3257,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		</flags16>
 		<int16 name="Unknown" offset="0x52" visible="false" />
 	</tagblock>
-	<tagblock name="Effect Scenery Palette" offset="0x1F0" visible="true" elementSize="0x30">
+	<tagblock name="Effect Scenery Palette" offset="0x1F0" visible="true" elementSize="0x10">
 		<tagRef name="Effect Scenery" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Light Volumes" offset="0x1FC" visible="true" elementSize="0x8C">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
-			<bit name="Not On Easy" index="1" />
-			<bit name="Not On Normal" index="2" />
-			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Environment Object" index="4" />
-			<bit name="Lock Transform To Environment Object" index="5" />
-			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Environment Object" index="7" />
-			<bit name="Create At Rest" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
+			<bit name="Lock Type To Environment Object" index="1" />
+			<bit name="Lock Transform To Environment Object" index="2" />
+			<bit name="Never Placed" index="3" />
+			<bit name="Lock Name to Environment Object" index="4" />
+			<bit name="Create At Rest" index="5" />
+			<bit name="Store Orientations" index="6" />
+			<bit name="PVS Bound" index="7" />
+			<bit name="Startup" index="8" />
+			<bit name="Render As Default In Vision Mode" index="9" />
 		</flags32>
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
@@ -3870,93 +3489,50 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<float32 name="Falloff Distance" offset="0x84" visible="true" />
 		<float32 name="Cutoff Distance" offset="0x88" visible="true" />
 	</tagblock>
-	<tagblock name="Light Volumes Palette" offset="0x208" visible="true" elementSize="0x30">
+	<tagblock name="Light Volumes Palette" offset="0x208" visible="true" elementSize="0x10">
 		<tagRef name="Light Volume" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Map Variant Vehicles" offset="0x214" visible="true" elementSize="0x30">
+	<tagblock name="Map Variant Vehicles" offset="0x214" visible="true" elementSize="0x1C">
 		<tagRef name="Object" offset="0x0" visible="true" />
 		<stringId name="Display Name" offset="0x10" visible="true" />
 		<int32 name="Maximum Allowed" offset="0x14" visible="true" tooltip="if this is &lt;= 0, these are 'unlimited' (up to a reasonable code-defined maximum)" />
 		<float32 name="Price Per Instance" offset="0x18" visible="true" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Map Variant Weapons" offset="0x220" visible="true" elementSize="0x30">
+	<tagblock name="Map Variant Weapons" offset="0x220" visible="true" elementSize="0x1C">
 		<tagRef name="Object" offset="0x0" visible="true" />
 		<stringId name="Display Name" offset="0x10" visible="true" />
 		<int32 name="Maximum Allowed" offset="0x14" visible="true" tooltip="if this is &lt;= 0, these are 'unlimited' (up to a reasonable code-defined maximum)" />
 		<float32 name="Price Per Instance" offset="0x18" visible="true" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Map Variant Equipment" offset="0x22C" visible="true" elementSize="0x30">
+	<tagblock name="Map Variant Equipment" offset="0x22C" visible="true" elementSize="0x1C">
 		<tagRef name="Object" offset="0x0" visible="true" />
 		<stringId name="Display Name" offset="0x10" visible="true" />
 		<int32 name="Maximum Allowed" offset="0x14" visible="true" tooltip="if this is &lt;= 0, these are 'unlimited' (up to a reasonable code-defined maximum)" />
 		<float32 name="Price Per Instance" offset="0x18" visible="true" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Map Variant Scenery" offset="0x238" visible="true" elementSize="0x30">
+	<tagblock name="Map Variant Scenery" offset="0x238" visible="true" elementSize="0x1C">
 		<tagRef name="Object" offset="0x0" visible="true" />
 		<stringId name="Display Name" offset="0x10" visible="true" />
 		<int32 name="Maximum Allowed" offset="0x14" visible="true" tooltip="if this is &lt;= 0, these are 'unlimited' (up to a reasonable code-defined maximum)" />
 		<float32 name="Price Per Instance" offset="0x18" visible="true" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Map Variant Teleporters" offset="0x244" visible="true" elementSize="0x30">
+	<tagblock name="Map Variant Teleporters" offset="0x244" visible="true" elementSize="0x1C">
 		<tagRef name="Object" offset="0x0" visible="true" />
 		<stringId name="Display Name" offset="0x10" visible="true" />
 		<int32 name="Maximum Allowed" offset="0x14" visible="true" tooltip="if this is &lt;= 0, these are 'unlimited' (up to a reasonable code-defined maximum)" />
 		<float32 name="Price Per Instance" offset="0x18" visible="true" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Map Variant Goal Objects" offset="0x250" visible="true" elementSize="0x30">
+	<tagblock name="Map Variant Goal Objects" offset="0x250" visible="true" elementSize="0x1C">
 		<tagRef name="Object" offset="0x0" visible="true" />
 		<stringId name="Display Name" offset="0x10" visible="true" />
 		<int32 name="Maximum Allowed" offset="0x14" visible="true" tooltip="if this is &lt;= 0, these are 'unlimited' (up to a reasonable code-defined maximum)" />
 		<float32 name="Price Per Instance" offset="0x18" visible="true" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
-	<tagblock name="Map Variant Spawning" offset="0x25C" visible="true" elementSize="0x30">
+	<tagblock name="Map Variant Spawning" offset="0x25C" visible="true" elementSize="0x1C">
 		<tagRef name="Object" offset="0x0" visible="true" />
 		<stringId name="Display Name" offset="0x10" visible="true" />
 		<int32 name="Maximum Allowed" offset="0x14" visible="true" tooltip="if this is &lt;= 0, these are 'unlimited' (up to a reasonable code-defined maximum)" />
 		<float32 name="Price Per Instance" offset="0x18" visible="true" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Soft Ceilings" offset="0x268" visible="true" elementSize="0xC">
 		<flags16 name="Flags" offset="0x0" visible="true">
@@ -4999,32 +4575,29 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<undefined name="Unknown" offset="0x74" visible="false" />
 			<undefined name="Unknown" offset="0x78" visible="false" />
 		</tagblock>
-		<tagblock name="Unknown" offset="0x54" visible="false" elementSize="0x18">
-			<tagblock name="Unknown" offset="0x0" visible="false" elementSize="0x20">
-				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
-				<undefined name="Unknown" offset="0x8" visible="false" />
-				<undefined name="Unknown" offset="0xC" visible="false" />
-				<undefined name="Unknown" offset="0x10" visible="false" />
-				<undefined name="Unknown" offset="0x14" visible="false" />
-				<undefined name="Unknown" offset="0x18" visible="false" />
-				<undefined name="Unknown" offset="0x1C" visible="false" />
+		<tagblock name="Giant Hints" offset="0x54" visible="true" elementSize="0x18">
+			<tagblock name="Giant Sector Hints" offset="0x0" visible="true" elementSize="0xC">
+				<tagblock name="Points" offset="0x0" visible="true" elementSize="0x18">
+					<point3 name="Point" offset="0x0" visible="true" />
+					<int16 name="Reference Frame Index" offset="0xC" visible="true" />
+					<int16 name="Structure BSP Index" offset="0xE" visible="true" />
+					<degree2 name="Normal" offset="0x10" visible="true" />
+				</tagblock>
 			</tagblock>
-			<tagblock name="Unknown" offset="0xC" visible="false" elementSize="0x28">
-				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
-				<undefined name="Unknown" offset="0x8" visible="false" />
-				<undefined name="Unknown" offset="0xC" visible="false" />
-				<undefined name="Unknown" offset="0x10" visible="false" />
-				<undefined name="Unknown" offset="0x14" visible="false" />
-				<undefined name="Unknown" offset="0x18" visible="false" />
-				<undefined name="Unknown" offset="0x1C" visible="false" />
-				<undefined name="Unknown" offset="0x20" visible="false" />
-				<undefined name="Unknown" offset="0x24" visible="false" />
+			<tagblock name="Giant Rail Hints" offset="0xC" visible="true" elementSize="0x4">
+				<int16 name="Geometry Index" offset="0x0" visible="true" />
+				<int16 name="Unknown" offset="0x2" visible="false" />
 			</tagblock>
 		</tagblock>
-		<tagblock name="Unknown" offset="0x60" visible="false" elementSize="0x4">
-			<undefined name="Unknown" offset="0x0" visible="false" />
+		<tagblock name="Flood Hints" offset="0x60" visible="true" elementSize="0xC">
+			<tagblock name="Flood Sector Hints" offset="0x0" visible="true" elementSize="0xC">
+				<tagblock name="Points" offset="0x0" visible="true" elementSize="0x18">
+					<point3 name="Point" offset="0x0" visible="true" />
+					<int16 name="Reference Frame Index" offset="0xC" visible="true" />
+					<int16 name="Structure BSP Index" offset="0xE" visible="true" />
+					<degree2 name="Normal" offset="0x10" visible="true" />
+				</tagblock>
+			</tagblock>
 		</tagblock>
 	</tagblock>
 	<undefined name="Unknown" offset="0x40C" visible="false" />
@@ -5400,15 +4973,14 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 		<undefined name="Unknown" offset="0x7C" visible="false" />
 		<undefined name="Unknown" offset="0x80" visible="false" />
 	</tagblock>
-	<tagblock name="Cutscene Flags" offset="0x468" visible="true" elementSize="0x20">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<stringid name="Name" offset="0x4" visible="true" />
-		<point3 name="Position" offset="0x8" visible="true" />
-		<degree2 name="Facing" offset="0x14" visible="true" />
-		<int16 name="Editor Folder Index" offset="0x1C" visible="true" />
-		<int16 name="Unknown" offset="0x1E" visible="false" />
+	<tagblock name="Cutscene Flags" offset="0x468" visible="true" elementSize="0x1C">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<point3 name="Position" offset="0x4" visible="true" />
+		<degree2 name="Facing" offset="0x10" visible="true" />
+		<int16 name="Editor Folder Index" offset="0x18" visible="true" />
+		<int16 name="Unknown" offset="0x1A" visible="false" />
 	</tagblock>
-	<tagblock name="Cutscene Camera Points" offset="0x474" visible="true" elementSize="0x40">
+	<tagblock name="Cutscene Camera Points" offset="0x474" visible="true" elementSize="0x3C">
 		<flags16 name="Flags" offset="0x0" visible="true">
 			<bit name="Edit As Relative" index="0" />
 		</flags16>
@@ -5419,9 +4991,8 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<option name="Ignore Target Updates" value="0x3" />
 		</enum16>
 		<ascii name="Name" offset="0x4" visible="true" size="0x20" />
-		<int32 name="Unknown" offset="0x24" visible="false" />
-		<point3 name="Position" offset="0x28" visible="true" />
-		<degree3 name="Orientation" offset="0x34" visible="true" />
+		<point3 name="Position" offset="0x24" visible="true" />
+		<degree3 name="Orientation" offset="0x30" visible="true" />
 	</tagblock>
 	<tagblock name="Cutscene Titles" offset="0x480" visible="true" elementSize="0x28">
 		<stringid name="Name" offset="0x0" visible="true" />
@@ -5859,34 +5430,19 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 	<int32 name="Object Salts 30" offset="0x5D4" visible="false" />
 	<int32 name="Object Salts 31" offset="0x5D8" visible="false" />
 	<int32 name="Object Salts 32" offset="0x5DC" visible="false" />
-	<tagblock name="Spawn Data" offset="0x5E0" visible="true" elementSize="0x6C">
+	<tagblock name="Spawn Data" offset="0x5E0" visible="true" elementSize="0x30">
 		<comment title="Dynamic Spawn">Non-0 values here overload what appears in multiplayer_globals.</comment>
 		<float32 name="Dynamic Spawn Lower Height" offset="0x0" visible="true" />
 		<float32 name="Dynamic Spawn Upper Height" offset="0x4" visible="true" />
 		<float32 name="Game Object Reset Height" offset="0x8" visible="true" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<tagblock name="Dynamic Spawn Overloads" offset="0x48" visible="true" elementSize="0x10">
+		<tagblock name="Dynamic Spawn Overloads" offset="0xC" visible="true" elementSize="0x10">
 			<int16 name="Overload Type" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="true" />
 			<float32 name="Inner Radius" offset="0x4" visible="true" />
 			<float32 name="Outer Radius" offset="0x8" visible="true" />
 			<float32 name="Weight" offset="0xC" visible="true" />
 		</tagblock>
-		<tagblock name="Static Respawn Zones" offset="0x54" visible="true" elementSize="0x30">
+		<tagblock name="Static Respawn Zones" offset="0x18" visible="true" elementSize="0x30">
 			<comment title="Static Spawn Zones">Lower and upper heights can be left at 0, in which case they use defaults. Leaving relevant teams empty means all teams; leaving all games empty means all games.</comment>
 			<stringid name="Name" offset="0x0" visible="true" />
 			<flags32 name="Relevant Teams" offset="0x4" visible="true">
@@ -5975,7 +5531,7 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<float32 name="Outer Radius" offset="0x28" visible="true" />
 			<float32 name="Weight" offset="0x2C" visible="true" />
 		</tagblock>
-		<tagblock name="Static Initial Spawn Zones" offset="0x60" visible="true" elementSize="0x30">
+		<tagblock name="Static Initial Spawn Zones" offset="0x24" visible="true" elementSize="0x30">
 			<comment title="Static Spawn Zones">Lower and upper heights can be left at 0, in which case they use defaults. Leaving relevant teams empty means all teams; leaving all games empty means all games.</comment>
 			<stringid name="Name" offset="0x0" visible="true" />
 			<flags32 name="Relevant Teams" offset="0x4" visible="true">
@@ -6071,37 +5627,15 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 		<int16 name="Name Index" offset="0x2" visible="true" />
 		<flags32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
-			<bit name="Not On Easy" index="1" />
-			<bit name="Not On Normal" index="2" />
-			<bit name="Not On Hard" index="3" />
-			<bit name="Lock Type To Environment Object" index="4" />
-			<bit name="Lock Transform To Environment Object" index="5" />
-			<bit name="Never Placed" index="6" />
-			<bit name="Lock Name to Environment Object" index="7" />
-			<bit name="Create At Rest" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
+			<bit name="Lock Type To Environment Object" index="1" />
+			<bit name="Lock Transform To Environment Object" index="2" />
+			<bit name="Never Placed" index="3" />
+			<bit name="Lock Name to Environment Object" index="4" />
+			<bit name="Create At Rest" index="5" />
+			<bit name="Store Orientations" index="6" />
+			<bit name="PVS Bound" index="7" />
+			<bit name="Startup" index="8" />
+			<bit name="Render As Default In Vision Mode" index="9" />
 		</flags32>
 		<point3 name="Position" offset="0x8" visible="true" />
 		<degree3 name="Rotation" offset="0x14" visible="true" />
@@ -6340,16 +5874,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<float32 name="Boundary Shape -Height" offset="0xA8" visible="true" />
 		<float32 name="Respawn Weight" offset="0xAC" visible="true" />
 	</tagblock>
-	<tagblock name="Crates Palette" offset="0x608" visible="true" elementSize="0x30">
+	<tagblock name="Crates Palette" offset="0x608" visible="true" elementSize="0x10">
 		<tagRef name="Crate" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Flock Palette" offset="0x614" visible="true" elementSize="0x10">
 		<tagRef name="Flock" offset="0x0" visible="true" />
@@ -6405,27 +5931,18 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 	<undefined name="Unknown" offset="0x63C" visible="false" />
 	<undefined name="Unknown" offset="0x640" visible="false" />
 	<undefined name="Unknown" offset="0x644" visible="false" />
-	<tagblock name="Creatures Palette" offset="0x648" visible="true" elementSize="0x30">
+	<tagblock name="Creatures Palette" offset="0x648" visible="true" elementSize="0x10">
 		<tagRef name="Creature" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</tagblock>
 	<tagblock name="Editor Folders" offset="0x654" visible="true" elementSize="0x104">
 		<int32 name="Parent Folder" offset="0x0" visible="true" />
 		<ascii name="Name" offset="0x4" size="0x100" visible="true" />
 	</tagblock>
-	<tagRef name="Territory Location Name Strings" offset="0x660" visible="true" />
-	<tagblock name="Mission Dialogue" offset="0x670" visible="true" elementSize="0x10">
+	<tagblock name="Mission Dialogue" offset="0x660" visible="true" elementSize="0x10">
 		<tagRef name="Mission Dialogue" offset="0x0" visible="true" />
 	</tagblock>
-	<tagRef name="Objective Strings" offset="0x67C" visible="true" />
-	<tagblock name="Interpolators" offset="0x68C" visible="true" elementSize="0x24">
+	<tagRef name="Objective Strings" offset="0x66C" visible="true" />
+	<tagblock name="Interpolators" offset="0x67C" visible="true" elementSize="0x24">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<stringid name="Accelerator Name" offset="0x4" visible="true" />
 		<stringid name="Multiplier Name" offset="0x8" visible="true" />
@@ -6433,19 +5950,22 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Unknown" offset="0x20" visible="false" />
 		<int16 name="Unknown" offset="0x22" visible="false" />
 	</tagblock>
+	<undefined name="Unknown" offset="0x688" visible="false" />
+	<undefined name="Unknown" offset="0x68C" visible="false" />
+	<undefined name="Unknown" offset="0x690" visible="false" />
+	<undefined name="Unknown" offset="0x694" visible="false" />
 	<undefined name="Unknown" offset="0x698" visible="false" />
 	<undefined name="Unknown" offset="0x69C" visible="false" />
-	<undefined name="Unknown" offset="0x6A0" visible="false" />
-	<undefined name="Unknown" offset="0x6A4" visible="false" />
-	<undefined name="Unknown" offset="0x6A8" visible="false" />
-	<undefined name="Unknown" offset="0x6AC" visible="false" />
-	<tagRef name="Default Camera FX" offset="0x6B0" visible="true" />
-	<tagRef name="Default Screen FX" offset="0x6C0" visible="true" />
-	<tagRef name="Sky Parameters" offset="0x6D0" visible="true" />
-	<tagRef name="Global Lighting" offset="0x6E0" visible="true" />
-	<tagRef name="Lightmap" offset="0x6F0" visible="true" />
-	<tagRef name="Performace Throttles" offset="0x700" visible="true" />
-	<tagblock name="Unknown Objects" offset="0x710" visible="true" elementSize="0x10">
+	<tagRef name="Default Camera FX" offset="0x6A0" visible="true" />
+	<tagRef name="Default Screen FX" offset="0x6B0" visible="true" />
+	<tagRef name="Sky Parameters" offset="0x6C0" visible="true" />
+	<tagRef name="Global Lighting" offset="0x6D0" visible="true" />
+	<tagblock name="Chocolate Mountains" offset="0x6E0" visible="true" elementSize="0x10">
+		<tagRef name="Chocolate Mountain" offset="0x0" visible="true" />
+	</tagblock>
+	<tagRef name="Lightmap" offset="0x6EC" visible="true" />
+	<tagRef name="Performance Throttles" offset="0x6FC" visible="true" />
+	<tagblock name="Unknown Objects" offset="0x70C" visible="true" elementSize="0x10">
 		<datum name="Unique ID" offset="0x0" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x4" visible="true" />
 		<enum8 name="Type" offset="0x6" visible="true">
@@ -6481,7 +6001,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<int16 name="Unknown" offset="0xC" visible="false" />
 		<int16 name="Unknown" offset="0xE" visible="false" />
 	</tagblock>
-	<tagblock name="AI Objectives" offset="0x71C" visible="true" elementSize="0x24">
+	<tagblock name="AI Objectives" offset="0x718" visible="true" elementSize="0x24">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -6626,7 +6146,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			</tagblock>
 		</tagblock>
 	</tagblock>
-	<tagblock name="Designer Zonesets" offset="0x728" visible="true" elementSize="0xC8">
+	<tagblock name="Designer Zonesets" offset="0x724" visible="true" elementSize="0xC8">
 		<comment title="Designer Zonesets">This block is essentially leftover import data and is only useful as a reference to where something is loaded. Modifying anything in this block won't change anything.</comment>
 		<stringid name="Name" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
@@ -6679,21 +6199,21 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<int16 name="Palette Index" offset="0x0" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Unknown" offset="0x734" visible="false" elementSize="0x4">
+	<tagblock name="Unknown" offset="0x730" visible="false" elementSize="0x4">
 		<int16 name="Unknown" offset="0x0" visible="false" />
 		<int16 name="Unknown" offset="0x2" visible="false" />
 	</tagblock>
+	<undefined name="Unknown" offset="0x73C" visible="false" />
 	<undefined name="Unknown" offset="0x740" visible="false" />
 	<undefined name="Unknown" offset="0x744" visible="false" />
-	<undefined name="Unknown" offset="0x748" visible="false" />
-	<tagblock name="Cinematics" offset="0x74C" visible="true" elementSize="0x10">
+	<tagblock name="Cinematics" offset="0x748" visible="true" elementSize="0x10">
 		<tagRef name="Cinematics" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Cinematic Lighting" offset="0x758" visible="true" elementSize="0x14">
+	<tagblock name="Cinematic Lighting" offset="0x754" visible="true" elementSize="0x14">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<tagRef name="Cinematic Light" offset="0x4" visible="true" />
 	</tagblock>
-	<tagblock name="Override Player Representations" offset="0x764" visible="true" elementSize="0x6C">
+	<tagblock name="Override Player Representations" offset="0x760" visible="true" elementSize="0x5C">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<int8 name="Unknown" offset="0x4" visible="false" />
 		<int8 name="Unknown" offset="0x5" visible="false" />
@@ -6705,9 +6225,8 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<stringId name="Third Person Variant" offset="0x38" visible="true" />
 		<tagRef name="Binoculars Zoom In Sound" offset="0x3C" visible="true" />
 		<tagRef name="Binoculars Zoom Out Sound" offset="0x4C" visible="true" />
-		<tagRef name="Combat Dialogue" offset="0x5C" visible="true" />
 	</tagblock>
-	<tagblock name="Campaign Metagame" offset="0x770" visible="true" elementSize="0x1C">
+	<tagblock name="Campaign Metagame" offset="0x76C" visible="true" elementSize="0x1C">
 		<tagblock name="Time Bonuses" offset="0x0" visible="true" elementSize="0x8">
 			<float32 name="Time" offset="0x0" visible="true" tooltip="if you finish in under this time you get the following bonus" />
 			<float32 name="Score Multiplier" offset="0x4" visible="true" />
@@ -6719,7 +6238,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 			<float32 name="Par Score" offset="0x4" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Soft Surfaces" offset="0x77C" visible="true" elementSize="0x18">
+	<tagblock name="Soft Surfaces" offset="0x778" visible="true" elementSize="0x18">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<float32 name="Class Biped" offset="0x4" visible="true" tooltip="max - .2f" />
 		<float32 name="Class Dead Biped" offset="0x8" visible="true" tooltip="max - .09f" />
@@ -6727,35 +6246,35 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 		<float32 name="Class Debris" offset="0x10" visible="true" tooltip="max - .04f" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0x788" visible="false" elementSize="0x10">
+	<tagblock name="Unknown" offset="0x784" visible="false" elementSize="0x10">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<int16 name="Unknown" offset="0xC" visible="false" />
 		<int16 name="Unknown" offset="0xE" visible="false" />
 	</tagblock>
+	<undefined name="Unknown" offset="0x790" visible="false" />
 	<undefined name="Unknown" offset="0x794" visible="false" />
 	<undefined name="Unknown" offset="0x798" visible="false" />
-	<undefined name="Unknown" offset="0x79C" visible="false" />
-	<tagblock name="Unknown" offset="0x7A0" visible="false" elementSize="0x14">
+	<tagblock name="Unknown" offset="0x79C" visible="false" elementSize="0x14">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<stringid name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 	</tagblock>
-	<tagblock name="Unknown" offset="0x7AC" visible="false" elementSize="0x10">
+	<tagblock name="Unknown" offset="0x7A8" visible="false" elementSize="0x10">
 		<tagRef name="Unknown" offset="0x0" visible="false" />
 	</tagblock>
-	<tagRef name="Mission Vision Mode Effect" offset="0x7B8" visible="true" />
-	<tagRef name="Mission Vision Mode Theater Effect" offset="0x7C8" visible="true" />
-	<tagRef name="Mission Vision Mode" offset="0x7D8" visible="true" />
+	<tagRef name="Mission Vision Mode Effect" offset="0x7B4" visible="true" />
+	<tagRef name="Mission Vision Mode Theater Effect" offset="0x7C4" visible="true" />
+	<tagRef name="Mission Vision Mode" offset="0x7D4" visible="true" />
 	<comment title="Structured Interop Resource">The resource referenced in the block contains data for every beam, cntl, effe, and ltvl tag.</comment>
-	<tagblock name="Structured Buffer Interops" offset="0x7E8" visible="true" elementSize="0x8">
+	<tagblock name="Structured Buffer Interops" offset="0x7E4" visible="true" elementSize="0x8">
 		<datum name="[zone] Structured Buffer Interop Asset Datum" offset="0x0" visible="true" />
 		<int32 name="Useless Padding" offset="0x4" visible="false" />
 	</tagblock>
-	<tagblock name="Scavenger Hunt Objects" offset="0x7F4" visible="true" elementSize="0x24">
+	<tagblock name="Scavenger Hunt Objects" offset="0x7F0" visible="true" elementSize="0x24">
 		<ascii name="Exported Name" offset="0x0" size="0x20" visible="true" />
 		<int16 name="Name Index" offset="0x20" visible="true" />
 		<int16 name="Unknown" offset="0x22" visible="false" />

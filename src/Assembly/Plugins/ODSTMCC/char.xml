@@ -287,8 +287,10 @@
 		<float32 name="Deceleration Stop Time" offset="0x14" visible="true" />
 	</tagblock>
 	<tagblock name="Swarm Properties" offset="0xC0" visible="true" elementSize="0x38">
-		<int16 name="Scatter Killed Count" offset="0x0" visible="true" tooltip="After the given number of deaths, the swarm scatters" />
-		<int16 name="Unknown" offset="0x2" visible="false" />
+		<flags16 name="Swarm Flags" offset="0x0" visible="true">
+			<bit name="Ignore Attachment Vitality Threshold" index="0" tooltip="will attach to bipeds even if their health is above 40 percent" />
+		</flags16>
+		<int16 name="Scatter Killed Count" offset="0x2" visible="true" tooltip="After the given number of deaths, the swarm scatters" />
 		<float32 name="Scatter Radius" offset="0x4" visible="true" tooltip="the distance from the target that the swarm scatters" />
 		<float32 name="Scatter Time" offset="0x8" visible="true" tooltip="amount of time to remain scattered" />
 		<rangef name="Hound Distance" offset="0xC" visible="true" />
@@ -421,17 +423,16 @@ All chances are expressed as 'chance of triggering cover in a 1 second period'.<
 		<rangef name="Uncover Distance Bounds" offset="0x10" visible="true" tooltip="Distance of uncover point from target. Hard lower limit, soft upper limit." />
 		<rangef name="Vocalization Time" offset="0x18" visible="true" />
 	</tagblock>
-	<tagblock name="Pre-Search Properties" offset="0x120" visible="true" elementSize="0x28">
+	<tagblock name="Pre-Search Properties" offset="0x120" visible="true" elementSize="0x24">
 		<flags32 name="Pre-Search Flags" offset="0x0" visible="true">
 			<bit name="Bit 0" index="0" />
 		</flags32>
 		<rangef name="Minimum Presearch Time" offset="0x4" visible="true" tooltip="If the min presearch time expires and the target is (actually) outside the min-certainty radius, presearch turns off" />
 		<rangef name="Maximum Presearch Time" offset="0xC" visible="true" tooltip="Presearch turns off after the given time" />
 		<float32 name="Minimum Certainty Radius" offset="0x14" visible="true" />
-		<float32 name="Unknown" offset="0x18" visible="true" />
-		<rangef name="Minimum Suppressing Time" offset="0x1C" visible="true" tooltip="if the min suppressing time expires and the target is outside min-certainty radius, suppressing fire turns off" />
-		<int16 name="Unknown" offset="0x24" visible="false" />
-		<int16 name="Unknown" offset="0x26" visible="false" />
+		<rangef name="Minimum Suppressing Time" offset="0x18" visible="true" tooltip="if the min suppressing time expires and the target is outside min-certainty radius, suppressing fire turns off" />
+		<int16 name="Unknown" offset="0x20" visible="false" />
+		<int16 name="Unknown" offset="0x22" visible="false" />
 	</tagblock>
 	<tagblock name="Idle Properties" offset="0x12C" visible="true" elementSize="0x14">
 		<undefined name="Unknown" offset="0x0" visible="false" />
