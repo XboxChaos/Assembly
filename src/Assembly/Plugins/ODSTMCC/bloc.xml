@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin game="ODSTMCC" baseSize="0x128">
+<plugin game="ODSTMCC" baseSize="0x11C">
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
@@ -32,14 +32,12 @@
 		<bit name="Does Not Cause Collision Damage" index="5" />
 		<bit name="Early Mover" index="6" />
 		<bit name="Early Mover Localized Physics" index="7" />
-		<bit name="Use Static Massive Lightmap Sample" index="8" />
-		<bit name="Object Scales Attachments" index="9" />
-		<bit name="Inherits Player's Appearance" index="10" />
-		<bit name="Dead Bipeds Can't Localize" index="11" />
-		<bit name="Attach To Clusters By Dynamic Sphere" index="12" />
-		<bit name="Effects Created By This Object Do Not Spawn Objects In Multiplayer" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
+		<bit name="Object Scales Attachments" index="8" />
+		<bit name="Non Physical In Map Editor" index="9" />
+		<bit name="Attach To Clusters By Dynamic Sphere" index="10" tooltip="use this for the mac gun on spacestation" />
+		<bit name="Effects Created By This Object Do Not Spawn Objects In Multiplayer" index="11" />
+		<bit name="Does Not Collide With Camera" index="12" tooltip="specificly the flying observer camera" />
+		<bit name="Damage Not Blocked By Obstructions" index="13" tooltip="AOE damage being applied to this object does not test for obstrutions." />
 	</flags16>
 	<float32 name="Bounding Radius" offset="0x4" visible="true" tooltip="If you edit this field manually, beware that the render model is no longer respected for radius calculation and that you need to set the bounding offset as well." />
 	<point3 name="Bounding Offset" offset="0x8" visible="true" />
@@ -249,21 +247,18 @@
 			<colorf name="Color Upper Bound" offset="0x10" alpha="false" visible="true" />
 			<stringId name="Variant Name" offset="0x1C" visible="true" tooltip="if empty, may be used by any model variant" />
 		</tagblock>
-		<tagblock name="Functions" offset="0xC" visible="true" elementSize="0x28">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<flags32 name="Scale Flags" offset="0x4" visible="true">
+		<tagblock name="Functions" offset="0xC" visible="true" elementSize="0x24">
+			<flags32 name="Scale Flags" offset="0x0" visible="true">
 				<bit name="Blend In HSV" index="0" tooltip="blends colors in hsv rather than rgb space" />
 				<bit name="...More Colors" index="1" tooltip="blends colors through more hues (goes the long way around the color wheel)" />
 			</flags32>
-			<colorf name="Color Lower Bound" offset="0x8" alpha="false" visible="true" />
-			<colorf name="Color Upper Bound" offset="0x14" alpha="false" visible="true" />
-			<stringid name="Darken By" offset="0x20" visible="true" />
-			<stringid name="Scale By" offset="0x24" visible="true" />
+			<colorf name="Color Lower Bound" offset="0x4" alpha="false" visible="true" />
+			<colorf name="Color Upper Bound" offset="0x10" alpha="false" visible="true" />
+			<stringid name="Darken By" offset="0x1C" visible="true" />
+			<stringid name="Scale By" offset="0x20" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Predicted Resources" offset="0xE0" visible="false" elementSize="0x0">
-	</tagblock>
-	<tagblock name="Multiplayer Object" offset="0xEC" visible="true" elementSize="0xC4">
+	<tagblock name="Multiplayer Object" offset="0xE0" visible="true" elementSize="0xC4">
 		<flags16 name="Engine Flags" offset="0x0" visible="true" tooltip="Set which game engines you desire this object to appear in">
 			<bit name="Capture The Flag" index="0" />
 			<bit name="Slayer" index="1" />
@@ -364,12 +359,12 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<tagref name="Box Standard Shader" offset="0xA4" visible="true" />
 		<tagref name="Box Opaque Shader" offset="0xB4" visible="true" />
 	</tagblock>
-	<tagblock name="Reviving Equipment" offset="0xF8" visible="true" elementSize="0x10">
-		<tagRef name="Equipment" offset="0x0" visible="true" tooltip="MUST be an equipment tag that implements the &quot;Atlas Health Pack&quot; block" />
+	<tagblock name="Health Packs" offset="0xEC" visible="true" elementSize="0x10">
+		<tagRef name="Health Pack Equipment" offset="0x0" visible="true" tooltip="MUST be an equipment tag that implements the &quot;Health Pack&quot; block" />
 	</tagblock>
-	<tagref name="Simulation Interpolation" offset="0x104" visible="true" tooltip="Set to a specific interpolation definition, or leave blank to inherit the default for the object type (there are defaults for bipeds, vehicles, and crates in multiplayer_globals)." />
+	<tagref name="Simulation Interpolation" offset="0xF8" visible="true" tooltip="Set to a specific interpolation definition, or leave blank to inherit the default for the object type (there are defaults for bipeds, vehicles, and crates in multiplayer_globals)." />
 	<comment title="CRATE" />
-	<flags16 name="Flags" offset="0x114" visible="true">
+	<flags16 name="Flags" offset="0x108" visible="true">
 		<bit name="Does Not Block Area Of Effect" index="0" />
 		<bit name="Camera" index="1" />
 		<bit name="Bit 2" index="2" />
@@ -387,8 +382,8 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<bit name="Bit 14" index="14" />
 		<bit name="Bit 15" index="15" />
 	</flags16>
-	<int16 name="Unknown" offset="0x116" visible="false" />
-	<tagblock name="Metagame Properties" offset="0x118" visible="true" elementSize="0x8">
+	<int16 name="Unknown" offset="0x10A" visible="false" />
+	<tagblock name="Metagame Properties" offset="0x10C" visible="true" elementSize="0x8">
 		<flags8 name="Flags" offset="0x0" visible="true">
 			<bit name="Must Have Active Seats" index="0" />
 		</flags8>
@@ -438,8 +433,8 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<int16 name="Points" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
 	</tagblock>
-	<int8 name="Unknown" offset="0x124" visible="false" />
-	<int8 name="Unknown" offset="0x125" visible="false" />
-	<int8 name="Unknown" offset="0x126" visible="false" />
-	<int8 name="Unknown" offset="0x127" visible="false" />
+	<int8 name="Unknown" offset="0x118" visible="false" />
+	<int8 name="Unknown" offset="0x119" visible="false" />
+	<int8 name="Unknown" offset="0x11A" visible="false" />
+	<int8 name="Unknown" offset="0x11B" visible="false" />
 </plugin>

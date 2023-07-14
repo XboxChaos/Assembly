@@ -1,0 +1,1982 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo4MCC" baseSize="0x36C">
+	<revisions>
+		<revision author="Lord Zedd" version="1">Portin without generation</revision>
+		<revision author="Lord Zedd" version="2">thanks h5</revision>
+	</revisions>
+	<enum16 name="Object Type" offset="0x0" visible="true" tooltip="changing this would not be wise">
+		<option name="Biped" value="0x0" />
+		<option name="Vehicle" value="0x1" />
+		<option name="Weapon" value="0x2" />
+		<option name="Equipment" value="0x3" />
+		<option name="Terminal" value="0x4" />
+		<option name="Projectile" value="0x5" />
+		<option name="Scenery" value="0x6" />
+		<option name="Machine" value="0x7" />
+		<option name="Control" value="0x8" />
+		<option name="Dispenser" value="0x9" />
+		<option name="Sound Scenery" value="0xA" />
+		<option name="Crate" value="0xB" />
+		<option name="Creature" value="0xC" />
+		<option name="Giant" value="0xD" />
+		<option name="Effect Scenery" value="0xE" />
+		<option name="Spawner" value="0xF" />
+	</enum16>
+	<enum8 name="Nav Mesh Cutting" offset="0x2" visible="true">
+		<option name="Default" value="0x0" />
+		<option name="Cut" value="0x1" />
+		<option name="Not Cut" value="0x2" />
+	</enum8>
+	<enum8 name="Nav Mesh Obstacle" offset="0x3" visible="true">
+		<option name="Default" value="0x0" />
+		<option name="Yes" value="0x1" />
+		<option name="No" value="0x2" />
+	</enum8>
+	<vector3 name="Nav Mesh Cutting OBB Offset" offset="0x4" visible="true" />
+	<vector3 name="Nav Mesh Cutting OBB Scale" offset="0x10" visible="true" />
+	<flags32 name="Flags" offset="0x1C" visible="true">
+		<bit name="Does Not Cast Shadow" index="0" />
+		<bit name="Children Do Not Cast Shadow" index="1" />
+		<bit name="First Class Child" index="2" />
+		<bit name="Object Samples Lightprobes Only" index="3" />
+		<bit name="Object Uses Only Own Static Lightmap" index="4" />
+		<bit name="Search Cardinal Direction Lightmaps On Failure" index="5" />
+		<bit name="Preserves Initial Damage Owner" index="6" />
+		<bit name="Not A Pathfinding Obstacle" index="7" />
+		<bit name="Extension Of Parent" index="8" tooltip="object uses parent's markers" />
+		<bit name="Does Not Cause Collision Damage" index="9" />
+		<bit name="Early Mover" index="10" />
+		<bit name="Early Mover Localized Physics" index="11" />
+		<bit name="Object Scales Attachments" index="12" />
+		<bit name="Inherits Player's Appearance" index="13" />
+		<bit name="Non-Physical in Map Editor" index="14" />
+		<bit name="Object Is Always On Ceiling" index="15" />
+		<bit name="Sample Environment Lighting Only Ignore Object Lighting" index="16" />
+		<bit name="Effects Created By This Object Do Not Spawn Objects In Multiplayer" index="17" />
+		<bit name="Does Not Collide With Camera" index="18" tooltip="force camera not to collide with object. By default small sweetener objects do not collide" />
+		<bit name="Force Collide With Camera" index="19" tooltip="force the camera to collide with this object, By default small sweetener objects do not collide" />
+		<bit name="Damage Not Blocked By Obstructions" index="20" tooltip="AOE damage being applied to this object does not test for obstrutions." />
+		<bit name="Does Not Damage Breakable Surfaces" index="21" />
+		<bit name="Early Mover Localize Projectiles" index="22" />
+		<bit name="Requires Shadow Bounds Visibility Test" index="23" />
+		<bit name="Grab Parent Object In Forge Editing" index="24" />
+		<bit name="Never Use Imposter For Shadow Generation" index="25" />
+		<bit name="Hoistable From Stand" index="26" />
+		<bit name="Hoistable From Crouch" index="27" />
+		<bit name="Vaultable" index="28" />
+		<bit name="Collides With Own Projectiles" index="29" />
+		<bit name="Object Rejects Dynamic Decals" index="30" />
+	</flags32>
+	<float32 name="Bounding Radius" offset="0x20" visible="true" tooltip="If you edit this field manually, beware that the render model is no longer respected for radius calculation and that you need to set the bounding offset as well." />
+	<point3 name="Bounding Offset" offset="0x24" visible="true" />
+	<float32 name="Horizontal Acceleration Scale" offset="0x30" visible="true" />
+	<float32 name="Vertical Acceleration Scale" offset="0x34" visible="true" />
+	<float32 name="Angular Acceleration Scale" offset="0x38" visible="true" />
+	<enum16 name="Lightmap Shadow Mode" offset="0x3C" visible="true">
+		<option name="Default" value="0x0" />
+		<option name="Never" value="0x1" />
+		<option name="Always" value="0x2" />
+		<option name="Blur" value="0x3" />
+	</enum16>
+	<enum8 name="Sweetener Size" offset="0x3E" visible="true">
+		<option name="Default" value="0x0" />
+		<option name="Small" value="0x1" />
+		<option name="Medium" value="0x2" />
+		<option name="Large" value="0x3" />
+	</enum8>
+	<enum8 name="Water Density" offset="0x3F" visible="true">
+		<option name="Default" value="0x0" />
+		<option name="Super Floater" value="0x1" />
+		<option name="Floater" value="0x2" />
+		<option name="Neutral" value="0x3" />
+		<option name="Sinker" value="0x4" />
+		<option name="Super Sinker" value="0x5" />
+		<option name="None" value="0x6" />
+	</enum8>
+	<flags32 name="Runtime Flags" offset="0x40" visible="true">
+		<bit name="Runtime Change Colors Allowed" index="0" />
+		<bit name="Bit 1" index="1" />
+		<bit name="Bit 2" index="2" />
+		<bit name="Bit 3" index="3" />
+		<bit name="Bit 4" index="4" />
+		<bit name="Bit 5" index="5" />
+		<bit name="Bit 6" index="6" />
+		<bit name="Bit 7" index="7" />
+		<bit name="Bit 8" index="8" />
+		<bit name="Bit 9" index="9" />
+		<bit name="Bit 10" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
+		<bit name="Bit 16" index="16" />
+		<bit name="Bit 17" index="17" />
+		<bit name="Bit 18" index="18" />
+		<bit name="Bit 19" index="19" />
+		<bit name="Bit 20" index="20" />
+		<bit name="Bit 21" index="21" />
+		<bit name="Bit 22" index="22" />
+		<bit name="Bit 23" index="23" />
+		<bit name="Bit 24" index="24" />
+		<bit name="Bit 25" index="25" />
+		<bit name="Bit 26" index="26" />
+		<bit name="Bit 27" index="27" />
+		<bit name="Bit 28" index="28" />
+		<bit name="Bit 29" index="29" />
+		<bit name="Bit 30" index="30" />
+		<bit name="Bit 31" index="31" />
+	</flags32>
+	<float32 name="Dynamic Light Sphere Radius" offset="0x44" visible="true" tooltip="sphere to use for dynamic lights and shadows. only used if not 0" />
+	<point3 name="Dynamic Light Sphere Offset" offset="0x48" visible="true" tooltip="only used if radius not 0" />
+	<tagblock name="Source Sidecar" offset="0x54" visible="true" elementSize="0x100">
+		<ascii name="Sidecar Path" offset="0x0" size="0x100" visible="true" />
+	</tagblock>
+	<stringid name="Default Model Variant" offset="0x60" visible="true" />
+	<tagRef name="Model" offset="0x64" visible="true" />
+	<tagRef name="Crate Object" offset="0x74" visible="true" />
+	<tagRef name="Collision Damage" offset="0x84" visible="true" tooltip="only set this tag if you want to override the default collision damage values in globals.globals" />
+	<tagRef name="Brittle Collision Damage" offset="0x94" visible="true" />
+	<tagblock name="Early Mover Oriented Bounding Box" offset="0xA4" visible="true" elementSize="0x2C">
+		<stringid name="Node Name" offset="0x0" visible="true" tooltip="empty means object space" />
+		<int32 name="Runtime Node Index" offset="0x4" visible="true" />
+		<rangef name="x" offset="0x8" visible="true" />
+		<rangef name="y" offset="0x10" visible="true" />
+		<rangef name="z" offset="0x18" visible="true" />
+		<degree3 name="Angles" offset="0x20" visible="true" />
+	</tagblock>
+	<tagRef name="Creation Effect" offset="0xB0" visible="true" />
+	<tagRef name="Material Effects" offset="0xC0" visible="true" />
+	<tagRef name="Melee Sound" offset="0xD0" visible="true" tooltip="this is the sound that is made when I am meleed. This overrides the sweetener sound of my material." />
+	<float32 name="Self-Destruct Time" offset="0xE0" visible="true" tooltip="if non-zero, any instances of this object will destroy themselves after this many seconds." />
+	<tagblock name="AI Properties" offset="0xE4" visible="true" elementSize="0x10">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="Destroyable Cover" index="0" />
+			<bit name="Pathfinding Ignore When Dead" index="1" />
+			<bit name="Dynamic Cover" index="2" />
+			<bit name="Non Flight-Blocking" index="3" />
+			<bit name="Dynamic Cover From Centre" index="4" />
+			<bit name="Has Corner Markers" index="5" />
+			<bit name="Idle When Flying" index="6" />
+			<bit name="Consider For Interaction" index="7" />
+		</flags32>
+		<stringid name="AI Type Name" offset="0x4" visible="true" tooltip="used for combat dialogue, etc." />
+		<stringid name="Interaction Name" offset="0x8" visible="true" tooltip="if you checked the consider for interaction flag, type what interaction the AI should do with this object" />
+		<enum16 name="AI Size" offset="0xC" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Tiny" value="0x1" />
+			<option name="Small" value="0x2" />
+			<option name="Medium" value="0x3" />
+			<option name="Large" value="0x4" />
+			<option name="Huge" value="0x5" />
+			<option name="Immobile" value="0x6" />
+		</enum16>
+		<enum16 name="Leap Jump Speed" offset="0xE" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Down" value="0x1" />
+			<option name="Step" value="0x2" />
+			<option name="Crouch" value="0x3" />
+			<option name="Stand" value="0x4" />
+			<option name="Storey" value="0x5" />
+			<option name="Tower" value="0x6" />
+			<option name="Infinite" value="0x7" />
+		</enum16>
+	</tagblock>
+	<tagblock name="Functions" offset="0xF0" visible="true" elementSize="0x40">
+		<flags32 name="Flags" offset="0x0" visible="true">
+			<bit name="Invert" index="0" tooltip="result of function is one minus actual result" />
+			<bit name="Mapping Does Not Controls Active" index="1" tooltip="the curve mapping can make the function active/inactive" />
+			<bit name="Always Active" index="2" tooltip="function does not deactivate when at or below lower bound" />
+			<bit name="Random Time Offset" index="3" tooltip="function offsets periodic function input by random value between 0 and 1" />
+			<bit name="Always Exports Value" index="4" tooltip="when this function is deactivated, it still exports its value" />
+			<bit name="Turn Off With Uses Magnitude" index="5" tooltip="the function will be turned off if the value of the turns_off_with function is 0" />
+		</flags32>
+		<stringid name="Import Name" offset="0x4" visible="true" tooltip="if you leave this field blank then you can set this function's input value with the hs_function object_set_function_variable" />
+		<stringid name="Export Name" offset="0x8" visible="true" />
+		<stringid name="Turn Off With" offset="0xC" visible="true" tooltip="if the specified function is off, so is this function" />
+		<stringid name="Ranged Interpolation Name" offset="0x10" visible="true" tooltip="if you have the ranged button checked" />
+		<float32 name="Minimum Value" offset="0x14" visible="true" tooltip="function must exceed this value (after mapping) to be active 0. means do nothing" />
+		<dataRef name="Default Function" offset="0x18" visible="true" />
+		<stringid name="Scale By" offset="0x2C" visible="true" />
+		<tagblock name="Interpolation" offset="0x30" visible="true" elementSize="0x18">
+			<enum32 name="Interpolation Mode" offset="0x0" visible="true">
+				<option name="Constant Velocity" value="0x0" />
+				<option name="Linear Acceleration" value="0x1" />
+				<option name="Damped Spring" value="0x2" />
+				<option name="Fractional" value="0x3" tooltip="covers a fixed fraction of the distance to the target on each update" />
+			</enum32>
+			<float32 name="Linear Travel Time" offset="0x4" visible="true" tooltip="used by constant velocity" />
+			<float32 name="Acceleration" offset="0x8" visible="true" tooltip="used by linear acceleration" />
+			<comment title="Springs">the damping ratio is c/(2*sqrt(k)). if this ratio is:
+= 0 : oscillates forever
+&lt; 1 : oscillates with decreasing amplitude
+= 1 : reaches the target precisely and quickly (no oscillation)
+&gt; 1 : reaches the target slowly
+the higher the value of k, the quicker the system will reach the target value</comment>
+			<float32 name="Spring k" offset="0xC" visible="true" tooltip="used by damped spring, determines acceleration by displacement" />
+			<float32 name="Spring c" offset="0x10" visible="true" tooltip="used by damped spring, determines damping based on velocity" />
+			<float32 name="Fraction" offset="0x14" visible="true" tooltip="used by fractional, how mush of the distance to the target to cover each update" />
+		</tagblock>
+		<int32 name="Runtime Interpolator Index" offset="0x3C" visible="true" />
+	</tagblock>
+	<tagblock name="Runtime Interpolator Functions" offset="0xFC" visible="true" elementSize="0x4">
+		<int32 name="Runtime Interpolator To Object Function Mapping" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Function Switches" offset="0x108" visible="true" elementSize="0x14">
+		<stringid name="Switch Function Name" offset="0x0" visible="true" />
+		<stringid name="Export Name" offset="0x4" visible="true" />
+		<tagblock name="Switched Functions" offset="0x8" visible="true" elementSize="0xC">
+			<rangef name="Selection Bounds" offset="0x0" visible="true" tooltip="if the switch function is between these values, this function will be picked" />
+			<stringid name="Function Name" offset="0x8" visible="true" />
+		</tagblock>
+	</tagblock>
+	<flags16 name="Secondary Flags" offset="0x114" visible="true">
+		<bit name="Does Not Affect Projectile Aiming" index="0" />
+		<bit name="Update State Animation and Keyframe Rigid Bodies Every Frame" index="1" />
+	</flags16>
+	<int16 name="Unknown" offset="0x116" visible="false" />
+	<tagblock name="Attachments" offset="0x118" visible="true" elementSize="0x20">
+		<tagRef name="Type" offset="0x0" visible="true" />
+		<stringid name="Marker" offset="0x10" visible="true" />
+		<enum8 name="Change Color" offset="0x14" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Primary" value="0x1" />
+			<option name="Secondary" value="0x2" />
+			<option name="Tertiary" value="0x3" />
+			<option name="Quaternary" value="0x4" />
+		</enum8>
+		<flags8 name="Flags" offset="0x15" visible="true">
+			<bit name="Force Always On" index="0" tooltip="when this flag is clear we only create the attachment when the function object function is active or set to empty string" />
+			<bit name="Effect Size Scale From Object Scale" index="1" />
+		</flags8>
+		<int16 name="Unknown" offset="0x16" visible="false" />
+		<stringid name="Primary Scale" offset="0x18" visible="true" />
+		<stringid name="Secondary Scale" offset="0x1C" visible="true" />
+	</tagblock>
+	<tagblock name="Hull Surfaces" offset="0x124" visible="true" elementSize="0x18">
+		<flags16 name="Flags" offset="0x0" visible="true">
+			<bit name="Works On Land" index="0" tooltip="drives on an extruded version of everything physical in your level" />
+			<bit name="Effects Only" index="1" />
+		</flags16>
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<stringid name="Marker Name" offset="0x4" visible="true" />
+		<float32 name="Radius" offset="0x8" visible="true" />
+		<tagblock name="Drag" offset="0xC" visible="true" elementSize="0x3C">
+			<stringid name="Material" offset="0x0" visible="true" />
+			<comment title="Drag" />
+			<dataref name="Velocity To Pressure Function" offset="0x4" visible="true" />
+			<float32 name="Maximum Velocity" offset="0x18" visible="true" />
+			<comment title="Suction" />
+			<dataref name="Velocity To Pressure Function" offset="0x1C" visible="true" />
+			<float32 name="Maximum Velocity" offset="0x30" visible="true" />
+			<float32 name="Linear Damping" offset="0x34" visible="true" />
+			<float32 name="Angular Damping" offset="0x38" visible="true" />
+		</tagblock>
+	</tagblock>
+	<tagblock name="Jetwash" offset="0x130" visible="true" elementSize="0x24">
+		<stringid name="Marker Name" offset="0x0" visible="true" />
+		<float32 name="Radius" offset="0x4" visible="true" />
+		<int32 name="Maximum Traces" offset="0x8" visible="true" />
+		<float32 name="Maximum Emission Length" offset="0xC" visible="true" />
+		<ranged name="Trace Yaw Angle" offset="0x10" visible="true" />
+		<ranged name="Trace Pitch Angle" offset="0x18" visible="true" />
+		<float32 name="Particle Offset" offset="0x20" visible="true" />
+	</tagblock>
+	<tagblock name="Widgets" offset="0x13C" visible="true" elementSize="0x10">
+		<tagRef name="Type" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Change Colors" offset="0x148" visible="true" elementSize="0x18">
+		<tagblock name="Initial Permutations" offset="0x0" visible="true" elementSize="0x20">
+			<float32 name="Weight" offset="0x0" visible="true" />
+			<colorf name="Color Lower Bound" offset="0x4" alpha="false" visible="true" />
+			<colorf name="Color Upper Bound" offset="0x10" alpha="false" visible="true" />
+			<stringId name="Variant Name" offset="0x1C" visible="true" tooltip="if empty, may be used by any model variant" />
+		</tagblock>
+		<tagblock name="Functions" offset="0xC" visible="true" elementSize="0x28">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<flags32 name="Scale Flags" offset="0x4" visible="true">
+				<bit name="Blend In HSV" index="0" tooltip="blends colors in hsv rather than rgb space" />
+				<bit name="...More Colors" index="1" tooltip="blends colors through more hues (goes the long way around the color wheel)" />
+			</flags32>
+			<colorf name="Color Lower Bound" offset="0x8" alpha="false" visible="true" />
+			<colorf name="Color Upper Bound" offset="0x14" alpha="false" visible="true" />
+			<stringid name="Darken By" offset="0x20" visible="true" />
+			<stringid name="Scale By" offset="0x24" visible="true" />
+		</tagblock>
+	</tagblock>
+	<tagblock name="Multiplayer Object" offset="0x154" visible="true" elementSize="0xCC">
+		<flags8 name="Game Engine Flags" offset="0x0" visible="true" tooltip="Set which game engines you desire this object to appear in">
+			<bit name="None" index="0" />
+			<bit name="Sandbox" index="1" />
+			<bit name="Megalo" index="2" />
+			<bit name="Campaign" index="3" />
+			<bit name="Survival" index="4" />
+			<bit name="Firefight" index="5" />
+		</flags8>
+		<comment title="TYPE AND FLAGS">Type pertains to how you want the game engine to handle this object
+Certain flags applicable only to certain object types, should be self evident</comment>
+		<enum8 name="Type" offset="0x1" visible="true">
+			<option name="Ordinary" value="0x0" />
+			<option name="Weapon" value="0x1" />
+			<option name="Grenade" value="0x2" />
+			<option name="Projectile" value="0x3" />
+			<option name="Powerup" value="0x4" />
+			<option name="Equipment" value="0x5" />
+			<option name="Ammo Pack" value="0x6" />
+			<option name="Light Land Vehicle" value="0x7" />
+			<option name="Heavy Land Vehicle" value="0x8" />
+			<option name="Flying Vehicle" value="0x9" />
+			<option name="Turret" value="0xA" />
+			<option name="Device" value="0xB" />
+			<option name="Dispenser" value="0xC" />
+			<option name="Teleporter 2Way" value="0xD" />
+			<option name="Teleporter Sender" value="0xE" />
+			<option name="Teleporter Receiver" value="0xF" />
+			<option name="Player Spawn Location" value="0x10" />
+			<option name="Player Respawn Zone" value="0x11" />
+			<option name="Secondary Objective" value="0x12" />
+			<option name="Primary Objective" value="0x13" />
+			<option name="Named Location Area" value="0x14" />
+			<option name="Danger Zone" value="0x15" />
+			<option name="Fireteam 1 Respawn Zone" value="0x16" />
+			<option name="Fireteam 2 Respawn Zone" value="0x17" />
+			<option name="Fireteam 3 Respawn Zone" value="0x18" />
+			<option name="Fireteam 4 Respawn Zone" value="0x19" />
+			<option name="Safe Volume" value="0x1A" />
+			<option name="Kill Volume" value="0x1B" />
+			<option name="Cinematic Camera Position" value="0x1C" />
+			<option name="Mosh Enemy Spawn Location" value="0x1D" />
+			<option name="Ordnance Drop Point" value="0x1E" />
+			<option name="Trait Zone" value="0x1F" />
+			<option name="Initial Ordnance Drop Point" value="0x20" />
+			<option name="Random Ordnance Drop Point" value="0x21" />
+			<option name="Objective Ordnance Drop Point" value="0x22" />
+			<option name="Personal Ordnance Drop Point" value="0x23" />
+		</enum8>
+		<flags8 name="Teleporter Passability" offset="0x2" visible="true">
+			<bit name="Disallow Players" index="0" />
+			<bit name="Allow Light Land Vehicles" index="1" />
+			<bit name="Allow Heavy Land Vehicles" index="2" />
+			<bit name="Allow Flying Vehicles" index="3" />
+			<bit name="Allow Projectiles" index="4" />
+		</flags8>
+		<enum8 name="Spawn Timer Type" offset="0x3" visible="true">
+			<option name="Starts On Death" value="0x0" />
+			<option name="Starts On Disturbance" value="0x1" />
+		</enum8>
+		<comment title="GOAL &amp; RESPAWN ZONE OBJECT BOUNDARY">These fields are only used for goal area objects with boundaries, and for respawn zones</comment>
+		<float32 name="Boundary Width/Radius" offset="0x4" visible="true" />
+		<float32 name="Boundary Box Length" offset="0x8" visible="true" />
+		<float32 name="Boundary +Height" offset="0xC" visible="true" />
+		<float32 name="Boundary -Height" offset="0x10" visible="true" />
+		<enum8 name="Boundary Shape" offset="0x14" visible="true">
+			<option name="Unused" value="0x0" />
+			<option name="Sphere" value="0x1" />
+			<option name="Cylinder" value="0x2" />
+			<option name="Box" value="0x3" />
+		</enum8>
+		<int8 name="Unknown" offset="0x15" visible="false" />
+		<int16 name="Unknown" offset="0x16" visible="false" />
+		<comment title="SPAWNING DATA">These fields are used for default spawning times and remapping</comment>
+		<int16 name="Default Spawn Time" offset="0x18" visible="true" />
+		<int16 name="Default Abandonment Time" offset="0x1A" visible="true" />
+		<flags16 name="Flags" offset="0x1C" visible="true">
+			<bit name="Only Visible In Editor" index="0" />
+			<bit name="Phased Physics In Forge" index="1" />
+			<bit name="Valid Initial Player Spawn" index="2" />
+			<bit name="Fixed Boundary Orientation" index="3" />
+			<bit name="Candy Monitor Should Ignore" index="4" />
+			<bit name="Inherit Owning Team Color" index="5" />
+			<bit name="Boundary Volume Doesn't Kill Immediately" index="6" />
+		</flags16>
+		<int16 name="Unknown" offset="0x1E" visible="false" />
+		<comment title="RESPAWN ZONE DATA">These are respawn zone weights, used only for respawn zones</comment>
+		<float32 name="Normal Weight" offset="0x20" visible="true" />
+		<tagblock name="Falloff Function" offset="0x24" visible="true" elementSize="0x14" tooltip="Multiplier applied to weight (domain is center to radius, range should be 0 to 1).">
+			<dataRef name="Function" offset="0x0" visible="true" />
+		</tagblock>
+		<comment title="MARKER DATA">These fields are only used for defining certain, special markers to use for positional locations if the default position (object origin) is not sufficient</comment>
+		<stringid name="Boundary Center Marker" offset="0x30" visible="true" />
+		<stringid name="Spawned Object Marker Name" offset="0x34" visible="true" />
+		<tagref name="Spawned Object" offset="0x38" visible="true" tooltip="If this object is intended to spawn something, the object it spawns should be specified here" />
+		<stringid name="Boundary Material (Not Yet Implemented)" offset="0x48" visible="true" />
+		<tagref name="Default Boundary Standard Shader" offset="0x4C" visible="true" />
+		<tagref name="Default Boundary Opaque Shader" offset="0x5C" visible="true" />
+		<tagref name="Sphere Standard Shader" offset="0x6C" visible="true" />
+		<tagref name="Sphere Opaque Shader" offset="0x7C" visible="true" />
+		<tagref name="Cylinder Standard Shader" offset="0x8C" visible="true" />
+		<tagref name="Cylinder Opaque Shader" offset="0x9C" visible="true" />
+		<tagref name="Box Standard Shader" offset="0xAC" visible="true" />
+		<tagref name="Box Opaque Shader" offset="0xBC" visible="true" />
+	</tagblock>
+	<tagref name="Simulation Interpolation" offset="0x160" visible="true" tooltip="Set to a specific interpolation definition, or leave blank to inherit the default for the object type (there are defaults for bipeds, vehicles, and crates in multiplayer_globals). To disable interpolation on a particular object whose type has interpolation by default, set this reference to the special disable_interpolation.simulation_interpolation tag." />
+	<tagblock name="Spawn Effects" offset="0x170" visible="true" elementSize="0x30">
+		<comment title="Spawn Effects">Effect played when an object of this type spawns in during each game mode.
+Unlike creation effect, it is only played when the object spawns in through certain methods, not whenever one is created.</comment>
+		<tagRef name="Multiplayer Spawn Effect" offset="0x0" visible="true" tooltip="effect played when this object spawns in MP games" />
+		<tagRef name="Survival Spawn Effect" offset="0x10" visible="true" tooltip="effect played when this object spawns in Firefight games" />
+		<tagRef name="Campaign Spawn Effect" offset="0x20" visible="true" tooltip="effect played when this object spawns in Campaign games" />
+	</tagblock>
+	<tagblock name="Model Dissolve Data" offset="0x17C" visible="true" elementSize="0x10">
+		<tagref name="Model Dissolve Data" offset="0x0" visible="true" />
+	</tagblock>
+	<comment title="Script Data" />
+	<tagblock name="Source File References" offset="0x188" visible="true" elementSize="0x10">
+		<tagref name="Reference" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="External Source References" offset="0x194" visible="true" elementSize="0x10">
+		<tagRef name="Reference" offset="0x0" visible="true" />
+	</tagblock>
+	<tagref name="Compiled Script" offset="0x1A0" visible="true" />
+	<tagblock name="Script Tagalongs" offset="0x1B0" visible="true" elementSize="0x10">
+		<tagRef name="Reference" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Scripted Dependencies" offset="0x1BC" visible="true" elementSize="0x10">
+		<tagref name="Reference" offset="0x0" visible="true" />
+	</tagblock>
+	<comment title="Object Abandonment">Damaged vehicles are recycled with an explosion timer when vitality &lt;= limit. Re-entering the vehicle will reset this timer. This data only applies to Vehicle units. Weapons have abandonment data that lives in the scenario file.</comment>
+	<float32 name="Vitality Limit To Start Countdown" offset="0x1C8" visible="true" tooltip="Lower than this triggers recycling of unused vehicles." />
+	<float32 name="Countdown Time In Seconds" offset="0x1CC" visible="true" />
+	<flags8 name="Flags" offset="0x1D0" visible="true">
+		<bit name="Enable In Multiplayer" index="0" />
+		<bit name="Enable In Single Player" index="1" />
+	</flags8>
+	<int8 name="Unknown" offset="0x1D1" visible="false" />
+	<int16 name="Unknown" offset="0x1D2" visible="false" />
+	<comment title="ITEM" />
+	<flags32 name="Flags" offset="0x1D4" visible="true">
+		<bit name="Always Maintains z Up" index="0" />
+		<bit name="Blocks Headshots" index="1" tooltip="like jackal shield" />
+		<bit name="Use Ground Scale For All Unspecified Attachments" index="2" />
+		<bit name="Fixup Position Upon Detaching From Parent" index="3" />
+		<bit name="Fixup Position After Attaching To Parent" index="4" />
+	</flags32>
+	<int16 name="OLD Message Index" offset="0x1D8" visible="true" />
+	<int16 name="Sort Order" offset="0x1DA" visible="true" />
+	<float32 name="OLD Multiplayer On-Ground Scale" offset="0x1DC" visible="true" />
+	<float32 name="OLD Campaign On-Ground Scale" offset="0x1E0" visible="true" />
+	<stringId name="Pickup Message" offset="0x1E4" visible="true" />
+	<stringId name="Swap Message" offset="0x1E8" visible="true" />
+	<stringId name="Dual Pickup Message" offset="0x1EC" visible="true" />
+	<stringId name="Dual Swap Message" offset="0x1F0" visible="true" />
+	<stringId name="Picked Up Message" offset="0x1F4" visible="true" />
+	<stringId name="Switch-To Message" offset="0x1F8" visible="true" />
+	<stringId name="Switch-To From AI Message" offset="0x1FC" visible="true" />
+	<stringid name="Notify Empty Message" offset="0x200" visible="true" />
+	<stringid name="Notify Overheated Message" offset="0x204" visible="true" />
+	<tagref name="Collision Sound" offset="0x208" visible="true" />
+	<tagblock name="Predicted Bitmaps" offset="0x218" visible="false" elementSize="0x10">
+		<tagRef name="Bitmap" offset="0x0" visible="false" />
+	</tagblock>
+	<tagref name="Detonation Damage Effect" offset="0x224" visible="true" />
+	<rangef name="Detonation Delay" offset="0x234" visible="true" />
+	<tagref name="Detonating Effect" offset="0x23C" visible="true" />
+	<tagref name="Detonation Effect" offset="0x24C" visible="true" />
+	<comment title="Item Scale Settings">because grenades look better as coconuts. 0==1</comment>
+	<float32 name="Ground Scale" offset="0x25C" visible="true" />
+	<float32 name="Small Unit Armed Scale" offset="0x260" visible="true" />
+	<float32 name="Small Unit Stowed Scale" offset="0x264" visible="true" />
+	<float32 name="Medium Unit Armed Scale" offset="0x268" visible="true" />
+	<float32 name="Medium Unit Stowed Scale" offset="0x26C" visible="true" />
+	<float32 name="Large Unit Armed Scale" offset="0x270" visible="true" />
+	<float32 name="Large Unit Stowed Scale" offset="0x274" visible="true" />
+	<float32 name="Huge Unit Armed Scale" offset="0x278" visible="true" />
+	<float32 name="Huge Unit Stowed Scale" offset="0x27C" visible="true" />
+	<tagref name="Grounded Friction Settings" offset="0x280" visible="true" tooltip="If not present, the default from global.globals is used." />
+	<tagref name="Tossed Override" offset="0x290" visible="true" tooltip="Used to override the object tossed when item owner is killed. Is overridden by tossed weapon override." />
+	<comment title="EQUIPMENT" />
+	<float32 name="Initial Energy" offset="0x2A0" visible="true" />
+	<float32 name="Energy Recovery Time" offset="0x2A4" visible="true" tooltip="after deactivation, energy stays constant for this long before starting to change by 'inactive energy rate'" />
+	<float32 name="Inactive Energy Rate" offset="0x2A8" visible="true" />
+	<flags32 name="Flags" offset="0x2AC" visible="true">
+		<bit name="Pathfinding Obstacle" index="0" />
+		<bit name="Equipment Is Dangerous To AI" index="1" />
+		<bit name="Never Dropped By AI" index="2" tooltip="if an actor dies while carrying this, it gets deleted immediately does not affect dropping by players" />
+		<bit name="Protects Parent From AOE" index="3" />
+		<bit name="3rd Person Camera Always" index="4" />
+		<bit name="Use Forced Primary Change Color" index="5" />
+		<bit name="Use Forced Secondary Change Color" index="6" />
+		<bit name="Can Not Be Picked Up By Player" index="7" />
+		<bit name="Is Removed From World On Deactivation" index="8" tooltip="used with supercombine attach" />
+		<bit name="Is Dropped By Player" index="9" />
+		<bit name="Is Dropped By AI" index="10" />
+	</flags32>
+	<stringid name="Unit Stow Marker Name" offset="0x2B0" visible="true" tooltip="the marker on the unit to attach this equipment to when it is stowed. The equipment should have a marker named &quot;equipment_stow_anchor&quot;" />
+	<enum8 name="Pickup Behavior" offset="0x2B4" visible="true">
+		<option name="Automatic If Empty" value="0x0" tooltip="picks it up automatically, if you have no equipment in your inventory, otherwise, press RB to swap" />
+		<option name="Always Automatic" value="0x1" tooltip="always picks it up, whether or not you have another piece of equipment" />
+		<option name="Manual" value="0x2" tooltip="press RB to pickup or swap this equipment" />
+		<option name="Activate On Ground" value="0x3" tooltip="Never pickup, press RB to activate it in-place" />
+	</enum8>
+	<int8 name="Unknown" offset="0x2B5" visible="false" />
+	<int16 name="Unknown" offset="0x2B6" visible="false" />
+	<colorf name="Forced Primary Change Color" offset="0x2B8" visible="true" alpha="true" tooltip="sets the primary change color on the unit to this if the flag above is checked" />
+	<colorf name="Forced Secondary Change Color" offset="0x2C8" visible="true" alpha="true" tooltip="sets the secondary change color on the unit to this if the flag above is checked" />
+	<comment title="AI">Settings which the AI use to know how they should react to this equipment</comment>
+	<float32 name="Danger Radius" offset="0x2D8" visible="true" tooltip="How large a danger zone we should create around this equipment (0 means no danger zone)" />
+	<float32 name="Minimum Deployment Distance" offset="0x2DC" visible="true" tooltip="How far does my target have to be for me to throw this at them?" />
+	<float32 name="Awareness Time" offset="0x2E0" visible="true" tooltip="How long I should go unnoticed by nearby enemies" />
+	<stringid name="AI Dialogue Equipment Type" offset="0x2E4" visible="true" tooltip="The equipment ability type name used by the ai dialog system used to filter equipment activation dialogue events." />
+	<tagblock name="Override Camera" offset="0x2E8" visible="true" elementSize="0x78">
+		<flags16 name="Flags" offset="0x0" visible="true">
+			<bit name="Pitch Bounds Absolute Space" index="0" />
+			<bit name="Only Collides With Environment" index="1" />
+			<bit name="Hides Player-Unit From Camera" index="2" tooltip="the player controlling this camera will not see their unit. All other cameras will see this unit" />
+			<bit name="Use Aiming Vector Instead Of Marker Forward" index="3" tooltip="for cameras without tracks that use a marker position, specifies that we use the unit's aiming vector instead of the marker's forward vector. This results in more accurate aiming and smoother movement when frames are dropped" />
+		</flags16>
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<stringid name="Camera Marker Name" offset="0x4" visible="true" />
+		<degree name="Pitch Auto-Level" offset="0x8" visible="true" />
+		<ranged name="Pitch Range" offset="0xC" visible="true" />
+		<tagblock name="Camera Tracks" offset="0x14" visible="true" elementSize="0x20">
+			<tagRef name="Track" offset="0x0" visible="true" />
+			<tagRef name="Screen Effect" offset="0x10" visible="true" />
+		</tagblock>
+		<degree name="Pitch Minimum Spring" offset="0x20" visible="true" />
+		<degree name="Pitch Maximum Spring" offset="0x24" visible="true" />
+		<degree name="Spring Velocity" offset="0x28" visible="true" />
+		<degree name="Look Acceleration" offset="0x2C" visible="true" tooltip="if non-zero, limits the change in look velocity per second while the user is pushing the look stick in the current direction of looking" />
+		<degree name="Look Deceleration" offset="0x30" visible="true" tooltip="if non-zero, limits the change in look velocity per second while the user is not pushing the look stick or changing directions" />
+		<float32 name="Look Acceleration Smoothing Fraction" offset="0x34" visible="true" tooltip="if non-zero, when the desired velocity change is less than this fraction of the acceleration, starts interpolating the maximum acceleration towards zero. You can think of this as a time in seconds where if the velocity would reach its target in this amount of time or less, it will start taking longer." />
+		<degree name="Override Field Of View" offset="0x38" visible="true" tooltip="if non-zero, overrides the FOV set in the unit or globals" />
+		<comment title="Camera Obstruction" />
+		<float32 name="Cylinder Fraction" offset="0x3C" visible="true" tooltip="controls how far from the focus point the outer raycasts start. 0 == cone, 1 == cylinder" />
+		<degree name="Obstruction Test Angle" offset="0x40" visible="true" tooltip="how wide of a cone to test" />
+		<float32 name="Obstruction Maximum Inward Acceleration" offset="0x44" visible="true" tooltip="how quickly the camera moves inward when it anticipates a collision" />
+		<float32 name="Obstruction Maximum Outward Acceleration" offset="0x48" visible="true" tooltip="how quickly the camera returns to a normal position when its anticipated distance is further than its current" />
+		<float32 name="Obstruction Maximum Velocity" offset="0x4C" visible="true" tooltip="maximum speed the camera can move" />
+		<float32 name="Obstruction Return Delay" offset="0x50" visible="true" tooltip="when the camera wants to start moving back out, wait this long before doing so" />
+		<tagblock name="Camera Acceleration" offset="0x54" visible="true" elementSize="0x70">
+			<float32 name="Maximum Camera Velocity" offset="0x0" visible="true" tooltip="how quickly the camera can move to a new displacement (if the velocity suddenly changes). During this time the aim vector for the unit will be inaccurate, so don't set this too low. 0 defaults to infinite." />
+			<comment title="Forward/Back" />
+			<enum8 name="Input Variable" offset="0x4" visible="true">
+				<option name="Linear Velocity" value="0x0" />
+				<option name="Linear Acceleration" value="0x1" />
+				<option name="Yaw" value="0x2" />
+				<option name="Pitch" value="0x3" />
+				<option name="Roll" value="0x4" />
+			</enum8>
+			<int8 name="Unknown" offset="0x5" visible="false" />
+			<int16 name="Unknown" offset="0x6" visible="false" />
+			<dataref name="Function" offset="0x8" visible="true" />
+			<float32 name="Maximum Value" offset="0x1C" visible="true" tooltip="for linear velocity; this is wu/s. for linear acceleration; this is the fraction of the seat acceleration. for angular velocity; this is deg/s" />
+			<float32 name="Camera Scale (Axial)" offset="0x20" visible="true" tooltip="scale factor used when this acceleration component is along the axis of the forward vector of the camera" />
+			<float32 name="Camera Scale (Perpendicular)" offset="0x24" visible="true" tooltip="scale factor used when this acceleration component is perpendicular to the camera" />
+			<comment title="Left/Right" />
+			<enum8 name="Input Variable" offset="0x28" visible="true">
+				<option name="Linear Velocity" value="0x0" />
+				<option name="Linear Acceleration" value="0x1" />
+				<option name="Yaw" value="0x2" />
+				<option name="Pitch" value="0x3" />
+				<option name="Roll" value="0x4" />
+			</enum8>
+			<int8 name="Unknown" offset="0x29" visible="false" />
+			<int16 name="Unknown" offset="0x2A" visible="false" />
+			<dataref name="Function" offset="0x2C" visible="true" />
+			<float32 name="Maximum Value" offset="0x40" visible="true" tooltip="for linear velocity; this is wu/s. for linear acceleration; this is the fraction of the seat acceleration. for angular velocity; this is deg/s" />
+			<float32 name="Camera Scale (Axial)" offset="0x44" visible="true" tooltip="scale factor used when this acceleration component is along the axis of the forward vector of the camera" />
+			<float32 name="Camera Scale (Perpendicular)" offset="0x48" visible="true" tooltip="scale factor used when this acceleration component is perpendicular to the camera" />
+			<comment title="Up/Down" />
+			<enum8 name="Input Variable" offset="0x4C" visible="true">
+				<option name="Linear Velocity" value="0x0" />
+				<option name="Linear Acceleration" value="0x1" />
+				<option name="Yaw" value="0x2" />
+				<option name="Pitch" value="0x3" />
+				<option name="Roll" value="0x4" />
+			</enum8>
+			<int8 name="Unknown" offset="0x4D" visible="false" />
+			<int16 name="Unknown" offset="0x4E" visible="false" />
+			<dataref name="Function" offset="0x50" visible="true" />
+			<float32 name="Maximum Value" offset="0x64" visible="true" tooltip="for linear velocity; this is wu/s. for linear acceleration; this is the fraction of the seat acceleration. for angular velocity; this is deg/s" />
+			<float32 name="Camera Scale (Axial)" offset="0x68" visible="true" tooltip="scale factor used when this acceleration component is along the axis of the forward vector of the camera" />
+			<float32 name="Camera Scale (Perpendicular)" offset="0x6C" visible="true" tooltip="scale factor used when this acceleration component is perpendicular to the camera" />
+		</tagblock>
+		<tagblock name="Move Stick Overrides" offset="0x60" visible="true" elementSize="0x28">
+			<enum8 name="Input Shape" offset="0x0" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Unit Circle" value="0x1" />
+				<option name="Unit Square" value="0x2" />
+			</enum8>
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<float32 name="Peg Threshold" offset="0x4" visible="true" tooltip="[0,1] magnitude of analog input for pegged acceleration to kick in" />
+			<point2 name="Pegged Time" offset="0x8" visible="true" tooltip="time for a pegged look to reach maximum effect" />
+			<point2 name="Pegged Scale" offset="0x10" visible="true" tooltip="the maximum effect achieved over the duration of the pegged time." />
+			<degree name="Peg Maximum Angular Velocity" offset="0x18" visible="true" tooltip="the maximum turning speed during peg" />
+			<tagblock name="Input Mapping Function" offset="0x1C" visible="true" elementSize="0x14">
+				<dataref name="Function" offset="0x0" visible="true" />
+			</tagblock>
+		</tagblock>
+		<tagblock name="Look Stick Overrides" offset="0x6C" visible="true" elementSize="0x28">
+			<enum8 name="Input Shape" offset="0x0" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Unit Circle" value="0x1" />
+				<option name="Unit Square" value="0x2" />
+			</enum8>
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<float32 name="Peg Threshold" offset="0x4" visible="true" tooltip="[0,1] magnitude of analog input for pegged acceleration to kick in" />
+			<point2 name="Pegged Time" offset="0x8" visible="true" tooltip="time for a pegged look to reach maximum effect" />
+			<point2 name="Pegged Scale" offset="0x10" visible="true" tooltip="the maximum effect achieved over the duration of the pegged time." />
+			<degree name="Peg Maximum Angular Velocity" offset="0x18" visible="true" tooltip="the maximum turning speed during peg" />
+			<tagblock name="Input Mapping Function" offset="0x1C" visible="true" elementSize="0x14">
+				<dataref name="Function" offset="0x0" visible="true" />
+			</tagblock>
+		</tagblock>
+	</tagblock>
+	<tagblock name="Abilities" offset="0x2F4" visible="true" elementSize="0x23C">
+		<comment title="Timers" />
+		<float32 name="Duration" offset="0x0" visible="true" tooltip="use negative numbers for infinite duration" />
+		<float32 name="Warmup Time" offset="0x4" visible="true" tooltip="time before the equipment truly becomes active" />
+		<float32 name="Cooldown Time" offset="0x8" visible="true" tooltip="for equipment that suppresses combat actions, these actions remain suppressed for this long after the equipment deactivates. Note that if this equipment also readies weapons when deactivated, the weapon will not be usable until both this timer expires and the ready animation has finished, whichever is longer" />
+		<float32 name="Phantom Volume Activation Time" offset="0xC" visible="true" tooltip="time in seconds for the phantom volumes on this object to start accelerating things in them" />
+		<comment title="Energy">All these fields are additive, meaning a negative number will reduce energy and a positive one will increase energy. Every piece of equipment starts at 1.0 energy</comment>
+		<float32 name="Minimum Activation Energy" offset="0x10" visible="true" tooltip="energy must be at least this high to activate. Like activation cost, but doesn't actually change energy levels" />
+		<float32 name="Low Energy Warning Threshold" offset="0x14" visible="true" tooltip="used by UI" />
+		<float32 name="Activation Energy Cost" offset="0x18" visible="true" />
+		<float32 name="Deactivation Energy Cost" offset="0x1C" visible="true" />
+		<float32 name="Active Energy Rate" offset="0x20" visible="true" />
+		<dataref name="Movement Speed To Energy Rate Function" offset="0x24" visible="true" />
+		<float32 name="Movement Speed Domain" offset="0x38" visible="true" />
+		<flags32 name="Flags" offset="0x3C" visible="true">
+			<bit name="3rd Person Camera While Active" index="0" />
+			<bit name="3rd Person Camera During Activation Animation" index="1" />
+			<bit name="Hide Reticule While Active" index="2" />
+			<bit name="Cannot Be Active While Airborne" index="3" tooltip="if checked, this equipment cannot be activated if the user is airborne, and deactivates itself if the user becomes airborne" />
+			<bit name="Cannot Activate While Airborne" index="4" tooltip="can't activate in midair, but doesn't turn off if you later become airborne" />
+			<bit name="Cannot Activate While Standing On Biped" index="5" tooltip="if you are standing on another biped you can not use this equipment" />
+			<bit name="Cannot Be Active In Vehicle" index="6" tooltip="can't be activated in a seat, and deactivates if a vehicle is entered" />
+			<bit name="Cannot Be Active While Motion Is Modified By Physics" index="7" tooltip="e.g. by mancannon" />
+			<bit name="Suppresses Weapons While Active" index="8" />
+			<bit name="Suppresses Melee While Active" index="9" />
+			<bit name="Suppresses Grenades While Active" index="10" />
+			<bit name="Suppresses Device Interaction While Active" index="11" />
+			<bit name="Suppresses Hero-Assist-Equipment Use While Active" index="12" tooltip="probably this means sprint" />
+			<bit name="Suppresses Entering Vehicle" index="13" />
+			<bit name="Activation Animation Suppresses Weapons And Melee" index="14" />
+			<bit name="Duck Sound While Active" index="15" />
+			<bit name="Blocks Tracking While Active" index="16" />
+			<bit name="Readies Weapon On Deactivation" index="17" tooltip="note - if this equipment has an animation cycle, the weapon is readied after the exit animation finishes. Otherwise the weapon-ready happens immediately on deactivation" />
+			<bit name="Drops Support/Must Be Readied Weapons On Activation" index="18" />
+			<bit name="Hides Weapon On Activation" index="19" tooltip="checking this flag will automatically cause the weapon to ready on deactivation" />
+			<bit name="Cannot Activate In Vehicle" index="20" tooltip="cannot activate while in vehicle, but previously activated equipment remains active" />
+			<bit name="Deactivated By Firing Weapon" index="21" />
+			<bit name="Deactivated By Reloading Weapon" index="22" />
+			<bit name="Deactivated By Switching Weapon" index="23" />
+			<bit name="Deactivated By Throwing Grenade" index="24" />
+			<bit name="Deactivated By Grenade Animation" index="25" />
+			<bit name="Deactivated By Melee Attacking" index="26" />
+			<bit name="Suppresses Weapon Zoom While Active" index="27" />
+			<bit name="Ignore Auto-Pick-Up Weapons While Active" index="28" tooltip="Prevents auto-pick-up of weapons set to auto by megalo action weapon_set_picup_priority" />
+			<bit name="Cannot Crouch While Active" index="29" />
+			<bit name="Activation Interrupts Melee" index="30" />
+			<bit name="Activation Interrupts Grenades" index="31" />
+		</flags32>
+		<flags32 name="Secondary Flags" offset="0x40" visible="true">
+			<bit name="Suppresses Weapon Zoom During Activation Animation" index="0" tooltip="the equipment only suppresses zoom during its activation animation" />
+			<bit name="Suppresses Jumping While Active" index="1" />
+			<bit name="Suppresses Toggle Deactivation While Active" index="2" />
+			<bit name="Suppresses Jumping During Activation Animation" index="3" tooltip="only suppresses jumping during its activation animation" />
+			<bit name="Suppresses Vehicle Entry During Activation Animation" index="4" tooltip="only suppresses vehicle entry during its activation animation" />
+			<bit name="Suppresses Grenade Usage During Activation Animation" index="5" tooltip="only suppresses grenade usage during its activation animation" />
+			<bit name="Hide Reticule During Activation Animation" index="6" />
+			<bit name="Hide Reticule During During Weapon Ready" index="7" />
+			<bit name="Deactivating During Warmup Will Apply Deactivation Energy Penalty" index="8" />
+			<bit name="Deactivating During Warmup Will Fire Deactivation Effects" index="9" />
+			<bit name="Apply Player Traits During Warmup" index="10" />
+			<bit name="Apply Player Traits During Cooldown" index="11" />
+			<bit name="Hero Assist Ability" index="12" />
+			<bit name="Ignores Normal Support Weapon Force Deactivation Of Equipment" index="13" tooltip="used by Auto Turret to bypass how support weapons force equipment deactivation" />
+		</flags32>
+		<int16 name="Charges" offset="0x44" visible="true" tooltip="-1 means unlimited charges" />
+		<enum8 name="Activation Mode" offset="0x46" visible="true">
+			<option name="Toggle" value="0x0" tooltip="toggles state when X is pressed" />
+			<option name="Hold" value="0x1" tooltip="activates when X is pressed and deactivates when X is released" />
+			<option name="Double Tap" value="0x2" tooltip="activates when X is pressed twice in quick succession" />
+			<option name="Shield Fail" value="0x3" tooltip="activates when player shield fails" />
+			<option name="Death" value="0x4" tooltip="activates when player dies" />
+		</enum8>
+		<int8 name="Object Noise Adjustment" offset="0x47" visible="true" tooltip="for AI perception. while active, adjusts noises made by the owner unit by this many 'notches'. note that this is additive, so a positive number is louder and a negative number is quieter" />
+		<comment title="Type Definitions" />
+		<tagblock name="Multiplayer Powerup" offset="0x48" visible="true" elementSize="0x4">
+			<enum32 name="Flavor" offset="0x0" visible="true">
+				<option name="Red Powerup" value="0x0" />
+				<option name="Blue Powerup" value="0x1" />
+				<option name="Yellow Powerup" value="0x2" />
+				<option name="Custom Powerup" value="0x3" />
+			</enum32>
+		</tagblock>
+		<tagblock name="Spawner" offset="0x54" visible="true" elementSize="0x34">
+			<float32 name="Spawn Radius" offset="0x0" visible="true" tooltip="distance from players eyeball on the z-plane that this effect spawns" />
+			<float32 name="Spawn z Offset" offset="0x4" visible="true" tooltip="z-offset of effect spawn" />
+			<float32 name="Spawn Area Radius" offset="0x8" visible="true" tooltip="need a sphere of radius r's free space in order to spawn, otherwise we pick a new spawn location" />
+			<float32 name="Spawn Velocity" offset="0xC" visible="true" tooltip="WU/sec" />
+			<enum16 name="Type" offset="0x10" visible="true">
+				<option name="Along Aiming Vector" value="0x0" />
+				<option name="Camera Position z Plane" value="0x1" />
+				<option name="Foot Position z Plane" value="0x2" />
+			</enum16>
+			<int16 name="Unknown" offset="0x12" visible="false" />
+			<tagRef name="Spawned Object" offset="0x14" visible="true" />
+			<tagRef name="Spawned Effect" offset="0x24" visible="true" />
+		</tagblock>
+		<tagblock name="AI Spawner" offset="0x60" visible="true" elementSize="0x24">
+			<float32 name="Spawn Radius" offset="0x0" visible="true" tooltip="distance from players eyeball on the z-plane that this effect spawns" />
+			<float32 name="Spawn a Offset" offset="0x4" visible="true" tooltip="z-offset of effect spawn" />
+			<float32 name="Spawn Area Radius" offset="0x8" visible="true" tooltip="need a sphere of radius r's free space in order to spawn, otherwise we pick a new spawn location" />
+			<float32 name="Spawn Velocity" offset="0xC" visible="true" tooltip="WU/sec" />
+			<enum16 name="Type" offset="0x10" visible="true">
+				<option name="Along Aiming Vector" value="0x0" />
+				<option name="Camera Position z Plane" value="0x1" />
+				<option name="Foot Position z Plane" value="0x2" />
+			</enum16>
+			<int16 name="Unknown" offset="0x12" visible="false" />
+			<tagRef name="Spawned Character" offset="0x14" visible="true" />
+		</tagblock>
+		<tagblock name="Proximity Mine" offset="0x6C" visible="true" elementSize="0x30">
+			<tagRef name="Explosion Effect" offset="0x0" visible="true" />
+			<tagRef name="Explosion Damage Effect" offset="0x10" visible="true" />
+			<float32 name="Arm Time" offset="0x20" visible="true" tooltip="time before it becomes a proximity mine" />
+			<float32 name="Self Destruct Time" offset="0x24" visible="true" tooltip="seconds after it is created that it must self destruct. 0 means never destroy" />
+			<float32 name="Trigger Time" offset="0x28" visible="true" tooltip="seconds object moving at trigger velocity takes to trigger explosion. This will smooth out sensitivity to velocity noise" />
+			<float32 name="Trigger Velocity" offset="0x2C" visible="true" tooltip="WU/sec at which we trigger explosion" />
+		</tagblock>
+		<tagblock name="Motion Tracker Noise" offset="0x78" visible="true" elementSize="0x14">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Affects Self" index="0" />
+				<bit name="Affects Friendlies" index="1" />
+			</flags32>
+			<float32 name="Arm Time" offset="0x4" visible="true" tooltip="time before it starts making noise" />
+			<float32 name="Noise Radius" offset="0x8" visible="true" tooltip="radius in WU that the noise extends to." />
+			<int32 name="Noise Count" offset="0xC" visible="true" tooltip="number of noise points that are generated" />
+			<float32 name="Flash Radius" offset="0x10" visible="true" tooltip="radius in WU that the damage flash noise extends to." />
+		</tagblock>
+		<tagblock name="Invincibility Mode" offset="0x84" visible="true" elementSize="0x80">
+			<stringid name="Invincibility Global Material Name" offset="0x0" visible="true" />
+			<int16 name="Invincibility Global Material Index" offset="0x4" visible="true" />
+			<int16 name="Unknown" offset="0x6" visible="false" />
+			<float32 name="Shield Recharge Rate" offset="0x8" visible="true" tooltip="while active, shields recharge at this fraction per second" />
+			<float32 name="Shield Maximum Recharge Level" offset="0xC" visible="true" tooltip="highest level shield can recharge to (can be up to 4)" />
+			<tagRef name="Override Collision Damage" offset="0x10" visible="true" />
+			<tagRef name="AI Melee Reflect Damage" offset="0x20" visible="true" />
+			<tagRef name="Player Melee Reflect Damage" offset="0x30" visible="true" />
+			<stringid name="Loop-Invincibility Shield Name" offset="0x40" visible="true" tooltip="active while the equipment is in use (used for shield rendering effects)" />
+			<stringid name="Post-Invincibility Shield Name" offset="0x44" visible="true" tooltip="active once the equipment is no longer in use" />
+			<dataref name="Post-Invincibility Time To Shield Level Function" offset="0x48" visible="true" />
+			<float32 name="Maximum Vertical Velocity" offset="0x5C" visible="true" tooltip="we use this to specify the domain of the active vertical velocity funtion" />
+			<dataref name="Active Vertical Velocity Damping Function" offset="0x60" visible="true" />
+			<tagblock name="Threshold Effects" offset="0x74" visible="true" elementSize="0x18" tooltip="the effect with the highest threshold will play on deactivation">
+				<float32 name="Threshold Energy Burned" offset="0x0" visible="true" tooltip="how much energy you have to burn to play this effect" />
+				<float32 name="Energy Adjustment" offset="0x4" visible="true" tooltip="how much energy to add when playing this effect" />
+				<tagRef name="Effect" offset="0x8" visible="true" />
+			</tagblock>
+		</tagblock>
+		<tagblock name="Tree Of Life" offset="0x90" visible="true" elementSize="0xC">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Un-Stuns Shields" index="0" />
+				<bit name="Un-Stuns Body" index="1" />
+			</flags32>
+			<stringid name="Origin Marker" offset="0x4" visible="true" />
+			<float32 name="Radius" offset="0x8" visible="true" />
+		</tagblock>
+		<tagblock name="Shapeshifter" offset="0x9C" visible="true" elementSize="0xC">
+			<stringid name="Region Name" offset="0x0" visible="true" />
+			<stringid name="Inactive Permutation Name" offset="0x4" visible="true" />
+			<stringid name="Active Permutation Name" offset="0x8" visible="true" />
+		</tagblock>
+		<tagblock name="Player Trait Field" offset="0xA8" visible="true" elementSize="0x1C">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<tagblock name="Active Player Traits" offset="0x4" visible="true" elementSize="0x3C">
+				<tagblock name="Vitality Traits" offset="0x0" visible="true" elementSize="0x40">
+					<flags32 name="Should Apply Trait" offset="0x0" visible="true">
+						<bit name="Damage Resistance" index="0" />
+						<bit name="Shield Multiplier" index="1" />
+						<bit name="Body Multiplier" index="2" />
+						<bit name="Shield Stun Duration" index="3" />
+						<bit name="Shield Recharge Rate" index="4" />
+						<bit name="Body Recharge Rate" index="5" />
+						<bit name="Overshield Recharge Rate" index="6" />
+						<bit name="Vampirism Percent" index="7" />
+						<bit name="Explosive Damage Resistance" index="8" />
+						<bit name="Wheelman Armor Vehicle Stun Time Modifier" index="9" />
+						<bit name="Wheelman Armor Vehicle Recharge Time Modifier" index="10" />
+						<bit name="Wheelman Armor Vehicle EMP Disabled Time Modifier" index="11" />
+						<bit name="Fall Damage Multiplier" index="12" />
+					</flags32>
+					<comment title="Damage Resistance">Any damage taken is divided by this number. If you put -1, that means "invulnerable".</comment>
+					<float32 name="Damage Resistance" offset="0x4" visible="true" />
+					<float32 name="Shield Multiplier" offset="0x8" visible="true" />
+					<float32 name="Body Multiplier" offset="0xC" visible="true" />
+					<float32 name="Shield Stun Duration" offset="0x10" visible="true" />
+					<float32 name="Shield Recharge Rate" offset="0x14" visible="true" />
+					<float32 name="Body Recharge Rate" offset="0x18" visible="true" />
+					<float32 name="Overshield Recharge Rate" offset="0x1C" visible="true" />
+					<float32 name="Vampirism Percent" offset="0x20" visible="true" />
+					<float32 name="Explosive Damage Resistance" offset="0x24" visible="true" tooltip="incoming damage multiplied by (1 - resistance)" />
+					<float32 name="Wheelman Armor Vehicle Stun Time Modifier" offset="0x28" visible="true" />
+					<float32 name="Wheelman Armor Vehicle Recharge Time Modifier" offset="0x2C" visible="true" />
+					<float32 name="Wheelman Armor Vehicle EMP Disabled Time Modifier" offset="0x30" visible="true" />
+					<float32 name="Fall Damage Multiplier" offset="0x34" visible="true" />
+					<enum8 name="Headshot Immunity" offset="0x38" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Assassination Immunity" offset="0x39" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Deathless" offset="0x3A" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Fast Track Armor" offset="0x3B" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Powerup Cancellation" offset="0x3C" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="None" value="0x1" />
+						<option name="No Overshield" value="0x2" />
+					</enum8>
+					<int8 name="Unknown" offset="0x3D" visible="false" />
+					<int16 name="Unknown" offset="0x3E" visible="false" />
+				</tagblock>
+				<tagblock name="Weapon Traits" offset="0xC" visible="true" elementSize="0x80">
+					<flags32 name="Should Apply Trait" offset="0x0" visible="true">
+						<bit name="Damage Multiplier" index="0" />
+						<bit name="Melee Damage Multiplier" index="1" />
+						<bit name="Grenade Recharge Seconds Frag" index="2" />
+						<bit name="Grenade Recharge Seconds Plasma" index="3" />
+						<bit name="Grenade Recharge Seconds Spike" index="4" />
+						<bit name="Hero Equipment Energy Use Rate Modifier" index="5" />
+						<bit name="Hero Equipment Energy Recharge Delay Modifier" index="6" />
+						<bit name="Hero Equipment Energy Recharge Rate Modifier" index="7" />
+						<bit name="Hero Equipment Initial Energy Modifier" index="8" />
+						<bit name="Equipment Energy Use Rate Modifier" index="9" />
+						<bit name="Equipment Energy Recharge Delay Modifier" index="10" />
+						<bit name="Equipment Energy Use Recharge Rate Modifier" index="11" />
+						<bit name="Equipment Energy Initial Energy Modifier" index="12" />
+						<bit name="Switch Speed Modifier" index="13" />
+						<bit name="Reload Speed Modifier" index="14" />
+						<bit name="Ordnance Points Modifier" index="15" />
+						<bit name="Explosive Area Of Effect Radius Modifier" index="16" />
+						<bit name="Gunner Armor Modifier" index="17" />
+						<bit name="Stability Armor Modifier" index="18" />
+						<bit name="Drop Recon Warning Seconds" index="19" />
+						<bit name="Drop Recon Distance Modifier" index="20" />
+						<bit name="Assassination Speed Modifier" index="21" />
+					</flags32>
+					<float32 name="Damage Multiplier" offset="0x4" visible="true" />
+					<float32 name="Melee Damage Multiplier" offset="0x8" visible="true" />
+					<float32 name="Grenade Recharge Seconds Frag" offset="0xC" visible="true" />
+					<float32 name="Grenade Recharge Seconds Plasma" offset="0x10" visible="true" />
+					<float32 name="Grenade Recharge Seconds Spike" offset="0x14" visible="true" />
+					<float32 name="Hero Equipment Energy Use Rate Modifier" offset="0x18" visible="true" />
+					<float32 name="Hero Equipment Energy Recharge Delay Modifier" offset="0x1C" visible="true" />
+					<float32 name="Hero Equipment Energy Recharge Rate Modifier" offset="0x20" visible="true" />
+					<float32 name="Hero Equipment Initial Energy Modifier" offset="0x24" visible="true" />
+					<float32 name="Equipment Energy Use Rate Modifier" offset="0x28" visible="true" />
+					<float32 name="Equipment Energy Recharge Delay Modifier" offset="0x2C" visible="true" />
+					<float32 name="Equipment Energy Use Recharge Rate Modifier" offset="0x30" visible="true" />
+					<float32 name="Equipment Energy Initial Energy Modifier" offset="0x34" visible="true" />
+					<float32 name="Switch Speed Modifier" offset="0x38" visible="true" />
+					<float32 name="Reload Speed Modifier" offset="0x3C" visible="true" />
+					<float32 name="Ordnance Points Modifier" offset="0x40" visible="true" />
+					<float32 name="Explosive Area Of Effect Radius Modifier" offset="0x44" visible="true" />
+					<float32 name="Gunner Armor Modifier" offset="0x48" visible="true" />
+					<float32 name="Stability Armor Modifier" offset="0x4C" visible="true" />
+					<float32 name="Drop Recon Warning Seconds" offset="0x50" visible="true" />
+					<float32 name="Drop Recon Distance Modifier" offset="0x54" visible="true" />
+					<float32 name="Assassination Speed Modifier" offset="0x58" visible="true" />
+					<enum8 name="Weapon Pickup Allowed" offset="0x5C" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Initial Grenade Count" offset="0x5D" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="Map Default" value="0x1" />
+						<option name="0" value="0x2" />
+						<option name="1 Frag" value="0x3" />
+						<option name="2 Frag" value="0x4" />
+						<option name="1 Plasma" value="0x5" />
+						<option name="2 Plasma" value="0x6" />
+						<option name="1 Type2" value="0x7" />
+						<option name="2 Type2" value="0x8" />
+						<option name="1 Type3" value="0x9" />
+						<option name="2 Type3" value="0xA" />
+						<option name="1 Type4" value="0xB" />
+						<option name="2 Type4" value="0xC" />
+						<option name="1 Type5" value="0xD" />
+						<option name="2 Type5" value="0xE" />
+						<option name="1 Type6" value="0xF" />
+						<option name="2 Type6" value="0x10" />
+						<option name="1 Type7" value="0x11" />
+						<option name="2 Type7" value="0x12" />
+					</enum8>
+					<enum8 name="Infinite Ammo" offset="0x5E" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="Off" value="0x1" />
+						<option name="On" value="0x2" />
+						<option name="Bottomless Clip" value="0x3" />
+					</enum8>
+					<enum8 name="Equipment Usage" offset="0x5F" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="Off" value="0x1" />
+						<option name="Not With Objectives" value="0x2" />
+						<option name="On" value="0x3" />
+					</enum8>
+					<enum8 name="Equipment Usage Excepting Auto Turret" offset="0x60" visible="true" tooltip="false will disable all equipment except auto turret">
+						<option name="Unchanged" value="0x0" />
+						<option name="Off" value="0x1" />
+						<option name="Not With Objectives" value="0x2" />
+						<option name="On" value="0x3" />
+					</enum8>
+					<enum8 name="Equipment Drop" offset="0x61" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Infinite Equipment" offset="0x62" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Weapons Ammopack" offset="0x63" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Weapons Grenadier" offset="0x64" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Weapons Explode On Death Armormod" offset="0x65" visible="true" tooltip="spawns projectile specified in globals.globals">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Ordnance Markers Visible" offset="0x66" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Weapons Ordnance Reroll Available" offset="0x67" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Weapons Resourceful" offset="0x68" visible="true" tooltip="grenade probabilities defined in grenade_list.game_globals_grenade_list">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Weapons Well Equipped" offset="0x69" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Ordnance Disabled" offset="0x6A" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<int8 name="Unknown" offset="0x6B" visible="false" />
+					<comment title="Initial Weapons/Equipment">Type any string from the relevant sections of multiplayer/globals.multiplayer_object_type_list.</comment>
+					<stringid name="Initial Primary Weapon" offset="0x6C" visible="true" />
+					<stringid name="Initial Secondary Weapon" offset="0x70" visible="true" />
+					<stringid name="Initial Equipment" offset="0x74" visible="true" />
+					<stringid name="Initial Tactical Package" offset="0x78" visible="true" />
+					<stringid name="Initial Support Upgrade" offset="0x7C" visible="true" />
+				</tagblock>
+				<tagblock name="Movement Traits" offset="0x18" visible="true" elementSize="0x1C">
+					<flags32 name="Should Apply Trait" offset="0x0" visible="true">
+						<bit name="Speed" index="0" />
+						<bit name="Gravity Multiplier" index="1" />
+						<bit name="Jump Multiplier" index="2" />
+						<bit name="Turn Speed Multiplier" index="3" />
+					</flags32>
+					<float32 name="Speed" offset="0x4" visible="true" />
+					<float32 name="Gravity Multiplier" offset="0x8" visible="true" />
+					<float32 name="Jump Multiplier" offset="0xC" visible="true" />
+					<float32 name="Turn Speed Multiplier" offset="0x10" visible="true" />
+					<enum8 name="Vehicle Usage" offset="0x14" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="None" value="0x1" />
+						<option name="Passenger Only" value="0x2" />
+						<option name="Driver Only" value="0x3" />
+						<option name="Gunner Only" value="0x4" />
+						<option name="Not Passenger" value="0x5" />
+						<option name="Not Driver" value="0x6" />
+						<option name="Not Gunner" value="0x7" />
+						<option name="Full" value="0x8" />
+					</enum8>
+					<enum8 name="Double Jump" offset="0x15" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="Off" value="0x1" />
+						<option name="On" value="0x2" />
+						<option name="On Plus Lunge" value="0x3" />
+					</enum8>
+					<enum8 name="Sprint Usage" offset="0x16" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Automatic Momentum Usage" offset="0x17" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Vaulting Enabled" offset="0x18" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Stealthy" offset="0x19" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<int16 name="Unknown" offset="0x1A" visible="false" />
+				</tagblock>
+				<tagblock name="Appearance Traits" offset="0x24" visible="true" elementSize="0xC">
+					<enum8 name="Active Camo" offset="0x0" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="Off" value="0x1" />
+						<option name="Poor" value="0x2" />
+						<option name="Good" value="0x3" />
+						<option name="Excellent" value="0x4" />
+						<option name="Invisible" value="0x5" />
+					</enum8>
+					<enum8 name="Waypoint" offset="0x1" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="Off" value="0x1" />
+						<option name="Allies" value="0x2" />
+						<option name="All" value="0x3" />
+					</enum8>
+					<enum8 name="Gamertag Visible" offset="0x2" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="Off" value="0x1" />
+						<option name="Allies" value="0x2" />
+						<option name="All" value="0x3" />
+					</enum8>
+					<enum8 name="Aura" offset="0x3" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="Off" value="0x1" />
+						<option name="Team Color" value="0x2" />
+						<option name="Black" value="0x3" />
+						<option name="White" value="0x4" />
+					</enum8>
+					<comment title="Death Effect/Attached Effect">Type any string from the relevant sections of multiplayer/megalo/multiplayer_effects.multiplayereffects.</comment>
+					<stringid name="Death Effect" offset="0x4" visible="true" />
+					<stringid name="Attached Effect" offset="0x8" visible="true" />
+				</tagblock>
+				<tagblock name="Sensor Traits" offset="0x30" visible="true" elementSize="0x14">
+					<flags32 name="Should Apply Trait" offset="0x0" visible="true">
+						<bit name="Motion Tracker Range" index="0" />
+						<bit name="Nemesis Duration" index="1" />
+					</flags32>
+					<float32 name="Motion Tracker Range" offset="0x4" visible="true" />
+					<float32 name="Nemesis Duration" offset="0x8" visible="true" />
+					<enum8 name="Motion Tracker" offset="0xC" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="Off" value="0x1" />
+						<option name="Moving Friendly Bipeds Moving Neutral Vehicles" value="0x2" />
+						<option name="Moving Bipeds Moving Vehicles" value="0x3" />
+						<option name="All Bipeds Moving Vehicles" value="0x4" />
+					</enum8>
+					<enum8 name="Motion Tracker While Zoomed" offset="0xD" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Directional Damage Indicator" offset="0xE" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Vision Mode" offset="0xF" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Battle Awareness" offset="0x10" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Threat View" offset="0x11" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Aural Enhancement" offset="0x12" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Nemesis" offset="0x13" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+				</tagblock>
+			</tagblock>
+			<tagblock name="Inactive Player Traits" offset="0x10" visible="true" elementSize="0x3C">
+				<tagblock name="Vitality Traits" offset="0x0" visible="true" elementSize="0x40">
+					<flags32 name="Should Apply Trait" offset="0x0" visible="true">
+						<bit name="Damage Resistance" index="0" />
+						<bit name="Shield Multiplier" index="1" />
+						<bit name="Body Multiplier" index="2" />
+						<bit name="Shield Stun Duration" index="3" />
+						<bit name="Shield Recharge Rate" index="4" />
+						<bit name="Body Recharge Rate" index="5" />
+						<bit name="Overshield Recharge Rate" index="6" />
+						<bit name="Vampirism Percent" index="7" />
+						<bit name="Explosive Damage Resistance" index="8" />
+						<bit name="Wheelman Armor Vehicle Stun Time Modifier" index="9" />
+						<bit name="Wheelman Armor Vehicle Recharge Time Modifier" index="10" />
+						<bit name="Wheelman Armor Vehicle Emp Disabled Time Modifier" index="11" />
+						<bit name="Fall Damage Multiplier" index="12" />
+					</flags32>
+					<comment title="Damage Resistance">Any damage taken is divided by this number. If you put -1, that means "invulnerable".</comment>
+					<float32 name="Damage Resistance" offset="0x4" visible="true" />
+					<float32 name="Shield Multiplier" offset="0x8" visible="true" />
+					<float32 name="Body Multiplier" offset="0xC" visible="true" />
+					<float32 name="Shield Stun Duration" offset="0x10" visible="true" />
+					<float32 name="Shield Recharge Rate" offset="0x14" visible="true" />
+					<float32 name="Body Recharge Rate" offset="0x18" visible="true" />
+					<float32 name="Overshield Recharge Rate" offset="0x1C" visible="true" />
+					<float32 name="Vampirism Percent" offset="0x20" visible="true" />
+					<float32 name="Explosive Damage Resistance" offset="0x24" visible="true" tooltip="incoming damage multiplied by (1 - resistance)" />
+					<float32 name="Wheelman Armor Vehicle Stun Time Modifier" offset="0x28" visible="true" />
+					<float32 name="Wheelman Armor Vehicle Recharge Time Modifier" offset="0x2C" visible="true" />
+					<float32 name="Wheelman Armor Vehicle Emp Disabled Time Modifier" offset="0x30" visible="true" />
+					<float32 name="Fall Damage Multiplier" offset="0x34" visible="true" />
+					<enum8 name="Headshot Immunity" offset="0x38" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Assassination Immunity" offset="0x39" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Deathless" offset="0x3A" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Fast Track Armor" offset="0x3B" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Powerup Cancellation" offset="0x3C" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="None" value="0x1" />
+						<option name="No Overshield" value="0x2" />
+					</enum8>
+					<int8 name="Unknown" offset="0x3D" visible="false" />
+					<int16 name="Unknown" offset="0x3E" visible="false" />
+				</tagblock>
+				<tagblock name="Weapon Traits" offset="0xC" visible="true" elementSize="0x80">
+					<flags32 name="Should Apply Trait" offset="0x0" visible="true">
+						<bit name="Damage Multiplier" index="0" />
+						<bit name="Melee Damage Multiplier" index="1" />
+						<bit name="Grenade Recharge Seconds Frag" index="2" />
+						<bit name="Grenade Recharge Seconds Plasma" index="3" />
+						<bit name="Grenade Recharge Seconds Spike" index="4" />
+						<bit name="Hero Equipment Energy Use Rate Modifier" index="5" />
+						<bit name="Hero Equipment Energy Recharge Delay Modifier" index="6" />
+						<bit name="Hero Equipment Energy Recharge Rate Modifier" index="7" />
+						<bit name="Hero Equipment Initial Energy Modifier" index="8" />
+						<bit name="Equipment Energy Use Rate Modifier" index="9" />
+						<bit name="Equipment Energy Recharge Delay Modifier" index="10" />
+						<bit name="Equipment Energy Use Recharge Rate Modifier" index="11" />
+						<bit name="Equipment Energy Initial Energy Modifier" index="12" />
+						<bit name="Switch Speed Modifier" index="13" />
+						<bit name="Reload Speed Modifier" index="14" />
+						<bit name="Ordnance Points Modifier" index="15" />
+						<bit name="Explosive Area Of Effect Radius Modifier" index="16" />
+						<bit name="Gunner Armor Modifier" index="17" />
+						<bit name="Stability Armor Modifier" index="18" />
+						<bit name="Drop Recon Warning Seconds" index="19" />
+						<bit name="Drop Recon Distance Modifier" index="20" />
+						<bit name="Assassination Speed Modifier" index="21" />
+					</flags32>
+					<float32 name="Damage Multiplier" offset="0x4" visible="true" />
+					<float32 name="Melee Damage Multiplier" offset="0x8" visible="true" />
+					<float32 name="Grenade Recharge Seconds Frag" offset="0xC" visible="true" />
+					<float32 name="Grenade Recharge Seconds Plasma" offset="0x10" visible="true" />
+					<float32 name="Grenade Recharge Seconds Spike" offset="0x14" visible="true" />
+					<float32 name="Hero Equipment Energy Use Rate Modifier" offset="0x18" visible="true" />
+					<float32 name="Hero Equipment Energy Recharge Delay Modifier" offset="0x1C" visible="true" />
+					<float32 name="Hero Equipment Energy Recharge Rate Modifier" offset="0x20" visible="true" />
+					<float32 name="Hero Equipment Initial Energy Modifier" offset="0x24" visible="true" />
+					<float32 name="Equipment Energy Use Rate Modifier" offset="0x28" visible="true" />
+					<float32 name="Equipment Energy Recharge Delay Modifier" offset="0x2C" visible="true" />
+					<float32 name="Equipment Energy Use Recharge Rate Modifier" offset="0x30" visible="true" />
+					<float32 name="Equipment Energy Initial Energy Modifier" offset="0x34" visible="true" />
+					<float32 name="Switch Speed Modifier" offset="0x38" visible="true" />
+					<float32 name="Reload Speed Modifier" offset="0x3C" visible="true" />
+					<float32 name="Ordnance Points Modifier" offset="0x40" visible="true" />
+					<float32 name="Explosive Area Of Effect Radius Modifier" offset="0x44" visible="true" />
+					<float32 name="Gunner Armor Modifier" offset="0x48" visible="true" />
+					<float32 name="Stability Armor Modifier" offset="0x4C" visible="true" />
+					<float32 name="Drop Recon Warning Seconds" offset="0x50" visible="true" />
+					<float32 name="Drop Recon Distance Modifier" offset="0x54" visible="true" />
+					<float32 name="Assassination Speed Modifier" offset="0x58" visible="true" />
+					<enum8 name="Weapon Pickup Allowed" offset="0x5C" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Initial Grenade Count" offset="0x5D" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="Map Default" value="0x1" />
+						<option name="0" value="0x2" />
+						<option name="1 Frag" value="0x3" />
+						<option name="2 Frag" value="0x4" />
+						<option name="1 Plasma" value="0x5" />
+						<option name="2 Plasma" value="0x6" />
+						<option name="1 Type2" value="0x7" />
+						<option name="2 Type2" value="0x8" />
+						<option name="1 Type3" value="0x9" />
+						<option name="2 Type3" value="0xA" />
+						<option name="1 Type4" value="0xB" />
+						<option name="2 Type4" value="0xC" />
+						<option name="1 Type5" value="0xD" />
+						<option name="2 Type5" value="0xE" />
+						<option name="1 Type6" value="0xF" />
+						<option name="2 Type6" value="0x10" />
+						<option name="1 Type7" value="0x11" />
+						<option name="2 Type7" value="0x12" />
+					</enum8>
+					<enum8 name="Infinite Ammo" offset="0x5E" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="Off" value="0x1" />
+						<option name="On" value="0x2" />
+						<option name="Bottomless Clip" value="0x3" />
+					</enum8>
+					<enum8 name="Equipment Usage" offset="0x5F" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="Off" value="0x1" />
+						<option name="Not With Objectives" value="0x2" />
+						<option name="On" value="0x3" />
+					</enum8>
+					<enum8 name="Equipment Usage Excepting Auto Turret" offset="0x60" visible="true" tooltip="false will disable all equipment except auto turret">
+						<option name="Unchanged" value="0x0" />
+						<option name="Off" value="0x1" />
+						<option name="Not With Objectives" value="0x2" />
+						<option name="On" value="0x3" />
+					</enum8>
+					<enum8 name="Equipment Drop" offset="0x61" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Infinite Equipment" offset="0x62" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Weapons Ammopack" offset="0x63" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Weapons Grenadier" offset="0x64" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Weapons Explode On Death Armormod" offset="0x65" visible="true" tooltip="spawns projectile specified in globals.globals">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Ordnance Markers Visible" offset="0x66" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Weapons Ordnance Reroll Available" offset="0x67" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Weapons Resourceful" offset="0x68" visible="true" tooltip="grenade probabilities defined in grenade_list.game_globals_grenade_list">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Weapons Well Equipped" offset="0x69" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Ordnance Disabled" offset="0x6A" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<int8 name="Unknown" offset="0x6B" visible="false" />
+					<comment title="Initial Weapons/Equipment">Type any string from the relevant sections of multiplayer/globals.multiplayer_object_type_list.</comment>
+					<stringid name="Initial Primary Weapon" offset="0x6C" visible="true" />
+					<stringid name="Initial Secondary Weapon" offset="0x70" visible="true" />
+					<stringid name="Initial Equipment" offset="0x74" visible="true" />
+					<stringid name="Initial Tactical Package" offset="0x78" visible="true" />
+					<stringid name="Initial Support Upgrade" offset="0x7C" visible="true" />
+				</tagblock>
+				<tagblock name="Movement Traits" offset="0x18" visible="true" elementSize="0x1C">
+					<flags32 name="Should Apply Trait" offset="0x0" visible="true">
+						<bit name="Speed" index="0" />
+						<bit name="Gravity Multiplier" index="1" />
+						<bit name="Jump Multiplier" index="2" />
+						<bit name="Turn Speed Multiplier" index="3" />
+					</flags32>
+					<float32 name="Speed" offset="0x4" visible="true" />
+					<float32 name="Gravity Multiplier" offset="0x8" visible="true" />
+					<float32 name="Jump Multiplier" offset="0xC" visible="true" />
+					<float32 name="Turn Speed Multiplier" offset="0x10" visible="true" />
+					<enum8 name="Vehicle Usage" offset="0x14" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="None" value="0x1" />
+						<option name="Passenger Only" value="0x2" />
+						<option name="Driver Only" value="0x3" />
+						<option name="Gunner Only" value="0x4" />
+						<option name="Not Passenger" value="0x5" />
+						<option name="Not Driver" value="0x6" />
+						<option name="Not Gunner" value="0x7" />
+						<option name="Full" value="0x8" />
+					</enum8>
+					<enum8 name="Double Jump" offset="0x15" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="Off" value="0x1" />
+						<option name="On" value="0x2" />
+						<option name="On Plus Lunge" value="0x3" />
+					</enum8>
+					<enum8 name="Sprint Usage" offset="0x16" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Automatic Momentum Usage" offset="0x17" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Vaulting Enabled" offset="0x18" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Stealthy" offset="0x19" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<int16 name="Unknown" offset="0x1A" visible="false" />
+				</tagblock>
+				<tagblock name="Appearance Traits" offset="0x24" visible="true" elementSize="0xC">
+					<enum8 name="Active Camo" offset="0x0" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="Off" value="0x1" />
+						<option name="Poor" value="0x2" />
+						<option name="Good" value="0x3" />
+						<option name="Excellent" value="0x4" />
+						<option name="Invisible" value="0x5" />
+					</enum8>
+					<enum8 name="Waypoint" offset="0x1" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="Off" value="0x1" />
+						<option name="Allies" value="0x2" />
+						<option name="All" value="0x3" />
+					</enum8>
+					<enum8 name="Gamertag Visible" offset="0x2" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="Off" value="0x1" />
+						<option name="Allies" value="0x2" />
+						<option name="All" value="0x3" />
+					</enum8>
+					<enum8 name="Aura" offset="0x3" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="Off" value="0x1" />
+						<option name="Team Color" value="0x2" />
+						<option name="Black" value="0x3" />
+						<option name="White" value="0x4" />
+					</enum8>
+					<comment title="Death Effect/Attached Effect">Type any string from the relevant sections of multiplayer/megalo/multiplayer_effects.multiplayereffects.</comment>
+					<stringid name="Death Effect" offset="0x4" visible="true" />
+					<stringid name="Attached Effect" offset="0x8" visible="true" />
+				</tagblock>
+				<tagblock name="Sensor Traits" offset="0x30" visible="true" elementSize="0x14">
+					<flags32 name="Should Apply Trait" offset="0x0" visible="true">
+						<bit name="Motion Tracker Range" index="0" />
+						<bit name="Nemesis Duration" index="1" />
+					</flags32>
+					<float32 name="Motion Tracker Range" offset="0x4" visible="true" />
+					<float32 name="Nemesis Duration" offset="0x8" visible="true" />
+					<enum8 name="Motion Tracker" offset="0xC" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="Off" value="0x1" />
+						<option name="Moving Friendly Bipeds Moving Neutral Vehicles" value="0x2" />
+						<option name="Moving Bipeds Moving Vehicles" value="0x3" />
+						<option name="All Bipeds Moving Vehicles" value="0x4" />
+					</enum8>
+					<enum8 name="Motion Tracker While Zoomed" offset="0xD" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Directional Damage Indicator" offset="0xE" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Vision Mode" offset="0xF" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Battle Awareness" offset="0x10" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Threat View" offset="0x11" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Aural Enhancement" offset="0x12" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+					<enum8 name="Nemesis" offset="0x13" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="False" value="0x1" />
+						<option name="True" value="0x2" />
+					</enum8>
+				</tagblock>
+			</tagblock>
+		</tagblock>
+		<tagblock name="AI Trait Field" offset="0xB4" visible="true" elementSize="0x18">
+			<tagblock name="Active AI Equipment Traits" offset="0x0" visible="true" elementSize="0xC">
+				<tagblock name="Appearance Traits" offset="0x0" visible="true" elementSize="0x4">
+					<comment title="Appearance Traits">Traits that affect the AI's appearance</comment>
+					<enum8 name="Active Camo Setting" offset="0x0" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="Off" value="0x1" />
+						<option name="Poor" value="0x2" />
+						<option name="Good" value="0x3" />
+						<option name="Excellent" value="0x4" />
+						<option name="Invisible" value="0x5" />
+					</enum8>
+					<int8 name="Unknown" offset="0x1" visible="false" />
+					<int16 name="Unknown" offset="0x2" visible="false" />
+				</tagblock>
+			</tagblock>
+			<tagblock name="Inactive AI Equipment Traits" offset="0xC" visible="true" elementSize="0xC">
+				<tagblock name="Appearance Traits" offset="0x0" visible="true" elementSize="0x4">
+					<comment title="Appearance Traits">Traits that affect the AI's appearance</comment>
+					<enum8 name="Active Camo Setting" offset="0x0" visible="true">
+						<option name="Unchanged" value="0x0" />
+						<option name="Off" value="0x1" />
+						<option name="Poor" value="0x2" />
+						<option name="Good" value="0x3" />
+						<option name="Excellent" value="0x4" />
+						<option name="Invisible" value="0x5" />
+					</enum8>
+					<int8 name="Unknown" offset="0x1" visible="false" />
+					<int16 name="Unknown" offset="0x2" visible="false" />
+				</tagblock>
+			</tagblock>
+		</tagblock>
+		<tagblock name="Repulsor Field" offset="0xC0" visible="true" elementSize="0xC">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Affects Projectiles" index="0" />
+				<bit name="Affects Vehicles" index="1" />
+				<bit name="Affects Bipeds" index="2" />
+			</flags32>
+			<float32 name="Radius" offset="0x4" visible="true" />
+			<float32 name="Power" offset="0x8" visible="true" />
+		</tagblock>
+		<tagblock name="Stasis Field" offset="0xCC" visible="true" elementSize="0x20">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Affects Projectiles" index="0" />
+				<bit name="Affects Vehicles" index="1" />
+				<bit name="Affects Bipeds" index="2" />
+			</flags32>
+			<float32 name="Radius" offset="0x4" visible="true" />
+			<comment title="Time Dilation">The effective rate at which time passes for objects in the field. Values below 0.45 screw up jumping.</comment>
+			<float32 name="Time Dilation Player Characters" offset="0x8" visible="true" />
+			<float32 name="Time Dilation Projectiles" offset="0xC" visible="true" />
+			<float32 name="Time Dilation Vehicles" offset="0x10" visible="true" />
+			<float32 name="Time Dilation Other" offset="0x14" visible="true" tooltip="everything else" />
+			<float32 name="Maximum Biped Turning Rate" offset="0x18" visible="true" />
+			<float32 name="Gravity Multiplier" offset="0x1C" visible="true" tooltip="negative values will invert gravity" />
+		</tagblock>
+		<tagblock name="Ball Lightning" offset="0xD8" visible="true" elementSize="0x20">
+			<flags32 name="Flags" offset="0x0" visible="true">
+				<bit name="Affects Projectiles" index="0" />
+				<bit name="Affects Vehicles" index="1" />
+				<bit name="Affects Bipeds" index="2" />
+			</flags32>
+			<float32 name="Start Radius" offset="0x4" visible="true" />
+			<comment title="Ball Lightning">Damage effect that passes from one biped to nearby bipeds, recursively</comment>
+			<float32 name="Chain Radius Reduction Multiplier" offset="0x8" visible="true" tooltip="MUST BE GREATER THAN ZERO - each time lightning chains, this is the multiplier that controls how much the radius is reduced by" />
+			<float32 name="Chain Delay Timer" offset="0xC" visible="true" />
+			<tagRef name="Lightning Damage" offset="0x10" visible="true" />
+		</tagblock>
+		<tagblock name="IWHBYDaddy" offset="0xE4" visible="true" elementSize="0x60">
+			<tagRef name="Child Object" offset="0x0" visible="true" />
+			<flags16 name="Flags" offset="0x10" visible="true">
+				<bit name="Inactive Unstowed" index="0" />
+				<bit name="Inactive Stowed" index="1" />
+				<bit name="Active Unstowed" index="2" />
+				<bit name="Active Stowed" index="3" />
+				<bit name="Warming Up Unstowed" index="4" />
+				<bit name="Warming Up Stowed" index="5" />
+				<bit name="Cooling Down Unstowed" index="6" />
+				<bit name="Cooling Down Stowed" index="7" />
+				<bit name="Shield Vitality Tied To Energy" index="8" tooltip="as energy goes down, the shield vitality will as well" />
+			</flags16>
+			<int16 name="Unknown" offset="0x12" visible="false" />
+			<float32 name="Shield Damage To Energy Scale" offset="0x14" visible="true" tooltip="scale factor for energy gain from shield damage to child. Damage is normalized, so if this value is -1.0 then the equipment will lose all its energy when its child's shield is depleted." />
+			<float32 name="Starting Warm Up Object Scale" offset="0x18" visible="true" tooltip="if &gt;0 (and warm up time is &gt;0), object size will scale up from this up to 1.0 over course of warm up time and down over cooldown time" />
+			<point3 name="Offset From Parent" offset="0x1C" visible="true" tooltip="the root of the child is offset by this amount from the root of the parent biped" />
+			<float32 name="Vertical Offset In World Space" offset="0x28" visible="true" tooltip="used to adjust hight per biped, regardless of aim direction" />
+			<rangef name="Pitch" offset="0x2C" visible="true" tooltip="the min and max pitch that the child will follow as you aim up and down. -90 to 90" />
+			<float32 name="Visual Activation Time" offset="0x34" visible="true" />
+			<tagRef name="Spawn Effect" offset="0x38" visible="true" />
+			<stringid name="Spawn Effect Marker" offset="0x48" visible="true" />
+			<tagRef name="Despawn Effect" offset="0x4C" visible="true" />
+			<stringid name="Despawn Effect Marker" offset="0x5C" visible="true" />
+		</tagblock>
+		<tagblock name="Laser Designation" offset="0xF0" visible="true" elementSize="0x4">
+			<float32 name="Unknown" offset="0x0" visible="true" />
+		</tagblock>
+		<tagblock name="Super Jump" offset="0xFC" visible="true" elementSize="0x14">
+			<dataref name="Energy To Jump Function" offset="0x0" visible="true" />
+		</tagblock>
+		<tagblock name="Ammo Pack" offset="0x108" visible="true" elementSize="0x24">
+			<float32 name="Energy Change Per Clip Added" offset="0x0" visible="true" />
+			<int32 name="Extra Frags" offset="0x4" visible="true" />
+			<int32 name="Extra Plasma" offset="0x8" visible="true" />
+			<int32 name="Extra Grenade 3" offset="0xC" visible="true" />
+			<int32 name="Extra Grenade 4" offset="0x10" visible="true" />
+			<int32 name="Extra Grenade 5" offset="0x14" visible="true" />
+			<int32 name="Extra Grenade 6" offset="0x18" visible="true" />
+			<int32 name="Extra Grenade 7" offset="0x1C" visible="true" />
+			<int32 name="Extra Grenade 8" offset="0x20" visible="true" />
+		</tagblock>
+		<tagblock name="Power Fist" offset="0x114" visible="true" elementSize="0x40">
+			<tagRef name="Melee Damage" offset="0x0" visible="true" />
+			<tagRef name="Melee Response" offset="0x10" visible="true" />
+			<tagRef name="Clang Damage" offset="0x20" visible="true" />
+			<tagRef name="Clang Response" offset="0x30" visible="true" />
+		</tagblock>
+		<tagblock name="Health Pack" offset="0x120" visible="true" elementSize="0x14">
+			<dataref name="Health Given Over Energy Used Function" offset="0x0" visible="true" />
+		</tagblock>
+		<tagblock name="Jet Pack" offset="0x12C" visible="true" elementSize="0x70">
+			<flags8 name="Flags" offset="0x0" visible="true">
+				<bit name="Use Camera And Movement For Thrust Dir" index="0" tooltip="Jetpack thrust dir is controlled by camera dir and player movement (signifies Zero-G jet pack)" />
+				<bit name="Cache Thrust At Activation" index="1" tooltip="don't let the player change the direction of thrust once they activate" />
+			</flags8>
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<dataref name="Thrust To Acceleration Function" offset="0x4" visible="true" />
+			<dataref name="Infinite Energy Thrust To Acceleration Function" offset="0x18" visible="true" />
+			<float32 name="Thrust Attack Time" offset="0x2C" visible="true" />
+			<float32 name="Thrust Decay Time" offset="0x30" visible="true" />
+			<float32 name="Negative Velocity Acceleration Scale" offset="0x34" visible="true" tooltip="when falling, scale the thrust by this (so you can 'catch' yourself easier)" />
+			<float32 name="Airborne Acceleration Scale" offset="0x38" visible="true" />
+			<float32 name="Grounded Acceleration Magnitude" offset="0x3C" visible="true" tooltip="how hard to kick you upwards if you activate while grounded" />
+			<float32 name="Landing Anticipation Time" offset="0x40" visible="true" tooltip="how many seconds before landing the jetpack user enters the airborne arc" />
+			<comment title="Zero-G Jet Pack">These apply if 'Use camera and movement for thrust dir' flag is checked</comment>
+			<float32 name="Camera vs Move Input Thrust Control" offset="0x44" visible="true" tooltip="Camera direction (0.0) VS movement input (1.0) interpolation" />
+			<float32 name="Minimum Speed" offset="0x48" visible="true" tooltip="drag will be applied above this" />
+			<float32 name="Maximum Speed" offset="0x4C" visible="true" />
+			<float32 name="Stick Forward Thrust" offset="0x50" visible="true" />
+			<float32 name="Stick Strafe Thrust" offset="0x54" visible="true" />
+			<float32 name="Drag" offset="0x58" visible="true" />
+			<float32 name="Drag Cutoff Time" offset="0x5C" visible="true" tooltip="if 0, drag is always applied" />
+			<float32 name="Cow Catcher Duration" offset="0x60" visible="true" />
+			<tagblock name="Cow Catcher Parameters" offset="0x64" visible="true" elementSize="0x2C">
+				<float32 name="Cow Catcher Height" offset="0x0" visible="true" tooltip="world units" />
+				<float32 name="Cow Catcher Front Width" offset="0x4" visible="true" tooltip="world units, the width of the flat front portion of the cow-catcher" />
+				<float32 name="Cow Catcher Side Width" offset="0x8" visible="true" tooltip="world units, the width of the angled side portion of the cow-catcher" />
+				<float32 name="Cow Catcher Side Depth" offset="0xC" visible="true" tooltip="world units, the depth of the angled side portion of the cow-catcher" />
+				<vector3 name="Cow Catcher Offset" offset="0x10" visible="true" tooltip="offset from the unit's origin to put the origin of the cow-catcher at" />
+				<tagRef name="Collision Damage Override" offset="0x1C" visible="true" tooltip="if &quot;hide unit during transit&quot; isn't checked, this can override the unit's collision damage definition during the teleport" />
+			</tagblock>
+		</tagblock>
+		<tagblock name="Hologram" offset="0x138" visible="true" elementSize="0x64">
+			<float32 name="Hologram Duration" offset="0x0" visible="true" />
+			<enum32 name="Collision Group" offset="0x4" visible="true">
+				<option name="Everything" value="0x0" />
+				<option name="Environment Default" value="0x1" />
+				<option name="Environment Only" value="0x2" />
+				<option name="Small Crate" value="0x3" />
+				<option name="Crate" value="0x4" />
+				<option name="Huge Crate" value="0x5" />
+				<option name="Item" value="0x6" />
+				<option name="Projectile" value="0x7" />
+				<option name="Machine" value="0x8" />
+				<option name="Early Mover Machine" value="0x9" />
+				<option name="Creature" value="0xA" />
+				<option name="Biped" value="0xB" />
+				<option name="Dead Biped" value="0xC" />
+				<option name="Super Collidable Ragdoll" value="0xD" />
+				<option name="Ragdoll" value="0xE" />
+				<option name="Vehicle" value="0xF" />
+				<option name="Decal" value="0x10" />
+				<option name="Forge Dynamic Scenery" value="0x11" />
+				<option name="Small Expensive Plant" value="0x12" />
+				<option name="Tech Art Custom" value="0x13" />
+				<option name="Proxy" value="0x14" />
+				<option name="Huge Vehicle" value="0x15" />
+				<option name="Ignore Environment" value="0x16" />
+				<option name="Character Posture" value="0x17" />
+				<option name="Item Blocker" value="0x18" />
+				<option name="User00" value="0x19" />
+				<option name="Zero Extent" value="0x1A" />
+				<option name="Physical Projectile" value="0x1B" />
+				<option name="Environment Invisible Wall" value="0x1C" />
+				<option name="Environment Play Collision" value="0x1D" />
+				<option name="Environment Bullet Collision" value="0x1E" />
+			</enum32>
+			<tagRef name="Creation Effect" offset="0x8" visible="true" />
+			<tagRef name="Attached Effect" offset="0x18" visible="true" />
+			<stringid name="Attached Effect Marker" offset="0x28" visible="true" />
+			<stringid name="Attached Effect Primary Scale" offset="0x2C" visible="true" />
+			<stringid name="Attached Effect Secondary Scale" offset="0x30" visible="true" />
+			<tagRef name="Destruction Effect" offset="0x34" visible="true" />
+			<float32 name="Shimmer Decrease Rate" offset="0x44" visible="true" tooltip="how fast shimmer decreases" />
+			<float32 name="Shimmer Bullet Ping" offset="0x48" visible="true" tooltip="how much to ping shimmer when hit by a bullet" />
+			<dataref name="Shimmer To Camo Function" offset="0x4C" visible="true" />
+			<flags8 name="Flags" offset="0x60" visible="true">
+				<bit name="Driveable" index="0" tooltip="hologram is automatically bump possessed by the player" />
+			</flags8>
+			<int8 name="Unknown" offset="0x61" visible="false" />
+			<int16 name="Unknown" offset="0x62" visible="false" />
+		</tagblock>
+		<tagblock name="Special Weapon" offset="0x144" visible="true" elementSize="0x10">
+			<tagRef name="Weapon" offset="0x0" visible="true" />
+		</tagblock>
+		<tagblock name="Special Move" offset="0x150" visible="true" elementSize="0x2C">
+			<stringid name="Forward" offset="0x0" visible="true" />
+			<stringid name="Left" offset="0x4" visible="true" />
+			<stringid name="Backward" offset="0x8" visible="true" />
+			<stringid name="Right" offset="0xC" visible="true" />
+			<enum8 name="Default Direction" offset="0x10" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Forward" value="0x1" />
+				<option name="Left" value="0x2" />
+				<option name="Backward" value="0x3" />
+				<option name="Right" value="0x4" />
+			</enum8>
+			<int8 name="Unknown" offset="0x11" visible="false" />
+			<int16 name="Unknown" offset="0x12" visible="false" />
+			<tagRef name="Directional Effect" offset="0x14" visible="true" />
+			<float32 name="Danger Radius" offset="0x24" visible="true" tooltip="AI avoidance radius. Ignored if zero." />
+			<float32 name="Speed Multiplier" offset="0x28" visible="true" tooltip="Use this instead of a trait. 0 defaults to 1. With a trait, the client will move at non-modified scale until it gets replicated." />
+		</tagblock>
+		<tagblock name="Engineer Shields" offset="0x15C" visible="true" elementSize="0xC">
+			<float32 name="Radius" offset="0x0" visible="true" />
+			<stringid name="Shield Name" offset="0x4" visible="true" />
+			<flags32 name="Flags" offset="0x8" visible="true">
+				<bit name="Gives Shields To Owner" index="0" />
+			</flags32>
+		</tagblock>
+		<tagblock name="Sprint" offset="0x168" visible="true" elementSize="0x1">
+			<int8 name="Unknown" offset="0x0" visible="true" />
+		</tagblock>
+		<tagblock name="Teleporter" offset="0x174" visible="true" elementSize="0x5C">
+			<comment title="Teleporter">This causes you to warp forward. It'll trace the path with an effect at the specified speed, then spawn you at the end of it.</comment>
+			<flags8 name="Flags" offset="0x0" visible="true">
+				<bit name="Hide Unit During Transit" index="0" tooltip="during the teleport, hide the unit and turn off collision" />
+				<bit name="Disable Shortened Teleport" index="1" tooltip="makes it so that we always thrust or teleport the full distance; not wise unless &quot;hide unit during transit&quot; is unchecked" />
+				<bit name="Disable Extra Probes" index="2" tooltip="only the center probe is cast, no extra probes" />
+				<bit name="Force Along Aim Vector" index="3" tooltip="ignores all search vector parameters and uses the aim vector as the search vector" />
+				<bit name="Can Pass Through Objects" index="4" tooltip="only collides against environment and structures" />
+				<bit name="Force Along Stick Direction" index="5" tooltip="if stick throw magnitude==0 then search in facing direction, else search in stick direction" />
+			</flags8>
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<float32 name="Teleport Distance" offset="0x4" visible="true" />
+			<float32 name="Travel Speed" offset="0x8" visible="true" tooltip="the speed at which you cross the teleporter distance; 0 means instant" />
+			<float32 name="Deactivation Speed" offset="0xC" visible="true" tooltip="the speed you return to at the end of the teleport, if &quot;hide unit during transit&quot; isn't checked" />
+			<tagRef name="Trace Effect" offset="0x10" visible="true" tooltip="an effect that will follow along the travel path" />
+			<vector3 name="Trace Effect Offset" offset="0x20" visible="true" tooltip="offset from the unit's origin to put the effects at" />
+			<float32 name="Maximum Pitch (Airborne)" offset="0x2C" visible="true" tooltip="[-90 to 90] the pitch of the search vector will be clamped to no higher than this when starting a teleport in the air" />
+			<float32 name="Maximum Pitch (Ground)" offset="0x30" visible="true" tooltip="[-90 to 90] the pitch of the search vector will be clamped to no higher than this when starting a teleport on the ground" />
+			<comment title="Search Vector" />
+			<comment title="Look Vector Weight">If "force along aim vector" isn't checked, the start vector will be your motion vector, plus some amount of weight for where you're looking, if you're moving along your look vector.</comment>
+			<float32 name="Look Vector Weight" offset="0x34" visible="true" tooltip="value from 0 to 1 for how much we can use the look vector in place of the movement vector" />
+			<float32 name="Look Vector Falloff Inner" offset="0x38" visible="true" tooltip="degrees, inside this angle, we use the look vector at full weight" />
+			<float32 name="Look Vector Falloff Outer" offset="0x3C" visible="true" tooltip="degrees, outside this angle, we only use the movement vector" />
+			<float32 name="Move Vector Vertical Offset" offset="0x40" visible="true" tooltip="degrees, how much to offset the move vector vertically; positive is up, negative is down" />
+			<comment title="Probes" />
+			<comment title="Probe">If "disable extra probes" isn't checked, we'll do a fan of rays vertically from our central vector, with one probe horizontally on either side of each of those rays.</comment>
+			<float32 name="Horizontal Probe Angle" offset="0x44" visible="true" tooltip="degrees, the angle to each side of the horizontal probes" />
+			<float32 name="Vertical Probe Angle" offset="0x48" visible="true" tooltip="degrees, the angle up and down covered by the fan of vertical rays" />
+			<int32 name="Number Of Vertical Probes" offset="0x4C" visible="true" tooltip="higher is more likely to find a good match, but more expensive" />
+			<comment title="Collision">If "hide unit during transit" isn't checked, we'll add a cow-catcher collision volume on the front and change the collision damage type.</comment>
+			<tagblock name="Cow Catcher Parameters" offset="0x50" visible="true" elementSize="0x2C">
+				<float32 name="Cow Catcher Height" offset="0x0" visible="true" tooltip="world units" />
+				<float32 name="Cow Catcher Front Width" offset="0x4" visible="true" tooltip="world units, the width of the flat front portion of the cow-catcher" />
+				<float32 name="Cow Catcher Side Width" offset="0x8" visible="true" tooltip="world units, the width of the angled side portion of the cow-catcher" />
+				<float32 name="Cow Catcher Side Depth" offset="0xC" visible="true" tooltip="world units, the depth of the angled side portion of the cow-catcher" />
+				<vector3 name="Cow Catcher Offset" offset="0x10" visible="true" tooltip="offset from the unit's origin to put the origin of the cow-catcher at" />
+				<tagRef name="Collision Damage Override" offset="0x1C" visible="true" tooltip="if &quot;hide unit during transit&quot; isn't checked, this can override the unit's collision damage definition during the teleport" />
+			</tagblock>
+		</tagblock>
+		<tagblock name="Auto Turret" offset="0x180" visible="true" elementSize="0x88">
+			<flags8 name="Flags" offset="0x0" visible="true">
+				<bit name="Turret Follows Player" index="0" tooltip="if set, turret follows player, otherwise it moves to a specific location" />
+				<bit name="Turret Fake Gravity" index="1" tooltip="if set, turret will sink to a height defined in y orbit offset below" />
+			</flags8>
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<tagRef name="Weapon" offset="0x4" visible="true" />
+			<point3 name="Orbit Offset From Player" offset="0x14" visible="true" tooltip="z forward, x right, y down. Set x,z zero to get independent turret, y is altitude off ground" />
+			<float32 name="Orbit Range" offset="0x20" visible="true" tooltip="if above are zeros, this is max turret range" />
+			<float32 name="Orbit Rate" offset="0x24" visible="true" />
+			<float32 name="Maximum Range" offset="0x28" visible="true" tooltip="if not following player, maximum distance downrange turret will travel" />
+			<float32 name="Maximum Velocity" offset="0x2C" visible="true" />
+			<float32 name="Maximum Acceleration" offset="0x30" visible="true" />
+			<float32 name="Turret Halt Engage Time" offset="0x34" visible="true" tooltip="amount of time after a moving turret engages a target before it halts movement" />
+			<float32 name="Turret Idle Equipment Drain Multiplier" offset="0x38" visible="true" tooltip="the multiplier on equipment drain when equipment is in its idle state" />
+			<float32 name="Turret Inactive Equipment Drain Multiplier" offset="0x3C" visible="true" tooltip="the multiplier on equipment drain when equipment is in its inactive state" />
+			<float32 name="Spawn Radius" offset="0x40" visible="true" tooltip="area that must be clear in order for turret to spawn" />
+			<float32 name="Spawn In Time" offset="0x44" visible="true" tooltip="the turret will be inactive for this duration" />
+			<vector3 name="Spawn Offset From Player" offset="0x48" visible="true" tooltip="relative to origin and camera direction without pitch" />
+			<float32 name="Vertical Bob Height" offset="0x54" visible="true" />
+			<float32 name="Vertical Bobs Per Second" offset="0x58" visible="true" />
+			<tagRef name="Spawn Effect" offset="0x5C" visible="true" tooltip="effect played on the turret when it is spawned into the world" />
+			<stringid name="Spawn Effect Marker" offset="0x6C" visible="true" />
+			<stringid name="Spawn Dissolve Type" offset="0x70" visible="true" />
+			<stringid name="Spawn Dissolve Marker" offset="0x74" visible="true" />
+			<tagRef name="Collision Phase Effect" offset="0x78" visible="true" tooltip="effect played on the turret while a biped or vehicle passes through it" />
+		</tagblock>
+		<tagblock name="Vision Mode" offset="0x18C" visible="true" elementSize="0x2C">
+			<flags8 name="Flags" offset="0x0" visible="true">
+				<bit name="Apply Tell Damage Response To Friends" index="0" />
+				<bit name="Generate Tell Motion Sensor Blip" index="1" />
+			</flags8>
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<float32 name="Maximum Tell Distance" offset="0x4" visible="true" tooltip="'Other activation tell effect' will be applied to players within this distance" />
+			<tagRef name="Activation Tell Effect" offset="0x8" visible="true" tooltip="applied to other players within maximum distance" />
+			<int32 name="Motion Sensor Tell Blip Ticks" offset="0x18" visible="true" tooltip="within 'maxiumum tell distance' blip duration if 'Generate tell motion sensor blip' is checked" />
+			<tagRef name="Vision Mode" offset="0x1C" visible="true" />
+		</tagblock>
+		<tagblock name="Shield Projector" offset="0x198" visible="true" elementSize="0x50">
+			<float32 name="Lifetime" offset="0x0" visible="true" tooltip="Number of seconds a projected shield will remain active." />
+			<float32 name="Recharge Time" offset="0x4" visible="true" tooltip="Number of seconds between shield projections." />
+			<float32 name="Warmup Time" offset="0x8" visible="true" tooltip="Number of seconds it takes to activate a projection." />
+			<float32 name="Maximum Move Percentage" offset="0xC" visible="true" tooltip="Percentage of distance between current and desired positions a shield can be moved per update tick." />
+			<float32 name="Offset Amount" offset="0x10" visible="true" tooltip="Distance from defender's position to project the shield." />
+			<float32 name="Minimum Projection Distance" offset="0x14" visible="true" tooltip="Minimum distance between defender and attacker required to project shield." />
+			<float32 name="Maximum Projection Distance" offset="0x18" visible="true" tooltip="Max distance from equipment that shield can be projected." />
+			<float32 name="Minimum Required Energy Level" offset="0x1C" visible="true" tooltip="Min energy required to activate shield." />
+			<tagRef name="Project Effect" offset="0x20" visible="true" tooltip="Beam effect that links equipment to projected shield." />
+			<tagRef name="Warmup Effect" offset="0x30" visible="true" tooltip="Effect played at eventual shield projection point during warmup period." />
+			<tagRef name="Shield Crate" offset="0x40" visible="true" tooltip="Crate created to represent projected shield." />
+		</tagblock>
+		<tagblock name="Projectile Collector" offset="0x1A4" visible="true" elementSize="0x40">
+			<float32 name="Chance To Collect" offset="0x0" visible="true" tooltip="Percent chance (0-1) that collector has to collect each grenade. Will only attempt to collect each grenade once." />
+			<rangef name="Collect Cooldown" offset="0x4" visible="true" tooltip="Number of seconds collector must wait between successful collections." />
+			<rangef name="Attack Delay" offset="0xC" visible="true" tooltip="Number of seconds collector must wait before throwing a collected projectile at a target." />
+			<float32 name="Maximum Collect Range" offset="0x14" visible="true" tooltip="Max range in world units that collector can collect and hold onto projectiles." />
+			<rangef name="Orbit Radius" offset="0x18" visible="true" tooltip="Collector will try to keep collected projectiles orbiting in this range." />
+			<float32 name="Orbit Speed" offset="0x20" visible="true" tooltip="Speed at which collected projectiles orbit." />
+			<float32 name="Vertical Offset" offset="0x24" visible="true" tooltip="Orbit vertical offset amount." />
+			<float32 name="Strength" offset="0x28" visible="true" tooltip="Controls amount of acceleration applied to projectile." />
+			<float32 name="Attack Speed" offset="0x2C" visible="true" tooltip="Initial speed of projectiles when thrown as an attack." />
+			<tagRef name="Collect Effect" offset="0x30" visible="true" tooltip="Beam effect that links equipment to each collected projectile." />
+		</tagblock>
+		<tagblock name="Remote Strike" offset="0x1B0" visible="true" elementSize="0x24">
+			<tagRef name="Weapon" offset="0x0" visible="true" />
+			<float32 name="Maximum Velocity" offset="0x10" visible="true" />
+			<float32 name="Acceleration" offset="0x14" visible="true" tooltip="this is a percentage of max velocity per second - 0.1 reaches max velocity in 10 seconds" />
+			<float32 name="Decay Rate" offset="0x18" visible="true" tooltip="the rate at which a moving camera decays when you release the stick. Lower decays faster." />
+			<float32 name="Camera Interpolation Time" offset="0x1C" visible="true" />
+			<flags8 name="Flags" offset="0x20" visible="true">
+				<bit name="Ordnance UI" index="0" tooltip="special version of RS use for ordnance droppod UI" />
+				<bit name="Target Designator" index="1" tooltip="target designator is in weapon field" />
+			</flags8>
+			<int8 name="Unknown" offset="0x21" visible="false" />
+			<int16 name="Unknown" offset="0x22" visible="false" />
+		</tagblock>
+		<tagblock name="Equipment Hacker" offset="0x1BC" visible="true" elementSize="0x3C">
+			<flags8 name="Flags" offset="0x0" visible="true">
+				<bit name="Disable Friendly Fire" index="0" />
+			</flags8>
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<float32 name="Base Drain Per Second" offset="0x4" visible="true" tooltip="Will be multiplied by a value from the drain level block." />
+			<float32 name="Energy Recovery Delay" offset="0x8" visible="true" tooltip="The targeted equipment will not start regenerating energy until at least this much time has gone by." />
+			<float32 name="Cone Angle Degrees" offset="0xC" visible="true" tooltip="Degrees away from the reticle at which targets are in the cone." />
+			<tagblock name="Drain Levels" offset="0x10" visible="true" elementSize="0x8">
+				<float32 name="Cutoff Distance" offset="0x0" visible="true" tooltip="Targets within this distance will be affected by this multiplier." />
+				<float32 name="Drain Multiplier" offset="0x4" visible="true" tooltip="Multiplied by the base drain per second." />
+			</tagblock>
+			<tagRef name="Cone Effect" offset="0x1C" visible="true" tooltip="an effect that will shoot out of your face" />
+			<tagRef name="Target Effect" offset="0x2C" visible="true" tooltip="an effect that will play on the target" />
+		</tagblock>
+		<tagblock name="Remote Vehicle" offset="0x1C8" visible="true" elementSize="0x28">
+			<tagRef name="Hologram Spawner" offset="0x0" visible="true" tooltip="reference the equipment that will spawn the hologram that will pilot the remote vehicle" />
+			<tagRef name="Vehicle" offset="0x10" visible="true" tooltip="reference the remote vehicle to be created" />
+			<stringid name="Seat Label" offset="0x20" visible="true" tooltip="hologram gets loaded into this seat in the vehicle" />
+			<stringid name="Spawn Position Flag" offset="0x24" visible="true" tooltip="position of scenerio flag with this name. Empty will default to flag named 'remote_vehicle_start_position'" />
+		</tagblock>
+		<tagblock name="Suicide Bomb" offset="0x1D4" visible="true" elementSize="0x20">
+			<tagRef name="Explosion Damage Effect" offset="0x0" visible="true" />
+			<tagRef name="Explosion Effect" offset="0x10" visible="true" />
+		</tagblock>
+		<tagblock name="Active Shield" offset="0x1E0" visible="true" elementSize="0x1">
+			<flags8 name="Flags" offset="0x0" visible="true">
+				<bit name="Pause Shield Stun Timer" index="0" tooltip="false forces full amount of stun following deactivation" />
+			</flags8>
+		</tagblock>
+		<tagRef name="Activation While Disabled By Player Traits Sound" offset="0x1EC" visible="true" />
+		<tagRef name="Activate Effect" offset="0x1FC" visible="true" />
+		<tagRef name="Looping Effect" offset="0x20C" visible="true" />
+		<tagRef name="Deactivate Effect" offset="0x21C" visible="true" />
+		<stringid name="Activation Animation" offset="0x22C" visible="true" />
+		<stringid name="Active Animation" offset="0x230" visible="true" />
+		<stringid name="Deactivate Animation" offset="0x234" visible="true" />
+		<stringid name="Active Animation Stance" offset="0x238" visible="true" />
+	</tagblock>
+	<enum8 name="Damage Reporting Type" offset="0x300" visible="true">
+		<option name="Guardians (Unknown)" value="0x0" />
+		<option name="Guardians (Default)" value="0x1" />
+		<option name="Guardians (Script)" value="0x2" />
+		<option name="Suicide" value="0x3" />
+		<option name="Supressor" value="0x4" />
+		<option name="Scattershot" value="0x5" />
+		<option name="Light Rifle" value="0x6" />
+		<option name="Binary Rifle" value="0x7" />
+		<option name="Forerunner Turret" value="0x8" />
+		<option name="Boltshot" value="0x9" />
+		<option name="Pulse Grenade" value="0xA" />
+		<option name="Incineration Cannon" value="0xB" />
+		<option name="Magnum" value="0xC" />
+		<option name="Assault Rifle" value="0xD" />
+		<option name="DMR" value="0xE" />
+		<option name="Shotgun" value="0xF" />
+		<option name="Battle Rifle" value="0x10" />
+		<option name="Sniper Rifle" value="0x11" />
+		<option name="Rocket Launcher" value="0x12" />
+		<option name="Spartan Laser" value="0x13" />
+		<option name="Frag Grenade" value="0x14" />
+		<option name="Sticky Detonator" value="0x15" />
+		<option name="SAW" value="0x16" />
+		<option name="Railgun" value="0x17" />
+		<option name="Plasma Pistol" value="0x18" />
+		<option name="Needler" value="0x19" />
+		<option name="Gravity Hammer" value="0x1A" />
+		<option name="Energy Sword" value="0x1B" />
+		<option name="Plasma Grenade" value="0x1C" />
+		<option name="Covenant Carbine" value="0x1D" />
+		<option name="Beam Rifle" value="0x1E" />
+		<option name="Storm Rifle" value="0x1F" />
+		<option name="Concussion Rifle" value="0x20" />
+		<option name="Fuel Rod Cannon" value="0x21" />
+		<option name="Ghost" value="0x22" />
+		<option name="Revenant (Old)" value="0x23" />
+		<option name="Revenant Gunner (Old)" value="0x24" />
+		<option name="Wraith" value="0x25" />
+		<option name="Wraith Gunner" value="0x26" />
+		<option name="Banshee" value="0x27" />
+		<option name="Banshee Bomb" value="0x28" />
+		<option name="Seraph" value="0x29" />
+		<option name="Revenant" value="0x2A" />
+		<option name="Revenant Gunner" value="0x2B" />
+		<option name="Lich" value="0x2C" />
+		<option name="Lich Gunner" value="0x2D" />
+		<option name="Mongoose" value="0x2E" />
+		<option name="Warthog" value="0x2F" />
+		<option name="Warthog Gunner" value="0x30" />
+		<option name="Warthog Gauss" value="0x31" />
+		<option name="Warthog Rocket" value="0x32" />
+		<option name="Scorpion" value="0x33" />
+		<option name="Scorpion Gunner" value="0x34" />
+		<option name="Falcon" value="0x35" />
+		<option name="Falcon Gunner" value="0x36" />
+		<option name="Wasp" value="0x37" />
+		<option name="Wasp Gunner" value="0x38" />
+		<option name="Wasp Heavy Gunner" value="0x39" />
+		<option name="Mantis Stomp" value="0x3A" />
+		<option name="Mantis Chaingun" value="0x3B" />
+		<option name="Mantis Cannon" value="0x3C" />
+		<option name="Mantis Missile" value="0x3D" />
+		<option name="Broadsword" value="0x3E" />
+		<option name="Broadword Missile" value="0x3F" />
+		<option name="Mammoth" value="0x40" />
+		<option name="Mammoth Gunner" value="0x41" />
+		<option name="MAC Cannon" value="0x42" />
+		<option name="Target Locator" value="0x43" />
+		<option name="Drop Pod" value="0x44" />
+		<option name="Cruise Missile" value="0x45" />
+		<option name="Hardlight Shield" value="0x46" />
+		<option name="Auto Sentry" value="0x47" />
+		<option name="Thruster Pack" value="0x48" />
+		<option name="Falling" value="0x49" />
+		<option name="Collision" value="0x4A" />
+		<option name="Melee" value="0x4B" />
+		<option name="Explosion" value="0x4C" />
+		<option name="Fire" value="0x4D" />
+		<option name="Birthday Party Explosion" value="0x4E" />
+		<option name="Flag" value="0x4F" />
+		<option name="Bomb" value="0x50" />
+		<option name="Bomb Explosion" value="0x51" />
+		<option name="Ball" value="0x52" />
+		<option name="Teleporter" value="0x53" />
+		<option name="Transfer Damage" value="0x54" />
+		<option name="Armor Lock" value="0x55" />
+		<option name="Machinegun Turret" value="0x56" />
+		<option name="Plasma Cannon" value="0x57" />
+		<option name="Plasma Mortar" value="0x58" />
+		<option name="Plasma Turret" value="0x59" />
+		<option name="Shade Turret" value="0x5A" />
+		<option name="Forerunner Turret" value="0x5B" />
+		<option name="Tank" value="0x5C" />
+		<option name="Chopper" value="0x5D" />
+		<option name="Pelican Chaingun" value="0x5E" />
+		<option name="Mantis" value="0x5F" />
+		<option name="Flag Sidearm" value="0x60" />
+		<option name="Flood Talon" value="0x61" />
+	</enum8>
+	<int8 name="Unknown" offset="0x301" visible="false" />
+	<int16 name="Unknown" offset="0x302" visible="false" />
+	<tagRef name="HUD Screen Reference" offset="0x304" visible="true" />
+	<tagRef name="Pickup Sound" offset="0x314" visible="true" />
+	<tagRef name="Energy Charged Effect" offset="0x324" visible="true" />
+	<tagRef name="Unable To Activate Sound" offset="0x334" visible="true" />
+	<tagRef name="Player Sound Bank" offset="0x344" visible="true" tooltip="High quality player sound bank to be prefetched. Can be empty." />
+	<tagblock name="Sound RTPCs" offset="0x354" visible="true" elementSize="0x10">
+		<int32 name="Attachment Index" offset="0x0" visible="true" tooltip="Sound attachment to affect" />
+		<stringid name="Function" offset="0x4" visible="true" tooltip="Function to drive the RTPC" />
+		<stringid name="RTPC Name" offset="0x8" visible="true" tooltip="WWise RTPC string name" />
+		<int32 name="RTPC Name Hash Value" offset="0xC" visible="true" />
+	</tagblock>
+	<tagblock name="Sound Sweeteners" offset="0x360" visible="true" elementSize="0x1C">
+		<stringid name="Function" offset="0x0" visible="true" tooltip="Function to trigger the sweetener" />
+		<tagRef name="Sound" offset="0x4" visible="true" />
+		<float32 name="Switch Point" offset="0x14" visible="true" tooltip="value of the function (between 0 and 1) where the sound is triggered" />
+		<int32 name="Mode" offset="0x18" visible="true" tooltip="0 for triggering while function is decreasing, 1 for increasing (more modes to come?)" />
+	</tagblock>
+</plugin>

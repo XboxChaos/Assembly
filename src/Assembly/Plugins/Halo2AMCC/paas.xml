@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo2AMCC" baseSize="0x5C">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+		<revision author="Krevil" version="2">Edited using H4 tag layouts dumped by Lord Zedd.</revision>
+	</revisions>
+	<enum8 name="Runtime Flags" offset="0x0" visible="true">
+		<option name="Processed" value="0x0" />
+		<option name="Available" value="0x1" />
+	</enum8>
+	<enum8 name="Polyart Vertex Type" offset="0x1" visible="true">
+		<option name="Position" value="0x0" />
+		<option name="Position And UV" value="0x1" />
+	</enum8>
+	<int8 name="UV Set Index" offset="0x2" visible="true" />
+	<int8 name="Unknown" offset="0x3" visible="false" />
+	<float32 name="Antialiasing Extent Size" offset="0x4" visible="true" />
+	<tagblock name="Placement Data" offset="0x8" visible="true" elementSize="0x1C">
+		<float32 name="Horizontal Field of View" offset="0x0" visible="true" />
+		<float32 name="Vertical Field of View" offset="0x4" visible="true" />
+		<float32 name="Near z Plane Distance" offset="0x8" visible="true" />
+		<float32 name="Far z Plane Distance" offset="0xC" visible="true" />
+		<point3 name="Camera Position" offset="0x10" visible="true" />
+	</tagblock>
+	<tagblock name="Vertices" offset="0x14" visible="true" elementSize="0xC">
+		<int16 name="Half x" offset="0x0" visible="true" />
+		<int16 name="Half y" offset="0x2" visible="true" />
+		<int16 name="Half z" offset="0x4" visible="true" />
+		<int16 name="Half Alpha" offset="0x6" visible="true" />
+		<int16 name="Half u" offset="0x8" visible="true" />
+		<int16 name="Half v" offset="0xA" visible="true" />
+	</tagblock>
+	<tagblock name="Indices" offset="0x20" visible="true" elementSize="0x2">
+		<int16 name="Index" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="PC Vertex Buffers" offset="0x2C" visible="true" elementSize="0x10">
+		<uint8 name="Declaration Type" offset="0x0" visible="true" />
+		<uint8 name="Stride" offset="0x1" visible="true" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<uint32 name="Count" offset="0x4" visible="true" />
+		<int32 name="D3D Hardware Format" offset="0x8" visible="true" />
+		<int32 name="D3D Shader View" offset="0xC" visible="true" />
+	</tagblock>
+	<tagblock name="PC Index Buffers" offset="0x38" visible="true" elementSize="0xC">
+		<uint8 name="Declaration Type" offset="0x0" visible="true" />
+		<uint8 name="Stride" offset="0x1" visible="true" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<uint32 name="Count" offset="0x4" visible="true" />
+		<int32 name="D3D Hardware Format" offset="0x8" visible="true" />
+	</tagblock>
+	<comment title="Interop Pointers">These pointers go to a dataref (x14 bytes) elsewhere in memory which contains the given buffer. A table in the tag header contains pointers to these pointers.</comment>
+	<uint32 name="Vertex Polyart Interop Pointer" offset="0x44" visible="true" />
+	<undefined name="Unknown" offset="0x48" visible="false" />
+	<int32 name="Useless Padding" offset="0x4C" visible="false" />
+	<uint32 name="Index Polyart Interop Pointer" offset="0x50" visible="true" />
+	<undefined name="Unknown" offset="0x54" visible="false" />
+	<int32 name="Useless Padding" offset="0x58" visible="false" />
+</plugin>

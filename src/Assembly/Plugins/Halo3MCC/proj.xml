@@ -31,14 +31,12 @@
 		<bit name="Does Not Cause Collision Damage" index="5" />
 		<bit name="Early Mover" index="6" />
 		<bit name="Early Mover Localized Physics" index="7" />
-		<bit name="Use Static Massive Lightmap Sample" index="8" />
-		<bit name="Object Scales Attachments" index="9" />
-		<bit name="Inherits Player's Appearance" index="10" />
-		<bit name="Non Physical In Map Editor" index="11" />
-		<bit name="Attach To Clusters By Dynamic Sphere" index="12" tooltip="use this for the mac gun on spacestation" />
-		<bit name="Effects Created By This Object Do Not Spawn Objects In Multiplayer" index="13" />
-		<bit name="Does Not Collide With Camera" index="14" tooltip="specificly the flying observer camera" />
-		<bit name="Damage Not Blocked By Obstructions" index="15" tooltip="AOE damage being applied to this object does not test for obstrutions." />
+		<bit name="Object Scales Attachments" index="8" />
+		<bit name="Non Physical In Map Editor" index="9" />
+		<bit name="Attach To Clusters By Dynamic Sphere" index="10" tooltip="use this for the mac gun on spacestation" />
+		<bit name="Effects Created By This Object Do Not Spawn Objects In Multiplayer" index="11" />
+		<bit name="Does Not Collide With Camera" index="12" tooltip="specificly the flying observer camera" />
+		<bit name="Damage Not Blocked By Obstructions" index="13" tooltip="AOE damage being applied to this object does not test for obstrutions." />
 	</flags16>
 	<float32 name="Bounding Radius" offset="0x4" visible="true" tooltip="If you edit this field manually, beware that the render model is no longer respected for radius calculation and that you need to set the bounding offset as well." />
 	<point3 name="Bounding Offset" offset="0x8" visible="true" />
@@ -114,7 +112,7 @@
 	<tagRef name="Creation Effect" offset="0x70" visible="true" />
 	<tagRef name="Material Effects" offset="0x80" visible="true" />
 	<tagRef name="Melee Sound" offset="0x90" visible="true" tooltip="this is the sound that is made when I am meleed. This overrides the sweetener sound of my material." />
-	<tagblock name="AI Properties" offset="0xA0" visible="true" elementSize="0x10">
+	<tagblock name="AI Properties" offset="0xA0" visible="true" elementSize="0xC">
 		<flags32 name="AI Flags" offset="0x0" visible="true">
 			<bit name="Destroyable Cover" index="0" />
 			<bit name="Pathfinding Ignore When Dead" index="1" />
@@ -124,8 +122,7 @@
 			<bit name="Has Corner Markers" index="5" />
 		</flags32>
 		<stringId name="AI Type Name" offset="0x4" visible="true" tooltip="used for combat dialogue, etc." />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<enum16 name="AI Size" offset="0xC" visible="true">
+		<enum16 name="AI Size" offset="0x8" visible="true">
 			<option name="Default" value="0x0" />
 			<option name="Tiny" value="0x1" />
 			<option name="Small" value="0x2" />
@@ -134,7 +131,7 @@
 			<option name="Huge" value="0x5" />
 			<option name="Immobile" value="0x6" />
 		</enum16>
-		<enum16 name="Leap Jump Speed" offset="0xE" visible="true">
+		<enum16 name="Leap Jump Speed" offset="0xA" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Down" value="0x1" />
 			<option name="Step" value="0x2" />
@@ -189,21 +186,18 @@
 			<colorf name="Color Upper Bound" offset="0x10" alpha="false" visible="true" />
 			<stringId name="Variant Name" offset="0x1C" visible="true" tooltip="if empty, may be used by any model variant" />
 		</tagblock>
-		<tagblock name="Functions" offset="0xC" visible="true" elementSize="0x28">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<flags32 name="Scale Flags" offset="0x4" visible="true">
+		<tagblock name="Functions" offset="0xC" visible="true" elementSize="0x24">
+			<flags32 name="Scale Flags" offset="0x0" visible="true">
 				<bit name="Blend In HSV" index="0" tooltip="blends colors in hsv rather than rgb space" />
 				<bit name="...More Colors" index="1" tooltip="blends colors through more hues (goes the long way around the color wheel)" />
 			</flags32>
-			<colorf name="Color Lower Bound" offset="0x8" alpha="false" visible="true" />
-			<colorf name="Color Upper Bound" offset="0x14" alpha="false" visible="true" />
-			<stringid name="Darken By" offset="0x20" visible="true" />
-			<stringid name="Scale By" offset="0x24" visible="true" />
+			<colorf name="Color Lower Bound" offset="0x4" alpha="false" visible="true" />
+			<colorf name="Color Upper Bound" offset="0x10" alpha="false" visible="true" />
+			<stringid name="Darken By" offset="0x1C" visible="true" />
+			<stringid name="Scale By" offset="0x20" visible="true" />
 		</tagblock>
 	</tagblock>
-	<tagblock name="Predicted Resources" offset="0xE0" visible="false" elementSize="0x0">
-	</tagblock>
-	<tagblock name="Multiplayer Object" offset="0xEC" visible="true" elementSize="0xC4">
+	<tagblock name="Multiplayer Object" offset="0xE0" visible="true" elementSize="0xC4">
 		<flags16 name="Game Engine Flags" offset="0x0" visible="true" tooltip="Set which game engines you desire this object to appear in">
 			<bit name="Capture The Flag" index="0" />
 			<bit name="Slayer" index="1" />
@@ -291,6 +285,9 @@ Certain flags applicable only to certain object types, should be self evident</c
 		<tagref name="Cylinder Opaque Shader" offset="0x94" visible="true" />
 		<tagref name="Box Standard Shader" offset="0xA4" visible="true" />
 		<tagref name="Box Opaque Shader" offset="0xB4" visible="true" />
+	</tagblock>
+	<tagblock name="Health Packs" offset="0xEC" visible="true" elementSize="0x10">
+		<tagRef name="Health Pack Equipment" offset="0x0" visible="true" tooltip="MUST be an equipment tag that implements the &quot;Health Pack&quot; block" />
 	</tagblock>
 	<comment title="PROJECTILE" />
 	<flags32 name="Flags" offset="0xF8" visible="true">

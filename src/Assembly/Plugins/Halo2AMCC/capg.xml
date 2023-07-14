@@ -1,0 +1,406 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo2AMCC" baseSize="0x14">
+	<revisions>
+		<revision author="Lord Zedd" version="1">THERE'S AN APP FOR THAT.</revision>
+	</revisions>
+	<int32 name="Unknown" offset="0x0" visible="true" />
+	<int16 name="Unknown" offset="0x4" visible="true" />
+	<int16 name="Unknown" offset="0x6" visible="true" />
+	<tagblock name="Apps" offset="0x8" visible="true" elementSize="0x3C">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<stringid name="Unknown" offset="0x4" visible="true" />
+		<stringid name="Unknown" offset="0x8" visible="true" />
+		<stringid name="Icon" offset="0xC" visible="true" />
+		<tagref name="Unknown" offset="0x10" visible="true" />
+		<undefined name="Unknown" offset="0x20" visible="true" />
+		<tagblock name="App Traits" offset="0x24" visible="true" elementSize="0x3C">
+			<tagblock name="Vitality Traits" offset="0x0" visible="true" elementSize="0x40">
+				<flags32 name="Should Apply Trait" offset="0x0" visible="true">
+					<bit name="Damage Resistance" index="0" />
+					<bit name="Shield Multiplier" index="1" />
+					<bit name="Body Multiplier" index="2" />
+					<bit name="Shield Stun Duration" index="3" />
+					<bit name="Shield Recharge Rate" index="4" />
+					<bit name="Body Recharge Rate" index="5" />
+					<bit name="Overshield Recharge Rate" index="6" />
+					<bit name="Vampirism Percent" index="7" />
+					<bit name="Explosive Damage Resistance" index="8" />
+					<bit name="Wheelman Armor Vehicle Stun Time Modifier" index="9" />
+					<bit name="Wheelman Armor Vehicle Recharge Time Modifier" index="10" />
+					<bit name="Wheelman Armor Vehicle Emp Disabled Time Modifier" index="11" />
+					<bit name="Fall Damage Multiplier" index="12" />
+				</flags32>
+				<comment title="Damage Resistance">Any damage taken is divided by this number. If you put -1, that means "invulnerable".</comment>
+				<float32 name="Damage Resistance" offset="0x4" visible="true" />
+				<float32 name="Shield Multiplier" offset="0x8" visible="true" />
+				<float32 name="Body Multiplier" offset="0xC" visible="true" />
+				<float32 name="Shield Stun Duration" offset="0x10" visible="true" />
+				<float32 name="Shield Recharge Rate" offset="0x14" visible="true" />
+				<float32 name="Body Recharge Rate" offset="0x18" visible="true" />
+				<float32 name="Overshield Recharge Rate" offset="0x1C" visible="true" />
+				<float32 name="Vampirism Percent" offset="0x20" visible="true" />
+				<float32 name="Explosive Damage Resistance" offset="0x24" visible="true" tooltip="incoming damage multiplied by (1 - resistance)" />
+				<float32 name="Wheelman Armor Vehicle Stun Time Modifier" offset="0x28" visible="true" />
+				<float32 name="Wheelman Armor Vehicle Recharge Time Modifier" offset="0x2C" visible="true" />
+				<float32 name="Wheelman Armor Vehicle Emp Disabled Time Modifier" offset="0x30" visible="true" />
+				<float32 name="Fall Damage Multiplier" offset="0x34" visible="true" />
+				<enum8 name="Headshot Immunity" offset="0x38" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Assassination Immunity" offset="0x39" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Deathless" offset="0x3A" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Fast Track Armor" offset="0x3B" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Powerup Cancellation" offset="0x3C" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="None" value="0x1" />
+					<option name="No Overshield" value="0x2" />
+				</enum8>
+				<int8 name="Unknown" offset="0x3D" visible="false" />
+				<int16 name="Unknown" offset="0x3E" visible="false" />
+			</tagblock>
+			<tagblock name="Weapon Traits" offset="0xC" visible="true" elementSize="0x80">
+				<flags32 name="Should Apply Trait" offset="0x0" visible="true">
+					<bit name="Damage Multiplier" index="0" />
+					<bit name="Melee Damage Multiplier" index="1" />
+					<bit name="Grenade Recharge Seconds Frag" index="2" />
+					<bit name="Grenade Recharge Seconds Plasma" index="3" />
+					<bit name="Grenade Recharge Seconds Spike" index="4" />
+					<bit name="Hero Equipment Energy Use Rate Modifier" index="5" />
+					<bit name="Hero Equipment Energy Recharge Delay Modifier" index="6" />
+					<bit name="Hero Equipment Energy Recharge Rate Modifier" index="7" />
+					<bit name="Hero Equipment Initial Energy Modifier" index="8" />
+					<bit name="Equipment Energy Use Rate Modifier" index="9" />
+					<bit name="Equipment Energy Recharge Delay Modifier" index="10" />
+					<bit name="Equipment Energy Use Recharge Rate Modifier" index="11" />
+					<bit name="Equipment Energy Initial Energy Modifier" index="12" />
+					<bit name="Switch Speed Modifier" index="13" />
+					<bit name="Reload Speed Modifier" index="14" />
+					<bit name="Ordnance Points Modifier" index="15" />
+					<bit name="Explosive Area Of Effect Radius Modifier" index="16" />
+					<bit name="Gunner Armor Modifier" index="17" />
+					<bit name="Stability Armor Modifier" index="18" />
+					<bit name="Drop Recon Warning Seconds" index="19" />
+					<bit name="Drop Recon Distance Modifier" index="20" />
+					<bit name="Assassination Speed Modifier" index="21" />
+				</flags32>
+				<float32 name="Damage Multiplier" offset="0x4" visible="true" />
+				<float32 name="Melee Damage Multiplier" offset="0x8" visible="true" />
+				<float32 name="Grenade Recharge Seconds Frag" offset="0xC" visible="true" />
+				<float32 name="Grenade Recharge Seconds Plasma" offset="0x10" visible="true" />
+				<float32 name="Grenade Recharge Seconds Spike" offset="0x14" visible="true" />
+				<float32 name="Hero Equipment Energy Use Rate Modifier" offset="0x18" visible="true" />
+				<float32 name="Hero Equipment Energy Recharge Delay Modifier" offset="0x1C" visible="true" />
+				<float32 name="Hero Equipment Energy Recharge Rate Modifier" offset="0x20" visible="true" />
+				<float32 name="Hero Equipment Initial Energy Modifier" offset="0x24" visible="true" />
+				<float32 name="Equipment Energy Use Rate Modifier" offset="0x28" visible="true" />
+				<float32 name="Equipment Energy Recharge Delay Modifier" offset="0x2C" visible="true" />
+				<float32 name="Equipment Energy Use Recharge Rate Modifier" offset="0x30" visible="true" />
+				<float32 name="Equipment Energy Initial Energy Modifier" offset="0x34" visible="true" />
+				<float32 name="Switch Speed Modifier" offset="0x38" visible="true" />
+				<float32 name="Reload Speed Modifier" offset="0x3C" visible="true" />
+				<float32 name="Ordnance Points Modifier" offset="0x40" visible="true" />
+				<float32 name="Explosive Area Of Effect Radius Modifier" offset="0x44" visible="true" />
+				<float32 name="Gunner Armor Modifier" offset="0x48" visible="true" />
+				<float32 name="Stability Armor Modifier" offset="0x4C" visible="true" />
+				<float32 name="Drop Recon Warning Seconds" offset="0x50" visible="true" />
+				<float32 name="Drop Recon Distance Modifier" offset="0x54" visible="true" />
+				<float32 name="Assassination Speed Modifier" offset="0x58" visible="true" />
+				<enum8 name="Weapon Pickup Allowed" offset="0x5C" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Initial Grenade Count" offset="0x5D" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="Map Default" value="0x1" />
+					<option name="0" value="0x2" />
+					<option name="1 Frag" value="0x3" />
+					<option name="2 Frag" value="0x4" />
+					<option name="1 Plasma" value="0x5" />
+					<option name="2 Plasma" value="0x6" />
+					<option name="1 Type2" value="0x7" />
+					<option name="2 Type2" value="0x8" />
+					<option name="1 Type3" value="0x9" />
+					<option name="2 Type3" value="0xA" />
+					<option name="1 Type4" value="0xB" />
+					<option name="2 Type4" value="0xC" />
+					<option name="1 Type5" value="0xD" />
+					<option name="2 Type5" value="0xE" />
+					<option name="1 Type6" value="0xF" />
+					<option name="2 Type6" value="0x10" />
+					<option name="1 Type7" value="0x11" />
+					<option name="2 Type7" value="0x12" />
+				</enum8>
+				<enum8 name="Infinite Ammo" offset="0x5E" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="Off" value="0x1" />
+					<option name="On" value="0x2" />
+					<option name="Bottomless Clip" value="0x3" />
+				</enum8>
+				<enum8 name="Equipment Usage" offset="0x5F" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="Off" value="0x1" />
+					<option name="Not With Objectives" value="0x2" />
+					<option name="On" value="0x3" />
+				</enum8>
+				<enum8 name="Equipment Usage Excepting Auto Turret" offset="0x60" visible="true" tooltip="false will disable all equipment except auto turret">
+					<option name="Unchanged" value="0x0" />
+					<option name="Off" value="0x1" />
+					<option name="Not With Objectives" value="0x2" />
+					<option name="On" value="0x3" />
+				</enum8>
+				<enum8 name="Equipment Drop" offset="0x61" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Infinite Equipment" offset="0x62" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Weapons Ammopack" offset="0x63" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Weapons Grenadier" offset="0x64" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Weapons Explode On Death Armormod" offset="0x65" visible="true" tooltip="spawns projectile specified in globals.globals">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Ordnance Markers Visible" offset="0x66" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Weapons Ordnance Reroll Available" offset="0x67" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Weapons Resourceful" offset="0x68" visible="true" tooltip="grenade probabilities defined in grenade_list.game_globals_grenade_list">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Weapons Well Equipped" offset="0x69" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Ordnance Disabled" offset="0x6A" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<int8 name="Unknown" offset="0x6B" visible="false" />
+				<comment title="Initial Weapons/Equipment">Type any string from the relevant sections of multiplayer/globals.multiplayer_object_type_list.</comment>
+				<stringid name="Initial Primary Weapon" offset="0x6C" visible="true" />
+				<stringid name="Initial Secondary Weapon" offset="0x70" visible="true" />
+				<stringid name="Initial Equipment" offset="0x74" visible="true" />
+				<stringid name="Initial Tactical Package" offset="0x78" visible="true" />
+				<stringid name="Initial Support Upgrade" offset="0x7C" visible="true" />
+			</tagblock>
+			<tagblock name="Movement Traits" offset="0x18" visible="true" elementSize="0x1C">
+				<flags32 name="Should Apply Trait" offset="0x0" visible="true">
+					<bit name="Speed" index="0" />
+					<bit name="Gravity Multiplier" index="1" />
+					<bit name="Jump Multiplier" index="2" />
+					<bit name="Turn Speed Multiplier" index="3" />
+				</flags32>
+				<float32 name="Speed" offset="0x4" visible="true" />
+				<float32 name="Gravity Multiplier" offset="0x8" visible="true" />
+				<float32 name="Jump Multiplier" offset="0xC" visible="true" />
+				<float32 name="Turn Speed Multiplier" offset="0x10" visible="true" />
+				<enum8 name="Vehicle Usage" offset="0x14" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="None" value="0x1" />
+					<option name="Passenger Only" value="0x2" />
+					<option name="Driver Only" value="0x3" />
+					<option name="Gunner Only" value="0x4" />
+					<option name="Not Passenger" value="0x5" />
+					<option name="Not Driver" value="0x6" />
+					<option name="Not Gunner" value="0x7" />
+					<option name="Full" value="0x8" />
+				</enum8>
+				<enum8 name="Double Jump" offset="0x15" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="Off" value="0x1" />
+					<option name="On" value="0x2" />
+					<option name="On Plus Lunge" value="0x3" />
+				</enum8>
+				<enum8 name="Sprint Usage" offset="0x16" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Automatic Momentum Usage" offset="0x17" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Vaulting Enabled" offset="0x18" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Stealthy" offset="0x19" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Vehicle Exit Disabled" offset="0x1A" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<int8 name="Unknown" offset="0x1B" visible="false" />
+			</tagblock>
+			<tagblock name="Appearance Traits" offset="0x24" visible="true" elementSize="0x10">
+				<comment title="Death Effect/Attached Effect">Type any string from the relevant sections of multiplayer/megalo/multiplayer_effects.multiplayereffects.</comment>
+				<stringid name="Death Effect" offset="0x0" visible="true" />
+				<stringid name="Attached Effect" offset="0x4" visible="true" />
+				<enum8 name="Active Camo" offset="0x8" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="Off" value="0x1" />
+					<option name="Poor" value="0x2" />
+					<option name="Good" value="0x3" />
+					<option name="Excellent" value="0x4" />
+					<option name="Invisible" value="0x5" />
+				</enum8>
+				<enum8 name="Primary Color" offset="0x9" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="Red" value="0x1" />
+					<option name="Orange" value="0x2" />
+					<option name="Gold" value="0x3" />
+					<option name="Dark Green" value="0x4" />
+					<option name="Light Green" value="0x5" />
+					<option name="Dark Blue" value="0x6" />
+					<option name="Light Blue" value="0x7" />
+					<option name="Purple" value="0x8" />
+					<option name="Pink" value="0x9" />
+					<option name="Black" value="0xA" />
+					<option name="Grey" value="0xB" />
+					<option name="White" value="0xC" />
+					<option name="Brown" value="0xD" />
+					<option name="Sand" value="0xE" />
+					<option name="Dark Red" value="0xF" />
+					<option name="Infection" value="0x10" />
+				</enum8>
+				<enum8 name="Secondary Color" offset="0xA" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="Red" value="0x1" />
+					<option name="Orange" value="0x2" />
+					<option name="Gold" value="0x3" />
+					<option name="Dark Green" value="0x4" />
+					<option name="Light Green" value="0x5" />
+					<option name="Dark Blue" value="0x6" />
+					<option name="Light Blue" value="0x7" />
+					<option name="Purple" value="0x8" />
+					<option name="Pink" value="0x9" />
+					<option name="Black" value="0xA" />
+					<option name="Grey" value="0xB" />
+					<option name="White" value="0xC" />
+					<option name="Brown" value="0xD" />
+					<option name="Sand" value="0xE" />
+					<option name="Dark Red" value="0xF" />
+					<option name="Infection" value="0x10" />
+				</enum8>
+				<enum8 name="Waypoint" offset="0xB" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="Off" value="0x1" />
+					<option name="Allies" value="0x2" />
+					<option name="All" value="0x3" />
+				</enum8>
+				<enum8 name="Gamertag Visible" offset="0xC" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="Off" value="0x1" />
+					<option name="Allies" value="0x2" />
+					<option name="All" value="0x3" />
+				</enum8>
+				<enum8 name="Aura" offset="0xD" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="Off" value="0x1" />
+					<option name="Team Color" value="0x2" />
+					<option name="Black" value="0x3" />
+					<option name="White" value="0x4" />
+				</enum8>
+				<int16 name="Unknown" offset="0xE" visible="false" />
+			</tagblock>
+			<tagblock name="Sensor Traits" offset="0x30" visible="true" elementSize="0x14">
+				<flags32 name="Should Apply Trait" offset="0x0" visible="true">
+					<bit name="Motion Tracker Range" index="0" />
+					<bit name="Nemesis Duration" index="1" />
+				</flags32>
+				<float32 name="Motion Tracker Range" offset="0x4" visible="true" />
+				<float32 name="Nemesis Duration" offset="0x8" visible="true" />
+				<enum8 name="Motion Tracker" offset="0xC" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="Off" value="0x1" />
+					<option name="Moving Friendly Bipeds Moving Neutral Vehicles" value="0x2" />
+					<option name="Moving Bipeds Moving Vehicles" value="0x3" />
+					<option name="All Bipeds Moving Vehicles" value="0x4" />
+				</enum8>
+				<enum8 name="Motion Tracker While Zoomed" offset="0xD" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Directional Damage Indicator" offset="0xE" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Vision Mode" offset="0xF" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Battle Awareness" offset="0x10" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Threat View" offset="0x11" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Aural Enhancement" offset="0x12" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+				<enum8 name="Nemesis" offset="0x13" visible="true">
+					<option name="Unchanged" value="0x0" />
+					<option name="False" value="0x1" />
+					<option name="True" value="0x2" />
+				</enum8>
+			</tagblock>
+		</tagblock>
+		<tagblock name="Sprinty" offset="0x30" visible="true" elementSize="0x8">
+			<undefined name="Unknown" offset="0x0" visible="true" />
+			<undefined name="Unknown" offset="0x4" visible="true" />
+		</tagblock>
+	</tagblock>
+</plugin>

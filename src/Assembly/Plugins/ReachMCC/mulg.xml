@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="ReachMCC" baseSize="0x18">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="DarkShallFall" version="1">Mapped plugin structure a new.</revision>
+		<revision author="Lord Zedd" version="2">Updating</revision>
+		<revision author="Lord Zedd" version="3">thanks h5</revision>
+	</revisions>
+	<tagblock name="Universal" offset="0x0" visible="true" elementSize="0x4C">
+		<tagRef name="Random Player Names" offset="0x0" visible="true" />
+		<tagRef name="Team Names" offset="0x10" visible="true" />
+		<tagblock name="Team Colors" offset="0x20" visible="true" elementSize="0xC">
+			<colorf name="Color" offset="0x0" visible="true" alpha="false" />
+		</tagblock>
+		<tagRef name="Multiplayer Text" offset="0x2C" visible="true" />
+		<tagRef name="Sandbox Object Properties Values" offset="0x3C" visible="true" />
+	</tagblock>
+	<tagblock name="Runtime" offset="0xC" visible="true" elementSize="0x178">
+		<tagRef name="Editor Biped" offset="0x0" visible="true" />
+		<tagRef name="Editor Helper" offset="0x10" visible="true" />
+		<comment title="DO NOT REMOVE">the ball and bomb references are not directly touched by game code, but the references are load baring. Removing these fields or emptying the reference will cause their multiplayer_object_type_list entries to fail to resolve and result in oddball/assault megalo variants to fail to load since they require these objects</comment>
+		<tagRef name="Ball" offset="0x20" visible="true" />
+		<tagRef name="Assault Bomb" offset="0x30" visible="true" />
+		<tagRef name="In Game Text" offset="0x40" visible="true" />
+		<tagblock name="Sounds" offset="0x50" visible="true" elementSize="0x10">
+			<tagRef name="Sound" offset="0x0" visible="true" />
+		</tagblock>
+		<tagblock name="Looping Sounds" offset="0x5C" visible="true" elementSize="0x10">
+			<tagRef name="Looping Sound" offset="0x0" visible="true" />
+		</tagblock>
+		<tagref name="Megalo Sounds" offset="0x68" visible="true" />
+		<int32 name="Maximum Frag Grenade Count" offset="0x78" visible="true" />
+		<int32 name="Maximum Plasma Grenade Count" offset="0x7C" visible="true" />
+		<tagblock name="Multiplayer Constants" offset="0x80" visible="true" elementSize="0x130">
+			<comment title="Enemy Forbid">This is a tight cylinder around the player with a strong negative weight. It serves to protect players from spawning close to an enemy, or having and enemy spawn close to them.</comment>
+			<float32 name="Full Weight Radius" offset="0x0" visible="true" />
+			<float32 name="Fall-Off Radius" offset="0x4" visible="true" />
+			<tagblock name="Falloff Function" offset="0x8" visible="true" elementSize="0x14" tooltip="Multiplier applied to weight (domain is full weight radius to fall-off radius, range should be 0 to 1).">
+				<dataref name="Function" offset="0x0" visible="true" />
+			</tagblock>
+			<float32 name="Upper Height" offset="0x14" visible="true" />
+			<float32 name="Lower Height" offset="0x18" visible="true" />
+			<float32 name="Weight" offset="0x1C" visible="true" />
+			<comment title="Enemy Bias">This is a larger cylinder, with a size set specifically for the size of the map. It has a weak negative weight which falls to zero towards the outer radius. It serves to bias players away from spawning near enemies, or in enemy held areas.</comment>
+			<float32 name="Full Weight Radius" offset="0x20" visible="true" />
+			<float32 name="Fall-Off Radius" offset="0x24" visible="true" />
+			<tagblock name="Falloff Function" offset="0x28" visible="true" elementSize="0x14" tooltip="Multiplier applied to weight (domain is full weight radius to fall-off radius, range should be 0 to 1).">
+				<dataref name="Function" offset="0x0" visible="true" />
+			</tagblock>
+			<float32 name="Upper Height" offset="0x34" visible="true" />
+			<float32 name="Lower Height" offset="0x38" visible="true" />
+			<float32 name="Weight" offset="0x3C" visible="true" />
+			<comment title="Ally Bias">This is a larger cylinder, with a size set specifically for the size of the map. It has a weak positive weight which falls to zero towards the outer radius. It serves to bias players towards spawning with allies, or in areas which are controlled by friendly players.</comment>
+			<float32 name="Full Weight Radius" offset="0x40" visible="true" />
+			<float32 name="Fall-Off Radius" offset="0x44" visible="true" />
+			<tagblock name="Falloff Function" offset="0x48" visible="true" elementSize="0x14" tooltip="Multiplier applied to weight (domain is full weight radius to fall-off radius, range should be 0 to 1).">
+				<dataref name="Function" offset="0x0" visible="true" />
+			</tagblock>
+			<float32 name="Upper Height" offset="0x54" visible="true" />
+			<float32 name="Lower Height" offset="0x58" visible="true" />
+			<float32 name="Weight" offset="0x5C" visible="true" />
+			<comment title="Selected Ally Bias">Same as ALLY BIAS, but used when the ally is selected in the dead-camera.</comment>
+			<float32 name="Full Weight Radius" offset="0x60" visible="true" />
+			<float32 name="Fall-Off Radius" offset="0x64" visible="true" />
+			<tagblock name="Falloff Function" offset="0x68" visible="true" elementSize="0x14" tooltip="Multiplier applied to weight (domain is full weight radius to fall-off radius, range should be 0 to 1).">
+				<dataref name="Function" offset="0x0" visible="true" />
+			</tagblock>
+			<float32 name="Upper Height" offset="0x74" visible="true" />
+			<float32 name="Lower Height" offset="0x78" visible="true" />
+			<float32 name="Weight" offset="0x7C" visible="true" />
+			<comment title="Dead Teammate Bias">Dead teammate influences are cylinders centered upon the body of a dead teammate (or the player's own dead body).</comment>
+			<float32 name="Full Weight Radius" offset="0x80" visible="true" />
+			<float32 name="Fall-Off Radius" offset="0x84" visible="true" />
+			<tagblock name="Falloff Function" offset="0x88" visible="true" elementSize="0x14" tooltip="Multiplier applied to weight (domain is full weight radius to fall-off radius, range should be 0 to 1).">
+				<dataref name="Function" offset="0x0" visible="true" />
+			</tagblock>
+			<float32 name="Upper Height" offset="0x94" visible="true" />
+			<float32 name="Lower Height" offset="0x98" visible="true" />
+			<float32 name="Weight" offset="0x9C" visible="true" />
+			<float32 name="Influence Duration" offset="0xA0" visible="true" />
+			<tagblock name="Weapon Influencers" offset="0xA4" visible="true" elementSize="0x20" tooltip="These influencers are induced by weapons either wielded or carried in the player's backpack">
+				<tagRef name="Weapon" offset="0x0" visible="true" />
+				<float32 name="Full Weight Range" offset="0x10" visible="true" />
+				<float32 name="Fall-Off Range" offset="0x14" visible="true" />
+				<float32 name="Fall-Off Cone Radius" offset="0x18" visible="true" />
+				<float32 name="Weight" offset="0x1C" visible="true" />
+			</tagblock>
+			<tagblock name="Vehicle Influencers" offset="0xB0" visible="true" elementSize="0x20" tooltip="These influencers are induced by vehicles.">
+				<tagRef name="Vehicle" offset="0x0" visible="true" />
+				<float32 name="Radius" offset="0x10" visible="true" />
+				<float32 name="Lead Time" offset="0x14" visible="true" />
+				<float32 name="Minimum Velocity" offset="0x18" visible="true" />
+				<float32 name="Weight" offset="0x1C" visible="true" />
+			</tagblock>
+			<tagblock name="Projectile Influencers" offset="0xBC" visible="true" elementSize="0x1C" tooltip="These influencers are induced by projectiles.">
+				<tagRef name="Projectile" offset="0x0" visible="true" />
+				<float32 name="Lead Time" offset="0x10" visible="true" />
+				<float32 name="Collision Cylinder Radius" offset="0x14" visible="true" />
+				<float32 name="Weight" offset="0x18" visible="true" />
+			</tagblock>
+			<tagblock name="Equipment Influencers" offset="0xC8" visible="true" elementSize="0x14" tooltip="These influencers are induced by equipment.">
+				<tagRef name="Equipment" offset="0x0" visible="true" />
+				<float32 name="Weight" offset="0x10" visible="true" />
+			</tagblock>
+			<float32 name="Maximum Random Spawn Bias" offset="0xD4" visible="true" />
+			<float32 name="Teleporter Recharge Time" offset="0xD8" visible="true" />
+			<tagRef name="Sandbox Effect" offset="0xDC" visible="true" />
+			<stringId name="Blocked Teleporter" offset="0xEC" visible="true" />
+			<stringid name="Voluntary Respawn Control Instructions" offset="0xF0" visible="true" />
+			<stringId name="Spawn Allowed Default Respawn" offset="0xF4" visible="true" />
+			<stringId name="Spawn At Player Allowed Looking At Self" offset="0xF8" visible="true" />
+			<stringId name="Spawn At Player Allowed Looking At Target" offset="0xFC" visible="true" />
+			<stringId name="Spawn At Player Allowed Looking At Potential Target" offset="0x100" visible="true" />
+			<stringId name="Spawn At Territory Allowed Looking At Target" offset="0x104" visible="true" />
+			<stringId name="Spawn At Territory Allowed Looking At Potential Target" offset="0x108" visible="true" />
+			<stringId name="You Are Out Of Lives" offset="0x10C" visible="true" />
+			<stringId name="Invalid Spawn Target Selected" offset="0x110" visible="true" />
+			<stringId name="Targeted Player Enemies Nearby" offset="0x114" visible="true" />
+			<stringId name="Targeted Player Unfriendly Team" offset="0x118" visible="true" />
+			<stringId name="Targeted Player Dead" offset="0x11C" visible="true" />
+			<stringId name="Targeted Player In Combat" offset="0x120" visible="true" />
+			<stringId name="Targeted Player Too Far From Owned Flag" offset="0x124" visible="true" />
+			<stringId name="No Available Netpoints" offset="0x128" visible="true" />
+			<stringId name="Targeted Netpoint Contested" offset="0x12C" visible="true" />
+		</tagblock>
+		<tagblock name="State Responses" offset="0x8C" visible="true" elementSize="0xC">
+			<enum16 name="State" offset="0x0" visible="true">
+				<option name="Waiting For Space To Clear" value="0x0" />
+				<option name="Observing" value="0x1" />
+				<option name="Respawning Soon" value="0x2" />
+				<option name="Sitting Out" value="0x3" />
+				<option name="Out Of Lives" value="0x4" />
+				<option name="Playing (Winning)" value="0x5" />
+				<option name="Playing (Tied)" value="0x6" />
+				<option name="Playing (Losing)" value="0x7" />
+				<option name="Game Over (Won)" value="0x8" />
+				<option name="Game Over (Tied)" value="0x9" />
+				<option name="Game Over (Lost)" value="0xA" />
+				<option name="Game Over (You Lost, But Game Tied)" value="0xB" />
+				<option name="You Have Flag" value="0xC" />
+				<option name="Enemy Has Flag" value="0xD" />
+				<option name="Flag Not Home" value="0xE" />
+				<option name="Carrying Oddball" value="0xF" />
+				<option name="You Are Juggernaut" value="0x10" />
+				<option name="You Control Hill" value="0x11" />
+				<option name="Switching Sides Soon" value="0x12" />
+				<option name="Player Recently Started" value="0x13" />
+				<option name="You Have Bomb" value="0x14" />
+				<option name="Flag Contested" value="0x15" />
+				<option name="Bomb Contested" value="0x16" />
+				<option name="Limited Lives Left (Multiple)" value="0x17" />
+				<option name="Limited Lives Left (Single)" value="0x18" />
+				<option name="Limited Lives Left (Final)" value="0x19" />
+				<option name="Playing (Winning, Unlimited)" value="0x1A" />
+				<option name="Playing (Tied, Unlimited)" value="0x1B" />
+				<option name="Playing (Losing, Unlimited)" value="0x1C" />
+				<option name="Waiting To Spawn" value="0x1D" />
+				<option name="Waiting For Game Start" value="0x1E" />
+				<option name="Blank" value="0x1F" />
+			</enum16>
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<stringid name="Free for All Message" offset="0x4" visible="true" />
+			<stringId name="Team Message" offset="0x8" visible="true" />
+		</tagblock>
+		<tagref name="Hill Shader" offset="0x98" visible="true" />
+		<tagref name="Null Intro UI" offset="0xA8" visible="true" />
+		<tagRef name="Sandbox Intro UI" offset="0xB8" visible="true" />
+		<tagref name="Megalo Intro UI" offset="0xC8" visible="true" />
+		<tagref name="Campaign Intro UI" offset="0xD8" visible="true" />
+		<tagref name="Survival Intro UI" offset="0xE8" visible="true" />
+		<tagRef name="Default Biped Simulation Interpolation" offset="0xF8" visible="true" />
+		<tagRef name="Default Vehicle Simulation Interpolation" offset="0x108" visible="true" />
+		<tagRef name="Default Crate Simulation Interpolation" offset="0x118" visible="true" />
+		<tagRef name="Default Item Simulation Interpolation" offset="0x128" visible="true" />
+		<tagRef name="Default Projectile Simulation Interpolation" offset="0x138" visible="true" />
+		<tagRef name="Default Object Simulation Interpolation" offset="0x148" visible="true" />
+		<tagRef name="Co-Op Spawning Globals" offset="0x158" visible="true" />
+		<tagRef name="Megalo String ID Table" offset="0x168" visible="true" />
+	</tagblock>
+</plugin>
