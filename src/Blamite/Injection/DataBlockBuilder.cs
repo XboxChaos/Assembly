@@ -144,7 +144,7 @@ namespace Blamite.Injection
 		{
 			// haxhaxhaxhax
 			// TODO: Fix this if/when cross-tag references are added to plugins
-			var lowerName = name.ToLower();
+			var lowerName = name.ToLowerInvariant();
 			if (lowerName.Contains("asset salt")
 			    || lowerName.Contains("resource salt")
 			    || lowerName.Contains("asset datum salt")
@@ -163,7 +163,7 @@ namespace Blamite.Injection
 		{
 			// haxhaxhaxhax
 			// TODO: Fix this if/when cross-tag references are added to plugins
-			var lowerName = name.ToLower();
+			var lowerName = name.ToLowerInvariant();
 			if (lowerName.Contains("asset index")
 			    || lowerName.Contains("resource index")
 			    || lowerName.Contains("asset datum")
@@ -428,7 +428,7 @@ namespace Blamite.Injection
 		{
 			// haxhaxhaxhax
 			// TODO: Fix this if/when cross-tag references are added to plugins
-			var lowerName = name.ToLower();
+			var lowerName = name.ToLowerInvariant();
 			if (lowerName.Contains("asset index")
 				|| lowerName.Contains("resource index")
 				|| lowerName.Contains("asset datum")

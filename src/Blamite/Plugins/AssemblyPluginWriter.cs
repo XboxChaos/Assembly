@@ -229,15 +229,15 @@ namespace Blamite.Plugins
 			string element = "color32";
 
 			WriteValueStart(element, name, offset, visible, tooltip);
-			_output.WriteAttributeString("alpha", alpha.ToString().ToLower());
+			_output.WriteAttributeString("alpha", alpha.ToString().ToLowerInvariant());
 			_output.WriteEndElement();
 		}
 
 		public void VisitColorF(string name, uint offset, bool visible, bool alpha, bool basic, uint pluginLine, string tooltip)
 		{
 			WriteValueStart("colorf", name, offset, visible, tooltip);
-			_output.WriteAttributeString("alpha", alpha.ToString().ToLower());
-			_output.WriteAttributeString("basic", basic.ToString().ToLower());
+			_output.WriteAttributeString("alpha", alpha.ToString().ToLowerInvariant());
+			_output.WriteAttributeString("basic", basic.ToString().ToLowerInvariant());
 			_output.WriteEndElement();
 		}
 
@@ -320,7 +320,7 @@ namespace Blamite.Plugins
 			if (align != 4)
 				_output.WriteAttributeString("align", ToHexString(align));
 			if (sort == true)
-				_output.WriteAttributeString("sort", sort.ToString().ToLower());
+				_output.WriteAttributeString("sort", sort.ToString().ToLowerInvariant());
 			return true;
 		}
 
@@ -373,7 +373,7 @@ namespace Blamite.Plugins
 			_output.WriteStartElement(element);
 			_output.WriteAttributeString("name", name);
 			_output.WriteAttributeString("offset", ToHexString(offset));
-			_output.WriteAttributeString("visible", visible.ToString().ToLower());
+			_output.WriteAttributeString("visible", visible.ToString().ToLowerInvariant());
 			if (!string.IsNullOrEmpty(tooltip))
 				_output.WriteAttributeString("tooltip", tooltip);
 		}

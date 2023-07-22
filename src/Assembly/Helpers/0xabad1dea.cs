@@ -70,7 +70,7 @@ namespace Assembly.Helpers
 				var keey = new KeyConverter();
 				string convertToString = keey.ConvertToString(null, Thread.CurrentThread.CurrentUICulture, key);
 				if (convertToString != null)
-					histroyOfEggs.Insert(0, convertToString.ToLower().ToCharArray()[0]);
+					histroyOfEggs.Insert(0, convertToString.ToLowerInvariant().ToCharArray()[0]);
 
 				ValidateHistory();
 			}
@@ -79,7 +79,7 @@ namespace Assembly.Helpers
 			{
 				char[] fakeHistory = histroyOfEggs.ToArray();
 				Array.Reverse(fakeHistory);
-				string realHistory = new string(fakeHistory).ToLower();
+				string realHistory = new string(fakeHistory).ToLowerInvariant();
 
 				if (realHistory.EndsWith("comic"))
 					try

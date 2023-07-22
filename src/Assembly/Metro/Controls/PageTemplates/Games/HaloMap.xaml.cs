@@ -1994,7 +1994,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			return
 				contentTabs.Items.Cast<CloseableTabItem>()
-					.Any(tab => ((ContentControl) tab.Header).Content.ToString().ToLower() == tabTitle.ToLower());
+					.Any(tab => ((ContentControl) tab.Header).Content.ToString().ToLowerInvariant() == tabTitle.ToLowerInvariant());
 		}
 
 		/// <summary>
@@ -2018,7 +2018,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			foreach (
 				CloseableTabItem tabb in
 					contentTabs.Items.Cast<CloseableTabItem>()
-						.Where(tabb => ((ContentControl) tabb.Header).Content.ToString().ToLower() == tabTitle.ToLower()))
+						.Where(tabb => ((ContentControl) tabb.Header).Content.ToString().ToLowerInvariant() == tabTitle.ToLowerInvariant()))
 				tab = tabb;
 
 			if (tab != null)
@@ -2220,7 +2220,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				return;
 
 			string filter = "";
-			Dispatcher.Invoke(new Action(delegate { filter = txtTagSearch.Text.ToLower(); }));
+			Dispatcher.Invoke(new Action(delegate { filter = txtTagSearch.Text.ToLowerInvariant(); }));
 
 			_visibleTags = BuildTagHierarchy(
 				c => FilterGroup(c, filter),
@@ -2278,12 +2278,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			{
 				// Datum search
 				string searchHex = filter.Substring(2);
-				if (tag.RawTag.Index.ToString().ToLower().Substring(2).Contains(searchHex))
+				if (tag.RawTag.Index.ToString().ToLowerInvariant().Substring(2).Contains(searchHex))
 					return true;
 			}
 
 			// Name search
-			return tag.TagFileName.ToLower().Contains(filter) || tag.GroupName.ToLower().Contains(filter);
+			return tag.TagFileName.ToLowerInvariant().Contains(filter) || tag.GroupName.ToLowerInvariant().Contains(filter);
 		}
 
 		#endregion
