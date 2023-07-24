@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo1OS" baseSize="0x24">
+	<revisions>
+		<revision author="Lord Zedd" version="1">ayy lmao</revision>
+	</revisions>
+	<tagblock name="Targets" offset="0x0" visible="true" elementSize="0xAC">
+		<ascii name="Target Name" offset="0x0" size="0x20" visible="true" />
+		<flags16 name="Flags" offset="0x20" visible="true">
+			<bit name="Try To Use Existing Unit" index="0" />
+			<bit name="Drop Weapon" index="1" />
+			<bit name="Inherit Seated Units" index="2" />
+			<bit name="Delete Attached Actors" index="3" />
+		</flags16>
+		<int16 name="Unknown" offset="0x22" visible="false" />
+		<float32 name="Easy Selection Chance" offset="0x24" visible="true" />
+		<float32 name="Normal Selection Chance" offset="0x28" visible="true" />
+		<float32 name="Hard Selection Chance" offset="0x2C" visible="true" />
+		<float32 name="Impossible Selection Chance" offset="0x30" visible="true" />
+		<comment title="AI" />
+		<tagRef name="Actor Variant" offset="0x34" visible="true" />
+		<enum16 name="Encounter/Squad Handling" offset="0x44" visible="true">
+			<option name="Inherit From Old Unit" value="0x0" />
+			<option name="Inherit From Attacker" value="0x1" />
+			<option name="Free Actor" value="0x2" />
+		</enum16>
+		<int16 name="Unknown" offset="0x46" visible="false" />
+		<enum16 name="Team Handling" offset="0x48" visible="true">
+			<option name="Inherit From Old Unit" value="0x0" />
+			<option name="Inherit From Attacker" value="0x1" />
+			<option name="Override" value="0x2" />
+		</enum16>
+		<enum16 name="Team Override" offset="0x4A" visible="true">
+			<option name="Unit Default" value="0x0" />
+			<option name="Player" value="0x1" />
+			<option name="Human" value="0x2" />
+			<option name="Covenant" value="0x3" />
+			<option name="Flood" value="0x4" />
+			<option name="Sentinel" value="0x5" />
+			<option name="Unused" value="0x6" />
+			<option name="Unused" value="0x7" />
+			<option name="Unused" value="0x8" />
+			<option name="Unused" value="0x9" />
+		</enum16>
+		<enum16 name="Initial State Handling" offset="0x4C" visible="true">
+			<option name="Inherit" value="0x0" />
+			<option name="Override" value="0x1" />
+		</enum16>
+		<enum16 name="Initial State Override" offset="0x4E" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Sleeping" value="0x1" />
+			<option name="Alert" value="0x2" />
+			<option name="Moving Repeat Same Position" value="0x3" />
+			<option name="Moving Loop" value="0x4" />
+			<option name="Moving Loop Back And Forth" value="0x5" />
+			<option name="Moving Loop Randomly" value="0x6" />
+			<option name="Moving Randomly" value="0x7" />
+			<option name="Guarding" value="0x8" />
+			<option name="Guarding At Guard Position" value="0x9" />
+			<option name="Searching" value="0xA" />
+			<option name="Fleeing" value="0xB" />
+		</enum16>
+		<enum16 name="Return State Handling" offset="0x50" visible="true">
+			<option name="Inherit" value="0x0" />
+			<option name="Override" value="0x1" />
+			<option name="Actor Default" value="0x2" />
+		</enum16>
+		<enum16 name="Return State Override" offset="0x52" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Sleeping" value="0x1" />
+			<option name="Alert" value="0x2" />
+			<option name="Moving Repeat Same Position" value="0x3" />
+			<option name="Moving Loop" value="0x4" />
+			<option name="Moving Loop Back And Forth" value="0x5" />
+			<option name="Moving Loop Randomly" value="0x6" />
+			<option name="Moving Randomly" value="0x7" />
+			<option name="Guarding" value="0x8" />
+			<option name="Guarding At Guard Position" value="0x9" />
+			<option name="Searching" value="0xA" />
+			<option name="Fleeing" value="0xB" />
+		</enum16>
+		<int16 name="Unknown" offset="0x54" visible="false" />
+		<int16 name="Unknown" offset="0x56" visible="false" />
+		<comment title="Animation">Played immediately after the old unit's transform out animation. The new actor is made braindead during the animation, and will be invincible until it ends.</comment>
+		<ascii name="Transform In Anim" offset="0x58" size="0x20" visible="true" />
+		<tagblock name="Keyframe Actions" offset="0x78" visible="true" elementSize="0x48">
+			<enum16 name="Keyframe" offset="0x0" visible="true">
+				<option name="Primary" value="0x0" />
+				<option name="Secondary" value="0x1" />
+				<option name="Final" value="0x2" />
+			</enum16>
+			<enum16 name="Rider Handling" offset="0x2" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Kill" value="0x1" />
+				<option name="Eject" value="0x2" />
+			</enum16>
+			<enum16 name="Target" offset="0x4" visible="true">
+				<option name="Self" value="0x0" />
+				<option name="Riders" value="0x1" />
+			</enum16>
+			<int16 name="Unknown" offset="0x6" visible="false" />
+			<tagRef name="Damage Effect" offset="0x8" visible="true" />
+			<tagRef name="Effect" offset="0x18" visible="true" />
+			<ascii name="Effect Marker" offset="0x28" size="0x20" visible="true" />
+		</tagblock>
+		<comment title="Vitality" />
+		<undefined name="Unknown" offset="0x84" visible="false" />
+		<enum16 name="Vitality Inheritance" offset="0x88" visible="true">
+			<option name="Neither" value="0x0" />
+			<option name="Both" value="0x1" />
+			<option name="Shield Only" value="0x2" />
+			<option name="Health Only" value="0x3" />
+		</enum16>
+		<enum16 name="Vitality Override" offset="0x8A" visible="true">
+			<option name="Neither" value="0x0" />
+			<option name="Both" value="0x1" />
+			<option name="Shield Only" value="0x2" />
+			<option name="Health Only" value="0x3" />
+		</enum16>
+		<float32 name="Shield Override" offset="0x8C" visible="true" />
+		<float32 name="Health Override" offset="0x90" visible="true" />
+		<undefined name="Unknown" offset="0x94" visible="false" />
+		<undefined name="Unknown" offset="0x98" visible="false" />
+		<undefined name="Unknown" offset="0x9C" visible="false" />
+		<undefined name="Unknown" offset="0xA0" visible="false" />
+		<undefined name="Unknown" offset="0xA4" visible="false" />
+		<undefined name="Unknown" offset="0xA8" visible="false" />
+	</tagblock>
+	<undefined name="Unknown" offset="0xC" visible="false" />
+	<undefined name="Unknown" offset="0x10" visible="false" />
+	<undefined name="Unknown" offset="0x14" visible="false" />
+	<undefined name="Unknown" offset="0x18" visible="false" />
+	<undefined name="Unknown" offset="0x1C" visible="false" />
+	<undefined name="Unknown" offset="0x20" visible="false" />
+</plugin>

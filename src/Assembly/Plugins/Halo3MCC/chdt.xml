@@ -48,9 +48,9 @@ Output values are what actually pipes into the shader. you can output external o
 			<option name="Inherited" value="0x6" />
 			<option name="Saved Film" value="0x7" />
 		</enum8>
-		<tagblock name="State Data" offset="0x8" visible="true" elementSize="0x28">
+		<tagblock name="State Data" offset="0x8" visible="true" elementSize="0x2C">
 			<comment title="Global" />
-			<flags16 name="Game State" offset="0x0" visible="true">
+			<flags32 name="Game State" offset="0x0" visible="true">
 				<bit name="Campaign Solo" index="0" />
 				<bit name="Campaign Coop" index="1" />
 				<bit name="Multi FFA" index="2" />
@@ -64,16 +64,24 @@ Output values are what actually pipes into the shader. you can output external o
 				<bit name="MP Assault" index="10" />
 				<bit name="MP VIP" index="11" />
 				<bit name="MP Infection" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="MP Sandbox" index="14" />
-				<bit name="Film Playback" index="15" />
-			</flags16>
-			<flags16 name="Skin State" offset="0x2" visible="true">
+				<bit name="MP Sandbox" index="13" />
+				<bit name="Film Playback" index="14" />
+				<bit name="Campaign Survival" index="15" />
+				<bit name="MP Gun Game" index="16" />
+			</flags32>
+			<flags16 name="Skin State" offset="0x4" visible="true">
 				<bit name="Spartan" index="0" />
 				<bit name="Elite" index="1" />
 				<bit name="Monitor" index="2" />
 			</flags16>
-			<flags16 name="Game Team" offset="0x4" visible="true">
+			<flags16 name="Sandbox State" offset="0x6" visible="true">
+				<bit name="Default Crosshair" index="0" />
+				<bit name="Active Crosshair" index="1" />
+				<bit name="Manipulation Crosshair" index="2" />
+				<bit name="Not-Allowed Crosshair" index="3" />
+				<bit name="Budget Available" index="4" />
+			</flags16>
+			<flags16 name="Game Team" offset="0x8" visible="true">
 				<bit name="Offense" index="0" />
 				<bit name="Defense" index="1" />
 				<bit name="Doesn't Apply" index="2" />
@@ -86,7 +94,7 @@ Output values are what actually pipes into the shader. you can output external o
 				<bit name="VOICE Open" index="9" />
 				<bit name="VOICE Open Brdcst" index="10" />
 			</flags16>
-			<flags16 name="Window State" offset="0x6" visible="true">
+			<flags16 name="Window State" offset="0xA" visible="true">
 				<bit name="720p Fullscreen" index="0" />
 				<bit name="720p Halfscreen" index="1" />
 				<bit name="480p Fullscreen" index="2" />
@@ -96,7 +104,7 @@ Output values are what actually pipes into the shader. you can output external o
 				<bit name="480p Quarterscreen" index="6" />
 				<bit name="480i Quarterscreen" index="7" />
 			</flags16>
-			<flags16 name="Game Engine State" offset="0x8" visible="true">
+			<flags16 name="Game Engine State" offset="0xC" visible="true">
 				<bit name="Friendly Score Available" index="0" />
 				<bit name="Enemy Score Available" index="1" />
 				<bit name="Variant Name Available" index="2" />
@@ -111,7 +119,7 @@ Output values are what actually pipes into the shader. you can output external o
 				<bit name="Round Start Period" index="11" />
 				<bit name="Test Enabled" index="12" />
 			</flags16>
-			<flags16 name="Misc State" offset="0xA" visible="true">
+			<flags16 name="Misc State" offset="0xE" visible="true">
 				<bit name="Texture Cam Available" index="0" />
 				<bit name="Sniper Flava Available" index="1" />
 				<bit name="Saved Film Recording Mode" index="2" />
@@ -119,14 +127,7 @@ Output values are what actually pipes into the shader. you can output external o
 				<bit name="Player Training Available" index="4" />
 				<bit name="Campaign Objective Available" index="5" />
 			</flags16>
-			<flags16 name="Sandbox State" offset="0xC" visible="true">
-				<bit name="Default Crosshair" index="0" />
-				<bit name="Active Crosshair" index="1" />
-				<bit name="Manipulation Crosshair" index="2" />
-				<bit name="Not-Allowed Crosshair" index="3" />
-				<bit name="Budget Available" index="4" />
-			</flags16>
-			<flags16 name="Hindsight State" offset="0xE" visible="true">
+			<flags32 name="Hindsight State" offset="0x10" visible="true">
 				<bit name="Sensor Range 10m" index="0" />
 				<bit name="Sensor Range 25m" index="1" />
 				<bit name="Sensor Range 75m" index="2" />
@@ -142,9 +143,9 @@ Output values are what actually pipes into the shader. you can output external o
 				<bit name="Metagame Transient Score" index="12" />
 				<bit name="Metagame Multikill" index="13" />
 				<bit name="Metagame Negative Score" index="14" />
-			</flags16>
+			</flags32>
 			<comment title="Unit" />
-			<flags16 name="Unit Impulse State" offset="0x10" visible="true">
+			<flags16 name="Unit Impulse State" offset="0x14" visible="true">
 				<bit name="Grenade Human Pickup" index="0" />
 				<bit name="Grenade Plasma Pickup" index="1" />
 				<bit name="Grenade Brute Pickup" index="2" />
@@ -155,18 +156,18 @@ Output values are what actually pipes into the shader. you can output external o
 				<bit name="Zoom 1 To 0" index="7" />
 				<bit name="Zoom 2 To 0" index="8" />
 			</flags16>
-			<flags16 name="Unit Zoom State" offset="0x12" visible="true">
+			<flags16 name="Unit Zoom State" offset="0x16" visible="true">
 				<bit name="Unzoomed" index="0" />
 				<bit name="Zoom Lvl 1" index="1" />
 				<bit name="Zoom Lvl 2" index="2" />
 			</flags16>
-			<flags16 name="Unit Armed State" offset="0x14" visible="true">
+			<flags16 name="Unit Armed State" offset="0x18" visible="true">
 				<bit name="Unarmed" index="0" />
 				<bit name="Single Wielding" index="1" />
 				<bit name="Dual Wielding" index="2" />
 				<bit name="Support Weapon" index="3" />
 			</flags16>
-			<flags16 name="Unit Misc State" offset="0x16" visible="true">
+			<flags16 name="Unit Misc State" offset="0x1A" visible="true">
 				<bit name="Motion Sensor Enabled" index="0" />
 				<bit name="Motion Sensor Disabled" index="1" />
 				<bit name="Human Gren Selected" index="2" />
@@ -185,18 +186,18 @@ Output values are what actually pipes into the shader. you can output external o
 				<bit name="Shield Available" index="15" />
 			</flags16>
 			<comment title="Weapon" />
-			<flags16 name="Weapon Impulse State" offset="0x18" visible="true">
+			<flags16 name="Weapon Impulse State" offset="0x1C" visible="true">
 				<bit name="Ammo Used" index="0" />
 				<bit name="Ammo Pickup" index="1" />
 				<bit name="Ammo Threshold" index="2" />
 			</flags16>
-			<flags16 name="Weapon Armed State" offset="0x1A" visible="true">
+			<flags16 name="Weapon Armed State" offset="0x1E" visible="true">
 				<bit name="Right Hand" index="0" />
 				<bit name="Left Hand" index="1" />
 				<bit name="Backpack" index="2" />
 				<bit name="Hidden" index="3" />
 			</flags16>
-			<flags16 name="Weapon Crosshair State" offset="0x1C" visible="true">
+			<flags16 name="Weapon Crosshair State" offset="0x20" visible="true">
 				<bit name="Normal" index="0" />
 				<bit name="Friendly" index="1" />
 				<bit name="Enemy" index="2" />
@@ -207,21 +208,27 @@ Output values are what actually pipes into the shader. you can output external o
 				<bit name="Plasma Track" index="7" />
 				<bit name="Lock Unavailable" index="8" />
 			</flags16>
-			<flags16 name="Weapon Misc State" offset="0x1E" visible="true">
+			<flags16 name="Weapon Misc State" offset="0x22" visible="true">
 				<bit name="Locking On Available" index="0" />
 				<bit name="Locked On Available" index="1" />
 				<bit name="Locked On Unavailable" index="2" />
 			</flags16>
 			<comment title="Flash" />
-			<flags16 name="Non Weapon Flash" offset="0x20" visible="true">
+			<flags16 name="Non Weapon Flash" offset="0x24" visible="true">
 				<bit name="Shield Low" index="0" />
 				<bit name="Shield Empty" index="1" />
-				<bit name="Frag Empty" index="2" />
-				<bit name="Plasma Empty" index="3" />
-				<bit name="Claymore Empty" index="4" />
-				<bit name="Firebomb Empty" index="5" />
+				<bit name="Health Minor" index="2" />
+				<bit name="Health Major" index="3" />
+				<bit name="Health Critical" index="4" />
+				<bit name="Shield Minor" index="5" />
+				<bit name="Shield Major" index="6" />
+				<bit name="Shield Critical" index="7" />
+				<bit name="Frag Empty" index="8" />
+				<bit name="Plasma Empty" index="9" />
+				<bit name="Claymore Empty" index="10" />
+				<bit name="Firebomb Empty" index="11" />
 			</flags16>
-			<flags16 name="Weapon Flash" offset="0x22" visible="true">
+			<flags16 name="Weapon Flash" offset="0x26" visible="true">
 				<bit name="Ammo Loaded Low" index="0" />
 				<bit name="Ammo Loaded Empty" index="1" />
 				<bit name="Ammo Reserve Low" index="2" />
@@ -231,12 +238,12 @@ Output values are what actually pipes into the shader. you can output external o
 				<bit name="Overheating" index="6" />
 			</flags16>
 			<comment title="Misc" />
-			<flags16 name="Hidden State" offset="0x24" visible="true">
+			<flags16 name="Hidden State" offset="0x28" visible="true">
 				<bit name="Zoomed" index="0" />
 				<bit name="Grenades Unusable" index="1" />
 				<bit name="Backpack Weapon Unavailable" index="2" />
 			</flags16>
-			<int16 name="Unknown" offset="0x26" visible="false" />
+			<int16 name="Unknown" offset="0x2A" visible="false" />
 		</tagblock>
 		<tagblock name="Placement Data" offset="0x14" visible="true" elementSize="0x1C">
 			<enum16 name="Anchor Type" offset="0x0" visible="true">
@@ -854,9 +861,9 @@ Output values are what actually pipes into the shader. you can output external o
 				<option name="Inherited" value="0x6" />
 				<option name="Saved Film" value="0x7" />
 			</enum8>
-			<tagblock name="State Data" offset="0x8" visible="true" elementSize="0x28">
+			<tagblock name="State Data" offset="0x8" visible="true" elementSize="0x2C">
 				<comment title="Global" />
-				<flags16 name="Game State" offset="0x0" visible="true">
+				<flags32 name="Game State" offset="0x0" visible="true">
 					<bit name="Campaign Solo" index="0" />
 					<bit name="Campaign Coop" index="1" />
 					<bit name="Multi FFA" index="2" />
@@ -870,16 +877,24 @@ Output values are what actually pipes into the shader. you can output external o
 					<bit name="MP Assault" index="10" />
 					<bit name="MP VIP" index="11" />
 					<bit name="MP Infection" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="MP Sandbox" index="14" />
-					<bit name="Film Playback" index="15" />
-				</flags16>
-				<flags16 name="Skin State" offset="0x2" visible="true">
+					<bit name="MP Sandbox" index="13" />
+					<bit name="Film Playback" index="14" />
+					<bit name="Campaign Survival" index="15" />
+					<bit name="MP Gun Game" index="16" />
+				</flags32>
+				<flags16 name="Skin State" offset="0x4" visible="true">
 					<bit name="Spartan" index="0" />
 					<bit name="Elite" index="1" />
 					<bit name="Monitor" index="2" />
 				</flags16>
-				<flags16 name="Game Team" offset="0x4" visible="true">
+				<flags16 name="Sandbox State" offset="0x6" visible="true">
+					<bit name="Default Crosshair" index="0" />
+					<bit name="Active Crosshair" index="1" />
+					<bit name="Manipulation Crosshair" index="2" />
+					<bit name="Not-Allowed Crosshair" index="3" />
+					<bit name="Budget Available" index="4" />
+				</flags16>
+				<flags16 name="Game Team" offset="0x8" visible="true">
 					<bit name="Offense" index="0" />
 					<bit name="Defense" index="1" />
 					<bit name="Doesn't Apply" index="2" />
@@ -892,7 +907,7 @@ Output values are what actually pipes into the shader. you can output external o
 					<bit name="VOICE Open" index="9" />
 					<bit name="VOICE Open Brdcst" index="10" />
 				</flags16>
-				<flags16 name="Window State" offset="0x6" visible="true">
+				<flags16 name="Window State" offset="0xA" visible="true">
 					<bit name="720p Fullscreen" index="0" />
 					<bit name="720p Halfscreen" index="1" />
 					<bit name="480p Fullscreen" index="2" />
@@ -902,7 +917,7 @@ Output values are what actually pipes into the shader. you can output external o
 					<bit name="480p Quarterscreen" index="6" />
 					<bit name="480i Quarterscreen" index="7" />
 				</flags16>
-				<flags16 name="Game Engine State" offset="0x8" visible="true">
+				<flags16 name="Game Engine State" offset="0xC" visible="true">
 					<bit name="Friendly Score Available" index="0" />
 					<bit name="Enemy Score Available" index="1" />
 					<bit name="Variant Name Available" index="2" />
@@ -917,7 +932,7 @@ Output values are what actually pipes into the shader. you can output external o
 					<bit name="Round Start Period" index="11" />
 					<bit name="Test Enabled" index="12" />
 				</flags16>
-				<flags16 name="Misc State" offset="0xA" visible="true">
+				<flags16 name="Misc State" offset="0xE" visible="true">
 					<bit name="Texture Cam Available" index="0" />
 					<bit name="Sniper Flava Available" index="1" />
 					<bit name="Saved Film Recording Mode" index="2" />
@@ -925,14 +940,7 @@ Output values are what actually pipes into the shader. you can output external o
 					<bit name="Player Training Available" index="4" />
 					<bit name="Campaign Objective Available" index="5" />
 				</flags16>
-				<flags16 name="Sandbox State" offset="0xC" visible="true">
-					<bit name="Default Crosshair" index="0" />
-					<bit name="Active Crosshair" index="1" />
-					<bit name="Manipulation Crosshair" index="2" />
-					<bit name="Not-Allowed Crosshair" index="3" />
-					<bit name="Budget Available" index="4" />
-				</flags16>
-				<flags16 name="Hindsight State" offset="0xE" visible="true">
+				<flags32 name="Hindsight State" offset="0x10" visible="true">
 					<bit name="Sensor Range 10m" index="0" />
 					<bit name="Sensor Range 25m" index="1" />
 					<bit name="Sensor Range 75m" index="2" />
@@ -948,9 +956,9 @@ Output values are what actually pipes into the shader. you can output external o
 					<bit name="Metagame Transient Score" index="12" />
 					<bit name="Metagame Multikill" index="13" />
 					<bit name="Metagame Negative Score" index="14" />
-				</flags16>
+				</flags32>
 				<comment title="Unit" />
-				<flags16 name="Unit Impulse State" offset="0x10" visible="true">
+				<flags16 name="Unit Impulse State" offset="0x14" visible="true">
 					<bit name="Grenade Human Pickup" index="0" />
 					<bit name="Grenade Plasma Pickup" index="1" />
 					<bit name="Grenade Brute Pickup" index="2" />
@@ -961,18 +969,18 @@ Output values are what actually pipes into the shader. you can output external o
 					<bit name="Zoom 1 To 0" index="7" />
 					<bit name="Zoom 2 To 0" index="8" />
 				</flags16>
-				<flags16 name="Unit Zoom State" offset="0x12" visible="true">
+				<flags16 name="Unit Zoom State" offset="0x16" visible="true">
 					<bit name="Unzoomed" index="0" />
 					<bit name="Zoom Lvl 1" index="1" />
 					<bit name="Zoom Lvl 2" index="2" />
 				</flags16>
-				<flags16 name="Unit Armed State" offset="0x14" visible="true">
+				<flags16 name="Unit Armed State" offset="0x18" visible="true">
 					<bit name="Unarmed" index="0" />
 					<bit name="Single Wielding" index="1" />
 					<bit name="Dual Wielding" index="2" />
 					<bit name="Support Weapon" index="3" />
 				</flags16>
-				<flags16 name="Unit Misc State" offset="0x16" visible="true">
+				<flags16 name="Unit Misc State" offset="0x1A" visible="true">
 					<bit name="Motion Sensor Enabled" index="0" />
 					<bit name="Motion Sensor Disabled" index="1" />
 					<bit name="Human Gren Selected" index="2" />
@@ -991,18 +999,18 @@ Output values are what actually pipes into the shader. you can output external o
 					<bit name="Shield Available" index="15" />
 				</flags16>
 				<comment title="Weapon" />
-				<flags16 name="Weapon Impulse State" offset="0x18" visible="true">
+				<flags16 name="Weapon Impulse State" offset="0x1C" visible="true">
 					<bit name="Ammo Used" index="0" />
 					<bit name="Ammo Pickup" index="1" />
 					<bit name="Ammo Threshold" index="2" />
 				</flags16>
-				<flags16 name="Weapon Armed State" offset="0x1A" visible="true">
+				<flags16 name="Weapon Armed State" offset="0x1E" visible="true">
 					<bit name="Right Hand" index="0" />
 					<bit name="Left Hand" index="1" />
 					<bit name="Backpack" index="2" />
 					<bit name="Hidden" index="3" />
 				</flags16>
-				<flags16 name="Weapon Crosshair State" offset="0x1C" visible="true">
+				<flags16 name="Weapon Crosshair State" offset="0x20" visible="true">
 					<bit name="Normal" index="0" />
 					<bit name="Friendly" index="1" />
 					<bit name="Enemy" index="2" />
@@ -1013,21 +1021,27 @@ Output values are what actually pipes into the shader. you can output external o
 					<bit name="Plasma Track" index="7" />
 					<bit name="Lock Unavailable" index="8" />
 				</flags16>
-				<flags16 name="Weapon Misc State" offset="0x1E" visible="true">
+				<flags16 name="Weapon Misc State" offset="0x22" visible="true">
 					<bit name="Locking On Available" index="0" />
 					<bit name="Locked On Available" index="1" />
 					<bit name="Locked On Unavailable" index="2" />
 				</flags16>
 				<comment title="Flash" />
-				<flags16 name="Non Weapon Flash" offset="0x20" visible="true">
+				<flags16 name="Non Weapon Flash" offset="0x24" visible="true">
 					<bit name="Shield Low" index="0" />
 					<bit name="Shield Empty" index="1" />
-					<bit name="Frag Empty" index="2" />
-					<bit name="Plasma Empty" index="3" />
-					<bit name="Claymore Empty" index="4" />
-					<bit name="Firebomb Empty" index="5" />
+					<bit name="Health Minor" index="2" />
+					<bit name="Health Major" index="3" />
+					<bit name="Health Critical" index="4" />
+					<bit name="Shield Minor" index="5" />
+					<bit name="Shield Major" index="6" />
+					<bit name="Shield Critical" index="7" />
+					<bit name="Frag Empty" index="8" />
+					<bit name="Plasma Empty" index="9" />
+					<bit name="Claymore Empty" index="10" />
+					<bit name="Firebomb Empty" index="11" />
 				</flags16>
-				<flags16 name="Weapon Flash" offset="0x22" visible="true">
+				<flags16 name="Weapon Flash" offset="0x26" visible="true">
 					<bit name="Ammo Loaded Low" index="0" />
 					<bit name="Ammo Loaded Empty" index="1" />
 					<bit name="Ammo Reserve Low" index="2" />
@@ -1037,12 +1051,12 @@ Output values are what actually pipes into the shader. you can output external o
 					<bit name="Overheating" index="6" />
 				</flags16>
 				<comment title="Misc" />
-				<flags16 name="Hidden State" offset="0x24" visible="true">
+				<flags16 name="Hidden State" offset="0x28" visible="true">
 					<bit name="Zoomed" index="0" />
 					<bit name="Grenades Unusable" index="1" />
 					<bit name="Backpack Weapon Unavailable" index="2" />
 				</flags16>
-				<int16 name="Unknown" offset="0x26" visible="false" />
+				<int16 name="Unknown" offset="0x2A" visible="false" />
 			</tagblock>
 			<tagblock name="Placement Data" offset="0x14" visible="true" elementSize="0x1C">
 				<enum16 name="Anchor Type" offset="0x0" visible="true">
@@ -1681,9 +1695,9 @@ Output values are what actually pipes into the shader. you can output external o
 				<option name="Inherited" value="0x6" />
 				<option name="Saved Film" value="0x7" />
 			</enum8>
-			<tagblock name="State Data" offset="0x8" visible="true" elementSize="0x28">
+			<tagblock name="State Data" offset="0x8" visible="true" elementSize="0x2C">
 				<comment title="Global" />
-				<flags16 name="Game State" offset="0x0" visible="true">
+				<flags32 name="Game State" offset="0x0" visible="true">
 					<bit name="Campaign Solo" index="0" />
 					<bit name="Campaign Coop" index="1" />
 					<bit name="Multi FFA" index="2" />
@@ -1697,16 +1711,24 @@ Output values are what actually pipes into the shader. you can output external o
 					<bit name="MP Assault" index="10" />
 					<bit name="MP VIP" index="11" />
 					<bit name="MP Infection" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="MP Sandbox" index="14" />
-					<bit name="Film Playback" index="15" />
-				</flags16>
-				<flags16 name="Skin State" offset="0x2" visible="true">
+					<bit name="MP Sandbox" index="13" />
+					<bit name="Film Playback" index="14" />
+					<bit name="Campaign Survival" index="15" />
+					<bit name="MP Gun Game" index="16" />
+				</flags32>
+				<flags16 name="Skin State" offset="0x4" visible="true">
 					<bit name="Spartan" index="0" />
 					<bit name="Elite" index="1" />
 					<bit name="Monitor" index="2" />
 				</flags16>
-				<flags16 name="Game Team" offset="0x4" visible="true">
+				<flags16 name="Sandbox State" offset="0x6" visible="true">
+					<bit name="Default Crosshair" index="0" />
+					<bit name="Active Crosshair" index="1" />
+					<bit name="Manipulation Crosshair" index="2" />
+					<bit name="Not-Allowed Crosshair" index="3" />
+					<bit name="Budget Available" index="4" />
+				</flags16>
+				<flags16 name="Game Team" offset="0x8" visible="true">
 					<bit name="Offense" index="0" />
 					<bit name="Defense" index="1" />
 					<bit name="Doesn't Apply" index="2" />
@@ -1719,7 +1741,7 @@ Output values are what actually pipes into the shader. you can output external o
 					<bit name="VOICE Open" index="9" />
 					<bit name="VOICE Open Brdcst" index="10" />
 				</flags16>
-				<flags16 name="Window State" offset="0x6" visible="true">
+				<flags16 name="Window State" offset="0xA" visible="true">
 					<bit name="720p Fullscreen" index="0" />
 					<bit name="720p Halfscreen" index="1" />
 					<bit name="480p Fullscreen" index="2" />
@@ -1729,7 +1751,7 @@ Output values are what actually pipes into the shader. you can output external o
 					<bit name="480p Quarterscreen" index="6" />
 					<bit name="480i Quarterscreen" index="7" />
 				</flags16>
-				<flags16 name="Game Engine State" offset="0x8" visible="true">
+				<flags16 name="Game Engine State" offset="0xC" visible="true">
 					<bit name="Friendly Score Available" index="0" />
 					<bit name="Enemy Score Available" index="1" />
 					<bit name="Variant Name Available" index="2" />
@@ -1744,7 +1766,7 @@ Output values are what actually pipes into the shader. you can output external o
 					<bit name="Round Start Period" index="11" />
 					<bit name="Test Enabled" index="12" />
 				</flags16>
-				<flags16 name="Misc State" offset="0xA" visible="true">
+				<flags16 name="Misc State" offset="0xE" visible="true">
 					<bit name="Texture Cam Available" index="0" />
 					<bit name="Sniper Flava Available" index="1" />
 					<bit name="Saved Film Recording Mode" index="2" />
@@ -1752,14 +1774,7 @@ Output values are what actually pipes into the shader. you can output external o
 					<bit name="Player Training Available" index="4" />
 					<bit name="Campaign Objective Available" index="5" />
 				</flags16>
-				<flags16 name="Sandbox State" offset="0xC" visible="true">
-					<bit name="Default Crosshair" index="0" />
-					<bit name="Active Crosshair" index="1" />
-					<bit name="Manipulation Crosshair" index="2" />
-					<bit name="Not-Allowed Crosshair" index="3" />
-					<bit name="Budget Available" index="4" />
-				</flags16>
-				<flags16 name="Hindsight State" offset="0xE" visible="true">
+				<flags32 name="Hindsight State" offset="0x10" visible="true">
 					<bit name="Sensor Range 10m" index="0" />
 					<bit name="Sensor Range 25m" index="1" />
 					<bit name="Sensor Range 75m" index="2" />
@@ -1775,9 +1790,9 @@ Output values are what actually pipes into the shader. you can output external o
 					<bit name="Metagame Transient Score" index="12" />
 					<bit name="Metagame Multikill" index="13" />
 					<bit name="Metagame Negative Score" index="14" />
-				</flags16>
+				</flags32>
 				<comment title="Unit" />
-				<flags16 name="Unit Impulse State" offset="0x10" visible="true">
+				<flags16 name="Unit Impulse State" offset="0x14" visible="true">
 					<bit name="Grenade Human Pickup" index="0" />
 					<bit name="Grenade Plasma Pickup" index="1" />
 					<bit name="Grenade Brute Pickup" index="2" />
@@ -1788,18 +1803,18 @@ Output values are what actually pipes into the shader. you can output external o
 					<bit name="Zoom 1 To 0" index="7" />
 					<bit name="Zoom 2 To 0" index="8" />
 				</flags16>
-				<flags16 name="Unit Zoom State" offset="0x12" visible="true">
+				<flags16 name="Unit Zoom State" offset="0x16" visible="true">
 					<bit name="Unzoomed" index="0" />
 					<bit name="Zoom Lvl 1" index="1" />
 					<bit name="Zoom Lvl 2" index="2" />
 				</flags16>
-				<flags16 name="Unit Armed State" offset="0x14" visible="true">
+				<flags16 name="Unit Armed State" offset="0x18" visible="true">
 					<bit name="Unarmed" index="0" />
 					<bit name="Single Wielding" index="1" />
 					<bit name="Dual Wielding" index="2" />
 					<bit name="Support Weapon" index="3" />
 				</flags16>
-				<flags16 name="Unit Misc State" offset="0x16" visible="true">
+				<flags16 name="Unit Misc State" offset="0x1A" visible="true">
 					<bit name="Motion Sensor Enabled" index="0" />
 					<bit name="Motion Sensor Disabled" index="1" />
 					<bit name="Human Gren Selected" index="2" />
@@ -1818,18 +1833,18 @@ Output values are what actually pipes into the shader. you can output external o
 					<bit name="Shield Available" index="15" />
 				</flags16>
 				<comment title="Weapon" />
-				<flags16 name="Weapon Impulse State" offset="0x18" visible="true">
+				<flags16 name="Weapon Impulse State" offset="0x1C" visible="true">
 					<bit name="Ammo Used" index="0" />
 					<bit name="Ammo Pickup" index="1" />
 					<bit name="Ammo Threshold" index="2" />
 				</flags16>
-				<flags16 name="Weapon Armed State" offset="0x1A" visible="true">
+				<flags16 name="Weapon Armed State" offset="0x1E" visible="true">
 					<bit name="Right Hand" index="0" />
 					<bit name="Left Hand" index="1" />
 					<bit name="Backpack" index="2" />
 					<bit name="Hidden" index="3" />
 				</flags16>
-				<flags16 name="Weapon Crosshair State" offset="0x1C" visible="true">
+				<flags16 name="Weapon Crosshair State" offset="0x20" visible="true">
 					<bit name="Normal" index="0" />
 					<bit name="Friendly" index="1" />
 					<bit name="Enemy" index="2" />
@@ -1840,21 +1855,27 @@ Output values are what actually pipes into the shader. you can output external o
 					<bit name="Plasma Track" index="7" />
 					<bit name="Lock Unavailable" index="8" />
 				</flags16>
-				<flags16 name="Weapon Misc State" offset="0x1E" visible="true">
+				<flags16 name="Weapon Misc State" offset="0x22" visible="true">
 					<bit name="Locking On Available" index="0" />
 					<bit name="Locked On Available" index="1" />
 					<bit name="Locked On Unavailable" index="2" />
 				</flags16>
 				<comment title="Flash" />
-				<flags16 name="Non Weapon Flash" offset="0x20" visible="true">
+				<flags16 name="Non Weapon Flash" offset="0x24" visible="true">
 					<bit name="Shield Low" index="0" />
 					<bit name="Shield Empty" index="1" />
-					<bit name="Frag Empty" index="2" />
-					<bit name="Plasma Empty" index="3" />
-					<bit name="Claymore Empty" index="4" />
-					<bit name="Firebomb Empty" index="5" />
+					<bit name="Health Minor" index="2" />
+					<bit name="Health Major" index="3" />
+					<bit name="Health Critical" index="4" />
+					<bit name="Shield Minor" index="5" />
+					<bit name="Shield Major" index="6" />
+					<bit name="Shield Critical" index="7" />
+					<bit name="Frag Empty" index="8" />
+					<bit name="Plasma Empty" index="9" />
+					<bit name="Claymore Empty" index="10" />
+					<bit name="Firebomb Empty" index="11" />
 				</flags16>
-				<flags16 name="Weapon Flash" offset="0x22" visible="true">
+				<flags16 name="Weapon Flash" offset="0x26" visible="true">
 					<bit name="Ammo Loaded Low" index="0" />
 					<bit name="Ammo Loaded Empty" index="1" />
 					<bit name="Ammo Reserve Low" index="2" />
@@ -1864,12 +1885,12 @@ Output values are what actually pipes into the shader. you can output external o
 					<bit name="Overheating" index="6" />
 				</flags16>
 				<comment title="Misc" />
-				<flags16 name="Hidden State" offset="0x24" visible="true">
+				<flags16 name="Hidden State" offset="0x28" visible="true">
 					<bit name="Zoomed" index="0" />
 					<bit name="Grenades Unusable" index="1" />
 					<bit name="Backpack Weapon Unavailable" index="2" />
 				</flags16>
-				<int16 name="Unknown" offset="0x26" visible="false" />
+				<int16 name="Unknown" offset="0x2A" visible="false" />
 			</tagblock>
 			<tagblock name="Placement Data" offset="0x14" visible="true" elementSize="0x1C">
 				<enum16 name="Anchor Type" offset="0x0" visible="true">
@@ -2464,21 +2485,23 @@ Output values are what actually pipes into the shader. you can output external o
 				<bit name="Force 3-Digit Number" index="2" />
 				<bit name="Kudos" index="3" />
 				<bit name="Postfix M For Meters" index="4" />
-				<bit name="Decimal 2 Digits" index="5" />
-				<bit name="Decimal 3 Digits" index="6" />
-				<bit name="Decimal 5 Digits" index="7" />
-				<bit name="Superhuge Nubmer" index="8" />
-				<bit name="Postfix X" index="9" />
-				<bit name="Wrap With Brackets" index="10" />
-				<bit name="Format As Time" index="11" />
-				<bit name="Format As hh-mm-ss Time" index="12" />
-				<bit name="Format As Budget Number" index="13" />
-				<bit name="Kudos(Negative)" index="14" />
-				<bit name="Only Axes Global" index="15" />
-				<bit name="Only Axes Local" index="16" />
+				<bit name="Decimal 1 Digit" index="5" />
+				<bit name="Decimal 2 Digits" index="6" />
+				<bit name="Decimal 3 Digits" index="7" />
+				<bit name="Decimal 5 Digits" index="8" />
+				<bit name="Superhuge Nubmer" index="9" />
+				<bit name="Postfix X" index="10" />
+				<bit name="Wrap With Brackets" index="11" />
+				<bit name="Format As Time" index="12" />
+				<bit name="Format As hh-mm-ss Time" index="13" />
+				<bit name="Format As Budget Number" index="14" />
+				<bit name="Kudos(Negative)" index="15" />
+				<bit name="Center Horizontally" index="16" />
+				<bit name="Only Axes Global" index="17" />
+				<bit name="Only Axes Local" index="18" />
 			</flags32>
 			<comment title="Font">Fonts use a dumb jump table that creates a custom font ordering for the HUD. The number in brackets is the proper engine order index from the fontpackage file.</comment>
-			<enum32 name="Font" offset="0x40" visible="true">
+			<enum16 name="Font" offset="0x40" visible="true">
 				<option name="[06] Conduit, 18" value="0x0" tooltip="full screen hud message" />
 				<option name="[05] Fixedsys, 9" value="0x1" tooltip="split screen hud message" />
 				<option name="[00] Fixedsys, 9" value="0x2" tooltip="terminal" />
@@ -2490,7 +2513,8 @@ Output values are what actually pipes into the shader. you can output external o
 				<option name="[08] Conduit, 18" value="0x8" tooltip="hud number" />
 				<option name="[09] Conduit, 16" value="0x9" tooltip="subtitle" />
 				<option name="[10] Pragmata, 14" value="0xA" tooltip="main menu" />
-			</enum32>
+			</enum16>
+			<int16 name="Unknown" offset="0x42" visible="false" />
 			<comment title="String">This value can be anything from the hud_messages unicode tag, or one of the following, where a-f correspond to Output Scalars a-f in the Render Data block:
 chud_out_a
 chud_out_b

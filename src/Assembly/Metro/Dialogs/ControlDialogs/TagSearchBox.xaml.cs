@@ -49,13 +49,13 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 					if (textSearch.Text.StartsWith("0x"))
 					{
 						string searchHex = textSearch.Text.Substring(2);
-						if (tag.RawTag.Index.ToString().ToLower().Substring(2).Contains(searchHex))
+						if (tag.RawTag.Index.ToString().ToLowerInvariant().Substring(2).Contains(searchHex))
 						{
 							listTagSearchResults.Items.Add(tag);
 							continue;
 						}	
 					}
-					if (tag.TagFileName.ToLower().Contains(textSearch.Text.ToLower()))
+					if (tag.TagFileName.ToLowerInvariant().Contains(textSearch.Text.ToLowerInvariant()))
 						listTagSearchResults.Items.Add(tag);
 				}
 		}

@@ -42,7 +42,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			// Parse
 			uint action;
-			string str = txtConverterString.Text.ToLower();
+			string str = txtConverterString.Text.ToLowerInvariant();
 			StringID temp;
 			temp = _cache.StringIDs.FindStringID(str);
 			if (temp.Value != 0)

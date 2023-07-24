@@ -19,7 +19,7 @@
 		<engineInfo>
 			<generation>{"first", "second", "third"}</generation> - The engine generation of the cache file.
 			<endian>{"little", "big"}</endian> - The endianness of the cache file.
-			<segmentAlignment>{number}</segmentAlignment> - The alignment that sections of the cache file stick to.
+			<segmentAlignment>{number}</segmentAlignment> - The alignment that sections of the cache file stick to. Default if not present is 0x1000.
 			<expandMagic>{number}</expandMagic> - The number used by MCC in compacting various addresses. {compressedAddr << 2 + expandMagic}
 			<encryption>
 				<tagNameKey>{key}</tagNameKey> - Used to decrypt tag names in engines where they are encrypted.
@@ -31,6 +31,8 @@
 			<usesStringHashes>{"true", "false"}</usesStringHashes> - Whether hashes inside the globals tag should be updated upon modification to localizations. Because for some reason giving hashes when they shipped as 0's can crash. Default if not present is true.
 			<usesRawHashes>{"true", "false"}</usesRawHashes> - Whether hashes inside the play or zone tags are fully implemented or some/all are 0'd. This aids in making sure the relevant option in the Import dialog is checked/unchecked by default as tag injection optimizations use hashes to reduce redundant pages. Default if not present is true.
 			<optimizedShaders>{"true", "false"}</optimizedShaders> - Whether the shaders in each map are stripped down to only shaders used by that specific cache file. This aids in making sure the relevant option in the Import dialog is checked/unchecked by default as if shaders are optimized then you can't trust the existing shader during tag injection and must rename/inject the new shader to prevent ingame issues. Default if not present is false.
+			<tagSegmentAlignment>{number}</tagSegmentAlignment> - The alignment that the tag sections of the cache file stick to. Used for Third Gen. Default if not present is 0x10000 which applies to everything but an early H3 build.
+			<reverseChecksum>{"true", "false"}</reverseChecksum> - This will flip the endianness of the checksum when writing. Default if not present is false. Only seen in alpha/beta H3.
 		</engineInfo>
 
 		<pokingInfo>
@@ -76,6 +78,18 @@
 
 	<engine name="Halo 1 Xbox Demo" version="5" build="" inherits="Halo 1">
 		<shortName>H1D</shortName>
+	</engine>
+
+	<engine name="Halo 1 Xbox PAL" version="5" build="01.01.14.2342" inherits="Halo 1">
+		<shortName>H1PAL</shortName>
+	</engine>
+
+	<engine name="Halo 1 Xbox Japan" version="5" build="01.03.14.0009" inherits="Halo 1">
+		<shortName>H1JP</shortName>
+	</engine>
+
+	<engine name="Halo 1 Xbox China" version="5" build="01.12.09.0135" inherits="Halo 1">
+		<shortName>H1KR</shortName>
 	</engine>
 
 	<!-- Halo 1 Beta Builds -->
@@ -224,7 +238,7 @@
 
 	<engine name="Halo 1 Custom Edition" version="609" versionAlt="343" build="01.00.00.0609">
 		<shortName>H1CE</shortName>
-		<plugins>Halo1PC</plugins>
+		<plugins>Halo1OS</plugins>
 		<fallbackPlugins>Halo1</fallbackPlugins>
 		<engineInfo>
 			<generation>first</generation>
@@ -309,6 +323,26 @@
 		</databases>
 	</engine>
 
+	<engine name="Halo 2 box_mp" version="8" build="02.08.28.09214">
+		<shortName>Halo2Box</shortName>
+		<plugins>Halo2Beta</plugins>
+		<fallbackPlugins>Halo2</fallbackPlugins>
+		<engineInfo>
+			<generation>second</generation>
+			<endian>little</endian>
+			<!-- TODO: this might not be accurate -->
+			<segmentAlignment>0x4</segmentAlignment>
+		</engineInfo>
+		<pokingInfo>
+			<platform>xbox</platform>
+		</pokingInfo>
+		<databases>
+			<layouts type="layouts" path="Formats/Halo2Xbox/LayoutsBox" />
+			<groupNames type="groupNames" path="Formats/Halo2Vista/H2V_GroupNames.xml" />
+			<localeSymbols type="localeSymbols" path="Formats/Halo2Xbox/H2X_LocaleSymbols.xml" />
+		</databases>
+	</engine>
+
 	<!-- Halo 2 Builds -->
 	<engine name="Halo 2" version="8" build="02.09.27.09809">
 		<shortName>Halo2</shortName>
@@ -352,6 +386,7 @@
 		</databases>
 	</engine>
 
+	<engine name="Halo 2 Vista Review" version="8" build="11028.07.03.23.1927.main" inherits="Halo 2 Vista" />
 	<engine name="Halo 2 Vista Custom 1" version="8" build="11091.07.05.11.1104.main" inherits="Halo 2 Vista" />
 	<engine name="Halo 2 Vista Custom 2" version="8" build="11122.07.08.24.1808.main" inherits="Halo 2 Vista" />
 
@@ -363,6 +398,7 @@
 			<generation>third</generation>
 			<endian>big</endian>
 			<segmentAlignment>0x800</segmentAlignment>
+			<reverseChecksum>true</reverseChecksum>
 		</engineInfo>
 		<pokingInfo>
 			<platform>xbox360</platform>
@@ -372,6 +408,25 @@
 			<localeSymbols type="localeSymbols" path="Formats/Halo3Beta/H3B_LocaleSymbols.xml" />
 			<scripting type="scripting" path="Formats/Halo3Beta/H3B_Scripting.xml" />
 			<layouts type="layouts" path="Formats/Halo3Beta/Layouts" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 3 Playtest" version="9" build="05241.06.09.21.1534.first_playt" inherits="Halo 3 Beta">
+		<shortName>H3Play</shortName>
+		<plugins>Halo3PreAlpha</plugins>
+		<fallbackPlugins>Halo3Beta</fallbackPlugins>
+		<engineInfo>
+			<generation>third</generation>
+			<endian>big</endian>
+			<!--This alignment may be wrong but a sample size of 1 doesn't help-->
+			<segmentAlignment>0x200</segmentAlignment>
+			<tagSegmentAlignment>0x1000</tagSegmentAlignment>
+		</engineInfo>
+		<databases>
+			<stringIds type="stringIds" path="Formats/Halo3Alpha/H3P_StringIDs.xml" />
+			<localeSymbols type="localeSymbols" path="Formats/Halo3Alpha/H3A_LocaleSymbols.xml" />
+			<scripting type="scripting" path="Formats/Halo3Alpha/H3A_Scripting.xml" />
+			<layouts type="layouts" path="Formats/Halo3Alpha/LayoutsPlaytest" />
 		</databases>
 	</engine>
 
@@ -500,6 +555,17 @@
 			<scripting type="scripting" path="Formats/ReachBeta/ReachBeta_Scripting.xml" />
 			<localeSymbols type="localeSymbols" path="Formats/ReachBeta/ReachBeta_LocaleSymbols.xml" />
 			<layouts type="layouts" path="Formats/ReachBeta/Layouts" />
+		</databases>
+	</engine>
+
+	<engine name="Halo: Reach Pre-Alpha" version="11" build="08516.10.02.19.1607.omaha_alpha" inherits="Halo: Reach Pre-Beta">
+		<shortName>ReachPreAlpha</shortName>
+		<plugins>ReachAlpha</plugins>
+		<fallbackPlugins>ReachBeta</fallbackPlugins>
+		<databases>
+			<layouts type="layouts" path="Formats/ReachAlpha/Layouts" />
+			<stringIds type="stringIds" path="Formats/ReachAlpha/ReachAlpha_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/ReachAlpha/ReachAlpha_Scripting.xml" />
 		</databases>
 	</engine>
 
@@ -878,6 +944,41 @@
 		</databases>
 	</engine>
 
+	<engine name="Halo: Reach MCC Update 13" version="13" build="Jun 21 2023 15:35:31" inherits="Halo: Reach MCC Update 3">
+		<databases>
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU13" />
+			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U13_Stub_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo: Reach MCC Toolset Update 2" version="13" build="Jun 27 2023 08:55:51" inherits="Halo: Reach MCC Update 3">
+		<databases>
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU13" />
+			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U13_Stub_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo: Reach MCC Toolset Update 2 Fast" version="13" build="Jun 27 2023 08:55:19" inherits="Halo: Reach MCC Update 3">
+		<databases>
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU13" />
+			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U13_Stub_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo: Reach MCC Toolset Update 3" version="13" build="Jul 16 2023 16:12:13" inherits="Halo: Reach MCC Update 3">
+		<databases>
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU13" />
+			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U13_Stub_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo: Reach MCC Toolset Update 3 Fast" version="13" build="Jul 16 2023 16:08:14" inherits="Halo: Reach MCC Update 3">
+		<databases>
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU13" />
+			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U13_Stub_StringIDs.xml" />
+		</databases>
+	</engine>
+
 	<!-- Halo 1 MCC -->
 	<!-- NOTE: CEA 360 and early MCC have the same build strings, this makes things harder -->
 	<engine name="Halo 1 Anniversary MCC" version="7" build="01.00.01.0563">
@@ -1067,6 +1168,24 @@
 	</engine>
 
 	<engine name="Halo 2 Anniversary MCC Toolset Fast" version="13" build="Dec  6 2022 11:13:46" inherits="Halo 2 Anniversary MCC Update 8">
+		<databases>
+			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 2 Anniversary MCC Update 11" version="13" build="Jun 13 2023 20:21:18" inherits="Halo 2 Anniversary MCC Update 8">
+		<databases>
+			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 2 Anniversary MCC Toolset Update 1" version="13" build="Jun 27 2023 08:47:43" inherits="Halo 2 Anniversary MCC Update 8">
+		<databases>
+			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 2 Anniversary MCC Toolset Update 1 Fast" version="13" build="Jun 27 2023 08:47:52" inherits="Halo 2 Anniversary MCC Update 8">
 		<databases>
 			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" />
 		</databases>
@@ -1329,6 +1448,21 @@
 		</databases>
 	</engine>
 
+	<engine name="Halo 3 MCC Update 13" version="13" build="May 22 2023 20:10:02" inherits="Halo 3 MCC Update 6">
+		<databases>
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU13" />
+			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U13_Stub_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 3 MCC Toolset Update 7" version="13" build="Jun 27 2023 08:39:36" inherits="Halo 3 MCC Update 6">
+		<!--tool and tool fast landed on the same build time so just need 1-->
+		<databases>
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU13" />
+			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U13_Stub_StringIDs.xml" />
+		</databases>
+	</engine>
+
 	<!-- ODST MCC -->
 	<engine name="Halo ODST MCC Flight" version="11" build="Aug 11 2020 06:58:27">
 		<shortName>ODSTMCC</shortName>
@@ -1442,6 +1576,41 @@
 		</databases>
 	</engine>
 
+	<engine name="Halo ODST MCC Update 8" version="13" build="May 16 2023 11:44:41" inherits="Halo ODST MCC Update 4">
+		<databases>
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" />
+			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC_U8_Stub_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo ODST MCC Toolset Update 5" version="13" build="Jun 27 2023 08:39:51" inherits="Halo ODST MCC Update 4">
+		<databases>
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" />
+			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC_U8_Stub_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo ODST MCC Toolset Update 5 Fast" version="13" build="Jun 27 2023 08:39:50" inherits="Halo ODST MCC Update 4">
+		<databases>
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" />
+			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC_U8_Stub_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo ODST MCC Toolset Update 6" version="13" build="Jul 16 2023 15:51:04" inherits="Halo ODST MCC Update 4">
+		<databases>
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" />
+			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC_U8_Stub_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo ODST MCC Toolset Update 6 Fast" version="13" build="Jul 16 2023 15:52:04" inherits="Halo ODST MCC Update 4">
+		<databases>
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" />
+			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC_U8_Stub_StringIDs.xml" />
+		</databases>
+	</engine>
+
 	<!-- Halo 4 MCC -->
 	<engine name="Halo 4 MCC Flight" version="12" build="Oct 12 2020 08:13:40">
 		<shortName>H4MCC</shortName>
@@ -1548,6 +1717,24 @@
 	</engine>
 
 	<engine name="Halo 4 MCC Toolset Fast" version="13" build="Dec  6 2022 11:26:37" inherits="Halo 4 MCC Update 4">
+		<databases>
+			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU6" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 4 MCC Update 7" version="13" build="Apr  1 2023 17:35:22" inherits="Halo 4 MCC Update 4">
+		<databases>
+			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU6" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 4 MCC Toolset Update 1" version="13" build="Jun 27 2023 08:46:47" inherits="Halo 4 MCC Update 4">
+		<databases>
+			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU6" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 4 MCC Toolset Update 1 Fast" version="13" build="Jun 27 2023 08:47:24" inherits="Halo 4 MCC Update 4">
 		<databases>
 			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU6" />
 		</databases>

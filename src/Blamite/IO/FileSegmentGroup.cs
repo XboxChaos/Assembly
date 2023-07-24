@@ -67,14 +67,27 @@ namespace Blamite.IO
 		}
 
 		/// <summary>
-		///     Gets the total size of the group.
+		///     Gets the actual total size of the group.
 		/// </summary>
 		public uint Size
 		{
 			get
 			{
 				if (Segments.Count > 0)
-					return (Segments[Segments.Count - 1].Offset - Segments[0].Offset + Segments[Segments.Count - 1].ActualSize);
+					return Segments[Segments.Count - 1].Offset - Segments[0].Offset + Segments[Segments.Count - 1].ActualSize;
+				return 0;
+			}
+		}
+
+		/// <summary>
+		///     Gets the virtual size of the group.
+		/// </summary>
+		public uint VirtualSize
+		{
+			get
+			{
+				if (Segments.Count > 0)
+					return Segments[Segments.Count - 1].Offset - Segments[0].Offset + Segments[Segments.Count - 1].Size;
 				return 0;
 			}
 		}

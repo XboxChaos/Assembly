@@ -208,7 +208,7 @@ namespace Blamite.Blam
 
 	public static class ICacheFileExtensions
 	{
-		public static uint GenerateChecksum(this ICacheFile cacheFile, IReader reader)
+		public static uint GenerateChecksum(this ICacheFile cacheFile, IReader reader, bool reverse = false)
 		{
 			// XOR all of the uint32s in the file after the header
 			// based on http://codeescape.com/2009/05/optimized-c-halo-2-map-signing-algorithm/
@@ -224,6 +224,14 @@ namespace Blamite.Blam
 				reader.ReadBlock(block, 0, actualSize);
 				for (int i = 0; i < block.Length; i += 4)
 					checksum ^= BitConverter.ToUInt32(block, i);
+			}
+
+			// I guess while getting the engine moved over to 360, the checksum stayed little endian for a chunk of dev.
+			if (reverse)
+			{
+				byte[] checksumBytes = BitConverter.GetBytes(checksum);
+				Array.Reverse(checksumBytes);
+				checksum = BitConverter.ToUInt32(checksumBytes, 0);
 			}
 
 			return checksum;

@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<layouts>
+	<layout for="header" size="0x800">
+		<uint32 name="file size" offset="0x8" />
+		<uint32 name="meta offset" offset="0x10" />
+		<uint32 name="tag data offset" offset="0x14" />
+		<int32 name="tag data size" offset="0x18" />
+		<int32 name="meta size" offset="0x1C" />
+		
+		<asciiz name="build string" offset="0x120" />
+		<int32 name="type" offset="0x140" />
+
+		<int32 name="low detail bitmap data count" offset="0x154" />
+		<int32 name="low detail bitmap data offset" offset="0x158" />
+		<int32 name="low detail bitmap data size" offset="0x15C" />
+
+		<int32 name="string block offset" offset="0x160" />
+		<int32 name="string table count" offset="0x164" />
+		<int32 name="string table size" offset="0x168" />
+		<uint32 name="string index table offset" offset="0x16C" />
+		<uint32 name="string table offset" offset="0x170" />
+
+		<asciiz name="internal name" offset="0x198" />
+		<asciiz name="scenario name" offset="0x1BC" />
+
+		<int32 name="file table count" offset="0x2C0" />
+		<uint32 name="file table offset" offset="0x2C4" />
+		<int32 name="file table size" offset="0x2C8" />
+		<uint32 name="file index table offset" offset="0x2CC" />
+
+		<uint32 name="checksum" offset="0x2D0" />
+	</layout>
+
+	<layout for="meta header" size="0x20">
+		<int32 name="tag group table offset" offset="0x0" />
+		<int32 name="number of tag groups" offset="0x4" />
+		<int32 name="tag table offset" offset="0x8" />
+
+		<uint32 name="scenario datum index" offset="0xC" />
+		<uint32 name="map globals datum index" offset="0x10" />
+
+		<int32 name="number of tags" offset="0x18" />
+
+		<int32 name="magic" offset="0x1C" />
+	</layout>
+
+	<layout for="tag group element" size="0xC">
+		<int32 name="magic" offset="0x0" />
+		<int32 name="parent magic" offset="0x4" />
+		<int32 name="grandparent magic" offset="0x8" />
+	</layout>
+
+	<layout for="tag element" size="0x10">
+		<int32 name="tag group magic" offset="0x0" />
+		<uint32 name="datum index" offset="0x4" />
+		<int32 name="offset" offset="0x8" />
+		<int32 name="data size" offset="0xC" />
+	</layout>
+
+	<layout for="bsp header" size="0x10">
+		<int32 name="size" offset="0x0" />
+		<int32 name="bsp address" offset="0x4" />
+		<int32 name="lightmap address" offset="0x8" />
+		<int32 name="magic" offset="0xC" />
+	</layout>
+
+	<layout for="tag block" size="0xC">
+		<int32 name="entry count" offset="0x0" />
+		<uint32 name="pointer" offset="0x4" />
+		<uint32 name="block definition" offset="0x8" />
+	</layout>
+
+	<layout for="tag reference" size="0x10">
+		<int32 name="tag group magic" offset="0x0" />
+		<uint32 name="name" offset="0x4" />
+		<uint32 name="name length" offset="0x8" />
+		<uint32 name="datum index" offset="0xC" />
+	</layout>
+
+	<layout for="data reference" size="0x14">
+		<int32 name="size" offset="0x0" />
+		<uint32 name="flags" offset="0x4" />
+		<uint32 name="stream position" offset="0x8" />
+		<uint32 name="pointer" offset="0xC" />
+	</layout>
+</layouts>

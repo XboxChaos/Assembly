@@ -231,7 +231,7 @@ namespace Blamite.Util
 			string[] names = Enum.GetNames(typeof(T));
 			for (int i = 0; i < names.Length; i++)
 			{
-				if (names[i].ToLower() != name) continue;
+				if (names[i].ToLowerInvariant() != name) continue;
 				
 				var values = (T[]) Enum.GetValues(typeof(T));
 				result = values[i];

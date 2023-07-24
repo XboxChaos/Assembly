@@ -213,25 +213,24 @@
 	<tagblock name="Havok Cleanup Resources" offset="0x558" visible="true" elementSize="0x10">
 		<tagRef name="Object Cleanup Effect" offset="0x0" visible="true" />
 	</tagblock>
-	<tagblock name="Sound Globals" offset="0x564" visible="true" elementSize="0xB8">
+	<tagblock name="Sound Globals" offset="0x564" visible="true" elementSize="0xA8">
 		<tagRef name="Sound Classes" offset="0x0" visible="true" />
 		<tagRef name="Sound Effects" offset="0x10" visible="true" />
 		<tagRef name="Sound Mix" offset="0x20" visible="true" />
-		<tagRef name="Sound Combat Dialogue Constants" offset="0x30" visible="true" />
-		<tagRef name="Sound Propagation" offset="0x40" visible="true" />
-		<tagRef name="Initial Sound Bank" offset="0x50" visible="true" tooltip="Init sound bank for WWise." />
-		<tagRef name="Global Sound Bank" offset="0x60" visible="true" tooltip="Global sound bank for WWise." />
-		<tagRef name="Extra Sound Bank" offset="0x70" visible="true" tooltip="The other sound bank for WWise." />
-		<tagref name="Campaign Sound Bank" offset="0x80" visible="true" tooltip="Extra sound bank for WWise - only loaded for Campaign." />
-		<tagref name="Multiplayer Sound Bank" offset="0x90" visible="true" tooltip="Extra sound bank for WWise - only loaded for MP - PVP." />
-		<tagblock name="Streaming Pack Files" offset="0xA0" visible="true" elementSize="0x24">
+		<tagRef name="Sound Propagation" offset="0x30" visible="true" />
+		<tagRef name="Initial Sound Bank" offset="0x40" visible="true" tooltip="Init sound bank for WWise." />
+		<tagRef name="Global Sound Bank" offset="0x50" visible="true" tooltip="Global sound bank for WWise." />
+		<tagRef name="Extra Sound Bank" offset="0x60" visible="true" tooltip="The other sound bank for WWise." />
+		<tagref name="Campaign Sound Bank" offset="0x70" visible="true" tooltip="Extra sound bank for WWise - only loaded for Campaign." />
+		<tagref name="Multiplayer Sound Bank" offset="0x80" visible="true" tooltip="Extra sound bank for WWise - only loaded for MP - PVP." />
+		<tagblock name="Streaming Pack Files" offset="0x90" visible="true" elementSize="0x24">
 			<flags32 name="Flags" offset="0x0" visible="true">
 				<bit name="Language Pack" index="0" />
 				<bit name="Sound Bank Pack" index="1" />
 			</flags32>
 			<ascii name="Streaming Pack File" offset="0x4" size="0x20" visible="true" tooltip="Name of the stream pack file" />
 		</tagblock>
-		<tagblock name="Un-Spatialized Campaign Sounds" offset="0xAC" visible="true" elementSize="0x10">
+		<tagblock name="Un-Spatialized Campaign Sounds" offset="0x9C" visible="true" elementSize="0x10">
 			<tagRef name="Sound" offset="0x0" visible="true" />
 		</tagblock>
 	</tagblock>
@@ -465,7 +464,7 @@
 				<bit name="Explosive Damage Resistance" index="8" />
 				<bit name="Wheelman Armor Vehicle Stun Time Modifier" index="9" />
 				<bit name="Wheelman Armor Vehicle Recharge Time Modifier" index="10" />
-				<bit name="Wheelman Armor Vehicle EMP Disabled Time Modifier" index="11" />
+				<bit name="Wheelman Armor Vehicle Emp Disabled Time Modifier" index="11" />
 				<bit name="Fall Damage Multiplier" index="12" />
 			</flags32>
 			<comment title="Damage Resistance">Any damage taken is divided by this number. If you put -1, that means "invulnerable".</comment>
@@ -707,20 +706,26 @@
 				<option name="False" value="0x1" />
 				<option name="True" value="0x2" />
 			</enum8>
-			<int16 name="Unknown" offset="0x1A" visible="false" />
+			<enum8 name="Vehicle Exit Disabled" offset="0x1A" visible="true">
+				<option name="Unchanged" value="0x0" />
+				<option name="False" value="0x1" />
+				<option name="True" value="0x2" />
+			</enum8>
+			<int8 name="Unknown" offset="0x1B" visible="false" />
 		</tagblock>
 		<tagblock name="Appearance Traits" offset="0x24" visible="true" elementSize="0x10">
+			<comment title="Death Effect/Attached Effect">Type any string from the relevant sections of multiplayer/megalo/multiplayer_effects.multiplayereffects.</comment>
 			<stringid name="Death Effect" offset="0x0" visible="true" />
-			<stringid name="Looping Effect" offset="0x4" visible="true" />
+			<stringid name="Attached Effect" offset="0x4" visible="true" />
 			<enum8 name="Active Camo" offset="0x8" visible="true">
 				<option name="Unchanged" value="0x0" />
-				<option name="Disabled" value="0x1" />
-				<option name="Enabled" value="0x2" />
-				<option name="Poor Camo" value="0x3" />
-				<option name="Good Camo" value="0x4" />
-				<option name="Best Camo" value="0x5" />
+				<option name="Off" value="0x1" />
+				<option name="Poor" value="0x2" />
+				<option name="Good" value="0x3" />
+				<option name="Excellent" value="0x4" />
+				<option name="Invisible" value="0x5" />
 			</enum8>
-			<enum8 name="Forced Primary Color" offset="0x9" visible="true">
+			<enum8 name="Primary Color" offset="0x9" visible="true">
 				<option name="Unchanged" value="0x0" />
 				<option name="Red" value="0x1" />
 				<option name="Orange" value="0x2" />
@@ -739,7 +744,7 @@
 				<option name="Dark Red" value="0xF" />
 				<option name="Infection" value="0x10" />
 			</enum8>
-			<enum8 name="Forced Secondary Color" offset="0xA" visible="true">
+			<enum8 name="Secondary Color" offset="0xA" visible="true">
 				<option name="Unchanged" value="0x0" />
 				<option name="Red" value="0x1" />
 				<option name="Orange" value="0x2" />
@@ -760,25 +765,24 @@
 			</enum8>
 			<enum8 name="Waypoint" offset="0xB" visible="true">
 				<option name="Unchanged" value="0x0" />
-				<option name="Disabled" value="0x1" />
-				<option name="Allies Only" value="0x2" />
+				<option name="Off" value="0x1" />
+				<option name="Allies" value="0x2" />
 				<option name="All" value="0x3" />
 			</enum8>
-			<enum8 name="Show Gamertag" offset="0xC" visible="true">
+			<enum8 name="Gamertag Visible" offset="0xC" visible="true">
 				<option name="Unchanged" value="0x0" />
-				<option name="Disabled" value="0x1" />
-				<option name="Allies Only" value="0x2" />
+				<option name="Off" value="0x1" />
+				<option name="Allies" value="0x2" />
 				<option name="All" value="0x3" />
 			</enum8>
 			<enum8 name="Aura" offset="0xD" visible="true">
 				<option name="Unchanged" value="0x0" />
-				<option name="Disabled" value="0x1" />
-				<option name="Team" value="0x2" />
+				<option name="Off" value="0x1" />
+				<option name="Team Color" value="0x2" />
 				<option name="Black" value="0x3" />
 				<option name="White" value="0x4" />
 			</enum8>
-			<int8 name="Unknown" offset="0xE" visible="false" />
-			<int8 name="Unknown" offset="0xF" visible="false" />
+			<int16 name="Unknown" offset="0xE" visible="false" />
 		</tagblock>
 		<tagblock name="Sensor Traits" offset="0x30" visible="true" elementSize="0x14">
 			<flags32 name="Should Apply Trait" offset="0x0" visible="true">
@@ -1049,26 +1053,14 @@
 		<float32 name="Vehicle Normal Damping" offset="0x14" visible="true" />
 		<float32 name="Vehicle Tangent Damping" offset="0x18" visible="true" />
 	</tagblock>
-	<tagblock name="Interface Tags" offset="0x5E0" visible="true" elementSize="0x130">
+	<tagblock name="Interface Tags" offset="0x5E0" visible="true" elementSize="0x70">
 		<tagref name="Spinner Bitmap" offset="0x0" visible="true" />
-		<tagref name="Obsolete" offset="0x10" visible="true" />
-		<tagref name="Screen Color Table" offset="0x20" visible="true" />
-		<tagRef name="HUD Color Table" offset="0x30" visible="true" />
-		<tagRef name="Editor Color Table" offset="0x40" visible="true" />
-		<tagRef name="Dialog Color Table" offset="0x50" visible="true" />
-		<tagref name="Motion Sensor Sweep Bitmap" offset="0x60" visible="true" />
-		<tagref name="Motion Sensor Sweep Bitmap Mask" offset="0x70" visible="true" />
-		<tagref name="Multiplayer HUD Bitmap" offset="0x80" visible="true" />
-		<tagref name="HUD Digits Definition" offset="0x90" visible="true" />
-		<tagref name="Motion Sensor Blip Bitmap" offset="0xA0" visible="true" />
-		<tagref name="Interface Goo Map 1" offset="0xB0" visible="true" />
-		<tagref name="Interface Goo Map 2" offset="0xC0" visible="true" />
-		<tagRef name="Interface Goo Map 3" offset="0xD0" visible="true" />
-		<tagRef name="Main Menu UI Globals" offset="0xE0" visible="true" />
-		<tagref name="Single Player UI Globals" offset="0xF0" visible="true" />
-		<tagRef name="Multiplayer UI Globals" offset="0x100" visible="true" />
-		<tagRef name="Survival UI Globals" offset="0x110" visible="true" />
-		<tagRef name="Style Sheet Globals" offset="0x120" visible="true" />
+		<tagRef name="Dialog Color Table" offset="0x10" visible="true" />
+		<tagRef name="Main Menu UI Globals" offset="0x20" visible="true" />
+		<tagref name="Single Player UI Globals" offset="0x30" visible="true" />
+		<tagRef name="Multiplayer UI Globals" offset="0x40" visible="true" />
+		<tagRef name="Survival UI Globals" offset="0x50" visible="true" />
+		<tagRef name="Style Sheet Globals" offset="0x60" visible="true" />
 	</tagblock>
 	<tagblock name="Player Information" offset="0x5EC" visible="true" elementSize="0xDC">
 		<float32 name="Walking Speed" offset="0x0" visible="true" />

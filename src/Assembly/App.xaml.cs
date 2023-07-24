@@ -62,7 +62,19 @@ namespace Assembly
 			VersionInfo.Load("version.json");
 
 			// Create Assembly Storage
-			AssemblyStorage = new Storage();
+#if !DEBUG
+			try
+			{
+				App.AssemblyStorage = new Storage();
+			}
+			catch (Exception ex)
+			{
+				Metro.Dialogs.MetroException.Show(ex);
+			}
+#endif
+#if DEBUG
+			App.AssemblyStorage = new Storage();
+#endif
 
 			// Update Assembly Protocol
 			AssemblyProtocol.UpdateProtocol();

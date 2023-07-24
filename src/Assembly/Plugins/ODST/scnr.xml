@@ -245,8 +245,10 @@
 			<tagblock name="Unknown" offset="0x3C" visible="false" elementSize="0x4">
 				<undefined name="Unknown" offset="0x0" visible="false" />
 			</tagblock>
-			<tagblock name="Clusters" offset="0x48" visible="false" elementSize="0x4">
-				<undefined name="Unknown" offset="0x0" visible="false" />
+			<tagblock name="Clusters" offset="0x48" visible="false" elementSize="0xC">
+				<tagblock name="Clusters" offset="0x0" visible="true" elementSize="0x1">
+					<int8 name="Cluster Indices" offset="0x0" visible="true" />
+				</tagblock>
 			</tagblock>
 		</tagblock>
 		<tagblock name="Portal To Device Mapping" offset="0x20" visible="true" elementSize="0x18">
@@ -4995,32 +4997,29 @@ append ':*' to zone set names to allow vehicles to teleport along with their pla
 			<undefined name="Unknown" offset="0x74" visible="false" />
 			<undefined name="Unknown" offset="0x78" visible="false" />
 		</tagblock>
-		<tagblock name="Unknown" offset="0x54" visible="false" elementSize="0x18">
-			<tagblock name="Unknown" offset="0x0" visible="false" elementSize="0x20">
-				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
-				<undefined name="Unknown" offset="0x8" visible="false" />
-				<undefined name="Unknown" offset="0xC" visible="false" />
-				<undefined name="Unknown" offset="0x10" visible="false" />
-				<undefined name="Unknown" offset="0x14" visible="false" />
-				<undefined name="Unknown" offset="0x18" visible="false" />
-				<undefined name="Unknown" offset="0x1C" visible="false" />
+		<tagblock name="Giant Hints" offset="0x54" visible="true" elementSize="0x18">
+			<tagblock name="Giant Sector Hints" offset="0x0" visible="true" elementSize="0xC">
+				<tagblock name="Points" offset="0x0" visible="true" elementSize="0x18">
+					<point3 name="Point" offset="0x0" visible="true" />
+					<int16 name="Reference Frame Index" offset="0xC" visible="true" />
+					<int16 name="Structure BSP Index" offset="0xE" visible="true" />
+					<degree2 name="Normal" offset="0x10" visible="true" />
+				</tagblock>
 			</tagblock>
-			<tagblock name="Unknown" offset="0xC" visible="false" elementSize="0x28">
-				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
-				<undefined name="Unknown" offset="0x8" visible="false" />
-				<undefined name="Unknown" offset="0xC" visible="false" />
-				<undefined name="Unknown" offset="0x10" visible="false" />
-				<undefined name="Unknown" offset="0x14" visible="false" />
-				<undefined name="Unknown" offset="0x18" visible="false" />
-				<undefined name="Unknown" offset="0x1C" visible="false" />
-				<undefined name="Unknown" offset="0x20" visible="false" />
-				<undefined name="Unknown" offset="0x24" visible="false" />
+			<tagblock name="Giant Rail Hints" offset="0xC" visible="true" elementSize="0x4">
+				<int16 name="Geometry Index" offset="0x0" visible="true" />
+				<int16 name="Unknown" offset="0x2" visible="false" />
 			</tagblock>
 		</tagblock>
-		<tagblock name="Unknown" offset="0x60" visible="false" elementSize="0x4">
-			<undefined name="Unknown" offset="0x0" visible="false" />
+		<tagblock name="Flood Hints" offset="0x60" visible="true" elementSize="0xC">
+			<tagblock name="Flood Sector Hints" offset="0x0" visible="true" elementSize="0xC">
+				<tagblock name="Points" offset="0x0" visible="true" elementSize="0x18">
+					<point3 name="Point" offset="0x0" visible="true" />
+					<int16 name="Reference Frame Index" offset="0xC" visible="true" />
+					<int16 name="Structure BSP Index" offset="0xE" visible="true" />
+					<degree2 name="Normal" offset="0x10" visible="true" />
+				</tagblock>
+			</tagblock>
 		</tagblock>
 	</tagblock>
 	<undefined name="Unknown" offset="0x420" visible="false" />
@@ -6454,7 +6453,7 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 	<tagRef name="Sky Parameters" offset="0x71C" visible="true" />
 	<tagRef name="Global Lighting" offset="0x72C" visible="true" />
 	<tagRef name="Lightmap" offset="0x73C" visible="true" />
-	<tagRef name="Performace Throttles" offset="0x74C" visible="true" />
+	<tagRef name="Performance Throttles" offset="0x74C" visible="true" />
 	<tagblock name="Unknown Objects" offset="0x75C" visible="true" elementSize="0x10">
 		<datum name="Unique ID" offset="0x0" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x4" visible="true" />

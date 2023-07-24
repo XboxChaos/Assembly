@@ -554,7 +554,8 @@ namespace Assembly.Windows
 			{ ".asmp", (home, path) => home.AddPatchTabModule(path) },
 			{ ".ascpatch", (home, path) => home.AddPatchTabModule(path) },
 			{ ".patchdat", (home, path) => home.AddPatchTabModule(path) },
-			{ ".module", (home, path) => home.AddCacheTabModule(path) }
+			{ ".module", (home, path) => home.AddCacheTabModule(path) },
+			{ ".yelo", (home, path) => home.AddCacheTabModule(path) }
 		};
 
 		/// <summary>
@@ -957,7 +958,7 @@ namespace Assembly.Windows
 
 				// Decide what to do
 				Activate();
-				switch (commandArgs[0].ToLower())
+				switch (commandArgs[0].ToLowerInvariant())
 				{
 					case "open":
 						// Determine type of file, and start it up, yo

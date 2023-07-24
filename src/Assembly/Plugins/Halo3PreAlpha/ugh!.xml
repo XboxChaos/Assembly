@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo3PreAlpha" baseSize="0xA0">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+		<revision author="Lord Zedd" version="2">match with beta</revision>
+	</revisions>
+	<tagblock name="Playback Parameters" offset="0x0" visible="true" elementSize="0x38">
+		<comment title="Distances" />
+		<float32 name="Minimum Distance" offset="0x0" visible="true" tooltip="the distance below which this sound no longer gets louder" />
+		<float32 name="Maximum Distance" offset="0x4" visible="true" tooltip="the distance beyond which this sound is no longer audible" />
+		<float32 name="Skip Fraction" offset="0x8" visible="true" tooltip="fraction of requests to play this sound that will be ignored (0 means always play.)" />
+		<float32 name="Bend Per Second" offset="0xC" visible="true" tooltip="=Maximum Bend Per Second/Difference Pitch Modifier Scale" />
+		<comment title="Randomization">these settings control random variation of volume and pitch.
+ the second parameter gets clipped to the first.</comment>
+		<float32 name="Gain Base" offset="0x10" visible="true" tooltip="sound's random gain will start here" />
+		<float32 name="Gain Variance" offset="0x14" visible="true" tooltip="sound's gain will be randomly modulated within this range" />
+		<range16 name="Random Pitch Bounds" offset="0x18" visible="true" tooltip="the sound's pitch will be modulated randomly within this range." />
+		<comment title="Directional Sounds">these settings allow sounds to be directional, fading as they turn away from the listener</comment>
+		<degree name="Inner Cone Angle" offset="0x1C" visible="true" tooltip="within the cone defined by this angle and the sound's direction, the sound plays with a gain of 1.0." />
+		<degree name="Outer Cone Angle" offset="0x20" visible="true" tooltip="outside the cone defined by this angle and the sound's direction, the sound plays with a gain of OUTER CONE GAIN. (0 means the sound does not attenuate with direction.)" />
+		<float32 name="Outer Cone Gain" offset="0x24" visible="true" tooltip="the gain to use when the sound is directed away from the listener" />
+		<comment title="SCRIPTED LOCATION OVERRIDE">NOTE: this will only apply when the sound is started via script
+azimuth:
+    0 =&gt; front
+    90 =&gt; left
+    180 =&gt; back
+    270 =&gt; right</comment>
+		<flags32 name="Flags" offset="0x28" visible="true">
+			<bit name="Override Azimuth" index="0" />
+			<bit name="Override 3D Gain" index="1" />
+			<bit name="Override Speaker Gain" index="2" />
+		</flags32>
+		<float32 name="Azimuth" offset="0x2C" visible="true" />
+		<float32 name="Positional Gain" offset="0x30" visible="true" />
+		<float32 name="First Person Gain" offset="0x34" visible="true" />
+	</tagblock>
+	<tagblock name="Scales" offset="0xC" visible="true" elementSize="0x14">
+		<comment title="Scale Modifiers">as the sound's input scale changes from zero to one, these modifiers move between the two values specified here. the sound will play using the current scale modifier multiplied by the values specified above. (0 values are ignored.)</comment>
+		<rangef name="Gain Modifier" offset="0x0" visible="true" />
+		<range16 name="Pitch Modifier" offset="0x8" visible="true" />
+		<rangef name="Skip Fraction Modifier" offset="0xC" visible="true" />
+	</tagblock>
+	<tagblock name="Import Names" offset="0x18" visible="true" elementSize="0x4">
+		<stringid name="Import Name" offset="0x0" visible="true" />
+	</tagblock>
+	<tagblock name="Pitch Range Parameters" offset="0x24" visible="true" elementSize="0xE">
+		<int16 name="Natural Pitch" offset="0x0" visible="true" />
+		<range16 name="Bend Bounds" offset="0x2" visible="true" tooltip="the range of pitches that will be represented using this sample." />
+		<range16 name="Maximum Gain Pitch Bounds" offset="0x6" visible="true" />
+		<range16 name="Playback Pitch Bounds" offset="0xA" visible="true" />
+	</tagblock>
+	<tagblock name="Pitch Ranges" offset="0x30" visible="true" elementSize="0xC" align="0x10">
+		<int16 name="Import Name Index" offset="0x0" visible="true" />
+		<int16 name="Pitch Range Parameter Index" offset="0x2" visible="true" />
+		<int16 name="Encoded Permutation Data Index" offset="0x4" visible="true" />
+		<int16 name="Encoded Runtime Permutation Flag Index" offset="0x6" visible="true" />
+		<int16 name="First Permutation" offset="0x8" visible="true" />
+		<int16 name="Permutation Count" offset="0xA" visible="true" />
+	</tagblock>
+	<tagblock name="Permutations" offset="0x3C" visible="true" elementSize="0x10">
+		<int16 name="Import Name Index" offset="0x0" visible="true" />
+		<int16 name="Encoded Skip Fraction" offset="0x2" visible="true" />
+		<int8 name="Gain" offset="0x4" visible="true" />
+		<int8 name="Permutation Info Index" offset="0x5" visible="true" />
+		<int16 name="Language Neutral Time" offset="0x6" visible="true" />
+		<uint32 name="Sample Size" offset="0x8" visible="true" />
+		<int16 name="First Chunk Index" offset="0xC" visible="true" />
+		<int16 name="Chunk Count" offset="0xE" visible="true" />
+	</tagblock>
+	<uint32 name="Custom Playbacks" offset="0x48" visible="false" />
+	<uint32 name="Custom Playbacks" offset="0x4C" visible="false" />
+	<uint32 name="Custom Playbacks" offset="0x50" visible="false" />
+	<tagblock name="Runtime Permutation Flags" offset="0x54" visible="true" elementSize="0x1" align="0x10">
+		<int8 name="Flags" offset="0x0" visible="true" />
+	</tagblock>
+	<dataref name="Native Sample Data" offset="0x60" visible="false" />
+	<undefined name="Unknown" offset="0x74" visible="false" />
+	<undefined name="Unknown" offset="0x78" visible="false" />
+	<tagblock name="Chunks" offset="0x7C" visible="true" elementSize="0x14" align="0x10">
+		<uint32 name="File Offset" offset="0x0" visible="true" />
+		<uint32 name="Encoded Size And Flags" offset="0x4" visible="true" />
+		<int32 name="Cache Index" offset="0x8" visible="true" />
+		<int32 name="XMA2 Source Buffer Sample Start" offset="0xC" visible="true" />
+		<int32 name="XMA2 Source Buffer Sample End" offset="0x10" visible="true" />
+	</tagblock>
+	<tagblock name="Promotions" offset="0x88" visible="true" elementSize="0x24" align="0x10">
+		<tagblock name="Promotion Rules" offset="0x0" visible="true" elementSize="0x10">
+			<int16 name="Pitch Range Index" offset="0x0" visible="true" />
+			<int16 name="Maximum Playing Count" offset="0x2" visible="true" />
+			<float32 name="Suppression Time" offset="0x4" visible="true" tooltip="time from when first permutation plays to when another sound from an equal or lower promotion can play" />
+			<int32 name="Runtime Rollover Time" offset="0x8" visible="true" />
+			<int32 name="Impulse Promotion Time" offset="0xC" visible="true" />
+		</tagblock>
+		<tagblock name="Runtime Timers" offset="0xC" visible="true" elementSize="0x4" align="0x10">
+			<int32 name="Timer Storage" offset="0x0" visible="true" />
+		</tagblock>
+		<int32 name="Runtime Active Promotion Index" offset="0x18" visible="true" />
+		<int32 name="Runtime Last Promotion Time" offset="0x1C" visible="true" />
+		<int32 name="Runtime Suppression Timeout" offset="0x20" visible="true" />
+	</tagblock>
+	<tagblock name="Extra Info" offset="0x94" visible="false" elementSize="0x34">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+	</tagblock>
+</plugin>

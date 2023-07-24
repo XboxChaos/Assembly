@@ -29,6 +29,9 @@ namespace Blamite.Blam
 			_indexTable = indexTable;
 			_data = data;
 
+			if (indexTable == null)
+				return;
+
 			int[] offsets = ReadOffsets(reader, indexTable, count);
 			IReader stringReader = DecryptData(reader, data, key);
 

@@ -38,7 +38,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public string TypeStr
 		{
-			get { return _type.ToString().ToLower(); }
+			get { return _type.ToString().ToLowerInvariant(); }
 		}
 
 		public int Value

@@ -297,7 +297,7 @@
 		<option name="Brightness Level Settings" value="0x110" />
 		<option name="Gamma Settings" value="0x111" />
 		<option name="Anti-Aliasing Settings" value="0x112" />
-		<option name="Hud Size Settings" value="0x113" />
+		<option name="HUD Size Settings" value="0x113" />
 		<option name="Restore Video Defaults" value="0x114" />
 		<option name="Search Option Maps" value="0x115" />
 		<option name="Search Option Gametype" value="0x116" />
@@ -632,7 +632,7 @@
 				<option name="63" value="0x40" />
 			</enum16>
 			<int16 name="Intro Animation Delay Milliseconds" offset="0xE" visible="true" />
-			<tagblock name="Unused Text-Value Pairs" offset="0x10" visible="true" elementSize="0x14" tooltip="This is unused">
+			<tagblock name="Item Text-Value Pairs" offset="0x10" visible="true" elementSize="0x14" tooltip="If you want to control item text-value pairing manually, add them here.">
 				<enum16 name="Value Type" offset="0x0" visible="true">
 					<option name="Integer Number" value="0x0" />
 					<option name="Floating Point Number" value="0x1" />
@@ -1043,7 +1043,10 @@ As a convention, let's always place objects in the ui scenario such that they ar
 			<stringid name="UNUSED Outro Anim" offset="0x44" visible="true" />
 			<stringid name="UNUSED Ambient Anim" offset="0x48" visible="true" />
 		</tagblock>
-		<tagblock name="Unused Text-Value Blocks" offset="0x34" visible="true" elementSize="0x28">
+		<comment title="Text-Value Pair Blocks">If you need general purpose text-value pairs for the contents of this pane, define them here. NOTE: special code will be needed to hook these into anything.
+They are useful for things such as custom text labels that change depending on the currently selected list item, or current value of some game setting.
+Thanks, have a nice day. -Stefan</comment>
+		<tagblock name="Text-Value Blocks" offset="0x34" visible="true" elementSize="0x28">
 			<ascii name="Name" offset="0x0" size="0x20" visible="true" />
 			<tagblock name="Text Value Pairs" offset="0x20" visible="true" elementSize="0x14">
 				<enum16 name="Value Type" offset="0x0" visible="true">

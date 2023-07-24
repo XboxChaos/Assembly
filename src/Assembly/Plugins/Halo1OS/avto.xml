@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo1OS" baseSize="0x94">
+	<revisions>
+		<revision author="Lord Zedd" version="1">ayy lmao</revision>
+	</revisions>
+	<flags16 name="Flags" offset="0x0" visible="true">
+		<bit name="Invincible During Transform Out" index="0" />
+	</flags16>
+	<int16 name="Unknown" offset="0x2" visible="false" />
+	<comment title="Transform Criteria" />
+	<flags16 name="Criteria Flags" offset="0x4" visible="true">
+		<bit name="Transform On Damage" index="0" />
+		<bit name="Ignore Friendly Fire" index="1" />
+		<bit name="Transform On Actor Action" index="2" />
+		<bit name="Transform On Actor State" index="3" />
+		<bit name="Transform On Shield Range" index="4" />
+		<bit name="Transform On Health Range" index="5" />
+	</flags16>
+	<int16 name="Unknown" offset="0x6" visible="false" />
+	<flags16 name="Actor Action" offset="0x8" visible="true">
+		<bit name="None" index="0" />
+		<bit name="Sleep" index="1" />
+		<bit name="Alert" index="2" />
+		<bit name="Fight" index="3" />
+		<bit name="Flee" index="4" />
+		<bit name="Uncover" index="5" />
+		<bit name="Guard" index="6" />
+		<bit name="Search" index="7" />
+		<bit name="Wait" index="8" />
+		<bit name="Vehicle" index="9" />
+		<bit name="Charge" index="10" />
+		<bit name="Obey" index="11" />
+		<bit name="Converse" index="12" />
+		<bit name="Avoid" index="13" />
+	</flags16>
+	<flags16 name="Actor State" offset="0xA" visible="true">
+		<bit name="None" index="0" />
+		<bit name="Sleeping" index="1" />
+		<bit name="Alert" index="2" />
+		<bit name="Moving Repeat Same Position" index="3" />
+		<bit name="Moving Loop" index="4" />
+		<bit name="Moving Loop Back And Forth" index="5" />
+		<bit name="Moving Loop Randomly" index="6" />
+		<bit name="Moving Randomly" index="7" />
+		<bit name="Guarding" index="8" />
+		<bit name="Guarding At Guard Position" index="9" />
+		<bit name="Searching" index="10" />
+		<bit name="Fleeing" index="11" />
+	</flags16>
+	<rangef name="Shield Range" offset="0xC" visible="true" />
+	<rangef name="Health Range" offset="0x14" visible="true" />
+	<undefined name="Unknown" offset="0x1C" visible="false" />
+	<undefined name="Unknown" offset="0x20" visible="false" />
+	<undefined name="Unknown" offset="0x24" visible="false" />
+	<undefined name="Unknown" offset="0x28" visible="false" />
+	<undefined name="Unknown" offset="0x2C" visible="false" />
+	<undefined name="Unknown" offset="0x30" visible="false" />
+	<comment title="Transform Instigators">Controls which attacking unit type can trigger this transform. Transforms with instigators will only be used when transform on damage is enabled.</comment>
+	<tagblock name="Instigators" offset="0x34" visible="true" elementSize="0x20">
+		<tagRef name="Unit" offset="0x0" visible="true" />
+		<enum16 name="Damage Type" offset="0x10" visible="true">
+			<option name="Both" value="0x0" />
+			<option name="Weapon Damage Only" value="0x1" />
+			<option name="Melee Damage Only" value="0x2" />
+		</enum16>
+		<int16 name="Unknown" offset="0x12" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+	</tagblock>
+	<comment title="Animation">Played when the transform criteria have been met. The actor is made braindead during the animation, and if the invincibility flag is set they cannot be killed once the animation begins.</comment>
+	<ascii name="Transform Out Anim" offset="0x40" size="0x20" visible="true" />
+	<tagblock name="Keyframe Actions" offset="0x60" visible="true" elementSize="0x48">
+		<enum16 name="Keyframe" offset="0x0" visible="true">
+			<option name="Primary" value="0x0" />
+			<option name="Secondary" value="0x1" />
+			<option name="Final" value="0x2" />
+		</enum16>
+		<enum16 name="Rider Handling" offset="0x2" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Kill" value="0x1" />
+			<option name="Eject" value="0x2" />
+		</enum16>
+		<enum16 name="Target" offset="0x4" visible="true">
+			<option name="Self" value="0x0" />
+			<option name="Riders" value="0x1" />
+		</enum16>
+		<int16 name="Unknown" offset="0x6" visible="false" />
+		<tagRef name="Damage Effect" offset="0x8" visible="true" />
+		<tagRef name="Effect" offset="0x18" visible="true" />
+		<ascii name="Effect Marker" offset="0x28" size="0x20" visible="true" />
+	</tagblock>
+	<comment title="Attachments">The listed attachments will be added to the unit when it's transformation begins. When specifying a single destination marker the destination marker name will be used as-is ('marker'), however when the marker count is more than 1 an index will be appended ('marker0', 'marker1', etc.)</comment>
+	<flags16 name="Attachment Flags" offset="0x6C" visible="true">
+		<bit name="Destroy Attachments On Death" index="0" />
+	</flags16>
+	<int16 name="Unknown" offset="0x6E" visible="false" />
+	<tagblock name="Attachments" offset="0x70" visible="true" elementSize="0x78">
+		<tagRef name="Object" offset="0x0" visible="true" />
+		<ascii name="Object Marker" offset="0x10" size="0x20" visible="true" />
+		<ascii name="Destination Marker" offset="0x30" size="0x20" visible="true" />
+		<int16 name="Destination Marker Count" offset="0x50" visible="true" />
+		<int16 name="Unknown" offset="0x52" visible="false" />
+		<enum16 name="Team Handling" offset="0x54" visible="true">
+			<option name="Inherit From Old Unit" value="0x0" />
+			<option name="Inherit From Attacker" value="0x1" />
+			<option name="Override" value="0x2" />
+		</enum16>
+		<enum16 name="Team Override" offset="0x56" visible="true">
+			<option name="Unit Default" value="0x0" />
+			<option name="Player" value="0x1" />
+			<option name="Human" value="0x2" />
+			<option name="Covenant" value="0x3" />
+			<option name="Flood" value="0x4" />
+			<option name="Sentinel" value="0x5" />
+			<option name="Unused" value="0x6" />
+			<option name="Unused" value="0x7" />
+			<option name="Unused" value="0x8" />
+			<option name="Unused" value="0x9" />
+		</enum16>
+		<rangef name="Attachment Scale" offset="0x58" visible="true" />
+		<undefined name="Unknown" offset="0x60" visible="false" />
+		<undefined name="Unknown" offset="0x64" visible="false" />
+		<undefined name="Unknown" offset="0x68" visible="false" />
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+	</tagblock>
+	<undefined name="Unknown" offset="0x7C" visible="false" />
+	<undefined name="Unknown" offset="0x80" visible="false" />
+	<undefined name="Unknown" offset="0x84" visible="false" />
+	<undefined name="Unknown" offset="0x88" visible="false" />
+	<undefined name="Unknown" offset="0x8C" visible="false" />
+	<undefined name="Unknown" offset="0x90" visible="false" />
+</plugin>

@@ -1827,7 +1827,7 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<float32 name="Turn Back Latched Period" offset="0xAC" visible="true" />
 		<dataref name="Turn Back Distance To Turn Rate Function" offset="0xB0" visible="true" />
 	</tagblock>
-	<tagblock name="Revenant Type" offset="0x5C4" visible="true" elementSize="0xCC">
+	<tagblock name="Revenant Type" offset="0x5C4" visible="true" elementSize="0xA8">
 		<degree name="Forward Arc" offset="0x0" visible="true" tooltip="outside of this arc the vehicle reverse direciton, around 110 degrees seems to be nice..." />
 		<degree name="Perpendicular Forward Arc" offset="0x4" visible="true" tooltip="this is the value of forward arc when turned sideways. We interpolate from forward arc to this value when camera becomes perpendicular to the vehicle" />
 		<float32 name="Flip Window" offset="0x8" visible="true" tooltip="seconds" />
@@ -1847,15 +1847,18 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		<comment title="Engine" />
 		<float32 name="Engine Moment" offset="0x38" visible="true" tooltip="higher moments make engine spin up slower" />
 		<float32 name="Engine Maximum Angular Velocity" offset="0x3C" visible="true" tooltip="higher moments make engine spin up slower" />
-		<tagblock name="Gears" offset="0x40" visible="true" elementSize="0x3C">
+		<tagblock name="Gears" offset="0x40" visible="true" elementSize="0x48">
 			<dataRef name="Loaded Torque Function" offset="0x0" visible="true" />
-			<dataRef name="Cruising Torque Function" offset="0x14" visible="true" />
+			<undefined name="Unknown" offset="0x14" visible="false" />
+			<dataRef name="Cruising Torque Function" offset="0x18" visible="true" />
+			<undefined name="Unknown" offset="0x2C" visible="false" />
 			<comment title="Gearing" />
-			<float32 name="Minimum Time to Up-Shift" offset="0x28" visible="true" tooltip="seconds" />
-			<float32 name="Engine Up-Shift Scale" offset="0x2C" visible="true" tooltip="0-1" />
-			<float32 name="Gear Ratio" offset="0x30" visible="true" />
-			<float32 name="Minimum Time to Down-Shift" offset="0x34" visible="true" tooltip="seconds" />
-			<float32 name="Engine Down-Shift Scale" offset="0x38" visible="true" tooltip="0-1" />
+			<float32 name="Minimum Time to Up-Shift" offset="0x30" visible="true" tooltip="seconds" />
+			<float32 name="Engine Up-Shift Scale" offset="0x34" visible="true" tooltip="0-1" />
+			<float32 name="Gear Ratio" offset="0x38" visible="true" />
+			<float32 name="Minimum Time to Down-Shift" offset="0x3C" visible="true" tooltip="seconds" />
+			<float32 name="Engine Down-Shift Scale" offset="0x40" visible="true" tooltip="0-1" />
+			<undefined name="Unknown" offset="0x44" visible="false" />
 		</tagblock>
 		<tagRef name="Gear Shift Sound" offset="0x4C" visible="true" />
 		<tagblock name="Load And Cruise Sound" offset="0x5C" visible="true" elementSize="0x8">
@@ -1864,45 +1867,30 @@ IOW: As velocity exceeds 'min speed' and approaches 'max speed', turn rates are 
 		</tagblock>
 		<float32 name="Wheel Circumferance" offset="0x68" visible="true" />
 		<float32 name="Gravity Adjust" offset="0x6C" visible="true" tooltip="0-1 fraction by which we scale gravity that is not along the ground plane" />
-		<flags8 name="Control Flags" offset="0x70" visible="true">
-			<bit name="Enable New Control" index="0" />
-			<bit name="Use Linear Velocity" index="1" tooltip="Used to decide if we use linear velocity to calculate if we are in motion" />
-			<bit name="Use Angular Velocity" index="2" tooltip="Used to decide if we use angular velocity to calculate if we are in motion" />
-		</flags8>
-		<int8 name="Unknown" offset="0x71" visible="false" />
-		<int16 name="Unknown" offset="0x72" visible="false" />
-		<float32 name="At Rest Forward Angle" offset="0x74" visible="true" />
-		<float32 name="At Rest Reverse Angle" offset="0x78" visible="true" />
-		<float32 name="At Rest Side On Reverse Angle Closest To Front" offset="0x7C" visible="true" tooltip="first angle starting arc in which the control will cause the tank to reverse while at rest and facing side on" />
-		<float32 name="At Rest Side On Reverse Angle Furthest From Front" offset="0x80" visible="true" tooltip="second angle ending arc in which the control will cause the tank to reverse while at rest and facing side on" />
-		<float32 name="At Rest Facing Forward Reverse Angle" offset="0x84" visible="true" tooltip="angle forming arc in which the control will cause the tank to reverse while at rest and facing forward" />
-		<float32 name="At Rest Facing Backward Reverse Angle" offset="0x88" visible="true" tooltip="angle forming arc in which the control will cause the tank to reverse while at rest and facing backwards" />
-		<float32 name="In Motion Opposing Direction Angle" offset="0x8C" visible="true" tooltip="when in motion the angle in which the control must be to start moving in the opposite direction" />
-		<float32 name="In Motion Speed" offset="0x90" visible="true" tooltip="the speed a tank must reach before we consider it in motion, changing the control mode" />
 		<comment title="Velocity Control Variables" />
-		<float32 name="Maximum Forward Speed" offset="0x94" visible="true" />
-		<float32 name="Maximum Reverse Speed" offset="0x98" visible="true" />
-		<float32 name="Speed Acceleration" offset="0x9C" visible="true" />
-		<float32 name="Speed Deceleration" offset="0xA0" visible="true" />
-		<float32 name="Maximum Left Slide" offset="0xA4" visible="true" />
-		<float32 name="Maximum Right Slide" offset="0xA8" visible="true" />
-		<float32 name="Slide Acceleration" offset="0xAC" visible="true" />
-		<float32 name="Slide Deceleration" offset="0xB0" visible="true" />
+		<float32 name="Maximum Forward Speed" offset="0x70" visible="true" />
+		<float32 name="Maximum Reverse Speed" offset="0x74" visible="true" />
+		<float32 name="Speed Acceleration" offset="0x78" visible="true" />
+		<float32 name="Speed Deceleration" offset="0x7C" visible="true" />
+		<float32 name="Maximum Left Slide" offset="0x80" visible="true" />
+		<float32 name="Maximum Right Slide" offset="0x84" visible="true" />
+		<float32 name="Slide Acceleration" offset="0x88" visible="true" />
+		<float32 name="Slide Deceleration" offset="0x8C" visible="true" />
 		<comment title="Steering Animation And Interpolation">This data controls the depiction of steering through animation - not the vehicles ability to turn</comment>
-		<float32 name="Interpolation Scale" offset="0xB4" visible="true" tooltip="how much we interpolate between steering poses. 1= heavy interp. of steering animations" />
-		<degree name="Maximum Angle" offset="0xB8" visible="true" tooltip="max animated steering angle change allowed per tick. non-zero= max angle delta per frame" />
-		<enum8 name="Specific Type" offset="0xBC" visible="true" tooltip="different types are treated differently alien scout controller">
+		<float32 name="Interpolation Scale" offset="0x90" visible="true" tooltip="how much we interpolate between steering poses. 1= heavy interp. of steering animations" />
+		<degree name="Maximum Angle" offset="0x94" visible="true" tooltip="max animated steering angle change allowed per tick. non-zero= max angle delta per frame" />
+		<enum8 name="Specific Type" offset="0x98" visible="true" tooltip="different types are treated differently alien scout controller">
 			<option name="None" value="0x0" />
 			<option name="Ghost" value="0x1" />
 			<option name="Spectre" value="0x2" />
 			<option name="Wraith" value="0x3" />
 			<option name="Hover Craft" value="0x4" />
 		</enum8>
-		<int8 name="Unknown" offset="0xBD" visible="true" />
-		<int16 name="Unknown" offset="0xBE" visible="true" />
-		<float32 name="Drag Coeficient" offset="0xC0" visible="true" />
-		<float32 name="Constant Deceleration" offset="0xC4" visible="true" />
-		<float32 name="Torque Scale" offset="0xC8" visible="true" tooltip="0 defaults to 1" />
+		<float32 name="Drag Coeficient" offset="0x99" visible="true" />
+		<float32 name="Constant Deceleration" offset="0x9D" visible="true" />
+		<float32 name="Torque Scale" offset="0xA1" visible="true" tooltip="0 defaults to 1" />
+		<int8 name="Unknown" offset="0xA5" visible="false" />
+		<int16 name="Unknown" offset="0xA6" visible="false" />
 	</tagblock>
 	<comment title="Friction And Antigravity Points" />
 	<flags32 name="Flags" offset="0x5D0" visible="true">

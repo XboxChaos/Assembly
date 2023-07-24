@@ -115,7 +115,7 @@ namespace Blamite.Plugins
 				tooltip = reader.Value;
 
 			reader.MoveToElement();
-			switch (elementName.ToLower()) // FIXME: Using ToLower() here violates XML standards
+			switch (elementName.ToLowerInvariant()) // FIXME: Using ToLower() here violates XML standards
 			{
 				case "uint8":
 					visitor.VisitUInt8(name, offset, visible, pluginLine, tooltip);
@@ -554,7 +554,7 @@ namespace Blamite.Plugins
 
 		private static bool ParseBool(string str)
 		{
-			return (str == "1" || str.ToLower() == "true");
+			return (str == "1" || str.ToLowerInvariant() == "true");
 		}
 	}
 }

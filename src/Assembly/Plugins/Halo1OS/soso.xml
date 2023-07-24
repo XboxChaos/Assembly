@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo1OS" baseSize="0x1B8">
+	<revisions>
+		<revision author="Lord Zedd" version="1">ayy lmao</revision>
+	</revisions>
+	<comment title="Radiosity Properties" />
+	<flags16 name="Flags" offset="0x0" visible="true">
+		<bit name="Simple Parameterization" index="0" tooltip="lightmap texture parametrization should correspond to diffuse texture parametrization" />
+		<bit name="Ignore Normals" index="1" tooltip="light independent of normals (trees)" />
+		<bit name="Transparent Lit" index="2" tooltip="use lit vertex shader permutation. Only for transparent chicago (extended) and generic" />
+	</flags16>
+	<enum16 name="Detail Level" offset="0x2" visible="true" tooltip="affects the density of tesselation (high means slow).">
+		<option name="High" value="0x0" />
+		<option name="Medium" value="0x1" />
+		<option name="Low" value="0x2" />
+		<option name="Turd" value="0x3" />
+	</enum16>
+	<float32 name="Power" offset="0x4" visible="true" tooltip="power of emitted light from 0 to infinity" />
+	<colorf name="Color Of Emitted Light" offset="0x8" alpha="false" visible="true" />
+	<colorf name="Tint Color" offset="0x14" alpha="false" visible="true" tooltip="light passing through this surface (if it's transparent) will be tinted this color." />
+	<comment title="Physics Properties">only relevant in structure bsp uses</comment>
+	<flags16 name="Flags" offset="0x20" visible="true">
+	</flags16>
+	<enum16 name="Material Type" offset="0x22" visible="true">
+		<option name="Dirt" value="0x0" />
+		<option name="Sand" value="0x1" />
+		<option name="Stone" value="0x2" />
+		<option name="Snow" value="0x3" />
+		<option name="Wood" value="0x4" />
+		<option name="Metal (Hollow)" value="0x5" />
+		<option name="Metal (Thin)" value="0x6" />
+		<option name="Metal (Thick)" value="0x7" />
+		<option name="Rubber" value="0x8" />
+		<option name="Glass" value="0x9" />
+		<option name="Force Field" value="0xA" />
+		<option name="Grunt" value="0xB" />
+		<option name="Hunter Armor" value="0xC" />
+		<option name="Hunter Skin" value="0xD" />
+		<option name="Elite" value="0xE" />
+		<option name="Jackal" value="0xF" />
+		<option name="Jackal Energy Shield" value="0x10" />
+		<option name="Engineer Skin" value="0x11" />
+		<option name="Engineer Force Field" value="0x12" />
+		<option name="Flood Combat Form" value="0x13" />
+		<option name="Flood Carrier Form" value="0x14" />
+		<option name="Cyborg Armor" value="0x15" />
+		<option name="Cyborg Energy Shield" value="0x16" />
+		<option name="Human Armor" value="0x17" />
+		<option name="Human Skin" value="0x18" />
+		<option name="Sentinel" value="0x19" />
+		<option name="Monitor" value="0x1A" />
+		<option name="Plastic" value="0x1B" />
+		<option name="Water" value="0x1C" />
+		<option name="Leaves" value="0x1D" />
+		<option name="Elite Energy Shield" value="0x1E" />
+		<option name="Ice" value="0x1F" />
+		<option name="Hunter Shield" value="0x20" />
+	</enum16>
+	<int16 name="Shader Type" offset="0x24" visible="true" />
+	<int16 name="Unknown" offset="0x26" visible="false" />
+	<comment title="Model Shader">Setting &lt;true atmospheric fog&gt; enables per-pixel atmospheric fog but disables point/spot lights, planar fog, and the ability to control the atmospheric fog density for this shader.</comment>
+	<flags16 name="Flags" offset="0x28" visible="true">
+		<bit name="Detail After Reflection" index="0" />
+		<bit name="Two-Sided" index="1" />
+		<bit name="Not Alpha-Tested" index="2" />
+		<bit name="Alpha-Blended Decal" index="3" />
+		<bit name="True Atmospheric Fog" index="4" />
+		<bit name="Disable Two-Sided Culling" index="5" />
+	</flags16>
+	<int16 name="Unknown" offset="0x2A" visible="false" />
+	<undefined name="Unknown" offset="0x2C" visible="false" />
+	<undefined name="Unknown" offset="0x30" visible="false" />
+	<undefined name="Unknown" offset="0x34" visible="false" />
+	<float32 name="Translucency" offset="0x38" visible="true" tooltip="amount of light that can illuminate the shader from behind" />
+	<undefined name="Unknown" offset="0x3C" visible="false" />
+	<undefined name="Unknown" offset="0x40" visible="false" />
+	<undefined name="Unknown" offset="0x44" visible="false" />
+	<undefined name="Unknown" offset="0x48" visible="false" />
+	<comment title="Change Color">Change color is used to recolor the diffuse map, it affects pixels based on the BLUE channel of the multipurpose map.</comment>
+	<enum16 name="Change Color Source" offset="0x4C" visible="true">
+		<option name="None" value="0x0" />
+		<option name="A" value="0x1" />
+		<option name="B" value="0x2" />
+		<option name="C" value="0x3" />
+		<option name="D" value="0x4" />
+	</enum16>
+	<int16 name="Unknown" offset="0x4E" visible="false" />
+	<undefined name="Unknown" offset="0x50" visible="false" />
+	<undefined name="Unknown" offset="0x54" visible="false" />
+	<undefined name="Unknown" offset="0x58" visible="false" />
+	<undefined name="Unknown" offset="0x5C" visible="false" />
+	<undefined name="Unknown" offset="0x60" visible="false" />
+	<undefined name="Unknown" offset="0x64" visible="false" />
+	<undefined name="Unknown" offset="0x68" visible="false" />
+	<comment title="Self-Illumination">Self-illumination adds diffuse light to pixels based on the GREEN channel of the multipurpose map. The external self-illumination color referenced by &lt;color source&gt; is modulated by the self-illumination animation.</comment>
+	<flags16 name="Flags" offset="0x6C" visible="true">
+		<bit name="No Random Phase" index="0" />
+	</flags16>
+	<int16 name="Unknown" offset="0x6E" visible="false" />
+	<enum16 name="Color Source" offset="0x70" visible="true">
+		<option name="None" value="0x0" />
+		<option name="A" value="0x1" />
+		<option name="B" value="0x2" />
+		<option name="C" value="0x3" />
+		<option name="D" value="0x4" />
+	</enum16>
+	<enum16 name="Animation Function" offset="0x72" visible="true">
+		<option name="One" value="0x0" />
+		<option name="Zero" value="0x1" />
+		<option name="Cosine" value="0x2" />
+		<option name="Cosine (Variable Period)" value="0x3" />
+		<option name="Diagonal Wave" value="0x4" />
+		<option name="Diagonal Wave (Variable Period)" value="0x5" />
+		<option name="Slide" value="0x6" />
+		<option name="Slide (Variable Period)" value="0x7" />
+		<option name="Noise" value="0x8" />
+		<option name="Jitter" value="0x9" />
+		<option name="Wander" value="0xA" />
+		<option name="Spark" value="0xB" />
+	</enum16>
+	<float32 name="Animation Period" offset="0x74" visible="true" />
+	<colorf name="Animation Color Lower Bound" offset="0x78" alpha="false" visible="true" />
+	<colorf name="Animation Color Upper Bound" offset="0x84" alpha="false" visible="true" />
+	<undefined name="Unknown" offset="0x90" visible="false" />
+	<undefined name="Unknown" offset="0x94" visible="false" />
+	<undefined name="Unknown" offset="0x98" visible="false" />
+	<comment title="Maps">Base map alpha is used for alpha-testing.
+
+Multipurpose map is used for the following:
+* BLUE: specular reflection mask (modulates reflections)
+* GREEN: self-illumination mask (adds to diffuse light)
+* ALPHA: primary change color mask (recolors diffuse map)
+* RED: auxiliary mask
+
+Note that when DXT1 compressed color-key textures are used for the multipurpose map (as they should be normally), the alpha channel is 1-bit and any non-zero alpha pixels must have zero-color, therefore the secondary change color mask cannot affect pixels already affected by any of the other channels.
+
+Detail map affects diffuse map, and optionally affects reflection if &lt;detail after reflection&gt; flag is set.</comment>
+	<float32 name="Map U-Scale" offset="0x9C" visible="true" tooltip="0 defaults to 1; scales all 2D maps simultaneously" />
+	<float32 name="Map V-Scale" offset="0xA0" visible="true" tooltip="0 defaults to 1; scales all 2D maps simultaneously" />
+	<tagRef name="Base Map" offset="0xA4" visible="true" />
+	<undefined name="Unknown" offset="0xB4" visible="false" />
+	<undefined name="Unknown" offset="0xB8" visible="false" />
+	<tagRef name="Multipurpose Map" offset="0xBC" visible="true" />
+	<undefined name="Unknown" offset="0xCC" visible="false" />
+	<undefined name="Unknown" offset="0xD0" visible="false" />
+	<enum16 name="Detail Function" offset="0xD4" visible="true" tooltip="controls how detail map is applied to diffuse map">
+		<option name="Double/Biased Multiply" value="0x0" />
+		<option name="Multiply" value="0x1" />
+		<option name="Double/Biased Add" value="0x2" />
+	</enum16>
+	<enum16 name="Detail Mask" offset="0xD6" visible="true" tooltip="controls how detail map is masked">
+		<option name="None" value="0x0" />
+		<option name="Reflection Mask Inverse" value="0x1" />
+		<option name="Reflection Mask" value="0x2" />
+		<option name="Self-Illumination Mask Inverse" value="0x3" />
+		<option name="Self-Illumination Mask" value="0x4" />
+		<option name="Change-Color Mask Inverse" value="0x5" />
+		<option name="Change-Color Mask" value="0x6" />
+		<option name="Multipurpose Map Alpha Inverse" value="0x7" />
+		<option name="Multipurpose Map Alpha" value="0x8" />
+	</enum16>
+	<float32 name="Detail Map Scale" offset="0xD8" visible="true" tooltip="0 defaults to 1" />
+	<tagRef name="Detail Map" offset="0xDC" visible="true" />
+	<float32 name="Detail Map V-Scale" offset="0xEC" visible="true" tooltip="0 defaults to 1 (applied on top of detail map scale above)" />
+	<tagblock name="Shader Model Extension" offset="0xF0" visible="true" elementSize="0xC0">
+		<comment title="Specular Map">The specular color map is multiplied by the stock specular result
+to provide finer control over the specular color.
+RGB holds the specular color</comment>
+		<tagRef name="Specular Color Map" offset="0x0" visible="true" />
+		<float32 name="Specular Color Coefficient" offset="0x10" visible="true" tooltip="0 defaults to 1" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<float32 name="Specular Color Exponent" offset="0x18" visible="true" tooltip="0 defaults to 1" />
+		<flags16 name="Flags" offset="0x1C" visible="true">
+			<bit name="Alpha As Exponent Mask" index="0" />
+		</flags16>
+		<int16 name="Unknown" offset="0x1E" visible="false" />
+		<comment title="Normal Maps">RGB holds the normal color data
+Alpha interpolates between no detail normals and detail normals 1 and 2
+
+The alpha channel uses:
+A = no detail normals
+B = detail normals 1
+C = detail normals 2
+
+    A  =======&gt;  B  =======&gt;  C  =======&gt;  A    
+ 0/0.000       85/0.333      170/0.666      255/1.000</comment>
+		<tagRef name="Base Normal Map" offset="0x20" visible="true" />
+		<float32 name="Base Normal Coefficient" offset="0x30" visible="true" tooltip="0 defaults to 1" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<tagRef name="Detail Normal 1 Map" offset="0x40" visible="true" />
+		<float32 name="Detail Normal 1 Coefficient" offset="0x50" visible="true" tooltip="0 defaults to 1" />
+		<float32 name="Detail Normal 1 Scale" offset="0x54" visible="true" tooltip="0 defaults to 1" />
+		<float32 name="Detail Normal 1 V-Scale" offset="0x58" visible="true" tooltip="0 defaults to 1 (applied on top of detail normal scale above)" />
+		<undefined name="Unknown" offset="0x5C" visible="false" />
+		<tagRef name="Detail Normal 2 Map" offset="0x60" visible="true" />
+		<float32 name="Detail Normal 2 Coefficient" offset="0x70" visible="true" tooltip="0 defaults to 1" />
+		<float32 name="Detail Normal 2 Scale" offset="0x74" visible="true" tooltip="0 defaults to 1" />
+		<float32 name="Detail Normal 2 V-Scale" offset="0x78" visible="true" tooltip="0 defaults to 1 (applied on top of detail normal scale above)" />
+		<undefined name="Unknown" offset="0x7C" visible="false" />
+		<comment title="Specular Tint Override">These values override the specular tint colours in the stock tag</comment>
+		<float32 name="Perpendicular Brightness" offset="0x80" visible="true" tooltip="reflection brightness when viewed perpendicularly" />
+		<colorf name="Perpendicular Tint Color" offset="0x84" alpha="false" visible="true" tooltip="reflection tint color when viewed perpendicularly" />
+		<float32 name="Parallel Brightness" offset="0x90" visible="true" tooltip="reflection brightness when viewed at a glancing angle" />
+		<colorf name="Parallel Tint Color" offset="0x94" alpha="false" visible="true" tooltip="reflection tint color when viewed at a glancing angle" />
+		<comment title="Diffuse Lighting" />
+		<flags16 name="Flags" offset="0xA0" visible="true">
+			<bit name="Do Not Use Dlms (BSP)" index="0" />
+		</flags16>
+		<int16 name="Unknown" offset="0xA2" visible="false" />
+		<undefined name="Unknown" offset="0xA4" visible="false" />
+		<comment title="Specular Lighting" />
+		<float32 name="Specular Lighting Exponent" offset="0xA8" visible="true" />
+		<float32 name="Specular Lighting Coefficient" offset="0xAC" visible="true" />
+		<undefined name="Unknown" offset="0xB0" visible="false" />
+		<undefined name="Unknown" offset="0xB4" visible="false" />
+		<undefined name="Unknown" offset="0xB8" visible="false" />
+		<undefined name="Unknown" offset="0xBC" visible="false" />
+	</tagblock>
+	<comment title="Texture Scrolling Animation">Scrolls all 2D maps simultaneously.</comment>
+	<enum16 name="U-Animation Source" offset="0xFC" visible="true">
+		<option name="None" value="0x0" />
+		<option name="A Out" value="0x1" />
+		<option name="B Out" value="0x2" />
+		<option name="C Out" value="0x3" />
+		<option name="D Out" value="0x4" />
+	</enum16>
+	<enum16 name="U-Animation Function" offset="0xFE" visible="true">
+		<option name="One" value="0x0" />
+		<option name="Zero" value="0x1" />
+		<option name="Cosine" value="0x2" />
+		<option name="Cosine (Variable Period)" value="0x3" />
+		<option name="Diagonal Wave" value="0x4" />
+		<option name="Diagonal Wave (Variable Period)" value="0x5" />
+		<option name="Slide" value="0x6" />
+		<option name="Slide (Variable Period)" value="0x7" />
+		<option name="Noise" value="0x8" />
+		<option name="Jitter" value="0x9" />
+		<option name="Wander" value="0xA" />
+		<option name="Spark" value="0xB" />
+	</enum16>
+	<float32 name="U-Animation Period" offset="0x100" visible="true" tooltip="0 defaults to 1" />
+	<float32 name="U-Animation Phase" offset="0x104" visible="true" />
+	<float32 name="U-Animation Scale" offset="0x108" visible="true" tooltip="0 defaults to 1" />
+	<enum16 name="V-Animation Source" offset="0x10C" visible="true">
+		<option name="None" value="0x0" />
+		<option name="A Out" value="0x1" />
+		<option name="B Out" value="0x2" />
+		<option name="C Out" value="0x3" />
+		<option name="D Out" value="0x4" />
+	</enum16>
+	<enum16 name="V-Animation Function" offset="0x10E" visible="true">
+		<option name="One" value="0x0" />
+		<option name="Zero" value="0x1" />
+		<option name="Cosine" value="0x2" />
+		<option name="Cosine (Variable Period)" value="0x3" />
+		<option name="Diagonal Wave" value="0x4" />
+		<option name="Diagonal Wave (Variable Period)" value="0x5" />
+		<option name="Slide" value="0x6" />
+		<option name="Slide (Variable Period)" value="0x7" />
+		<option name="Noise" value="0x8" />
+		<option name="Jitter" value="0x9" />
+		<option name="Wander" value="0xA" />
+		<option name="Spark" value="0xB" />
+	</enum16>
+	<float32 name="V-Animation Period" offset="0x110" visible="true" tooltip="0 defaults to 1" />
+	<float32 name="V-Animation Phase" offset="0x114" visible="true" />
+	<float32 name="V-Animation Scale" offset="0x118" visible="true" tooltip="0 defaults to 1" />
+	<enum16 name="Rotation-Animation Source" offset="0x11C" visible="true">
+		<option name="None" value="0x0" />
+		<option name="A Out" value="0x1" />
+		<option name="B Out" value="0x2" />
+		<option name="C Out" value="0x3" />
+		<option name="D Out" value="0x4" />
+	</enum16>
+	<enum16 name="Rotation-Animation Function" offset="0x11E" visible="true">
+		<option name="One" value="0x0" />
+		<option name="Zero" value="0x1" />
+		<option name="Cosine" value="0x2" />
+		<option name="Cosine (Variable Period)" value="0x3" />
+		<option name="Diagonal Wave" value="0x4" />
+		<option name="Diagonal Wave (Variable Period)" value="0x5" />
+		<option name="Slide" value="0x6" />
+		<option name="Slide (Variable Period)" value="0x7" />
+		<option name="Noise" value="0x8" />
+		<option name="Jitter" value="0x9" />
+		<option name="Wander" value="0xA" />
+		<option name="Spark" value="0xB" />
+	</enum16>
+	<float32 name="Rotation-Animation Period" offset="0x120" visible="true" tooltip="0 defaults to 1" />
+	<float32 name="Rotation-Animation Phase" offset="0x124" visible="true" />
+	<float32 name="Rotation-Animation Scale" offset="0x128" visible="true" tooltip="0 defaults to 360" />
+	<point2 name="Rotation-Animation Center" offset="0x12C" visible="true" />
+	<undefined name="Unknown" offset="0x134" visible="false" />
+	<undefined name="Unknown" offset="0x138" visible="false" />
+	<comment title="Reflection Properties" />
+	<float32 name="Reflection Falloff Distance" offset="0x13C" visible="true" tooltip="distance at which the reflection begins to fade out" />
+	<float32 name="Reflection Cutoff Distance" offset="0x140" visible="true" tooltip="distance at which the reflection fades out entirely (0 means no cutoff)" />
+	<float32 name="Perpendicular Brightness" offset="0x144" visible="true" tooltip="reflection brightness when viewed perpendicularly" />
+	<colorf name="Perpendicular Tint Color" offset="0x148" alpha="false" visible="true" tooltip="reflection tint color when viewed perpendicularly" />
+	<float32 name="Parallel Brightness" offset="0x154" visible="true" tooltip="reflection brightness when viewed at a glancing angle" />
+	<colorf name="Parallel Tint Color" offset="0x158" alpha="false" visible="true" tooltip="reflection tint color when viewed at a glancing angle" />
+	<tagRef name="Reflection Cube Map" offset="0x164" visible="true" />
+	<undefined name="Unknown" offset="0x174" visible="false" />
+	<undefined name="Unknown" offset="0x178" visible="false" />
+	<undefined name="Unknown" offset="0x17C" visible="false" />
+	<undefined name="Unknown" offset="0x180" visible="false" />
+	<float32 name="Runtime Unknown" offset="0x184" visible="true" />
+	<undefined name="Unknown" offset="0x188" visible="false" />
+	<undefined name="Unknown" offset="0x18C" visible="false" />
+	<undefined name="Unknown" offset="0x190" visible="false" />
+	<undefined name="Unknown" offset="0x194" visible="false" />
+	<undefined name="Unknown" offset="0x198" visible="false" />
+	<undefined name="Unknown" offset="0x19C" visible="false" />
+	<undefined name="Unknown" offset="0x1A0" visible="false" />
+	<undefined name="Unknown" offset="0x1A4" visible="false" />
+	<undefined name="Unknown" offset="0x1A8" visible="false" />
+	<undefined name="Unknown" offset="0x1AC" visible="false" />
+	<undefined name="Unknown" offset="0x1B0" visible="false" />
+	<undefined name="Unknown" offset="0x1B4" visible="false" />
+</plugin>

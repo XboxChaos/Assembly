@@ -108,7 +108,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 					MetroMessageBox.Show("Map is Read Only", "The provided map is readonly and cannot be modified. Check the file's properties and try again.");
 					break;
 				default:
-					MetroMessageBox.Show("Action Complete", string.Format("The provided map was {0} successfully.", result.ToString().ToLower()));
+					MetroMessageBox.Show("Action Complete", string.Format("The provided map was {0} successfully.", result.ToString().ToLowerInvariant()));
 					break;
 			}
 
@@ -213,7 +213,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 
 		private void workerBatch_RunWorkerCompleted(CompressionState state)
 		{
-			MetroMessageBox.Show("Batch Action Complete", string.Format("All applicable files have been {0}.", state.ToString().ToLower()));
+			MetroMessageBox.Show("Batch Action Complete", string.Format("All applicable files have been {0}.", state.ToString().ToLowerInvariant()));
 
 			EndWork();
 		}

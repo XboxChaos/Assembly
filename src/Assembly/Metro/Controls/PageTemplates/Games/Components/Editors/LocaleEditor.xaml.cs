@@ -71,7 +71,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			// Wrap the groups stored in the cache file and sort them
 			foreach (LocalizedStringList group in _currentPack.StringLists)
 			{
-				string name = _cache.FileNames.GetTagName(group.SourceTag);
+				string name = _cache.FileNames.GetTagName(group.SourceTag) ?? group.SourceTag.Index.ToString();
 				_groups.Add(new NamedStringList {Name = name, Base = group});
 			}
 			_groups.Sort((g1, g2) => g1.Name.CompareTo(g2.Name));
@@ -163,7 +163,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			if (!string.IsNullOrEmpty(_searchText))
 			{
 				// Only show strings that match the filter
-				if (!entry.Value.ToLower().Contains(_searchText) && !entry.StringID.ToLower().Contains(_searchText))
+				if (!entry.Value.ToLowerInvariant().Contains(_searchText) && !entry.StringID.ToLowerInvariant().Contains(_searchText))
 					return false;
 			}
 			return true;
@@ -176,7 +176,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 		private void SetSearchText(string filter)
 		{
 			if (filter != null)
-				_searchText = filter.ToLower();
+				_searchText = filter.ToLowerInvariant();
 			else
 				_searchText = null;
 

@@ -12,6 +12,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 	{
 		private FileSegment _eofSegment;
 		public int cacheSegmentAlignment;
+		public int tagSegmentAlignment;
 		private IPointerExpander _expander;
 
 		public ThirdGenHeader(StructureValueCollection values, EngineDescription info, FileSegmenter segmenter,
@@ -20,6 +21,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			BuildString = info.BuildVersion;
 			HeaderSize = info.HeaderSize;
 			cacheSegmentAlignment = info.SegmentAlignment;
+			tagSegmentAlignment = info.TagSegmentAlignment;
 			_expander = expander;
 			Load(values, segmenter);
 		}
@@ -223,7 +225,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			// I just want to get this working for now.
 			//rsrcSection.VirtualAddress = 0; // This is (not) always zero
 
-			if (cacheSegmentAlignment == 0x800)
+			if (cacheSegmentAlignment == 0x800 || cacheSegmentAlignment == 0x200)
 				rsrcSection.VirtualAddress = 0x800; // hax for h3b saving, sections aren't in the same order as final
 			rsrcSection.Size = (ResourcePointerConverter != null) ? (uint) RawTable.Size : 0;
 			localeSection.VirtualAddress = (LocalePointerConverter != null) ? rsrcSection.VirtualAddress + rsrcSection.Size : 0;
@@ -298,7 +300,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			CalculateStringGroup(values, segmenter);
 
-			Checksum = (uint)values.GetInteger("checksum");
+			Checksum = (uint)values.GetIntegerOrDefault("checksum", 0);
 		}
 
 		private void LoadInteropData(StructureValueCollection headerValues)
@@ -370,7 +372,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			{
 				uint tagDataOffset = TagBufferPointerConverter.PointerToOffset(TagBufferPointerConverter.BasePointer);
 				var tagDataSize = (uint) values.GetInteger("virtual size");
-				return segmenter.WrapSegment(tagDataOffset, tagDataSize, 0x10000, SegmentResizeOrigin.Beginning);
+				return segmenter.WrapSegment(tagDataOffset, tagDataSize, tagSegmentAlignment, SegmentResizeOrigin.Beginning);
 			}
 			return null;
 		}
