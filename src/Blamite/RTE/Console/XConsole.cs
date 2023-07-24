@@ -102,41 +102,41 @@ namespace Blamite.RTE.Console
 		/// <summary>
 		/// Tells the console to temporarily stop everything
 		/// </summary>
-		public void Stop()
+		public bool Stop()
 		{
 			if (!Connect())
-				return;
+				return false;
 
 			StopInternal();
-
 			Disconnect();
+			return true;
 		}
 
 		/// <summary>
 		/// Tells the console to resume after a previous stop
 		/// </summary>
-		public void Go()
+		public bool Go()
 		{
 			if (!Connect())
-				return;
+				return false;
 
 			GoInternal();
-
 			Disconnect();
+			return true;
 		}
 
 		/// <summary>
 		/// Reboots the console using the given reboot type
 		/// </summary>
 		/// <param name="rebootType">The kind of reboot to perform</param>
-		public void Reboot(RebootType rebootType)
+		public bool Reboot(RebootType rebootType)
 		{
 			if (!Connect())
-				return;
+				return false;
 
 			RebootInternal(rebootType);
-
 			Disconnect();
+			return true;
 		}
 
 		/// <summary>
@@ -153,7 +153,6 @@ namespace Blamite.RTE.Console
 			byte[] data = ReadMemoryInternal(address, length, out uint bytesRead);
 		
 			Disconnect();
-		
 			return data;
 		}
 
@@ -171,7 +170,6 @@ namespace Blamite.RTE.Console
 			bool result = WriteMemoryInternal(address, length, data, out uint bytesWritten);
 		
 			Disconnect();
-		
 			return result;
 		}
 
@@ -196,7 +194,6 @@ namespace Blamite.RTE.Console
 				GoInternal();
 
 			Disconnect();
-
 			return shot;
 		}
 
@@ -210,23 +207,21 @@ namespace Blamite.RTE.Console
 				return null;
 
 			string title = GetRunningTitleInternal();
-
 			Disconnect();
-
 			return title;
 		}
 
 		/// <summary>
 		/// Sets the console's time with the system time
 		/// </summary>
-		public void SetSystemTime()
+		public bool SetSystemTime()
 		{
 			if (!Connect())
-				return;
+				return false;
 
 			SetSystemTimeInternal();
-
 			Disconnect();
+			return true;
 		}
 		#endregion
 

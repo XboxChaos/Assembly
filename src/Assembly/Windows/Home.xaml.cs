@@ -246,6 +246,11 @@ namespace Assembly.Windows
 		}
 
 		//og console
+		private void ShowOGConnectError()
+		{
+			MetroMessageBox.Show("Not Connected", "You are not connected to a debug Xbox.");
+		}
+
 		private void menuOGScreenshot_Click(object sender, RoutedEventArgs e)
 		{
 			Bitmap image;
@@ -259,43 +264,54 @@ namespace Assembly.Windows
 					App.AssemblyStorage.AssemblySettings.HomeWindow.AddScreenTabModule(image, "Xbox");
 				}
 				else
-					MetroMessageBox.Show("Not Connected", "You are not connected to a debug Xbox.");
+					ShowOGConnectError();
 			}
 			catch { }
 		}
 
 		private void menuOGStop_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.XbConsole.Stop();
+			if (!App.AssemblyStorage.AssemblySettings.XbConsole.Stop())
+				ShowOGConnectError();
 		}
 
 
 		private void menuOGGo_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.XbConsole.Go();
+			if (!App.AssemblyStorage.AssemblySettings.XbConsole.Go())
+				ShowOGConnectError();
 		}
 
 		private void menuOGRebootCold_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.XbConsole.Reboot(RebootType.Cold);
+			if (!App.AssemblyStorage.AssemblySettings.XbConsole.Reboot(RebootType.Cold))
+				ShowOGConnectError();
 		}
 
 		private void menuOGRebootSoft_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.XbConsole.Reboot(RebootType.Soft);
+			if (!App.AssemblyStorage.AssemblySettings.XbConsole.Reboot(RebootType.Soft))
+				ShowOGConnectError();
 		}
 
 		private void menuOGRebootTitle_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.XbConsole.Reboot(RebootType.Title);
+			if (!App.AssemblyStorage.AssemblySettings.XbConsole.Reboot(RebootType.Title))
+				ShowOGConnectError();
 		}
 
 		private void menuOGSyncTime_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.XbConsole.SetSystemTime();
+			if (!App.AssemblyStorage.AssemblySettings.XbConsole.SetSystemTime())
+				ShowOGConnectError();
 		}
 
 		//360 console
+		private void Show360ConnectError()
+		{
+			MetroMessageBox.Show("Not Connected", "You are not connected to a debug Xbox 360.");
+		}
+
 		private void menu360Screenshot_Click(object sender, RoutedEventArgs e)
 		{
 			Bitmap image;
@@ -308,39 +324,45 @@ namespace Assembly.Windows
 					App.AssemblyStorage.AssemblySettings.HomeWindow.AddScreenTabModule(image, "Xbox 360");
 				}
 				else
-					MetroMessageBox.Show("Not Connected", "You are not connected to a debug Xbox 360.");
+					Show360ConnectError();
 			}
 			catch { }
 		}
 
 		private void menu360Stop_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.XeConsole.Stop();
+			if (!App.AssemblyStorage.AssemblySettings.XeConsole.Stop())
+				Show360ConnectError();
 		}
 
 		private void menu360Go_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.XeConsole.Go();
+			if (!App.AssemblyStorage.AssemblySettings.XeConsole.Go())
+				Show360ConnectError();
 		}
 
 		private void menu360RebootCold_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.XeConsole.Reboot(RebootType.Cold);
+			if (!App.AssemblyStorage.AssemblySettings.XeConsole.Reboot(RebootType.Cold))
+				Show360ConnectError(); ;
 		}
 
 		private void menu360RebootSoft_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.XeConsole.Reboot(RebootType.Soft);
+			if (!App.AssemblyStorage.AssemblySettings.XeConsole.Reboot(RebootType.Soft))
+				Show360ConnectError();
 		}
 
 		private void menu360RebootTitle_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.XeConsole.Reboot(RebootType.Title);
+			if (!App.AssemblyStorage.AssemblySettings.XeConsole.Reboot(RebootType.Title))
+				Show360ConnectError();
 		}
 
 		private void menu360SyncTime_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.XeConsole.SetSystemTime();
+			if (!App.AssemblyStorage.AssemblySettings.XeConsole.SetSystemTime())
+				Show360ConnectError();
 		}
 
 		// Help
