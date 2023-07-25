@@ -253,16 +253,12 @@ namespace Assembly.Windows
 
 		private void menuOGScreenshot_Click(object sender, RoutedEventArgs e)
 		{
-			Bitmap image;
 			try
 			{
 				Screenshot shot = App.AssemblyStorage.AssemblySettings.XbConsole.GetScreenshot(App.AssemblyStorage.AssemblySettings.XdkScreenshotFreeze);
 
 				if (shot != null)
-				{
-					image = shot.ConvertToBitmap(false);
-					App.AssemblyStorage.AssemblySettings.HomeWindow.AddScreenTabModule(image, "Xbox");
-				}
+					App.AssemblyStorage.AssemblySettings.HomeWindow.AddScreenTabModule(shot, "Xbox");
 				else
 					ShowOGConnectError();
 			}
@@ -314,15 +310,11 @@ namespace Assembly.Windows
 
 		private void menu360Screenshot_Click(object sender, RoutedEventArgs e)
 		{
-			Bitmap image;
 			try
 			{
 				Screenshot shot = App.AssemblyStorage.AssemblySettings.XeConsole.GetScreenshot(App.AssemblyStorage.AssemblySettings.XdkScreenshotFreeze);
 				if (shot != null)
-				{
-					image = shot.ConvertToBitmap(App.AssemblyStorage.AssemblySettings.XdkResizeImages);
-					App.AssemblyStorage.AssemblySettings.HomeWindow.AddScreenTabModule(image, "Xbox 360");
-				}
+					App.AssemblyStorage.AssemblySettings.HomeWindow.AddScreenTabModule(shot, "Xbox 360");
 				else
 					Show360ConnectError();
 			}
@@ -676,14 +668,14 @@ namespace Assembly.Windows
 		/// </summary>
 		/// <param name="bitmap">The image</param>
 		/// <param name="source">The console type that took the image, for tab title and tooltip</param>
-		public void AddScreenTabModule(Bitmap bitmap, string source)
+		public void AddScreenTabModule(Screenshot shot, string source)
 		{
 			var newScreenshotTab = new LayoutDocument
 			{
 				ContentId = DateTime.Now.ToString(),
 				ToolTip = source + " Screenshot",
 			};
-			newScreenshotTab.Content = new HaloScreenshot(bitmap, newScreenshotTab, source);
+			newScreenshotTab.Content = new HaloScreenshot(shot, newScreenshotTab, source);
 			documentManager.Children.Add(newScreenshotTab);
 			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newScreenshotTab);
 		}

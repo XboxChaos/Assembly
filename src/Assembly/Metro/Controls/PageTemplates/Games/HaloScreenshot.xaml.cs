@@ -9,6 +9,7 @@ using Assembly.Helpers;
 using Assembly.Helpers.Native;
 using Assembly.Helpers.Net;
 using Assembly.Metro.Dialogs;
+using Blamite.RTE.Console.Native;
 using Xceed.Wpf.AvalonDock.Layout;
 using Clipboard = System.Windows.Clipboard;
 
@@ -24,12 +25,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private readonly string _datetime_shrt;
 		private string _imageID;
 
-		public HaloScreenshot(Bitmap bitmap, LayoutDocument tabItem, string source)
+		public HaloScreenshot(Screenshot shot, LayoutDocument tabItem, string source)
 		{
 			InitializeComponent();
 
-			// Convert DDS to BitmapImage
-			_bitmapImage = ScreenshotHelper.CreateBitmapSource(bitmap);
+			using (Bitmap bitm = shot.ConvertToBitmap(shot.ScreenWidth != -1 ? App.AssemblyStorage.AssemblySettings.XdkResizeImages : false))
+			{
+				_bitmapImage = ScreenshotHelper.CreateBitmapSource(bitm);
+			}
 
 			// DateTime Creation
 			DateTime date = DateTime.Now;
