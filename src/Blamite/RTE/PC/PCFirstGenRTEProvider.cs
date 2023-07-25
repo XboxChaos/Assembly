@@ -4,11 +4,10 @@ using Blamite.RTE.PC.Native;
 using Blamite.Serialization;
 using System;
 using System.Diagnostics;
-using System.IO;
 
 namespace Blamite.RTE.PC
 {
-	public class PCFirstGenRTEProvider : RTEProvider
+	public class PCFirstGenRTEProvider : PCRTEProvider
 	{
 		/// <summary>
 		///     Constructs a new FirstGenRTEProvider.
@@ -60,16 +59,22 @@ namespace Blamite.RTE.PC
 			}
 
 			ProcessMemoryStream gameMemory = new ProcessMemoryStream(gameProcess, gameModule);
-			FirstGenMapPointerReader mapInfo = new FirstGenMapPointerReader(gameMemory, _buildInfo, info);
 
-			long memoryAddress = mapInfo.CurrentCacheAddress;
-			if (mapInfo.MapName != cacheFile.InternalName)
+			_baseAddress = (long)gameMemory.BaseModule.BaseAddress;
+			_mapHeaderAddress = _baseAddress + info.HeaderAddress.Value;
+			_mapMagicAddress = _baseAddress + info.MagicAddress.Value;
+
+			var reader = new EndianReader(gameMemory, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
+			ReadInformation(reader, _buildInfo);
+
+			long memoryAddress = CurrentCacheAddress;
+			if (CurrentMapName != cacheFile.InternalName)
 			{
 				gameMemory.Close();
-				if (string.IsNullOrEmpty(mapInfo.MapName))
+				if (string.IsNullOrEmpty(CurrentMapName))
 					ErrorMessage = "Tried to poke map \"" + cacheFile.InternalName + "\" but the game is not currently running any map." + GuessError;
 				else
-					ErrorMessage = "Tried to poke map \"" + cacheFile.InternalName + "\" but the game is currently in map \"" + mapInfo.MapName + "\"." + GuessError;
+					ErrorMessage = "Tried to poke map \"" + cacheFile.InternalName + "\" but the game is currently in map \"" + CurrentMapName + "\"." + GuessError;
 				return null;
 			}
 
@@ -81,6 +86,18 @@ namespace Blamite.RTE.PC
 
 			OffsetStream gameStream = new OffsetStream(gameMemory, memoryAddress - cacheFile.MetaArea.BasePointer);
 			return new EndianStream(gameStream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
+		}
+
+		protected override void ReadMapPointers32(IReader reader)
+		{
+			reader.SeekTo(_mapMagicAddress);
+			CurrentCacheAddress = reader.ReadUInt32();
+		}
+
+		protected override void ReadMapPointers64(IReader reader)
+		{
+			reader.SeekTo(_mapMagicAddress);
+			CurrentCacheAddress = reader.ReadInt64();
 		}
 	}
 }

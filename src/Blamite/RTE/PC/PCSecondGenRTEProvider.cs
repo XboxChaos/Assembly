@@ -4,12 +4,19 @@ using Blamite.RTE.PC.Native;
 using Blamite.Serialization;
 using System;
 using System.Diagnostics;
-using System.IO;
 
 namespace Blamite.RTE.PC
 {
-	public class PCSecondGenRTEProvider : RTEProvider
+	public class PCSecondGenRTEProvider : PCRTEProvider
 	{
+		private long _mapSharedMagicAddress;
+
+		/// <summary>
+		///     Gets the address of the cache for the currently-loaded shared map.
+		///     If no shared map is loaded, this will be the same as <see cref="CurrentCacheAddress" />.
+		/// </summary>
+		public long SharedCacheAddress { get; private set; }
+
 		/// <summary>
 		///     Constructs a new SecondGenRTEProvider.
 		/// </summary>
@@ -65,34 +72,53 @@ namespace Blamite.RTE.PC
 			}
 
 			ProcessMemoryStream gameMemory = new ProcessMemoryStream(gameProcess, gameModule);
-			SecondGenMapPointerReader mapInfo = new SecondGenMapPointerReader(gameMemory, _buildInfo, info);
+
+			_baseAddress = (long)gameMemory.BaseModule.BaseAddress;
+
+			var reader = new EndianReader(gameMemory, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
+
+			if (info.HeaderPointer.HasValue)
+			{
+				reader.SeekTo(_baseAddress + info.HeaderPointer.Value);
+				_mapHeaderAddress = reader.ReadInt64();
+			}
+			else
+				_mapHeaderAddress = _baseAddress + info.HeaderAddress.Value;
+
+			_mapMagicAddress = _baseAddress + info.MagicAddress.Value;
+			_mapSharedMagicAddress = _baseAddress + info.SharedMagicAddress.Value;
+
+			ReadInformation(reader, _buildInfo);
 
 			long memoryAddress;
 			if (cacheFile.Type != CacheFileType.Shared)
 			{
-				memoryAddress = mapInfo.CurrentCacheAddress;
+				memoryAddress = CurrentCacheAddress;
 
 				// The map isn't shared, so make sure the map names match
-				if (mapInfo.MapName != cacheFile.InternalName)
+				if (CurrentMapName != cacheFile.InternalName)
 				{
 					gameMemory.Close();
-					ErrorMessage = "Tried to poke map \"" + cacheFile.InternalName + "\" but the game is currently in map \"" + mapInfo.MapName + "\"." + GuessError;
-					return null;
+				if (string.IsNullOrEmpty(CurrentMapName))
+					ErrorMessage = "Tried to poke map \"" + cacheFile.InternalName + "\" but the game is not currently running any map." + GuessError;
+				else
+					ErrorMessage = "Tried to poke map \"" + cacheFile.InternalName + "\" but the game is currently in map \"" + CurrentMapName + "\"." + GuessError;
+				return null;
 				}
 			}
 			else
 			{
-				memoryAddress = mapInfo.SharedCacheAddress;
+				memoryAddress = SharedCacheAddress;
 
 				// Make sure the shared and current map pointers are different,
 				// or that the current map is the shared map
-				if (mapInfo.MapType != CacheFileType.Shared && mapInfo.CurrentCacheAddress == mapInfo.SharedCacheAddress)
+				if (CurrentMapType != CacheFileType.Shared && CurrentCacheAddress == SharedCacheAddress)
 				{
 					gameMemory.Close();
-					if (string.IsNullOrEmpty(mapInfo.MapName))
+					if (string.IsNullOrEmpty(CurrentMapName))
 						ErrorMessage = "Tried to poke map \"" + cacheFile.InternalName + "\" but the game is not currently running any map." + GuessError;
 					else
-						ErrorMessage = "Tried to poke map \"" + cacheFile.InternalName + "\" but the game is currently in map \"" + mapInfo.MapName + "\"." + GuessError;
+						ErrorMessage = "Tried to poke map \"" + cacheFile.InternalName + "\" but the game is currently in map \"" + CurrentMapName + "\"." + GuessError;
 					return null;
 				}
 			}
@@ -105,6 +131,27 @@ namespace Blamite.RTE.PC
 
 			OffsetStream gameStream = new OffsetStream(gameMemory, memoryAddress - cacheFile.MetaArea.BasePointer);
 			return new EndianStream(gameStream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
+		}
+
+		protected override void ReadMapPointers32(IReader reader)
+		{
+			// The shared meta pointer is immediately before the map header
+			reader.SeekTo(_mapSharedMagicAddress);
+			SharedCacheAddress = reader.ReadUInt32();
+
+			reader.SeekTo(_mapMagicAddress);
+			CurrentCacheAddress = reader.ReadUInt32();
+		}
+
+		protected override void ReadMapPointers64(IReader reader)
+		{
+			// The shared meta pointer is immediately before the map header
+			reader.SeekTo(_mapSharedMagicAddress);
+			SharedCacheAddress = reader.ReadInt64();
+
+			// The current meta pointer is immediately after the main header
+			reader.SeekTo(_mapMagicAddress);
+			CurrentCacheAddress = reader.ReadInt64();
 		}
 	}
 }

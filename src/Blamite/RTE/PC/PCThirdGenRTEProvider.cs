@@ -4,11 +4,10 @@ using Blamite.RTE.PC.Native;
 using Blamite.Serialization;
 using System;
 using System.Diagnostics;
-using System.IO;
 
 namespace Blamite.RTE.PC
 {
-	public class PCThirdGenRTEProvider : RTEProvider
+	public class PCThirdGenRTEProvider : PCRTEProvider
 	{
 		/// <summary>
 		///     Constructs a new ThirdGenRTEProvider.
@@ -55,16 +54,45 @@ namespace Blamite.RTE.PC
 			}
 
 			ProcessMemoryStream gameMemory = new ProcessMemoryStream(gameProcess, gameModule);
-			ThirdGenMapPointerReader mapInfo = new ThirdGenMapPointerReader(gameMemory, _buildInfo, info);
 
-			long memoryAddress = mapInfo.CurrentCacheAddress;
-			if (cacheFile != null && mapInfo.MapName != cacheFile.InternalName)
+			_baseAddress = (long)gameMemory.BaseModule.BaseAddress;
+
+			var reader = new EndianReader(gameMemory, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
+
+			if (info.HeaderPointer.HasValue)
+			{
+				reader.SeekTo(_baseAddress + info.HeaderPointer.Value);
+
+				long address;
+				if (_buildInfo.PokingPlatform == RTEConnectionType.LocalProcess32)
+				{
+					address = reader.ReadUInt32();
+					_mapHeaderAddress = address + 0x8;
+				}
+				else
+				{
+					address = reader.ReadInt64();
+					_mapHeaderAddress = address + 0x10;
+				}
+
+				_mapMagicAddress = address + _buildInfo.HeaderSize + info.MagicOffset.Value;
+			}
+			else
+			{
+				_mapHeaderAddress = _baseAddress + info.HeaderAddress.Value;
+				_mapMagicAddress = _baseAddress + info.MagicAddress.Value;
+			}
+
+			ReadInformation(reader, _buildInfo);
+
+			long memoryAddress = CurrentCacheAddress;
+			if (cacheFile != null && CurrentMapName != cacheFile.InternalName)
 			{
 				gameMemory.Close();
-				if (string.IsNullOrEmpty(mapInfo.MapName))
+				if (string.IsNullOrEmpty(CurrentMapName))
 					ErrorMessage = "Tried to poke map \"" + cacheFile.InternalName + "\" but the game is not currently running any map." + GuessError;
 				else
-					ErrorMessage = "Tried to poke map \"" + cacheFile.InternalName + "\" but the game is currently in map \"" + mapInfo.MapName + "\"." + GuessError;
+					ErrorMessage = "Tried to poke map \"" + cacheFile.InternalName + "\" but the game is currently in map \"" + CurrentMapName + "\"." + GuessError;
 				return null;
 			}
 
@@ -76,6 +104,18 @@ namespace Blamite.RTE.PC
 
 			OffsetStream gameStream = new OffsetStream(gameMemory, memoryAddress);
 			return new EndianStream(gameStream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
+		}
+
+		protected override void ReadMapPointers32(IReader reader)
+		{
+			reader.SeekTo(_mapMagicAddress);
+			CurrentCacheAddress = reader.ReadUInt32();
+		}
+
+		protected override void ReadMapPointers64(IReader reader)
+		{
+			reader.SeekTo(_mapMagicAddress);
+			CurrentCacheAddress = reader.ReadInt64();
 		}
 	}
 }
