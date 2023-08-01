@@ -99,11 +99,11 @@ namespace Blamite.RTE.PC
 				if (CurrentMapName != cacheFile.InternalName)
 				{
 					gameMemory.Close();
-				if (string.IsNullOrEmpty(CurrentMapName))
-					ErrorMessage = "Tried to poke map \"" + cacheFile.InternalName + "\" but the game is not currently running any map." + GuessError;
-				else
-					ErrorMessage = "Tried to poke map \"" + cacheFile.InternalName + "\" but the game is currently in map \"" + CurrentMapName + "\"." + GuessError;
-				return null;
+					if (string.IsNullOrEmpty(CurrentMapName))
+						ErrorMessage = "Tried to poke map \"" + cacheFile.InternalName + "\" but the game is not currently running any map." + GuessError;
+					else
+						ErrorMessage = "Tried to poke map \"" + cacheFile.InternalName + "\" but the game is currently in map \"" + CurrentMapName + "\"." + GuessError;
+					return null;
 				}
 			}
 			else
