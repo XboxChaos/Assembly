@@ -439,25 +439,19 @@
 						</Grid.ColumnDefinitions>
 
 						<StackPanel Grid.Column="0">
-							<TextBlock Text="Screenshot Events:" Style="{DynamicResource SettingName}" />
+							<TextBlock Text="Freeze Console During Screenshots:" Style="{DynamicResource SettingName}" />
 							<TextBlock TextWrapping="Wrap" Style="{DynamicResource SettingDescription}">
-								Events that happen when Assembly takes screenshots from the xbox console.
+								Makes screenshots more crisp by preventing any movement onscreen.
 							</TextBlock>
 						</StackPanel>
-						<StackPanel Grid.Column="2">
-							<CheckBox VerticalAlignment="Top" HorizontalAlignment="Left"
-									  Width="400" IsChecked="{Binding Path=XdkScreenshotFreeze, Mode=TwoWay}"
-									  Content="Freeze Console During Capture (Makes screenshots more crisp)" />
-							<CheckBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,4,0,0" 
-									  Width="400" IsChecked="{Binding Path=XdkResizeImages, Mode=TwoWay}"
-									  Content="Resize Screenshots To Console Resolution (360 only)" ToolTip="Screenshots start at the console's framebuffer size. This resolution may appear more crisp but for Reach the image will appear squished without resizing." />
-							<CheckBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,4,0,0" 
-									  Width="400" IsChecked="{Binding Path=XdkAutoSave, Mode=TwoWay}"
-									  Content="Auto Save Screenshots (Choose the path below)" />
-						</StackPanel>
+						<Grid Grid.Column="2">
+							<CheckBox VerticalAlignment="Top"
+									  IsChecked="{Binding Path=XdkScreenshotFreeze, Mode=TwoWay}"
+									  Content="Freeze Console" />
+						</Grid>
 					</Grid>
 
-					<Grid Style="{DynamicResource SettingEntry}" IsEnabled="{Binding Path=XdkAutoSave}">
+					<Grid Style="{DynamicResource SettingEntry}">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="200" />
 							<ColumnDefinition Width="20" />
@@ -465,15 +459,67 @@
 						</Grid.ColumnDefinitions>
 
 						<StackPanel Grid.Column="0">
-							<TextBlock Text="Sceenshot Auto Save Path:" Style="{DynamicResource SettingName}" />
+							<TextBlock Text="Gamma Correct Screenshots:" Style="{DynamicResource SettingName}" />
 							<TextBlock TextWrapping="Wrap" Style="{DynamicResource SettingDescription}">
-								The path on your local PC to automatically save screenshots. (This feature is only used if the setting above is set to true)
+								Applies custom gamma values to make Halo 3 and ODST screenshots more accurate. However this will also distort Halo Wars screenshots if enabled. Toggle as needed. (This is ignored for other games.)
 							</TextBlock>
 						</StackPanel>
-						<StackPanel Grid.Column="2" VerticalAlignment="Top" Orientation="Horizontal">
-							<TextBox x:Name="TextBoxAutoSaveDirectory" Width="250" Text="{Binding Path=XdkScreenshotPath, Mode=TwoWay}" />
-							<Button Margin="10,0,0,0" Width="75" Content="Browse..." Click="TextBoxAutoSaveDirectory_OnClick" />
+						<Grid Grid.Column="2">
+							<CheckBox VerticalAlignment="Top"
+									  IsChecked="{Binding Path=XdkScreenshotGammaCorrect, Mode=TwoWay}"
+									  Content="Gamma Correct" />
+						</Grid>
+					</Grid>
+					
+					<Grid Style="{DynamicResource SettingEntry}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="200" />
+							<ColumnDefinition Width="20" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+
+						<StackPanel Grid.Column="0">
+							<TextBlock Text="Auto-Save Screenshots:" Style="{DynamicResource SettingName}" />
+							<TextBlock TextWrapping="Wrap" Style="{DynamicResource SettingDescription}">
+								Screenshots will be automatically saved as PNG format to the specified folder.
+							</TextBlock>
 						</StackPanel>
+						<Grid Grid.Column="2">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+							<CheckBox VerticalAlignment="Top"
+									  IsChecked="{Binding Path=XdkAutoSave, Mode=TwoWay}"
+									  Content="Auto-Save" />
+
+							<StackPanel Grid.Row="2" VerticalAlignment="Top" Margin="0,4,0,0" Orientation="Horizontal">
+								<TextBox x:Name="TextBoxAutoSaveDirectory" Width="250" Text="{Binding Path=XdkScreenshotPath, Mode=TwoWay}" />
+								<Button Margin="10,0,0,0" Width="75" Content="Browse..." Click="TextBoxAutoSaveDirectory_OnClick" />
+							</StackPanel>
+						</Grid>
+					</Grid>
+
+					<Grid Style="{DynamicResource SettingEntry}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="200" />
+							<ColumnDefinition Width="20" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+
+						<StackPanel Grid.Column="0">
+							<TextBlock Text="Resize Screenshots:" Style="{DynamicResource SettingName}" />
+							<TextBlock TextWrapping="Wrap" Style="{DynamicResource SettingDescription}">
+								[360 Only] Resizes screenshots to your console's display resolution, as the game's internal resolution may be distorted in some cases.
+								<LineBreak/>
+								Examples of distortion include Halo 3, ODST, Reach, and running in a non-widescreen mode.
+							</TextBlock>
+						</StackPanel>
+						<Grid Grid.Column="2">
+							<CheckBox VerticalAlignment="Top"
+									  IsChecked="{Binding Path=XdkResizeImages, Mode=TwoWay}"
+									  Content="Resize Screenshots" />
+						</Grid>
 					</Grid>
 				</StackPanel>
 			</Grid>

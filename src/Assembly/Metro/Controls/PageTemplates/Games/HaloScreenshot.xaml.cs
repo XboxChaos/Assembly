@@ -29,7 +29,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			InitializeComponent();
 
-			using (Bitmap bitm = shot.ConvertToBitmap(shot.ScreenWidth != -1 ? App.AssemblyStorage.AssemblySettings.XdkResizeImages : false))
+			bool resize = App.AssemblyStorage.AssemblySettings.XdkResizeImages;
+
+			using (Bitmap bitm = shot.ConvertToBitmap(App.AssemblyStorage.AssemblySettings.XdkScreenshotGammaCorrect, shot.ScreenWidth != -1 ? resize : false))
 			{
 				_bitmapImage = ScreenshotHelper.CreateBitmapSource(bitm);
 			}

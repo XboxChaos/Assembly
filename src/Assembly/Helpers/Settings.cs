@@ -173,6 +173,7 @@ namespace Assembly.Helpers
 		private string _xbConsoleNameIp = "192.168.0.1";
 		private bool _xdkResizeImages;
 		private bool _xdkScreenshotFreeze = true;
+		private bool _xdkScreenshotGammaCorrect = true;
 		private string _xdkScreenshotPath = "";
 		private ObservableCollection<ImgurHistoryEntry> _imgurHistory = new ObservableCollection<ImgurHistoryEntry>();
 		private UpdateSource _updateChannel = UpdateSource.Stable;
@@ -484,6 +485,14 @@ namespace Assembly.Helpers
 				if (XbConsole != null)
 					XbConsole.UpdateIdentifier(value);
 			}
+		}
+
+		/// <summary>
+		/// </summary>
+		public bool XdkScreenshotGammaCorrect
+		{
+			get { return _xdkScreenshotGammaCorrect; }
+			set { SetField(ref _xdkScreenshotGammaCorrect, value, "XdkScreenshotGammaCorrect"); }
 		}
 
 		/// <summary>

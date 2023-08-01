@@ -96,7 +96,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 					screenshotPng = Path.GetTempFileName();
 
 					Screenshot shot = App.AssemblyStorage.AssemblySettings.XeConsole.GetScreenshot();
-					Bitmap bitmap = shot.ConvertToBitmap(App.AssemblyStorage.AssemblySettings.XdkResizeImages);
+					Bitmap bitmap = shot.ConvertToBitmap(App.AssemblyStorage.AssemblySettings.XdkScreenshotGammaCorrect, App.AssemblyStorage.AssemblySettings.XdkResizeImages);
 
 					if (bitmap == null)
 					{
