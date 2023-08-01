@@ -47,6 +47,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			// Set Image Name
 			lblImageName.Text = _datetime_long + ".png";
 
+			if (resize && shot.ScreenWidth != -1 && (shot.Width != shot.ScreenWidth || shot.Height != shot.ScreenHeight))
+				lblRes.Text = $"{shot.ScreenWidth}x{shot.ScreenHeight} [{shot.Width}x{shot.Height}]";
+			else
+				lblRes.Text = $"{shot.Width}x{shot.Height}";
+
 			// Set Image
 			imageScreenshot.Source = _bitmapImage;
 
