@@ -271,7 +271,11 @@ namespace Blamite.Blam.Scripting.Compiler
 
             // Handle functions.
             var functions = _opcodes.GetFunctionInfo(name);
-            foreach(var func in functions)
+
+            if (functions == null)
+                throw new CompilerException($"Tried to find opcode named '{name}' but could not. It may actually be a culled script if this is an unmodified map.", context);
+
+            foreach (var func in functions)
             {
                 if(!CheckParameterSanity(context, func))
                 {
