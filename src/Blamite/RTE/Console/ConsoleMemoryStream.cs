@@ -97,7 +97,7 @@ namespace Blamite.RTE.Console
 			}
 
 			Buffer.BlockCopy(tempBuffer, (int)cacheOffset, buffer, offset, count);
-			Position += bytesRead;
+			Position += count;
 
 			//cache the data
 			_cachedAddress = clippedAddress;

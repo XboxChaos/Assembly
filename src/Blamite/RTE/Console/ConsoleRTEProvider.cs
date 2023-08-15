@@ -40,6 +40,7 @@ namespace Blamite.RTE.Console
 				return null;
 			}
 
+			_console.Disconnect();
 			return new EndianStream(_console.MemoryStream, _console.Endianness);
 		}
 	}
