@@ -166,7 +166,7 @@ namespace Blamite.Blam.SecondGen.Structures
 			}
 
 			InternalName = values.GetString("internal name");
-			ScenarioName = values.GetString("scenario name");
+			ScenarioName = values.GetStringOrDefault("scenario name", null);
 
 			StringArea = new FileSegmentGroup();
 			if (values.HasInteger("string block offset"))
