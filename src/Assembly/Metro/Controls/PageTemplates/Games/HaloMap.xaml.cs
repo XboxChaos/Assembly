@@ -2468,6 +2468,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 				tag.NotifyTooltipUpdate();
 
+				_cacheFile.SaveChanges(stream);
+
 				MetroMessageBox.Show("Tag Isolation - Assembly",
 					"The tag was isolated successfully.");
 			}
