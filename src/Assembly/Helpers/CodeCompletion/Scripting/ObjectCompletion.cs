@@ -11,7 +11,7 @@ namespace Assembly.Helpers.CodeCompletion.Scripting
         public ObjectCompletion(ScriptingContextObject obj)
         {
             Text = obj.Name;
-            Description = $"[{obj.ObjectGroup.ToUpper()}]";
+            Description = $"[{obj.ObjectGroup.ToUpperInvariant()}]";
             if (obj.IsChild)
             {
                 Priority = 0.2;

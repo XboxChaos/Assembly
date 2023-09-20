@@ -47,7 +47,7 @@ namespace Blamite.Plugins
 			{
 				if (reader.NodeType == XmlNodeType.Element)
 				{
-					string elementName = reader.Name.ToLower();
+					string elementName = reader.Name.ToLowerInvariant();
 					if (topLevel)
 						HandleTopLevelElement(reader, elementName, visitor);
 					else
@@ -142,7 +142,7 @@ namespace Blamite.Plugins
 				visible = ParseBool(reader.Value);
 
 			reader.MoveToElement();
-			switch (elementName.ToLower())
+			switch (elementName.ToLowerInvariant())
 			{
 				case "uint8":
 				case "byte":
@@ -583,20 +583,20 @@ namespace Blamite.Plugins
 
 			if (!reader.MoveToAttribute("alpha") && !reader.MoveToAttribute("format") && !reader.MoveToAttribute("order"))
 				throw new ArgumentException("Color tags must have a alpha, format, or order attribute." + PositionInfo(reader));
-			format = reader.Value.ToLower();
+			format = reader.Value.ToLowerInvariant();
 
-			if (format.ToLower() == "true")
+			if (format.ToLowerInvariant() == "true")
 				return true;
-			else if (format.ToLower() == "false")
+			else if (format.ToLowerInvariant() == "false")
 				return false;
 			else
-				return format.ToLower().Contains("a");
+				return format.ToLowerInvariant().Contains("a");
 		}
 
 		private static bool ReadColorBasicValue(XmlReader reader)
 		{
 			if (reader.MoveToAttribute("basic"))
-				return reader.Value.ToLower() == "true";
+				return reader.Value.ToLowerInvariant() == "true";
 
 			return false;
 		}
@@ -654,7 +654,7 @@ namespace Blamite.Plugins
 
 		private static bool ParseBool(string str)
 		{
-			return (str == "1" || str.ToLower() == "true");
+			return (str == "1" || str.ToLowerInvariant() == "true");
 		}
 	}
 }

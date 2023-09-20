@@ -8,7 +8,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			return value.ToString().ToLower();
+			return value.ToString().ToLowerInvariant();
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

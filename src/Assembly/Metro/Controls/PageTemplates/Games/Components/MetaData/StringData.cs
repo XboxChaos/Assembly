@@ -73,7 +73,7 @@
 
 		public string TypeStr
 		{
-			get { return _type.ToString().ToLower(); }
+			get { return _type.ToString().ToLowerInvariant(); }
 		}
 
 		public override void Accept(IMetaFieldVisitor visitor)

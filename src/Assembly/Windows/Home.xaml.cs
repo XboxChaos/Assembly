@@ -871,7 +871,7 @@ namespace Assembly.Windows
 
 				// Decide what to do
 				Activate();
-				switch (commandArgs[0].ToLower())
+				switch (commandArgs[0].ToLowerInvariant())
 				{
 					case "open":
 						// Determine type of file, and start it up, yo

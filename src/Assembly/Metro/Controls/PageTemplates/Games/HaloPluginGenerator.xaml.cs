@@ -64,7 +64,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			foreach (
 				FileInfo fi in
 					fis.Where(
-						fi => !MapFilter.Contains(fi.Name.ToLower())))
+						fi => !MapFilter.Contains(fi.Name.ToLowerInvariant())))
 			{
 				GeneratorMaps.Add(new MapEntry
 				{

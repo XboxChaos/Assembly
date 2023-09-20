@@ -443,7 +443,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public void FilterFields(IEnumerable<MetaField> fields, string filter)
 		{
-			_filter = filter.ToLower();
+			_filter = filter.ToLowerInvariant();
 
 			float numberValue;
 			if (float.TryParse(filter, out numberValue))
@@ -466,7 +466,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		private bool FilterString(MetaField field, string fieldName)
 		{
-			if (fieldName != null && fieldName.ToLower().Contains(_filter))
+			if (fieldName != null && fieldName.ToLowerInvariant().Contains(_filter))
 			{
 				AcceptField(field);
 				return true;
