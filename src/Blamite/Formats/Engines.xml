@@ -9,7 +9,8 @@
 		version="{version number}" - The number located at offset 0x4.
 		versionAlt="{version number}" - An alternate version number used by the engine, see above.
 		build="{build string}" - The full build string.
-		inherits="{name of another defined engine}" - Uses the given engine as a base, anything else defined in this new engine overwrites the inherited value. You cannot chain multiple inherits. Any engine using this attribute should be placed AFTER the engine you wish to inherit.
+		looseBuild={"true", "false"} - Instead of checking for an exact build string match, Blamite should check if the cache's string starts with the defined one for the engine. Intended for H1 cache files built with the tool Invader which sets the build string to the tool's version. Default if not present is false.
+		inherits="{name of another defined engine}" - Uses the given engine as a base, anything else defined in this new engine overwrites the inherited value. You cannot chain multiple inherits. Any engine using this attribute should be placed AFTER the engine you wish to inherit within this file.
 		>
 
 		<shortname>{short name}</shortname> - A shorthand name for the engine, displayed on the recent files list. Will also get used as the "game" attribute in Assembly's plugin generator.
@@ -233,7 +234,7 @@
 
 	<engine name="Halo 1 PC v10" version="7" build="01.00.10.0621" inherits="Halo 1 PC" />
 
-	<engine name="Halo 1 PC Invader" version="7" build="Invader 0.44.0.r3320" inherits="Halo 1 PC" />
+	<engine name="Halo 1 PC Invader" version="7" build="Invader " looseBuild="true" inherits="Halo 1 PC" />
 
 	<engine name="Halo 1 Custom Edition" version="609" versionAlt="343" build="01.00.00.0609">
 		<shortName>H1CE</shortName>
@@ -259,7 +260,7 @@
 
 	<engine name="Halo 1 Custom Edition v10" version="609" versionAlt="343" build="01.00.10.0621" inherits="Halo 1 Custom Edition" />
 
-	<engine name="Halo 1 Custom Edition Invader" version="609" versionAlt="343" build="Invader 0.44.0.r3320" inherits="Halo 1 Custom Edition" />
+	<engine name="Halo 1 Custom Edition Invader" version="609" versionAlt="343" build="Invader " looseBuild="true" inherits="Halo 1 Custom Edition" />
 
 	<!-- NOTE: CEA 360 and early MCC have the same build strings, this makes things harder -->
 	<engine name="Halo 1 Anniversary" version="7" build="01.00.01.0563">
@@ -1005,6 +1006,20 @@
 	</engine>
 
 	<engine name="Halo 1 Anniversary MCC Update 1" version="13" build="01.03.43.0000" inherits="Halo 1 Anniversary MCC">
+		<engineInfo>
+			<segmentAlignment>0x1</segmentAlignment>
+			<usesCompression>false</usesCompression>
+		</engineInfo>
+	</engine>
+	
+	<engine name="Halo 1 Anniversary MCC Invader" version="13" build="Invader " looseBuild="true" inherits="Halo 1 Anniversary MCC">
+		<engineInfo>
+			<segmentAlignment>0x1</segmentAlignment>
+			<usesCompression>false</usesCompression>
+		</engineInfo>
+	</engine>
+	
+	<engine name="Halo 1 Anniversary MCC Hell" version="13" build="01.06.66.HELL" inherits="Halo 1 Anniversary MCC">
 		<engineInfo>
 			<segmentAlignment>0x1</segmentAlignment>
 			<usesCompression>false</usesCompression>
