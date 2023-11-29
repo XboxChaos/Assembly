@@ -42,7 +42,7 @@ namespace Blamite.Blam
 			engineInfo = FindEngineDescription(reader, engineDb);
 
 			if (engineInfo == null)
-				throw new NotSupportedException("Engine build of given cache file \"" + Path.GetFileName(filePath) + "\" not supported");
+				throw new NotSupportedException("Engine build of given cache file \"" + Path.GetFileName(filePath) + "\" not supported.");
 
 			return LoadCacheFileWithEngineDescription(reader, filePath, engineInfo);
 		}
@@ -58,7 +58,7 @@ namespace Blamite.Blam
 		public static ICacheFile LoadCacheFileWithEngineDescription(IReader reader, string filePath, EngineDescription engineInfo)
 		{
 			if (engineInfo == null)
-				throw new NotSupportedException("Engine build of given cache file \"" + Path.GetFileName(filePath) + "\" not supported");
+				throw new NotSupportedException("Engine build of given cache file \"" + Path.GetFileName(filePath) + "\" not supported.");
 
 			//reader is often initialized with Big Endian, switch it to match the EngineDescription
 			reader.Endianness = engineInfo.Endian;
@@ -110,7 +110,14 @@ namespace Blamite.Blam
 			reader.SeekTo(0);
 			byte[] headerMagic = reader.ReadBlock(4);
 			var endian = DetermineCacheFileEndianness(headerMagic);
+			var endianMod = DetermineModuleFileEndianness(headerMagic);
 			int fileVersion;
+			bool trial = false;
+
+			List<EngineDescription> matches = new List<EngineDescription>();
+
+			if (endianMod != null)
+				return matches;
 
 			if (endian != null)
 			{
@@ -125,26 +132,62 @@ namespace Blamite.Blam
 				headerMagic = reader.ReadBlock(4);
 				var trialendian = DetermineTrialCacheFileEndianness(headerMagic);
 
-				reader.Endianness = trialendian;
+				if (trialendian == null)
+					throw new ArgumentException("Invalid cache file header magic.");
+
+				reader.Endianness = trialendian.Value;
 				reader.SeekTo(0x588);
 				fileVersion = reader.ReadInt32();
+				trial = true;
 			}
 
 			var possibleEngines = engineDb.FindEnginesByVersion(fileVersion, reader.Endianness);
 
 			//reduce extra reads by caching the value at each offset
 			Dictionary<int, string> offsetCache = new Dictionary<int, string>();
-
-			List<EngineDescription> matches = new List<EngineDescription>();
+			Dictionary<int, bool> footCache = new Dictionary<int, bool>();
 
 			foreach (EngineDescription engine in possibleEngines)
 			{
+				int footOffset;
+
+				if (trial)
+				{
+					var headerLayout = engine.Layouts.GetLayout("header");
+					if (!headerLayout.HasField("footer magic"))
+						continue;
+
+					footOffset = headerLayout.GetFieldOffset("footer magic");
+				}
+				else
+					footOffset = engine.HeaderSize - 4;
+
+				if (footCache.ContainsKey(footOffset))
+				{
+					if (!footCache[footOffset])
+						continue;
+				}
+				else
+				{
+					reader.SeekTo(footOffset);
+					var footMagic = reader.ReadBlock(4);
+
+					bool realFeet = CheckFooter(footMagic);
+
+					footCache.Add(footOffset, realFeet);
+
+					if (!realFeet)
+						continue;
+				}
+
 				if (offsetCache.ContainsKey(engine.BuildStringOffset))
 				{
-					if (offsetCache[engine.BuildStringOffset] == engine.BuildVersion)
+					if ((engine.LooseBuildCheck && offsetCache[engine.BuildStringOffset].StartsWith(engine.BuildVersion)) ||
+						offsetCache[engine.BuildStringOffset] == engine.BuildVersion)
 					{
 						matches.Add(engine);
-						if (!string.IsNullOrEmpty(engine.BuildVersion))
+
+						if (!engine.LooseBuildCheck && !string.IsNullOrEmpty(engine.BuildVersion))
 							break;
 					}
 						
@@ -154,10 +197,12 @@ namespace Blamite.Blam
 				reader.SeekTo(engine.BuildStringOffset);
 				string buildString = reader.ReadAscii(0x20);
 
-				if (buildString == engine.BuildVersion)
+				if ((engine.LooseBuildCheck && buildString.StartsWith(engine.BuildVersion)) ||
+					buildString == engine.BuildVersion)
 				{
 					matches.Add(engine);
-					if (!string.IsNullOrEmpty(engine.BuildVersion))
+
+					if (!engine.LooseBuildCheck && !string.IsNullOrEmpty(engine.BuildVersion))
 						break;
 				}
 
@@ -175,17 +220,37 @@ namespace Blamite.Blam
 				return Endian.LittleEndian;
 
 			return null;
-			//throw new ArgumentException("Invalid cache file header magic");
 		}
 
-		public static Endian DetermineTrialCacheFileEndianness(byte[] headerMagic)
+		public static Endian? DetermineTrialCacheFileEndianness(byte[] headerMagic)
 		{
 			if (headerMagic[0] == 'E' && headerMagic[1] == 'h' && headerMagic[2] == 'e' && headerMagic[3] == 'd')
 				return Endian.BigEndian;
 			if (headerMagic[0] == 'd' && headerMagic[1] == 'e' && headerMagic[2] == 'h' && headerMagic[3] == 'E')
 				return Endian.LittleEndian;
 
-			throw new ArgumentException("Invalid cache file header magic");
+			return null;
+		}
+
+		public static Endian? DetermineModuleFileEndianness(byte[] headerMagic)
+		{
+			if (headerMagic[0] == 'd' && headerMagic[1] == 'h' && headerMagic[2] == 'o' && headerMagic[3] == 'm')
+				return Endian.BigEndian;
+			if (headerMagic[0] == 'm' && headerMagic[1] == 'o' && headerMagic[2] == 'h' && headerMagic[3] == 'd')
+				return Endian.LittleEndian;
+
+			return null;
+		}
+
+		public static bool CheckFooter(byte[] footerMagic)
+		{
+			if ((footerMagic[0] == 'f' && footerMagic[1] == 'o' && footerMagic[2] == 'o' && footerMagic[3] == 't') ||
+				(footerMagic[0] == 't' && footerMagic[1] == 'o' && footerMagic[2] == 'o' && footerMagic[3] == 'f') ||
+				(footerMagic[0] == 'G' && footerMagic[1] == 'f' && footerMagic[2] == 'o' && footerMagic[3] == 't') ||
+				(footerMagic[0] == 't' && footerMagic[1] == 'o' && footerMagic[2] == 'f' && footerMagic[3] == 'G'))
+				return true;
+
+			return false;
 		}
 	}
 }
