@@ -45,6 +45,7 @@ namespace Blamite.Serialization.Settings
 				string build = XMLUtil.GetStringAttribute(elem, "build");
 				var version = XMLUtil.GetNumericAttribute(elem, "version");
 				var versionAlt = XMLUtil.GetNumericAttribute(elem, "versionAlt", -1);
+				bool looseBuild = XMLUtil.GetBoolAttribute(elem, "looseBuild", false);
 				string inherits = XMLUtil.GetStringAttribute(elem, "inherits", null);
 				SettingsGroup settings = loader.LoadSettingsGroup(elem);
 				if (!string.IsNullOrWhiteSpace(inherits))
@@ -54,7 +55,7 @@ namespace Blamite.Serialization.Settings
 					baseSettings.Import(settings);
 					settings = baseSettings;
 				}
-				var desc = new EngineDescription(name, (int)version, (int)versionAlt, build, settings);
+				var desc = new EngineDescription(name, (int)version, (int)versionAlt, build, looseBuild, settings);
 				result.RegisterEngine(desc);
 			}
 			return result;

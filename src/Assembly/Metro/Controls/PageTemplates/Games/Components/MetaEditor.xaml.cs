@@ -1087,6 +1087,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					MetaWriter.SaveType.File, changes, _stringIdTrie);
 				metaUpdate.WriteFields(_pluginVisitor.Values);
 				_fileChanges.MarkUnchanged(field);
+
+				_cache.SaveChanges(stream);
 			}
 			if (newAddress == oldAddress)
 			{
@@ -1166,6 +1168,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					MetaWriter.SaveType.File, changes, _stringIdTrie);
 				metaUpdate.WriteFields(_pluginVisitor.Values);
 				_fileChanges.MarkUnchanged(field);
+
+				_cache.SaveChanges(stream);
 			}
 			MetroMessageBox.Show("Tag Block Isolation - Assembly",
 					"The tag block was isolated successfully.");
@@ -1214,6 +1218,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					MetaWriter.SaveType.File, changes, _stringIdTrie);
 				metaUpdate.WriteFields(_pluginVisitor.Values);
 				_fileChanges.MarkUnchanged(field);
+
+				_cache.SaveChanges(stream);
 			}
 
 			MetroMessageBox.Show("Data Reference Allocator - Assembly",
@@ -1276,6 +1282,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					MetaWriter.SaveType.File, changes, _stringIdTrie);
 				metaUpdate.WriteFields(_pluginVisitor.Values);
 				_fileChanges.MarkUnchanged(field);
+
+				_cache.SaveChanges(stream);
 			}
 			MetroMessageBox.Show("Data Reference Isolation - Assembly",
 					"The data reference was isolated successfully.");

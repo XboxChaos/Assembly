@@ -103,7 +103,7 @@ namespace Blamite.Blam.SecondGen.Structures
 			uint tagDataSize = (uint)values.GetInteger("tag data size");
 
 			var headSegment = new FileSegment(
-				segmenter.DefineSegment(metaOffset, tagTableSize, 0x1000, SegmentResizeOrigin.Beginning), segmenter);
+				segmenter.DefineSegment(metaOffset, tagTableSize, 0x200, SegmentResizeOrigin.Beginning), segmenter);
 
 			//xbox haxx, we can assume thru the existance of the code-set xbox mask
 			uint metaOffsetMask;
@@ -166,7 +166,7 @@ namespace Blamite.Blam.SecondGen.Structures
 			}
 
 			InternalName = values.GetString("internal name");
-			ScenarioName = values.GetString("scenario name");
+			ScenarioName = values.GetStringOrDefault("scenario name", null);
 
 			StringArea = new FileSegmentGroup();
 			if (values.HasInteger("string block offset"))

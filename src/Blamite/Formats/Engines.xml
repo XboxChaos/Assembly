@@ -9,7 +9,8 @@
 		version="{version number}" - The number located at offset 0x4.
 		versionAlt="{version number}" - An alternate version number used by the engine, see above.
 		build="{build string}" - The full build string.
-		inherits="{name of another defined engine}" - Uses the given engine as a base, anything else defined in this new engine overwrites the inherited value. You cannot chain multiple inherits. Any engine using this attribute should be placed AFTER the engine you wish to inherit.
+		looseBuild={"true", "false"} - Instead of checking for an exact build string match, Blamite should check if the cache's string starts with the defined one for the engine. Intended for H1 cache files built with the tool Invader which sets the build string to the tool's version. Default if not present is false.
+		inherits="{name of another defined engine}" - Uses the given engine as a base, anything else defined in this new engine overwrites the inherited value. You cannot chain multiple inherits. Any engine using this attribute should be placed AFTER the engine you wish to inherit within this file.
 		>
 
 		<shortname>{short name}</shortname> - A shorthand name for the engine, displayed on the recent files list. Will also get used as the "game" attribute in Assembly's plugin generator.
@@ -234,7 +235,7 @@
 
 	<engine name="Halo 1 PC v10" version="7" build="01.00.10.0621" inherits="Halo 1 PC" />
 
-	<engine name="Halo 1 PC Invader" version="7" build="Invader 0.44.0.r3320" inherits="Halo 1 PC" />
+	<engine name="Halo 1 PC Invader" version="7" build="Invader " looseBuild="true" inherits="Halo 1 PC" />
 
 	<engine name="Halo 1 Custom Edition" version="609" versionAlt="343" build="01.00.00.0609">
 		<shortName>H1CE</shortName>
@@ -260,7 +261,7 @@
 
 	<engine name="Halo 1 Custom Edition v10" version="609" versionAlt="343" build="01.00.10.0621" inherits="Halo 1 Custom Edition" />
 
-	<engine name="Halo 1 Custom Edition Invader" version="609" versionAlt="343" build="Invader 0.44.0.r3320" inherits="Halo 1 Custom Edition" />
+	<engine name="Halo 1 Custom Edition Invader" version="609" versionAlt="343" build="Invader " looseBuild="true" inherits="Halo 1 Custom Edition" />
 
 	<!-- NOTE: CEA 360 and early MCC have the same build strings, this makes things harder -->
 	<engine name="Halo 1 Anniversary" version="7" build="01.00.01.0563">
@@ -1011,6 +1012,20 @@
 			<usesCompression>false</usesCompression>
 		</engineInfo>
 	</engine>
+	
+	<engine name="Halo 1 Anniversary MCC Invader" version="13" build="Invader " looseBuild="true" inherits="Halo 1 Anniversary MCC">
+		<engineInfo>
+			<segmentAlignment>0x1</segmentAlignment>
+			<usesCompression>false</usesCompression>
+		</engineInfo>
+	</engine>
+	
+	<engine name="Halo 1 Anniversary MCC Hell" version="13" build="01.06.66.HELL" inherits="Halo 1 Anniversary MCC">
+		<engineInfo>
+			<segmentAlignment>0x1</segmentAlignment>
+			<usesCompression>false</usesCompression>
+		</engineInfo>
+	</engine>
 
 	<!-- Halo 2 MCC -->
 	<engine name="Halo 2 MCC" version="10" build=""><!-- gee thanks for the empty string 343 I appreciate it -->
@@ -1463,6 +1478,20 @@
 		</databases>
 	</engine>
 
+	<engine name="Halo 3 MCC Toolset Update 8" version="13" build="Sep  1 2023 11:01:27" inherits="Halo 3 MCC Update 6">
+		<databases>
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU13" />
+			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U13_Stub_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo 3 MCC Toolset Update 8 Fast" version="13" build="Sep  1 2023 11:01:50" inherits="Halo 3 MCC Update 6">
+		<databases>
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU13" />
+			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U13_Stub_StringIDs.xml" />
+		</databases>
+	</engine>
+
 	<!-- ODST MCC -->
 	<engine name="Halo ODST MCC Flight" version="11" build="Aug 11 2020 06:58:27">
 		<shortName>ODSTMCC</shortName>
@@ -1605,6 +1634,20 @@
 	</engine>
 
 	<engine name="Halo ODST MCC Toolset Update 6 Fast" version="13" build="Jul 16 2023 15:52:04" inherits="Halo ODST MCC Update 4">
+		<databases>
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" />
+			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC_U8_Stub_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo ODST MCC Toolset Update 7" version="13" build="Sep  1 2023 10:55:15" inherits="Halo ODST MCC Update 4">
+		<databases>
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" />
+			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC_U8_Stub_StringIDs.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo ODST MCC Toolset Update 7 Fast" version="13" build="Sep  1 2023 10:55:29" inherits="Halo ODST MCC Update 4">
 		<databases>
 			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" />
 			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC_U8_Stub_StringIDs.xml" />

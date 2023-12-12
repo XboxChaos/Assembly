@@ -18,12 +18,13 @@ namespace Blamite.Serialization
 		/// <param name="name">The engine's name.</param>
 		/// <param name="version">The engine's version.</param>
 		/// <param name="settings">The engine's settings.</param>
-		public EngineDescription(string name, int version, int versionalt, string build, SettingsGroup settings)
+		public EngineDescription(string name, int version, int versionalt, string build, bool looseBuild, SettingsGroup settings)
 		{
 			Name = name;
 			Version = version;
 			VersionAlt = versionalt;
 			BuildVersion = build;
+			LooseBuildCheck = looseBuild;
 			Settings = settings;
 
 			LoadSettings();
@@ -201,6 +202,11 @@ namespace Blamite.Serialization
 		///     Reverses the endian for the checksum during write, which is a thing I guess.
 		/// </summary>
 		public bool ReverseChecksum { get; private set; }
+
+		/// <summary>
+		///     Don't look for an exact match on the build string when checking against this EngineDescription during load. See if it starts with the string instead.
+		/// </summary>
+		public bool LooseBuildCheck { get; private set; }
 
 		private void LoadSettings()
 		{

@@ -8,7 +8,10 @@ namespace Blamite.Blam.FirstGen.Structures
 		private FileSegment _eofSegment;
 		public FirstGenHeader(StructureValueCollection values, EngineDescription info, FileSegmenter segmenter)
 		{
-			BuildString = info.BuildVersion;
+			if (info.LooseBuildCheck)
+				BuildString = values.GetString("build string");
+			else
+				BuildString = info.BuildVersion;
 			HeaderSize = info.HeaderSize;
 			Load(values, segmenter);
 		}
