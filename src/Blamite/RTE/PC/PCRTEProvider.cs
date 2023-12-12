@@ -165,7 +165,7 @@ namespace Blamite.RTE.PC
 				try
 				{
 					foreach (ProcessModule m in process.Modules)
-						if (Path.GetFileNameWithoutExtension(m.FileName) == _buildInfo.PokingModule)
+						if (string.Equals(Path.GetFileNameWithoutExtension(m.ModuleName), _buildInfo.PokingModule, System.StringComparison.InvariantCultureIgnoreCase))
 							return m;
 
 					ErrorMessage = "Game process \"" + _buildInfo.PokingExecutable + "\" does not appear to be currently running any module named \"" + _buildInfo.PokingModule + "\".";
