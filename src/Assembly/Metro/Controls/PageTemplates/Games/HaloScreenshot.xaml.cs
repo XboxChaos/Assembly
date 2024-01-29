@@ -86,7 +86,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			var sfd = new SaveFileDialog
 			{
 				Title = "Select where do you want to save the Screenshot",
-				Filter = "PNG Image (*.png)|*.png"
+				Filter = "PNG Image (*.png)|*.png",
+				FileName = _datetime_long
 			};
 			if (sfd.ShowDialog() == DialogResult.OK)
 				SaveImage(sfd.FileName);
