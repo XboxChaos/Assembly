@@ -379,7 +379,7 @@ namespace Blamite.Blam.FirstGen
 					if (hs != null)
 					{
 						ScriptFiles = new IScriptFile[1];
-						ScriptFiles[0] = new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index) ?? hs.Index.ToString(), MetaArea, _buildInfo, StringIDs, _expander, Allocator);
+						ScriptFiles[0] = new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index) ?? hs.Index.ToString(), hs.MetaLocation.BaseGroup, _buildInfo, StringIDs, _expander, Allocator);
 					}
 				}
 			}
