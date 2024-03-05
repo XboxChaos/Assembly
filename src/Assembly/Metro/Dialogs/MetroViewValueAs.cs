@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
+using Assembly.Metro.Controls.PageTemplates.Games;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Assembly.Metro.Dialogs.ControlDialogs;
 using Blamite.Blam;
@@ -19,9 +20,9 @@ namespace Assembly.Metro.Dialogs
 		/// <param name="fields">The fields to display in the viewer.</param>
 		/// <param name="cacheOffset">The initial offset to display.</param>
 		public static void Show(ICacheFile cacheFile, EngineDescription buildInfo, IStreamManager streamManager,
-			IList<MetaField> fields, uint cacheOffset)
+			IList<MetaField> fields, uint cacheOffset, TagEntry srcTag)
 		{
-			var valueAs = new ViewValueAs(cacheFile, buildInfo, streamManager, fields, cacheOffset)
+			var valueAs = new ViewValueAs(cacheFile, buildInfo, streamManager, fields, cacheOffset, srcTag)
 			{
 				Owner = App.AssemblyStorage.AssemblySettings.HomeWindow,
 				WindowStartupLocation = WindowStartupLocation.CenterOwner

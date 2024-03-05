@@ -253,6 +253,11 @@ namespace Blamite.Blam.ThirdGen
 			get { return _soundGestalt; }
 		}
 
+		public FileSegmentGroup[] BSPAreas
+		{
+			get { return null; }
+		}
+
 		private void Load(IReader reader)
 		{
 			LoadHeader(reader);

@@ -74,6 +74,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private AssemblyPluginVisitor _pluginVisitor;
 		private ObservableCollection<SearchResult> _searchResults;
 		private TagEntry _tag;
+		private FileSegmentGroup _srcSegmentGroup;
 
 		public MetaEditor(EngineDescription buildInfo, TagEntry tag, MetaContainer parentContainer, TagHierarchy tags,
 			ICacheFile cache, IStreamManager streamManager, IRTEProvider rteProvider, Trie stringIDTrie)
@@ -88,6 +89,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_rteProvider = rteProvider;
 			_searchTimer = new Timer(SearchTimer);
 			_stringIdTrie = stringIDTrie;
+			_srcSegmentGroup = tag.RawTag.MetaLocation.BaseGroup;
 
 			LoadNewTagEntry(tag);
 
@@ -148,7 +150,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			// Load Plugin File
 			using (XmlReader xml = XmlReader.Create(_pluginPath))
 			{
-				_pluginVisitor = new AssemblyPluginVisitor(_tags, _stringIdTrie, _cache.MetaArea,
+				_pluginVisitor = new AssemblyPluginVisitor(_tags, _stringIdTrie, _srcSegmentGroup,
 					App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles);
 				AssemblyPluginLoader.LoadPlugin(xml, _pluginVisitor);
 			}
@@ -157,7 +159,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_fileChanges = new FieldChangeSet();
 			_memoryChanges = new FieldChangeSet();
 
-			var metaReader = new MetaReader(streamManager, baseOffset, _cache, _buildInfo, type, _fileChanges);
+			var metaReader = new MetaReader(streamManager, baseOffset, _cache, _buildInfo, type, _fileChanges, _srcSegmentGroup);
 			_flattener = new TagBlockFlattener(metaReader, _changeTracker, _fileChanges);
 			_flattener.Flatten(_pluginVisitor.Values);
 			metaReader.ReadFields(_pluginVisitor.Values);
@@ -238,8 +240,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 #if DEBUG_SAVE_ALL
                     MetaWriter metaUpdate = new MetaWriter(writer, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, null, _stringIdTrie);
 #else
-					var metaUpdate = new MetaWriter(stream, (uint) _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type,
-						_fileChanges, _stringIdTrie);
+					var metaUpdate = new MetaWriter(stream, _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type,
+						_fileChanges, _stringIdTrie, _srcSegmentGroup);
 #endif
 					metaUpdate.WriteFields(_pluginVisitor.Values);
 					_cache.SaveChanges(stream);
@@ -264,7 +266,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					{
 						FieldChangeSet changes = onlyUpdateChanged ? _memoryChanges : null;
 						var metaUpdate = new MetaWriter(metaStream, _tag.RawTag.MetaLocation.AsPointer(), _cache, _buildInfo, type,
-							changes, _stringIdTrie);
+							changes, _stringIdTrie, _srcSegmentGroup);
 						metaUpdate.WriteFields(_pluginVisitor.Values);
 
 						if (showActionDialog)
@@ -607,8 +609,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			if (field != null)
 			{
 				IList<MetaField> viewValueAsFields = LoadViewValueAsPlugin();
-				var offset = (uint) _cache.MetaArea.PointerToOffset(field.FieldAddress);
-				MetroViewValueAs.Show(_cache, _buildInfo, _fileManager, viewValueAsFields, offset);
+				var offset = _srcSegmentGroup.PointerToOffset(field.FieldAddress);
+				MetroViewValueAs.Show(_cache, _buildInfo, _fileManager, viewValueAsFields, offset, _tag);
 			}
 		}
 
@@ -648,14 +650,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					address = field.FieldAddress;
 				}
 
-				if (!_cache.MetaArea.ContainsPointer(address))
+				if (!_srcSegmentGroup.ContainsPointer(address))
 				{
 					MetroMessageBox.Show("View Value As", "This field has an invalid address. Cannot open a View Value As window for it.");
 					return;
 				}
 
-				var offset = _cache.MetaArea.PointerToOffset(address);
-				MetroViewValueAs.Show(_cache, _buildInfo, _fileManager, viewValueAsFields, offset);
+				var offset = _srcSegmentGroup.PointerToOffset(address);
+				MetroViewValueAs.Show(_cache, _buildInfo, _fileManager, viewValueAsFields, offset, _tag);
 			}
 		}
 
@@ -728,7 +730,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				VariousFunctions.GetApplicationLocation() + @"Plugins");
 			XmlReader reader = XmlReader.Create(path);
 
-			var plugin = new AssemblyPluginVisitor(_tags, _stringIdTrie, _cache.MetaArea, true, true);
+			var plugin = new AssemblyPluginVisitor(_tags, _stringIdTrie, _srcSegmentGroup, true, true);
 			AssemblyPluginLoader.LoadPlugin(reader, plugin);
 			reader.Close();
 
@@ -1041,7 +1043,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				// If the block was made larger, zero extra data and null tagrefs
 				if (newAddress != 0 && newSize > oldSize)
 				{
-					stream.SeekTo(_cache.MetaArea.PointerToOffset(newAddress) + oldSize);
+					stream.SeekTo(_srcSegmentGroup.PointerToOffset(newAddress) + oldSize);
 					StreamUtil.Fill(stream, 0, (uint)(newSize - oldSize));
 
 					var tagRefLayout = _buildInfo.Layouts.GetLayout("tag reference");
@@ -1051,7 +1053,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					//go through each new page and write null for any tagrefs
 					for (int i = oldCount; i < newCount; i++)
 					{
-						var entryStart = _cache.MetaArea.PointerToOffset(newAddress) + (field.ElementSize * i);
+						var entryStart = _srcSegmentGroup.PointerToOffset(newAddress) + (field.ElementSize * i);
 						foreach (MetaField mf in field.Template)
 						{
 							if (mf.GetType() != typeof(TagRefData))
@@ -1084,8 +1086,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				// Force a save back to the file
 				var changes = new FieldChangeSet();
 				changes.MarkChanged(field);
-				var metaUpdate = new MetaWriter(stream, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
-					MetaWriter.SaveType.File, changes, _stringIdTrie);
+				var metaUpdate = new MetaWriter(stream, _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
+					MetaWriter.SaveType.File, changes, _stringIdTrie, _srcSegmentGroup);
 				metaUpdate.WriteFields(_pluginVisitor.Values);
 				_fileChanges.MarkUnchanged(field);
 
@@ -1150,10 +1152,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				_cache.SaveChanges(stream);
 
 				//copy data
-				stream.SeekTo(_cache.MetaArea.PointerToOffset(oldAddress));
+				stream.SeekTo(_srcSegmentGroup.PointerToOffset(oldAddress));
 				var data = stream.ReadBlock(size);
 
-				stream.SeekTo(_cache.MetaArea.PointerToOffset(newAddress));
+				stream.SeekTo(_srcSegmentGroup.PointerToOffset(newAddress));
 				stream.WriteBlock(data);
 			}
 
@@ -1165,8 +1167,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				// Force a save back to the file
 				var changes = new FieldChangeSet();
 				changes.MarkChanged(field);
-				var metaUpdate = new MetaWriter(stream, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
-					MetaWriter.SaveType.File, changes, _stringIdTrie);
+				var metaUpdate = new MetaWriter(stream, _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
+					MetaWriter.SaveType.File, changes, _stringIdTrie, _srcSegmentGroup);
 				metaUpdate.WriteFields(_pluginVisitor.Values);
 				_fileChanges.MarkUnchanged(field);
 
@@ -1215,8 +1217,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				// Force a save back to the file
 				var changes = new FieldChangeSet();
 				changes.MarkChanged(field);
-				var metaUpdate = new MetaWriter(stream, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
-					MetaWriter.SaveType.File, changes, _stringIdTrie);
+				var metaUpdate = new MetaWriter(stream, _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
+					MetaWriter.SaveType.File, changes, _stringIdTrie, _srcSegmentGroup);
 				metaUpdate.WriteFields(_pluginVisitor.Values);
 				_fileChanges.MarkUnchanged(field);
 
@@ -1264,10 +1266,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				_cache.SaveChanges(stream);
 		
 				//copy data
-				stream.SeekTo(_cache.MetaArea.PointerToOffset(oldAddress));
+				stream.SeekTo(_srcSegmentGroup.PointerToOffset(oldAddress));
 				var data = stream.ReadBlock(size);
 		
-				stream.SeekTo(_cache.MetaArea.PointerToOffset(newAddress));
+				stream.SeekTo(_srcSegmentGroup.PointerToOffset(newAddress));
 				stream.WriteBlock(data);
 			}
 		
@@ -1279,8 +1281,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				// Force a save back to the file
 				var changes = new FieldChangeSet();
 				changes.MarkChanged(field);
-				var metaUpdate = new MetaWriter(stream, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
-					MetaWriter.SaveType.File, changes, _stringIdTrie);
+				var metaUpdate = new MetaWriter(stream, _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
+					MetaWriter.SaveType.File, changes, _stringIdTrie, _srcSegmentGroup);
 				metaUpdate.WriteFields(_pluginVisitor.Values);
 				_fileChanges.MarkUnchanged(field);
 

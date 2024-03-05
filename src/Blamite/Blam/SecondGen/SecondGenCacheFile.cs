@@ -36,6 +36,8 @@ namespace Blamite.Blam.SecondGen
 		private SoundResourceManager _soundGestalt;
 		private SecondGenSimulationDefinitionTable _simulationDefinitions;
 
+		private FileSegmentGroup[] _bspAreas;
+
 		public SecondGenCacheFile(IReader reader, EngineDescription buildInfo, string filePath)
 		{
 			FilePath = filePath;
@@ -259,6 +261,11 @@ namespace Blamite.Blam.SecondGen
 			get { return _soundGestalt; }
 		}
 
+		public FileSegmentGroup[] BSPAreas
+		{
+			get { return _bspAreas; }
+		}
+
 		private void Load(IReader reader)
 		{
 			_header = LoadHeader(reader, out uint primaryMask);
@@ -266,6 +273,7 @@ namespace Blamite.Blam.SecondGen
 			_fileNames = LoadFileNames(reader);
 			_stringIDs = LoadStringIDs(reader);
 
+			FixupStructureTags(reader);
 			LoadLanguageGlobals(reader);
 			LoadScriptFiles();
 			LoadSimulationDefinitions(reader);
@@ -335,6 +343,70 @@ namespace Blamite.Blam.SecondGen
 			}
 				
 			return new SecondGenTagTable(reader, MetaArea, Allocator, _buildInfo);
+		}
+
+		private void FixupStructureTags(IReader reader)
+		{
+			if (_buildInfo.Layouts.HasLayout("scenario bsp table element"))
+			{
+				var scenarioTag = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
+				if (scenarioTag != null)
+				{
+					reader.SeekTo(scenarioTag.MetaLocation.AsOffset());
+					StructureValueCollection scenarioValues = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("scnr"));
+
+					int bspCount = (int)scenarioValues.GetInteger("number of scenario bsps");
+					uint bspAddr = (uint)scenarioValues.GetInteger("scenario bsp table address");
+
+					StructureLayout layout = _buildInfo.Layouts.GetLayout("scenario bsp table element");
+					StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, bspCount, bspAddr, layout, MetaArea);
+
+					_bspAreas = new FileSegmentGroup[bspCount];
+
+					for (int i = 0; i < bspCount; i++)
+					{
+						StructureValueCollection ent = entries[i];
+
+						uint offset = (uint)ent.GetInteger("data offset");
+						if (offset == 0)
+							continue;
+
+						//bsp
+						ITag bspTag = _tags[(int)ent.GetInteger("sbsp datum") & 0xFFFF];
+						reader.SeekTo(offset);
+						StructureLayout bspHeaderLayout = _buildInfo.Layouts.GetLayout("bsp header");
+						StructureValueCollection bspHeadValues = StructureReader.ReadStructure(reader, bspHeaderLayout);
+						if (bspTag is SecondGenTag)
+							((SecondGenTag)bspTag).DataSize = (int)(bspHeadValues.GetInteger("lightmap address") - bspHeadValues.GetInteger("bsp address"));
+
+						//register area
+						FileSegment bspSegment = new FileSegment(
+							_segmenter.DefineSegment((uint)ent.GetInteger("data offset"), (uint)ent.GetInteger("data size"), 0x1000, SegmentResizeOrigin.End), _segmenter);
+
+						_bspAreas[i] = new FileSegmentGroup(new MetaOffsetConverter(bspSegment, (uint)ent.GetInteger("data address")));
+						_bspAreas[i].AddSegment(bspSegment);
+
+						bspTag.MetaLocation = SegmentPointer.FromPointer((uint)bspHeadValues.GetInteger("bsp address"), _bspAreas[i]);
+
+						//lightmap
+						uint ltmpdatum = (uint)ent.GetInteger("ltmp datum");
+						if (ltmpdatum != 0xFFFFFFFF)
+						{
+							ITag ltmpTag = _tags[(int)ent.GetInteger("ltmp datum") & 0xFFFF];
+							if (ltmpTag is SecondGenTag)
+							{
+								uint totalsize = (uint)(bspHeadValues.GetInteger("size") - (uint)bspHeaderLayout.Size);
+								uint highestaddress = (uint)bspHeadValues.GetInteger("bsp address") + totalsize;
+								((SecondGenTag)ltmpTag).DataSize = (int)(highestaddress - bspHeadValues.GetInteger("lightmap address"));
+							}
+
+							uint lightaddr = (uint)bspHeadValues.GetInteger("lightmap address");
+							ltmpTag.MetaLocation = SegmentPointer.FromPointer(lightaddr, _bspAreas[i]);
+						}
+
+					}
+				}
+			}
 		}
 
 		private IndexedFileNameSource LoadFileNames(IReader reader)
