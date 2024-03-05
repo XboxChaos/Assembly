@@ -403,7 +403,6 @@ namespace Blamite.Blam.SecondGen
 							uint lightaddr = (uint)bspHeadValues.GetInteger("lightmap address");
 							ltmpTag.MetaLocation = SegmentPointer.FromPointer(lightaddr, _bspAreas[i]);
 						}
-
 					}
 				}
 			}
