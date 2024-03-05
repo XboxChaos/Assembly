@@ -54,6 +54,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			txtMemOffset.Text = "0x" + _memOffset.ToString("X");
 			txtMapName.Text = Path.GetFileName(_cacheFile.FilePath);
 			txtMapName.ToolTip = _cacheFile.FilePath;
+			txtTagName.Text = srcTag.TagFileName + "." + srcTag.GroupName;
 
 			// Load Meta
 			panelMetaComponents.ItemsSource = _fields;
@@ -118,7 +119,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			{
 				MetroMessageBox.Show(
 					"Invalid offset.",
-					"The meta offset you set is not valid. It might be beyond the boundaries of the file or contain invalid characters. Remember, if it's a hex number, it must start with a '0x'."
+					"The file offset you set is not valid. It might be beyond the boundaries of the file/tag or contain invalid characters. If you entered a hex number, it must start with '0x'."
 					);
 				return;
 			}
@@ -152,7 +153,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			{
 				MetroMessageBox.Show(
 					"Invalid address.",
-					"The meta address you set is not valid. It might be beyond the boundaries of the file or contain invalid characters. Remember, if it's a hex number, it must start with a '0x'."
+					"The address you set is not valid. It might be beyond the boundaries of the file/tag or contain invalid characters. If you entered a hex number, it must start with '0x'."
 					);
 				return;
 			}
