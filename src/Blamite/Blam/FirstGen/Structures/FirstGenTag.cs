@@ -26,7 +26,7 @@ namespace Blamite.Blam.FirstGen.Structures
 			result.SetInteger("tag group magic", (Group != null) ? (uint)Group.Magic : 0xFFFFFFFF);
 			result.SetInteger("datum index", Index.Value);
 
-			result.SetInteger("name offset", (uint)FileNameOffset.AsPointer());
+			result.SetInteger("name address", (uint)FileNameOffset.AsPointer());
 
 			uint addr = 0;
 			if (Source == TagSource.MetaArea && MetaLocation != null)
@@ -34,8 +34,8 @@ namespace Blamite.Blam.FirstGen.Structures
 			else if (Source == TagSource.Data)
 				addr = (uint)ResourceIndex;
 
-			result.SetInteger("offset", addr);
-			result.SetInteger("is in data file", (uint)(Source == TagSource.Data ? 1 : 0));
+			result.SetInteger("memory address", addr);
+			result.SetInteger("is external", (uint)(Source == TagSource.Data ? 1 : 0));
 
 			return result;
 		}
@@ -49,15 +49,15 @@ namespace Blamite.Blam.FirstGen.Structures
 
 			Index = new DatumIndex(values.GetInteger("datum index"));
 
-			uint nameAddr = (uint)values.GetInteger("name offset");
+			uint nameAddr = (uint)values.GetInteger("name address");
 			if (nameAddr != 0)
 				FileNameOffset = SegmentPointer.FromPointer(nameAddr, metaArea);
 
-			uint addr = (uint)values.GetInteger("offset");
+			uint addr = (uint)values.GetInteger("memory address");
 
 			Source = TagSource.Null;
 
-			if (values.GetInteger("is in data file") == 1)
+			if (values.GetInteger("is external") == 1)
 			{
 				Source = TagSource.Data;
 				ResourceIndex = (int)addr;

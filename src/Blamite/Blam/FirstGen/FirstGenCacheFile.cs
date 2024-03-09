@@ -262,7 +262,7 @@ namespace Blamite.Blam.FirstGen
 				primaryMask = tagTableAddress - (uint)indexHeaderLayout.Size;
 				uint tagTableOffset = tagTableAddress - primaryMask + indexHeaderOffset;
 
-				reader.SeekTo(tagTableOffset + tagElementLayout.GetFieldOffset("offset"));
+				reader.SeekTo(tagTableOffset + tagElementLayout.GetFieldOffset("memory address"));
 				uint firstTagAddress = reader.ReadUInt32();
 
 				values.SetInteger("xbox meta offset mask", firstTagAddress - (uint)values.GetInteger("tag data offset"));

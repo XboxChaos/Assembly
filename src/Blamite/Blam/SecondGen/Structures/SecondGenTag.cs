@@ -38,7 +38,7 @@ namespace Blamite.Blam.SecondGen.Structures
 			if (Source == TagSource.MetaArea && MetaLocation != null)
 				addr = (uint)MetaLocation.AsPointer();
 
-			result.SetInteger("offset", addr);
+			result.SetInteger("memory address", addr);
 			result.SetInteger("data size", Source != TagSource.BSP ? (uint)DataSize : 0);
 
 			return result;
@@ -46,7 +46,7 @@ namespace Blamite.Blam.SecondGen.Structures
 
 		private void Load(StructureValueCollection values, FileSegmentGroup metaArea, Dictionary<int, ITagGroup> groupsById)
 		{
-			uint address = (uint)values.GetInteger("offset");
+			uint address = (uint)values.GetInteger("memory address");
 			Source = TagSource.Null;
 
 			if (address != 0 && address != 0xFFFFFFFF)

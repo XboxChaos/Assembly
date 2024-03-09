@@ -125,9 +125,9 @@ namespace Blamite.Blam.FirstGen.Structures
 				//h2 alpha/beta store names differently, convert it to something expected
 				if (metaOffset > 0)
 				{
-					ulong nameOffset = values.GetInteger("name offset");
+					ulong nameOffset = values.GetInteger("name address");
 					nameOffset += metaOffset;
-					values.SetInteger("name offset", nameOffset);
+					values.SetInteger("name address", nameOffset);
 				}
 				result.Add(new FirstGenTag(values, metaArea, _groupsById));
 			}
