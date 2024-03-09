@@ -332,6 +332,7 @@ namespace Blamite.Blam.FirstGen
 						_bspAreas[i].AddSegment(bspSegment);
 
 						bspTag.MetaLocation = SegmentPointer.FromPointer((uint)bspHeadValues.GetInteger("bsp address"), _bspAreas[i]);
+						bspTag.Source = TagSource.BSP;
 
 						//lightmap
 						if (ent.HasInteger("ltmp datum"))
@@ -343,6 +344,7 @@ namespace Blamite.Blam.FirstGen
 
 								uint lightaddr = (uint)bspHeadValues.GetInteger("lightmap address");
 								ltmpTag.MetaLocation = SegmentPointer.FromPointer(lightaddr, _bspAreas[i]);
+								ltmpTag.Source = TagSource.BSP;
 							}
 						}
 
