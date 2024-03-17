@@ -1022,6 +1022,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				return;
 			}
 
+			if (_tag.RawTag.Source != TagSource.MetaArea)
+			{
+				MetroMessageBox.Show("Tag Block Reallocator", "Only tags scoped to the cache file's main tag data area are currently supported by the block reallocator.");
+				return;
+			}
+
 			var field = GetWrappedField(e.OriginalSource) as TagBlockData;
 			if (field == null)
 				return;
@@ -1128,6 +1134,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				return;
 			}
 
+			if (_tag.RawTag.Source != TagSource.MetaArea)
+			{
+				MetroMessageBox.Show("Tag Block Isolation", "Only tags scoped to the cache file's main tag data area are currently supported.");
+				return;
+			}
+
 			var field = GetWrappedField(e.OriginalSource) as TagBlockData;
 			if (field == null)
 				return;
@@ -1191,6 +1203,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				return;
 			}
 
+			if (_tag.RawTag.Source != TagSource.MetaArea)
+			{
+				MetroMessageBox.Show("Data Reference Allocator", "Only tags scoped to the cache file's main tag data area are currently supported by the data reference allocator.");
+				return;
+			}
+
 			var field = GetWrappedField(e.OriginalSource) as DataRef;
 			if (field == null)
 				return;
@@ -1242,6 +1260,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				return;
 			}
 		
+			if (_tag.RawTag.Source != TagSource.MetaArea)
+			{
+				MetroMessageBox.Show("Data Reference Isolation", "Only tags scoped to the cache file's main tag data area are currently supported.");
+				return;
+			}
+
 			var field = GetWrappedField(e.OriginalSource) as DataRef;
 			if (field == null)
 				return;
