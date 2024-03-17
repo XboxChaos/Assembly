@@ -56,6 +56,9 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			txtMapName.ToolTip = _cacheFile.FilePath;
 			txtTagName.Text = srcTag.TagFileName + "." + srcTag.GroupName;
 
+			if (srcTag.RawTag.Source == TagSource.MetaArea)
+				txtNote.Visibility = Visibility.Collapsed;
+
 			// Load Meta
 			panelMetaComponents.ItemsSource = _fields;
 			RefreshMeta();
