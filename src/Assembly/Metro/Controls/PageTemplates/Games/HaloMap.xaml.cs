@@ -1535,6 +1535,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private void TagContextMenu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
 			var tagContext = sender as ContextMenu;
+			var tag = tagContext.DataContext as TagEntry;
 
 			foreach (object tagItem in tagContext.Items)
 			{
@@ -1543,16 +1544,33 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				{
 					MenuItem tagMenuItem = tagItem as MenuItem;
 
-					if ((tagMenuItem.Name == "itemRename" ||
-						tagMenuItem.Name == "itemIsolate") &&
-						_cacheFile.Engine < EngineType.SecondGeneration)
-						tagMenuItem.Visibility = Visibility.Collapsed;
-					else if ((tagMenuItem.Name == "itemDuplicate" ||
-						tagMenuItem.Name == "itemExtract" ||
-						tagMenuItem.Name == "itemForce" ||
-						tagMenuItem.Name == "itemTagBatch")
-						&& (_cacheFile.Engine != EngineType.ThirdGeneration || (_cacheFile.Engine == EngineType.ThirdGeneration && _cacheFile.HeaderSize == 0x800)))
-						tagMenuItem.Visibility = Visibility.Collapsed;
+					switch (tagMenuItem.Name)
+					{
+						case "itemRename":
+							{
+								if (_cacheFile.Engine == EngineType.FirstGeneration)
+									tagMenuItem.Visibility = Visibility.Collapsed;
+								break;
+							}
+						case "itemIsolate":
+							{
+								if (_cacheFile.Engine == EngineType.FirstGeneration ||
+									tag.RawTag.Source != TagSource.MetaArea)
+									tagMenuItem.Visibility = Visibility.Collapsed;
+								break;
+							}
+						case "itemDuplicate":
+						case "itemExtract":
+						case "itemForce":
+						case "itemTagBatch":
+							{
+								if (_cacheFile.Engine != EngineType.ThirdGeneration ||
+									(_cacheFile.Engine == EngineType.ThirdGeneration && _cacheFile.HeaderSize == 0x800))
+									tagMenuItem.Visibility = Visibility.Collapsed;
+								break;
+							}
+
+					}
 				}
 				if (tagItem is Separator)
 				{
