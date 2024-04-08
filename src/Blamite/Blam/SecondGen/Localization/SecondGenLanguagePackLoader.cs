@@ -103,6 +103,9 @@ namespace Blamite.Blam.SecondGen.Localization
 		{
 			foreach (var tag in cacheFile.Tags.FindTagsByGroup("unic"))
 			{
+				if (tag.Source != TagSource.MetaArea)
+					continue;
+
 				var group = new SecondGenMultilingualStringList(reader, tag, _buildInfo);
 				_groupsByTag[tag] = group;
 			}

@@ -435,9 +435,9 @@ namespace Blamite.Blam.SecondGen
 		private void LoadLanguageGlobals(IReader reader)
 		{
 			// Find the language data
-			ITag languageTag;
-			StructureLayout tagLayout;
-			if (!FindLanguageTable(out languageTag, out tagLayout))
+			uint localeOffset;
+			StructureLayout localeLayout;
+			if (!FindLanguageTable(out localeOffset, out localeLayout))
 			{
 				// No language data
 				_languageLoader = new SecondGenLanguagePackLoader();
@@ -445,26 +445,34 @@ namespace Blamite.Blam.SecondGen
 			}
 
 			// Read it
-			reader.SeekTo(languageTag.MetaLocation.AsOffset());
-			StructureValueCollection values = StructureReader.ReadStructure(reader, tagLayout);
+			reader.SeekTo(localeOffset);
+			StructureValueCollection values = StructureReader.ReadStructure(reader, localeLayout);
 			_languageInfo = new SecondGenLanguageGlobals(values, _segmenter, _buildInfo);
 			_languageLoader = new SecondGenLanguagePackLoader(this, _languageInfo, _buildInfo, reader);
 		}
 
-		private bool FindLanguageTable(out ITag tag, out StructureLayout layout)
+		private bool FindLanguageTable(out uint offset, out StructureLayout layout)
 		{
-			tag = null;
+			offset = 0;
 			layout = null;
 
 			if (_tags == null)
 				return false;
 
-			if (_buildInfo.Layouts.HasLayout("matg"))
+			if (_header.LocalizationArea != null)
 			{
-				tag = _tags.GetGlobalTag(CharConstant.FromString("matg"));
-				layout = _buildInfo.Layouts.GetLayout("matg");
+				layout = _buildInfo.Layouts.GetLayout("locale globals");
+				offset = _header.LocalizationGlobalsLocation.AsOffset();
 			}
-			return (tag != null && layout != null && tag.MetaLocation != null);
+			else if (_buildInfo.Layouts.HasLayout("matg"))
+			{
+				ITag tag = _tags.GetGlobalTag(CharConstant.FromString("matg"));
+				layout = _buildInfo.Layouts.GetLayout("matg");
+				if (tag.Source == TagSource.MetaArea && tag.MetaLocation != null)
+					offset = tag.MetaLocation.AsOffset();
+			}
+
+			return offset > 0 && layout != null;
 		}
 
 		private void LoadScriptFiles()
@@ -543,15 +551,15 @@ namespace Blamite.Blam.SecondGen
 		private void WriteLanguageInfo(IWriter writer)
 		{
 			// Find the language data
-			ITag languageTag;
-			StructureLayout tagLayout;
-			if (!FindLanguageTable(out languageTag, out tagLayout))
+			uint localeOffset;
+			StructureLayout localeLayout;
+			if (!FindLanguageTable(out localeOffset, out localeLayout))
 				return;
 
 			// Write it
 			StructureValueCollection values = _languageInfo.Serialize();
-			writer.SeekTo(languageTag.MetaLocation.AsOffset());
-			StructureWriter.WriteStructure(values, tagLayout, writer);
+			writer.SeekTo(localeOffset);
+			StructureWriter.WriteStructure(values, localeLayout, writer);
 		}
 	}
 }

@@ -13,6 +13,7 @@ namespace Blamite.Blam.SecondGen.Localization
 		private readonly StructureLayout _pointerLayout;
 		private readonly int _sizeAlign;
 		private readonly bool _hashes;
+		private bool _sharedBit;
 
 		public SecondGenLanguage(GameLanguage language, StructureValueCollection values, FileSegmenter segmenter,
 			FileSegmentGroup localeArea, EngineDescription buildInfo)
@@ -40,9 +41,21 @@ namespace Blamite.Blam.SecondGen.Localization
 			result.SetInteger("locale table size", LocaleData != null ? (uint) LocaleData.Size : 0);
 
 			if (LocaleIndexTableLocation != null)
-				result.SetInteger("locale index table offset", (uint)LocaleIndexTableLocation.AsPointer());
+			{
+				uint indexTable = (uint)LocaleIndexTableLocation.AsPointer();
+				if (_sharedBit)
+					indexTable |= 0x80000000;
+				result.SetInteger("locale index table offset", indexTable);
+			}
+				
 			if (LocaleDataLocation != null)
-				result.SetInteger("locale data index offset", (uint)LocaleDataLocation.AsPointer());
+			{
+				uint dataTable = (uint)LocaleDataLocation.AsPointer();
+				if (_sharedBit)
+					dataTable |= 0x80000000;
+
+				result.SetInteger("locale data index offset", dataTable);
+			}
 
 			return result;
 		}
@@ -53,12 +66,23 @@ namespace Blamite.Blam.SecondGen.Localization
 			if (StringCount > 0)
 			{
 				// Index table offset, segment, and pointer
-				uint localeIndexTableOffset = localeArea.PointerToOffset((uint)values.GetInteger("locale index table offset"));
+				uint indexTable = (uint)values.GetInteger("locale index table offset");
+				if ((indexTable & 0x80000000) > 0)
+				{
+					_sharedBit = true;
+					indexTable &= 0x7FFFFFFF;
+				}
+
+				uint localeIndexTableOffset = localeArea.PointerToOffset(indexTable);
 				LocaleIndexTable = segmenter.WrapSegment(localeIndexTableOffset, (uint)StringCount*8, 8, SegmentResizeOrigin.End);
 				LocaleIndexTableLocation = localeArea.AddSegment(LocaleIndexTable);
 
 				// Data offset, segment, and pointer
-				uint localeDataOffset = localeArea.PointerToOffset((uint)values.GetInteger("locale data index offset"));
+				uint dataTable = (uint)values.GetInteger("locale data index offset");
+				if (_sharedBit)
+					dataTable &= 0x7FFFFFFF;
+
+				uint localeDataOffset = localeArea.PointerToOffset(dataTable);
 				var localeDataSize = (uint) values.GetInteger("locale table size");
 				LocaleData = segmenter.WrapSegment(localeDataOffset, localeDataSize, _sizeAlign, SegmentResizeOrigin.End);
 				LocaleDataLocation = localeArea.AddSegment(LocaleData);
