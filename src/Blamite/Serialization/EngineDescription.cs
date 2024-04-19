@@ -208,6 +208,12 @@ namespace Blamite.Serialization
 		/// </summary>
 		public bool LooseBuildCheck { get; private set; }
 
+		/// <summary>
+		///     Gets hud message locale symbols for the engine.
+		///     Can be <c>null</c> if not present.
+		/// </summary>
+		public LocaleSymbolCollection HudMessageSymbols { get; private set; }
+
 		private void LoadSettings()
 		{
 			LoadEngineSettings();
@@ -291,6 +297,7 @@ namespace Blamite.Serialization
 			VertexLayouts = Settings.GetSettingOrDefault<VertexLayoutCollection>("databases/vertexLayouts", null);
 			GroupNames = Settings.GetSettingOrDefault<GroupNameCollection>("databases/groupNames", null);
 			Poking = Settings.GetSettingOrDefault<PokingCollection>("databases/poking", null);
+			HudMessageSymbols = Settings.GetSettingOrDefault<LocaleSymbolCollection>("databases/hudMessageSymbols", null);
 		}
 
 		private void LoadCrucialLayoutInfo()

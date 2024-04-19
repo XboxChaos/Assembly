@@ -62,4 +62,39 @@
 		<uint32 name="stream position" offset="0x8" />
 		<uint32 name="pointer" offset="0xC" />
 	</layout>
+
+	<!-- hmt (hud_message_text) -->
+	<layout for="hmt">
+		<int32 name="string data size" offset="0x0" />
+		<uint32 name="string data address" offset="0xC" />
+
+		<int32 name="number of message elements" offset="0x14" />
+		<uint32 name="message element table address" offset="0x18" />
+
+		<int32 name="number of messages" offset="0x20" />
+		<uint32 name="message table address" offset="0x24" />
+	</layout>
+
+	<layout for="hud message element" size="0x2">
+		<byte name="type" offset="0x0" />
+		<byte name="data" offset="0x1" />
+	</layout>
+
+	<layout for="hud message" size="0x40">
+		<asciiz name="name" offset="0x0" />
+		<int16 name="string offset" offset="0x20" />
+		<int16 name="starting element index" offset="0x22" />
+		<int16 name="element count" offset="0x24" />
+	</layout>
+
+	<!-- str# (string_list) / ustr (unicode_string_list) -->
+	<layout for="str">
+		<int32 name="number of strings" offset="0x0" />
+		<uint32 name="string table address" offset="0x4" />
+	</layout>
+
+	<layout for="string list element" size="0x14">
+		<int32 name="string data size" offset="0x0" />
+		<uint32 name="string data address" offset="0xC" />
+	</layout>
 </layouts>

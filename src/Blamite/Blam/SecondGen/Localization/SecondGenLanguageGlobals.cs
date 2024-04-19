@@ -43,7 +43,7 @@ namespace Blamite.Blam.SecondGen.Localization
 		}
 
 		//hax
-		public Dictionary<GameLanguage, int> LanguageRemaps = new Dictionary<GameLanguage, int>()
+		public static Dictionary<GameLanguage, int> LanguageRemaps = new Dictionary<GameLanguage, int>()
 		{
 			{ GameLanguage.English, 0 },
 			{ GameLanguage.Japanese, 1 },

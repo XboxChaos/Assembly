@@ -83,4 +83,20 @@
 		<uint32 name="stream position" offset="0x8" />
 		<uint32 name="pointer" offset="0xC" />
 	</layout>
+
+	<!-- unic (multilingual_unicode_string_list) -->
+	<!-- named different to not get mixed with builds that rely on the globals tag -->
+	<layout for="unic table">
+		<int32 name="number of strings" offset="0x0" />
+		<uint32 name="string table address" offset="0x4" />
+		<int32 name="string data size" offset="0xC" />
+		<uint32 name="string data address" offset="0x18" />
+	</layout>
+
+	<layout for="unic table string reference" size="0x28">
+		<uint32 name="name stringid" offset="0x0" />
+		<array name="language offsets" offset="0x4" entrySize="0x4" count="9">
+			<int32 name="start offset" offset="0x0" />
+		</array>
+	</layout>
 </layouts>

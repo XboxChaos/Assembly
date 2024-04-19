@@ -62,7 +62,7 @@ namespace Blamite.Blam.SecondGen.Localization
 			if (_languageGlobals == null)
 				return null;
 
-			int languageIndex = _languageGlobals.LanguageRemaps[language];
+			int languageIndex = SecondGenLanguageGlobals.LanguageRemaps[language];
 
 			var data = _languageGlobals.Languages[languageIndex];
 			var table = data.LoadStrings(reader);
@@ -80,7 +80,7 @@ namespace Blamite.Blam.SecondGen.Localization
 		public void SaveLanguage(LanguagePack pack, IStream stream)
 		{
 			// Null out all of the language's string lists
-			var languageIndex = _languageGlobals.LanguageRemaps[pack.Language];
+			var languageIndex = SecondGenLanguageGlobals.LanguageRemaps[pack.Language];
 			ResetLanguage(languageIndex);
 
 			// Merge lists from the pack

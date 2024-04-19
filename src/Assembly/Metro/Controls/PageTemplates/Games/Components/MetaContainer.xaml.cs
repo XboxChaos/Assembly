@@ -20,6 +20,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private readonly ICacheFile _cache;
 		private readonly MetaEditor _metaEditor;
 		private PluginEditor _pluginEditor;
+		private StringEditor _stringEditor;
 		private IRTEProvider _rteProvider;
 		private IStreamManager _streamManager;
 		private string _cacheLocation;
@@ -104,6 +105,25 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 						(int)Settings.LastMetaEditorType.MetaEditor;
 			}
 
+			#endregion
+
+			#region Strings
+			if ((_tag.GroupName == "hmt " && _buildInfo.Layouts.HasLayout("hmt")) ||
+				((_tag.GroupName == "str#" || _tag.GroupName == "ustr") && _buildInfo.Layouts.HasLayout("str")) ||
+				(_tag.GroupName == "unic" && _cache.LocaleArea == null &&
+				(_buildInfo.Layouts.HasLayout("unic split") || _buildInfo.Layouts.HasLayout("unic table"))))
+			{
+				tabStringEditor.Visibility = Visibility.Visible;
+				tabStringEditor.Content = new StringEditor(_buildInfo, _cache, _tag, _streamManager);
+			}
+			else
+			{
+				tabStringEditor.Visibility = Visibility.Collapsed;
+				if (App.AssemblyStorage.AssemblySettings.HalomapLastSelectedMetaEditor ==
+					Settings.LastMetaEditorType.String)
+					tbMetaEditors.SelectedIndex =
+						(int)Settings.LastMetaEditorType.MetaEditor;
+			}
 			#endregion
 		}
 
