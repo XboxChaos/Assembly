@@ -96,7 +96,6 @@ namespace Blamite.Blam.SecondGen.Structures
 			return result;
 		}
 
-		
 		private void Load(StructureValueCollection values, FileSegmenter segmenter)
 		{
 			uint filesize = (uint)values.GetInteger("file size");
@@ -117,6 +116,7 @@ namespace Blamite.Blam.SecondGen.Structures
 				metaOffsetMask = (uint)values.GetInteger("xbox meta offset mask");
 
 				// old modded h2 maps have unexpected size values, if this is the case, fix it. This will get applied to the file when saving.
+				tagDataSize = (tagDataSize + 3) & 0xFFFFFFFC;
 				uint segmentsize = metaOffset + tagTableSize + tagDataSize;
 				if (segmentsize > filesize)
 					filesize = segmentsize;
