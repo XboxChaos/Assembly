@@ -301,13 +301,13 @@ namespace Blamite.Blam.SecondGen
 
 				uint indexHeaderOffset = (uint)values.GetInteger("meta offset");
 
-				reader.SeekTo(indexHeaderOffset + indexHeaderLayout.GetFieldOffset("tag table offset"));
+				reader.SeekTo(indexHeaderOffset + indexHeaderLayout.GetFieldOffset("tag table address"));
 				uint tagTableAddress = reader.ReadUInt32();
 
 				uint maskReference;
-				if (indexHeaderLayout.HasField("tag group table offset"))
+				if (indexHeaderLayout.HasField("tag group table address"))
 				{
-					reader.SeekTo(indexHeaderOffset + indexHeaderLayout.GetFieldOffset("tag group table offset"));
+					reader.SeekTo(indexHeaderOffset + indexHeaderLayout.GetFieldOffset("tag group table address"));
 					maskReference = reader.ReadUInt32();
 				}
 				else
@@ -331,7 +331,7 @@ namespace Blamite.Blam.SecondGen
 		{
 			// h2 beta still uses a first gen tag table so need more dumb checks
 			StructureLayout metaHeaderLayout = _buildInfo.Layouts.GetLayout("meta header");
-			if (!metaHeaderLayout.HasField("tag group table offset"))
+			if (!metaHeaderLayout.HasField("tag group table address") && !metaHeaderLayout.HasField("tag group table offset"))
 			{
 				reader.SeekTo(MetaArea.Offset);
 				StructureValueCollection values = StructureReader.ReadStructure(reader, metaHeaderLayout);
@@ -381,7 +381,7 @@ namespace Blamite.Blam.SecondGen
 
 						//register area
 						FileSegment bspSegment = new FileSegment(
-							_segmenter.DefineSegment((uint)ent.GetInteger("data offset"), (uint)ent.GetInteger("data size"), 0x1000, SegmentResizeOrigin.End), _segmenter);
+							_segmenter.DefineSegment(offset, (uint)ent.GetInteger("data size"), 0x1000, SegmentResizeOrigin.End), _segmenter);
 
 						_bspAreas[i] = new FileSegmentGroup(new MetaOffsetConverter(bspSegment, (uint)ent.GetInteger("data address")));
 						_bspAreas[i].AddSegment(bspSegment);

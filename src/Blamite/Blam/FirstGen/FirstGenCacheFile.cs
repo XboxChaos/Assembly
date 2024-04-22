@@ -35,8 +35,7 @@ namespace Blamite.Blam.FirstGen
 			_segmenter = new FileSegmenter(buildInfo.SegmentAlignment);
 			_expander = new DummyPointerExpander();
 
-			// TODO (Dragon): not sure if this is right for first gen
-			Allocator = new MetaAllocator(this, 0x10000);
+			Allocator = new MetaAllocator(this, 0x1000);
 
 			Load(reader);
 		}
@@ -256,7 +255,7 @@ namespace Blamite.Blam.FirstGen
 				StructureLayout tagElementLayout = _buildInfo.Layouts.GetLayout("tag element");
 
 				uint indexHeaderOffset = (uint)values.GetInteger("meta offset");
-				reader.SeekTo(indexHeaderOffset + indexHeaderLayout.GetFieldOffset("tag table offset"));
+				reader.SeekTo(indexHeaderOffset + indexHeaderLayout.GetFieldOffset("tag table address"));
 				uint tagTableAddress = reader.ReadUInt32();
 
 				primaryMask = tagTableAddress - (uint)indexHeaderLayout.Size;
@@ -326,7 +325,7 @@ namespace Blamite.Blam.FirstGen
 
 						//register area
 						FileSegment bspSegment = new FileSegment(
-							_segmenter.DefineSegment((uint)ent.GetInteger("data offset"), (uint)ent.GetInteger("data size"), 0x4, SegmentResizeOrigin.End), _segmenter);
+							_segmenter.DefineSegment(offset, (uint)ent.GetInteger("data size"), 0x4, SegmentResizeOrigin.End), _segmenter);
 
 						_bspAreas[i] = new FileSegmentGroup(new MetaOffsetConverter(bspSegment, (uint)ent.GetInteger("data address")));
 						_bspAreas[i].AddSegment(bspSegment);

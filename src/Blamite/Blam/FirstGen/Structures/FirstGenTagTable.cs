@@ -63,12 +63,11 @@ namespace Blamite.Blam.FirstGen.Structures
 
 			uint tagTableOffset;
 			if (headerValues.HasInteger("meta header mask"))
-				tagTableOffset = (uint)(metaArea.Offset + (uint)headerValues.GetInteger("tag table offset") - (uint)headerValues.GetInteger("meta header mask"));
+				tagTableOffset = (uint)(metaArea.Offset + (uint)headerValues.GetInteger("tag table address") - (uint)headerValues.GetInteger("meta header mask"));
 			else
-				tagTableOffset = (uint)(metaArea.Offset + (uint)headerValues.GetInteger("tag table offset") - metaArea.BasePointer);
+				tagTableOffset = (uint)(metaArea.Offset + (uint)headerValues.GetInteger("tag table address") - metaArea.BasePointer);
 
 			// Offset is relative to the header
-			// hack to "spoof" a group table since firstgen has none
 			_groups = ReadGroups(reader, tagTableOffset, numTags, buildInfo);
 			_groupsById = BuildGroupLookup(_groups);
 
