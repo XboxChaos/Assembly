@@ -24,12 +24,7 @@ namespace Blamite.Blam.SecondGen
 		private SecondGenLanguagePackLoader _languageLoader;
 		private IndexedStringIDSource _stringIDs;
 
-		// NOTE (Dragon): this may cause problems in the future, but since the beta uses a first gen style tag table
-		//				  we need to be able to use one here. we *DO* cast to a SecondGenTagTable for other builds though
-		//				  (see SaveChanges() and the TagGroups property)
-		//private SecondGenTagTable _tags;
-		private TagTable _tags;				
-		
+		private TagTable _tags;						
 		
 		private DummyPointerExpander _expander;
 		private Endian _endianness;
@@ -415,7 +410,7 @@ namespace Blamite.Blam.SecondGen
 			IndexedStringTable strings;
 			if (_tags is FirstGen.Structures.FirstGenTagTable)
 			{
-				strings = new FirstGenIndexedStringTable(reader, (FirstGen.Structures.FirstGenTagTable)_tags);
+				strings = new FirstGen.FirstGenIndexedStringTable(reader, (FirstGen.Structures.FirstGenTagTable)_tags);
 			}
 			else
 			{

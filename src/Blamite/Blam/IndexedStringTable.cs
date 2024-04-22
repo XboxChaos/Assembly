@@ -17,19 +17,13 @@ namespace Blamite.Blam
 		private readonly AESKey _key;
 		private readonly List<string> _strings = new List<string>();
 
-		// TODO (Dragon): hacccckkkkk
-		protected IndexedStringTable()
-		{
-
-		}
-
 		public IndexedStringTable(IReader reader, int count, FileSegment indexTable, FileSegment data, AESKey key)
 		{
 			_key = key;
 			_indexTable = indexTable;
 			_data = data;
 
-			if (indexTable == null)
+			if (reader == null || indexTable == null)
 				return;
 
 			int[] offsets = ReadOffsets(reader, indexTable, count);

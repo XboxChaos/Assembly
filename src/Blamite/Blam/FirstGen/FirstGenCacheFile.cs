@@ -354,8 +354,6 @@ namespace Blamite.Blam.FirstGen
 
 		private IndexedFileNameSource LoadFileNames(IReader reader)
 		{
-			//var strings = new IndexedStringTable(reader, _header.FileNameCount, _header.FileNameIndexTable, _header.FileNameData,
-			//    _buildInfo.TagNameKey);
 			var strings = new FirstGenIndexedStringTable(reader, _tags);
 			return new IndexedFileNameSource(strings);
 		}

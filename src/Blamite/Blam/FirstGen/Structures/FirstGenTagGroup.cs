@@ -2,8 +2,6 @@
 
 namespace Blamite.Blam.FirstGen.Structures
 {
-	// TODO (Dragon): firstgen doesnt have an explicit group table
-	//                so we have to "spoof" one while loading tags
 	public class FirstGenTagGroup : ITagGroup
 	{
 		public FirstGenTagGroup(StructureValueCollection values)
