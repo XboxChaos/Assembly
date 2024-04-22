@@ -175,7 +175,7 @@ namespace Blamite.Blam.FirstGen
 
 		public IResourceMetaLoader ResourceMetaLoader
 		{
-			get { return new FirstGenResourceMetaLoader(); }
+			get { return new DummyResourceMetaLoader(); }
 		}
 
 		public IEnumerable<FileSegment> Segments

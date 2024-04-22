@@ -1,6 +1,6 @@
 ﻿using Blamite.IO;
 
-namespace Blamite.Blam.FirstGen
+namespace Blamite.Blam
 {
 	public class MetaOffsetConverter : IPointerConverter
 	{
@@ -30,7 +30,7 @@ namespace Blamite.Blam.FirstGen
 
 		public long OffsetToPointer(uint offset, uint areaStartOffset)
 		{
-			return (uint)(offset - areaStartOffset + _mask);
+			return (offset - areaStartOffset + _mask);
 		}
 	}
 }

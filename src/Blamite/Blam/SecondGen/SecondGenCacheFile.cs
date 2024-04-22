@@ -194,7 +194,7 @@ namespace Blamite.Blam.SecondGen
 
 		public IResourceMetaLoader ResourceMetaLoader
 		{
-			get { return new SecondGenResourceMetaLoader(); }
+			get { return new DummyResourceMetaLoader(); }
 		}
 
 		public FileSegment StringIDIndexTable
