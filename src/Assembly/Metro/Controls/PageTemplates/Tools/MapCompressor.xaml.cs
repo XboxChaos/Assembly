@@ -92,7 +92,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 
 		private void DoSingleWork(object sender, DoWorkEventArgs e)
 		{
-			e.Result = CacheCompressor.HandleCompression((string)e.Argument, App.AssemblyStorage.AssemblySettings.DefaultDatabase);
+			e.Result = CompressionManager.HandleCompression((string)e.Argument, App.AssemblyStorage.AssemblySettings.DefaultDatabase);
 		}
 
 		private void workerSingle_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -200,7 +200,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 		{
 			for (int i = 0; i < files.Count; i++)
 			{
-				CacheCompressor.HandleCompression(files[i], App.AssemblyStorage.AssemblySettings.DefaultDatabase, state);
+				CompressionManager.HandleCompression(files[i], App.AssemblyStorage.AssemblySettings.DefaultDatabase, state);
 
 				worker.ReportProgress((i + 1) * 100 / files.Count);
 			}
