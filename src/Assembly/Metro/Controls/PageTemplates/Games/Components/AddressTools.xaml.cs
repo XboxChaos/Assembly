@@ -68,7 +68,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				return;
 			}
 
-			var rteStream = realtime.GetMetaStream(_cache);
+			var rteStream = realtime?.GetMetaStream(_cache);
 			long rteMagic = 0;
 			if (cbInputType.SelectedIndex == 3 || cbOutputType.SelectedIndex == 3)
 			{
