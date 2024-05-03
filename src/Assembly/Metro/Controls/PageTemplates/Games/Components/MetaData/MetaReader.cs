@@ -181,12 +181,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			SeekToOffset(field.Offset);
 
 			// colors are handled differently prior to thirdgen, but there are edge cases in thirdgen
-			if (_cache.Engine < EngineType.ThirdGeneration || field.Basic)
+			if (field.Basic)
 			{
-				byte a = (byte)(field.Alpha ? _reader.ReadFloat() * 255f + 0.5f : 255);
-				byte r = (byte)(_reader.ReadFloat() * 255f + 0.5f);
-				byte g = (byte)(_reader.ReadFloat() * 255f + 0.5f);
-				byte b = (byte)(_reader.ReadFloat() * 255f + 0.5f);
+				byte a = field.Alpha ? ColorData.FloatToByte(_reader.ReadFloat()) : (byte)255;
+				byte r = ColorData.FloatToByte(_reader.ReadFloat());
+				byte g = ColorData.FloatToByte(_reader.ReadFloat());
+				byte b = ColorData.FloatToByte(_reader.ReadFloat());
 				field.Value = Color.FromArgb(a, r, g, b);
 			}
 			else

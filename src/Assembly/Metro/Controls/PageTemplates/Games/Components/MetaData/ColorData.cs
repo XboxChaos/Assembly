@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows.Media;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
@@ -63,6 +64,24 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
+		public static byte FloatToByte(float value)
+		{
+			float expand = value * 255f;
+
+			if (expand > 255f)
+				expand = 255f;
+			else if (expand < 0f)
+				expand = 0f;
+
+			return Convert.ToByte(expand);
+		}
+
+		public static float ByteToFloat(byte value)
+		{
+			//rounding doesnt work great for 128 so force it to 0.5
+			return value == 128 ? 0.5f : value / 255f;
+		}
+
 		public override void Accept(IMetaFieldVisitor visitor)
 		{
 			if (DataType == "color32")
@@ -78,12 +97,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override string AsString()
 		{
+			if (Alpha)
+				return string.Format("{0} | {1} | {2} {3} {4} {5}", DataType, Name, Value.A, Value.R, Value.G, Value.B);
+
 			return string.Format("{0} | {1} | {2} {3} {4}", DataType, Name, Value.R, Value.G, Value.B);
 		}
 
 		public override object GetAsJson()
 		{
 			Dictionary<string, object> dict = new Dictionary<string, object>();
+			if (Alpha)
+				dict["A"] = Value.A;
 			dict["R"] = Value.R;
 			dict["G"] = Value.G;
 			dict["B"] = Value.B;

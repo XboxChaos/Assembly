@@ -164,13 +164,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			SeekToOffset(field.Offset);
 
 			// colors are handled differently prior to thirdgen, but there are edge cases in thirdgen
-			if (_cache.Engine < EngineType.ThirdGeneration || field.Basic)
+			if (field.Basic)
 			{
 				if (field.Alpha)
-					_writer.WriteFloat(field.Value.A / 255f);
-				_writer.WriteFloat(field.Value.R / 255f);
-				_writer.WriteFloat(field.Value.G / 255f);
-				_writer.WriteFloat(field.Value.B / 255f);
+					_writer.WriteFloat(ColorData.ByteToFloat(field.Value.A));
+				_writer.WriteFloat(ColorData.ByteToFloat(field.Value.R));
+				_writer.WriteFloat(ColorData.ByteToFloat(field.Value.G));
+				_writer.WriteFloat(ColorData.ByteToFloat(field.Value.G));
 			}
 			else
 			{

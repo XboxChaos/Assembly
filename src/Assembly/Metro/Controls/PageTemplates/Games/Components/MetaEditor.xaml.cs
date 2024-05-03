@@ -151,7 +151,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			using (XmlReader xml = XmlReader.Create(_pluginPath))
 			{
 				_pluginVisitor = new AssemblyPluginVisitor(_tags, _stringIdTrie, _srcSegmentGroup,
-					App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles);
+					App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles, _buildInfo.Engine < EngineType.ThirdGeneration);
 				AssemblyPluginLoader.LoadPlugin(xml, _pluginVisitor);
 			}
 
@@ -730,7 +730,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				VariousFunctions.GetApplicationLocation() + @"Plugins");
 			XmlReader reader = XmlReader.Create(path);
 
-			var plugin = new AssemblyPluginVisitor(_tags, _stringIdTrie, _srcSegmentGroup, true, true);
+			var plugin = new AssemblyPluginVisitor(_tags, _stringIdTrie, _srcSegmentGroup, true, _buildInfo.Engine < EngineType.ThirdGeneration, true);
 			AssemblyPluginLoader.LoadPlugin(reader, plugin);
 			reader.Close();
 
