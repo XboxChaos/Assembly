@@ -1,6 +1,6 @@
 using Blamite.IO;
 
-namespace Blamite.Blam.ThirdGen
+namespace Blamite.Blam
 {
 	/// <summary>
 	///     Provides methods for converting between memory addresses stored in cache files and file offsets.

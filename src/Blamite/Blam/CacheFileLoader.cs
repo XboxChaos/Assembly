@@ -5,6 +5,7 @@ using Blamite.Blam.ThirdGen;
 using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Blam.FirstGen;
+using Blamite.Blam.Eldorado;
 using System.Collections.Generic;
 
 namespace Blamite.Blam
@@ -74,6 +75,9 @@ namespace Blamite.Blam
 
 				case EngineType.ThirdGeneration:
 					return new ThirdGenCacheFile(reader, engineInfo, filePath);
+
+				case EngineType.Eldorado:
+					return new EldoradoCacheFile(reader, engineInfo, filePath);
 
 				default:
 					throw new NotSupportedException("Engine not supported");

@@ -16,7 +16,7 @@ namespace Assembly.Helpers.Net.Sockets
 
         public RTEConnectionType ConnectionType { get; private set; }
 
-        public IStream GetMetaStream(ICacheFile cacheFile)
+        public IStream GetMetaStream(ICacheFile cacheFile, ITag tag)
         {
             return new EndianStream(new SocketStream(_sessionManager, cacheFile.BuildString, cacheFile.InternalName), cacheFile.Endianness);
         }

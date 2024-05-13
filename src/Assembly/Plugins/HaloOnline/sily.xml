@@ -1,0 +1,660 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="HaloOnline" baseSize="0x18">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+		<revision author="Lord Zedd" version="2">pls follow my twitters</revision>
+	</revisions>
+	<enum32 name="Parameter" offset="0x0" visible="true">
+		<option name="(int) Global-Teams" value="0x0" />
+		<option name="(int) Global-New Unknown" value="0x1" /><!--bit 1 in wezr global block-->
+		<option name="(int) Global-Rounds Reset" value="0x2" />
+		<option name="(int) Global-Round Time Limit" value="0x3" />
+		<option name="(int) Global-Round Count" value="0x4" />
+		<option name="(int) Global-Early Victory Win Count" value="0x5" />
+		<option name="(int) Global-Respawn Inheritance" value="0x6" />
+		<option name="(int) Global-Respawn With Team" value="0x7" />
+		<option name="(int) Global-Respawn At Location" value="0x8" />
+		<option name="(int) Global-Respawn On Kill" value="0x9" />
+		<option name="(int) Global-Lives Per Round" value="0xA" />
+		<option name="(int) Global-Team Lives Per Round" value="0xB" />
+		<option name="(int) Global-Respawn Time" value="0xC" />
+		<option name="(int) Global-Suicide Penalty" value="0xD" />
+		<option name="(int) Global-Betrayal Penalty" value="0xE" />
+		<option name="(int) Global-Respawn Growth" value="0xF" />
+		<option name="(int) Global-Respawn Traits-Duration" value="0x10" />
+		<option name="(int) Global-Respawn Traits-Damage Resistance" value="0x11" />
+		<option name="(int) Global-Respawn Traits-Shield Multiplier" value="0x12" />
+		<option name="(int) Global-Respawn Traits-Shield Recharge" value="0x13" />
+		<option name="(int) Global-Respawn Traits-Headshot Immunity" value="0x14" />
+		<option name="(int) Global-Respawn Traits-Vampirism" value="0x15" />
+		<option name="(int) Global-Respawn Traits-Damage Modifier" value="0x16" />
+		<option name="(sID) Global-Respawn Traits-Primary Weapon" value="0x17" />
+		<option name="(sID) Global-Respawn Traits-Secondary Weapon" value="0x18" />
+		<option name="(int) Global-Respawn Traits-Grenade Count" value="0x19" />
+		<option name="(int) Global-Respawn Traits-Grenade Recharge" value="0x1A" />
+		<option name="(int) Global-Respawn Traits-Infinite Ammo" value="0x1B" />
+		<option name="(int) Global-Respawn Traits-Weapon Pickup" value="0x1C" />
+		<option name="(int) Global-Respawn Traits-Speed" value="0x1D" />
+		<option name="(int) Global-Respawn Traits-Gravity" value="0x1E" />
+		<option name="(int) Global-Respawn Traits-Vehicle Use" value="0x1F" />
+		<option name="(int) Global-Respawn Traits-Sensor" value="0x20" />
+		<option name="(int) Global-Respawn Traits-Sensor Range" value="0x21" />
+		<option name="(int) Global-Respawn Traits-Waypoint" value="0x22" />
+		<option name="(int) Global-Respawn Traits-Active Camo" value="0x23" />
+		<option name="(int) Global-Respawn Traits-Visual Aura" value="0x24" />
+		<option name="(int) Global-Respawn Traits-Forced Color" value="0x25" />
+		<option name="(int) Global-Observers" value="0x26" />
+		<option name="(int) Global-Team Changing" value="0x27" />
+		<option name="(int) Global-Friendly Fire" value="0x28" />
+		<option name="(int) Global-Betrayal Booting" value="0x29" />
+		<option name="(int) Global-Enemy Voice" value="0x2A" />
+		<option name="(int) Global-Open Channel Voice" value="0x2B" />
+		<option name="(int) Global-Dead Player Voice" value="0x2C" />
+		<option name="(int) Global-Grenades On Map" value="0x2D" />
+		<option name="(int) Global-Indestructible Vehicles" value="0x2E" />
+		<option name="(int) Global-Base Traits-Damage Resistance" value="0x2F" />
+		<option name="(int) Global-Base Traits-Shield Multiplier" value="0x30" />
+		<option name="(int) Global-Base Traits-Shield Recharge" value="0x31" />
+		<option name="(int) Global-Base Traits-Headshot Immunity" value="0x32" />
+		<option name="(int) Global-Base Traits-Vampirism" value="0x33" />
+		<option name="(int) Global-Base Traits-Damage Modifier" value="0x34" />
+		<option name="(sID) Global-Base Traits-Primary Weapon" value="0x35" />
+		<option name="(sID) Global-Base Traits-Secondary Weapon" value="0x36" />
+		<option name="(int) Global-Base Traits-Grenade Count" value="0x37" />
+		<option name="(int) Global-Base Traits-Grenade Recharge" value="0x38" />
+		<option name="(int) Global-Base Traits-Infinite Ammo" value="0x39" />
+		<option name="(int) Global-Base Traits-Weapon Pickup" value="0x3A" />
+		<option name="(int) Global-Base Traits-Speed" value="0x3B" />
+		<option name="(int) Global-Base Traits-Gravity" value="0x3C" />
+		<option name="(int) Global-Base Traits-Vehicle Use" value="0x3D" />
+		<option name="(int) Global-Base Traits-Sensor" value="0x3E" />
+		<option name="(int) Global-Base Traits-Sensor Range" value="0x3F" />
+		<option name="(int) Global-Base Traits-Waypoint" value="0x40" />
+		<option name="(int) Global-Base Traits-Active Camo" value="0x41" />
+		<option name="(int) Global-Base Traits-Visual Aura" value="0x42" />
+		<option name="(int) Global-Base Traits-Forced Color" value="0x43" />
+		<option name="(sID) Global-Map Weapon Set" value="0x44" />
+		<option name="(sID) Global-Map Vehicle Set" value="0x45" />
+		<option name="(int) Global-Red Traits-Damage Resistance" value="0x46" />
+		<option name="(int) Global-Red Traits-Shield Multiplier" value="0x47" />
+		<option name="(int) Global-Red Traits-Shield Recharge" value="0x48" />
+		<option name="(int) Global-Red Traits-Headshot Immunity" value="0x49" />
+		<option name="(int) Global-Red Traits-Vampirism" value="0x4A" />
+		<option name="(int) Global-Red Traits-Damage Modifier" value="0x4B" />
+		<option name="(sID) Global-Red Traits-Primary Weapon" value="0x4C" />
+		<option name="(sID) Global-Red Traits-Secondary Weapon" value="0x4D" />
+		<option name="(int) Global-Red Traits-Grenade Count" value="0x4E" />
+		<option name="(int) Global-Red Traits-Grenade Recharge" value="0x4F" />
+		<option name="(int) Global-Red Traits-Infinite Ammo" value="0x50" />
+		<option name="(int) Global-Red Traits-Weapon Pickup" value="0x51" />
+		<option name="(int) Global-Red Traits-Speed" value="0x52" />
+		<option name="(int) Global-Red Traits-Gravity" value="0x53" />
+		<option name="(int) Global-Red Traits-Vehicle Use" value="0x54" />
+		<option name="(int) Global-Red Traits-Sensor" value="0x55" />
+		<option name="(int) Global-Red Traits-Sensor Range" value="0x56" />
+		<option name="(int) Global-Red Traits-Waypoint" value="0x57" />
+		<option name="(int) Global-Red Traits-Active Camo" value="0x58" />
+		<option name="(int) Global-Red Traits-Visual Aura" value="0x59" />
+		<option name="(int) Global-Red Traits-Forced Color" value="0x5A" />
+		<option name="(int) Global-Blue Traits-Damage Resistance" value="0x5B" />
+		<option name="(int) Global-Blue Traits-Shield Multiplier" value="0x5C" />
+		<option name="(int) Global-Blue Traits-Shield Recharge" value="0x5D" />
+		<option name="(int) Global-Blue Traits-Headshot Immunity" value="0x5E" />
+		<option name="(int) Global-Blue Traits-Vampirism" value="0x5F" />
+		<option name="(int) Global-Blue Traits-Damage Modifier" value="0x60" />
+		<option name="(sID) Global-Blue Traits-Primary Weapon" value="0x61" />
+		<option name="(sID) Global-Blue Traits-Secondary Weapon" value="0x62" />
+		<option name="(int) Global-Blue Traits-Grenade Count" value="0x63" />
+		<option name="(int) Global-Blue Traits-Grenade Recharge" value="0x64" />
+		<option name="(int) Global-Blue Traits-Infinite Ammo" value="0x65" />
+		<option name="(int) Global-Blue Traits-Weapon Pickup" value="0x66" />
+		<option name="(int) Global-Blue Traits-Speed" value="0x67" />
+		<option name="(int) Global-Blue Traits-Gravity" value="0x68" />
+		<option name="(int) Global-Blue Traits-Vehicle Use" value="0x69" />
+		<option name="(int) Global-Blue Traits-Sensor" value="0x6A" />
+		<option name="(int) Global-Blue Traits-Sensor Range" value="0x6B" />
+		<option name="(int) Global-Blue Traits-Waypoint" value="0x6C" />
+		<option name="(int) Global-Blue Traits-Active Camo" value="0x6D" />
+		<option name="(int) Global-Blue Traits-Visual Aura" value="0x6E" />
+		<option name="(int) Global-Blue Traits-Forced Color" value="0x6F" />
+		<option name="(int) Global-Yellow Traits-Damage Resistance" value="0x70" />
+		<option name="(int) Global-Yellow Traits-Shield Multiplier" value="0x71" />
+		<option name="(int) Global-Yellow Traits-Shield Recharge" value="0x72" />
+		<option name="(int) Global-Yellow Traits-Headshot Immunity" value="0x73" />
+		<option name="(int) Global-Yellow Traits-Vampirism" value="0x74" />
+		<option name="(int) Global-Yellow Traits-Damage Modifier" value="0x75" />
+		<option name="(sID) Global-Yellow Traits-Primary Weapon" value="0x76" />
+		<option name="(sID) Global-Yellow Traits-Secondary Weapon" value="0x77" />
+		<option name="(int) Global-Yellow Traits-Grenade Count" value="0x78" />
+		<option name="(int) Global-Yellow Traits-Grenade Recharge" value="0x79" />
+		<option name="(int) Global-Yellow Traits-Infinite Ammo" value="0x7A" />
+		<option name="(int) Global-Yellow Traits-Weapon Pickup" value="0x7B" />
+		<option name="(int) Global-Yellow Traits-Speed" value="0x7C" />
+		<option name="(int) Global-Yellow Traits-Gravity" value="0x7D" />
+		<option name="(int) Global-Yellow Traits-Vehicle Use" value="0x7E" />
+		<option name="(int) Global-Yellow Traits-Sensor" value="0x7F" />
+		<option name="(int) Global-Yellow Traits-Sensor Range" value="0x80" />
+		<option name="(int) Global-Yellow Traits-Waypoint" value="0x81" />
+		<option name="(int) Global-Yellow Traits-Active Camo" value="0x82" />
+		<option name="(int) Global-Yellow Traits-Visual Aura" value="0x83" />
+		<option name="(int) Global-Yellow Traits-Forced Color" value="0x84" />
+		<option name="(int) Global-Red Traits-Duration" value="0x85" />
+		<option name="(int) Global-Blue Traits-Duration" value="0x86" />
+		<option name="(int) Global-Yellow Traits-Duration" value="0x87" />
+		<option name="(int) Slayer-Team Scoring" value="0x88" />
+		<option name="(int) Slayer-Score To Win" value="0x89" />
+		<option name="(int) Slayer-Kill Points" value="0x8A" />
+		<option name="(int) Slayer-Assist Points" value="0x8B" />
+		<option name="(int) Slayer-Death Points" value="0x8C" />
+		<option name="(int) Slayer-Suicide Points" value="0x8D" />
+		<option name="(int) Slayer-Betrayal Points" value="0x8E" />
+		<option name="(int) Slayer-Leader Points" value="0x8F" />
+		<option name="(int) Slayer-Elimination Points" value="0x90" />
+		<option name="(int) Slayer-Assassination Points" value="0x91" />
+		<option name="(int) Slayer-Headshot Points" value="0x92" />
+		<option name="(int) Slayer-Melee Points" value="0x93" />
+		<option name="(int) Slayer-Sticky Points" value="0x94" />
+		<option name="(int) Slayer-Splatter Points" value="0x95" />
+		<option name="(int) Slayer-Spree Points" value="0x96" />
+		<option name="(int) Slayer-Leader Traits-Damage Resistance" value="0x97" />
+		<option name="(int) Slayer-Leader Traits-Shield Multiplier" value="0x98" />
+		<option name="(int) Slayer-Leader Traits-Shield Recharge" value="0x99" />
+		<option name="(int) Slayer-Leader Traits-Headshot Immunity" value="0x9A" />
+		<option name="(int) Slayer-Leader Traits-Vampirism" value="0x9B" />
+		<option name="(int) Slayer-Leader Traits-Damage Modifier" value="0x9C" />
+		<option name="(sID) Slayer-Leader Traits-Primary Weapon" value="0x9D" />
+		<option name="(sID) Slayer-Leader Traits-Secondary Weapon" value="0x9E" />
+		<option name="(int) Slayer-Leader Traits-Grenade Count" value="0x9F" />
+		<option name="(int) Slayer-Leader Traits-Grenade Recharge" value="0xA0" />
+		<option name="(int) Slayer-Leader Traits-Infinite Ammo" value="0xA1" />
+		<option name="(int) Slayer-Leader Traits-Weapon Pickup" value="0xA2" />
+		<option name="(int) Slayer-Leader Traits-Speed" value="0xA3" />
+		<option name="(int) Slayer-Leader Traits-Gravity" value="0xA4" />
+		<option name="(int) Slayer-Leader Traits-Vehicle Use" value="0xA5" />
+		<option name="(int) Slayer-Leader Traits-Sensor" value="0xA6" />
+		<option name="(int) Slayer-Leader Traits-Sensor Range" value="0xA7" />
+		<option name="(int) Slayer-Leader Traits-Waypoint" value="0xA8" />
+		<option name="(int) Slayer-Leader Traits-Active Camo" value="0xA9" />
+		<option name="(int) Slayer-Leader Traits-Visual Aura" value="0xAA" />
+		<option name="(int) Slayer-Leader Traits-Forced Color" value="0xAB" />
+		<option name="(int) Oddball-Auto Pickup" value="0xAC" />
+		<option name="(int) Oddball-Ball Effect" value="0xAD" />
+		<option name="(int) Oddball-Team Scoring" value="0xAE" />
+		<option name="(int) Oddball-Unknown" value="0xAF" />
+		<option name="(int) Oddball-Score To Win" value="0xB0" />
+		<option name="(int) Oddball-Carrier Points" value="0xB1" />
+		<option name="(int) Oddball-Kill Points" value="0xB2" />
+		<option name="(int) Oddball-Ball Kill Points" value="0xB3" />
+		<option name="(int) Oddball-Carrier Kill Points" value="0xB4" />
+		<option name="(int) Oddball-Ball Count" value="0xB5" />
+		<option name="(int) Oddball-Spawn Delay" value="0xB6" />
+		<option name="(int) Oddball-Respawn Delay" value="0xB7" />
+		<option name="(int) Oddball-Carrier Traits-Damage Resistance" value="0xB8" />
+		<option name="(int) Oddball-Carrier Traits-Shield Multiplier" value="0xB9" />
+		<option name="(int) Oddball-Carrier Traits-Shield Recharge" value="0xBA" />
+		<option name="(int) Oddball-Carrier Traits-Headshot Immunity" value="0xBB" />
+		<option name="(int) Oddball-Carrier Traits-Vampirism" value="0xBC" />
+		<option name="(int) Oddball-Carrier Traits-Damage Modifier" value="0xBD" />
+		<option name="(sID) Oddball-Carrier Traits-Primary Weapon" value="0xBE" />
+		<option name="(sID) Oddball-Carrier Traits-Secondary Weapon" value="0xBF" />
+		<option name="(int) Oddball-Carrier Traits-Grenade Count" value="0xC0" />
+		<option name="(int) Oddball-Carrier Traits-Grenade Recharge" value="0xC1" />
+		<option name="(int) Oddball-Carrier Traits-Infinite Ammo" value="0xC2" />
+		<option name="(int) Oddball-Carrier Traits-Weapon Pickup" value="0xC3" />
+		<option name="(int) Oddball-Carrier Traits-Speed" value="0xC4" />
+		<option name="(int) Oddball-Carrier Traits-Gravity" value="0xC5" />
+		<option name="(int) Oddball-Carrier Traits-Vehicle Use" value="0xC6" />
+		<option name="(int) Oddball-Carrier Traits-Sensor" value="0xC7" />
+		<option name="(int) Oddball-Carrier Traits-Sensor Range" value="0xC8" />
+		<option name="(int) Oddball-Carrier Traits-Waypoint" value="0xC9" />
+		<option name="(int) Oddball-Carrier Traits-Active Camo" value="0xCA" />
+		<option name="(int) Oddball-Carrier Traits-Visual Aura" value="0xCB" />
+		<option name="(int) Oddball-Carrier Traits-Forced Color" value="0xCC" />
+		<option name="(int) CTF-Touch Return Time" value="0xCD" />
+		<option name="(int) CTF-Flag At Home" value="0xCE" />
+		<option name="(int) CTF-Home Waypoint" value="0xCF" />
+		<option name="(int) CTF-Unknown" value="0xD0" />
+		<option name="(int) CTF-Unknown" value="0xD1" />
+		<option name="(int) CTF-Game Mode" value="0xD2" />
+		<option name="(int) CTF-Respawn On Capture" value="0xD3" />
+		<option name="(int) CTF-Score To Win" value="0xD4" />
+		<option name="(int) CTF-Sudden Death" value="0xD5" />
+		<option name="(int) CTF-Idle Return" value="0xD6" />
+		<option name="(int) CTF-Unknown" value="0xD7" />
+		<option name="(int) CTF-Unknown" value="0xD8" />
+		<option name="(int) CTF-Carrier Traits-Damage Resistance" value="0xD9" />
+		<option name="(int) CTF-Carrier Traits-Shield Multiplier" value="0xDA" />
+		<option name="(int) CTF-Carrier Traits-Shield Recharge" value="0xDB" />
+		<option name="(int) CTF-Carrier Traits-Headshot Immunity" value="0xDC" />
+		<option name="(int) CTF-Carrier Traits-Vampirism" value="0xDD" />
+		<option name="(int) CTF-Carrier Traits-Damage Modifier" value="0xDE" />
+		<option name="(sID) CTF-Carrier Traits-Primary Weapon" value="0xDF" />
+		<option name="(sID) CTF-Carrier Traits-Secondary Weapon" value="0xE0" />
+		<option name="(int) CTF-Carrier Traits-Grenade Count" value="0xE1" />
+		<option name="(int) CTF-Carrier Traits-Grenade Recharge" value="0xE2" />
+		<option name="(int) CTF-Carrier Traits-Infinite Ammo" value="0xE3" />
+		<option name="(int) CTF-Carrier Traits-Weapon Pickup" value="0xE4" />
+		<option name="(int) CTF-Carrier Traits-Speed" value="0xE5" />
+		<option name="(int) CTF-Carrier Traits-Gravity" value="0xE6" />
+		<option name="(int) CTF-Carrier Traits-Vehicle Use" value="0xE7" />
+		<option name="(int) CTF-Carrier Traits-Sensor" value="0xE8" />
+		<option name="(int) CTF-Carrier Traits-Sensor Range" value="0xE9" />
+		<option name="(int) CTF-Carrier Traits-Waypoint" value="0xEA" />
+		<option name="(int) CTF-Carrier Traits-Active Camo" value="0xEB" />
+		<option name="(int) CTF-Carrier Traits-Visual Aura" value="0xEC" />
+		<option name="(int) CTF-Carrier Traits-Forced Color" value="0xED" />
+		<option name="(int) Infection-Respawn On Haven Move" value="0xEE" />
+		<option name="(int) Infection-Haven Movement" value="0xEF" />
+		<option name="(int) Infection-Next Zombie" value="0xF0" />
+		<option name="(int) Infection-Initial Count" value="0xF1" />
+		<option name="(int) Infection-Haven Movement Time" value="0xF2" />
+		<option name="(int) Infection-Kill Points" value="0xF3" />
+		<option name="(int) Infection-Infect Points" value="0xF4" />
+		<option name="(int) Infection-Haven Arrival Points" value="0xF5" />
+		<option name="(int) Infection-Suicide Points" value="0xF6" />
+		<option name="(int) Infection-Betrayal Points" value="0xF7" />
+		<option name="(int) Infection-Last Man Standing Points" value="0xF8" />
+		<option name="(int) Infection-Zombie Traits-Damage Resistance" value="0xF9" />
+		<option name="(int) Infection-Zombie Traits-Shield Multiplier" value="0xFA" />
+		<option name="(int) Infection-Zombie Traits-Shield Recharge" value="0xFB" />
+		<option name="(int) Infection-Zombie Traits-Headshot Immunity" value="0xFC" />
+		<option name="(int) Infection-Zombie Traits-Vampirism" value="0xFD" />
+		<option name="(int) Infection-Zombie Traits-Damage Modifier" value="0xFE" />
+		<option name="(sID) Infection-Zombie Traits-Primary Weapon" value="0xFF" />
+		<option name="(sID) Infection-Zombie Traits-Secondary Weapon" value="0x100" />
+		<option name="(int) Infection-Zombie Traits-Grenade Count" value="0x101" />
+		<option name="(int) Infection-Zombie Traits-Grenade Recharge" value="0x102" />
+		<option name="(int) Infection-Zombie Traits-Infinite Ammo" value="0x103" />
+		<option name="(int) Infection-Zombie Traits-Weapon Pickup" value="0x104" />
+		<option name="(int) Infection-Zombie Traits-Speed" value="0x105" />
+		<option name="(int) Infection-Zombie Traits-Gravity" value="0x106" />
+		<option name="(int) Infection-Zombie Traits-Vehicle Use" value="0x107" />
+		<option name="(int) Infection-Zombie Traits-Sensor" value="0x108" />
+		<option name="(int) Infection-Zombie Traits-Sensor Range" value="0x109" />
+		<option name="(int) Infection-Zombie Traits-Waypoint" value="0x10A" />
+		<option name="(int) Infection-Zombie Traits-Active Camo" value="0x10B" />
+		<option name="(int) Infection-Zombie Traits-Visual Aura" value="0x10C" />
+		<option name="(int) Infection-Zombie Traits-Forced Color" value="0x10D" />
+		<option name="(int) Infection-Alpha Zombie Traits-Damage Resistance" value="0x10E" />
+		<option name="(int) Infection-Alpha Zombie Traits-Shield Multiplier" value="0x10F" />
+		<option name="(int) Infection-Alpha Zombie Traits-Shield Recharge" value="0x110" />
+		<option name="(int) Infection-Alpha Zombie Traits-Headshot Immunity" value="0x111" />
+		<option name="(int) Infection-Alpha Zombie Traits-Vampirism" value="0x112" />
+		<option name="(int) Infection-Alpha Zombie Traits-Damage Modifier" value="0x113" />
+		<option name="(sID) Infection-Alpha Zombie Traits-Primary Weapon" value="0x114" />
+		<option name="(sID) Infection-Alpha Zombie Traits-Secondary Weapon" value="0x115" />
+		<option name="(int) Infection-Alpha Zombie Traits-Grenade Count" value="0x116" />
+		<option name="(int) Infection-Alpha Zombie Traits-Grenade Recharge" value="0x117" />
+		<option name="(int) Infection-Alpha Zombie Traits-Infinite Ammo" value="0x118" />
+		<option name="(int) Infection-Alpha Zombie Traits-Weapon Pickup" value="0x119" />
+		<option name="(int) Infection-Alpha Zombie Traits-Speed" value="0x11A" />
+		<option name="(int) Infection-Alpha Zombie Traits-Gravity" value="0x11B" />
+		<option name="(int) Infection-Alpha Zombie Traits-Vehicle Use" value="0x11C" />
+		<option name="(int) Infection-Alpha Zombie Traits-Sensor" value="0x11D" />
+		<option name="(int) Infection-Alpha Zombie Traits-Sensor Range" value="0x11E" />
+		<option name="(int) Infection-Alpha Zombie Traits-Waypoint" value="0x11F" />
+		<option name="(int) Infection-Alpha Zombie Traits-Active Camo" value="0x120" />
+		<option name="(int) Infection-Alpha Zombie Traits-Visual Aura" value="0x121" />
+		<option name="(int) Infection-Alpha Zombie Traits-Forced Color" value="0x122" />
+		<option name="(int) Infection-Haven Traits-Damage Resistance" value="0x123" />
+		<option name="(int) Infection-Haven Traits-Shield Multiplier" value="0x124" />
+		<option name="(int) Infection-Haven Traits-Shield Recharge" value="0x125" />
+		<option name="(int) Infection-Haven Traits-Headshot Immunity" value="0x126" />
+		<option name="(int) Infection-Haven Traits-Vampirism" value="0x127" />
+		<option name="(int) Infection-Haven Traits-Damage Modifier" value="0x128" />
+		<option name="(sID) Infection-Haven Traits-Primary Weapon" value="0x129" />
+		<option name="(sID) Infection-Haven Traits-Secondary Weapon" value="0x12A" />
+		<option name="(int) Infection-Haven Traits-Grenade Count" value="0x12B" />
+		<option name="(int) Infection-Haven Traits-Grenade Recharge" value="0x12C" />
+		<option name="(int) Infection-Haven Traits-Infinite Ammo" value="0x12D" />
+		<option name="(int) Infection-Haven Traits-Weapon Pickup" value="0x12E" />
+		<option name="(int) Infection-Haven Traits-Speed" value="0x12F" />
+		<option name="(int) Infection-Haven Traits-Gravity" value="0x130" />
+		<option name="(int) Infection-Haven Traits-Vehicle Use" value="0x131" />
+		<option name="(int) Infection-Haven Traits-Sensor" value="0x132" />
+		<option name="(int) Infection-Haven Traits-Sensor Range" value="0x133" />
+		<option name="(int) Infection-Haven Traits-Waypoint" value="0x134" />
+		<option name="(int) Infection-Haven Traits-Active Camo" value="0x135" />
+		<option name="(int) Infection-Haven Traits-Visual Aura" value="0x136" />
+		<option name="(int) Infection-Haven Traits-Forced Color" value="0x137" />
+		<option name="(int) Infection-Last Man Standing Traits-Damage Resistance" value="0x138" />
+		<option name="(int) Infection-Last Man Standing Traits-Shield Multiplier" value="0x139" />
+		<option name="(int) Infection-Last Man Standing Traits-Shield Recharge" value="0x13A" />
+		<option name="(int) Infection-Last Man Standing Traits-Headshot Immunity" value="0x13B" />
+		<option name="(int) Infection-Last Man Standing Traits-Vampirism" value="0x13C" />
+		<option name="(int) Infection-Last Man Standing Traits-Damage Modifier" value="0x13D" />
+		<option name="(sID) Infection-Last Man Standing Traits-Primary Weapon" value="0x13E" />
+		<option name="(sID) Infection-Last Man Standing Traits-Secondary Weapon" value="0x13F" />
+		<option name="(int) Infection-Last Man Standing Traits-Grenade Count" value="0x140" />
+		<option name="(int) Infection-Last Man Standing Traits-Grenade Recharge" value="0x141" />
+		<option name="(int) Infection-Last Man Standing Traits-Infinite Ammo" value="0x142" />
+		<option name="(int) Infection-Last Man Standing Traits-Weapon Pickup" value="0x143" />
+		<option name="(int) Infection-Last Man Standing Traits-Speed" value="0x144" />
+		<option name="(int) Infection-Last Man Standing Traits-Gravity" value="0x145" />
+		<option name="(int) Infection-Last Man Standing Traits-Vehicle Use" value="0x146" />
+		<option name="(int) Infection-Last Man Standing Traits-Sensor" value="0x147" />
+		<option name="(int) Infection-Last Man Standing Traits-Sensor Range" value="0x148" />
+		<option name="(int) Infection-Last Man Standing Traits-Waypoint" value="0x149" />
+		<option name="(int) Infection-Last Man Standing Traits-Active Camo" value="0x14A" />
+		<option name="(int) Infection-Last Man Standing Traits-Visual Aura" value="0x14B" />
+		<option name="(int) Infection-Last Man Standing Traits-Forced Color" value="0x14C" />
+		<option name="(int) KOTH-Opaque Hill" value="0x14D" />
+		<option name="(int) KOTH-Score To Win" value="0x14E" />
+		<option name="(int) KOTH-Team Scoring" value="0x14F" />
+		<option name="(int) KOTH-Moving Hill" value="0x150" />
+		<option name="(int) KOTH-Moving Hill Order" value="0x151" />
+		<option name="(int) KOTH-Inside Hill Points" value="0x152" />
+		<option name="(int) KOTH-Outside Hill Points" value="0x153" />
+		<option name="(int) KOTH-Uncontested Points" value="0x154" />
+		<option name="(int) KOTH-Kill Points" value="0x155" />
+		<option name="(int) KOTH-Hill Traits-Damage Resistance" value="0x156" />
+		<option name="(int) KOTH-Hill Traits-Shield Multiplier" value="0x157" />
+		<option name="(int) KOTH-Hill Traits-Shield Recharge" value="0x158" />
+		<option name="(int) KOTH-Hill Traits-Headshot Immunity" value="0x159" />
+		<option name="(int) KOTH-Hill Traits-Vampirism" value="0x15A" />
+		<option name="(int) KOTH-Hill Traits-Damage Modifier" value="0x15B" />
+		<option name="(sID) KOTH-Hill Traits-Primary Weapon" value="0x15C" />
+		<option name="(sID) KOTH-Hill Traits-Secondary Weapon" value="0x15D" />
+		<option name="(int) KOTH-Hill Traits-Grenade Count" value="0x15E" />
+		<option name="(int) KOTH-Hill Traits-Grenade Recharge" value="0x15F" />
+		<option name="(int) KOTH-Hill Traits-Infinite Ammo" value="0x160" />
+		<option name="(int) KOTH-Hill Traits-Weapon Pickup" value="0x161" />
+		<option name="(int) KOTH-Hill Traits-Speed" value="0x162" />
+		<option name="(int) KOTH-Hill Traits-Gravity" value="0x163" />
+		<option name="(int) KOTH-Hill Traits-Vehicle Use" value="0x164" />
+		<option name="(int) KOTH-Hill Traits-Sensor" value="0x165" />
+		<option name="(int) KOTH-Hill Traits-Sensor Range" value="0x166" />
+		<option name="(int) KOTH-Hill Traits-Waypoint" value="0x167" />
+		<option name="(int) KOTH-Hill Traits-Active Camo" value="0x168" />
+		<option name="(int) KOTH-Hill Traits-Visual Aura" value="0x169" />
+		<option name="(int) KOTH-Hill Traits-Forced Color" value="0x16A" />
+		<option name="(int) Territories-Capture Time" value="0x16B" />
+		<option name="(int) Territories-Game Mode" value="0x16C" />
+		<option name="(int) Territories-Lock On Capture" value="0x16D" />
+		<option name="(int) Territories-Sudden Death" value="0x16E" />
+		<option name="(int) Territories-Spawn On Capture" value="0x16F" />
+		<option name="(int) Territories-Defender Traits-Damage Resistance" value="0x170" />
+		<option name="(int) Territories-Defender Traits-Shield Multiplier" value="0x171" />
+		<option name="(int) Territories-Defender Traits-Shield Recharge" value="0x172" />
+		<option name="(int) Territories-Defender Traits-Headshot Immunity" value="0x173" />
+		<option name="(int) Territories-Defender Traits-Vampirism" value="0x174" />
+		<option name="(int) Territories-Defender Traits-Damage Modifier" value="0x175" />
+		<option name="(sID) Territories-Defender Traits-Primary Weapon" value="0x176" />
+		<option name="(sID) Territories-Defender Traits-Secondary Weapon" value="0x177" />
+		<option name="(int) Territories-Defender Traits-Grenade Count" value="0x178" />
+		<option name="(int) Territories-Defender Traits-Grenade Recharge" value="0x179" />
+		<option name="(int) Territories-Defender Traits-Infinite Ammo" value="0x17A" />
+		<option name="(int) Territories-Defender Traits-Weapon Pickup" value="0x17B" />
+		<option name="(int) Territories-Defender Traits-Speed" value="0x17C" />
+		<option name="(int) Territories-Defender Traits-Gravity" value="0x17D" />
+		<option name="(int) Territories-Defender Traits-Vehicle Use" value="0x17E" />
+		<option name="(int) Territories-Defender Traits-Sensor" value="0x17F" />
+		<option name="(int) Territories-Defender Traits-Sensor Range" value="0x180" />
+		<option name="(int) Territories-Defender Traits-Waypoint" value="0x181" />
+		<option name="(int) Territories-Defender Traits-Active Camo" value="0x182" />
+		<option name="(int) Territories-Defender Traits-Visual Aura" value="0x183" />
+		<option name="(int) Territories-Defender Traits-Forced Color" value="0x184" />
+		<option name="(int) Territories-Attacker Traits-Damage Resistance" value="0x185" />
+		<option name="(int) Territories-Attacker Traits-Shield Multiplier" value="0x186" />
+		<option name="(int) Territories-Attacker Traits-Shield Recharge" value="0x187" />
+		<option name="(int) Territories-Attacker Traits-Headshot Immunity" value="0x188" />
+		<option name="(int) Territories-Attacker Traits-Vampirism" value="0x189" />
+		<option name="(int) Territories-Attacker Traits-Damage Modifier" value="0x18A" />
+		<option name="(sID) Territories-Attacker Traits-Primary Weapon" value="0x18B" />
+		<option name="(sID) Territories-Attacker Traits-Secondary Weapon" value="0x18C" />
+		<option name="(int) Territories-Attacker Traits-Grenade Count" value="0x18D" />
+		<option name="(int) Territories-Attacker Traits-Grenade Recharge" value="0x18E" />
+		<option name="(int) Territories-Attacker Traits-Infinite Ammo" value="0x18F" />
+		<option name="(int) Territories-Attacker Traits-Weapon Pickup" value="0x190" />
+		<option name="(int) Territories-Attacker Traits-Speed" value="0x191" />
+		<option name="(int) Territories-Attacker Traits-Gravity" value="0x192" />
+		<option name="(int) Territories-Attacker Traits-Vehicle Use" value="0x193" />
+		<option name="(int) Territories-Attacker Traits-Sensor" value="0x194" />
+		<option name="(int) Territories-Attacker Traits-Sensor Range" value="0x195" />
+		<option name="(int) Territories-Attacker Traits-Waypoint" value="0x196" />
+		<option name="(int) Territories-Attacker Traits-Active Camo" value="0x197" />
+		<option name="(int) Territories-Attacker Traits-Visual Aura" value="0x198" />
+		<option name="(int) Territories-Attacker Traits-Forced Color" value="0x199" />
+		<option name="(int) VIP-Score To Win" value="0x19A" />
+		<option name="(int) VIP-Game Mode" value="0x19B" />
+		<option name="(int) VIP-Zone Count" value="0x19C" />
+		<option name="(int) VIP-End On Death" value="0x19D" />
+		<option name="(int) VIP-Kill Points" value="0x19E" />
+		<option name="(int) VIP-Takedown Points" value="0x19F" />
+		<option name="(int) VIP-VIP Kill Points" value="0x1A0" />
+		<option name="(int) VIP-Death Points" value="0x1A1" />
+		<option name="(int) VIP-Zone Arrival Points" value="0x1A2" />
+		<option name="(int) VIP-Suicide Points" value="0x1A3" />
+		<option name="(int) VIP-VIP Betrayal Points" value="0x1A4" />
+		<option name="(int) VIP-Betrayal Points" value="0x1A5" />
+		<option name="(int) VIP-Selection" value="0x1A6" />
+		<option name="(int) VIP-Zone Movement" value="0x1A7" />
+		<option name="(int) VIP-Zone Order" value="0x1A8" />
+		<option name="(int) VIP-Influence Radius" value="0x1A9" />
+		<option name="(int) VIP-Team Traits-Damage Resistance" value="0x1AA" />
+		<option name="(int) VIP-Team Traits-Shield Multiplier" value="0x1AB" />
+		<option name="(int) VIP-Team Traits-Shield Recharge" value="0x1AC" />
+		<option name="(int) VIP-Team Traits-Headshot Immunity" value="0x1AD" />
+		<option name="(int) VIP-Team Traits-Vampirism" value="0x1AE" />
+		<option name="(int) VIP-Team Traits-Damage Modifier" value="0x1AF" />
+		<option name="(sID) VIP-Team Traits-Primary Weapon" value="0x1B0" />
+		<option name="(sID) VIP-Team Traits-Secondary Weapon" value="0x1B1" />
+		<option name="(int) VIP-Team Traits-Grenade Count" value="0x1B2" />
+		<option name="(int) VIP-Team Traits-Grenade Recharge" value="0x1B3" />
+		<option name="(int) VIP-Team Traits-Infinite Ammo" value="0x1B4" />
+		<option name="(int) VIP-Team Traits-Weapon Pickup" value="0x1B5" />
+		<option name="(int) VIP-Team Traits-Speed" value="0x1B6" />
+		<option name="(int) VIP-Team Traits-Gravity" value="0x1B7" />
+		<option name="(int) VIP-Team Traits-Vehicle Use" value="0x1B8" />
+		<option name="(int) VIP-Team Traits-Sensor" value="0x1B9" />
+		<option name="(int) VIP-Team Traits-Sensor Range" value="0x1BA" />
+		<option name="(int) VIP-Team Traits-Waypoint" value="0x1BB" />
+		<option name="(int) VIP-Team Traits-Active Camo" value="0x1BC" />
+		<option name="(int) VIP-Team Traits-Visual Aura" value="0x1BD" />
+		<option name="(int) VIP-Team Traits-Forced Color" value="0x1BE" />
+		<option name="(int) VIP-Influence Traits-Damage Resistance" value="0x1BF" />
+		<option name="(int) VIP-Influence Traits-Shield Multiplier" value="0x1C0" />
+		<option name="(int) VIP-Influence Traits-Shield Recharge" value="0x1C1" />
+		<option name="(int) VIP-Influence Traits-Headshot Immunity" value="0x1C2" />
+		<option name="(int) VIP-Influence Traits-Vampirism" value="0x1C3" />
+		<option name="(int) VIP-Influence Traits-Damage Modifier" value="0x1C4" />
+		<option name="(sID) VIP-Influence Traits-Primary Weapon" value="0x1C5" />
+		<option name="(sID) VIP-Influence Traits-Secondary Weapon" value="0x1C6" />
+		<option name="(int) VIP-Influence Traits-Grenade Count" value="0x1C7" />
+		<option name="(int) VIP-Influence Traits-Grenade Recharge" value="0x1C8" />
+		<option name="(int) VIP-Influence Traits-Infinite Ammo" value="0x1C9" />
+		<option name="(int) VIP-Influence Traits-Weapon Pickup" value="0x1CA" />
+		<option name="(int) VIP-Influence Traits-Speed" value="0x1CB" />
+		<option name="(int) VIP-Influence Traits-Gravity" value="0x1CC" />
+		<option name="(int) VIP-Influence Traits-Vehicle Use" value="0x1CD" />
+		<option name="(int) VIP-Influence Traits-Sensor" value="0x1CE" />
+		<option name="(int) VIP-Influence Traits-Sensor Range" value="0x1CF" />
+		<option name="(int) VIP-Influence Traits-Waypoint" value="0x1D0" />
+		<option name="(int) VIP-Influence Traits-Active Camo" value="0x1D1" />
+		<option name="(int) VIP-Influence Traits-Visual Aura" value="0x1D2" />
+		<option name="(int) VIP-Influence Traits-Forced Color" value="0x1D3" />
+		<option name="(int) VIP-VIP Traits-Damage Resistance" value="0x1D4" />
+		<option name="(int) VIP-VIP Traits-Shield Multiplier" value="0x1D5" />
+		<option name="(int) VIP-VIP Traits-Shield Recharge" value="0x1D6" />
+		<option name="(int) VIP-VIP Traits-Headshot Immunity" value="0x1D7" />
+		<option name="(int) VIP-VIP Traits-Vampirism" value="0x1D8" />
+		<option name="(int) VIP-VIP Traits-Damage Modifier" value="0x1D9" />
+		<option name="(sID) VIP-VIP Traits-Primary Weapon" value="0x1DA" />
+		<option name="(sID) VIP-VIP Traits-Secondary Weapon" value="0x1DB" />
+		<option name="(int) VIP-VIP Traits-Grenade Count" value="0x1DC" />
+		<option name="(int) VIP-VIP Traits-Grenade Recharge" value="0x1DD" />
+		<option name="(int) VIP-VIP Traits-Infinite Ammo" value="0x1DE" />
+		<option name="(int) VIP-VIP Traits-Weapon Pickup" value="0x1DF" />
+		<option name="(int) VIP-VIP Traits-Speed" value="0x1E0" />
+		<option name="(int) VIP-VIP Traits-Gravity" value="0x1E1" />
+		<option name="(int) VIP-VIP Traits-Vehicle Use" value="0x1E2" />
+		<option name="(int) VIP-VIP Traits-Sensor" value="0x1E3" />
+		<option name="(int) VIP-VIP Traits-Sensor Range" value="0x1E4" />
+		<option name="(int) VIP-VIP Traits-Waypoint" value="0x1E5" />
+		<option name="(int) VIP-VIP Traits-Active Camo" value="0x1E6" />
+		<option name="(int) VIP-VIP Traits-Visual Aura" value="0x1E7" />
+		<option name="(int) VIP-VIP Traits-Forced Color" value="0x1E8" />
+		<option name="(int) Juggernaut-Score To Win" value="0x1E9" />
+		<option name="(int) Juggernaut-Kill Points" value="0x1EA" />
+		<option name="(int) Juggernaut-Juggy Kill Points" value="0x1EB" />
+		<option name="(int) Juggernaut-Kill As Juggy Points" value="0x1EC" />
+		<option name="(int) Juggernaut-Zone Arrival Points" value="0x1ED" />
+		<option name="(int) Juggernaut-Suicide Points" value="0x1EE" />
+		<option name="(int) Juggernaut-Betrayal Points" value="0x1EF" />
+		<option name="(int) Juggernaut-Initial Juggy Selection" value="0x1F0" />
+		<option name="(int) Juggernaut-Next Juggy Selection" value="0x1F1" />
+		<option name="(int) Juggernaut-Allied Against Juggy" value="0x1F2" />
+		<option name="(int) Juggernaut-Next Juggy Delay" value="0x1F3" />
+		<option name="(int) Juggernaut-Zones Enabled" value="0x1F4" />
+		<option name="(int) Juggernaut-Zone Movement" value="0x1F5" />
+		<option name="(int) Juggernaut-Zone Order" value="0x1F6" />
+		<option name="(int) Juggernaut-Respawn On Lone Juggy" value="0x1F7" />
+		<option name="(int) Juggernaut-Juggernaut Traits-Damage Resistance" value="0x1F8" />
+		<option name="(int) Juggernaut-Juggernaut Traits-Shield Multiplier" value="0x1F9" />
+		<option name="(int) Juggernaut-Juggernaut Traits-Shield Recharge" value="0x1FA" />
+		<option name="(int) Juggernaut-Juggernaut Traits-Headshot Immunity" value="0x1FB" />
+		<option name="(int) Juggernaut-Juggernaut Traits-Vampirism" value="0x1FC" />
+		<option name="(int) Juggernaut-Juggernaut Traits-Damage Modifier" value="0x1FD" />
+		<option name="(sID) Juggernaut-Juggernaut Traits-Primary Weapon" value="0x1FE" />
+		<option name="(sID) Juggernaut-Juggernaut Traits-Secondary Weapon" value="0x1FF" />
+		<option name="(int) Juggernaut-Juggernaut Traits-Grenade Count" value="0x200" />
+		<option name="(int) Juggernaut-Juggernaut Traits-Grenade Recharge" value="0x201" />
+		<option name="(int) Juggernaut-Juggernaut Traits-Infinite Ammo" value="0x202" />
+		<option name="(int) Juggernaut-Juggernaut Traits-Weapon Pickup" value="0x203" />
+		<option name="(int) Juggernaut-Juggernaut Traits-Speed" value="0x204" />
+		<option name="(int) Juggernaut-Juggernaut Traits-Gravity" value="0x205" />
+		<option name="(int) Juggernaut-Juggernaut Traits-Vehicle Use" value="0x206" />
+		<option name="(int) Juggernaut-Juggernaut Traits-Sensor" value="0x207" />
+		<option name="(int) Juggernaut-Juggernaut Traits-Sensor Range" value="0x208" />
+		<option name="(int) Juggernaut-Juggernaut Traits-Waypoint" value="0x209" />
+		<option name="(int) Juggernaut-Juggernaut Traits-Active Camo" value="0x20A" />
+		<option name="(int) Juggernaut-Juggernaut Traits-Visual Aura" value="0x20B" />
+		<option name="(int) Juggernaut-Juggernaut Traits-Forced Color" value="0x20C" />
+		<option name="(int) Unknown Traits-Damage Resistance" value="0x20D" />
+		<option name="(int) Unknown Traits-Shield Multiplier" value="0x20E" />
+		<option name="(int) Unknown Traits-Shield Recharge" value="0x20F" />
+		<option name="(int) Unknown Traits-Headshot Immunity" value="0x210" />
+		<option name="(int) Unknown Traits-Vampirism" value="0x211" />
+		<option name="(int) Unknown Traits-Damage Modifier" value="0x212" />
+		<option name="(sID) Unknown Traits-Primary Weapon" value="0x213" />
+		<option name="(sID) Unknown Traits-Secondary Weapon" value="0x214" />
+		<option name="(int) Unknown Traits-Grenade Count" value="0x215" />
+		<option name="(int) Unknown Traits-Grenade Recharge" value="0x216" />
+		<option name="(int) Unknown Traits-Infinite Ammo" value="0x217" />
+		<option name="(int) Unknown Traits-Weapon Pickup" value="0x218" />
+		<option name="(int) Unknown Traits-Speed" value="0x219" />
+		<option name="(int) Unknown Traits-Gravity" value="0x21A" />
+		<option name="(int) Unknown Traits-Vehicle Use" value="0x21B" />
+		<option name="(int) Unknown Traits-Sensor" value="0x21C" />
+		<option name="(int) Unknown Traits-Sensor Range" value="0x21D" />
+		<option name="(int) Unknown Traits-Waypoint" value="0x21E" />
+		<option name="(int) Unknown Traits-Active Camo" value="0x21F" />
+		<option name="(int) Unknown Traits-Visual Aura" value="0x220" />
+		<option name="(int) Unknown Traits-Forced Color" value="0x221" />
+		<option name="(int) Assault-Arm Time" value="0x222" />
+		<option name="(int) Assault-Disarm Time" value="0x223" />
+		<option name="(int) Assault-Fuse Time" value="0x224" />
+		<option name="(int) Assault-Reset Time" value="0x225" />
+		<option name="(int) Assault-Carrier Traits-Damage Resistance" value="0x226" />
+		<option name="(int) Assault-Carrier Traits-Shield Multiplier" value="0x227" />
+		<option name="(int) Assault-Carrier Traits-Shield Recharge" value="0x228" />
+		<option name="(int) Assault-Carrier Traits-Headshot Immunity" value="0x229" />
+		<option name="(int) Assault-Carrier Traits-Vampirism" value="0x22A" />
+		<option name="(int) Assault-Carrier Traits-Damage Modifier" value="0x22B" />
+		<option name="(sID) Assault-Carrier Traits-Primary Weapon" value="0x22C" />
+		<option name="(sID) Assault-Carrier Traits-Secondary Weapon" value="0x22D" />
+		<option name="(int) Assault-Carrier Traits-Grenade Count" value="0x22E" />
+		<option name="(int) Assault-Carrier Traits-Grenade Recharge" value="0x22F" />
+		<option name="(int) Assault-Carrier Traits-Infinite Ammo" value="0x230" />
+		<option name="(int) Assault-Carrier Traits-Weapon Pickup" value="0x231" />
+		<option name="(int) Assault-Carrier Traits-Speed" value="0x232" />
+		<option name="(int) Assault-Carrier Traits-Gravity" value="0x233" />
+		<option name="(int) Assault-Carrier Traits-Vehicle Use" value="0x234" />
+		<option name="(int) Assault-Carrier Traits-Sensor" value="0x235" />
+		<option name="(int) Assault-Carrier Traits-Sensor Range" value="0x236" />
+		<option name="(int) Assault-Carrier Traits-Waypoint" value="0x237" />
+		<option name="(int) Assault-Carrier Traits-Active Camo" value="0x238" />
+		<option name="(int) Assault-Carrier Traits-Visual Aura" value="0x239" />
+		<option name="(int) Assault-Carrier Traits-Forced Color" value="0x23A" />
+		<option name="(int) Assault-Unknown" value="0x23B" />
+		<option name="(int) Assault-Game Mode" value="0x23C" />
+		<option name="(int) Assault-Reset On Disarm" value="0x23D" />
+		<option name="(int) Assault-New Unknown" value="0x23E" />
+		<option name="(int) Assault-Enemy Bomb Waypoint" value="0x23F" />
+		<option name="(int) Assault-Score To Win" value="0x240" />
+		<option name="(int) Assault-New Unknown" value="0x241" /><!--x68 in main assault wezr block-->
+		<option name="(nul) Assault-New Unknown" value="0x242" />
+		<option name="(nul) Assault-New Unknown" value="0x243" />
+		<option name="(int) Assault-Sudden Death" value="0x244" />
+		<option name="(int) Editor-Open Channel Voice" value="0x245" />
+		<option name="(int) Editor-Edit Mode" value="0x246" />
+		<option name="(int) Editor-Respawn Time" value="0x247" />
+		<option name="(int) Editor-Editor Traits-Damage Resistance" value="0x248" />
+		<option name="(int) Editor-Editor Traits-Shield Multiplier" value="0x249" />
+		<option name="(int) Editor-Editor Traits-Shield Recharge" value="0x24A" />
+		<option name="(int) Editor-Editor Traits-Headshot Immunity" value="0x24B" />
+		<option name="(int) Editor-Editor Traits-Vampirism" value="0x24C" />
+		<option name="(int) Editor-Editor Traits-Damage Modifier" value="0x24D" />
+		<option name="(sID) Editor-Editor Traits-Primary Weapon" value="0x24E" />
+		<option name="(sID) Editor-Editor Traits-Secondary Weapon" value="0x24F" />
+		<option name="(int) Editor-Editor Traits-Grenade Count" value="0x250" />
+		<option name="(int) Editor-Editor Traits-Grenade Recharge" value="0x251" />
+		<option name="(int) Editor-Editor Traits-Infinite Ammo" value="0x252" />
+		<option name="(int) Editor-Editor Traits-Weapon Pickup" value="0x253" />
+		<option name="(int) Editor-Editor Traits-Speed" value="0x254" />
+		<option name="(int) Editor-Editor Traits-Gravity" value="0x255" />
+		<option name="(int) Editor-Editor Traits-Vehicle Use" value="0x256" />
+		<option name="(int) Editor-Editor Traits-Sensor" value="0x257" />
+		<option name="(int) Editor-Editor Traits-Sensor Range" value="0x258" />
+		<option name="(int) Editor-Editor Traits-Waypoint" value="0x259" />
+		<option name="(int) Editor-Editor Traits-Active Camo" value="0x25A" />
+		<option name="(int) Editor-Editor Traits-Visual Aura" value="0x25B" />
+		<option name="(int) Editor-Editor Traits-Forced Color" value="0x25C" />
+		<option name="(int) Global-Traits Template-Damage Resistance" value="0x25D" />
+		<option name="(int) Global-Traits Template-Shield Multiplier" value="0x25E" />
+		<option name="(int) Global-Traits Template-Shield Recharge" value="0x25F" />
+		<option name="(int) Global-Traits Template-Headshot Immunity" value="0x260" />
+		<option name="(int) Global-Traits Template-Vampirism" value="0x261" />
+		<option name="(int) Global-Traits Template-Damage Modifier" value="0x262" />
+		<option name="(sID) Global-Traits Template-Primary Weapon" value="0x263" />
+		<option name="(sID) Global-Traits Template-Secondary Weapon" value="0x264" />
+		<option name="(int) Global-Traits Template-Grenade Count" value="0x265" />
+		<option name="(int) Global-Traits Template-Grenade Recharge" value="0x266" />
+		<option name="(int) Global-Traits Template-Infinite Ammo" value="0x267" />
+		<option name="(int) Global-Traits Template-Weapon Pickup" value="0x268" />
+		<option name="(int) Global-Traits Template-Speed" value="0x269" />
+		<option name="(int) Global-Traits Template-Gravity" value="0x26A" />
+		<option name="(int) Global-Traits Template-Vehicle Use" value="0x26B" />
+		<option name="(int) Global-Traits Template-Sensor" value="0x26C" />
+		<option name="(int) Global-Traits Template-Sensor Range" value="0x26D" />
+		<option name="(int) Global-Traits Template-Waypoint" value="0x26E" />
+		<option name="(int) Global-Traits Template-Active Camo" value="0x26F" />
+		<option name="(int) Global-Traits Template-Visual Aura" value="0x270" />
+		<option name="(int) Global-Traits Template-Forced Color" value="0x271" />
+	</enum32>
+	<stringId name="Name" offset="0x4" visible="true" />
+	<stringId name="Description" offset="0x8" visible="true" />
+	<tagblock name="Text Value Pairs" offset="0xC" visible="true" elementSize="0x14">
+		<flags8 name="Flags" offset="0x0" visible="true">
+			<bit name="Default Setting" index="0" />
+			<bit name="Unchanged Setting" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</flags8>
+		<enum8 name="Expected Value Type" offset="0x1" visible="true">
+			<option name="Integer Index" value="0x0" />
+			<option name="StringID Reference" value="0x1" />
+			<option name="Incremental" value="0x2" />
+		</enum8>
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<int32 name="Integer Value" offset="0x4" visible="true" />
+		<stringid name="StringID Value" offset="0x8" visible="true" />
+		<stringId name="Name" offset="0xC" visible="true" />
+		<stringId name="Description" offset="0x10" visible="true" />
+	</tagblock>
+</plugin>

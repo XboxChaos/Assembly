@@ -104,6 +104,13 @@
   <ItemGroup>
     <Compile Include="Blam\CacheFileLoader.cs" />
     <Compile Include="Blam\DummyPointerExpander.cs" />
+    <Compile Include="Blam\Eldorado\CSVFilenameSource.cs" />
+    <Compile Include="Blam\Eldorado\EldoradoCacheFile.cs" />
+    <Compile Include="Blam\Eldorado\ExternalIndexedStringTable.cs" />
+    <Compile Include="Blam\Eldorado\Structures\EldoradoCacheHeader.cs" />
+    <Compile Include="Blam\Eldorado\Structures\EldoradoTag.cs" />
+    <Compile Include="Blam\Eldorado\Structures\EldoradoTagGroup.cs" />
+    <Compile Include="Blam\Eldorado\Structures\EldoradoTagTable.cs" />
     <Compile Include="Blam\EngineType.cs" />
     <Compile Include="Blam\EffectInterop.cs" />
     <Compile Include="Blam\FirstGen\FirstGenCacheFile.cs" />
@@ -211,12 +218,13 @@
     <Compile Include="Blam\Scripting\ScriptFunctionInfo.cs" />
     <Compile Include="Blam\Scripting\ScriptTable.cs" />
     <Compile Include="Blam\Shaders\ShaderType.cs" />
+    <Compile Include="Blam\StringIDNamespace.cs" />
     <Compile Include="Blam\TagSource.cs" />
     <Compile Include="Blam\TagTable.cs" />
-    <Compile Include="Blam\ThirdGen\BasedPointerConverter.cs" />
+    <Compile Include="Blam\BasedPointerConverter.cs" />
     <Compile Include="Blam\ThirdGen\BLF\Campaign.cs" />
     <Compile Include="Blam\ThirdGen\Localization\ThirdGenLanguagePackLoader.cs" />
-    <Compile Include="Blam\ThirdGen\MetaAddressConverter.cs" />
+    <Compile Include="Blam\MetaAddressConverter.cs" />
     <Compile Include="Blam\ThirdGen\Resources\BSP\ThirdGenScenarioBSP.cs" />
     <Compile Include="Blam\ThirdGen\Resources\ThirdGenResourceManager.cs" />
     <Compile Include="Blam\ThirdGen\Shaders\ThirdGenShader.cs" />
@@ -254,6 +262,7 @@
     <Compile Include="Injection\ExtractedSound.cs" />
     <Compile Include="IO\IPointerExpander.cs" />
     <Compile Include="Native\ProcessModuleMemoryStream.cs" />
+    <Compile Include="RTE\Eldorado\EldoradoRTEProvider.cs" />
     <Compile Include="RTE\FirstGen\FirstGenRTEProvider.cs" />
     <Compile Include="RTE\FirstGen\FirstGenMCCRTEProvider.cs" />
     <Compile Include="RTE\FirstGen\FirstGenMapPointerReader.cs" />
@@ -288,6 +297,8 @@
     <Compile Include="Serialization\Settings\SettingsGroup.cs" />
     <Compile Include="Serialization\Settings\XMLEngineDatabaseLoader.cs" />
     <Compile Include="Serialization\Settings\XMLSettingsGroupLoader.cs" />
+    <Compile Include="Serialization\Settings\XMLStringIDLoader.cs" />
+    <Compile Include="Serialization\StringIDInformation.cs" />
     <Compile Include="Serialization\StringIDLayout.cs" />
     <Compile Include="Serialization\VertexLayout.cs" />
     <Compile Include="Serialization\VertexElementLayout.cs" />
@@ -329,7 +340,6 @@
     <Compile Include="Blam\Util\AESKey.cs" />
     <Compile Include="Serialization\LocaleSymbolCollection.cs" />
     <Compile Include="Blam\StringIDNamespaceResolver.cs" />
-    <Compile Include="Serialization\Settings\XMLStringIDNamespaceLoader.cs" />
     <Compile Include="Serialization\StructureLayoutCollection.cs" />
     <Compile Include="Serialization\Settings\XMLOpcodeLookup.cs" />
     <Compile Include="IO\FileSegmenterExtensions.cs" />
@@ -944,6 +954,66 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\Halo4\Layouts\H4_Layouts_Shaders.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_155_Scripting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_MS25_LocaleSymbols.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_Poking.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_Scripting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_StringIDs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_ZBT70_Scripting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_ZBT70_StringIDs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_ZBT_Scripting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_ZBT_StringIDs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_LocaleSymbols.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\LayoutsMS25\HO_LayoutsMS25_Core.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\LayoutsMS25\HO_LayoutsMS25_Scenario.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\LayoutsZBT\HO_LayoutsZBT_Core.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\LayoutsZBT\HO_LayoutsZBT_Scenario.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\Layouts\HO_Layouts_Core.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\Layouts\HO_Layouts_Scenario.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_MS25_Scripting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_MS26_Scripting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_430_Scripting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_372_Scripting.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\ODSTMCC\LayoutsU8\ODSTMCC_LayoutsU8_Core.xml">

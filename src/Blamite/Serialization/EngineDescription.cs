@@ -1,4 +1,5 @@
 ﻿using Blamite.Blam;
+using Blamite.Blam.Eldorado;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.Util;
 using Blamite.Compression;
@@ -91,10 +92,10 @@ namespace Blamite.Serialization
 		public StructureLayoutCollection Layouts { get; private set; }
 
 		/// <summary>
-		///     Gets the stringID set resolver for the engine.
+		///     Gets the stringID info for the engine.
 		///     Can be <c>null</c> if not present.
 		/// </summary>
-		public StringIDNamespaceResolver StringIDs { get; private set; }
+		public StringIDInformation StringIDInfo { get; private set; }
 
 		/// <summary>
 		///     Gets scripting info for the engine.
@@ -252,8 +253,10 @@ namespace Blamite.Serialization
 				Engine = EngineType.SecondGeneration;
 			else if (generation.Contains("third"))
 				Engine = EngineType.ThirdGeneration;
+			else if (generation.Contains("eldorado"))
+				Engine = EngineType.Eldorado;
 			else
-				throw new System.Exception("Invalid generation type \"" + generation + "\" for build " + Name + "in engines.xml. Only \"first\", \"second\", and \"third\" are valid.");
+				throw new System.Exception("Invalid generation type \"" + generation + "\" for build " + Name + "in engines.xml. Only \"first\", \"second\", \"third\", and \"eldorado\" are valid.");
 
 			string compression = Settings.GetSettingOrDefault("engineInfo/compression", "none");
 
@@ -306,7 +309,7 @@ namespace Blamite.Serialization
 		private void LoadDatabases()
 		{
 			Layouts = Settings.GetSettingOrDefault<StructureLayoutCollection>("databases/layouts", null);
-			StringIDs = Settings.GetSettingOrDefault<StringIDNamespaceResolver>("databases/stringIds", null);
+			StringIDInfo = Settings.GetSettingOrDefault<StringIDInformation>("databases/stringIds", null);
 			ScriptInfo = Settings.GetSettingOrDefault<OpcodeLookup>("databases/scripting", null);
 			LocaleSymbols = Settings.GetSettingOrDefault<LocaleSymbolCollection>("databases/localeSymbols", null);
 			VertexLayouts = Settings.GetSettingOrDefault<VertexLayoutCollection>("databases/vertexLayouts", null);

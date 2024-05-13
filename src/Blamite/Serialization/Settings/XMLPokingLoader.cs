@@ -43,9 +43,16 @@ namespace Blamite.Serialization.Settings
 				long magicOffset = XMLUtil.GetNumericAttribute(cl, "magicOffset", -1);
 				long sharedMagicAddress = XMLUtil.GetNumericAttribute(cl, "sharedMagicAddress", -1);
 
+				string versionString = XMLUtil.GetStringAttribute(cl, "versionString", null);
+				long versionAddress = XMLUtil.GetNumericAttribute(cl, "versionAddress", -1);
+				long lastTagIndex = XMLUtil.GetNumericAttribute(cl, "lastTagIndex", -1);
+				long indexArrayPointer = XMLUtil.GetNumericAttribute(cl, "indexArrayPointer", -1);
+				long addressArrayPointer = XMLUtil.GetNumericAttribute(cl, "addressArrayPointer", -1);
+
 				Version version = new Version(name);
 
-				result.AddName(version, new PokingInformation(headerPointer, headerAddress, magicAddress, magicOffset, sharedMagicAddress));
+				result.AddName(version, new PokingInformation(headerPointer, headerAddress, magicAddress, magicOffset, sharedMagicAddress,
+					versionString, versionAddress, lastTagIndex, indexArrayPointer, addressArrayPointer));
 			}
 			return result;
 		}

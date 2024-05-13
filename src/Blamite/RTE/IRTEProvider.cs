@@ -30,7 +30,8 @@ namespace Blamite.RTE
 		///     The stream will be set up such that offsets in the stream correspond to meta pointers in the cache file.
 		/// </summary>
 		/// <param name="cacheFile">The cache file to get a stream for.</param>
+		/// <param name="tag">The tag to get a stream for.</param>
 		/// <returns>The stream if it was opened successfully, or null otherwise.</returns>
-		IStream GetMetaStream(ICacheFile cacheFile);
+		IStream GetMetaStream(ICacheFile cacheFile, ITag tag);
 	}
 }

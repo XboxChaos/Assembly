@@ -22,7 +22,7 @@ namespace Blamite.RTE.ThirdGen
 		/// </summary>
 		/// <param name="cacheFile">The cache file to get a stream for.</param>
 		/// <returns>The stream if it was opened successfully, or null otherwise.</returns>
-		public override IStream GetMetaStream(ICacheFile cacheFile = null)
+		public override IStream GetMetaStream(ICacheFile cacheFile = null, ITag tag = null)
 		{
 			if (!CheckBuildInfo())
 				return null;

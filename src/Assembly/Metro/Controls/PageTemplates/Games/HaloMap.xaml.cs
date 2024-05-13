@@ -31,12 +31,12 @@ using CloseableTabItemDemo;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using XBDMCommunicator;
-using Blamite.Blam.SecondGen;
 using Blamite.Blam.ThirdGen;
 using Blamite.RTE.ThirdGen;
 using Blamite.Blam.Resources.Sounds;
-using System.Reflection;
 using Blamite.RTE.FirstGen;
+using Blamite.Blam.Eldorado;
+using Blamite.RTE.Eldorado;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -216,7 +216,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				}
 #endif
 
-				_mapManager = new FileStreamManager(_cacheLocation, reader.Endianness);
+				if (_buildInfo.Engine == EngineType.Eldorado)
+					_mapManager = new FileStreamManager(((EldoradoCacheFile)_cacheFile).TagFilePath, reader.Endianness);
+				else
+					_mapManager = new FileStreamManager(_cacheLocation, reader.Endianness);
 
 				// Build SID trie
 				_stringIdTrie = new Trie();
@@ -260,6 +263,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 							{
 								if (!string.IsNullOrEmpty(_buildInfo.PokingModule))
 									_rteProvider = new ThirdGenMCCRTEProvider(_buildInfo);
+							}
+							else if (_cacheFile.Engine == EngineType.Eldorado)
+							{
+								_rteProvider = new EldoradoRTEProvider(_buildInfo);
 							}
 							break;
 						}
@@ -492,7 +499,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				totalStrings += language.StringCount;
 			Dispatcher.Invoke(new Action(delegate { lblLocaleTotalCount.Text = totalStrings.ToString(); }));*/
 
-			if (!_cacheFile.Languages.AvailableLanguages.Any())
+			if (_cacheFile.Languages == null || !_cacheFile.Languages.AvailableLanguages.Any())
 			{
 				Dispatcher.Invoke(new Action(() => tabStrings.Visibility = Visibility.Collapsed));
 				return;
@@ -578,9 +585,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			// Update TreeView
 			UpdateTagFilter();
-
-			// Fuck bitches, get money
-			// #xboxscenefame
 		}
 
 		private void cbOpenDuplicate_Altered(object sender, RoutedEventArgs e)

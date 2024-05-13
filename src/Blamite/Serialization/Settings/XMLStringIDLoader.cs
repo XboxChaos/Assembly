@@ -6,9 +6,9 @@ using Blamite.Util;
 namespace Blamite.Serialization.Settings
 {
 	/// <summary>
-	///     Loads stringID set definitions from XML data.
+	///     Loads stringID namespace definitions from XML data.
 	/// </summary>
-	public class XMLStringIDNamespaceLoader : IComplexSettingLoader
+	public class XMLStringIDLoader : IComplexSettingLoader
 	{
 		/// <summary>
 		///     Loads setting data from a path.
@@ -23,11 +23,11 @@ namespace Blamite.Serialization.Settings
 		}
 
 		/// <summary>
-		///     Loads stringID set definitions from an XML document.
+		///     Loads stringID namespace definitions from an XML document.
 		/// </summary>
-		/// <param name="document">The XML document to load set definitions from.</param>
-		/// <returns>The StringIDSetResolver that was created.</returns>
-		public static StringIDNamespaceResolver LoadStringIDNamespaces(XDocument document)
+		/// <param name="document">The XML document to load namespace definitions from.</param>
+		/// <returns>The StringIDInformation that was created.</returns>
+		public static StringIDInformation LoadStringIDNamespaces(XDocument document)
 		{
 			// Make sure there is a root <stringIDs> tag
 			XElement container = document.Element("stringIDs");
@@ -36,20 +36,21 @@ namespace Blamite.Serialization.Settings
 
 			StringIDLayout idLayout = ProcessIDLayoutInfo(container);
 
-			// Process <set> elements
-			var resolver = new StringIDNamespaceResolver(idLayout);
-			foreach (XElement element in container.Elements("namespace"))
-				ProcessSetElement(element, resolver);
+			// Process <namespace> elements
+			var info = new StringIDInformation(idLayout);
 
-			return resolver;
+			foreach (XElement element in container.Elements("namespace"))
+				ProcessNamespaceElement(element, info);
+
+			return info;
 		}
 
 		/// <summary>
-		///     Loads stringID set definitions from an XML document.
+		///     Loads stringID namespace definitions from an XML document.
 		/// </summary>
 		/// <param name="documentPath">The path to the XML document to load.</param>
-		/// <returns>The StringIDSetResolver that was created.</returns>
-		public static StringIDNamespaceResolver LoadStringIDNamespaces(string documentPath)
+		/// <returns>The StringIDInformation that was created.</returns>
+		public static StringIDInformation LoadStringIDNamespaces(string documentPath)
 		{
 			return LoadStringIDNamespaces(XDocument.Load(documentPath));
 		}
@@ -62,13 +63,13 @@ namespace Blamite.Serialization.Settings
 			return new StringIDLayout(indexBits, setBits, lengthBits);
 		}
 
-		private static void ProcessSetElement(XElement element, StringIDNamespaceResolver resolver)
+		private static void ProcessNamespaceElement(XElement element, StringIDInformation resolver)
 		{
 			int id = (int)XMLUtil.GetNumericAttribute(element, "id");
 			int min = (int)XMLUtil.GetNumericAttribute(element, "min", 0);
 			int globalIndex = (int)XMLUtil.GetNumericAttribute(element, "startIndex");
 
-			resolver.RegisterSet(id, min, globalIndex);
+			resolver.AddNamespace(id, min, globalIndex);
 		}
 	}
 }
