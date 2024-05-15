@@ -130,7 +130,7 @@ namespace Blamite.Blam
 			{
 				foreach (KeyValuePair<int, string> key in _strings)
 				{
-					string name = !string.IsNullOrEmpty(key.Value) ? key.Value : $"{key.Key:X8}";
+					string name = !string.IsNullOrEmpty(key.Value) ? key.Value : $"0x{key.Key:X8}";
 					sw.WriteLine($"0x{key.Key:X8},{name}");
 				}
 
