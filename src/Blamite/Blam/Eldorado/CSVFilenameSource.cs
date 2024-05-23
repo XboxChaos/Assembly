@@ -10,11 +10,11 @@ namespace Blamite.Blam
 	/// </summary>
 	class CSVFilenameSource : FileNameSource
 	{
-		private readonly Dictionary<int, string> _strings;
+		private readonly SortedDictionary<int, string> _strings;
 		private readonly string[] splitValues = new string[] { "," };
 		public CSVFilenameSource(string fileName)
 		{
-			_strings = new Dictionary<int, string>();
+			_strings = new SortedDictionary<int, string>();
 			Load(fileName);
 		}
 
@@ -130,8 +130,10 @@ namespace Blamite.Blam
 			{
 				foreach (KeyValuePair<int, string> key in _strings)
 				{
-					string name = !string.IsNullOrEmpty(key.Value) ? key.Value : $"0x{key.Key:X8}";
-					sw.WriteLine($"0x{key.Key:X8},{name}");
+					if (string.IsNullOrEmpty(key.Value))
+						continue;
+
+					sw.WriteLine($"0x{key.Key:X8},{key.Value}");
 				}
 
 				File.WriteAllText(fileName, sw.ToString());
