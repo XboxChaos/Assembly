@@ -226,6 +226,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			SeekToOffset(field.Offset);
 			field.DataAddress = field.FieldAddress;
+
+			long fieldEnd = field.FieldAddress + field.Length;
+			long groupEnd = _srcSegmentGroup.BasePointer + _srcSegmentGroup.Size;
+
+			if (fieldEnd > groupEnd)
+				field.Length = (int)(groupEnd - field.FieldAddress);
+
 			field.Value = FunctionHelpers.BytesToHexString(_reader.ReadBlock(field.Length));
 		}
 
