@@ -19,7 +19,7 @@ namespace Blamite.Blam.Eldorado.Structures
 			Magic = (int)values.GetInteger("magic");
 			ParentMagic = (int)values.GetInteger("parent magic");
 			GrandparentMagic = (int)values.GetInteger("grandparent magic");
-			Description = new StringID(values.GetIntegerOrDefault("stringid", 0));
+			Description = new StringID(values.GetIntegerOrDefault("group stringid", 0));
 		}
 	}
 }
