@@ -1551,6 +1551,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					switch (tagMenuItem.Name)
 					{
 						case "itemRename":
+						case "itemPasteName":
 							{
 								if (_cacheFile.Engine == EngineType.FirstGeneration)
 									tagMenuItem.Visibility = Visibility.Collapsed;
@@ -2618,6 +2619,44 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			MetroMessageBox.Show("Free StringIDs", "A total of " + result + " bytes were freed.");
 				
+		}
+
+		private void itemCopyName_Click(object sender, RoutedEventArgs e)
+		{
+			var item = e.Source as MenuItem;
+			if (item == null)
+				return;
+
+			var tag = item.DataContext as TagEntry;
+			if (tag == null)
+				return;
+
+			Clipboard.SetText(tag.TagFileName);
+		}
+
+		private void itemPasteName_Click(object sender, RoutedEventArgs e)
+		{
+			var item = e.Source as MenuItem;
+			if (item == null)
+				return;
+
+			var tag = item.DataContext as TagEntry;
+			if (tag == null)
+				return;
+
+			if (tag.IsNull)
+				return;
+
+			string name = Clipboard.GetText();
+			if (name.Length > 256)
+				return;
+
+			if (!Keyboard.IsKeyDown(Key.LeftShift) && MetroMessageBox.Show("Rename Tag",
+				$"Are you sure you wish to rename\r\n{tag.TagFileName}\r\nto\r\n{name}",
+				MetroMessageBox.MessageBoxButtons.YesNoCancel) != MetroMessageBox.MessageBoxResult.Yes)
+				return;
+
+			tag.TagFileName = name;
 		}
 	}
 }

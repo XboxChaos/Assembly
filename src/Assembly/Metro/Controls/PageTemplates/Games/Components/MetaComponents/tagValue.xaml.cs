@@ -7,6 +7,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using Assembly.Metro.Dialogs.ControlDialogs;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
+using Assembly.Metro.Dialogs;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 {
@@ -77,6 +78,33 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
                 cbTagEntry.SelectedValue = searchDialog.SelectedTag;
             }
         }
+
+		private void CopyName_Click(object sender, RoutedEventArgs e)
+		{
+			TagEntry tag = (TagEntry)cbTagEntry.SelectedItem;
+			if (tag.RawTag == null)
+				return;
+
+			Clipboard.SetText(cbTagEntry.Text);
+		}
+
+		private void PasteName_Click(object sender, RoutedEventArgs e)
+		{
+			TagEntry tag = (TagEntry)cbTagEntry.SelectedItem;
+			if (tag.RawTag == null)
+				return;
+
+			string name = Clipboard.GetText();
+			if (name.Length > 256)
+				return;
+
+			if (!Keyboard.IsKeyDown(Key.LeftShift) && MetroMessageBox.Show("Rename Tag",
+				$"Are you sure you wish to rename\r\n{tag.TagFileName}\r\nto\r\n{name}\r\n\r\nThis change may not save if the cache file does not support tag renaming.",
+				MetroMessageBox.MessageBoxButtons.YesNoCancel) != MetroMessageBox.MessageBoxResult.Yes)
+				return;
+
+			tag.TagFileName = name;
+		}
     }
 
 	/// <summary>
