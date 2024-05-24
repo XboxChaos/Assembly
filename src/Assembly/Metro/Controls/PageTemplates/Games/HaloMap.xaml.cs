@@ -1371,7 +1371,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			// Save it
 			using (IStream stream = _mapManager.OpenReadWrite())
-				_cacheFile.SaveChanges(stream);
+				_cacheFile.SaveTagNames(stream);
 
 			MetroMessageBox.Show("Success!", "Tag names saved successfully.");
 		}

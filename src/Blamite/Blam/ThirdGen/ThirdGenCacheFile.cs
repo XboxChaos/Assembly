@@ -78,6 +78,11 @@ namespace Blamite.Blam.ThirdGen
 			}
 		}
 
+		public void SaveTagNames(IStream stream)
+		{
+			SaveChanges(stream);
+		}
+
 		public string FilePath { get; private set; }
 
 		public int HeaderSize

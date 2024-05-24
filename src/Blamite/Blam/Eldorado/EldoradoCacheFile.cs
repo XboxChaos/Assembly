@@ -48,8 +48,12 @@ namespace Blamite.Blam.Eldorado
 		public void SaveChanges(IStream stream)
 		{
 			_tags.SaveChanges(stream);
-			_fileNames.SaveChanges(TagListPath);
 			_stringIds.SaveChanges(null);
+		}
+
+		public void SaveTagNames(IStream stream)
+		{
+			_fileNames.SaveChanges(TagListPath);
 		}
 
 		public string FilePath { get; private set; }
