@@ -216,6 +216,12 @@ namespace Blamite.Serialization
 		/// </summary>
 		public LocaleSymbolCollection HudMessageSymbols { get; private set; }
 
+		/// <summary>
+		///		Gets the folder where the "default" tag name csv can be found. For Eldorado when there isn't a csv available alongside the loaded cache file.
+		///		The csv then should be named after the build string.
+		/// </summary>
+		public string FallbackTagNameFolder { get; private set; }
+
 		private void LoadSettings()
 		{
 			LoadEngineSettings();
@@ -279,6 +285,8 @@ namespace Blamite.Serialization
 				StringIDKey = new AESKey(Settings.GetSettingOrDefault<string>("engineInfo/encryption/stringIdKey", null));
 			if (Settings.PathExists("engineInfo/encryption/localeKey"))
 				LocaleKey = new AESKey(Settings.GetSettingOrDefault<string>("engineInfo/encryption/localeKey", null));
+
+			FallbackTagNameFolder = Settings.GetSettingOrDefault<string>("fallbackTagNamesPath", null);
 		}
 
 		private void LoadPokingSettings()

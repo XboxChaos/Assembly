@@ -284,7 +284,11 @@ namespace Blamite.Blam.Eldorado
 
 		private void LoadFileNames(string nameFile)
 		{
-			_fileNames = new CSVFilenameSource(nameFile);
+			string fallback = null;
+			if (_buildInfo.FallbackTagNameFolder != null)
+				fallback = Path.Combine(_buildInfo.FallbackTagNameFolder, _buildInfo.BuildVersion.Replace(':', '_') + ".csv");
+
+			_fileNames = new CSVFilenameSource(nameFile, fallback);
 		}
 
 		private void LoadStringIDs(string stringFile)

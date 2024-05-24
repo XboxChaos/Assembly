@@ -12,10 +12,14 @@ namespace Blamite.Blam
 	{
 		private readonly SortedDictionary<int, string> _strings;
 		private readonly string[] splitValues = new string[] { "," };
-		public CSVFilenameSource(string fileName)
+		public CSVFilenameSource(string localFileName, string fallbackFileName)
 		{
 			_strings = new SortedDictionary<int, string>();
-			Load(fileName);
+
+			if (File.Exists(localFileName))
+				Load(localFileName);
+			else if (!string.IsNullOrEmpty(fallbackFileName) && File.Exists(fallbackFileName))
+				Load(fallbackFileName);
 		}
 
 		/// <summary>
@@ -23,9 +27,6 @@ namespace Blamite.Blam
 		/// </summary>
 		private void Load(string fileName)
 		{
-			if (!File.Exists(fileName))
-				return;
-
 			string[] lines = File.ReadAllLines(fileName);
 			foreach (string s in lines)
 			{
