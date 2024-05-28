@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Assembly.Helpers.Native;
+using Assembly.Metro.Controls.PageTemplates.Games;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Blamite.Blam;
 using Blamite.Serialization;
@@ -25,6 +26,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		private uint _cacheOffset;
 		private MetaReader _reader;
 		private long _memOffset;
+		private FileSegmentGroup _srcSegmentGroup;
 
 		public ICacheFile ParentCache
 		{
@@ -32,25 +34,30 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		}
 
 		public ViewValueAs(ICacheFile cacheFile, EngineDescription buildInfo, IStreamManager streamManager,
-			IList<MetaField> fields, uint cacheOffset)
+			IList<MetaField> fields, uint cacheOffset, TagEntry srcTag)
 		{
 			InitializeComponent();
 
 			DwmDropShadow.DropShadowToWindow(this);
 
+			_srcSegmentGroup = srcTag.RawTag.MetaLocation.BaseGroup;
 			_buildInfo = buildInfo;
 			_streamManager = streamManager;
 			_cacheFile = cacheFile;
 			_fields = fields;
 			_cacheOffsetOriginal = _cacheOffset = cacheOffset;
 
-			_memOffset = _cacheFile.MetaArea.OffsetToPointer((uint)_cacheOffset);
+			_memOffset = _srcSegmentGroup.OffsetToPointer((uint)_cacheOffset);
 
 			// Set Textboxes
 			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
 			txtMemOffset.Text = "0x" + _memOffset.ToString("X");
 			txtMapName.Text = Path.GetFileName(_cacheFile.FilePath);
 			txtMapName.ToolTip = _cacheFile.FilePath;
+			txtTagName.Text = srcTag.TagFileName + "." + srcTag.GroupName;
+
+			if (srcTag.RawTag.Source == TagSource.MetaArea)
+				txtNote.Visibility = Visibility.Collapsed;
 
 			// Load Meta
 			panelMetaComponents.ItemsSource = _fields;
@@ -59,7 +66,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 
 		public void RefreshMeta()
 		{
-			_reader = new MetaReader(_streamManager, _cacheOffset, _cacheFile, _buildInfo, MetaReader.LoadType.File, null);
+			_reader = new MetaReader(_streamManager, _cacheOffset, _cacheFile, _buildInfo, MetaReader.LoadType.File, null, _srcSegmentGroup);
 			_reader.ReadFields(_fields);
 		}
 
@@ -111,18 +118,18 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 				success = uint.TryParse(txtOffset.Text, out offset);
 			}
 
-			if (!success || !_cacheFile.MetaArea.ContainsOffset((uint)offset))
+			if (!success || !_srcSegmentGroup.ContainsOffset((uint)offset))
 			{
 				MetroMessageBox.Show(
 					"Invalid offset.",
-					"The meta offset you set is not valid. It might be beyond the boundaries of the file or contain invalid characters. Remember, if it's a hex number, it must start with a '0x'."
+					"The file offset you set is not valid. It might be beyond the boundaries of the file/tag or contain invalid characters. If you entered a hex number, it must start with '0x'."
 					);
 				return;
 			}
 			_cacheOffset = offset;
 
 			//Update the other textbox
-			_memOffset = _cacheFile.MetaArea.OffsetToPointer((uint)_cacheOffset);
+			_memOffset = _srcSegmentGroup.OffsetToPointer((uint)_cacheOffset);
 			txtMemOffset.Text = "0x" + _memOffset.ToString("X");
 
 			RefreshMeta();
@@ -145,15 +152,15 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 				success = long.TryParse(txtMemOffset.Text, out offset);
 			}
 
-			if (!success || !_cacheFile.MetaArea.ContainsPointer(offset))
+			if (!success || !_srcSegmentGroup.ContainsPointer(offset))
 			{
 				MetroMessageBox.Show(
 					"Invalid address.",
-					"The meta address you set is not valid. It might be beyond the boundaries of the file or contain invalid characters. Remember, if it's a hex number, it must start with a '0x'."
+					"The address you set is not valid. It might be beyond the boundaries of the file/tag or contain invalid characters. If you entered a hex number, it must start with '0x'."
 					);
 				return;
 			}
-			_cacheOffset = (uint)_cacheFile.MetaArea.PointerToOffset(offset);
+			_cacheOffset = (uint)_srcSegmentGroup.PointerToOffset(offset);
 
 			//Update the other textbox
 			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
@@ -176,7 +183,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		private void btnReset_Click(object sender, RoutedEventArgs e)
 		{
 			_cacheOffset = _cacheOffsetOriginal;
-			_memOffset = _cacheFile.MetaArea.OffsetToPointer((uint)_cacheOffset);
+			_memOffset = _srcSegmentGroup.OffsetToPointer((uint)_cacheOffset);
 
 			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
 			txtMemOffset.Text = "0x" + _memOffset.ToString("X");
@@ -186,7 +193,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		private void btnDown_Click(object sender, RoutedEventArgs e)
 		{
 			_cacheOffset -= GetSkip();
-			_memOffset = _cacheFile.MetaArea.OffsetToPointer((uint)_cacheOffset);
+			_memOffset = _srcSegmentGroup.OffsetToPointer((uint)_cacheOffset);
 
 			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
 			txtMemOffset.Text = "0x" + _memOffset.ToString("X");
@@ -196,7 +203,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		private void btnUp_Click(object sender, RoutedEventArgs e)
 		{
 			_cacheOffset += GetSkip();
-			_memOffset = _cacheFile.MetaArea.OffsetToPointer((uint)_cacheOffset);
+			_memOffset = _srcSegmentGroup.OffsetToPointer((uint)_cacheOffset);
 
 			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
 			txtMemOffset.Text = "0x" + _memOffset.ToString("X");

@@ -3,14 +3,8 @@
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:converters="clr-namespace:Assembly.Helpers.Converters"
 			 mc:Ignorable="d" 
 			 d:DesignHeight="500" d:DesignWidth="800">
-	<UserControl.Resources>
-		<converters:EnumToString x:Key="IValueEnumToString" />
-		<converters:IntegerTo32BitHex x:Key="IValueIntegerTo32BitHex" />
-		<converters:ResourceFilePath x:Key="IValueResourceFilePath" />
-	</UserControl.Resources>
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="300" />
@@ -68,31 +62,31 @@
 					<!-- Compression Type -->
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="Compression:" Style="{DynamicResource GenericTextblock}" Foreground="White" />
-						<TextBlock Text="{Binding PrimaryResourcePage.CompressionMethod, Converter={StaticResource IValueEnumToString}, FallbackValue=Null}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
+						<TextBlock Text="{Binding PrimaryResourcePage.CompressionMethod, FallbackValue=Null}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
 					</StackPanel>
 
 					<!-- Compressed Size -->
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="Compressed Size:" Style="{DynamicResource GenericTextblock}" Foreground="White" />
-						<TextBlock Text="{Binding PrimaryResourcePage.CompressedSize, Converter={StaticResource IValueIntegerTo32BitHex}, FallbackValue=Null}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
+						<TextBlock Text="{Binding PrimaryResourcePage.CompressedSize, StringFormat='0x{0:X}', FallbackValue=Null}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
 					</StackPanel>
 
 					<!-- Uncompressed Size -->
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="Uncompressed Size:" Style="{DynamicResource GenericTextblock}" Foreground="White" />
-						<TextBlock Text="{Binding PrimaryResourcePage.UncompressedSize, Converter={StaticResource IValueIntegerTo32BitHex}, FallbackValue=Null}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
+						<TextBlock Text="{Binding PrimaryResourcePage.UncompressedSize, StringFormat='0x{0:X}', FallbackValue=Null}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
 					</StackPanel>
 
 					<!-- Offset -->
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="Offset:" Style="{DynamicResource GenericTextblock}" Foreground="White" />
-						<TextBlock Text="{Binding PrimaryResourcePage.Offset, Converter={StaticResource IValueIntegerTo32BitHex}, FallbackValue=Null}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
+						<TextBlock Text="{Binding PrimaryResourcePage.Offset, StringFormat='0x{0:X}', FallbackValue=Null}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
 					</StackPanel>
 
 					<!-- File Path -->
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="Resource Cache Path:" Style="{DynamicResource GenericTextblock}" Foreground="White" />
-						<TextBlock Text="{Binding PrimaryResourcePage.FilePath, Converter={StaticResource IValueResourceFilePath}, FallbackValue=Null}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
+						<TextBlock Text="{Binding PrimaryResourcePage.FilePath, FallbackValue=Null, TargetNullValue=local}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
 					</StackPanel>
 				</StackPanel>
 			</StackPanel>
@@ -103,63 +97,35 @@
 					<!-- Compression Type -->
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="Compression:" Style="{DynamicResource GenericTextblock}" Foreground="White" />
-						<TextBlock Text="{Binding SecondaryResourcePage.CompressionMethod, Converter={StaticResource IValueEnumToString}, FallbackValue=Null}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
+						<TextBlock Text="{Binding SecondaryResourcePage.CompressionMethod, FallbackValue=Null}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
 					</StackPanel>
 
 					<!-- Compressed Size -->
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="Compressed Size:" Style="{DynamicResource GenericTextblock}" Foreground="White" />
-						<TextBlock Text="{Binding SecondaryResourcePage.CompressedSize, Converter={StaticResource IValueIntegerTo32BitHex}, FallbackValue=Null}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
+						<TextBlock Text="{Binding SecondaryResourcePage.CompressedSize, StringFormat='0x{0:X}', FallbackValue=Null}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
 					</StackPanel>
 
 					<!-- Uncompressed Size -->
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="Uncompressed Size:" Style="{DynamicResource GenericTextblock}" Foreground="White" />
-						<TextBlock Text="{Binding SecondaryResourcePage.UncompressedSize, Converter={StaticResource IValueIntegerTo32BitHex}, FallbackValue=Null}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
+						<TextBlock Text="{Binding SecondaryResourcePage.UncompressedSize, StringFormat='0x{0:X}', FallbackValue=Null}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
 					</StackPanel>
 
 					<!-- Offset -->
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="Offset:" Style="{DynamicResource GenericTextblock}" Foreground="White" />
-						<TextBlock Text="{Binding SecondaryResourcePage.Offset, Converter={StaticResource IValueIntegerTo32BitHex}, FallbackValue=Null}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
+						<TextBlock Text="{Binding SecondaryResourcePage.Offset, StringFormat='0x{0:X}', FallbackValue=Null}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
 					</StackPanel>
 
 					<!-- File Path -->
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="Resource Cache Path:" Style="{DynamicResource GenericTextblock}" Foreground="White" />
-						<TextBlock Text="{Binding SecondaryResourcePage.FilePath, Converter={StaticResource IValueResourceFilePath}, FallbackValue=Null}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
+						<TextBlock Text="{Binding SecondaryResourcePage.FilePath, FallbackValue=Null,TargetNullValue=local}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
 					</StackPanel>
 				</StackPanel>
 			</StackPanel>
 
-			<StackPanel Margin="12,20,0,0">
-				<TextBlock Style="{DynamicResource GenericTextblock}" Text="Sound Information;" FontSize="25" Opacity="0.3" />
-				<StackPanel>
-					<!-- Sound Class -->
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="Sound Class:" Style="{DynamicResource GenericTextblock}" Foreground="White" />
-						<TextBlock Text="{Binding Sound.SoundClass, FallbackValue=Loading...}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
-					</StackPanel>
-
-					<!-- Sample Rate -->
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="Sample Rate:" Style="{DynamicResource GenericTextblock}" Foreground="White" />
-						<TextBlock Text="{Binding Sound.SampleRate, Converter={StaticResource IValueEnumToString}, FallbackValue=Loading...}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
-					</StackPanel>
-
-					<!-- Encoding -->
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="Encoding:" Style="{DynamicResource GenericTextblock}" Foreground="White" />
-						<TextBlock Text="{Binding Sound.Encoding, Converter={StaticResource IValueEnumToString}, FallbackValue=Loading...}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
-					</StackPanel>
-
-					<!-- Max Playtime -->
-					<StackPanel Orientation="Horizontal" Visibility="Collapsed">
-						<TextBlock Text="Loading..." Style="{DynamicResource GenericTextblock}" Foreground="White" />
-						<TextBlock Text="{Binding Sound.MaxPlaytime, FallbackValue=Loading...}" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" />
-					</StackPanel>
-				</StackPanel>
-			</StackPanel>
 		</StackPanel>
 	</Grid>
 </UserControl>

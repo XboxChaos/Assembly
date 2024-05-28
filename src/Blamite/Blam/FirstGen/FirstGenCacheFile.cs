@@ -25,6 +25,8 @@ namespace Blamite.Blam.FirstGen
 		private DummyPointerExpander _expander;
 		private Endian _endianness;
 
+		private FileSegmentGroup[] _bspAreas;
+
 		public FirstGenCacheFile(IReader reader, EngineDescription buildInfo, string filePath)
 		{
 			FilePath = filePath;
@@ -33,8 +35,7 @@ namespace Blamite.Blam.FirstGen
 			_segmenter = new FileSegmenter(buildInfo.SegmentAlignment);
 			_expander = new DummyPointerExpander();
 
-			// TODO (Dragon): not sure if this is right for first gen
-			Allocator = new MetaAllocator(this, 0x10000);
+			Allocator = new MetaAllocator(this, 0x1000);
 
 			Load(reader);
 		}
@@ -174,7 +175,7 @@ namespace Blamite.Blam.FirstGen
 
 		public IResourceMetaLoader ResourceMetaLoader
 		{
-			get { return new FirstGenResourceMetaLoader(); }
+			get { return new DummyResourceMetaLoader(); }
 		}
 
 		public IEnumerable<FileSegment> Segments
@@ -218,6 +219,11 @@ namespace Blamite.Blam.FirstGen
 
 		public SoundResourceManager SoundGestalt => throw new NotImplementedException();
 
+		public FileSegmentGroup[] BSPAreas
+		{
+			get { return _bspAreas; }
+		}
+
 		private void Load(IReader reader)
 		{
 			_header = LoadHeader(reader, out uint primaryMask);
@@ -225,6 +231,8 @@ namespace Blamite.Blam.FirstGen
 			_fileNames = LoadFileNames(reader);
 			
 			_stringIDs = LoadStringIDs(reader);
+
+			FixupStructureTags(reader);
 
 			//header doesn't contain a scenario path, but later engines do so might as well grab it
 			ITag scenario = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
@@ -247,13 +255,13 @@ namespace Blamite.Blam.FirstGen
 				StructureLayout tagElementLayout = _buildInfo.Layouts.GetLayout("tag element");
 
 				uint indexHeaderOffset = (uint)values.GetInteger("meta offset");
-				reader.SeekTo(indexHeaderOffset + indexHeaderLayout.GetFieldOffset("tag table offset"));
+				reader.SeekTo(indexHeaderOffset + indexHeaderLayout.GetFieldOffset("tag table address"));
 				uint tagTableAddress = reader.ReadUInt32();
 
 				primaryMask = tagTableAddress - (uint)indexHeaderLayout.Size;
 				uint tagTableOffset = tagTableAddress - primaryMask + indexHeaderOffset;
 
-				reader.SeekTo(tagTableOffset + tagElementLayout.GetFieldOffset("offset"));
+				reader.SeekTo(tagTableOffset + tagElementLayout.GetFieldOffset("memory address"));
 				uint firstTagAddress = reader.ReadUInt32();
 
 				values.SetInteger("xbox meta offset mask", firstTagAddress - (uint)values.GetInteger("tag data offset"));
@@ -283,10 +291,69 @@ namespace Blamite.Blam.FirstGen
 			return new FirstGenTagTable(reader, values, MetaArea, _buildInfo);
 		}
 
+		private void FixupStructureTags(IReader reader)
+		{
+			if (_buildInfo.Layouts.HasLayout("scenario bsp table element"))
+			{
+				var scenarioTag = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
+				if (scenarioTag != null)
+				{
+					reader.SeekTo(scenarioTag.MetaLocation.AsOffset());
+					StructureValueCollection scenarioValues = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("scnr"));
+
+					int bspCount = (int)scenarioValues.GetInteger("number of scenario bsps");
+					uint bspAddr = (uint)scenarioValues.GetInteger("scenario bsp table address");
+
+					StructureLayout layout = _buildInfo.Layouts.GetLayout("scenario bsp table element");
+					StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, bspCount, bspAddr, layout, MetaArea);
+
+					_bspAreas = new FileSegmentGroup[bspCount];
+
+					for (int i = 0; i < bspCount; i++)
+					{
+						StructureValueCollection ent = entries[i];
+
+						uint offset = (uint)ent.GetInteger("data offset");
+						if (offset == 0)
+							continue;
+
+						//bsp
+						ITag bspTag = _tags[(int)ent.GetInteger("sbsp datum") & 0xFFFF];
+						reader.SeekTo(offset);
+						StructureLayout bspHeaderLayout = _buildInfo.Layouts.GetLayout("bsp header");
+						StructureValueCollection bspHeadValues = StructureReader.ReadStructure(reader, bspHeaderLayout);
+
+						//register area
+						FileSegment bspSegment = new FileSegment(
+							_segmenter.DefineSegment(offset, (uint)ent.GetInteger("data size"), 0x4, SegmentResizeOrigin.End), _segmenter);
+
+						_bspAreas[i] = new FileSegmentGroup(new MetaOffsetConverter(bspSegment, (uint)ent.GetInteger("data address")));
+						_bspAreas[i].AddSegment(bspSegment);
+
+						bspTag.MetaLocation = SegmentPointer.FromPointer((uint)bspHeadValues.GetInteger("bsp address"), _bspAreas[i]);
+						bspTag.Source = TagSource.BSP;
+
+						//lightmap
+						if (ent.HasInteger("ltmp datum"))
+						{
+							uint ltmpdatum = (uint)ent.GetInteger("ltmp datum");
+							if (ltmpdatum != 0xFFFFFFFF)
+							{
+								ITag ltmpTag = _tags[(int)ent.GetInteger("ltmp datum") & 0xFFFF];
+
+								uint lightaddr = (uint)bspHeadValues.GetInteger("lightmap address");
+								ltmpTag.MetaLocation = SegmentPointer.FromPointer(lightaddr, _bspAreas[i]);
+								ltmpTag.Source = TagSource.BSP;
+							}
+						}
+
+					}
+				}
+			}
+		}
+
 		private IndexedFileNameSource LoadFileNames(IReader reader)
 		{
-			//var strings = new IndexedStringTable(reader, _header.FileNameCount, _header.FileNameIndexTable, _header.FileNameData,
-			//    _buildInfo.TagNameKey);
 			var strings = new FirstGenIndexedStringTable(reader, _tags);
 			return new IndexedFileNameSource(strings);
 		}
@@ -311,7 +378,7 @@ namespace Blamite.Blam.FirstGen
 					if (hs != null)
 					{
 						ScriptFiles = new IScriptFile[1];
-						ScriptFiles[0] = new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index) ?? hs.Index.ToString(), MetaArea, _buildInfo, StringIDs, _expander, Allocator);
+						ScriptFiles[0] = new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index) ?? hs.Index.ToString(), hs.MetaLocation.BaseGroup, _buildInfo, StringIDs, _expander, Allocator);
 					}
 				}
 			}

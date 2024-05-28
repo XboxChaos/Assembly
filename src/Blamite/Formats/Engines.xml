@@ -28,7 +28,7 @@
 				<localeKey>{key}</localeKey> - Used to decrypt localization strings in engines where they are encrypted.
 			</encryption>
 			<sortLocalesByStringId>{"true", "false"}</sortLocalesByStringId> - Whether the localization strings in a tag are sorted by their string id value. This was introduced in H4 to increase performance. Default if not present is false.
-			<usesCompression>{"true", "false"}</usesCompression> - Whether the cache files for this engine have some sort of overall compression. (H1X, H2MCC, etc). Default if not present is false.
+			<compression>{"none", "cexbox", "cea360", "ceamcc", "h2mcc"}</compression> - The compression type used on the cache file for use in the compression tool. Default if not present is none.
 			<usesStringHashes>{"true", "false"}</usesStringHashes> - Whether hashes inside the globals tag should be updated upon modification to localizations. Because for some reason giving hashes when they shipped as 0's can crash. Default if not present is true.
 			<usesRawHashes>{"true", "false"}</usesRawHashes> - Whether hashes inside the play or zone tags are fully implemented or some/all are 0'd. This aids in making sure the relevant option in the Import dialog is checked/unchecked by default as tag injection optimizations use hashes to reduce redundant pages. Default if not present is true.
 			<optimizedShaders>{"true", "false"}</optimizedShaders> - Whether the shaders in each map are stripped down to only shaders used by that specific cache file. This aids in making sure the relevant option in the Import dialog is checked/unchecked by default as if shaders are optimized then you can't trust the existing shader during tag injection and must rename/inject the new shader to prevent ingame issues. Default if not present is false.
@@ -54,6 +54,7 @@
 			<vertexLayouts>{file path}</vertexLayouts> - (Unused) The xml file which defines vertex layouts for the engine, for scrapped model extraction support.
 			<groupNames>{file path}</groupNames> - The xml file which defines the full names of tag groups if the cache file does not already suppy them. If no group names are available, you will see a bunch of "unknown_description"s in the tag tree.
 			<poking>{file path}</poking> - The xml file which defines the poking addresses and offsets for the engine. (PC)
+			<hudMessageSymbols>{file path}</hudMessageSymbols> - The xml which defines the special symbols used by hud message tags.
 		</databases>
 	</engine>-->
 
@@ -65,7 +66,7 @@
 			<generation>first</generation>
 			<endian>little</endian>
 			<segmentAlignment>0x4</segmentAlignment>
-			<usesCompression>true</usesCompression>
+			<compression>cexbox</compression>
 		</engineInfo>
 		<pokingInfo>
 			<platform>xbox</platform>
@@ -74,6 +75,7 @@
 			<layouts type="layouts" path="Formats/Halo1/LayoutsXbox" />
 			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
 			<scripting type="scripting" path="Formats/Halo1/H1X_Scripting.xml" />
+			<hudMessageSymbols type="hudMessageSymbols" path="Formats/Halo1/H1_HudMessageSymbols.xml" />
 		</databases>
 	</engine>
 
@@ -120,7 +122,7 @@
 			<generation>first</generation>
 			<endian>little</endian>
 			<segmentAlignment>0x4</segmentAlignment>
-			<usesCompression>true</usesCompression>
+			<compression>cexbox</compression>
 		</engineInfo>
 		<pokingInfo>
 			<platform>xbox</platform>
@@ -129,6 +131,7 @@
 			<layouts type="layouts" path="Formats/Stubbs/LayoutsXbox" />
 			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
 			<scripting type="scripting" path="Formats/Stubbs/SX_Scripting.xml" />
+			<hudMessageSymbols type="hudMessageSymbols" path="Formats/Stubbs/S_HudMessageSymbols.xml" />
 		</databases>
 	</engine>
 
@@ -161,6 +164,7 @@
 			<layouts type="layouts" path="Formats/Stubbs/LayoutsPC" />
 			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
 			<scripting type="scripting" path="Formats/Stubbs/SPC_Scripting.xml" />
+			<hudMessageSymbols type="hudMessageSymbols" path="Formats/Stubbs/S_HudMessageSymbols.xml" />
 		</databases>
 	</engine>
 
@@ -181,6 +185,7 @@
 			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
 			<scripting type="scripting" path="Formats/Stubbs/SR_Scripting.xml" />
 			<poking type="poking" path="Formats/Stubbs/SR_Poking.xml" />
+			<hudMessageSymbols type="hudMessageSymbols" path="Formats/Stubbs/SR_HudMessageSymbols.xml" />
 		</databases>
 	</engine>
 
@@ -203,6 +208,7 @@
 			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
 			<scripting type="scripting" path="Formats/Halo1/H1_Scripting.xml" />
 			<poking type="poking" path="Formats/Halo1/H1_Poking.xml" />
+			<hudMessageSymbols type="hudMessageSymbols" path="Formats/Halo1/H1_HudMessageSymbols.xml" />
 		</databases>
 	</engine>
 
@@ -256,6 +262,7 @@
 			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
 			<scripting type="scripting" path="Formats/Halo1/H1CE_Scripting.xml" />
 			<poking type="poking" path="Formats/Halo1/H1CE_Poking.xml" />
+			<hudMessageSymbols type="hudMessageSymbols" path="Formats/Halo1/H1_HudMessageSymbols.xml" />
 		</databases>
 	</engine>
 
@@ -272,7 +279,7 @@
 			<generation>first</generation>
 			<endian>big</endian>
 			<segmentAlignment>0x4</segmentAlignment>
-			<usesCompression>true</usesCompression>
+			<compression>cea360</compression>
 		</engineInfo>
 		<pokingInfo>
 			<platform>xbox360</platform>
@@ -281,6 +288,7 @@
 			<layouts type="layouts" path="Formats/Halo1/Layouts" />
 			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
 			<scripting type="scripting" path="Formats/Halo1/H1A_Scripting.xml" />
+			<hudMessageSymbols type="hudMessageSymbols" path="Formats/Halo1/H1_HudMessageSymbols.xml" />
 		</databases>
 	</engine>
 
@@ -301,6 +309,7 @@
 			<layouts type="layouts" path="Formats/Halo2Alpha/Layouts" />
 			<groupNames type="groupNames" path="Formats/Halo2Vista/H2V_GroupNames.xml" />
 			<scripting type="scripting" path="Formats/Halo2Alpha/H2Alpha_Scripting.xml" />
+			<hudMessageSymbols type="hudMessageSymbols" path="Formats/Halo1/H1_HudMessageSymbols.xml" />
 		</databases>
 	</engine>
 
@@ -1002,7 +1011,7 @@
 			<generation>first</generation>
 			<endian>little</endian>
 			<segmentAlignment>0x4</segmentAlignment>
-			<usesCompression>true</usesCompression>
+			<compression>ceamcc</compression>
 		</engineInfo>
 		<pokingInfo>
 			<platform>pc64</platform>
@@ -1015,27 +1024,28 @@
 			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
 			<scripting type="scripting" path="Formats/Halo1/H1AMCC_Scripting.xml" />
 			<poking type="poking" path="Formats/Halo1/H1AMCC_Poking.xml" />
+			<hudMessageSymbols type="hudMessageSymbols" path="Formats/Halo1/H1_HudMessageSymbols.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 1 Anniversary MCC Update 1" version="13" build="01.03.43.0000" inherits="Halo 1 Anniversary MCC">
 		<engineInfo>
 			<segmentAlignment>0x1</segmentAlignment>
-			<usesCompression>false</usesCompression>
+			<compression>none</compression>
 		</engineInfo>
 	</engine>
 	
 	<engine name="Halo 1 Anniversary MCC Invader" version="13" build="Invader " looseBuild="true" inherits="Halo 1 Anniversary MCC">
 		<engineInfo>
 			<segmentAlignment>0x1</segmentAlignment>
-			<usesCompression>false</usesCompression>
+			<compression>none</compression>
 		</engineInfo>
 	</engine>
 	
 	<engine name="Halo 1 Anniversary MCC Hell" version="13" build="01.06.66.HELL" inherits="Halo 1 Anniversary MCC">
 		<engineInfo>
 			<segmentAlignment>0x1</segmentAlignment>
-			<usesCompression>false</usesCompression>
+			<compression>none</compression>
 		</engineInfo>
 	</engine>
 
@@ -1048,7 +1058,7 @@
 			<generation>second</generation>
 			<endian>little</endian>
 			<segmentAlignment>0x80</segmentAlignment>
-			<usesCompression>true</usesCompression>
+			<compression>h2mcc</compression>
 		</engineInfo>
 		<pokingInfo>
 			<platform>pc64</platform>

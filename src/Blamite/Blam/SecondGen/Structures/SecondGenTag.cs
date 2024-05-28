@@ -11,8 +11,8 @@ namespace Blamite.Blam.SecondGen.Structures
 			Index = index;
 			Group = tagGroup;
 			MetaLocation = metaLocation;
-			Offset = (int)MetaLocation.AsPointer();
 			DataSize = size;
+			Source = TagSource.MetaArea;
 		}
 
 		public SecondGenTag(StructureValueCollection values, FileSegmentGroup metaArea, Dictionary<int, ITagGroup> groupsById)
@@ -25,29 +25,35 @@ namespace Blamite.Blam.SecondGen.Structures
 		public ITagGroup Group { get; set; }
 		public SegmentPointer MetaLocation { get; set; }
 		public DatumIndex Index { get; private set; }
-		public int Offset { get; private set; }
+		public TagSource Source { get; set; }
 
 		public StructureValueCollection Serialize()
 		{
 			var result = new StructureValueCollection();
 
-			uint addr = 0;
-			if (MetaLocation != null)
-				addr = (uint)MetaLocation.AsPointer();
-
 			result.SetInteger("tag group magic", (Group != null) ? (uint)Group.Magic : 0xFFFFFFFF);
 			result.SetInteger("datum index", Index.Value);
-			result.SetInteger("offset", (uint)Offset);
-			result.SetInteger("data size", (uint)DataSize);
+
+			uint addr = 0;
+			if (Source == TagSource.MetaArea && MetaLocation != null)
+				addr = (uint)MetaLocation.AsPointer();
+
+			result.SetInteger("memory address", addr);
+			result.SetInteger("data size", Source != TagSource.BSP ? (uint)DataSize : 0);
 
 			return result;
 		}
 
 		private void Load(StructureValueCollection values, FileSegmentGroup metaArea, Dictionary<int, ITagGroup> groupsById)
 		{
-			Offset = (int)values.GetInteger("offset");
-			if ((uint)Offset > 0)
-				MetaLocation = SegmentPointer.FromPointer((uint)Offset, metaArea);
+			uint address = (uint)values.GetInteger("memory address");
+			Source = TagSource.Null;
+
+			if (address != 0 && address != 0xFFFFFFFF)
+			{
+				Source = TagSource.MetaArea;
+				MetaLocation = SegmentPointer.FromPointer(address, metaArea);
+			}
 
 			// Load the tag group by looking up the magic value that's stored
 			var groupMagic = (int) values.GetInteger("tag group magic");

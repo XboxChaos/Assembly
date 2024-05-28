@@ -49,6 +49,10 @@ namespace Blamite.Blam.SecondGen.Structures
 
 		public uint Checksum { get; set; }
 
+		public FileSegmentGroup LocalizationArea { get; set; }
+		public FileSegment LocalizationGlobals { get; set; }
+		public SegmentPointer LocalizationGlobalsLocation { get; set; }
+
 		private uint _bsp_size_hack = 0;
 
 		public StructureValueCollection Serialize()
@@ -92,7 +96,6 @@ namespace Blamite.Blam.SecondGen.Structures
 			return result;
 		}
 
-		
 		private void Load(StructureValueCollection values, FileSegmenter segmenter)
 		{
 			uint filesize = (uint)values.GetInteger("file size");
@@ -113,6 +116,7 @@ namespace Blamite.Blam.SecondGen.Structures
 				metaOffsetMask = (uint)values.GetInteger("xbox meta offset mask");
 
 				// old modded h2 maps have unexpected size values, if this is the case, fix it. This will get applied to the file when saving.
+				tagDataSize = (tagDataSize + 3) & 0xFFFFFFFC;
 				uint segmentsize = metaOffset + tagTableSize + tagDataSize;
 				if (segmentsize > filesize)
 					filesize = segmentsize;
@@ -199,6 +203,22 @@ namespace Blamite.Blam.SecondGen.Structures
 			}
 
 			Checksum = (uint)values.GetIntegerOrDefault("checksum", 0);
+
+			//vista mp maps dont have a globals tag so its referenced in the header
+			if (values.HasInteger("locale globals offset"))
+			{
+				uint locDataOffset = (uint)values.GetInteger("locale globals offset");
+				if (locDataOffset != 0xFFFFFFFF)
+				{
+					LocalizationArea = new FileSegmentGroup();
+
+					uint locDataSize = (uint)values.GetInteger("locale globals size");
+
+					LocalizationGlobals = segmenter.WrapSegment(locDataOffset, locDataSize, 0x4, SegmentResizeOrigin.None);
+					LocalizationArea.AddSegment(LocalizationGlobals);
+					LocalizationGlobalsLocation = SegmentPointer.FromOffset(LocalizationGlobals.Offset, LocalizationArea);
+				}
+			}
 
 			// Set up a bogus partition table
 			Partitions = new Partition[1];

@@ -204,6 +204,12 @@ namespace Blamite.Blam
 		Endian Endianness { get; }
 
 		EffectInterop EffectInterops { get; }
+
+		/// <summary>
+		///     The bsp areas of the cache file.
+		///     Can be null.
+		/// </summary>
+		FileSegmentGroup[] BSPAreas { get; }
 	}
 
 	public static class ICacheFileExtensions

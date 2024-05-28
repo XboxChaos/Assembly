@@ -88,5 +88,13 @@ namespace Blamite.Serialization
 			}
 			return locale;
 		}
+
+		public string GetSymbolName(char symbol)
+		{
+			if (!_charReplacements.ContainsKey(symbol))
+				return null;
+
+			return _charReplacements[symbol];
+		}
 	}
 }

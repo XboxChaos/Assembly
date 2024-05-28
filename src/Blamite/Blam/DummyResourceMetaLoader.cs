@@ -5,10 +5,10 @@ using Blamite.Blam.Resources.Models;
 using Blamite.Blam.Resources.Sounds;
 using Blamite.IO;
 
-namespace Blamite.Blam.SecondGen
+namespace Blamite.Blam
 {
 	// Just a dummy for now...
-	public class SecondGenResourceMetaLoader : IResourceMetaLoader
+	public class DummyResourceMetaLoader : IResourceMetaLoader
 	{
 		public bool SupportsRenderModels
 		{

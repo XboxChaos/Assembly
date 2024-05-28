@@ -20,6 +20,7 @@ namespace Assembly.Helpers.Plugins
 		private readonly IList<PluginRevision> _pluginRevisions = new List<PluginRevision>();
 		private readonly List<TagBlockData> _tagBlocks = new List<TagBlockData>();
 		private readonly bool _showInvisibles;
+		private readonly bool _alwaysBasicColors;
 		private readonly bool _viewValueAs;
 		private readonly Trie _stringIDTrie;
 		private readonly TagHierarchy _tags;
@@ -32,7 +33,7 @@ namespace Assembly.Helpers.Plugins
 			get { return App.AssemblyStorage.AssemblySettings.PluginsShowComments; }
 		}
 		
-		public AssemblyPluginVisitor(TagHierarchy tags, Trie stringIDTrie, FileSegmentGroup metaArea, bool showInvisibles, bool viewValueAs = false)
+		public AssemblyPluginVisitor(TagHierarchy tags, Trie stringIDTrie, FileSegmentGroup metaArea, bool showInvisibles, bool alwaysBasicColor, bool viewValueAs = false)
 		{
 			_tags = tags;
 			_stringIDTrie = stringIDTrie;
@@ -41,6 +42,7 @@ namespace Assembly.Helpers.Plugins
 			Values = new ObservableCollection<MetaField>();
 			TagBlocks = new ObservableCollection<TagBlockData>();
 			_showInvisibles = showInvisibles;
+			_alwaysBasicColors = alwaysBasicColor;
 			_viewValueAs = viewValueAs;
 		}
 
@@ -155,7 +157,7 @@ namespace Assembly.Helpers.Plugins
 		public void VisitColorF(string name, uint offset, bool visible, bool alpha, bool basic, uint pluginLine, string tooltip)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new ColorData(name, offset, 0, alpha, basic, "colorf", Colors.Transparent, pluginLine, tooltip));
+				AddValue(new ColorData(name, offset, 0, alpha, basic || _alwaysBasicColors, "colorf", Colors.Transparent, pluginLine, tooltip));
 		}
 
 		public void VisitStringID(string name, uint offset, bool visible, uint pluginLine, string tooltip)

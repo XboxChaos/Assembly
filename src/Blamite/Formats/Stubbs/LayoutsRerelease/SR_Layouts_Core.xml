@@ -9,22 +9,18 @@
 		<asciiz name="build string" offset="0x40" />
 
 		<uint16 name="type" offset="0x60" />
-
-		<!-- checksum used isn't supported
-		<uint32 name="checksum" offset="0x64" />
-		-->
-
+		<uint32 name="crc checksum" offset="0x64" />
 	</layout>
 
 	<layout for="meta header" size="0x38">
-		<int64 name="tag table offset" offset="0x0" />
+		<int64 name="tag table address" offset="0x0" />
 		<int32 name="scenario datum index" offset="0x8" />
 		<int32 name="checksum" offset="0xC" />
 		<int32 name="number of tags" offset="0x10" />
-		<int32 name="number of vertices" offset="0x14" />
-		<int64 name="vertices offset" offset="0x18" />
-		<int32 name="number of indices" offset="0x20" />
-		<int64 name="indices offset" offset="0x28" />
+		<int32 name="number of model parts" offset="0x14" />
+		<int64 name="model data offset" offset="0x18" />
+		<int32 name="number of model parts alt" offset="0x20" />
+		<int64 name="vertices size" offset="0x28" />
 		<int32 name="model data size" offset="0x30" />
 		<int32 name="magic" offset="0x34" />
 	</layout>
@@ -33,15 +29,14 @@
 		<int32 name="tag group magic" offset="0x0" />
 		<int32 name="parent group magic" offset="0x4" />
 		<int32 name="grandparent group magic" offset="0x8" />
-		<int32 name="datum index" offset="0xC" />
-		<int64 name="name offset" offset="0x10" />
-		<int64 name="offset" offset="0x18" />
-		<int32 name="is in data file" offset="0x20" />
-		<int32 name="pad_2" offset="0x24" />
+		<uint32 name="datum index" offset="0xC" />
+		<uint64 name="name address" offset="0x10" />
+		<uint64 name="memory address" offset="0x18" />
+		<int32 name="is external" offset="0x20" />
 	</layout>
 
 	<layout for="bsp header" size="0x2C">
-		<int64 name="bsp address" offset="0x0" />
+		<uint64 name="bsp address" offset="0x0" />
 		<int32 name="magic" offset="0x28" />
 	</layout>
 
@@ -63,5 +58,40 @@
 		<uint32 name="flags" offset="0x4" />
 		<uint32 name="stream position" offset="0x8" />
 		<uint64 name="pointer" offset="0xC" />
+	</layout>
+
+	<!-- hmt (hud_message_text) -->
+	<layout for="hmt">
+		<int32 name="string data size" offset="0x0" />
+		<uint32 name="string data address" offset="0xC" />
+
+		<int32 name="number of message elements" offset="0x1C" />
+		<uint32 name="message element table address" offset="0x20" />
+
+		<int32 name="number of messages" offset="0x30" />
+		<uint32 name="message table address" offset="0x34" />
+	</layout>
+
+	<layout for="hud message element" size="0x2">
+		<byte name="type" offset="0x0" />
+		<byte name="data" offset="0x1" />
+	</layout>
+
+	<layout for="hud message" size="0x40">
+		<asciiz name="name" offset="0x0" />
+		<int16 name="string offset" offset="0x20" />
+		<int16 name="starting element index" offset="0x22" />
+		<int16 name="element count" offset="0x24" />
+	</layout>
+
+	<!-- str# (string_list) / ustr (unicode_string_list) -->
+	<layout for="str">
+		<int32 name="number of strings" offset="0x0" />
+		<uint32 name="string table address" offset="0x4" />
+	</layout>
+
+	<layout for="string list element" size="0x1C">
+		<int32 name="string data size" offset="0x0" />
+		<uint32 name="string data address" offset="0xC" />
 	</layout>
 </layouts>

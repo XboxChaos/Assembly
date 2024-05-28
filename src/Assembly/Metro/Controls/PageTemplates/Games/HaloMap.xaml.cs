@@ -489,23 +489,23 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 
 			// TODO: Define the language names in an XML file or something
-			AddLanguage("English", GameLanguage.English);
-			AddLanguage("Chinese (Traditional)", GameLanguage.ChineseTrad);
-			AddLanguage("Chinese (Simplified)", GameLanguage.ChineseSimp);
-			AddLanguage("Danish", GameLanguage.Danish);
-			AddLanguage("Dutch", GameLanguage.Dutch);
-			AddLanguage("Finnish", GameLanguage.Finnish);
-			AddLanguage("French", GameLanguage.French);
-			AddLanguage("German", GameLanguage.German);
-			AddLanguage("Italian", GameLanguage.Italian);
-			AddLanguage("Japanese", GameLanguage.Japanese);
-			AddLanguage("Korean", GameLanguage.Korean);
-			AddLanguage("Norwegian", GameLanguage.Norwegian);
-			AddLanguage("Polish", GameLanguage.Polish);
-			AddLanguage("Portuguese", GameLanguage.Portuguese);
-			AddLanguage("Russian", GameLanguage.Russian);
-			AddLanguage("Spanish", GameLanguage.Spanish);
-			AddLanguage("Spanish (Latin American)", GameLanguage.LatinAmericanSpanish);
+			AddLanguage(GameLanguage.English);
+			AddLanguage(GameLanguage.ChineseTrad);
+			AddLanguage(GameLanguage.ChineseSimp);
+			AddLanguage(GameLanguage.Danish);
+			AddLanguage(GameLanguage.Dutch);
+			AddLanguage(GameLanguage.Finnish);
+			AddLanguage(GameLanguage.French);
+			AddLanguage(GameLanguage.German);
+			AddLanguage(GameLanguage.Italian);
+			AddLanguage(GameLanguage.Japanese);
+			AddLanguage(GameLanguage.Korean);
+			AddLanguage(GameLanguage.Norwegian);
+			AddLanguage(GameLanguage.Polish);
+			AddLanguage(GameLanguage.Portuguese);
+			AddLanguage(GameLanguage.Russian);
+			AddLanguage(GameLanguage.Spanish);
+			AddLanguage(GameLanguage.LatinAmericanSpanish);
 
 			Dispatcher.Invoke(new Action(delegate
 			{
@@ -534,12 +534,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				Clipboard.SetText(((TextBlock) e.OriginalSource).Text);
 		}
 
-		private void AddLanguage(string name, GameLanguage lang)
+		private void AddLanguage(GameLanguage lang)
 		{
 			if (!_cacheFile.Languages.AvailableLanguages.Contains(lang))
 				return;
 
-			_languages.Add(new LanguageEntry(name, lang));
+			_languages.Add(new LanguageEntry(GameLanguageTools.GetPrettyName(lang), lang));
 		}
 
 		private void SettingsChanged(object sender, EventArgs e)
@@ -1525,6 +1525,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private void TagContextMenu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
 			var tagContext = sender as ContextMenu;
+			var tag = tagContext.DataContext as TagEntry;
 
 			foreach (object tagItem in tagContext.Items)
 			{
@@ -1533,16 +1534,33 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				{
 					MenuItem tagMenuItem = tagItem as MenuItem;
 
-					if ((tagMenuItem.Name == "itemRename" ||
-						tagMenuItem.Name == "itemIsolate") &&
-						_cacheFile.Engine < EngineType.SecondGeneration)
-						tagMenuItem.Visibility = Visibility.Collapsed;
-					else if ((tagMenuItem.Name == "itemDuplicate" ||
-						tagMenuItem.Name == "itemExtract" ||
-						tagMenuItem.Name == "itemForce" ||
-						tagMenuItem.Name == "itemTagBatch")
-						&& (_cacheFile.Engine != EngineType.ThirdGeneration || (_cacheFile.Engine == EngineType.ThirdGeneration && _cacheFile.HeaderSize == 0x800)))
-						tagMenuItem.Visibility = Visibility.Collapsed;
+					switch (tagMenuItem.Name)
+					{
+						case "itemRename":
+							{
+								if (_cacheFile.Engine == EngineType.FirstGeneration)
+									tagMenuItem.Visibility = Visibility.Collapsed;
+								break;
+							}
+						case "itemIsolate":
+							{
+								if (_cacheFile.Engine == EngineType.FirstGeneration ||
+									tag.RawTag.Source != TagSource.MetaArea)
+									tagMenuItem.Visibility = Visibility.Collapsed;
+								break;
+							}
+						case "itemDuplicate":
+						case "itemExtract":
+						case "itemForce":
+						case "itemTagBatch":
+							{
+								if (_cacheFile.Engine != EngineType.ThirdGeneration ||
+									(_cacheFile.Engine == EngineType.ThirdGeneration && _cacheFile.HeaderSize == 0x800))
+									tagMenuItem.Visibility = Visibility.Collapsed;
+								break;
+							}
+
+					}
 				}
 				if (tagItem is Separator)
 				{

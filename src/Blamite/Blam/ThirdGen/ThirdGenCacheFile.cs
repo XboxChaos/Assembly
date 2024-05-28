@@ -253,6 +253,11 @@ namespace Blamite.Blam.ThirdGen
 			get { return _soundGestalt; }
 		}
 
+		public FileSegmentGroup[] BSPAreas
+		{
+			get { return null; }
+		}
+
 		private void Load(IReader reader)
 		{
 			LoadHeader(reader);
@@ -431,7 +436,7 @@ namespace Blamite.Blam.ThirdGen
 
 				if (_buildInfo.Layouts.HasLayout("hsdt"))
 				{
-					ScriptFiles = _tags.FindTagsByGroup("hsdt").Select(t => new HsdtScriptFile(t, _fileNames.GetTagName(t.Index) ?? t.Index.ToString(), MetaArea, _buildInfo, StringIDs, _expander)).ToArray();
+					ScriptFiles = _tags.FindTagsByGroup("hsdt").Select(t => new HsdtScriptFile(t, _fileNames.GetTagName(t.Index) ?? t.Index.ToString(), t.MetaLocation.BaseGroup, _buildInfo, StringIDs, _expander)).ToArray();
 				}
 				else if (_buildInfo.Layouts.HasLayout("scnr"))
 				{
@@ -440,7 +445,7 @@ namespace Blamite.Blam.ThirdGen
 					if (hs != null)
 					{
 						ScriptFiles = new IScriptFile[1];
-						ScriptFiles[0] = new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index) ?? hs.Index.ToString(), MetaArea, _buildInfo, StringIDs, _expander, Allocator);
+						ScriptFiles[0] = new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index) ?? hs.Index.ToString(), hs.MetaLocation.BaseGroup, _buildInfo, StringIDs, _expander, Allocator);
 					}
 				}
 			}

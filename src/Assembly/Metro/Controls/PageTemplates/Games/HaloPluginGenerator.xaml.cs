@@ -193,7 +193,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				var mapsToProcess = new Queue<MetaMap>();
 				foreach (ITag tag in cacheFile.Tags)
 				{
-					if (tag.MetaLocation == null)
+					if (tag.MetaLocation == null || tag.Source != TagSource.MetaArea)
 						continue;
 
 					var map = new MetaMap();
@@ -208,7 +208,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				var groupMaps = new Dictionary<string, MetaMap>();
 				foreach (ITag tag in cacheFile.Tags)
 				{
-					if (tag.MetaLocation == null)
+					if (tag.MetaLocation == null || tag.Source != TagSource.MetaArea)
 						continue;
 
 					MetaMap map = tagMaps[tag];

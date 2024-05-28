@@ -24,17 +24,14 @@ namespace Blamite.Blam.SecondGen
 		private SecondGenLanguagePackLoader _languageLoader;
 		private IndexedStringIDSource _stringIDs;
 
-		// NOTE (Dragon): this may cause problems in the future, but since the beta uses a first gen style tag table
-		//				  we need to be able to use one here. we *DO* cast to a SecondGenTagTable for other builds though
-		//				  (see SaveChanges() and the TagGroups property)
-		//private SecondGenTagTable _tags;
-		private TagTable _tags;				
-		
+		private TagTable _tags;						
 		
 		private DummyPointerExpander _expander;
 		private Endian _endianness;
 		private SoundResourceManager _soundGestalt;
 		private SecondGenSimulationDefinitionTable _simulationDefinitions;
+
+		private FileSegmentGroup[] _bspAreas;
 
 		public SecondGenCacheFile(IReader reader, EngineDescription buildInfo, string filePath)
 		{
@@ -197,7 +194,7 @@ namespace Blamite.Blam.SecondGen
 
 		public IResourceMetaLoader ResourceMetaLoader
 		{
-			get { return new SecondGenResourceMetaLoader(); }
+			get { return new DummyResourceMetaLoader(); }
 		}
 
 		public FileSegment StringIDIndexTable
@@ -259,6 +256,11 @@ namespace Blamite.Blam.SecondGen
 			get { return _soundGestalt; }
 		}
 
+		public FileSegmentGroup[] BSPAreas
+		{
+			get { return _bspAreas; }
+		}
+
 		private void Load(IReader reader)
 		{
 			_header = LoadHeader(reader, out uint primaryMask);
@@ -266,6 +268,7 @@ namespace Blamite.Blam.SecondGen
 			_fileNames = LoadFileNames(reader);
 			_stringIDs = LoadStringIDs(reader);
 
+			FixupStructureTags(reader);
 			LoadLanguageGlobals(reader);
 			LoadScriptFiles();
 			LoadSimulationDefinitions(reader);
@@ -293,13 +296,13 @@ namespace Blamite.Blam.SecondGen
 
 				uint indexHeaderOffset = (uint)values.GetInteger("meta offset");
 
-				reader.SeekTo(indexHeaderOffset + indexHeaderLayout.GetFieldOffset("tag table offset"));
+				reader.SeekTo(indexHeaderOffset + indexHeaderLayout.GetFieldOffset("tag table address"));
 				uint tagTableAddress = reader.ReadUInt32();
 
 				uint maskReference;
-				if (indexHeaderLayout.HasField("tag group table offset"))
+				if (indexHeaderLayout.HasField("tag group table address"))
 				{
-					reader.SeekTo(indexHeaderOffset + indexHeaderLayout.GetFieldOffset("tag group table offset"));
+					reader.SeekTo(indexHeaderOffset + indexHeaderLayout.GetFieldOffset("tag group table address"));
 					maskReference = reader.ReadUInt32();
 				}
 				else
@@ -308,7 +311,7 @@ namespace Blamite.Blam.SecondGen
 				primaryMask = maskReference - (uint)indexHeaderLayout.Size;
 				uint tagTableOffset = tagTableAddress - primaryMask + indexHeaderOffset;
 
-				reader.SeekTo(tagTableOffset + tagElementLayout.GetFieldOffset("offset"));
+				reader.SeekTo(tagTableOffset + tagElementLayout.GetFieldOffset("memory address"));
 				uint firstTagAddress = reader.ReadUInt32();
 
 				values.SetInteger("xbox meta offset mask", firstTagAddress - (uint)values.GetInteger("tag data offset"));
@@ -323,7 +326,7 @@ namespace Blamite.Blam.SecondGen
 		{
 			// h2 beta still uses a first gen tag table so need more dumb checks
 			StructureLayout metaHeaderLayout = _buildInfo.Layouts.GetLayout("meta header");
-			if (!metaHeaderLayout.HasField("tag group table offset"))
+			if (!metaHeaderLayout.HasField("tag group table address") && !metaHeaderLayout.HasField("tag group table offset"))
 			{
 				reader.SeekTo(MetaArea.Offset);
 				StructureValueCollection values = StructureReader.ReadStructure(reader, metaHeaderLayout);
@@ -337,12 +340,77 @@ namespace Blamite.Blam.SecondGen
 			return new SecondGenTagTable(reader, MetaArea, Allocator, _buildInfo);
 		}
 
+		private void FixupStructureTags(IReader reader)
+		{
+			if (_buildInfo.Layouts.HasLayout("scenario bsp table element"))
+			{
+				var scenarioTag = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
+				if (scenarioTag != null)
+				{
+					reader.SeekTo(scenarioTag.MetaLocation.AsOffset());
+					StructureValueCollection scenarioValues = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("scnr"));
+
+					int bspCount = (int)scenarioValues.GetInteger("number of scenario bsps");
+					uint bspAddr = (uint)scenarioValues.GetInteger("scenario bsp table address");
+
+					StructureLayout layout = _buildInfo.Layouts.GetLayout("scenario bsp table element");
+					StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, bspCount, bspAddr, layout, MetaArea);
+
+					_bspAreas = new FileSegmentGroup[bspCount];
+
+					for (int i = 0; i < bspCount; i++)
+					{
+						StructureValueCollection ent = entries[i];
+
+						uint offset = (uint)ent.GetInteger("data offset");
+						if (offset == 0)
+							continue;
+
+						//bsp
+						ITag bspTag = _tags[(int)ent.GetInteger("sbsp datum") & 0xFFFF];
+						reader.SeekTo(offset);
+						StructureLayout bspHeaderLayout = _buildInfo.Layouts.GetLayout("bsp header");
+						StructureValueCollection bspHeadValues = StructureReader.ReadStructure(reader, bspHeaderLayout);
+						if (bspTag is SecondGenTag)
+							((SecondGenTag)bspTag).DataSize = (int)(bspHeadValues.GetInteger("lightmap address") - bspHeadValues.GetInteger("bsp address"));
+
+						//register area
+						FileSegment bspSegment = new FileSegment(
+							_segmenter.DefineSegment(offset, (uint)ent.GetInteger("data size"), 0x1000, SegmentResizeOrigin.End), _segmenter);
+
+						_bspAreas[i] = new FileSegmentGroup(new MetaOffsetConverter(bspSegment, (uint)ent.GetInteger("data address")));
+						_bspAreas[i].AddSegment(bspSegment);
+
+						bspTag.MetaLocation = SegmentPointer.FromPointer((uint)bspHeadValues.GetInteger("bsp address"), _bspAreas[i]);
+						bspTag.Source = TagSource.BSP;
+
+						//lightmap
+						uint ltmpdatum = (uint)ent.GetInteger("ltmp datum");
+						if (ltmpdatum != 0xFFFFFFFF)
+						{
+							ITag ltmpTag = _tags[(int)ent.GetInteger("ltmp datum") & 0xFFFF];
+							if (ltmpTag is SecondGenTag)
+							{
+								uint totalsize = (uint)(bspHeadValues.GetInteger("size") - (uint)bspHeaderLayout.Size);
+								uint highestaddress = (uint)bspHeadValues.GetInteger("bsp address") + totalsize;
+								((SecondGenTag)ltmpTag).DataSize = (int)(highestaddress - bspHeadValues.GetInteger("lightmap address"));
+							}
+
+							uint lightaddr = (uint)bspHeadValues.GetInteger("lightmap address");
+							ltmpTag.MetaLocation = SegmentPointer.FromPointer(lightaddr, _bspAreas[i]);
+							ltmpTag.Source = TagSource.BSP;
+						}
+					}
+				}
+			}
+		}
+
 		private IndexedFileNameSource LoadFileNames(IReader reader)
 		{
 			IndexedStringTable strings;
 			if (_tags is FirstGen.Structures.FirstGenTagTable)
 			{
-				strings = new FirstGenIndexedStringTable(reader, (FirstGen.Structures.FirstGenTagTable)_tags);
+				strings = new FirstGen.FirstGenIndexedStringTable(reader, (FirstGen.Structures.FirstGenTagTable)_tags);
 			}
 			else
 			{
@@ -362,9 +430,9 @@ namespace Blamite.Blam.SecondGen
 		private void LoadLanguageGlobals(IReader reader)
 		{
 			// Find the language data
-			ITag languageTag;
-			StructureLayout tagLayout;
-			if (!FindLanguageTable(out languageTag, out tagLayout))
+			uint localeOffset;
+			StructureLayout localeLayout;
+			if (!FindLanguageTable(out localeOffset, out localeLayout))
 			{
 				// No language data
 				_languageLoader = new SecondGenLanguagePackLoader();
@@ -372,26 +440,34 @@ namespace Blamite.Blam.SecondGen
 			}
 
 			// Read it
-			reader.SeekTo(languageTag.MetaLocation.AsOffset());
-			StructureValueCollection values = StructureReader.ReadStructure(reader, tagLayout);
+			reader.SeekTo(localeOffset);
+			StructureValueCollection values = StructureReader.ReadStructure(reader, localeLayout);
 			_languageInfo = new SecondGenLanguageGlobals(values, _segmenter, _buildInfo);
 			_languageLoader = new SecondGenLanguagePackLoader(this, _languageInfo, _buildInfo, reader);
 		}
 
-		private bool FindLanguageTable(out ITag tag, out StructureLayout layout)
+		private bool FindLanguageTable(out uint offset, out StructureLayout layout)
 		{
-			tag = null;
+			offset = 0;
 			layout = null;
 
 			if (_tags == null)
 				return false;
 
-			if (_buildInfo.Layouts.HasLayout("matg"))
+			if (_header.LocalizationArea != null)
 			{
-				tag = _tags.GetGlobalTag(CharConstant.FromString("matg"));
-				layout = _buildInfo.Layouts.GetLayout("matg");
+				layout = _buildInfo.Layouts.GetLayout("locale globals");
+				offset = _header.LocalizationGlobalsLocation.AsOffset();
 			}
-			return (tag != null && layout != null && tag.MetaLocation != null);
+			else if (_buildInfo.Layouts.HasLayout("matg"))
+			{
+				ITag tag = _tags.GetGlobalTag(CharConstant.FromString("matg"));
+				layout = _buildInfo.Layouts.GetLayout("matg");
+				if (tag.Source == TagSource.MetaArea && tag.MetaLocation != null)
+					offset = tag.MetaLocation.AsOffset();
+			}
+
+			return offset > 0 && layout != null;
 		}
 
 		private void LoadScriptFiles()
@@ -407,7 +483,7 @@ namespace Blamite.Blam.SecondGen
 					if (hs != null)
 					{
 						ScriptFiles = new IScriptFile[1];
-						ScriptFiles[0] = new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index) ?? hs.Index.ToString(), MetaArea, _buildInfo, StringIDs, _expander, Allocator); ;
+						ScriptFiles[0] = new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index) ?? hs.Index.ToString(), hs.MetaLocation.BaseGroup, _buildInfo, StringIDs, _expander, Allocator); ;
 					}
 				}
 			}
@@ -470,15 +546,15 @@ namespace Blamite.Blam.SecondGen
 		private void WriteLanguageInfo(IWriter writer)
 		{
 			// Find the language data
-			ITag languageTag;
-			StructureLayout tagLayout;
-			if (!FindLanguageTable(out languageTag, out tagLayout))
+			uint localeOffset;
+			StructureLayout localeLayout;
+			if (!FindLanguageTable(out localeOffset, out localeLayout))
 				return;
 
 			// Write it
 			StructureValueCollection values = _languageInfo.Serialize();
-			writer.SeekTo(languageTag.MetaLocation.AsOffset());
-			StructureWriter.WriteStructure(values, tagLayout, writer);
+			writer.SeekTo(localeOffset);
+			StructureWriter.WriteStructure(values, localeLayout, writer);
 		}
 	}
 }

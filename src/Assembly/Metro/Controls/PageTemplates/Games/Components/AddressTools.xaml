@@ -6,6 +6,10 @@
              mc:Ignorable="d"
              d:DesignHeight="800" d:DesignWidth="800">
 	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
 		<Border BorderBrush="Gray" BorderThickness="1,1,1,4" Width="350" VerticalAlignment="Top"
 		        HorizontalAlignment="Left" Margin="20,20,0,0">
 			<Grid Margin="10">
@@ -21,7 +25,7 @@
 					<ColumnDefinition Width="2*" />
 				</Grid.ColumnDefinitions>
 
-				<TextBlock Text="Input Type:" Foreground="White" VerticalAlignment="Center" FontFamily="{DynamicResource MetroFontRegular}" Grid.Column="0" Grid.Row="0" />
+				<TextBlock Text="Input Type:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" Grid.Column="0" Grid.Row="0" />
 				<ComboBox x:Name="cbInputType" SelectedIndex="0" Grid.Column="1" Grid.Row="0" ToolTip="{Binding Path=SelectedItem.ToolTip, RelativeSource={RelativeSource Self}}">
 					<ComboBoxItem Content="File Offset" ToolTip="An offset into the cache file itself." />
 					<ComboBoxItem Content="Contracted Address" ToolTip="The contracted addresses seen in tag data, a 64bit address reduced to 32bit." />
@@ -32,7 +36,7 @@
 				<TextBox x:Name="txtCoverterInput" Text="" Margin="0,5,0,0" KeyDown="txtCoverterInput_KeyDown" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" />
 				<Button x:Name="btnConvert" Content="Convert" Margin="0,10,0,10" Click="btnConvert_Click" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" />
 
-				<TextBlock Text="Output Type:" Foreground="White" VerticalAlignment="Center" FontFamily="{DynamicResource MetroFontRegular}" Grid.Column="0" Grid.Row="3" />
+				<TextBlock Text="Output Type:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" Grid.Column="0" Grid.Row="3" />
 				<ComboBox x:Name="cbOutputType" SelectedIndex="2" Grid.Column="1" Grid.Row="3" ToolTip="{Binding Path=SelectedItem.ToolTip, RelativeSource={RelativeSource Self}}">
 					<ComboBoxItem Content="File Offset" ToolTip="An offset into the cache file itself." />
 					<ComboBoxItem Content="Contracted Address" ToolTip="The contracted addresses seen in tag data, a 64bit address reduced to 32bit." />
@@ -43,5 +47,10 @@
 				<TextBox x:Name="txtConverterOutput" Text="" Margin="0,5,0,0" IsReadOnly="True" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" />
 			</Grid>
 		</Border>
+		<TextBlock Grid.Row="1" Style="{DynamicResource GenericTextblock}" Margin="20,4,4,4">
+			Note: This tool is only for the main section of tag data in the map file.
+			<LineBreak/>
+			Certain tags or data can outside of this area and will not be accessible.
+		</TextBlock>
 	</Grid>
 </UserControl>

@@ -18,6 +18,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		}
 
 		private readonly ICacheFile _cache;
+		private readonly FileSegmentGroup _srcSegmentGroup;
 		private readonly FieldChangeSet _changes;
 		private readonly StructureLayout _dataRefLayout;
 		private readonly StructureLayout _tagBlockLayout;
@@ -33,11 +34,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		///     Save meta to the Blam Cache File
 		/// </summary>
 		public MetaWriter(IWriter writer, long baseOffset, ICacheFile cache, EngineDescription buildInfo, SaveType type,
-			FieldChangeSet changes, Trie stringIdTrie)
+			FieldChangeSet changes, Trie stringIdTrie, FileSegmentGroup segmentGroup)
 		{
 			_writer = writer;
 			_baseOffset = baseOffset;
 			_cache = cache;
+			_srcSegmentGroup = segmentGroup;
 			_type = type;
 			_changes = changes;
 			_stringIdTrie = stringIdTrie;
@@ -162,13 +164,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			SeekToOffset(field.Offset);
 
 			// colors are handled differently prior to thirdgen, but there are edge cases in thirdgen
-			if (_cache.Engine < EngineType.ThirdGeneration || field.Basic)
+			if (field.Basic)
 			{
 				if (field.Alpha)
-					_writer.WriteFloat(field.Value.A / 255f);
-				_writer.WriteFloat(field.Value.R / 255f);
-				_writer.WriteFloat(field.Value.G / 255f);
-				_writer.WriteFloat(field.Value.B / 255f);
+					_writer.WriteFloat(ColorData.ByteToFloat(field.Value.A));
+				_writer.WriteFloat(ColorData.ByteToFloat(field.Value.R));
+				_writer.WriteFloat(ColorData.ByteToFloat(field.Value.G));
+				_writer.WriteFloat(ColorData.ByteToFloat(field.Value.G));
 			}
 			else
 			{
@@ -184,7 +186,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			var values = new StructureValueCollection();
 
-			bool isValid = _cache.MetaArea.ContainsBlockPointer(field.FirstElementAddress, (uint)(field.Length * field.ElementSize));
+			bool isValid = _srcSegmentGroup.ContainsBlockPointer(field.FirstElementAddress, (uint)(field.Length * field.ElementSize));
 
 			values.SetInteger("entry count", isValid ? (uint)field.Length : 0);
 
@@ -266,7 +268,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void VisitDataRef(DataRef field)
 		{
 			var values = new StructureValueCollection();
-			bool isValid = _cache.MetaArea.ContainsBlockPointer(field.DataAddress, (uint)field.Length);
+			bool isValid = _srcSegmentGroup.ContainsBlockPointer(field.DataAddress, (uint)field.Length);
 			values.SetInteger("size", isValid ? (uint)field.Length : 0);
 
 			uint cont = _cache.PointerExpander.Contract(field.DataAddress);
@@ -281,7 +283,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				// Go to the data location
 				long offset = field.DataAddress;
 				if (_type == SaveType.File)
-					offset = _cache.MetaArea.PointerToOffset(offset);
+					offset = _srcSegmentGroup.PointerToOffset(offset);
 				_writer.SeekTo(offset);
 
 				// Build the data
@@ -533,13 +535,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void WriteTagBlockChildren(TagBlockData field)
 		{
 			if (field.CurrentIndex < 0 || !field.HasChildren ||
-				!_cache.MetaArea.ContainsBlockPointer(field.FirstElementAddress, (uint)(field.Length * field.ElementSize)))
+				!_srcSegmentGroup.ContainsBlockPointer(field.FirstElementAddress, (uint)(field.Length * field.ElementSize)))
 				return;
 
 			// Get the base address and convert it to an offset if we're writing to the file
 			long newBaseOffset = field.FirstElementAddress;
 			if (_type == SaveType.File)
-				newBaseOffset = _cache.MetaArea.PointerToOffset(newBaseOffset);
+				newBaseOffset = _srcSegmentGroup.PointerToOffset(newBaseOffset);
 
 			// Save the old base offset and set the base offset to the block's base
 			long oldBaseOffset = _baseOffset;

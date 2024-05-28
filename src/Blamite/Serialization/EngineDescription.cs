@@ -1,6 +1,7 @@
 ﻿using Blamite.Blam;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.Util;
+using Blamite.Compression;
 using Blamite.IO;
 using Blamite.RTE;
 using Blamite.Serialization.Settings;
@@ -149,9 +150,9 @@ namespace Blamite.Serialization
 		public PokingCollection Poking { get; private set; }
 
 		/// <summary>
-		///		Whether the cache file itself uses compression.
+		///		The compression type used on the cache file, if any.
 		/// </summary>
-		public bool UsesCompression { get; private set; }
+		public CompressionType Compression { get; private set; }
 
 		/// <summary>
 		///		MCC sometimes ships maps with string hashes 0'd out, in some cases adding a hash can cause issues.
@@ -208,6 +209,12 @@ namespace Blamite.Serialization
 		/// </summary>
 		public bool LooseBuildCheck { get; private set; }
 
+		/// <summary>
+		///     Gets hud message locale symbols for the engine.
+		///     Can be <c>null</c> if not present.
+		/// </summary>
+		public LocaleSymbolCollection HudMessageSymbols { get; private set; }
+
 		private void LoadSettings()
 		{
 			LoadEngineSettings();
@@ -222,7 +229,6 @@ namespace Blamite.Serialization
 			ExpandMagic = Settings.GetSettingOrDefault("engineInfo/expandMagic", -1);
 			TagSegmentAlignment = Settings.GetSettingOrDefault("engineInfo/tagSegmentAlignment", 0x10000);
 
-			UsesCompression = Settings.GetSettingOrDefault("engineInfo/usesCompression", false);
 			UsesStringHashes = Settings.GetSettingOrDefault("engineInfo/usesStringHashes", true);
 			UsesRawHashes = Settings.GetSettingOrDefault("engineInfo/usesRawHashes", true);
 			OptimizedShaders = Settings.GetSettingOrDefault("engineInfo/optimizedShaders", false);
@@ -248,6 +254,21 @@ namespace Blamite.Serialization
 				Engine = EngineType.ThirdGeneration;
 			else
 				throw new System.Exception("Invalid generation type \"" + generation + "\" for build " + Name + "in engines.xml. Only \"first\", \"second\", and \"third\" are valid.");
+
+			string compression = Settings.GetSettingOrDefault("engineInfo/compression", "none");
+
+			if (compression.Contains("none"))
+				Compression = CompressionType.None;
+			else if (compression.Contains("cexbox"))
+				Compression = CompressionType.CEXBox;
+			else if (compression.Contains("cea360"))
+				Compression = CompressionType.CEA360;
+			else if (compression.Contains("ceamcc"))
+				Compression = CompressionType.CEAMCC;
+			else if (compression.Contains("h2mcc"))
+				Compression = CompressionType.H2MCC;
+			else
+				throw new System.Exception("Invalid compression type \"" + compression + "\" for build " + Name + "in engines.xml. Only \"none\", \"cexbox\", \"cea360\", \"ceamcc\", and \"h2mcc\" are valid.");
 
 			if (Settings.PathExists("engineInfo/encryption/tagNameKey"))
 				TagNameKey = new AESKey(Settings.GetSettingOrDefault<string>("engineInfo/encryption/tagNameKey", null));
@@ -291,6 +312,7 @@ namespace Blamite.Serialization
 			VertexLayouts = Settings.GetSettingOrDefault<VertexLayoutCollection>("databases/vertexLayouts", null);
 			GroupNames = Settings.GetSettingOrDefault<GroupNameCollection>("databases/groupNames", null);
 			Poking = Settings.GetSettingOrDefault<PokingCollection>("databases/poking", null);
+			HudMessageSymbols = Settings.GetSettingOrDefault<LocaleSymbolCollection>("databases/hudMessageSymbols", null);
 		}
 
 		private void LoadCrucialLayoutInfo()

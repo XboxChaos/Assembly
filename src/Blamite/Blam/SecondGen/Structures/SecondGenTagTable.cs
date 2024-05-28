@@ -124,12 +124,12 @@ namespace Blamite.Blam.SecondGen.Structures
 
 			TagBlockWriter.WriteTagBlock(entries, addr, layout, _metaArea, stream);
 
-			uint adjustedOffset = (uint)offset;
 			if (headerValues.HasInteger("meta header mask"))
-				adjustedOffset += (uint)headerValues.GetInteger("meta header mask");
+				headerValues.SetInteger("tag group table address", (uint)offset + (uint)headerValues.GetInteger("meta header mask"));
+			else
+				headerValues.SetInteger("tag group table offset", (uint)offset);
 
 			headerValues.SetInteger("number of tag groups", (uint)_groups.Count);
-			headerValues.SetInteger("tag group table offset", adjustedOffset);
 
 			return Groups.Count * layout.Size;
 		}
@@ -142,12 +142,12 @@ namespace Blamite.Blam.SecondGen.Structures
 
 			TagBlockWriter.WriteTagBlock(entries, addr, layout, _metaArea, stream);
 
-			uint adjustedOffset = (uint)offset;
 			if (headerValues.HasInteger("meta header mask"))
-				adjustedOffset += (uint)headerValues.GetInteger("meta header mask");
+				headerValues.SetInteger("tag table address", (uint)offset + (uint)headerValues.GetInteger("meta header mask"));
+			else
+				headerValues.SetInteger("tag table offset", (uint)offset);
 
 			headerValues.SetInteger("number of tags", (uint)_tags.Count);
-			headerValues.SetInteger("tag table offset", adjustedOffset);
 		}
 
 		private void Load(IReader reader)
@@ -165,8 +165,8 @@ namespace Blamite.Blam.SecondGen.Structures
 			// xbox hax
 			if (headerValues.HasInteger("meta header mask"))
 			{
-				groupTableOffset = (uint)headerValues.GetInteger("tag group table offset") - (uint)headerValues.GetInteger("meta header mask") + (uint)_metaArea.Offset;
-				tagTableOffset = (uint)(_metaArea.Offset + (uint)headerValues.GetInteger("tag table offset")) - (uint)headerValues.GetInteger("meta header mask");
+				groupTableOffset = (uint)headerValues.GetInteger("tag group table address") - (uint)headerValues.GetInteger("meta header mask") + (uint)_metaArea.Offset;
+				tagTableOffset = (uint)(_metaArea.Offset + (uint)headerValues.GetInteger("tag table address")) - (uint)headerValues.GetInteger("meta header mask");
 			}
 			else
 			{
@@ -197,10 +197,11 @@ namespace Blamite.Blam.SecondGen.Structures
 			if ((uint)result.GetInteger("magic") != CharConstant.FromString("tags"))
 				throw new ArgumentException("Invalid index table header magic. This map could be compressed, try the Compressor in the Tools menu before reporting.");
 
-			//see if header values are memory (xbox) or local (everything after) and store the result if needed
-			uint metaMask = (uint)result.GetInteger("tag group table offset") - (uint)_metaHeaderLayout.Size;
-			if (metaMask > 0)
+			if (result.HasInteger("tag group table address"))
+			{
+				uint metaMask = (uint)result.GetInteger("tag group table address") - (uint)_metaHeaderLayout.Size;
 				result.SetInteger("meta header mask", metaMask);
+			}
 
 			return result;
 		}

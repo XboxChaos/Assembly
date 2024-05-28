@@ -11,13 +11,34 @@ namespace Blamite.Blam.FirstGen.Structures
 			Load(values, metaArea, groupsById);
 		}
 
-		public ITagGroup Group { get; set; }
-
-		public SegmentPointer MetaLocation { get; set; }
-
-		public DatumIndex Index { get; private set; }
-
 		public SegmentPointer FileNameOffset { get; set; }
+		public int ResourceIndex { get; set; }
+
+		public ITagGroup Group { get; set; }
+		public SegmentPointer MetaLocation { get; set; }
+		public DatumIndex Index { get; private set; }
+		public TagSource Source { get; set; }
+
+		public StructureValueCollection Serialize()
+		{
+			var result = new StructureValueCollection();
+
+			result.SetInteger("tag group magic", (Group != null) ? (uint)Group.Magic : 0xFFFFFFFF);
+			result.SetInteger("datum index", Index.Value);
+
+			result.SetInteger("name address", (uint)FileNameOffset.AsPointer());
+
+			uint addr = 0;
+			if (Source == TagSource.MetaArea && MetaLocation != null)
+				addr = (uint)MetaLocation.AsPointer();
+			else if (Source == TagSource.Data)
+				addr = (uint)ResourceIndex;
+
+			result.SetInteger("memory address", addr);
+			result.SetInteger("is external", (uint)(Source == TagSource.Data ? 1 : 0));
+
+			return result;
+		}
 
 		private void Load(StructureValueCollection values, FileSegmentGroup metaArea, Dictionary<int, ITagGroup> groupsById)
 		{
@@ -28,29 +49,32 @@ namespace Blamite.Blam.FirstGen.Structures
 
 			Index = new DatumIndex(values.GetInteger("datum index"));
 
-			// NOTE: cant really split filenames into a segment
-			//       because offset is relative to the meta header
-			uint nameOffset = (uint)values.GetInteger("name offset");
-			if (nameOffset > 0)
-				FileNameOffset = SegmentPointer.FromPointer(nameOffset, metaArea);
-				//FileNameOffset = SegmentPointer.FromOffset((int)nameOffset, metaArea);
+			uint nameAddr = (uint)values.GetInteger("name address");
+			if (nameAddr != 0)
+				FileNameOffset = SegmentPointer.FromPointer(nameAddr, metaArea);
 
-			uint offset = (uint)values.GetInteger("offset");
+			uint addr = (uint)values.GetInteger("memory address");
 
-			// checking the meta area contains the offset
-			// and that the tag element is not pointing to a data file
-			if (offset > 0 && metaArea.ContainsPointer(offset) 
-				&& (values.GetInteger("is in data file") != 1))
-				MetaLocation = SegmentPointer.FromPointer(offset, metaArea);
-			// TODO (Dragon): the offset can actually be 0 when used
-			//                as a data file table index
-			//else if (offset > 0 && !metaArea.ContainsPointer(offset))
-			// TODO (Dragon): load the tag from a data file
-			//                bitm: bitmaps.map
-			//                font: loc.map
-			//                ustr: loc.map
-			//                hmt : loc.map
+			Source = TagSource.Null;
 
+			if (values.GetInteger("is external") == 1)
+			{
+				Source = TagSource.Data;
+				ResourceIndex = (int)addr;
+			}
+			else if (addr != 0 && addr != 0xFFFFFFFF)
+			{
+				Source = TagSource.MetaArea;
+				MetaLocation = SegmentPointer.FromPointer(addr, metaArea);
+			}
+
+			/*
+			 todo: load resource tags for custom edition based on TagSource.Data like bsps from FirstGenCacheFile
+				bitm: bitmaps.map
+				font: loc.map
+				ustr: loc.map
+				hmt : loc.map
+			 */
 		}
 	}
 }

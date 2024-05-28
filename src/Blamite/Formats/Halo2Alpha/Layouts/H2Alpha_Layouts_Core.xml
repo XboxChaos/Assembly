@@ -11,10 +11,7 @@
 		<asciiz name="build string" offset="0x40" />
 
 		<uint16 name="type" offset="0x60" />
-
-		<!-- checksum used isn't supported
-		<uint32 name="checksum" offset="0x64" />
-		-->
+		<uint32 name="crc checksum" offset="0x64" />
 
 		<int32 name="low detail bitmap data count" offset="0x74" />
 		<int32 name="low detail bitmap data offset" offset="0x78" />
@@ -28,7 +25,7 @@
 	</layout>
 
 	<layout for="meta header" size="0x14">
-		<int32 name="tag table offset" offset="0x0" />
+		<int32 name="tag table address" offset="0x0" />
 		<int32 name="scenario datum index" offset="0x4" />
 		<int32 name="checksum" offset="0x8" />
 		<int32 name="number of tags" offset="0xC" />
@@ -39,17 +36,16 @@
 		<int32 name="tag group magic" offset="0x0" />
 		<int32 name="parent group magic" offset="0x4" />
 		<int32 name="grandparent group magic" offset="0x8" />
-		<int32 name="datum index" offset="0xC" />
-		<int32 name="name offset" offset="0x10" />
-		<int32 name="offset" offset="0x14" />
-		<int32 name="is in data file" offset="0x18" />
-		<int32 name="pad_2" offset="0x1C" />
+		<uint32 name="datum index" offset="0xC" />
+		<uint32 name="name address" offset="0x10" />
+		<uint32 name="memory address" offset="0x14" />
+		<int32 name="is external" offset="0x18" />
 	</layout>
 
 	<layout for="bsp header" size="0x10">
 		<int32 name="size" offset="0x0" />
-		<int32 name="bsp address" offset="0x4" />
-		<int32 name="lightmap address" offset="0x8" />
+		<uint32 name="bsp address" offset="0x4" />
+		<uint32 name="lightmap address" offset="0x8" />
 		<int32 name="magic" offset="0xC" />
 	</layout>
 
@@ -71,5 +67,48 @@
 		<uint32 name="flags" offset="0x4" />
 		<uint32 name="stream position" offset="0x8" />
 		<uint32 name="pointer" offset="0xC" />
+	</layout>
+
+	<!-- hmt (hud_message_text) -->
+	<layout for="hmt">
+		<int32 name="string data size" offset="0x0" />
+		<uint32 name="string data address" offset="0xC" />
+
+		<int32 name="number of message elements" offset="0x14" />
+		<uint32 name="message element table address" offset="0x18" />
+
+		<int32 name="number of messages" offset="0x20" />
+		<uint32 name="message table address" offset="0x24" />
+	</layout>
+
+	<layout for="hud message element" size="0x2">
+		<byte name="type" offset="0x0" />
+		<byte name="data" offset="0x1" />
+	</layout>
+
+	<layout for="hud message" size="0x40">
+		<asciiz name="name" offset="0x0" />
+		<int16 name="string offset" offset="0x20" />
+		<int16 name="starting element index" offset="0x22" />
+		<int16 name="element count" offset="0x24" />
+	</layout>
+
+	<!-- unic (multilingual_unicode_string_list) -->
+	<!-- named different to not get mixed with builds that rely on the globals tag -->
+	<layout for="unic split">
+		<int32 name="number of languages" offset="0x0" />
+		<uint32 name="language table address" offset="0x4" />
+	</layout>
+
+	<layout for="unic split language" size="0x10">
+		<int32 name="language index" offset="0x0" />
+		<int32 name="number of strings" offset="0x4" />
+		<uint32 name="string table address" offset="0x8" />
+	</layout>
+
+	<layout for="unic split string element" size="0x18">
+		<uint32 name="name stringid" offset="0x0" />
+		<int32 name="string data size" offset="0x4" />
+		<uint32 name="string data address" offset="0x10" />
 	</layout>
 </layouts>

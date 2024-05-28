@@ -63,12 +63,11 @@ namespace Blamite.Blam.FirstGen.Structures
 
 			uint tagTableOffset;
 			if (headerValues.HasInteger("meta header mask"))
-				tagTableOffset = (uint)(metaArea.Offset + (uint)headerValues.GetInteger("tag table offset") - (uint)headerValues.GetInteger("meta header mask"));
+				tagTableOffset = (uint)(metaArea.Offset + (uint)headerValues.GetInteger("tag table address") - (uint)headerValues.GetInteger("meta header mask"));
 			else
-				tagTableOffset = (uint)(metaArea.Offset + (uint)headerValues.GetInteger("tag table offset") - metaArea.BasePointer);
+				tagTableOffset = (uint)(metaArea.Offset + (uint)headerValues.GetInteger("tag table address") - metaArea.BasePointer);
 
 			// Offset is relative to the header
-			// hack to "spoof" a group table since firstgen has none
 			_groups = ReadGroups(reader, tagTableOffset, numTags, buildInfo);
 			_groupsById = BuildGroupLookup(_groups);
 
@@ -125,9 +124,9 @@ namespace Blamite.Blam.FirstGen.Structures
 				//h2 alpha/beta store names differently, convert it to something expected
 				if (metaOffset > 0)
 				{
-					ulong nameOffset = values.GetInteger("name offset");
+					ulong nameOffset = values.GetInteger("name address");
 					nameOffset += metaOffset;
-					values.SetInteger("name offset", nameOffset);
+					values.SetInteger("name address", nameOffset);
 				}
 				result.Add(new FirstGenTag(values, metaArea, _groupsById));
 			}
