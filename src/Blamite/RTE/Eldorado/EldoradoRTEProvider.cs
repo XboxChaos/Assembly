@@ -50,7 +50,7 @@ namespace Blamite.RTE.Eldorado
 			var gameMemory = new ProcessMemoryStream(gameProcess);
 
 			PokingInformation info;
-			if (gameProcess.MainModule.FileVersionInfo != null)
+			if (gameProcess.MainModule.FileVersionInfo?.ProductVersion != null)
 			{
 				string version = gameProcess.MainModule.FileVersionInfo.ProductVersion;
 				info = _buildInfo.Poking.RetrieveInformation(version);
