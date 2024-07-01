@@ -15,7 +15,7 @@ namespace Blamite.Blam
 		private readonly FileSegment _data;
 		private readonly FileSegment _indexTable;
 		private readonly AESKey _key;
-		private readonly List<string> _strings = new List<string>();
+		protected readonly List<string> _strings = new List<string>();
 
 		public IndexedStringTable(IReader reader, int count, FileSegment indexTable, FileSegment data, AESKey key)
 		{
@@ -106,7 +106,7 @@ namespace Blamite.Blam
 		///     Saves changes made to the string table.
 		/// </summary>
 		/// <param name="stream">The stream to manipulate.</param>
-		public void SaveChanges(IStream stream)
+		public virtual void SaveChanges(IStream stream)
 		{
 			SaveOffsets(stream);
 			SaveData(stream);

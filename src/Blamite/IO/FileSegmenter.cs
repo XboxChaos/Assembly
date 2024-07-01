@@ -143,7 +143,7 @@ namespace Blamite.IO
 			_segmentsById.Add(segment);
 			_segmentsByOffset[offset] = segment;
 
-			RecalculateActualSizes();
+			RecalculateActualSizes(segment);
 			return id;
 		}
 
@@ -232,8 +232,8 @@ namespace Blamite.IO
 
 			// Recalculate the segment offsets,
 			// and then use the recalculated offsets to recalculate the sizes
-			RecalculateOffsets();
-			RecalculateActualSizes();
+			RecalculateOffsets(segment);
+			RecalculateActualSizes(segment);
 
 			uint resizeOffset;
 			switch (segment.ResizeOrigin)
@@ -288,6 +288,25 @@ namespace Blamite.IO
 		}
 
 		/// <summary>
+		///     Recalculates the offset of each affected segment in the file after a segment's size has been changed.
+		/// </summary>
+		/// <param name="startSegment">The segment that was changed.</param>
+		private void RecalculateOffsets(InternalSegment startSegment)
+		{
+			IList<InternalSegment> segments = _segmentsByOffset.Values;
+			int startIndex = segments.IndexOf(startSegment);
+			if (startIndex <= 0)
+				startIndex = 1;
+
+			for (int i = startIndex; i < segments.Count; i++)
+			{
+				InternalSegment thisSegment = segments[i];
+				InternalSegment prevSegment = segments[i - 1];
+				thisSegment.Offset = Align(prevSegment.Offset + (uint)prevSegment.ActualSize, (uint)thisSegment.OffsetAlignment);
+			}
+		}
+
+		/// <summary>
 		///     Recalculates the actual size of each segment in the file after a segment's offset has been changed
 		///     or after a segment has been added.
 		/// </summary>
@@ -299,6 +318,26 @@ namespace Blamite.IO
 			for (int i = 0; i < segments.Count - 1; i++)
 			{
 				segments[i].ActualSize = (segments[i + 1].Offset - segments[i].Offset) /*& ~(segments[i].SizeAlignment - 1)*/;
+				if (segments[i].ActualSize < segments[i].Size)
+					throw new InvalidOperationException("Segment size is too large");
+			}
+		}
+
+		/// <summary>
+		///     Recalculates the actual size of each affected segment in the file after a segment's offset has been changed
+		///     or after a segment has been added.
+		/// </summary>
+		/// <param name="startSegment">The segment that was changed.</param>
+		private void RecalculateActualSizes(InternalSegment startSegment)
+		{
+			IList<InternalSegment> segments = _segmentsByOffset.Values;
+			int startIndex = segments.IndexOf(startSegment) - 1;
+			if (startIndex < 0)
+				startIndex = 0;
+
+			for (int i = startIndex; i < segments.Count - 1; i++)
+			{
+				segments[i].ActualSize = (segments[i + 1].Offset - segments[i].Offset);
 				if (segments[i].ActualSize < segments[i].Size)
 					throw new InvalidOperationException("Segment size is too large");
 			}

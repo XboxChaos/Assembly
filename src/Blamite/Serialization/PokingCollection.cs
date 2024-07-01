@@ -68,5 +68,14 @@ namespace Blamite.Serialization
 
 			return _collection.OrderByDescending(p => p.Key).First().Value;
 		}
+
+		/// <summary>
+		///		Returns the entire stored collection for external iteration.
+		/// </summary>
+		/// <returns>All poking definitions.</returns>
+		public List<PokingInformation> GetVersions()
+		{
+			return _collection.Values.ToList();
+		}
 	}
 }

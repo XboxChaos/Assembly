@@ -78,6 +78,11 @@ namespace Blamite.Blam.ThirdGen
 			}
 		}
 
+		public void SaveTagNames(IStream stream)
+		{
+			SaveChanges(stream);
+		}
+
 		public string FilePath { get; private set; }
 
 		public int HeaderSize
@@ -313,7 +318,7 @@ namespace Blamite.Blam.ThirdGen
 					namespaces[i] = reader.ReadInt32();
 
 				//get layout info from formats
-				var sidLayout = _buildInfo.StringIDs.IDLayout;
+				var sidLayout = _buildInfo.StringIDInfo.IDLayout;
 				var resolver = new StringIDNamespaceResolver(sidLayout);
 
 				int indexMask = (1 << sidLayout.NamespaceStart) - 1;
@@ -322,10 +327,10 @@ namespace Blamite.Blam.ThirdGen
 				int counter = namespaces[0] & indexMask;
 				for (int i = 1; i < namespaces.Length; i++)
 				{
-					resolver.RegisterSet(i, 0, counter);
+					resolver.RegisterNamespace(i, 0, counter);
 					counter += namespaces[i] & indexMask;
 				}
-				resolver.RegisterSet(0, namespaces[0] & indexMask, counter);
+				resolver.RegisterNamespace(0, namespaces[0] & indexMask, counter);
 				return resolver;
 			}
 			else
@@ -338,7 +343,7 @@ namespace Blamite.Blam.ThirdGen
 			{
 				var stringTable = new IndexedStringTable(reader, _header.StringIDCount, _header.StringIDIndexTable,
 					_header.StringIDData, _buildInfo.StringIDKey);
-				_stringIds = new IndexedStringIDSource(stringTable, resolver != null ? resolver : _buildInfo.StringIDs);
+				_stringIds = new IndexedStringIDSource(stringTable, resolver != null ? resolver : new StringIDNamespaceResolver(_buildInfo.StringIDInfo));
 			}
 		}
 

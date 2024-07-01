@@ -25,7 +25,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_cache = cache;
 
 			if (buildInfo.PokingPlatform == RTEConnectionType.LocalProcess32 ||
-				buildInfo.PokingPlatform == RTEConnectionType.LocalProcess64)
+				buildInfo.PokingPlatform == RTEConnectionType.LocalProcess64 &&
+				buildInfo.Engine != EngineType.Eldorado)
 			{
 				switch (_cache.Engine)
 				{
@@ -60,7 +61,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				return;
 			}
 
-			var rteStream = realtime?.GetCacheStream(_cache);
+			var rteStream = realtime?.GetCacheStream(_cache, null);
 
 			long rteMagic = 0;
 			if (cbInputType.SelectedIndex == 3 || cbOutputType.SelectedIndex == 3)

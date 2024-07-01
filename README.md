@@ -6,8 +6,6 @@ __An Xbox/Xbox 360 console capable of running unsigned code is required, for con
 
 __An Xbox/Xbox 360 console capable of running a dev kernel is required, for console-based games on their intended platform, in order to modify or interact with a game or console in real time (poking) with Assembly.__
 
-__This repository does not support files belonging to Halo Online. For Halo Online support, the most recent and active fork as of this writing can be found [here](https://github.com/Lord-Zedd/Assembly)__
-
 Assembly is a free, open-source Halo cache file (.map) editor that was built from the ground up. It allows users to create and distribute creative patches for game content.
 
 Assembly was designed with three goals in mind: 

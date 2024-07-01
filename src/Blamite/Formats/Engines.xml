@@ -16,6 +16,7 @@
 		<shortname>{short name}</shortname> - A shorthand name for the engine, displayed on the recent files list. Will also get used as the "game" attribute in Assembly's plugin generator.
 		<plugins>{plugin directory}</plugins> - The name of the directory relative to {Assembly Install}\Plugins\ where plugins are located.
 		<fallbackPlugins>{plugin directory}</fallbackPlugins> - The name of the directory relative to {Assembly Install}\Plugins\ where plugins are located. If a plugin is not found in the above directory, this directory is checked next (used mainly to reduce MCC redundancy)
+		<fallbackTagNamePath>{tag names directory}</fallbackTagNamePath> - (Halo Online Only) The name of the directory relative to {Assembly Install}\ where tag names are located. If a tag_list.csv is not found in the same directory as the loaded cache file, this directory is checked next using the build string as a filename.
 
 		<engineInfo>
 			<generation>{"first", "second", "third"}</generation> - The engine generation of the cache file.
@@ -1835,6 +1836,188 @@
 	<engine name="Halo 4 MCC Toolset Update 1 Fast" version="13" build="Jun 27 2023 08:47:24" inherits="Halo 4 MCC Update 4">
 		<databases>
 			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU6" />
+		</databases>
+	</engine>
+
+	<!-- Halo Online builds -->
+	<engine name="Halo Online MS23" version="18" build="1.106708 cert_ms23">
+		<shortName>HOMS23</shortName>
+		<plugins>HaloOnline</plugins>
+		<fallbackTagNamesPath>Formats/HaloOnline/TagNames</fallbackTagNamesPath>
+		<engineInfo>
+			<generation>eldorado</generation>
+			<endian>little</endian>
+			<segmentAlignment>0x1</segmentAlignment>
+		</engineInfo>
+		<pokingInfo>
+			<platform>pc32</platform>
+			<executable>eldorado</executable>
+			<executableAlt>darkloaded</executableAlt>
+		</pokingInfo>
+		<databases>
+			<stringIds type="stringIds" path="Formats/HaloOnline/HO_StringIDs.xml" />
+			<localeSymbols type="localeSymbols" path="Formats/HaloOnline/HO_LocaleSymbols.xml" />
+			<scripting type="scripting" path="Formats/HaloOnline/HO_Scripting.xml" />
+			<layouts type="layouts" path="Formats/HaloOnline/Layouts" />
+			<poking type="poking" path="Formats/HaloOnline/HO_Poking.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo Online Eldewrito 0.7" version="18" build="eldewrito" inherits="Halo Online MS23">
+		<shortName>HOMS23_ED</shortName>
+		<plugins>HaloOnline/Eldewrito</plugins>
+		<fallbackPlugins>HaloOnline</fallbackPlugins>
+	</engine>
+
+	<engine name="Halo Online MS23 15" version="18" build="1.155080 cert_ms23" inherits="Halo Online MS23">
+		<shortName>HOMS23_15</shortName>
+		<databases>
+			<scripting type="scripting" path="Formats/HaloOnline/HO_155_Scripting.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo Online MS25" version="18" build="1.235640 cert_ms25">
+		<shortName>HOMS25</shortName>
+		<plugins>HaloOnline/MS25</plugins>
+		<fallbackPlugins>HaloOnline</fallbackPlugins>
+		<fallbackTagNamesPath>Formats/HaloOnline/TagNames</fallbackTagNamesPath>
+		<engineInfo>
+			<generation>eldorado</generation>
+			<endian>little</endian>
+			<segmentAlignment>0x1</segmentAlignment>
+		</engineInfo>
+		<pokingInfo>
+			<platform>pc32</platform>
+			<executable>eldorado</executable>
+			<executableAlt>darkloaded</executableAlt>
+		</pokingInfo>
+		<databases>
+			<stringIds type="stringIds" path="Formats/HaloOnline/HO_StringIDs.xml" />
+			<localeSymbols type="localeSymbols" path="Formats/HaloOnline/HO_MS25_LocaleSymbols.xml" />
+			<scripting type="scripting" path="Formats/HaloOnline/HO_MS25_Scripting.xml" />
+			<layouts type="layouts" path="Formats/HaloOnline/LayoutsMS25" />
+			<poking type="poking" path="Formats/HaloOnline/HO_Poking.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo Online MS26" version="18" build="Jun 12 2015 13:02:50" inherits="Halo Online MS25">
+		<shortName>HOMS26</shortName>
+		<plugins>HaloOnline/MS26</plugins>
+		<databases>
+			<scripting type="scripting" path="Formats/HaloOnline/HO_MS26_Scripting.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo Online MS26 Live" version="18" build="0.4.1.327043 cert_MS26_new" inherits="Halo Online MS25">
+		<shortName>HOMS26L</shortName>
+		<plugins>HaloOnline/MS26</plugins>
+		<databases>
+			<scripting type="scripting" path="Formats/HaloOnline/HO_MS26_Scripting.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo Online Live 37" version="18" build="8.1.372731 Live">
+		<shortName>HOL37</shortName>
+		<plugins>HaloOnline/Live37</plugins>
+		<fallbackPlugins>HaloOnline</fallbackPlugins>
+		<fallbackTagNamesPath>Formats/HaloOnline/TagNames</fallbackTagNamesPath>
+		<engineInfo>
+			<generation>eldorado</generation>
+			<endian>little</endian>
+			<segmentAlignment>0x1</segmentAlignment>
+		</engineInfo>
+		<pokingInfo>
+			<platform>pc32</platform>
+			<executable>halo_online</executable>
+			<executableAlt>darkloaded</executableAlt>
+		</pokingInfo>
+		<databases>
+			<stringIds type="stringIds" path="Formats/HaloOnline/HO_StringIDs.xml" />
+			<localeSymbols type="localeSymbols" path="Formats/HaloOnline/HO_MS25_LocaleSymbols.xml" />
+			<scripting type="scripting" path="Formats/HaloOnline/HO_372_Scripting.xml" />
+			<layouts type="layouts" path="Formats/HaloOnline/LayoutsMS25" />
+			<poking type="poking" path="Formats/HaloOnline/HO_Poking.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo Online Live 41" version="18" build="0.0.416097 Live" inherits="Halo Online Live 37">
+		<shortName>HOL41</shortName>
+	</engine>
+
+	<engine name="Halo Online Live 43" version="18" build="10.1.430475 Live" inherits="Halo Online Live 37">
+		<shortName>HOL43</shortName>
+		<plugins>HaloOnline/Live43</plugins>
+		<databases>
+			<scripting type="scripting" path="Formats/HaloOnline/HO_430_Scripting.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo Online Live 44" version="18" build="10.1.449175 Live" inherits="Halo Online Live 37">
+		<shortName>HOL44</shortName>
+		<plugins>HaloOnline/Live43</plugins>
+		<databases>
+			<scripting type="scripting" path="Formats/HaloOnline/HO_430_Scripting.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo Online Live 45" version="18" build="10.1.454665 Live" inherits="Halo Online Live 37">
+		<shortName>HOL45</shortName>
+		<plugins>HaloOnline/Live43</plugins>
+		<databases>
+			<scripting type="scripting" path="Formats/HaloOnline/HO_430_Scripting.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo Online ZBT" version="18" build="11.1.498295 Live">
+		<shortName>HOZBT</shortName>
+		<plugins>HaloOnline/ZBT</plugins>
+		<fallbackPlugins>HaloOnline</fallbackPlugins>
+		<fallbackTagNamesPath>Formats/HaloOnline/TagNames</fallbackTagNamesPath>
+		<engineInfo>
+			<generation>eldorado</generation>
+			<endian>little</endian>
+			<segmentAlignment>0x1</segmentAlignment>
+		</engineInfo>
+		<pokingInfo>
+			<platform>pc32</platform>
+			<executable>halo_online</executable>
+			<executableAlt>darkloaded</executableAlt>
+		</pokingInfo>
+		<databases>
+			<stringIds type="stringIds" path="Formats/HaloOnline/HO_ZBT_StringIDs.xml" />
+			<localeSymbols type="localeSymbols" path="Formats/HaloOnline/HO_MS25_LocaleSymbols.xml" />
+			<scripting type="scripting" path="Formats/HaloOnline/HO_ZBT_Scripting.xml" />
+			<layouts type="layouts" path="Formats/HaloOnline/LayoutsZBT" />
+			<poking type="poking" path="Formats/HaloOnline/HO_Poking.xml" />
+		</databases>
+	</engine>
+
+	<engine name="Halo Online ZBT 530" version="18" build="11.1.530605 Live" inherits="Halo Online ZBT">
+		<shortName>HOZBT530</shortName>
+	</engine>
+
+	<engine name="Halo Online ZBT 532" version="18" build="11.1.532911 Live" inherits="Halo Online ZBT">
+		<shortName>HOZBT532</shortName>
+	</engine>
+
+	<engine name="Halo Online ZBT 55" version="18" build="11.1.554482 Live" inherits="Halo Online ZBT">
+		<shortName>HOZBT55</shortName>
+	</engine>
+
+	<engine name="Halo Online ZBT 57" version="18" build="11.1.571627 Live" inherits="Halo Online ZBT">
+		<shortName>HOZBT57</shortName>
+	</engine>
+
+	<engine name="Halo Online ZBT 60" version="18" build="11.1.601838 Live" inherits="Halo Online ZBT">
+		<shortName>HOZBT60</shortName>
+	</engine>
+
+	<engine name="Halo Online ZBT 70" version="18" build="12.1.700123 cert_ms30_oct19" inherits="Halo Online ZBT">
+		<shortName>HOZBT70</shortName>
+		<plugins>HaloOnline/ZBT70</plugins>
+		<databases>
+			<stringIds type="stringIds" path="Formats/HaloOnline/HO_ZBT70_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/HaloOnline/HO_ZBT70_Scripting.xml" />
 		</databases>
 	</engine>
 </engines>

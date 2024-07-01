@@ -105,6 +105,13 @@
   <ItemGroup>
     <Compile Include="Blam\CacheFileLoader.cs" />
     <Compile Include="Blam\DummyPointerExpander.cs" />
+    <Compile Include="Blam\Eldorado\CSVFilenameSource.cs" />
+    <Compile Include="Blam\Eldorado\EldoradoCacheFile.cs" />
+    <Compile Include="Blam\Eldorado\ExternalIndexedStringTable.cs" />
+    <Compile Include="Blam\Eldorado\Structures\EldoradoCacheHeader.cs" />
+    <Compile Include="Blam\Eldorado\Structures\EldoradoTag.cs" />
+    <Compile Include="Blam\Eldorado\Structures\EldoradoTagGroup.cs" />
+    <Compile Include="Blam\Eldorado\Structures\EldoradoTagTable.cs" />
     <Compile Include="Blam\EngineType.cs" />
     <Compile Include="Blam\EffectInterop.cs" />
     <Compile Include="Blam\FirstGen\FirstGenCacheFile.cs" />
@@ -212,12 +219,13 @@
     <Compile Include="Blam\Scripting\ScriptFunctionInfo.cs" />
     <Compile Include="Blam\Scripting\ScriptTable.cs" />
     <Compile Include="Blam\Shaders\ShaderType.cs" />
+    <Compile Include="Blam\StringIDNamespace.cs" />
     <Compile Include="Blam\TagSource.cs" />
     <Compile Include="Blam\TagTable.cs" />
-    <Compile Include="Blam\ThirdGen\BasedPointerConverter.cs" />
+    <Compile Include="Blam\BasedPointerConverter.cs" />
     <Compile Include="Blam\ThirdGen\BLF\Campaign.cs" />
     <Compile Include="Blam\ThirdGen\Localization\ThirdGenLanguagePackLoader.cs" />
-    <Compile Include="Blam\ThirdGen\MetaAddressConverter.cs" />
+    <Compile Include="Blam\MetaAddressConverter.cs" />
     <Compile Include="Blam\ThirdGen\Resources\BSP\ThirdGenScenarioBSP.cs" />
     <Compile Include="Blam\ThirdGen\Resources\ThirdGenResourceManager.cs" />
     <Compile Include="Blam\ThirdGen\Shaders\ThirdGenShader.cs" />
@@ -268,6 +276,18 @@
     <Compile Include="RTE\PC\PCSecondGenRTEProvider.cs" />
     <Compile Include="RTE\PC\PCThirdGenRTEProvider.cs" />
     <Compile Include="RTE\RTEStreamManager.cs" />
+    <Compile Include="Native\ProcessModuleMemoryStream.cs" />
+    <Compile Include="RTE\Eldorado\EldoradoRTEProvider.cs" />
+    <Compile Include="RTE\FirstGen\FirstGenRTEProvider.cs" />
+    <Compile Include="RTE\FirstGen\FirstGenMCCRTEProvider.cs" />
+    <Compile Include="RTE\FirstGen\FirstGenMapPointerReader.cs" />
+    <Compile Include="RTE\MapPointerReader.cs" />
+    <Compile Include="RTE\MCCRTEProvider.cs" />
+    <Compile Include="RTE\SecondGen\SecondGenMapPointerReader.cs" />
+    <Compile Include="RTE\SecondGen\SecondGenMCCRTEProvider.cs" />
+    <Compile Include="RTE\SecondGen\SecondGenRTEProvider.cs" />
+    <Compile Include="RTE\ThirdGen\ThirdGenMapPointerReader.cs" />
+    <Compile Include="RTE\ThirdGen\ThirdGenMCCRTEProvider.cs" />
     <Compile Include="Serialization\CacheStructureReader.cs" />
     <Compile Include="Serialization\ICacheStructureLayoutVisitor.cs" />
     <Compile Include="Serialization\PokingCollection.cs" />
@@ -292,6 +312,8 @@
     <Compile Include="Serialization\Settings\SettingsGroup.cs" />
     <Compile Include="Serialization\Settings\XMLEngineDatabaseLoader.cs" />
     <Compile Include="Serialization\Settings\XMLSettingsGroupLoader.cs" />
+    <Compile Include="Serialization\Settings\XMLStringIDLoader.cs" />
+    <Compile Include="Serialization\StringIDInformation.cs" />
     <Compile Include="Serialization\StringIDLayout.cs" />
     <Compile Include="Serialization\VertexLayout.cs" />
     <Compile Include="Serialization\VertexElementLayout.cs" />
@@ -333,7 +355,6 @@
     <Compile Include="Blam\Util\AESKey.cs" />
     <Compile Include="Serialization\LocaleSymbolCollection.cs" />
     <Compile Include="Blam\StringIDNamespaceResolver.cs" />
-    <Compile Include="Serialization\Settings\XMLStringIDNamespaceLoader.cs" />
     <Compile Include="Serialization\StructureLayoutCollection.cs" />
     <Compile Include="Serialization\Settings\XMLOpcodeLookup.cs" />
     <Compile Include="IO\FileSegmenterExtensions.cs" />
@@ -947,6 +968,66 @@
     <Content Include="Formats\Halo4\Layouts\H4_Layouts_Shaders.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Formats\HaloOnline\HO_155_Scripting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_MS25_LocaleSymbols.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_Poking.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_Scripting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_StringIDs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_ZBT70_Scripting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_ZBT70_StringIDs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_ZBT_Scripting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_ZBT_StringIDs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_LocaleSymbols.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\LayoutsMS25\HO_LayoutsMS25_Core.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\LayoutsMS25\HO_LayoutsMS25_Scenario.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\LayoutsZBT\HO_LayoutsZBT_Core.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\LayoutsZBT\HO_LayoutsZBT_Scenario.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\Layouts\HO_Layouts_Core.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\Layouts\HO_Layouts_Scenario.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_MS25_Scripting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_MS26_Scripting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_430_Scripting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\HO_372_Scripting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Formats\ODSTMCC\LayoutsU8\ODSTMCC_LayoutsU8_Core.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1325,6 +1406,57 @@
     <None Include="Blam\Scripting\ANTLR\HS_Gen1.g4" />
     <None Include="Blam\Scripting\ANTLR\HS_Gen1.tokens" />
     <None Include="Blam\Scripting\ANTLR\HS_Gen1Lexer.tokens" />
+    <Content Include="Formats\HaloOnline\TagNames\0.0.416097 Live.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\TagNames\0.4.1.327043 cert_MS26_new.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\TagNames\1.106708 cert_ms23.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\TagNames\1.155080 cert_ms23.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\TagNames\1.235640 cert_ms25.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\TagNames\10.1.430475 Live.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\TagNames\10.1.449175 Live.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\TagNames\10.1.454665 Live.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\TagNames\11.1.498295 Live.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\TagNames\11.1.530605 Live.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\TagNames\11.1.532911 Live.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\TagNames\11.1.554482 Live.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\TagNames\11.1.571627 Live.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\TagNames\11.1.601838 Live.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\TagNames\12.1.700123 cert_ms30_oct19.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\TagNames\8.1.372731 Live.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\HaloOnline\TagNames\Jun 12 2015 13_02_50.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

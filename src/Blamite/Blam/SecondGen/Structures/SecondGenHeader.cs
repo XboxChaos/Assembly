@@ -1,5 +1,6 @@
 ﻿using Blamite.Serialization;
 using Blamite.IO;
+using System;
 
 namespace Blamite.Blam.SecondGen.Structures
 {
@@ -98,6 +99,13 @@ namespace Blamite.Blam.SecondGen.Structures
 
 		private void Load(StructureValueCollection values, FileSegmenter segmenter)
 		{
+			if (values.HasInteger("flags"))
+			{
+				int flags = (int)values.GetInteger("flags");
+				if ((flags & 1) > 0)
+					throw new ArgumentException("Map claims to be compressed. Please decompress it using the Tools menu before trying to load it again.");
+			}
+
 			uint filesize = (uint)values.GetInteger("file size");
 
 			uint metaOffset = (uint)values.GetInteger("meta offset");

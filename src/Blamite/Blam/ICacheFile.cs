@@ -199,6 +199,12 @@ namespace Blamite.Blam
 		/// <param name="stream">The stream to write changes to.</param>
 		void SaveChanges(IStream stream);
 
+		/// <summary>
+		///     Saves any changes that were made to the list of tag names.
+		/// </summary>
+		/// <param name="stream">The stream to write changes to.</param>
+		void SaveTagNames(IStream stream);
+
 		IPointerExpander PointerExpander { get; }
 
 		Endian Endianness { get; }

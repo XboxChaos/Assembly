@@ -7,6 +7,7 @@
 	{
 		FirstGeneration, // H1
 		SecondGeneration, // H2
-		ThirdGeneration // H3, Reach, H4
+		ThirdGeneration, // H3, Reach, H4
+		Eldorado
 	}
 }

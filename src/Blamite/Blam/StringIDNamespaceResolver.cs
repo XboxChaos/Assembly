@@ -18,6 +18,13 @@ namespace Blamite.Blam
 			IDLayout = idLayout;
 		}
 
+		public StringIDNamespaceResolver(StringIDInformation info)
+		{
+			IDLayout = info.IDLayout;
+			foreach (StringIDNamespace ns in info.Namespaces)
+				RegisterNamespace(ns);
+		}
+
 		/// <summary>
 		///     Translates a stringID into an index into the global debug strings array.
 		/// </summary>
@@ -42,6 +49,12 @@ namespace Blamite.Blam
 				closestSetIndex--;
 				if (closestSetIndex < 0)
 					return (int) id.Value;
+			}
+
+			// Eldorado hackiness, fake set 0xFF is used to store the max index for any set
+			if (_namespacesByID.ContainsKey(0xFF) && id.GetIndex(IDLayout) >= _namespacesByID[0xFF].GlobalIndex)
+			{
+				return (int)id.Value;
 			}
 
 			// Calculate the array index by subtracting the value of the first ID in the set
@@ -69,6 +82,12 @@ namespace Blamite.Blam
 					return new StringID((uint) index); // No previous set defined - just return the index
 			}
 
+			// Eldorado hackiness, fake set 0xFF is used to store the max index for any set
+			if (_namespacesByID.ContainsKey(0xFF) && index >= _namespacesByID[0xFF].GlobalIndex)
+			{
+				return new StringID((uint)index);
+			}
+
 			// Calculate the StringID by subtracting the set's global array index
 			// and then adding the value of the first stringID in the set
 			StringIDNamespace set = _namespacesByGlobalIndex.Values[closestSetIndex];
@@ -87,45 +106,22 @@ namespace Blamite.Blam
 		/// <param name="id">The set's ID number.</param>
 		/// <param name="minIndex">The minimum index that a stringID must have in order to be counted as part of the set.</param>
 		/// <param name="globalIndex">The index of the set's first string in the global stringID table.</param>
-		public void RegisterSet(int id, int minIndex, int globalIndex)
+		public void RegisterNamespace(int id, int minIndex, int globalIndex)
 		{
 			var set = new StringIDNamespace(id, minIndex, globalIndex);
-			_namespacesByID[id] = set;
-			_namespacesByGlobalIndex[globalIndex] = set;
+			RegisterNamespace(set);
 		}
 
 		/// <summary>
-		///     A stringID set definition.
+		///     Registers a stringID set to use to translate stringIDs.
 		/// </summary>
-		private class StringIDNamespace
+		/// <param name="id">The set's ID number.</param>
+		/// <param name="minIndex">The minimum index that a stringID must have in order to be counted as part of the set.</param>
+		/// <param name="globalIndex">The index of the set's first string in the global stringID table.</param>
+		public void RegisterNamespace(StringIDNamespace ns)
 		{
-			/// <summary>
-			///     Constructs a new set definition.
-			/// </summary>
-			/// <param name="id">The set's ID number.</param>
-			/// <param name="minIndex">The minimum index that a stringID must have in order to be counted as part of the namespace.</param>
-			/// <param name="globalIndex">The index of the namespace's first string in the global stringID table.</param>
-			public StringIDNamespace(int id, int minIndex, int globalIndex)
-			{
-				ID = id;
-				MinIndex = minIndex;
-				GlobalIndex = globalIndex;
-			}
-
-			/// <summary>
-			///     The set's ID number.
-			/// </summary>
-			public int ID { get; private set; }
-
-			/// <summary>
-			///     The minimum index that a stringID must have in order to be counted as part of the set.
-			/// </summary>
-			public int MinIndex { get; private set; }
-
-			/// <summary>
-			///     The index of the set's first string in the global stringID table.
-			/// </summary>
-			public int GlobalIndex { get; private set; }
+			_namespacesByID[ns.ID] = ns;
+			_namespacesByGlobalIndex[ns.GlobalIndex] = ns;
 		}
 	}
 }

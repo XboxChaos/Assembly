@@ -16,7 +16,7 @@ namespace Assembly.Helpers.Net.Sockets
 
         public new RTEConnectionType ConnectionType { get; private set; }
 
-        public override IStream GetCacheStream(ICacheFile cacheFile)
+        public override IStream GetCacheStream(ICacheFile cacheFile, ITag tag)
         {
             return new EndianStream(new SocketStream(_sessionManager, cacheFile.BuildString, cacheFile.InternalName), cacheFile.Endianness);
         }

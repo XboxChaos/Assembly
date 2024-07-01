@@ -256,7 +256,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 							if (startOffset == -1)
 								continue;
 
-							GameLanguage language = SecondGenLanguageGlobals.LanguageRemaps.Keys.ElementAt(j);
+							GameLanguage language = _cache.Engine == EngineType.SecondGeneration ?
+								SecondGenLanguageGlobals.LanguageRemaps.Keys.ElementAt(j) : (GameLanguage)j;
 							if (!Strings.ContainsKey(language))
 								Strings[language] = new LocalizedStringPairs(language);
 
@@ -284,7 +285,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			if (size <= 0 || address == 0)
 				return new byte[0];
 
-			uint offset = _cache.MetaArea.PointerToOffset(expand);
+			uint offset = _tag.RawTag.MetaLocation.BaseGroup.PointerToOffset(expand);
 			reader.SeekTo(offset);
 			return reader.ReadBlock(size);
 		}
@@ -297,7 +298,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			long expand = _expander.Expand(address);
 
 			var layout = _buildInfo.Layouts.GetLayout(layoutName);
-			return TagBlockReader.ReadTagBlock(reader, count, expand, layout, _cache.MetaArea);
+			return TagBlockReader.ReadTagBlock(reader, count, expand, layout, _tag.RawTag.MetaLocation.BaseGroup);
 		}
 
 		private void cbLanguageGroups_SelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -132,13 +132,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					if (_rteProvider == null)
 						goto default;
 
-					if (_rteProvider.GetCacheStream(_cache) == null)
+					if (_rteProvider.GetCacheStream(_cache, _tag.RawTag) == null)
 					{
 						ShowConnectionError();
 						return;
 					}
 
-					streamManager = new RTEStreamManager(_rteProvider, _cache);
+					streamManager = new RTEStreamManager(_rteProvider, _cache, _tag.RawTag);
 					baseOffset = _tag.RawTag.MetaLocation.AsPointer();
 					break;
 
@@ -238,7 +238,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				using (IStream stream = _fileManager.OpenReadWrite())
 				{
 #if DEBUG_SAVE_ALL
-                    MetaWriter metaUpdate = new MetaWriter(writer, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, null, _stringIdTrie);
+                    MetaWriter metaUpdate = new MetaWriter(writer, _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, null, _stringIdTrie);
 #else
 					var metaUpdate = new MetaWriter(stream, _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type,
 						_fileChanges, _stringIdTrie, _srcSegmentGroup);
@@ -260,7 +260,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					rteProvider = App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider;
 				}
 
-				using (IStream metaStream = rteProvider.GetCacheStream(_cache))
+				using (IStream metaStream = rteProvider.GetCacheStream(_cache, _tag.RawTag))
 				{
 					if (metaStream != null)
 					{

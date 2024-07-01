@@ -1,6 +1,6 @@
 ﻿using Blamite.IO;
 
-namespace Blamite.Blam.ThirdGen
+namespace Blamite.Blam
 {
 	public class BasedPointerConverter : IPointerConverter
 	{
