@@ -10,7 +10,7 @@ namespace Blamite.RTE.PC
 	public class PCThirdGenRTEProvider : PCRTEProvider
 	{
 		/// <summary>
-		///     Constructs a new ThirdGenRTEProvider.
+		///     Constructs a new PCThirdGenRTEProvider.
 		/// </summary>
 		public PCThirdGenRTEProvider(EngineDescription engine) : base(engine)
 		{
@@ -29,8 +29,9 @@ namespace Blamite.RTE.PC
 		///     The stream will be set up such that offsets in the stream correspond to meta pointers in the cache file.
 		/// </summary>
 		/// <param name="cacheFile">The cache file to get a stream for.</param>
+		/// <param name="tag">The tag to be poked; only needed for Eldorado.</param>
 		/// <returns>The stream if it was opened successfully, or null otherwise.</returns>
-		public override IStream GetCacheStream(ICacheFile cacheFile = null)
+		public override IStream GetCacheStream(ICacheFile cacheFile = null, ITag tag = null)
 		{
 			if (!CheckBuildInfo())
 				return null; //ErrorMessage was handled by above.

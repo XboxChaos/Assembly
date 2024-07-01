@@ -18,7 +18,7 @@ namespace Blamite.RTE.PC
 		public long SharedCacheAddress { get; private set; }
 
 		/// <summary>
-		///     Constructs a new SecondGenRTEProvider.
+		///     Constructs a new PCSecondGenRTEProvider.
 		/// </summary>
 		public PCSecondGenRTEProvider(EngineDescription engine) : base(engine)
 		{
@@ -37,8 +37,9 @@ namespace Blamite.RTE.PC
 		///     The stream will be set up such that offsets in the stream correspond to meta pointers in the cache file.
 		/// </summary>
 		/// <param name="cacheFile">The cache file to get a stream for.</param>
+		/// <param name="tag">The tag to be poked; only needed for Eldorado.</param>
 		/// <returns>The stream if it was opened successfully, or null otherwise.</returns>
-		public override IStream GetCacheStream(ICacheFile cacheFile)
+		public override IStream GetCacheStream(ICacheFile cacheFile, ITag tag = null)
 		{
 			if (!CheckBuildInfo())
 				return null; //ErrorMessage was handled by above.

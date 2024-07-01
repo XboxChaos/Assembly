@@ -51,8 +51,9 @@ namespace Blamite.RTE
 		///     The stream will be set up such that offsets in the stream correspond to meta pointers in the cache file.
 		/// </summary>
 		/// <param name="cacheFile">The cache file to get a stream for.</param>
+		/// <param name="tag">The tag to be poked; only needed for Eldorado.</param>
 		/// <returns>The stream if it was opened successfully, or null otherwise, with <seealso cref="ErrorMessage"/> containing the reason.</returns>
-		public abstract IStream GetCacheStream(ICacheFile cacheFile);
+		public abstract IStream GetCacheStream(ICacheFile cacheFile, ITag tag);
 
 	}
 }

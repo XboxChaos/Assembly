@@ -29,8 +29,9 @@ namespace Blamite.RTE.Console
 		///     The stream will be set up such that offsets in the stream correspond to meta pointers in the cache file.
 		/// </summary>
 		/// <param name="cacheFile">The cache file to get a stream for.</param>
+		/// <param name="tag">The tag to be poked; only needed for Eldorado.</param>
 		/// <returns>The stream if it was opened successfully, or null otherwise.</returns>
-		public override IStream GetCacheStream(ICacheFile cacheFile)
+		public override IStream GetCacheStream(ICacheFile cacheFile, ITag tag = null)
 		{
 			// Okay, so technically we should be checking to see if the cache file is actually loaded into memory first
 			// But that's kinda hard to do...
