@@ -1561,7 +1561,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						case "itemIsolate":
 							{
 								if (_cacheFile.Engine == EngineType.FirstGeneration ||
-									tag.RawTag.Source != TagSource.MetaArea)
+									tag?.RawTag.Source != TagSource.MetaArea)
 									tagMenuItem.Visibility = Visibility.Collapsed;
 								break;
 							}
