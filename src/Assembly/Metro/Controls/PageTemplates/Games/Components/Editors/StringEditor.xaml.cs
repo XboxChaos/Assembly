@@ -2,13 +2,18 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
+using Assembly.Metro.Dialogs;
 using Blamite.Blam;
 using Blamite.Blam.Localization;
 using Blamite.Blam.SecondGen.Localization;
 using Blamite.Blam.Util;
 using Blamite.IO;
 using Blamite.Serialization;
+using Microsoft.Win32;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 {
@@ -26,6 +31,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			{
 				StringID = stringid;
 				Value = value;
+			}
+
+			public bool Filter(string filter)
+			{
+				return StringID.ToLowerInvariant().Contains(filter) ||
+					Value.ToLowerInvariant().Contains(filter);
 			}
 		}
 
@@ -52,8 +63,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 		private EngineDescription _buildInfo;
 		private readonly IStreamManager _streamManager;
 		private IPointerExpander _expander;
+		private CollectionView _stringView;
 
 		private readonly Dictionary<GameLanguage, LocalizedStringPairs> Strings = new Dictionary<GameLanguage, LocalizedStringPairs>();
+
+		private Dictionary<string, string> _escapeChars = new Dictionary<string, string>()
+		{
+			{ "\"", "\\\"" },
+
+			{ "'",  @"\'" },
+			{ "?",  "\\?" },
+			{ ";",  "\\;" },
+		};
 
 		public StringEditor(EngineDescription buildInfo, ICacheFile cache, TagEntry tag, IStreamManager streamManager)
 		{
@@ -275,6 +296,109 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 		}
 		#endregion
 
+		/// <summary>
+		///     Filter function for the string view.
+		/// </summary>
+		/// <param name="item">The item to filter.</param>
+		/// <returns><c>true</c> if the item should be made visible.</returns>
+		private bool FilterString(object item)
+		{
+			var entry = (StringPair)item;
+			if (!string.IsNullOrEmpty(txtFilter.Text))
+			{
+				string lowerFilter = txtFilter.Text.ToLowerInvariant();
+				return entry.Filter(lowerFilter);
+			}
+			return true;
+		}
+
+		#region Event Handlers
+		private void cbLanguageGroups_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			var pairs = cbLanguageGroups.SelectedItem as LocalizedStringPairs;
+			if (pairs != null && pairs.Strings != null)
+			{
+				lvLocales.ItemsSource = null;
+				lvLocales.ItemsSource = pairs.Strings;
+
+				_stringView = CollectionViewSource.GetDefaultView(lvLocales.ItemsSource) as CollectionView;
+				_stringView.Filter = FilterString;
+			}
+		}
+
+		private void txtFilter_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			if (lvLocales.ItemsSource != null)
+				CollectionViewSource.GetDefaultView(lvLocales.ItemsSource).Refresh();
+		}
+
+		private void Cell_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.ClickCount != 2)
+				return;
+
+			var cell = sender as TextBlock;
+			Clipboard.SetText(cell.Text);
+		}
+
+		private void btnExport_Click(object sender, RoutedEventArgs e)
+		{
+			string tagname = _tag.TagFileName != null
+				? _tag.TagFileName : "0x" + _tag.RawTag.Index.Value.ToString("X");
+
+			var invalids = Path.GetInvalidFileNameChars();
+
+			tagname = string.Join("_", tagname.Split(invalids));
+			tagname = Path.GetFileName(tagname);
+
+			var sfd = new SaveFileDialog();
+			sfd.Title = "Save Strings As";
+			sfd.FileName = tagname;
+
+			string filter = txtFilter.Text;
+			txtFilter.Text = "";
+
+			using (StringWriter sw = new StringWriter())
+			{
+				if (_tag.GroupName == "hmt ")
+				{
+					sfd.Filter = "HUD Message File|*.hmt|Text File|*.txt";
+					foreach (StringPair pair in lvLocales.Items)
+						sw.WriteLine($"{pair.StringID}={pair.Value}");
+				}
+				else if (_tag.GroupName == "unic")
+				{
+					sfd.Filter = "Text File|*.txt";
+					sw.WriteLine("[Strings]");
+					foreach (StringPair pair in lvLocales.Items)
+						sw.WriteLine($"{pair.StringID} = \"{EscapeString(pair.Value)}\"");
+				}
+				else
+				{
+					sfd.Filter = "Text File|*.txt";
+					foreach (StringPair pair in lvLocales.Items)
+					{
+						sw.WriteLine($"{pair.Value}");
+						sw.WriteLine("###END-STRING###");
+					}
+				}
+
+				if (!(bool)sfd.ShowDialog())
+					return;
+
+				File.WriteAllText(sfd.FileName, sw.ToString());
+				MetroMessageBox.Show("Strings Exported", "Strings exported successfully.");
+			}
+
+			txtFilter.Text = filter;
+		}
+
+		private void btnReset_Click(object sender, RoutedEventArgs e)
+		{
+			txtFilter.Text = "";
+		}
+		#endregion
+
 		private byte[] ReadDataReference(StructureValueCollection values, IReader reader, string lengthName, string addressName)
 		{
 			var size = (int)values.GetInteger(lengthName);
@@ -301,11 +425,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			return TagBlockReader.ReadTagBlock(reader, count, expand, layout, _tag.RawTag.MetaLocation.BaseGroup);
 		}
 
-		private void cbLanguageGroups_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private string EscapeString(string value)
 		{
-			var pairs = cbLanguageGroups.SelectedItem as LocalizedStringPairs;
-			if (pairs != null && pairs.Strings != null)
-				lvLocales.ItemsSource = pairs.Strings;
+			string result = value;
+			foreach (string k in _escapeChars.Keys)
+			{
+				if (result.Contains(k))
+					result.Replace(k, _escapeChars[k]);
+			}
+
+			return result;
 		}
+
 	}
 }

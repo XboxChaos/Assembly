@@ -36,18 +36,43 @@
 				<DataGridTemplateColumn x:Name="stringIdColumn" Header="StringID" Width="*" SortMemberPath="StringID">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<TextBlock Text="{Binding StringID}" TextWrapping="Wrap" VerticalAlignment="Center" />
+							<TextBlock Text="{Binding StringID}" TextWrapping="Wrap" VerticalAlignment="Center" MouseDown="Cell_MouseDown" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
-				<DataGridTextColumn x:Name="localeColumn" Header="Value" Binding="{Binding Value}" Width="3*">
-					<DataGridTextColumn.ElementStyle>
-						<Style TargetType="{x:Type TextBlock}">
-							<Setter Property="TextWrapping" Value="Wrap" />
-						</Style>
-					</DataGridTextColumn.ElementStyle>
-				</DataGridTextColumn>
+				<DataGridTemplateColumn x:Name="localeColumn" Header="Value" Width="3*">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding Value}" TextWrapping="Wrap" VerticalAlignment="Center" MouseDown="Cell_MouseDown" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 		</DataGrid>
+		<Border Height="30" VerticalAlignment="Bottom" BorderThickness="0,1,0,0" BorderBrush="#434346" Background="#FF303032">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"
+				            Margin="10,0,0,0">
+					<Button x:Name="btnExport" Content="Export" Width="72" VerticalAlignment="Center" HorizontalAlignment="Left"
+					        Click="btnExport_Click" />
+					<TextBlock Text="Filter:" Grid.Column="0" Margin="10,0,0,0" Style="{DynamicResource GenericTextblock}"
+					           VerticalAlignment="Center" HorizontalAlignment="Left" />
+				</StackPanel>
+
+				<TextBox x:Name="txtFilter" Grid.Column="1" Margin="10,0,5,0" VerticalAlignment="Center"
+				         HorizontalAlignment="Stretch" TextChanged="txtFilter_TextChanged" />
+
+				<StackPanel Orientation="Horizontal" Grid.Column="2">
+					<Button x:Name="btnReset" Content="Reset" Click="btnReset_Click" Margin="5,0,0,0" Width="60" />
+					<TextBlock Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"
+					           Text="Double-click on a string to copy it." Style="{DynamicResource GenericTextblock}" />
+				</StackPanel>
+			</Grid>
+		</Border>
 	</Grid>
 </UserControl>
