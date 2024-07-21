@@ -18,8 +18,10 @@ namespace Blamite.Serialization
 			if (_stringReplacements.ContainsKey(replacement))
 				throw new InvalidOperationException("Locale replacement \"" + replacement + "\" has multiple definitions");
 
-			_charReplacements[symbol] = "<" + replacement + "/>";
-			_stringReplacements[replacement] = symbol;
+			string ampersand = "&" + replacement;
+
+			_charReplacements[symbol] = ampersand;
+			_stringReplacements[ampersand] = symbol;
 		}
 
 		/// <summary>
@@ -45,16 +47,10 @@ namespace Blamite.Serialization
 			if (_charReplacements.Count == 0)
 				return locale;
 
-			// Loop through each character and see if it's in the replacements dictionary
-			for (int i = 0; i < locale.Length; i++)
+			foreach (var c in _charReplacements.Keys)
 			{
-				string replacement;
-				if (_charReplacements.TryGetValue(locale[i], out replacement))
-				{
-					// Replace the character with its replacement tag
-					locale = locale.Substring(0, i) + replacement + locale.Substring(i + 1);
-					i += replacement.Length - 1;
-				}
+				if (locale.Contains(c.ToString()))
+					locale = locale.Replace(c.ToString(), _charReplacements[c]);
 			}
 			return locale;
 		}
@@ -69,23 +65,13 @@ namespace Blamite.Serialization
 			if (_stringReplacements.Count == 0)
 				return locale;
 
-			int tagStartPos = locale.IndexOf('<');
-			while (tagStartPos >= 0)
+			foreach (string s in _stringReplacements.Keys)
 			{
-				int tagEndPos = locale.IndexOf("/>", tagStartPos + 1);
-				if (tagEndPos >= 0)
-				{
-					// Found a valid tag, get its name
-					string tagName = locale.Substring(tagStartPos + 1, tagEndPos - (tagStartPos + 1));
-					tagName = tagName.Trim();
-
-					// Replace it if there's a match
-					char replacement;
-					if (_stringReplacements.TryGetValue(tagName, out replacement))
-						locale = locale.Substring(0, tagStartPos) + replacement + locale.Substring(tagEndPos + 2);
-				}
-				tagStartPos = locale.IndexOf('<', tagStartPos + 1);
-			}
+                if (locale.Contains(s))
+                {
+					locale = locale.Replace(s, _stringReplacements[s].ToString());
+                }
+            }
 			return locale;
 		}
 
