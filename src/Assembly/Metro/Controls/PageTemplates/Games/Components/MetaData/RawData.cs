@@ -16,6 +16,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private string _format;
 		private int _length;
 		internal FileSegmentGroup _metaArea;
+		private bool _showingNotice;
+		private readonly int _noticeThreshold = 0x40000;
 
 		public RawData(string name, uint offset, long address, string value, int length, uint pluginLine, string tooltip, FileSegmentGroup metaArea)
 			: base(name, offset, address, pluginLine, tooltip)
@@ -107,6 +109,26 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public int MaxLength
 		{
 			get { return IsBinary ? _length * 2 : _length; }
+		}
+
+		public int NoticeThreshold
+		{
+			get { return _noticeThreshold; }
+		}
+
+		public bool ShouldShowNotice
+		{
+			get { return Length > _noticeThreshold; }
+		}
+
+		public bool ShowingNotice
+		{
+			get { return _showingNotice; }
+			set
+			{
+				_showingNotice = value;
+				NotifyPropertyChanged("ShowingNotice");
+			}
 		}
 
 		public override void Accept(IMetaFieldVisitor visitor)

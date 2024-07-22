@@ -46,7 +46,18 @@
 
 			<TextBox Text="{Binding Value}" x:Name="txtValue" MaxLength="{Binding MaxLength}" Margin="0,3,0,5"
 								   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-								   FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" Height="Auto" />
+								   FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" Height="Auto">
+				<TextBox.Style>
+					<Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+						<Setter Property="IsReadOnly" Value="False" />
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding ShowingNotice}" Value="True">
+								<Setter Property="IsReadOnly" Value="True"/>
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</TextBox.Style>
+			</TextBox>
 
 			<Grid Grid.Row="1" Margin="0,0,0,3">
 				<Grid.ColumnDefinitions>
@@ -77,6 +88,9 @@
 							<Style.Triggers>
 								<DataTrigger Binding="{Binding Type}" Value="dataref">
 									<Setter Property="IsReadOnly" Value="False"/>
+								</DataTrigger>
+								<DataTrigger Binding="{Binding ShowingNotice}" Value="True">
+									<Setter Property="IsReadOnly" Value="True"/>
 								</DataTrigger>
 							</Style.Triggers>
 						</Style>
@@ -123,6 +137,33 @@
 					</Border>
 				</Popup>
 			</Grid>
+
+			<Border x:Name="bigData" Margin="-2,1,-2,1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="Auto"
+					Background="#C0292929" Grid.RowSpan="2" BorderBrush="#C0252525" BorderThickness="1">
+				<Border.Style>
+					<Style TargetType="{x:Type Border}">
+						<Setter Property="Visibility" Value="Visible" />
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding ShowingNotice}" Value="True">
+								<Setter Property="Visibility" Value="Visible" />
+							</DataTrigger>
+							<DataTrigger Binding="{Binding ShowingNotice}" Value="False">
+								<Setter Property="Visibility" Value="Collapsed" />
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</Border.Style>
+
+				<StackPanel HorizontalAlignment="Center" Margin="0,30,0,0">
+					<TextBlock TextWrapping="Wrap" Foreground="White" TextAlignment="Center">
+						<Run>This field contains a lot of data which can cause lag. You must manually choose to load it.</Run>
+						<LineBreak/>
+						<Run>This feature can be disabled in the settings below via the gear icon.</Run>
+					</TextBlock>
+					<Button Content="Load Data" Margin="0,4,0,0" Click="NoticeHide_Click"/>
+				</StackPanel>
+
+			</Border>
 		</Grid>
 	</Grid>
 </UserControl>

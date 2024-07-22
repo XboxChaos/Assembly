@@ -160,6 +160,7 @@ namespace Assembly.Helpers
 		private bool _pluginsShowInvisibles;
 		private bool _pluginsShowInformation;
 		private EnumPrefix _pluginsEnumPrefix = EnumPrefix.None;
+		private bool _pluginsShowDataRefNotice = true;
 		private bool _startpageHideOnLaunch;
 		private bool _startpageShowOnLoad = true;
 		private bool _startpageShowRecentsBlf = true;
@@ -606,6 +607,14 @@ namespace Assembly.Helpers
 		{
 			get { return _pluginsShowComments; }
 			set { SetField(ref _pluginsShowComments, value, "PluginsShowComments"); }
+		}
+
+		/// <summary>
+		/// </summary>
+		public bool PluginsShowDataRefNotice
+		{
+			get { return _pluginsShowDataRefNotice; }
+			set { SetField(ref _pluginsShowDataRefNotice, value, "PluginsShowDataRefNotice"); }
 		}
 
 		/// <summary>

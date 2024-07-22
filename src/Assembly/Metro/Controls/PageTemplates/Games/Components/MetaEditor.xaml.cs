@@ -316,6 +316,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			cbShowInvisibles.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles;
 			cbShowComments.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowComments;
 			cbShowInformation.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInformation;
+			cbShowDataRefNotice.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowDataRefNotice;
 
 			cbEnumPrefix.SelectedIndex = (int)App.AssemblyStorage.AssemblySettings.PluginsEnumPrefix;
 
@@ -363,7 +364,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			if (!hasInitFinished) return;
 
-
 			App.AssemblyStorage.AssemblySettings.PluginsShowComments = (bool)cbShowComments.IsChecked;
 			RefreshEditor(MetaReader.LoadType.File);
 			btnOptions.IsChecked = false;
@@ -382,6 +382,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 
 			App.AssemblyStorage.AssemblySettings.PluginsShowInformation = (bool)cbShowInformation.IsChecked;
+			btnOptions.IsChecked = false;
+		}
+
+		private void cbShowDataRefNotice_Altered(object sender, RoutedEventArgs e)
+		{
+			if (!hasInitFinished) return;
+
+			App.AssemblyStorage.AssemblySettings.PluginsShowDataRefNotice = (bool)cbShowDataRefNotice.IsChecked;
 			btnOptions.IsChecked = false;
 		}
 
@@ -556,10 +564,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				}
 				else if (field is ValueField)
 				{
+					if (field is RawData)
+					{
+						RawData raw = field as RawData;
+						raw.ShowingNotice = false;
+					}
+
 					ValueField valueField = field as ValueField;
 					writer.WritePropertyName(valueField.Name);
 					WriteJSONContent(writer, valueField.GetAsJson());
-
 				}
 			}
 			writer.WriteEndObject();
@@ -593,7 +606,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					itw.Indent--;
 				}
 				else if (!(field is WrappedTagBlockEntry))
+				{
+					if (field is RawData)
+					{
+						RawData raw = field as RawData;
+						raw.ShowingNotice = false;
+					}
+
 					itw.WriteLine(field.AsString());
+				}
 			}
 		}
 
