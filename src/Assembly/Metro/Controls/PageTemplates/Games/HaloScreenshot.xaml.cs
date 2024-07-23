@@ -20,42 +20,33 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 	/// </summary>
 	public partial class HaloScreenshot
 	{
-		private readonly BitmapSource _bitmapImage;
+		private BitmapSource _bitmapImage;
 		private readonly string _datetime_long;
 		private readonly string _datetime_shrt;
 		private string _imageID;
+		private readonly Screenshot _shot;
 
 		public HaloScreenshot(Screenshot shot, LayoutDocument tabItem, string source)
 		{
 			InitializeComponent();
 
+			_shot = shot;
 			bool resize = App.AssemblyStorage.AssemblySettings.XdkResizeImages;
+			bool gamma = App.AssemblyStorage.AssemblySettings.XdkScreenshotGammaCorrect;
 
-			using (Bitmap bitm = shot.ConvertToBitmap(App.AssemblyStorage.AssemblySettings.XdkScreenshotGammaCorrect, shot.ScreenWidth != -1 ? resize : false))
-			{
-				_bitmapImage = ScreenshotHelper.CreateBitmapSource(bitm);
-			}
+			cbResize.IsChecked = resize;
+			cbGamma.IsChecked = gamma;
 
-			// DateTime Creation
+			SetBitmap(resize, gamma);
+
 			DateTime date = DateTime.Now;
 			_datetime_long = date.ToString("yyyy-MM-dd,hh-mm-ss");
 			_datetime_shrt = date.ToString("hh:mm.ss");
 
-			// Set Tab Header
 			tabItem.Title = source + " Screenshot {" + _datetime_shrt + "}";
 
-			// Set Image Name
 			lblImageName.Text = _datetime_long + ".png";
 
-			if (resize && shot.ScreenWidth != -1 && (shot.Width != shot.ScreenWidth || shot.Height != shot.ScreenHeight))
-				lblRes.Text = $"{shot.ScreenWidth}x{shot.ScreenHeight} [{shot.Width}x{shot.Height}]";
-			else
-				lblRes.Text = $"{shot.Width}x{shot.Height}";
-
-			// Set Image
-			imageScreenshot.Source = _bitmapImage;
-
-			// Should I save the image?
 			if (!App.AssemblyStorage.AssemblySettings.XdkAutoSave) return;
 
 			if (!Directory.Exists(App.AssemblyStorage.AssemblySettings.XdkScreenshotPath))
@@ -63,6 +54,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			string filePath = App.AssemblyStorage.AssemblySettings.XdkScreenshotPath + "\\" + _datetime_long + ".png";
 			SaveImage(filePath);
+		}
+
+		private void SetBitmap(bool resize, bool gamma, bool forceA2 = false)
+		{
+			using (Bitmap bitm = _shot.ConvertToBitmap(gamma, _shot.ScreenWidth != -1 ? resize : false, forceA2))
+			{
+				_bitmapImage = ScreenshotHelper.CreateBitmapSource(bitm);
+			}
+
+			imageScreenshot.Source = _bitmapImage;
+
+			if (resize && _shot.ScreenWidth != -1 && (_shot.Width != _shot.ScreenWidth || _shot.Height != _shot.ScreenHeight))
+				lblRes.Text = $"{_shot.ScreenWidth}x{_shot.ScreenHeight} [{_shot.Width}x{_shot.Height}]";
+			else
+				lblRes.Text = $"{_shot.Width}x{_shot.Height}";
 		}
 
 		private void SaveImage(string filePath)
@@ -165,6 +171,36 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				{
 					ImgurHistory.AddNewEntry(_datetime_long, _thumburl, _url);
 				}));
+			}
+		}
+
+		private void Reconvert_Click(object sender, RoutedEventArgs e)
+		{
+			bool resize = (bool)cbResize.IsChecked;
+			bool gamma = (bool)cbGamma.IsChecked;
+			bool format = (bool)cbFormat.IsChecked;
+
+			SetBitmap(resize, gamma, format);
+
+			if (!App.AssemblyStorage.AssemblySettings.XdkAutoSave) return;
+
+			if (!Directory.Exists(App.AssemblyStorage.AssemblySettings.XdkScreenshotPath))
+				Directory.CreateDirectory(App.AssemblyStorage.AssemblySettings.XdkScreenshotPath);
+
+			string filePath = App.AssemblyStorage.AssemblySettings.XdkScreenshotPath + "\\" + _datetime_long + ".png";
+			SaveImage(filePath);
+		}
+
+		private void CopyDebug_Click(object sender, RoutedEventArgs e)
+		{
+			using (StringWriter sw = new StringWriter())
+			{
+				foreach (string s in _shot.OriginalResponse.DumpValues())
+				{
+					sw.WriteLine(s);
+				}
+
+				Clipboard.SetText(sw.ToString());
 			}
 		}
 	}

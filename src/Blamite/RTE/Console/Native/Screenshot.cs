@@ -27,8 +27,12 @@ namespace Blamite.RTE.Console.Native
 
 		public byte[] Data { get; set; }
 
+		public FormattedResponse OriginalResponse { get; set; }
+
 		public Screenshot(FormattedResponse formatted)
 		{
+			OriginalResponse = formatted;
+
 			var pitch = formatted.FindNumberValue("pitch");
 			Pitch = pitch.HasValue ? (int)pitch.Value : 0;
 
@@ -65,8 +69,9 @@ namespace Blamite.RTE.Console.Native
 		/// </summary>
 		/// <param name="gamma">Apply gamma correction to the A2R10G10B10 format.</param>
 		/// <param name="resize">Resize to the console's screen resolution, if available.</param>
+		/// <param name="forceA2">Ignore the format value and force the format to be A2R10G10B10. Default is false.</param>
 		/// <returns>The screenshot as a Bitmap.</returns>
-		public Bitmap ConvertToBitmap(bool gamma, bool resize)
+		public Bitmap ConvertToBitmap(bool gamma, bool resize, bool forceA2 = false)
 		{
 			bool tiled = (Format & 0x100) > 0;
 			int format = (int)(Format & 0x3F);
@@ -80,7 +85,7 @@ namespace Blamite.RTE.Console.Native
 			//are other formats used? I hope not!
 			//OG xbox uses 0x1E which is plain little endian 8888 so no work is needed unlike 360
 
-			if (format == 0x36)
+			if (format == 0x36 || forceA2)
 				data = ConvertA2B10G10R10ToA8R8G8B8(data, realWidth, Height, gamma);
 			else //0x6, 0x1E
 				data = PostProcA8R8G8B8(data);

@@ -12,15 +12,51 @@
 		<Grid Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
 			<Border BorderThickness="0,1,0,0" BorderBrush="#434346">
 				<StackPanel Orientation="Horizontal">
-					<Button x:Name="btnSaveImg" Content="Save Image" Width="80" Margin="20,0,0,0" Click="btnSaveImg_Click" />
-					<Button x:Name="btnUploadImage" Content="Upload Image" Width="93" Margin="10,0,0,0" Click="btnUploadImage_Click" Visibility="Collapsed" />
-					<Button x:Name="btnClipboardImage" Content="Copy Image to Clipboard" Width="161" Margin="10,0,0,0"
+					<Button x:Name="btnSaveImg" Content="Save Image" Padding="10,0" Margin="20,0,0,0" Click="btnSaveImg_Click" />
+					<Button x:Name="btnUploadImage" Content="Upload Image"  Padding="10,0" Margin="8,0,0,0" Click="btnUploadImage_Click" Visibility="Collapsed" />
+					<Button x:Name="btnClipboardImage" Content="Copy Image to Clipboard"  Padding="10,0" Margin="8,0,0,0"
 					        Click="btnClipboardImage_Click" />
+
+					<ToggleButton x:Name="btnTweaks" Margin="8,0,0,0" IsChecked="False" ToolTip="Click to view available options for this screenshot for corrections.">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+
+							<TextBlock Text="Modify Image" Grid.Column="0" Padding="10,0,2,0" HorizontalAlignment="Center"/>
+							<Path x:Name="Arrow" Grid.Column="1" Data="M0,0L4,4 8,0z" Margin="2,0,10,0" UseLayoutRounding="True" SnapsToDevicePixels="True" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="#989898" Width="8"/>
+						</Grid>
+					</ToggleButton>
+
+					<Popup x:Name="popTweaks" IsOpen="{Binding IsChecked, ElementName=btnTweaks}" PlacementTarget="{x:Reference btnTweaks}" StaysOpen="False" >
+						<Border BorderThickness="1" Background="#1b1b1c" BorderBrush="#333337">
+							<StackPanel>
+								<MenuItem Header="Re-Convert Using These Options:" Foreground="White" Click="Reconvert_Click"
+										  ToolTip="Reconverts the original screenshot data using the below options. Defaults are your current settings. If autosaving is enabled the previous image will be overwritten.">
+									<MenuItem.Icon>
+										<Path Style="{StaticResource ScreenshotIcon}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+									</MenuItem.Icon>
+								</MenuItem>
+
+								<StackPanel Margin="30,0,0,0">
+									<MenuItem x:Name="cbResize" Header="Scale To Console Resolution" IsCheckable="True" Foreground="White" />
+									<MenuItem x:Name="cbGamma" Header="Gamma Correction" IsCheckable="True" Foreground="White" ToolTip="Still only applies to A2R10G10B10 format."/>
+									<MenuItem x:Name="cbFormat" Header="Force A2R10G10B10 Format (See ToolTip)" IsCheckable="True" Foreground="White"
+										ToolTip="The Dashlaunch XBDM plugin can give the wrong color format in games like Halo 3 and ODST, resulting in clown vomit. This will use the correct format instead."/>
+								</StackPanel>
+								
+								<Separator/>
+								
+								<MenuItem Header="Copy Debug Info" Foreground="White" Click="CopyDebug_Click" ToolTip="Copies a dump of the console's original text response to your clipboard containing format and resolution info." />
+							</StackPanel>
+						</Border>
+					</Popup>
 
 					<TextBlock x:Name="lblRes" Text="1280x720 [1152x640]" Foreground="#FF999999" Margin="4,0,0,0"
 					           VerticalAlignment="Center" FontFamily="{DynamicResource MetroFontRegular}" />
 
-					<TextBlock x:Name="lblImageName" Text="2012-09-26,06-21-41.png" Foreground="{DynamicResource ExtryzeAccentBrush}" Margin="4,0,0,0"
+					<TextBlock x:Name="lblImageName" Text="2009-10-25,02-57-33.mp4" Foreground="{DynamicResource ExtryzeAccentBrush}" Margin="4,0,0,0"
 					           VerticalAlignment="Center" FontFamily="{DynamicResource MetroFontRegular}" />
 				</StackPanel>
 			</Border>

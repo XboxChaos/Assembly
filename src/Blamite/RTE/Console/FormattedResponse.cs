@@ -83,5 +83,25 @@ namespace Blamite.RTE.Console
 
 			return result;
 		}
+
+		/// <summary>
+		/// Writes all values to a list.
+		/// </summary>
+		/// <returns>All values as a list.</returns>
+		public List<string> DumpValues()
+		{
+			var result = new List<string>();
+
+			foreach (KeyValuePair<string, uint> pair in _numberValues)
+			{
+				result.Add($"{pair.Key} = 0x{pair.Value:X}");
+			}
+			foreach (KeyValuePair<string, string> pair in _stringValues)
+			{
+				result.Add($"{pair.Key} = {pair.Value}");
+			}
+
+			return result;
+		}
 	}
 }
