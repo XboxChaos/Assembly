@@ -142,7 +142,6 @@ namespace Blamite.Blam
 				reader.Endianness = trialendian.Value;
 				reader.SeekTo(0x588);
 				fileVersion = reader.ReadInt32();
-				trial = true;
 			}
 
 			var possibleEngines = engineDb.FindEnginesByVersion(fileVersion, reader.Endianness);
@@ -154,15 +153,10 @@ namespace Blamite.Blam
 			foreach (EngineDescription engine in possibleEngines)
 			{
 				int footOffset;
+				var headerLayout = engine.Layouts.GetLayout("header");
 
-				if (trial)
-				{
-					var headerLayout = engine.Layouts.GetLayout("header");
-					if (!headerLayout.HasField("footer magic"))
-						continue;
-
+				if (headerLayout.HasField("footer magic"))
 					footOffset = headerLayout.GetFieldOffset("footer magic");
-				}
 				else
 					footOffset = engine.HeaderSize - 4;
 

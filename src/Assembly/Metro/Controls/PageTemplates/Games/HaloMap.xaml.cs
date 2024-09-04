@@ -238,6 +238,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					default:
 					case RTEConnectionType.None:
 					case RTEConnectionType.ConsoleXbox:
+					case RTEConnectionType.ConsoleXboxOne:
 						break;
 					case RTEConnectionType.ConsoleXbox360:
 						_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm);

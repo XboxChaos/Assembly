@@ -107,6 +107,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 				case CompressionState.ReadOnly:
 					MetroMessageBox.Show("Map is Read Only", "The provided map is readonly and cannot be modified. Check the file's properties and try again.");
 					break;
+				case CompressionState.NotSupported:
+					MetroMessageBox.Show("Not supported", "The desired action is not supported for the provided map. It has not been modified.");
+					break;
 				default:
 					MetroMessageBox.Show("Action Complete", string.Format("The provided map was {0} successfully.", result.ToString().ToLowerInvariant()));
 					break;

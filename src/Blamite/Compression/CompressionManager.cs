@@ -12,7 +12,8 @@ namespace Blamite.Compression
 		Null,
 		Compressed,
 		Decompressed,
-		ReadOnly
+		ReadOnly,
+		NotSupported
 	}
 
 	public enum CompressionType
@@ -21,7 +22,8 @@ namespace Blamite.Compression
 		CEXBox,
 		CEA360,
 		CEAMCC,
-		H2MCC
+		H2MCC,
+		XB1MCC
 	}
 
 	/// <summary>
@@ -73,7 +75,7 @@ namespace Blamite.Compression
 						else if (engineInfo.Compression == CompressionType.CEA360)
 						{
 							FirstGenSaberLZX.DecompressCache(input);
-							return CompressionState.Decompressed;
+							return CompressionState.NotSupported;
 						}
 						else if (engineInfo.Compression == CompressionType.CEAMCC)
 						{
@@ -83,6 +85,11 @@ namespace Blamite.Compression
 						else if (engineInfo.Compression == CompressionType.H2MCC)
 						{
 							SecondGenSaberZLib.DecompressCache(input, headerValues, headerLayout);
+							return CompressionState.Decompressed;
+						}
+						else if (engineInfo.Compression == CompressionType.XB1MCC)
+						{
+							ThirdGenDurangoLZMA.DecompressCache(input, headerValues, headerLayout, engineInfo.SegmentAlignment);
 							return CompressionState.Decompressed;
 						}
 						else
@@ -99,7 +106,7 @@ namespace Blamite.Compression
 						else if (engineInfo.Compression == CompressionType.CEA360)
 						{
 							FirstGenSaberLZX.CompressCache(input);
-							return CompressionState.Compressed;
+							return CompressionState.NotSupported;
 						}
 						else if (engineInfo.Compression == CompressionType.CEAMCC)
 						{
@@ -110,6 +117,11 @@ namespace Blamite.Compression
 						{
 							SecondGenSaberZLib.CompressCache(input, headerValues, headerLayout);
 							return CompressionState.Compressed;
+						}
+						else if (engineInfo.Compression == CompressionType.XB1MCC)
+						{
+							ThirdGenDurangoLZMA.CompressCache(input, headerValues, headerLayout);
+							return CompressionState.NotSupported;
 						}
 						else
 							return state;
@@ -185,6 +197,8 @@ namespace Blamite.Compression
 				return FirstGenSaberZLib.AnalyzeCache(reader, engineInfo, out headerValues);
 			else if (engineInfo.Compression == CompressionType.H2MCC)
 				return SecondGenSaberZLib.AnalyzeCache(reader, engineInfo, out headerValues);
+			else if (engineInfo.Compression == CompressionType.XB1MCC)
+				return ThirdGenDurangoLZMA.AnalyzeCache(reader, engineInfo, out headerValues);
 			else
 				return CompressionState.Null;
 		}

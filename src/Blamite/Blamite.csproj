@@ -257,6 +257,7 @@
     <Compile Include="Compression\FirstGenSaberLZX.cs" />
     <Compile Include="Compression\FirstGenXboxZLib.cs" />
     <Compile Include="Compression\SecondGenSaberZLib.cs" />
+    <Compile Include="Compression\ThirdGenDurangoLZMA.cs" />
     <Compile Include="Extensions\BitArrayExtensions.cs" />
     <Compile Include="Injection\DataBlockFixups.cs" />
     <Compile Include="Injection\ExtractedSound.cs" />
@@ -404,6 +405,18 @@
     <Compile Include="Native\ProcessMemoryStream.cs" />
     <Compile Include="RTE\IRTEProvider.cs" />
     <Compile Include="RTE\RTEStreamManager.cs" />
+    <Compile Include="Util\7zip\Common\CRC.cs" />
+    <Compile Include="Util\7zip\Compress\LZMA\LzmaBase.cs" />
+    <Compile Include="Util\7zip\Compress\LZMA\LzmaDecoder.cs" />
+    <Compile Include="Util\7zip\Compress\LZMA\LzmaEncoder.cs" />
+    <Compile Include="Util\7zip\Compress\LZ\IMatchFinder.cs" />
+    <Compile Include="Util\7zip\Compress\LZ\LzBinTree.cs" />
+    <Compile Include="Util\7zip\Compress\LZ\LzInWindow.cs" />
+    <Compile Include="Util\7zip\Compress\LZ\LzOutWindow.cs" />
+    <Compile Include="Util\7zip\Compress\RangeCoder\RangeCoder.cs" />
+    <Compile Include="Util\7zip\Compress\RangeCoder\RangeCoderBit.cs" />
+    <Compile Include="Util\7zip\Compress\RangeCoder\RangeCoderBitTree.cs" />
+    <Compile Include="Util\7zip\ICoder.cs" />
     <Compile Include="Util\Adler32.cs" />
     <Compile Include="Util\AES.cs" />
     <Compile Include="Util\CharConstant.cs" />
@@ -516,6 +529,9 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Formats\Halo2AMCC\H2AMCC_Scripting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo2AMCC\H2AMCC_UUI49_StringIDs.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\Halo2AMCC\H2AMCC_Stub_StringIDs.xml">
@@ -683,10 +699,19 @@
     <Content Include="Formats\Halo3Beta\Layouts\H3B_Layouts_Scenario.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Formats\Halo3MCC\H3MCC2014B_StringIDs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo3MCC\H3MCC2015_StringIDs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Formats\Halo3MCC\H3MCC_Poking.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\Halo3MCC\H3MCC_Scripting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo3MCC\H3MCC2014_StringIDs.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\Halo3MCC\H3MCC_StringIDs.xml">
@@ -819,6 +844,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\Halo4E3\H4WarGames_StringIDs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo4MCC\H4MCC2014B_StringIDs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo4MCC\H4MCC2014_StringIDs.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\Halo4MCC\H4MCC_Stub_StringIDs.xml">
@@ -1016,6 +1047,21 @@
     <Content Include="Formats\HaloOnline\HO_372_Scripting.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Formats\ODSTMCC\Layouts2015\ODSTMCC_Layouts2015_Core.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\ODSTMCC\Layouts2015\ODSTMCC_Layouts2015_Resources.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\ODSTMCC\Layouts2015\ODSTMCC_Layouts2015_Scenario.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\ODSTMCC\Layouts2015\ODSTMCC_Layouts2015_Scripting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\ODSTMCC\Layouts2015\ODSTMCC_Layouts2015_Sounds.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Formats\ODSTMCC\LayoutsU8\ODSTMCC_LayoutsU8_Core.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1029,6 +1075,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\ODSTMCC\LayoutsU8\ODSTMCC_LayoutsU8_Sounds.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\ODSTMCC\ODSTMCC2015_StringIDs.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\ODSTMCC\ODSTMCC_U8_Stub_StringIDs.xml">

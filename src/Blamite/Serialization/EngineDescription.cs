@@ -276,8 +276,10 @@ namespace Blamite.Serialization
 				Compression = CompressionType.CEAMCC;
 			else if (compression.Contains("h2mcc"))
 				Compression = CompressionType.H2MCC;
+			else if (compression.Contains("xb1mcc"))
+				Compression = CompressionType.XB1MCC;
 			else
-				throw new System.Exception("Invalid compression type \"" + compression + "\" for build " + Name + "in engines.xml. Only \"none\", \"cexbox\", \"cea360\", \"ceamcc\", and \"h2mcc\" are valid.");
+				throw new System.Exception("Invalid compression type \"" + compression + "\" for build " + Name + "in engines.xml. Only \"none\", \"cexbox\", \"cea360\", \"ceamcc\", \"h2mcc\", and \"xb1mcc\" are valid.");
 
 			if (Settings.PathExists("engineInfo/encryption/tagNameKey"))
 				TagNameKey = new AESKey(Settings.GetSettingOrDefault<string>("engineInfo/encryption/tagNameKey", null));
@@ -301,6 +303,8 @@ namespace Blamite.Serialization
 				PokingPlatform = RTEConnectionType.LocalProcess32;
 			else if (platform.Contains("pc64"))
 				PokingPlatform = RTEConnectionType.LocalProcess64;
+			else if (platform.Contains("xboxone"))
+				PokingPlatform = RTEConnectionType.ConsoleXboxOne;
 			else if (platform.Contains("undefined"))
 				PokingPlatform = RTEConnectionType.None;
 			else

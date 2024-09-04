@@ -75,7 +75,6 @@ namespace Blamite.Compression
 			}
 			*/
 
-			throw new InvalidOperationException("lzx compression is not currently supported.");
 		}
 		
 		public static void DecompressCache(string cacheFile)
@@ -125,7 +124,6 @@ namespace Blamite.Compression
 				File.WriteAllBytes(cacheFile, msOutput.ToArray());
 			*/
 
-			throw new InvalidOperationException("lzx compression is not currently supported.");
 		}
 	}
 }
