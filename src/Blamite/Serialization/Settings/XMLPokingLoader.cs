@@ -22,14 +22,15 @@ namespace Blamite.Serialization.Settings
 		/// <summary>
 		///     Loads all of the group names defined in an XML document.
 		/// </summary>
-		/// <param name="layoutDocument">The XML document to load group names from.</param>
+		/// <param name="document">The XML document to load group names from.</param>
+		/// <param name="path">The path to the original XML. For debugging purposes.</param>
 		/// <returns>The names that were loaded.</returns>
-		public static PokingCollection LoadPointers(XDocument namesDocument)
+		public static PokingCollection LoadPointers(XDocument document, string path)
 		{
 			// Make sure there is a root <poking> tag
-			XContainer container = namesDocument.Element("poking");
+			XContainer container = document.Element("poking");
 			if (container == null)
-				throw new ArgumentException("Invalid poking document");
+				throw new ArgumentException($"Invalid poking document.\r\n{path}");
 
 			var result = new PokingCollection();
 			foreach (XElement cl in container.Elements("version"))
@@ -64,7 +65,7 @@ namespace Blamite.Serialization.Settings
 		/// <returns>The poking versions that were loaded.</returns>
 		public static PokingCollection LoadPointers(string documentPath)
 		{
-			return LoadPointers(XDocument.Load(documentPath));
+			return LoadPointers(XDocument.Load(documentPath), documentPath);
 		}
 	}
 }

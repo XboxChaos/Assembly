@@ -26,13 +26,14 @@ namespace Blamite.Serialization.Settings
 		///     Loads stringID namespace definitions from an XML document.
 		/// </summary>
 		/// <param name="document">The XML document to load namespace definitions from.</param>
+		/// <param name="path">The path to the original XML. For debugging purposes.</param>
 		/// <returns>The StringIDInformation that was created.</returns>
-		public static StringIDInformation LoadStringIDNamespaces(XDocument document)
+		public static StringIDInformation LoadStringIDNamespaces(XDocument document, string path)
 		{
 			// Make sure there is a root <stringIDs> tag
 			XElement container = document.Element("stringIDs");
 			if (container == null)
-				throw new ArgumentException("Invalid stringID definition document");
+				throw new ArgumentException($"Invalid stringID definition document.\r\n{path}");
 
 			StringIDLayout idLayout = ProcessIDLayoutInfo(container);
 
@@ -52,7 +53,7 @@ namespace Blamite.Serialization.Settings
 		/// <returns>The StringIDInformation that was created.</returns>
 		public static StringIDInformation LoadStringIDNamespaces(string documentPath)
 		{
-			return LoadStringIDNamespaces(XDocument.Load(documentPath));
+			return LoadStringIDNamespaces(XDocument.Load(documentPath), documentPath);
 		}
 
 		private static StringIDLayout ProcessIDLayoutInfo(XElement element)

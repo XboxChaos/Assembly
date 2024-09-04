@@ -28,21 +28,22 @@ namespace Blamite.Serialization.Settings
 				result = LoadLayoutsFromDirectory(path);
 			else
 				result = LoadLayouts(path);
-			ProcessStructReferences(result);
+			ProcessStructReferences(result, path);
 			return result;
 		}
 
 		/// <summary>
 		///     Loads all of the structure layouts defined in an XML document.
 		/// </summary>
-		/// <param name="layoutDocument">The XML document to load structure layouts from.</param>
+		/// <param name="document">The XML document to load structure layouts from.</param>
+		/// <param name="path">The path to the original XML. For debugging purposes.</param>
 		/// <returns>The layouts that were loaded.</returns>
-		private StructureLayoutCollection LoadLayouts(XDocument layoutDocument)
+		private StructureLayoutCollection LoadLayouts(XDocument document, string path)
 		{
 			// Make sure there is a root <layouts> tag
-			XContainer layoutContainer = layoutDocument.Element("layouts");
+			XContainer layoutContainer = document.Element("layouts");
 			if (layoutContainer == null)
-				throw new ArgumentException("Invalid layout document");
+				throw new ArgumentException($"Invalid layout document.\r\n{path}");
 
 			// Layout tags have the format:
 			// <layout for="(layout's purpose)">(structure fields)</layout>
@@ -63,7 +64,7 @@ namespace Blamite.Serialization.Settings
 		/// <returns>The layouts that were loaded.</returns>
 		private StructureLayoutCollection LoadLayouts(string documentPath)
 		{
-			return LoadLayouts(XDocument.Load(documentPath));
+			return LoadLayouts(XDocument.Load(documentPath), documentPath);
 		}
 
 		/// <summary>
@@ -214,14 +215,14 @@ namespace Blamite.Serialization.Settings
 		/// Processes the queued structure list, resolving the layout referenced by each structure.
 		/// </summary>
 		/// <param name="layouts">The layout collection to search for layouts in.</param>
-		private void ProcessStructReferences(StructureLayoutCollection layouts)
+		private void ProcessStructReferences(StructureLayoutCollection layouts, string path)
 		{
 			// Resolve each struct field's layout reference
 			while (_structs.Count > 0)
 			{
 				var queuedStruct = _structs.Dequeue();
 				if (!layouts.HasLayout(queuedStruct.LayoutName))
-					throw new InvalidOperationException("Unable to find layout \"" + queuedStruct.LayoutName + "\" referenced by structure \"" + queuedStruct.Name + "\"");
+					throw new InvalidOperationException($"Unable to find layout \"{queuedStruct.LayoutName}\" referenced by structure \"{queuedStruct.Name}\".\r\n{path}");
 				var layout = layouts.GetLayout(queuedStruct.LayoutName);
 				queuedStruct.Owner.AddStructField(queuedStruct.Name, queuedStruct.Offset, layout);
 			}

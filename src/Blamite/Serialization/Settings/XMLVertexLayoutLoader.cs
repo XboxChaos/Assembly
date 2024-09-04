@@ -26,13 +26,14 @@ namespace Blamite.Serialization.Settings
 		/// <summary>
 		///     Loads all of the vertex layouts defined in an XML document.
 		/// </summary>
-		/// <param name="layoutDocument">The XML document to load vertex layouts from.</param>
+		/// <param name="document">The XML document to load vertex layouts from.</param>
+		/// <param name="path">The path to the original XML. For debugging purposes.</param>
 		/// <returns>The layouts that were loaded.</returns>
-		public static VertexLayoutCollection LoadLayouts(XDocument layoutDocument)
+		public static VertexLayoutCollection LoadLayouts(XDocument document, string path)
 		{
-			XContainer vertexTypesContainer = layoutDocument.Element("vertexTypes");
-			if (layoutDocument == null)
-				throw new ArgumentException("Invalid vertex layout document");
+			XContainer vertexTypesContainer = document.Element("vertexTypes");
+			if (document == null)
+				throw new ArgumentException("Invalid vertex layout document.\r\n{path}");
 
 			var result = new VertexLayoutCollection();
 			foreach (XElement vertex in vertexTypesContainer.Elements("vertex"))
@@ -50,7 +51,7 @@ namespace Blamite.Serialization.Settings
 		/// <returns>The layouts that were loaded.</returns>
 		public static VertexLayoutCollection LoadLayouts(string documentPath)
 		{
-			return LoadLayouts(XDocument.Load(documentPath));
+			return LoadLayouts(XDocument.Load(documentPath), documentPath);
 		}
 
 		/// <summary>
