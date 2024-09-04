@@ -147,5 +147,10 @@ namespace Assembly.Metro.Controls.PageTemplates
 		{
 			App.AssemblyStorage.AssemblySettings.HomeWindow.AddPatchTabModule();
 		}
+
+		private void BtnCompressor_OnClick(object sender, RoutedEventArgs e)
+		{
+			App.AssemblyStorage.AssemblySettings.HomeWindow.AddTabModule(Home.TabGenre.MapCompressor, true);
+		}
 	}
 }
