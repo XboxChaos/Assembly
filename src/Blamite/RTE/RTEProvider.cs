@@ -12,6 +12,7 @@ namespace Blamite.RTE
 		None,
 		ConsoleXbox,
 		ConsoleXbox360,
+		ConsoleXboxOne,
 		LocalProcess32,
 		LocalProcess64
 	}
