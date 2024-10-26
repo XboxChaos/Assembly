@@ -603,8 +603,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			var field = (DataRef)sender;
 
-			if (!_loading &&
-				(e.PropertyName == "Length" || e.PropertyName == "DataAddress"))
+			if (!_loading && !field.ShowingNotice &&
+				(e.PropertyName == "Length" || e.PropertyName == "DataAddress" || e.PropertyName == "ShowingNotice"))
 			{
 				_loading = true;
 				_tracker.Enabled = false;

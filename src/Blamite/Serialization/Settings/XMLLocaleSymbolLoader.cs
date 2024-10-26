@@ -25,30 +25,28 @@ namespace Blamite.Serialization.Settings
 		/// <summary>
 		///     Loads all of the locale symbols defined in an XML document.
 		/// </summary>
-		/// <param name="layoutDocument">The XML document to load locale symbols from.</param>
+		/// <param name="document">The XML document to load locale symbols from.</param>
+		/// <param name="path">The path to the original XML. For debugging purposes.</param>
 		/// <returns>The symbols that were loaded.</returns>
-		public static LocaleSymbolCollection LoadLocaleSymbols(XDocument symbolDocument)
+		public static LocaleSymbolCollection LoadLocaleSymbols(XDocument document, string path)
 		{
 			// Make sure there is a root <symbols> tag
-			XContainer container = symbolDocument.Element("symbols");
+			XContainer container = document.Element("symbols");
 			if (container == null)
-				throw new ArgumentException("Invalid symbols document");
+				throw new ArgumentException($"Invalid symbols document.\r\n{path}");
 
 			// Symbol tags have the format:
-			// <symbol code="0x(the byte array)" display="(Friendly Name)" />
+			// <symbol unicode="0x(hex code for character)" display="(engine name)" />
 			var result = new LocaleSymbolCollection();
 			foreach (XElement symbol in container.Elements("symbol"))
 			{
-				string code = XMLUtil.GetStringAttribute(symbol, "code");
+				string code = XMLUtil.GetStringAttribute(symbol, "unicode").Replace("0x", "");
 				string display = XMLUtil.GetStringAttribute(symbol, "display");
 
-				// Convert code to int
-				code = code.Replace("0x", "");
-				byte[] codeBytes = FunctionHelpers.HexStringToBytes(code);
-				string codeString = Encoding.UTF8.GetString(codeBytes);
-				char codeChar = codeString[0];
+				if (!short.TryParse(code, System.Globalization.NumberStyles.HexNumber, null, out short codeVal))
+					throw new ArgumentException($"Invalid unicode value \"{code}\" for display value \"{display}\".\r\n{path}");
 
-				result.AddSymbol(codeChar, display);
+				result.AddSymbol((char)codeVal, display);
 			}
 			return result;
 		}
@@ -60,7 +58,7 @@ namespace Blamite.Serialization.Settings
 		/// <returns>The symbols that were loaded.</returns>
 		public static LocaleSymbolCollection LoadLocaleSymbols(string documentPath)
 		{
-			return LoadLocaleSymbols(XDocument.Load(documentPath));
+			return LoadLocaleSymbols(XDocument.Load(documentPath), documentPath);
 		}
 	}
 }

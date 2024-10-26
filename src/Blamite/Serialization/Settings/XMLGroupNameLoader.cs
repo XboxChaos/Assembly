@@ -22,14 +22,15 @@ namespace Blamite.Serialization.Settings
 		/// <summary>
 		///     Loads all of the group names defined in an XML document.
 		/// </summary>
-		/// <param name="layoutDocument">The XML document to load group names from.</param>
+		/// <param name="document">The XML document to load group names from.</param>
+		/// <param name="path">The path to the original XML. For debugging purposes.</param>
 		/// <returns>The names that were loaded.</returns>
-		public static GroupNameCollection LoadGroupNames(XDocument namesDocument)
+		public static GroupNameCollection LoadGroupNames(XDocument document, string path)
 		{
 			// Make sure there is a root <tagGroups> tag
-			XContainer container = namesDocument.Element("tagGroups");
+			XContainer container = document.Element("tagGroups");
 			if (container == null)
-				throw new ArgumentException("Invalid group names document");
+				throw new ArgumentException($"Invalid group names document.\r\n{path}");
 
 			// Group tags have the format:
 			// <group magic="(the magic as a string)" name="(group name)" />
@@ -51,7 +52,7 @@ namespace Blamite.Serialization.Settings
 		/// <returns>The symbols that were loaded.</returns>
 		public static GroupNameCollection LoadGroupNames(string documentPath)
 		{
-			return LoadGroupNames(XDocument.Load(documentPath));
+			return LoadGroupNames(XDocument.Load(documentPath), documentPath);
 		}
 	}
 }

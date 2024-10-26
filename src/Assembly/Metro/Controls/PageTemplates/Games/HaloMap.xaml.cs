@@ -238,6 +238,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					case RTEConnectionType.ConsoleXbox360:
 						_rteProvider = new ConsoleRTEProvider(App.AssemblyStorage.AssemblySettings.XeConsole);
 						break;
+					case RTEConnectionType.ConsoleXboxOne:
+						break;
 					case RTEConnectionType.LocalProcess32:
 					case RTEConnectionType.LocalProcess64:
 						{
@@ -1550,7 +1552,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						case "itemIsolate":
 							{
 								if (_cacheFile.Engine == EngineType.FirstGeneration ||
-									tag.RawTag.Source != TagSource.MetaArea)
+									tag?.RawTag.Source != TagSource.MetaArea)
 									tagMenuItem.Visibility = Visibility.Collapsed;
 								break;
 							}

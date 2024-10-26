@@ -97,20 +97,59 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override string AsString()
 		{
-			if (Alpha)
-				return string.Format("{0} | {1} | {2} {3} {4} {5}", DataType, Name, Value.A, Value.R, Value.G, Value.B);
+			if (DataType == "color32")
+			{
+				if (Alpha)
+					return string.Format("{0} | {1} | {2} {3} {4} {5}", DataType, Name, Value.A, Value.R, Value.G, Value.B);
 
-			return string.Format("{0} | {1} | {2} {3} {4}", DataType, Name, Value.R, Value.G, Value.B);
+				return string.Format("{0} | {1} | {2} {3} {4}", DataType, Name, Value.R, Value.G, Value.B);
+			}
+			else if (Basic)
+			{
+				if (Alpha)
+					return string.Format("{0} | {1} | {2} {3} {4} {5}", DataType, Name, ByteToFloat(Value.A), ByteToFloat(Value.R), ByteToFloat(Value.G), ByteToFloat(Value.B));
+
+				return string.Format("{0} | {1} | {2} {3} {4}", DataType, Name, ByteToFloat(Value.R), ByteToFloat(Value.G), ByteToFloat(Value.B));
+			}
+			else
+			{
+				if (Alpha)
+					return string.Format("{0} | {1} | {2} {3} {4} {5}", DataType, Name, Value.ScA, Value.ScR, Value.ScG, Value.ScB);
+
+				return string.Format("{0} | {1} | {2} {3} {4}", DataType, Name, Value.ScR, Value.ScG, Value.ScB);
+			}
 		}
 
 		public override object GetAsJson()
 		{
 			Dictionary<string, object> dict = new Dictionary<string, object>();
-			if (Alpha)
-				dict["A"] = Value.A;
-			dict["R"] = Value.R;
-			dict["G"] = Value.G;
-			dict["B"] = Value.B;
+			if (DataType == "color32")
+			{
+				dict["Type"] = "integer";
+				if (Alpha)
+					dict["A"] = Value.A;
+				dict["R"] = Value.R;
+				dict["G"] = Value.G;
+				dict["B"] = Value.B;
+			}
+			else if (Basic)
+			{
+				dict["Type"] = "float";
+				if (Alpha)
+					dict["A"] = ByteToFloat(Value.A);
+				dict["R"] = ByteToFloat(Value.R);
+				dict["G"] = ByteToFloat(Value.G);
+				dict["B"] = ByteToFloat(Value.B);
+			}
+			else
+			{
+				dict["Type"] = "float";
+				if (Alpha)
+					dict["A"] = Value.ScA;
+				dict["R"] = Value.ScR;
+				dict["G"] = Value.ScG;
+				dict["B"] = Value.ScB;
+			}
 
 			return dict;
 		}
