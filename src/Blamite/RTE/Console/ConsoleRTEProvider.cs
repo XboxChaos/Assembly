@@ -19,7 +19,7 @@ namespace Blamite.RTE.Console
 		/// <summary>
 		///     The type of connection that the provider will establish.
 		/// </summary>
-		public new RTEConnectionType ConnectionType
+		public override RTEConnectionType ConnectionType
 		{
 			get { return _console.ConnectionType; }
 		}
@@ -42,7 +42,7 @@ namespace Blamite.RTE.Console
 			}
 
 			_console.Disconnect();
-			return new EndianStream(_console.MemoryStream, _console.Endianness);
+			return new EndianStream(_console.ConsoleStream, _console.Endianness);
 		}
 	}
 }

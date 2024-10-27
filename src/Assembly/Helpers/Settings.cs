@@ -169,6 +169,7 @@ namespace Assembly.Helpers
 		private bool _startpageShowRecentsCampaign = true;
 		private XeConsole _xeConsole;
 		private XbConsole _xbConsole;
+		private XeConsole _xeFuConsole;
 		private bool _xdkAutoSave;
 		private string _xeConsoleNameIp = "192.168.0.1";
 		private string _xbConsoleNameIp = "192.168.0.1";
@@ -180,6 +181,7 @@ namespace Assembly.Helpers
 		private UpdateSource _updateChannel = UpdateSource.Stable;
 		private bool _shownCheatingDialog = false;
 		private bool _autoOpenDuplicates = false;
+		private bool _xdkOnly360 = false;
 		// Scripting
 		private bool _showScriptInfo = false;
 		private bool _outputCompilerDebugData = false;
@@ -445,8 +447,10 @@ namespace Assembly.Helpers
 			{
 				SetField(ref _xeConsoleNameIp, value, "XeConsoleNameIp");
 
-				if (XeConsole != null)
-					XeConsole.UpdateIdentifier(value);
+				if (XenonConsole != null)
+					XenonConsole.UpdateIdentifier(value);
+				if (XenonFusionConsole != null)
+					XenonFusionConsole.UpdateIdentifier(value);
 			}
 		}
 
@@ -483,8 +487,8 @@ namespace Assembly.Helpers
 			{
 				SetField(ref _xbConsoleNameIp, value, "XbConsoleNameIp");
 
-				if (XbConsole != null)
-					XbConsole.UpdateIdentifier(value);
+				if (XboxConsole != null)
+					XboxConsole.UpdateIdentifier(value);
 			}
 		}
 
@@ -695,6 +699,14 @@ namespace Assembly.Helpers
 
 		/// <summary>
 		/// </summary>
+		public bool XdkOnly360
+		{
+			get { return _xdkOnly360; }
+			set { SetField(ref _xdkOnly360, value, "XdkOnly360"); }
+		}
+
+		/// <summary>
+		/// </summary>
 		public bool ShowScriptInfo
 		{
 			get { return _showScriptInfo; }
@@ -717,21 +729,33 @@ namespace Assembly.Helpers
 		}
 
 		/// <summary>
+		/// The global Xbox 360 communication instance.
 		/// </summary>
 		[JsonIgnore]
-		public XeConsole XeConsole
+		public XeConsole XenonConsole
 		{
 			get { return _xeConsole; }
-			set { SetField(ref _xeConsole, value, "XeConsole"); }
+			set { SetField(ref _xeConsole, value, "XenonConsole"); }
 		}
 
 		/// <summary>
+		/// The global Original Xbox communication instance.
 		/// </summary>
 		[JsonIgnore]
-		public XbConsole XbConsole
+		public XbConsole XboxConsole
 		{
 			get { return _xbConsole; }
-			set { SetField(ref _xbConsole, value, "XbConsole"); }
+			set { SetField(ref _xbConsole, value, "XboxConsole"); }
+		}
+
+		/// <summary>
+		/// The global Xbox 360 (modified for Original Xbox maps) communication instance.
+		/// </summary>
+		[JsonIgnore]
+		public XeConsole XenonFusionConsole
+		{
+			get { return _xeFuConsole; }
+			set { SetField(ref _xeFuConsole, value, "XenonFusionConsole"); }
 		}
 
 		/// <summary>

@@ -27,10 +27,7 @@ namespace Blamite.RTE
 			_buildInfo = engine;
 		}
 
-		public RTEConnectionType ConnectionType
-		{
-			get { return RTEConnectionType.LocalProcess32; }
-		}
+		public abstract RTEConnectionType ConnectionType { get; }
 
 		protected string GuessError
 		{

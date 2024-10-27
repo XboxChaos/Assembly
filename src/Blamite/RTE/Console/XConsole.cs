@@ -39,12 +39,18 @@ namespace Blamite.RTE.Console
 
 		public string Identifier { get; private set; }
 
-		public ConsoleMemoryStream MemoryStream { get; }
+		public ConsoleMemoryStream ConsoleStream { get; }
 
 		public XConsole(string identifier)
 		{
 			UpdateIdentifier(identifier);
-			MemoryStream = new ConsoleMemoryStream(this);
+			ConsoleStream = new ConsoleMemoryStream(this);
+		}
+
+		public XConsole(string identifier, uint forceOffset)
+		{
+			UpdateIdentifier(identifier);
+			ConsoleStream = new ConsoleMemoryStream(this, forceOffset);
 		}
 
 		public void UpdateIdentifier(string identifier)

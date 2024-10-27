@@ -25,7 +25,7 @@ namespace Blamite.RTE.PC
 		///     The type of connection that the provider will establish.
 		///     Always RTEConnectionType.LocalProcess.
 		/// </summary>
-		public new RTEConnectionType ConnectionType
+		public override RTEConnectionType ConnectionType
 		{
 			get { return _buildInfo.PokingPlatform; }
 		}

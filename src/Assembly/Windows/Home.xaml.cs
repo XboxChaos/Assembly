@@ -255,7 +255,7 @@ namespace Assembly.Windows
 		{
 			try
 			{
-				Screenshot shot = App.AssemblyStorage.AssemblySettings.XbConsole.GetScreenshot(App.AssemblyStorage.AssemblySettings.XdkScreenshotFreeze);
+				Screenshot shot = App.AssemblyStorage.AssemblySettings.XboxConsole.GetScreenshot(App.AssemblyStorage.AssemblySettings.XdkScreenshotFreeze);
 
 				if (shot != null)
 					App.AssemblyStorage.AssemblySettings.HomeWindow.AddScreenTabModule(shot, "Xbox");
@@ -267,38 +267,38 @@ namespace Assembly.Windows
 
 		private void menuOGStop_Click(object sender, RoutedEventArgs e)
 		{
-			if (!App.AssemblyStorage.AssemblySettings.XbConsole.Stop())
+			if (!App.AssemblyStorage.AssemblySettings.XboxConsole.Stop())
 				ShowOGConnectError();
 		}
 
 
 		private void menuOGGo_Click(object sender, RoutedEventArgs e)
 		{
-			if (!App.AssemblyStorage.AssemblySettings.XbConsole.Go())
+			if (!App.AssemblyStorage.AssemblySettings.XboxConsole.Go())
 				ShowOGConnectError();
 		}
 
 		private void menuOGRebootCold_Click(object sender, RoutedEventArgs e)
 		{
-			if (!App.AssemblyStorage.AssemblySettings.XbConsole.Reboot(RebootType.Cold))
+			if (!App.AssemblyStorage.AssemblySettings.XboxConsole.Reboot(RebootType.Cold))
 				ShowOGConnectError();
 		}
 
 		private void menuOGRebootSoft_Click(object sender, RoutedEventArgs e)
 		{
-			if (!App.AssemblyStorage.AssemblySettings.XbConsole.Reboot(RebootType.Soft))
+			if (!App.AssemblyStorage.AssemblySettings.XboxConsole.Reboot(RebootType.Soft))
 				ShowOGConnectError();
 		}
 
 		private void menuOGRebootTitle_Click(object sender, RoutedEventArgs e)
 		{
-			if (!App.AssemblyStorage.AssemblySettings.XbConsole.Reboot(RebootType.Title))
+			if (!App.AssemblyStorage.AssemblySettings.XboxConsole.Reboot(RebootType.Title))
 				ShowOGConnectError();
 		}
 
 		private void menuOGSyncTime_Click(object sender, RoutedEventArgs e)
 		{
-			if (!App.AssemblyStorage.AssemblySettings.XbConsole.SetSystemTime())
+			if (!App.AssemblyStorage.AssemblySettings.XboxConsole.SetSystemTime())
 				ShowOGConnectError();
 		}
 
@@ -312,7 +312,7 @@ namespace Assembly.Windows
 		{
 			try
 			{
-				Screenshot shot = App.AssemblyStorage.AssemblySettings.XeConsole.GetScreenshot(App.AssemblyStorage.AssemblySettings.XdkScreenshotFreeze);
+				Screenshot shot = App.AssemblyStorage.AssemblySettings.XenonConsole.GetScreenshot(App.AssemblyStorage.AssemblySettings.XdkScreenshotFreeze);
 				if (shot != null)
 					App.AssemblyStorage.AssemblySettings.HomeWindow.AddScreenTabModule(shot, "Xbox 360");
 				else
@@ -323,37 +323,37 @@ namespace Assembly.Windows
 
 		private void menu360Stop_Click(object sender, RoutedEventArgs e)
 		{
-			if (!App.AssemblyStorage.AssemblySettings.XeConsole.Stop())
+			if (!App.AssemblyStorage.AssemblySettings.XenonConsole.Stop())
 				Show360ConnectError();
 		}
 
 		private void menu360Go_Click(object sender, RoutedEventArgs e)
 		{
-			if (!App.AssemblyStorage.AssemblySettings.XeConsole.Go())
+			if (!App.AssemblyStorage.AssemblySettings.XenonConsole.Go())
 				Show360ConnectError();
 		}
 
 		private void menu360RebootCold_Click(object sender, RoutedEventArgs e)
 		{
-			if (!App.AssemblyStorage.AssemblySettings.XeConsole.Reboot(RebootType.Cold))
+			if (!App.AssemblyStorage.AssemblySettings.XenonConsole.Reboot(RebootType.Cold))
 				Show360ConnectError(); ;
 		}
 
 		private void menu360RebootSoft_Click(object sender, RoutedEventArgs e)
 		{
-			if (!App.AssemblyStorage.AssemblySettings.XeConsole.Reboot(RebootType.Soft))
+			if (!App.AssemblyStorage.AssemblySettings.XenonConsole.Reboot(RebootType.Soft))
 				Show360ConnectError();
 		}
 
 		private void menu360RebootTitle_Click(object sender, RoutedEventArgs e)
 		{
-			if (!App.AssemblyStorage.AssemblySettings.XeConsole.Reboot(RebootType.Title))
+			if (!App.AssemblyStorage.AssemblySettings.XenonConsole.Reboot(RebootType.Title))
 				Show360ConnectError();
 		}
 
 		private void menu360SyncTime_Click(object sender, RoutedEventArgs e)
 		{
-			if (!App.AssemblyStorage.AssemblySettings.XeConsole.SetSystemTime())
+			if (!App.AssemblyStorage.AssemblySettings.XenonConsole.SetSystemTime())
 				Show360ConnectError();
 		}
 

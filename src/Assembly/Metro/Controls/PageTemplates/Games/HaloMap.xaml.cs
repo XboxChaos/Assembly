@@ -70,6 +70,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private List<TagEntry> _tagEntries = new List<TagEntry>();
 		private Settings.TagOpenMode _tagOpenMode;
 		private TagHierarchy _visibleTags = new TagHierarchy();
+		private bool _only360Poke;
 
 		public static RoutedCommand DeleteBatchCommand = new RoutedCommand();
 
@@ -104,6 +105,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			cbShowBookmarkedTagsOnly.IsChecked = App.AssemblyStorage.AssemblySettings.HalomapOnlyShowBookmarkedTags;
 			cbOpenDuplicate.IsChecked = App.AssemblyStorage.AssemblySettings.AutoOpenDuplicates;
 			cbTabOpenMode.SelectedIndex = (int) App.AssemblyStorage.AssemblySettings.HalomapTagOpenMode;
+
+			_only360Poke = App.AssemblyStorage.AssemblySettings.XdkOnly360;
 
 			App.AssemblyStorage.AssemblySettings.PropertyChanged += SettingsChanged;
 
@@ -233,10 +236,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				switch (_buildInfo.PokingPlatform)
 				{
 					case RTEConnectionType.ConsoleXbox:
-						_rteProvider = new ConsoleRTEProvider(App.AssemblyStorage.AssemblySettings.XbConsole);
+						if (App.AssemblyStorage.AssemblySettings.XdkOnly360)
+							_rteProvider = new ConsoleRTEProvider(App.AssemblyStorage.AssemblySettings.XenonFusionConsole);
+						else
+							_rteProvider = new ConsoleRTEProvider(App.AssemblyStorage.AssemblySettings.XboxConsole);
 						break;
 					case RTEConnectionType.ConsoleXbox360:
-						_rteProvider = new ConsoleRTEProvider(App.AssemblyStorage.AssemblySettings.XeConsole);
+						_rteProvider = new ConsoleRTEProvider(App.AssemblyStorage.AssemblySettings.XenonConsole);
 						break;
 					case RTEConnectionType.ConsoleXboxOne:
 						break;
@@ -563,6 +569,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			if (App.AssemblyStorage.AssemblySettings.HalomapTagOpenMode != _tagOpenMode)
 				UpdateTagOpenMode();
+
+			if (App.AssemblyStorage.AssemblySettings.XdkOnly360 != _only360Poke)
+				UpdateOGPokingMode();
+
 		}
 
 		private void cbShowEmptyTags_Altered(object sender, RoutedEventArgs e)
@@ -2650,6 +2660,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				return;
 
 			tag.TagFileName = name;
+		}
+
+		private void UpdateOGPokingMode()
+		{
+			_only360Poke = App.AssemblyStorage.AssemblySettings.XdkOnly360;
+
+			//have to reinit the intended platform
+			if (_rteProvider != null && _buildInfo.PokingPlatform == RTEConnectionType.ConsoleXbox)
+			{
+				if (_rteProvider.ConnectionType == RTEConnectionType.ConsoleXbox360)
+					_rteProvider = new ConsoleRTEProvider(App.AssemblyStorage.AssemblySettings.XboxConsole);
+				else if (_rteProvider.ConnectionType == RTEConnectionType.ConsoleXbox)
+					_rteProvider = new ConsoleRTEProvider(App.AssemblyStorage.AssemblySettings.XenonFusionConsole);
+			}
 		}
 	}
 }

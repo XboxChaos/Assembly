@@ -13,10 +13,13 @@ namespace Blamite.RTE.Console
 
 		private Timer _staleTimer;
 
-		public ConsoleMemoryStream(XConsole console)
+		private uint _forceOffset;
+
+		public ConsoleMemoryStream(XConsole console, uint forceOffset = 0)
 		{
 			_console = console;
 			Position = 0;
+			_forceOffset = forceOffset;
 
 			_staleTimer = new Timer();
 			_staleTimer.Interval = 5000;//5 seconds
@@ -115,7 +118,7 @@ namespace Blamite.RTE.Console
 			switch (origin)
 			{
 				case SeekOrigin.Begin:
-					Position = offset;
+					Position = offset + _forceOffset;
 					break;
 		
 				case SeekOrigin.Current:

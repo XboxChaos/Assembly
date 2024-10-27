@@ -847,8 +847,8 @@ namespace Assembly.Metro.Controls.PageTemplates
 		{
 			try
 			{
-				if (App.AssemblyStorage.AssemblySettings.XeConsole == null ||
-					String.IsNullOrEmpty(App.AssemblyStorage.AssemblySettings.XeConsole.Identifier))
+				if (App.AssemblyStorage.AssemblySettings.XenonConsole == null ||
+					String.IsNullOrEmpty(App.AssemblyStorage.AssemblySettings.XenonConsole.Identifier))
 				{
 					MetroMessageBox.Show("No Xbox 360 Console Detected",
 						"Make sure your xbox 360 console is turned on, and the IP is entered in the App.AssemblyStorage.AssemblySettings.");
@@ -874,17 +874,17 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 					foreach (DataChange change in changes.DataChanges)
 					{
-						App.AssemblyStorage.AssemblySettings.XeConsole.MemoryStream.Seek(currentPatchToPoke.MetaPokeBase + change.Offset,
+						App.AssemblyStorage.AssemblySettings.XenonConsole.ConsoleStream.Seek(currentPatchToPoke.MetaPokeBase + change.Offset,
 							SeekOrigin.Begin);
-						App.AssemblyStorage.AssemblySettings.XeConsole.MemoryStream.Write(change.Data, 0x00, change.Data.Length);
+						App.AssemblyStorage.AssemblySettings.XenonConsole.ConsoleStream.Write(change.Data, 0x00, change.Data.Length);
 					}
 				}
 				else if (currentPatchToPoke.MetaChanges.Count > 0)
 				{
 					foreach (DataChange change in currentPatchToPoke.MetaChanges)
 					{
-						App.AssemblyStorage.AssemblySettings.XeConsole.MemoryStream.Seek(change.Offset, SeekOrigin.Begin);
-						App.AssemblyStorage.AssemblySettings.XeConsole.MemoryStream.Write(change.Data, 0x00, change.Data.Length);
+						App.AssemblyStorage.AssemblySettings.XenonConsole.ConsoleStream.Seek(change.Offset, SeekOrigin.Begin);
+						App.AssemblyStorage.AssemblySettings.XenonConsole.ConsoleStream.Write(change.Data, 0x00, change.Data.Length);
 					}
 				}
 

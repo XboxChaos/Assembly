@@ -10,11 +10,17 @@ namespace Blamite.RTE.Console
 	/// </summary>
 	public class XeConsole : XConsole
 	{
-		public override Endian Endianness { get { return Endian.BigEndian; } }
+		private static uint _fusionOffset = 0x50000000;
+		private Endian _endian = Endian.BigEndian;
+		public override Endian Endianness { get { return _endian; } }
 		public override int Port { get { return 730; } }
 		public override RTEConnectionType ConnectionType { get { return RTEConnectionType.ConsoleXbox360; } }
 
-		public XeConsole(string identifier) : base(identifier) { }
+		public XeConsole(string identifier, bool fusion = false) : base(identifier, fusion ? _fusionOffset : 0)
+		{
+			if (fusion)
+				_endian = Endian.LittleEndian;
+		}
 
 		internal override byte[] ReadMemoryInternal(uint address, uint length, out uint bytesRead)
 		{

@@ -14,7 +14,7 @@ namespace Assembly.Helpers.Net.Sockets
             _sessionManager = starter;
         }
 
-        public new RTEConnectionType ConnectionType { get; private set; }
+        public override RTEConnectionType ConnectionType { get; }
 
         public override IStream GetCacheStream(ICacheFile cacheFile, ITag tag)
         {
