@@ -170,7 +170,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 					_writer.WriteFloat(ColorData.ByteToFloat(field.Value.A));
 				_writer.WriteFloat(ColorData.ByteToFloat(field.Value.R));
 				_writer.WriteFloat(ColorData.ByteToFloat(field.Value.G));
-				_writer.WriteFloat(ColorData.ByteToFloat(field.Value.G));
+				_writer.WriteFloat(ColorData.ByteToFloat(field.Value.B));
 			}
 			else
 			{
