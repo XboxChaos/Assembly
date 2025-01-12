@@ -70,7 +70,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 			if (expand > 255f)
 				expand = 255f;
-			else if (expand < 0f)
+			else if (!(expand >= 0f && expand <= 255f))
 				expand = 0f;
 
 			return Convert.ToByte(expand);
