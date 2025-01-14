@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<plugin game="Halo2Alpha" baseSize="0x1FC">
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo2E3_04" baseSize="0x1FC">
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
@@ -77,11 +77,26 @@
 		<undefined name="Unknown" offset="0x48" visible="false" />
 		<undefined name="Unknown" offset="0x4C" visible="false" />
 	</tagblock>
-	<tagblock name="Sound Globals" offset="0xC8" visible="true" elementSize="0x20">
+	<tagblock name="Sound Globals" offset="0xC8" visible="true" elementSize="0x48">
 		<tagref name="Sound Classes" offset="0x0" visible="true" />
 		<tagref name="Sound Effects" offset="0x10" visible="true" />
+		<comment title="First Person Left Side Mix">For first person sounds to the left of you</comment>
+		<float32 name="Left Stereo Gain" offset="0x20" visible="true" />
+		<float32 name="Right Stereo Gain" offset="0x24" visible="true" />
+		<comment title="First Person Middle Mix">For first person sounds between your ears</comment>
+		<float32 name="Left Stereo Gain" offset="0x28" visible="true" />
+		<float32 name="Right Stereo Gain" offset="0x2C" visible="true" />
+		<comment title="First Person Left Side Mix">For first person sounds to the right of you</comment>
+		<float32 name="Left Stereo Gain" offset="0x30" visible="true" />
+		<float32 name="Right Stereo Gain" offset="0x34" visible="true" />
+		<comment title="First Person Stereo Mix" />
+		<float32 name="Front Speaker Gain" offset="0x38" visible="true" />
+		<float32 name="Rear Speaker Gain" offset="0x3C" visible="true" />
+		<comment title="Ambient Stereo Mix" />
+		<float32 name="Front Speaker Gain" offset="0x40" visible="true" />
+		<float32 name="Rear Speaker Gain" offset="0x44" visible="true" />
 	</tagblock>
-	<tagblock name="AI Globals" offset="0xD4" visible="true" elementSize="0x70">
+	<tagblock name="AI Globals" offset="0xD4" visible="true" elementSize="0xF8">
 		<float32 name="Danger Broadly Facing" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<float32 name="Danger Shooting Near" offset="0x8" visible="true" />
@@ -107,6 +122,35 @@
 		<undefined name="Unknown" offset="0x58" visible="false" />
 		<undefined name="Unknown" offset="0x5C" visible="false" />
 		<tagref name="Global Dialogue Tag" offset="0x60" visible="true" />
+		<stringid name="Default Mission Dialogue Sound Effect" offset="0x70" visible="true" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+		<undefined name="Unknown" offset="0x78" visible="false" />
+		<undefined name="Unknown" offset="0x7C" visible="false" />
+		<undefined name="Unknown" offset="0x80" visible="false" />
+		<undefined name="Unknown" offset="0x84" visible="false" />
+		<float32 name="Jump Down" offset="0x88" visible="true" />
+		<float32 name="Jump Step" offset="0x8C" visible="true" />
+		<float32 name="Jump Crouch" offset="0x90" visible="true" />
+		<float32 name="Jump Stand" offset="0x94" visible="true" />
+		<float32 name="Jump Storey" offset="0x98" visible="true" />
+		<float32 name="Jump Tower" offset="0x9C" visible="true" />
+		<float32 name="Max Jump Down Height Down" offset="0xA0" visible="true" />
+		<float32 name="Max Jump Down Height Step" offset="0xA4" visible="true" />
+		<float32 name="Max Jump Down Height Crouch" offset="0xA8" visible="true" />
+		<float32 name="Max Jump Down Height Stand" offset="0xAC" visible="true" />
+		<float32 name="Max Jump Down Height Storey" offset="0xB0" visible="true" />
+		<float32 name="Max Jump Down Height Tower" offset="0xB4" visible="true" />
+		<rangef name="Hoist Step" offset="0xB8" visible="true" />
+		<rangef name="Hoist Crouch" offset="0xC0" visible="true" />
+		<rangef name="Hoist Stand" offset="0xC8" visible="true" />
+		<undefined name="Unknown" offset="0xD0" visible="false" />
+		<undefined name="Unknown" offset="0xD4" visible="false" />
+		<undefined name="Unknown" offset="0xD8" visible="false" />
+		<undefined name="Unknown" offset="0xDC" visible="false" />
+		<undefined name="Unknown" offset="0xE0" visible="false" />
+		<undefined name="Unknown" offset="0xE4" visible="false" />
+		<rangef name="Vault Step" offset="0xE8" visible="true" />
+		<rangef name="Vault Crouch" offset="0xF0" visible="true" />
 	</tagblock>
 	<tagblock name="Damage Table" offset="0xE0" visible="true" elementSize="0xC">
 		<tagblock name="Damage Groups" offset="0x0" visible="true" elementSize="0x10">
@@ -123,8 +167,11 @@
 	<tagblock name="Sounds" offset="0xF8" visible="true" elementSize="0x10">
 		<tagRef name="Sound" offset="0x0" visible="true" tooltip="obsolete" />
 	</tagblock>
-	<tagblock name="Camera" offset="0x104" visible="true" elementSize="0x10">
+	<tagblock name="Camera" offset="0x104" visible="true" elementSize="0x1C">
 		<tagref name="Default Unit Camera Track" offset="0x0" visible="true" />
+		<float32 name="Default Change Pause" offset="0x10" visible="true" />
+		<float32 name="First Person Change Pause" offset="0x14" visible="true" />
+		<float32 name="Following Camera Change Pause" offset="0x18" visible="true" />
 	</tagblock>
 	<tagblock name="Player Control" offset="0x110" visible="true" elementSize="0x80">
 		<float32 name="Magnetism Friction" offset="0x0" visible="true" tooltip="how much the crosshair slows over enemies" />
@@ -511,7 +558,7 @@
 		<tagRef name="Binoculars Zoom Out Sound" offset="0xE4" visible="true" />
 		<tagref name="Binoculars HUD" offset="0xF4" visible="true" />
 	</tagblock>
-	<tagblock name="Player Representation" offset="0x17C" visible="true" elementSize="0xC0">
+	<tagblock name="Player Representation" offset="0x17C" visible="true" elementSize="0xD4">
 		<tagref name="First Person Hands" offset="0x0" visible="true" />
 		<tagref name="First Person Body" offset="0x10" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
@@ -524,8 +571,14 @@
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<undefined name="Unknown" offset="0x40" visible="false" />
 		<undefined name="Unknown" offset="0x44" visible="false" />
-		<tagRef name="Unknown" offset="0x48" visible="true" />
-		<tagRef name="Unknown" offset="0x58" visible="true" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
+		<undefined name="Unknown" offset="0x5C" visible="false" />
+		<undefined name="Unknown" offset="0x60" visible="false" />
+		<undefined name="Unknown" offset="0x64" visible="false" />
 		<undefined name="Unknown" offset="0x68" visible="false" />
 		<undefined name="Unknown" offset="0x6C" visible="false" />
 		<undefined name="Unknown" offset="0x70" visible="false" />
@@ -548,6 +601,8 @@
 		<undefined name="Unknown" offset="0xB4" visible="false" />
 		<undefined name="Unknown" offset="0xB8" visible="false" />
 		<undefined name="Unknown" offset="0xBC" visible="false" />
+		<tagref name="Third Person Unit" offset="0xC0" visible="true" />
+		<stringid name="Third Person Unit Variant" offset="0xD0" visible="true" />
 	</tagblock>
 	<tagblock name="Falling Damage" offset="0x188" visible="true" elementSize="0x98">
 		<undefined name="Unknown" offset="0x0" visible="false" />
@@ -609,8 +664,8 @@
 		<undefined name="Unknown" offset="0x90" visible="false" />
 		<comment title="Vehicle Terrain Parameters">the following fields modify the way a vehicle drives over terrain of this material type.</comment>
 		<float32 name="Ground Friction Scale" offset="0x94" visible="true" tooltip="fraction of original velocity parallel to the ground after one tick" />
-		<float32 name="Ground Friction Normal K1 Scale" offset="0x98" visible="true" tooltip="cosine of angle at which friction falls off" />
-		<float32 name="Ground Friction Normal K0 Scale" offset="0x9C" visible="true" tooltip="cosine of angle at which friction is zero" />
+		<float32 name="Ground Friction Normal k1 Scale" offset="0x98" visible="true" tooltip="cosine of angle at which friction falls off" />
+		<float32 name="Ground Friction Normal k0 Scale" offset="0x9C" visible="true" tooltip="cosine of angle at which friction is zero" />
 		<float32 name="Ground Depth Scale" offset="0xA0" visible="true" tooltip="depth a point mass rests in the ground" />
 		<float32 name="Ground Damp Fraction Scale" offset="0xA4" visible="true" tooltip="fraction of original velocity perpendicular to the ground after one tick" />
 		<undefined name="Unknown" offset="0xA8" visible="false" />
@@ -790,7 +845,7 @@
 		<undefined name="Unknown" offset="0x360" visible="false" />
 		<tagRef name="Melee Hit Sound" offset="0x364" visible="true" />
 	</tagblock>
-	<tagblock name="Materials" offset="0x1A0" visible="true" elementSize="0x88">
+	<tagblock name="Materials" offset="0x1A0" visible="true" elementSize="0x13C">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<stringid name="Parent Name" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x8" visible="false" />
@@ -879,7 +934,34 @@
 		<tagRef name="Sound Sweetener (Small)" offset="0x48" visible="true" />
 		<tagRef name="Sound Sweetener (Medium)" offset="0x58" visible="true" />
 		<tagRef name="Sound Sweetener (Large)" offset="0x68" visible="true" />
-		<tagRef name="Unknown Material Effects" offset="0x78" visible="true" />
+		<tagRef name="Sound Sweetener Rolling" offset="0x78" visible="true" />
+		<tagRef name="Sound Sweetener Grinding" offset="0x88" visible="true" />
+		<tagRef name="Sound Sweetener (Melee)" offset="0x98" visible="true" />
+		<tagref name="Unknown" offset="0xA8" visible="true" />
+		<tagRef name="Effect Sweetener (Small)" offset="0xB8" visible="true" />
+		<tagRef name="Effect Sweetener (Medium)" offset="0xC8" visible="true" />
+		<tagRef name="Effect Sweetener (Large)" offset="0xD8" visible="true" />
+		<tagRef name="Effect Sweetener Rolling" offset="0xE8" visible="true" />
+		<tagRef name="Effect Sweetener Grinding" offset="0xF8" visible="true" />
+		<tagRef name="Effect Sweetener (Melee)" offset="0x108" visible="true" />
+		<tagref name="Unknown" offset="0x118" visible="true" />
+		<flags32 name="Sweetener Inheritance Flags" offset="0x128" visible="true" tooltip="when a sweetener inheritance flag is set the sound\effect is not inherited from the parent material. If you leave the sweetener blank and set the flag than no effect\sound will play">
+			<bit name="Sound Small" index="0" />
+			<bit name="Sound Medium" index="1" />
+			<bit name="Sound Large" index="2" />
+			<bit name="Sound Rolling" index="3" />
+			<bit name="Sound Grinding" index="4" />
+			<bit name="Sound Melee" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Effect Small" index="7" />
+			<bit name="Effect Medium" index="8" />
+			<bit name="Effect Large" index="9" />
+			<bit name="Effect Rolling" index="10" />
+			<bit name="Effect Grinding" index="11" />
+			<bit name="Effect Melee" index="12" />
+			<bit name="Bit 13" index="13" />
+		</flags32>
+		<tagRef name="Material Effects" offset="0x12C" visible="true" />
 	</tagblock>
 	<tagblock name="Multiplayer UI" offset="0x1AC" visible="true" elementSize="0x38">
 		<tagRef name="Random Player Names" offset="0x0" visible="true" />
