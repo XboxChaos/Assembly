@@ -19,16 +19,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 			InitializeComponent();
 		}
 
-		private void AllocateCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			e.CanExecute = true;
-		}
-
-		private void IsolateCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			e.CanExecute = true;
-		}
-
 		private void NoticeHide_Click(object sender, System.Windows.RoutedEventArgs e)
 		{
 			RawData field = (RawData)DataContext;
