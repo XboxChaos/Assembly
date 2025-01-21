@@ -75,6 +75,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private ObservableCollection<SearchResult> _searchResults;
 		private TagEntry _tag;
 		private FileSegmentGroup _srcSegmentGroup;
+		private TagDataCommandState _tagCommandState;
 
 		public MetaEditor(EngineDescription buildInfo, TagEntry tag, MetaContainer parentContainer, TagHierarchy tags,
 			ICacheFile cache, IStreamManager streamManager, RTEProvider rteProvider, Trie stringIDTrie)
@@ -95,6 +96,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			// Set init finished
 			hasInitFinished = true;
+		}
+
+		private TagDataCommandState CheckTagDataCommand()
+		{
+			if (_cache.Engine == EngineType.Eldorado)
+				return TagDataCommandState.Eldorado;
+			else if (_tag.RawTag.Source != TagSource.MetaArea)
+				return TagDataCommandState.NotMainArea;
+			else if (_cache.Engine < EngineType.SecondGeneration)
+				return TagDataCommandState.FirstGenCache;
+			else if (_cache.Engine == EngineType.ThirdGeneration && _cache.HeaderSize == 0x800)
+				return TagDataCommandState.EarlyThirdGenCache;
+			else
+				return TagDataCommandState.None;
 		}
 
 		public void RefreshEditor(MetaReader.LoadType type)
@@ -151,7 +166,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			using (XmlReader xml = XmlReader.Create(_pluginPath))
 			{
 				_pluginVisitor = new AssemblyPluginVisitor(_tags, _stringIdTrie, _srcSegmentGroup,
-					App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles, _buildInfo.Engine < EngineType.ThirdGeneration);
+					App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles, _tagCommandState, _buildInfo.Engine < EngineType.ThirdGeneration);
 				AssemblyPluginLoader.LoadPlugin(xml, _pluginVisitor);
 			}
 
@@ -310,6 +325,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		public void LoadNewTagEntry(TagEntry tag)
 		{
 			_tag = tag;
+			_tagCommandState = CheckTagDataCommand();
 
 			// Set Option boxes
 			cbShowInvisibles.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles;
@@ -750,7 +766,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				VariousFunctions.GetApplicationLocation() + @"Plugins");
 			XmlReader reader = XmlReader.Create(path);
 
-			var plugin = new AssemblyPluginVisitor(_tags, _stringIdTrie, _srcSegmentGroup, true, _buildInfo.Engine < EngineType.ThirdGeneration, true);
+			var plugin = new AssemblyPluginVisitor(_tags, _stringIdTrie, _srcSegmentGroup, true, _tagCommandState, _buildInfo.Engine < EngineType.ThirdGeneration, true);
 			AssemblyPluginLoader.LoadPlugin(reader, plugin);
 			reader.Close();
 
@@ -1031,20 +1047,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void ReallocateBlockCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
 		{
-			e.CanExecute = true;
+			e.CanExecute = _tagCommandState == TagDataCommandState.None;
 		}
 
 		private void ReallocateBlockCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (_cache.Engine < EngineType.SecondGeneration || (_cache.Engine == EngineType.ThirdGeneration && _cache.HeaderSize == 0x800))
+			if (_tagCommandState != TagDataCommandState.None)
 			{
-				MetroMessageBox.Show("Tag Block Reallocator", "Only second and third generation cache files are currently supported by the block reallocator.");
-				return;
-			}
-
-			if (_tag.RawTag.Source != TagSource.MetaArea)
-			{
-				MetroMessageBox.Show("Tag Block Reallocator", "Only tags scoped to the cache file's main tag data area are currently supported by the block reallocator.");
+				MetroMessageBox.Show("Tag Block Reallocator", TagDataCommandStateResolver.GetStateDescription(_tagCommandState));
 				return;
 			}
 
@@ -1143,20 +1153,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void IsolateBlockCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
 		{
-			e.CanExecute = true;
+			e.CanExecute = _tagCommandState == TagDataCommandState.None;
 		}
 
 		private void IsolateBlockCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (_cache.Engine < EngineType.SecondGeneration || (_cache.Engine == EngineType.ThirdGeneration && _cache.HeaderSize == 0x800))
+			if (_tagCommandState != TagDataCommandState.None)
 			{
-				MetroMessageBox.Show("Tag Block Isolation", "Only second and third generation cache files are currently supported.");
-				return;
-			}
-
-			if (_tag.RawTag.Source != TagSource.MetaArea)
-			{
-				MetroMessageBox.Show("Tag Block Isolation", "Only tags scoped to the cache file's main tag data area are currently supported.");
+				MetroMessageBox.Show("Tag Block Isolation", TagDataCommandStateResolver.GetStateDescription(_tagCommandState));
 				return;
 			}
 
@@ -1212,20 +1216,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void AllocateDataRefCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
 		{
-			e.CanExecute = true;
+			e.CanExecute = _tagCommandState == TagDataCommandState.None;
 		}
 
 		private void AllocateDataRefCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (_cache.Engine < EngineType.SecondGeneration || (_cache.Engine == EngineType.ThirdGeneration && _cache.HeaderSize == 0x800))
+			if (_tagCommandState != TagDataCommandState.None)
 			{
-				MetroMessageBox.Show("Data Reference Allocator", "Only second and third generation cache files are currently supported by the data reference allocator.");
-				return;
-			}
-
-			if (_tag.RawTag.Source != TagSource.MetaArea)
-			{
-				MetroMessageBox.Show("Data Reference Allocator", "Only tags scoped to the cache file's main tag data area are currently supported by the data reference allocator.");
+				MetroMessageBox.Show("Data Reference Allocator", TagDataCommandStateResolver.GetStateDescription(_tagCommandState));
 				return;
 			}
 
@@ -1269,20 +1267,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void IsolateDataRefCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
 		{
-			e.CanExecute = true;
+			e.CanExecute = _tagCommandState == TagDataCommandState.None;
 		}
 		
 		private void IsolateDataRefCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (_cache.Engine < EngineType.SecondGeneration || (_cache.Engine == EngineType.ThirdGeneration && _cache.HeaderSize == 0x800))
+			if (_tagCommandState != TagDataCommandState.None)
 			{
-				MetroMessageBox.Show("Data Reference Isolation", "Only second and third generation cache files are currently supported.");
-				return;
-			}
-		
-			if (_tag.RawTag.Source != TagSource.MetaArea)
-			{
-				MetroMessageBox.Show("Data Reference Isolation", "Only tags scoped to the cache file's main tag data area are currently supported.");
+				MetroMessageBox.Show("Data Reference Isolation", TagDataCommandStateResolver.GetStateDescription(_tagCommandState));
 				return;
 			}
 

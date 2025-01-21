@@ -20,15 +20,5 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 			// Set Information box
 			infoToggle.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInformation;
 		}
-
-		private void ReallocateCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			e.CanExecute = true;
-		}
-
-		private void IsolateCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			e.CanExecute = true;
-		}
 	}
 }

@@ -11,10 +11,8 @@
 		<local:CustomBooleanToVisibilityConverter x:Key="cb2v" />
 	</UserControl.Resources>
 	<UserControl.CommandBindings>
-		<CommandBinding Command="{x:Static local:RawBlock.AllocateCommand}"
-                        CanExecute="AllocateCommand_CanExecute" />
-		<CommandBinding Command="{x:Static local:RawBlock.IsolateCommand}"
-                        CanExecute="IsolateCommand_CanExecute" />
+		<CommandBinding Command="{x:Static local:RawBlock.AllocateCommand}" />
+		<CommandBinding Command="{x:Static local:RawBlock.IsolateCommand}" />
 	</UserControl.CommandBindings>
 	<Grid>
 		<Grid.ColumnDefinitions>
@@ -129,9 +127,9 @@
 				<Popup x:Name="popOptions" IsOpen="{Binding IsChecked, ElementName=btnOptions}" PlacementTarget="{x:Reference btnOptions}" StaysOpen="False" >
 					<Border BorderThickness="1" Background="#1b1b1c" BorderBrush="#333337">
 						<StackPanel>
-							<MenuItem Header="Allocate Data" Foreground="White" ToolTip="Opens the Data Reference Allocator tool to properly increase or decrease the length of this data. (Original data will not be copied.)"
+							<MenuItem Header="Allocate Data" ToolTipService.ShowOnDisabled="True" ToolTipService.ToolTip="{Binding Path=AllocateTooltip}"
 								 Command="{x:Static local:RawBlock.AllocateCommand}" CommandTarget="{Binding ElementName=rawBlock}"/>
-							<MenuItem Header="Isolate Shared Data Reference" Foreground="White" ToolTip="Copy this dataref to a new address, isolating it from any shared instances."
+							<MenuItem Header="Isolate Shared Data Reference" ToolTipService.ShowOnDisabled="True" ToolTipService.ToolTip="{Binding Path=IsolateTooltip}"
 								 Command="{x:Static local:RawBlock.IsolateCommand}" CommandTarget="{Binding ElementName=rawBlock}"/>
 						</StackPanel>
 					</Border>

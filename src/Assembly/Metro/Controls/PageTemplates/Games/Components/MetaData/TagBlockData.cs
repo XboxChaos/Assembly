@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using Assembly.Helpers;
 using Blamite.IO;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
@@ -97,9 +98,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private bool _expanded;
 		private long _firstElementAddr;
 		private double _width = MinWidth;
+		private TagDataCommandState _tagCommandState;
+		private static string _allocateTooltip = "Opens the Tag Block Reallocator tool to properly add or remove elements for this block.";
+		private static string _isolateTooltip = "Isolates this block from other shared instances by copying to a new address.";
 
 		public TagBlockData(string name, uint offset, long address, uint elementSize, int align,
-			bool sort, uint pluginLine, string tooltip, FileSegmentGroup metaArea)
+			bool sort, uint pluginLine, string tooltip, FileSegmentGroup metaArea, TagDataCommandState tagCommandState)
 			: base(name, offset, address, pluginLine, tooltip)
 		{
 			_elementSize = elementSize;
@@ -107,6 +111,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_expanded = true;
 			Align = align;
 			Sort = sort;
+			_tagCommandState = tagCommandState;
 		}
 
 		public double Width
@@ -199,6 +204,28 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			get { return _template; }
 		}
 
+		public string AllocateTooltip
+		{
+			get
+			{
+				if (_tagCommandState == TagDataCommandState.None)
+					return _allocateTooltip;
+				else
+					return TagDataCommandStateResolver.GetStateDescription(_tagCommandState);
+			}
+		}
+
+		public string IsolateTooltip
+		{
+			get
+			{
+				if (_tagCommandState == TagDataCommandState.None)
+					return _isolateTooltip;
+				else
+					return TagDataCommandStateResolver.GetStateDescription(_tagCommandState);
+			}
+		}
+
 		/// <summary>
 		///     Recalculates the block's width.
 		/// </summary>
@@ -228,7 +255,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			var result = new TagBlockData(Name, Offset, FieldAddress, ElementSize, Align, Sort, PluginLine, ToolTip, _metaArea);
+			var result = new TagBlockData(Name, Offset, FieldAddress, ElementSize, Align, Sort, PluginLine, ToolTip, _metaArea, _tagCommandState);
 			result._expanded = _expanded;
 			result._width = _width;
 			result._currentIndex = _currentIndex;
