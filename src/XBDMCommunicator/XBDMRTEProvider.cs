@@ -35,7 +35,7 @@ namespace XBDMCommunicator
 		/// </summary>
 		/// <param name="cacheFile">The cache file to get a stream for.</param>
 		/// <returns>The stream if it was opened successfully, or null otherwise.</returns>
-		public IStream GetMetaStream(ICacheFile cacheFile)
+		public IStream GetMetaStream(ICacheFile cacheFile, ITag tag = null)
 		{
 			// Okay, so technically we should be checking to see if the cache file is actually loaded into memory first
 			// But that's kinda hard to do...

@@ -21,5 +21,10 @@ namespace Blamite.Blam
 		///     The tag's datum index.
 		/// </summary>
 		DatumIndex Index { get; }
+
+		/// <summary>
+		///     The source of the tag's metadata.
+		/// </summary>
+		TagSource Source { get; set; }
 	}
 }

@@ -18,6 +18,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		}
 
 		private readonly ICacheFile _cache;
+		private readonly FileSegmentGroup _srcSegmentGroup;
 		private readonly StructureLayout _dataRefLayout;
 		private readonly FieldChangeSet _ignoredFields;
 		private readonly StructureLayout _tagBlockLayout;
@@ -25,13 +26,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private readonly StructureLayout _tagRefLayout;
 		private readonly LoadType _type;
 		private IReader _reader;
+		private bool _shouldShowDatarefNotice;
 
 		public MetaReader(IStreamManager streamManager, long baseOffset, ICacheFile cache, EngineDescription buildInfo,
-			LoadType type, FieldChangeSet ignore)
+			LoadType type, FieldChangeSet ignore, FileSegmentGroup segmentGroup)
 		{
 			_streamManager = streamManager;
 			BaseOffset = baseOffset;
 			_cache = cache;
+			_srcSegmentGroup = segmentGroup;
 			_ignoredFields = ignore;
 			_type = type;
 
@@ -39,6 +42,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_tagBlockLayout = buildInfo.Layouts.GetLayout("tag block");
 			_tagRefLayout = buildInfo.Layouts.GetLayout("tag reference");
 			_dataRefLayout = buildInfo.Layouts.GetLayout("data reference");
+
+			_shouldShowDatarefNotice = App.AssemblyStorage.AssemblySettings.PluginsShowDataRefNotice;
 		}
 
 		public long BaseOffset { get; set; }
@@ -179,12 +184,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			SeekToOffset(field.Offset);
 
 			// colors are handled differently prior to thirdgen, but there are edge cases in thirdgen
-			if (_cache.Engine < EngineType.ThirdGeneration || field.Basic)
+			if (field.Basic)
 			{
-				byte a = (byte)(field.Alpha ? _reader.ReadFloat() * 255f + 0.5f : 255);
-				byte r = (byte)(_reader.ReadFloat() * 255f + 0.5f);
-				byte g = (byte)(_reader.ReadFloat() * 255f + 0.5f);
-				byte b = (byte)(_reader.ReadFloat() * 255f + 0.5f);
+				byte a = field.Alpha ? ColorData.FloatToByte(_reader.ReadFloat()) : (byte)255;
+				byte r = ColorData.FloatToByte(_reader.ReadFloat());
+				byte g = ColorData.FloatToByte(_reader.ReadFloat());
+				byte b = ColorData.FloatToByte(_reader.ReadFloat());
 				field.Value = Color.FromArgb(a, r, g, b);
 			}
 			else
@@ -224,6 +229,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			SeekToOffset(field.Offset);
 			field.DataAddress = field.FieldAddress;
+
+			long fieldEnd = field.FieldAddress + field.Length;
+			long groupEnd = _srcSegmentGroup.BasePointer + _srcSegmentGroup.Size;
+
+			if (fieldEnd > groupEnd)
+				field.Length = (int)(groupEnd - field.FieldAddress);
+
 			field.Value = FunctionHelpers.BytesToHexString(_reader.ReadBlock(field.Length));
 		}
 
@@ -237,7 +249,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 			long expanded = _cache.PointerExpander.Expand(pointer);
 
-			if (length > 0 && _cache.MetaArea.ContainsBlockPointer(expanded, (uint)length))
+			field.ShowingNotice = length > field.NoticeThreshold && _shouldShowDatarefNotice;
+
+			if (length > 0 && _srcSegmentGroup.ContainsBlockPointer(expanded, (uint)length))
 			{
 				field.DataAddress = expanded;
 				field.Length = length;
@@ -447,7 +461,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			long expanded = _cache.PointerExpander.Expand(pointer);
 
 			// Make sure the pointer looks valid
-			if (length < 0 || !_cache.MetaArea.ContainsBlockPointer(expanded, (uint) (length*field.ElementSize)))
+			if (length < 0 || !_srcSegmentGroup.ContainsBlockPointer(expanded, (uint) (length*field.ElementSize)))
 			{
 				length = 0;
 				pointer = 0;
@@ -515,7 +529,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			{
 				valueField.FieldAddress = BaseOffset + valueField.Offset;
 				if (_type == LoadType.File)
-					valueField.FieldAddress = _cache.MetaArea.OffsetToPointer((uint)valueField.FieldAddress);
+					valueField.FieldAddress = _srcSegmentGroup.OffsetToPointer((uint)valueField.FieldAddress);
 			}
 
 			// Read its contents if it hasn't changed (or if change detection is disabled)
@@ -563,7 +577,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				long oldBaseOffset = BaseOffset;
 				long dataOffset = block.FirstElementAddress;
 				if (_type == LoadType.File)
-					dataOffset = (uint) _cache.MetaArea.PointerToOffset(dataOffset);
+					dataOffset = _srcSegmentGroup.PointerToOffset(dataOffset);
 				BaseOffset = (dataOffset + block.CurrentIndex* block.ElementSize);
 
 				TagBlockPage page = block.Pages[block.CurrentIndex];
@@ -583,7 +597,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public void ReadDataRefContents(DataRef field)
 		{
-			if (field.Length < 0)
+			if (field.Length < 0 || field.ShowingNotice)
 				return;
 
 			bool opened = OpenReader();
@@ -596,7 +610,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				long oldBaseOffset = BaseOffset;
 				long dataOffset = field.DataAddress;
 				if (_type == LoadType.File)
-					dataOffset = (uint)_cache.MetaArea.PointerToOffset(dataOffset);
+					dataOffset = _srcSegmentGroup.PointerToOffset(dataOffset);
 
 				_reader.SeekTo(dataOffset);
 

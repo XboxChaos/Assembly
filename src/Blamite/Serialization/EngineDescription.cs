@@ -1,6 +1,8 @@
 ﻿using Blamite.Blam;
+using Blamite.Blam.Eldorado;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.Util;
+using Blamite.Compression;
 using Blamite.IO;
 using Blamite.RTE;
 using Blamite.Serialization.Settings;
@@ -90,10 +92,10 @@ namespace Blamite.Serialization
 		public StructureLayoutCollection Layouts { get; private set; }
 
 		/// <summary>
-		///     Gets the stringID set resolver for the engine.
+		///     Gets the stringID info for the engine.
 		///     Can be <c>null</c> if not present.
 		/// </summary>
-		public StringIDNamespaceResolver StringIDs { get; private set; }
+		public StringIDInformation StringIDInfo { get; private set; }
 
 		/// <summary>
 		///     Gets scripting info for the engine.
@@ -149,9 +151,9 @@ namespace Blamite.Serialization
 		public PokingCollection Poking { get; private set; }
 
 		/// <summary>
-		///		Whether the cache file itself uses compression.
+		///		The compression type used on the cache file, if any.
 		/// </summary>
-		public bool UsesCompression { get; private set; }
+		public CompressionType Compression { get; private set; }
 
 		/// <summary>
 		///		MCC sometimes ships maps with string hashes 0'd out, in some cases adding a hash can cause issues.
@@ -208,6 +210,18 @@ namespace Blamite.Serialization
 		/// </summary>
 		public bool LooseBuildCheck { get; private set; }
 
+		/// <summary>
+		///     Gets hud message locale symbols for the engine.
+		///     Can be <c>null</c> if not present.
+		/// </summary>
+		public LocaleSymbolCollection HudMessageSymbols { get; private set; }
+
+		/// <summary>
+		///		Gets the folder where the "default" tag name csv can be found. For Eldorado when there isn't a csv available alongside the loaded cache file.
+		///		The csv then should be named after the build string.
+		/// </summary>
+		public string FallbackTagNameFolder { get; private set; }
+
 		private void LoadSettings()
 		{
 			LoadEngineSettings();
@@ -222,7 +236,6 @@ namespace Blamite.Serialization
 			ExpandMagic = Settings.GetSettingOrDefault("engineInfo/expandMagic", -1);
 			TagSegmentAlignment = Settings.GetSettingOrDefault("engineInfo/tagSegmentAlignment", 0x10000);
 
-			UsesCompression = Settings.GetSettingOrDefault("engineInfo/usesCompression", false);
 			UsesStringHashes = Settings.GetSettingOrDefault("engineInfo/usesStringHashes", true);
 			UsesRawHashes = Settings.GetSettingOrDefault("engineInfo/usesRawHashes", true);
 			OptimizedShaders = Settings.GetSettingOrDefault("engineInfo/optimizedShaders", false);
@@ -246,8 +259,27 @@ namespace Blamite.Serialization
 				Engine = EngineType.SecondGeneration;
 			else if (generation.Contains("third"))
 				Engine = EngineType.ThirdGeneration;
+			else if (generation.Contains("eldorado"))
+				Engine = EngineType.Eldorado;
 			else
-				throw new System.Exception("Invalid generation type \"" + generation + "\" for build " + Name + "in engines.xml. Only \"first\", \"second\", and \"third\" are valid.");
+				throw new System.Exception("Invalid generation type \"" + generation + "\" for build " + Name + "in engines.xml. Only \"first\", \"second\", \"third\", and \"eldorado\" are valid.");
+
+			string compression = Settings.GetSettingOrDefault("engineInfo/compression", "none");
+
+			if (compression.Contains("none"))
+				Compression = CompressionType.None;
+			else if (compression.Contains("cexbox"))
+				Compression = CompressionType.CEXBox;
+			else if (compression.Contains("cea360"))
+				Compression = CompressionType.CEA360;
+			else if (compression.Contains("ceamcc"))
+				Compression = CompressionType.CEAMCC;
+			else if (compression.Contains("h2mcc"))
+				Compression = CompressionType.H2MCC;
+			else if (compression.Contains("xb1mcc"))
+				Compression = CompressionType.XB1MCC;
+			else
+				throw new System.Exception("Invalid compression type \"" + compression + "\" for build " + Name + "in engines.xml. Only \"none\", \"cexbox\", \"cea360\", \"ceamcc\", \"h2mcc\", and \"xb1mcc\" are valid.");
 
 			if (Settings.PathExists("engineInfo/encryption/tagNameKey"))
 				TagNameKey = new AESKey(Settings.GetSettingOrDefault<string>("engineInfo/encryption/tagNameKey", null));
@@ -255,6 +287,8 @@ namespace Blamite.Serialization
 				StringIDKey = new AESKey(Settings.GetSettingOrDefault<string>("engineInfo/encryption/stringIdKey", null));
 			if (Settings.PathExists("engineInfo/encryption/localeKey"))
 				LocaleKey = new AESKey(Settings.GetSettingOrDefault<string>("engineInfo/encryption/localeKey", null));
+
+			FallbackTagNameFolder = Settings.GetSettingOrDefault<string>("fallbackTagNamesPath", null);
 		}
 
 		private void LoadPokingSettings()
@@ -269,6 +303,8 @@ namespace Blamite.Serialization
 				PokingPlatform = RTEConnectionType.LocalProcess32;
 			else if (platform.Contains("pc64"))
 				PokingPlatform = RTEConnectionType.LocalProcess64;
+			else if (platform.Contains("xboxone"))
+				PokingPlatform = RTEConnectionType.ConsoleXboxOne;
 			else if (platform.Contains("undefined"))
 				PokingPlatform = RTEConnectionType.None;
 			else
@@ -285,12 +321,13 @@ namespace Blamite.Serialization
 		private void LoadDatabases()
 		{
 			Layouts = Settings.GetSettingOrDefault<StructureLayoutCollection>("databases/layouts", null);
-			StringIDs = Settings.GetSettingOrDefault<StringIDNamespaceResolver>("databases/stringIds", null);
+			StringIDInfo = Settings.GetSettingOrDefault<StringIDInformation>("databases/stringIds", null);
 			ScriptInfo = Settings.GetSettingOrDefault<OpcodeLookup>("databases/scripting", null);
 			LocaleSymbols = Settings.GetSettingOrDefault<LocaleSymbolCollection>("databases/localeSymbols", null);
 			VertexLayouts = Settings.GetSettingOrDefault<VertexLayoutCollection>("databases/vertexLayouts", null);
 			GroupNames = Settings.GetSettingOrDefault<GroupNameCollection>("databases/groupNames", null);
 			Poking = Settings.GetSettingOrDefault<PokingCollection>("databases/poking", null);
+			HudMessageSymbols = Settings.GetSettingOrDefault<LocaleSymbolCollection>("databases/hudMessageSymbols", null);
 		}
 
 		private void LoadCrucialLayoutInfo()

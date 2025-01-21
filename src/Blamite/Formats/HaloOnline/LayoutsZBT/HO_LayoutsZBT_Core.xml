@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layouts>
+	<!-- Map header (minus version info) -->
+	<layout for="header" size="0x3390">
+		<uint32 name="file size" offset="0x8" />
+		<uint32 name="index header address" offset="0x10" />
+		<uint32 name="tag buffer offset" offset="0x14" />
+
+		<asciiz name="build string" offset="0x11C" />
+		<int16 name="type" offset="0x13C" />
+
+		<asciiz name="internal name" offset="0x1B4" />
+		<asciiz name="scenario name" offset="0x1D8" />
+
+		<raw name="sha1 hash" offset="0x330" size="0x14" />
+		<raw name="rsa2048 hash" offset="0x344" size="0x100" />
+
+		<uint32 name="map id" offset="0x2DFC" />
+		<uint32 name="scenario index" offset="0x2E00" />
+		<uint32 name="resource gestalt index" offset="0x2E04" />
+	</layout>
+
+	<layout for="tags header" size="0x20">
+		<uint32 name="tag table offset" offset="0x4" />
+		<uint32 name="number of tags" offset="0x8" />
+	</layout>
+
+	<!-- Tag table entry -->
+	<layout for="tag element header" size="0x20">
+		<int32 name="checksum" offset="0x0" />
+
+		<int32 name="size" offset="0x4" />
+		<int16 name="dependencies count" offset="0x8" />
+		<int16 name="data fixups count" offset="0xA" />
+		<int16 name="resource fixups count" offset="0xC" />
+
+		<uint32 name="base data offset" offset="0x10" />
+		<int32 name="magic" offset="0x14" />
+		<int32 name="parent magic" offset="0x18" />
+		<int32 name="grandparent magic" offset="0x1C" />
+
+		<int32 name="group stringid" offset="0x20" />
+	</layout>
+
+	<layout for="tag block" size="0xC">
+		<int32 name="entry count" offset="0x0" />
+		<uint32 name="pointer" offset="0x4" />
+	</layout>
+
+	<layout for="tag reference" size="0x10">
+		<int32 name="tag group magic" offset="0x0" />
+		<uint32 name="datum index" offset="0xC" />
+	</layout>
+
+	<layout for="data reference" size="0x14">
+		<int32 name="size" offset="0x0" />
+		<uint32 name="pointer" offset="0xC" />
+	</layout>
+
+	<!-- unic (multilingual_unicode_string_list) -->
+	<!-- named different to not get mixed with builds that rely on the globals tag -->
+	<layout for="unic table">
+		<int32 name="number of strings" offset="0x0" />
+		<uint32 name="string table address" offset="0x4" />
+		<int32 name="string data size" offset="0xC" />
+		<uint32 name="string data address" offset="0x18" />
+	</layout>
+
+	<layout for="unic table string reference" size="0x54">
+		<uint32 name="name stringid" offset="0x0" />
+		<asciiz name="name string" offset="0x4" />
+		<array name="language offsets" offset="0x24" entrySize="0x4" count="12">
+			<int32 name="start offset" offset="0x0" />
+		</array>
+	</layout>
+
+</layouts>

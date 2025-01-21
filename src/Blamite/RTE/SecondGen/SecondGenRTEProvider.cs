@@ -36,7 +36,7 @@ namespace Blamite.RTE.SecondGen
 		/// </summary>
 		/// <param name="cacheFile">The cache file to get a stream for.</param>
 		/// <returns>The stream if it was opened successfully, or null otherwise.</returns>
-		public IStream GetMetaStream(ICacheFile cacheFile)
+		public IStream GetMetaStream(ICacheFile cacheFile, ITag tag = null)
 		{
 			if (string.IsNullOrEmpty(_buildInfo.PokingExecutable))
 				throw new InvalidOperationException("No gameExecutable value found in Engines.xml for engine " + _buildInfo.Name + ".");

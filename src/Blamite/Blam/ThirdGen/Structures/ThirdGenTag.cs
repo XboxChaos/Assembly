@@ -22,6 +22,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 		public DatumIndex Index { get; private set; }
 		public ITagGroup Group { get; set; }
 		public SegmentPointer MetaLocation { get; set; }
+		public TagSource Source { get; set; }
 
 		public StructureValueCollection Serialize(IList<ITagGroup> groupList, IPointerExpander expander)
 		{
@@ -40,10 +41,13 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private void Load(StructureValueCollection values, ushort index, FileSegmentGroup metaArea, IList<ITagGroup> groupList, IPointerExpander expander)
 		{
 			uint address = (uint)values.GetInteger("memory address");
+
+			Source = TagSource.Null;
 			if (address != 0 && address != 0xFFFFFFFF)
 			{
 				long expanded = expander.Expand(address);
 
+				Source = TagSource.MetaArea;
 				MetaLocation = SegmentPointer.FromPointer(expanded, metaArea);
 			}
 

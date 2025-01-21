@@ -25,7 +25,7 @@ namespace Blamite.RTE
 			get { return RTEConnectionType.LocalProcess64; }
 		}
 
-		public abstract IStream GetMetaStream(ICacheFile cacheFile = null);
+		public abstract IStream GetMetaStream(ICacheFile cacheFile = null, ITag tag = null);
 
 		protected bool CheckBuildInfo()
 		{

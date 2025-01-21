@@ -13,6 +13,8 @@ namespace Blamite.Serialization.Settings
 		private readonly Dictionary<string, IComplexSettingLoader> _settingLoaders =
 			new Dictionary<string, IComplexSettingLoader>();
 
+		private readonly Dictionary<SettingInfo, object> _settingCache = new Dictionary<SettingInfo, object>();
+
 		/// <summary>
 		///     Associates an <see cref="IComplexSettingLoader" /> with a particular type string.
 		/// </summary>
@@ -54,13 +56,48 @@ namespace Blamite.Serialization.Settings
 				string path = XMLUtil.GetStringAttribute(elem, "path", null);
 				if (path != null)
 				{
+					var info = new SettingInfo(type, path);
+					if (_settingCache.TryGetValue(info, out object cached))
+						return cached;
+
 					IComplexSettingLoader loader;
 					if (!_settingLoaders.TryGetValue(type, out loader))
 						throw new InvalidOperationException("Unrecognized complex setting type \"" + type + "\"");
-					return loader.LoadSetting(path);
+
+					object setting = loader.LoadSetting(path);
+					_settingCache[info] = setting;
+					return setting;
 				}
 			}
 			return elem.Value;
+		}
+
+		private class SettingInfo
+		{
+			public string Type { get; set; }
+			public string Path { get; set; }
+
+			public SettingInfo(string type, string path)
+			{
+				Type = type;
+				Path = path;
+			}
+
+			public override bool Equals(object obj)
+			{
+				if (obj.GetType() != typeof(SettingInfo))
+					return false;
+
+				return obj.GetHashCode() == GetHashCode();
+			}
+
+			public override int GetHashCode()
+			{
+				int result = 7057;
+				result = result * 8171 + Type.GetHashCode();
+				result = result * 8171 + Path.GetHashCode();
+				return result;
+			}
 		}
 	}
 }

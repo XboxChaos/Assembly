@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Input;
+using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 {
@@ -18,14 +19,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 			InitializeComponent();
 		}
 
-		private void AllocateCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		private void NoticeHide_Click(object sender, System.Windows.RoutedEventArgs e)
 		{
-			e.CanExecute = true;
-		}
-
-		private void IsolateCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			e.CanExecute = true;
+			RawData field = (RawData)DataContext;
+			field.ShowingNotice = false;
 		}
 	}
 }

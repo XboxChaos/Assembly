@@ -80,5 +80,13 @@ namespace Blamite.IO
 		{
 			return _baseGroup.OffsetToPointer(AsOffset());
 		}
+
+		/// <summary>
+		/// Gets the FileSegmentGroup that contains this Segment
+		/// </summary>
+		public FileSegmentGroup BaseGroup
+		{
+			get { return _baseGroup; }
+		}
 	}
 }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Blamite.Serialization;
 using Blamite.IO;
+using System;
 
 namespace Blamite.Blam.ThirdGen.Structures
 {
@@ -271,6 +272,15 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		private void Load(StructureValueCollection values, FileSegmenter segmenter)
 		{
+			if (values.HasArray("compressed section types"))
+			{
+				foreach (var type in values.GetArray("compressed section types"))
+				{
+					if ((int)type.GetInteger("type") > 0)
+						throw new ArgumentException("Map claims to be compressed. Please decompress it using the Tools menu before trying to load it again.");
+				}	
+			}
+
 			segmenter.DefineSegment(0, (uint)HeaderSize, 1, SegmentResizeOrigin.Beginning); // Define a segment for the header
 			_eofSegment = segmenter.WrapEOF((uint) values.GetInteger("file size"));
 

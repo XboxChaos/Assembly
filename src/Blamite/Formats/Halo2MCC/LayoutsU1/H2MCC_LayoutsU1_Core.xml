@@ -27,6 +27,11 @@
 		<uint32 name="tag data offset" offset="0x2D4" />
 		<int32 name="tag data size" offset="0x2D8" />
 
+		<uint32 name="locale globals offset" offset="0x2E4" />
+		<uint32 name="locale globals size" offset="0x2E8" />
+
+		<uint32 name="sound gestalt datum index" offset="0x2EC" />
+
 		<uint32 name="raw table offset" offset="0x2F0" />
 		<int32 name="raw table size" offset="0x2F4" />
 
@@ -60,8 +65,17 @@
 	<layout for="tag element" size="0x10">
 		<int32 name="tag group magic" offset="0x0" />
 		<uint32 name="datum index" offset="0x4" />
-		<int32 name="offset" offset="0x8" />
+		<uint32 name="memory address" offset="0x8" />
 		<int32 name="data size" offset="0xC" />
+	</layout>
+
+	<layout for="locale globals">
+		<array name="languages" offset="0x8" entrySize="0x1C" count="9">
+			<uint32 name="string count" offset="0x0" />
+			<uint32 name="locale table size" offset="0x4" />
+			<uint32 name="locale index table offset" offset="0x8" />
+			<uint32 name="locale data index offset" offset="0xC" />
+		</array>
 	</layout>
 
 	<!-- Map globals meta -->

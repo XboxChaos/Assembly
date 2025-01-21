@@ -9,6 +9,7 @@
 		Multiplayer,
 		MainMenu,
 		Shared,
-		SinglePlayerShared
+		SinglePlayerShared,
+		Sounds
 	}
 }

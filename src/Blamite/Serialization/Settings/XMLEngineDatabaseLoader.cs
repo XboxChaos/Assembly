@@ -67,11 +67,12 @@ namespace Blamite.Serialization.Settings
 			loader.RegisterComplexSettingLoader("layouts", new XMLLayoutLoader());
 			loader.RegisterComplexSettingLoader("groupNames", new XMLGroupNameLoader());
 			loader.RegisterComplexSettingLoader("localeSymbols", new XMLLocaleSymbolLoader());
-			loader.RegisterComplexSettingLoader("stringIds", new XMLStringIDNamespaceLoader());
+			loader.RegisterComplexSettingLoader("stringIds", new XMLStringIDLoader());
 			loader.RegisterComplexSettingLoader("scripting", new XMLOpcodeLookupLoader());
 			loader.RegisterComplexSettingLoader("vertexLayouts", new XMLVertexLayoutLoader());
 			loader.RegisterComplexSettingLoader("poking", new XMLPokingLoader());
-            return loader;
+			loader.RegisterComplexSettingLoader("hudMessageSymbols", new XMLLocaleSymbolLoader());
+			return loader;
 		}
 	}
 }

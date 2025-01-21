@@ -1,0 +1,3400 @@
+<?xml version="1.0" encoding="us-ascii" standalone="yes"?>
+<!-- Created by Lord Zedd -->
+<BlamScript>
+	<typecasting></typecasting>
+
+	<scriptTypes>
+		<type opcode="0x0" name="startup" />
+		<type opcode="0x1" name="dormant" />
+		<type opcode="0x2" name="continuous" />
+		<type opcode="0x3" name="static" />
+		<type opcode="0x4" name="stub" />
+		<type opcode="0x5" name="command_script" />
+	</scriptTypes>
+
+	<valueTypes version="1">
+		<type opcode="0x00" name="unparsed" size="0" />
+		<type opcode="0x01" name="special_form" size="0" />
+		<type opcode="0x02" name="function_name" size="0" />
+		<type opcode="0x03" name="passthrough" size="0" />
+		<type opcode="0x04" name="void" size="0" />
+		<type opcode="0x05" name="boolean" size="1" />
+		<type opcode="0x06" name="real" size="4" />
+		<type opcode="0x07" name="short" size="2" />
+		<type opcode="0x08" name="long" size="4" />
+		<type opcode="0x09" name="string" size="4" quoted="true" />
+		<type opcode="0x0A" name="script" size="2" />
+		<type opcode="0x0B" name="trigger_volume" size="2" quoted="true" />
+		<type opcode="0x0C" name="cutscene_flag" size="2" quoted="true" />
+		<type opcode="0x0D" name="cutscene_camera_point" size="2" quoted="true" />
+		<type opcode="0x0E" name="cutscene_title" size="2" quoted="true" />
+		<type opcode="0x0F" name="cutscene_recording" size="2" quoted="true" />
+		<type opcode="0x10" name="device_group" size="4" quoted="true" />
+		<type opcode="0x11" name="ai" size="4" quoted="true" />
+		<type opcode="0x12" name="ai_command_list" size="2" quoted="true" />
+		<type opcode="0x13" name="ai_command_script" size="2" />
+		<type opcode="0x14" name="ai_behavior" size="2" quoted="true" />
+		<type opcode="0x15" name="ai_orders" size="2" quoted="true" />
+		<type opcode="0x16" name="starting_profile" size="2" quoted="true" />
+		<type opcode="0x17" name="conversation" size="2" quoted="true" />
+		<type opcode="0x18" name="navpoint" size="2" />
+		<type opcode="0x19" name="point_reference" size="4" />
+		<type opcode="0x1A" name="style" size="4" />
+		<type opcode="0x1B" name="hud_message" size="2" />
+		<type opcode="0x1C" name="object_list" size="4" />
+		<type opcode="0x1D" name="sound" size="4" tag="snd!" quoted="true" />
+		<type opcode="0x1E" name="effect" size="4" tag="effe" quoted="true" />
+		<type opcode="0x1F" name="damage" size="4" tag="jpt!" quoted="true" />
+		<type opcode="0x20" name="looping_sound" size="4" tag="lsnd" quoted="true" />
+		<type opcode="0x21" name="animation_graph" size="4" tag="jmad" quoted="true" />
+		<type opcode="0x22" name="damage_effect" size="4" tag="jpt!" quoted="true" />
+		<type opcode="0x23" name="object_definition" size="4" tag="obje" quoted="true" />
+		<type opcode="0x24" name="bitmap" size="4" tag="bitm" quoted="true" />
+		<type opcode="0x25" name="game_difficulty" size="2" >
+			<enum>easy</enum>
+			<enum>normal</enum>
+			<enum>heroic</enum>
+			<enum>legendary</enum>
+		</type>
+		<type opcode="0x26" name="team" size="2" >
+			<enum>default</enum>
+			<enum>player</enum>
+			<enum>human</enum>
+			<enum>covenant</enum>
+			<enum>flood</enum>
+			<enum>sentinel</enum>
+			<enum>heretic</enum>
+			<enum>prophet</enum>
+			<enum>unused8</enum>
+			<enum>unused9</enum>
+			<enum>unused10</enum>
+			<enum>unused11</enum>
+			<enum>unused12</enum>
+			<enum>unused13</enum>
+			<enum>unused14</enum>
+			<enum>unused15</enum>
+		</type>
+		<type opcode="0x27" name="actor_type" size="2" >
+			<enum>elite</enum>
+			<enum>jackal</enum>
+			<enum>grunt</enum>
+			<enum>hunter</enum>
+			<enum>engineer</enum>
+			<enum>assassin</enum>
+			<enum>player</enum>
+			<enum>marine</enum>
+			<enum>crew</enum>
+			<enum>combat_form</enum>
+			<enum>infection_form</enum>
+			<enum>carrier_form</enum>
+			<enum>monitor</enum>
+			<enum>sentinel</enum>
+			<enum>none</enum>
+			<enum>mounted_weapon</enum>
+			<enum>brute</enum>
+			<enum>prophet</enum>
+		</type>
+		<type opcode="0x28" name="hud_corner" size="2" >
+			<enum>top_left</enum>
+			<enum>top_right</enum>
+			<enum>bottom_left</enum>
+			<enum>bottom_right</enum>
+			<enum>center</enum>
+		</type>
+		<type opcode="0x29" name="model_state" size="2" >
+			<enum>standard</enum>
+			<enum>minor_damage</enum>
+			<enum>medium_damage</enum>
+			<enum>major_damage</enum>
+			<enum>destroyed</enum>
+		</type>
+		<type opcode="0x2A" name="network_event" size="2" >
+			<enum>verbose</enum>
+			<enum>status</enum>
+			<enum>message</enum>
+			<enum>warning</enum>
+			<enum>error</enum>
+			<enum>critical</enum>
+		</type>
+		<type opcode="0x2B" name="object" size="4" />
+		<type opcode="0x2C" name="unit" size="4" />
+		<type opcode="0x2D" name="vehicle" size="4" />
+		<type opcode="0x2E" name="weapon" size="4" />
+		<type opcode="0x2F" name="device" size="4" />
+		<type opcode="0x30" name="scenery" size="4" />
+		<type opcode="0x31" name="object_name" size="2" object="true" quoted="true" />
+		<type opcode="0x32" name="unit_name" size="2" object="true" quoted="true" />
+		<type opcode="0x33" name="vehicle_name" size="2" object="true" quoted="true" />
+		<type opcode="0x34" name="weapon_name" size="2" object="true" quoted="true" />
+		<type opcode="0x35" name="device_name" size="2" object="true" quoted="true" />
+		<type opcode="0x36" name="scenery_name" size="2" object="true" quoted="true" />
+	</valueTypes>
+
+	<functions>
+		<function opcode="0x000" name="begin" returnType="passthrough" flags="2" group="Begin" />
+		<function opcode="0x001" name="begin_random" returnType="passthrough" flags="2" group="Begin" />
+		<function opcode="0x002" name="if" returnType="passthrough" flags="2" group="If" />
+		<function opcode="0x003" name="cond" returnType="passthrough" flags="2" group="Cond" />
+		<function opcode="0x004" name="set" returnType="passthrough" flags="2" group="Set" />
+		<function opcode="0x005" name="and" returnType="boolean" flags="2" group="Logical" />
+		<function opcode="0x006" name="or" returnType="boolean" flags="2" group="Logical" />
+		<function opcode="0x007" name="+" returnType="real" flags="2" group="Arithmetic" />
+		<function opcode="0x008" name="-" returnType="real" flags="2" group="Arithmetic" />
+		<function opcode="0x009" name="*" returnType="real" flags="2" group="Arithmetic" />
+		<function opcode="0x00A" name="/" returnType="real" flags="2" group="Arithmetic" />
+		<function opcode="0x00B" name="min" returnType="real" flags="2" group="Arithmetic" />
+		<function opcode="0x00C" name="max" returnType="real" flags="2" group="Arithmetic" />
+		<function opcode="0x00D" name="=" returnType="boolean" flags="2" group="Equality" />
+		<function opcode="0x00E" name="!=" returnType="boolean" flags="2" group="Equality" />
+		<function opcode="0x00F" name="&gt;" returnType="boolean" flags="2" group="Inequality" />
+		<function opcode="0x010" name="&lt;" returnType="boolean" flags="2" group="Inequality" />
+		<function opcode="0x011" name="&gt;=" returnType="boolean" flags="2" group="Inequality" />
+		<function opcode="0x012" name="&lt;=" returnType="boolean" flags="2" group="Inequality" />
+		<function opcode="0x013" name="sleep" returnType="void" flags="2" group="Sleep" />
+		<function opcode="0x014" name="sleep_forever" returnType="void" flags="2" group="SleepForever" />
+		<function opcode="0x015" name="sleep_until" returnType="void" flags="2" group="SleepUntil" />
+		<function opcode="0x016" name="wake" returnType="void" flags="2" group="Wake" />
+		<function opcode="0x017" name="inspect" returnType="void" flags="2" group="Inspect" />
+		<function opcode="0x018" name="unit" returnType="unit" flags="2" group="ObjectCast" />
+		<function opcode="0x019" name="not" returnType="boolean" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x01A" name="pin" returnType="real" argc="3">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x01B" name="print" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x01C" name="players" returnType="object_list" />
+		<function opcode="0x01D" name="volume_teleport_players_not_inside" returnType="void" argc="2">
+			<arg type="trigger_volume" />
+			<arg type="cutscene_flag" />
+		</function>
+		<function opcode="0x01E" name="volume_test_object" returnType="boolean" argc="2">
+			<arg type="trigger_volume" />
+			<arg type="object" />
+		</function>
+		<function opcode="0x01F" name="volume_test_objects" returnType="boolean" argc="2">
+			<arg type="trigger_volume" />
+			<arg type="object_list" />
+		</function>
+		<function opcode="0x020" name="volume_test_objects_all" returnType="boolean" argc="2">
+			<arg type="trigger_volume" />
+			<arg type="object_list" />
+		</function>
+		<function opcode="0x021" name="volume_return_objects" returnType="object_list" argc="1">
+			<arg type="trigger_volume" />
+		</function>
+		<function opcode="0x022" name="volume_return_objects_by_type" returnType="object_list" argc="2">
+			<arg type="trigger_volume" />
+			<arg type="long" />
+		</function>
+		<function opcode="0x023" name="list_get" returnType="object" argc="2">
+			<arg type="object_list" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x024" name="list_count" returnType="short" argc="1">
+			<arg type="object_list" />
+		</function>
+		<function opcode="0x025" name="effect_new" returnType="void" argc="2">
+			<arg type="effect" />
+			<arg type="cutscene_flag" />
+		</function>
+		<function opcode="0x026" name="effect_new_on_object_marker" returnType="void" argc="3">
+			<arg type="effect" />
+			<arg type="object" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x027" name="damage_new" returnType="void" argc="2">
+			<arg type="damage" />
+			<arg type="cutscene_flag" />
+		</function>
+		<function opcode="0x028" name="damage_object" returnType="void" argc="2">
+			<arg type="damage" />
+			<arg type="object" />
+		</function>
+		<function opcode="0x029" name="damage_objects" returnType="void" argc="2">
+			<arg type="damage" />
+			<arg type="object_list" />
+		</function>
+		<function opcode="0x02A" name="damage_players" returnType="void" null="true" argc="1">
+			<arg type="damage" />
+		</function>
+		<function opcode="0x02B" name="object_create" returnType="void" argc="1">
+			<arg type="object_name" />
+		</function>
+		<function opcode="0x02C" name="object_create_clone" returnType="void" argc="1">
+			<arg type="object_name" />
+		</function>
+		<function opcode="0x02D" name="object_create_anew" returnType="void" argc="1">
+			<arg type="object_name" />
+		</function>
+		<function opcode="0x02E" name="object_create_containing" returnType="void" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x02F" name="object_create_clone_containing" returnType="void" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x030" name="object_create_anew_containing" returnType="void" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x031" name="object_destroy" returnType="void" argc="1">
+			<arg type="object" />
+		</function>
+		<function opcode="0x032" name="object_destroy_containing" returnType="void" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x033" name="object_destroy_all" returnType="void" />
+		<function opcode="0x034" name="object_destroy_type_mask" returnType="void" argc="1">
+			<arg type="long" />
+		</function>
+		<function opcode="0x035" name="objects_delete_by_definition" returnType="void" argc="1">
+			<arg type="object_definition" />
+		</function>
+		<function opcode="0x036" name="object_hide" returnType="void" argc="2">
+			<arg type="object" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x037" name="object_set_shadowless" returnType="void" argc="2">
+			<arg type="object" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x038" name="object_set_ranged_attack_inhibited" returnType="void" argc="2">
+			<arg type="object" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x039" name="object_set_melee_attack_inhibited" returnType="void" argc="2">
+			<arg type="object" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x03A" name="objects_dump_memory" returnType="void" null="true" />
+		<function opcode="0x03B" name="object_get_health" returnType="real" argc="1">
+			<arg type="object" />
+		</function>
+		<function opcode="0x03C" name="object_get_shield" returnType="real" argc="1">
+			<arg type="object" />
+		</function>
+		<function opcode="0x03D" name="object_set_shield_effect" returnType="void" argc="3">
+			<arg type="object" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x03E" name="object_set_physics" returnType="void" argc="2">
+			<arg type="object" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x03F" name="object_get_parent" returnType="object" argc="1">
+			<arg type="object" />
+		</function>
+		<function opcode="0x040" name="objects_attach" returnType="void" argc="4">
+			<arg type="object" />
+			<arg type="string" />
+			<arg type="object" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x041" name="objects_detach" returnType="void" argc="2">
+			<arg type="object" />
+			<arg type="object" />
+		</function>
+		<function opcode="0x042" name="object_set_scale" returnType="void" argc="3">
+			<arg type="object" />
+			<arg type="real" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x043" name="object_set_velocity" returnType="void" argc="2">
+			<arg type="object" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x044" name="object_set_velocity" returnType="void" argc="4">
+			<arg type="object" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x045" name="garbage_collect_now" returnType="void" />
+		<function opcode="0x046" name="garbage_collect_unsafe" returnType="void" />
+		<function opcode="0x047" name="garbage_collect_multiplayer" returnType="void" />
+		<function opcode="0x048" name="object_cannot_take_damage" returnType="void" argc="1">
+			<arg type="object_list" />
+		</function>
+		<function opcode="0x049" name="object_can_take_damage" returnType="void" argc="1">
+			<arg type="object_list" />
+		</function>
+		<function opcode="0x04A" name="object_cinematic_lod" returnType="void" argc="2">
+			<arg type="object" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x04B" name="object_cinematic_collision" returnType="void" argc="2">
+			<arg type="object" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x04C" name="object_uses_cinematic_lighting" returnType="void" argc="2">
+			<arg type="object" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x04D" name="cinematic_lighting_set_primary_light" returnType="void" argc="5">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x04E" name="cinematic_lighting_set_secondary_light" returnType="void" argc="5">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x04F" name="cinematic_lighting_set_ambient_light" returnType="void" argc="3">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x050" name="objects_predict" returnType="void" argc="1">
+			<arg type="object_list" />
+		</function>
+		<function opcode="0x051" name="objects_predict_high" returnType="void" argc="1">
+			<arg type="object_list" />
+		</function>
+		<function opcode="0x052" name="objects_predict_low" returnType="void" argc="1">
+			<arg type="object_list" />
+		</function>
+		<function opcode="0x053" name="object_type_predict_high" returnType="void" argc="1">
+			<arg type="object_definition" />
+		</function>
+		<function opcode="0x054" name="object_type_predict_low" returnType="void" argc="1">
+			<arg type="object_definition" />
+		</function>
+		<function opcode="0x055" name="object_type_predict" returnType="void" argc="1">
+			<arg type="object_definition" />
+		</function>
+		<function opcode="0x056" name="object_teleport" returnType="void" argc="2">
+			<arg type="object" />
+			<arg type="cutscene_flag" />
+		</function>
+		<function opcode="0x057" name="object_set_facing" returnType="void" argc="2">
+			<arg type="object" />
+			<arg type="cutscene_flag" />
+		</function>
+		<function opcode="0x058" name="object_set_shield" returnType="void" argc="2">
+			<arg type="object" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x059" name="object_set_permutation" returnType="void" argc="3">
+			<arg type="object" />
+			<arg type="string" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x05A" name="object_set_region_state" returnType="void" argc="3">
+			<arg type="object" />
+			<arg type="string" />
+			<arg type="model_state" />
+		</function>
+		<function opcode="0x05B" name="objects_can_see_object" returnType="boolean" argc="3">
+			<arg type="object_list" />
+			<arg type="object" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x05C" name="objects_can_see_flag" returnType="boolean" argc="3">
+			<arg type="object_list" />
+			<arg type="cutscene_flag" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x05D" name="objects_distance_to_object" returnType="real" argc="2">
+			<arg type="object_list" />
+			<arg type="object" />
+		</function>
+		<function opcode="0x05E" name="objects_distance_to_flag" returnType="real" argc="2">
+			<arg type="object_list" />
+			<arg type="cutscene_flag" />
+		</function>
+		<function opcode="0x05F" name="map_info" returnType="void" null="true" />
+		<function opcode="0x060" name="position_predict" returnType="void" argc="3">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x061" name="shader_predict" returnType="void" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x062" name="bitmap_predict" returnType="void" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x063" name="script_recompile" returnType="void" null="true" />
+		<function opcode="0x064" name="script_doc" returnType="void" null="true" />
+		<function opcode="0x065" name="help" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x066" name="game_engine_objects" returnType="object_list" />
+		<function opcode="0x067" name="random_range" returnType="short" argc="2">
+			<arg type="short" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x068" name="real_random_range" returnType="real" argc="2">
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x069" name="physics_constants_reset" returnType="void" />
+		<function opcode="0x06A" name="physics_set_gravity" returnType="void" argc="1">
+			<arg type="real" />
+		</function>
+		<function opcode="0x06B" name="havok_debug_start" returnType="void" null="true" />
+		<function opcode="0x06C" name="havok_dump_world" returnType="void" null="true" argc="2">
+			<arg type="string" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x06D" name="havok_dump_world_close_movie" returnType="void" null="true" />
+		<function opcode="0x06E" name="breakable_surfaces_enable" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x06F" name="breakable_surfaces_reset" returnType="void" />
+		<function opcode="0x070" name="recording_play" returnType="boolean" argc="2">
+			<arg type="unit" />
+			<arg type="cutscene_recording" />
+		</function>
+		<function opcode="0x071" name="recording_play_and_delete" returnType="boolean" argc="2">
+			<arg type="unit" />
+			<arg type="cutscene_recording" />
+		</function>
+		<function opcode="0x072" name="recording_play_and_hover" returnType="boolean" argc="2">
+			<arg type="vehicle" />
+			<arg type="cutscene_recording" />
+		</function>
+		<function opcode="0x073" name="recording_kill" returnType="void" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x074" name="recording_time" returnType="short" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x075" name="render_lights" returnType="boolean" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x076" name="fog_report" returnType="void" null="true" />
+		<function opcode="0x077" name="fog_report_summary" returnType="void" null="true" />
+		<function opcode="0x078" name="fog_report_verbose" returnType="void" null="true" />
+		<function opcode="0x079" name="fog_mode_control" returnType="void" null="true" argc="4">
+			<arg type="boolean" />
+			<arg type="boolean" />
+			<arg type="boolean" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x07A" name="fog_override_off" returnType="void" null="true" />
+		<function opcode="0x07B" name="fog_override_mode" returnType="void" null="true" argc="1">
+			<arg type="long" />
+		</function>
+		<function opcode="0x07C" name="fog_override_mode_off" returnType="void" null="true" />
+		<function opcode="0x07D" name="fog_override_atmospheric_fog" returnType="void" null="true" argc="4">
+			<arg type="real" />
+			<arg type="string" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x07E" name="fog_override_atmospheric_fog_off" returnType="void" null="true" />
+		<function opcode="0x07F" name="fog_override_secondary_fog" returnType="void" null="true" argc="4">
+			<arg type="real" />
+			<arg type="string" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x080" name="fog_override_secondary_fog_off" returnType="void" null="true" />
+		<function opcode="0x081" name="fog_override_sky_fog" returnType="void" null="true" argc="2">
+			<arg type="real" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x082" name="fog_override_sky_fog_off" returnType="void" null="true" />
+		<function opcode="0x083" name="fog_override_planar_fog" returnType="void" null="true" argc="5">
+			<arg type="real" />
+			<arg type="string" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x084" name="fog_override_planar_fog_off" returnType="void" null="true" />
+		<function opcode="0x085" name="fog_override_planar_fog_plane" returnType="void" null="true" argc="3">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x086" name="fog_override_planar_fog_plane_off" returnType="void" null="true" />
+		<function opcode="0x087" name="fog_override_planar_max_atmospheric_depth" returnType="void" null="true" argc="1">
+			<arg type="real" />
+		</function>
+		<function opcode="0x088" name="fog_override_planar_max_atmospheric_depth_off" returnType="void" null="true" />
+		<function opcode="0x089" name="fog_override_planar_planar_eye_density" returnType="void" null="true" argc="1">
+			<arg type="real" />
+		</function>
+		<function opcode="0x08A" name="fog_override_planar_planar_eye_density_off" returnType="void" null="true" />
+		<function opcode="0x08B" name="fog_override_atmospheric_secondary_blend" returnType="void" null="true" argc="1">
+			<arg type="real" />
+		</function>
+		<function opcode="0x08C" name="fog_override_atmospheric_secondary_blend_off" returnType="void" null="true" />
+		<function opcode="0x08D" name="fog_override_atmospheric_planar_blend" returnType="void" null="true" argc="1">
+			<arg type="real" />
+		</function>
+		<function opcode="0x08E" name="fog_override_atmospheric_planar_blend_off" returnType="void" null="true" />
+		<function opcode="0x08F" name="render_debug_structure_cluster_visibility" returnType="void" null="true" argc="1">
+			<arg type="long" />
+		</function>
+		<function opcode="0x090" name="render_debug_structure_cluster_fog" returnType="void" null="true" argc="1">
+			<arg type="long" />
+		</function>
+		<function opcode="0x091" name="render_debug_structure_fog_plane" returnType="void" null="true" argc="1">
+			<arg type="long" />
+		</function>
+		<function opcode="0x092" name="render_debug_structure_fog_plane_infinite_extent" returnType="void" null="true" argc="1">
+			<arg type="long" />
+		</function>
+		<function opcode="0x093" name="render_debug_structure_fog_zone" returnType="void" null="true" argc="1">
+			<arg type="long" />
+		</function>
+		<function opcode="0x094" name="render_debug_structure_fog_zone_floodfill" returnType="void" null="true" argc="1">
+			<arg type="long" />
+		</function>
+		<function opcode="0x095" name="render_debug_structure_all_fog_planes" returnType="void" null="true" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x096" name="render_debug_structure_all_cluster_errors" returnType="void" null="true" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x097" name="render_debug_structure_line_opacity" returnType="void" null="true" argc="4">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x098" name="render_debug_structure_text_opacity" returnType="void" null="true" argc="4">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x099" name="render_debug_structure_opacity" returnType="void" null="true" argc="4">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x09A" name="render_debug_structure_non_occluded_fog_planes" returnType="void" null="true" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x09B" name="scenery_get_animation_time" returnType="short" argc="1">
+			<arg type="scenery" />
+		</function>
+		<function opcode="0x09C" name="scenery_animation_start" returnType="void" argc="3">
+			<arg type="scenery" />
+			<arg type="animation_graph" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x09D" name="scenery_animation_start_loop" returnType="void" argc="3">
+			<arg type="scenery" />
+			<arg type="animation_graph" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x09E" name="scenery_animation_start_relative" returnType="void" argc="4">
+			<arg type="scenery" />
+			<arg type="animation_graph" />
+			<arg type="string" />
+			<arg type="object" />
+		</function>
+		<function opcode="0x09F" name="scenery_animation_start_relative_loop" returnType="void" argc="4">
+			<arg type="scenery" />
+			<arg type="animation_graph" />
+			<arg type="string" />
+			<arg type="object" />
+		</function>
+		<function opcode="0x0A0" name="scenery_animation_start_at_frame" returnType="void" argc="4">
+			<arg type="scenery" />
+			<arg type="animation_graph" />
+			<arg type="string" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x0A1" name="scenery_animation_idle" returnType="void" argc="1">
+			<arg type="scenery" />
+		</function>
+		<function opcode="0x0A2" name="render_effects" returnType="void" null="true" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x0A3" name="unit_can_blink" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x0A4" name="unit_open" returnType="void" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x0A5" name="unit_close" returnType="void" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x0A6" name="unit_kill" returnType="void" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x0A7" name="unit_kill_silent" returnType="void" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x0A8" name="unit_get_custom_animation_time" returnType="short" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x0A9" name="unit_get_team_index" returnType="short" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x0AA" name="unit_stop_custom_animation" returnType="void" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x0AB" name="custom_animation" returnType="boolean" argc="4">
+			<arg type="unit" />
+			<arg type="animation_graph" />
+			<arg type="string" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x0AC" name="custom_animation_loop" returnType="boolean" argc="4">
+			<arg type="unit" />
+			<arg type="animation_graph" />
+			<arg type="string" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x0AD" name="custom_animation_relative" returnType="boolean" argc="5">
+			<arg type="unit" />
+			<arg type="animation_graph" />
+			<arg type="string" />
+			<arg type="boolean" />
+			<arg type="object" />
+		</function>
+		<function opcode="0x0AE" name="custom_animation_relative_loop" returnType="boolean" argc="5">
+			<arg type="unit" />
+			<arg type="animation_graph" />
+			<arg type="string" />
+			<arg type="boolean" />
+			<arg type="object" />
+		</function>
+		<function opcode="0x0AF" name="custom_animation_list" returnType="boolean" argc="4">
+			<arg type="object_list" />
+			<arg type="animation_graph" />
+			<arg type="string" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x0B0" name="unit_set_actively_controlled" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x0B1" name="unit_custom_animation_at_frame" returnType="boolean" argc="5">
+			<arg type="unit" />
+			<arg type="animation_graph" />
+			<arg type="string" />
+			<arg type="boolean" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x0B2" name="unit_is_playing_custom_animation" returnType="boolean" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x0B3" name="unit_aim_without_turning" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x0B4" name="unit_set_enterable_by_player" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x0B5" name="unit_enter_vehicle" returnType="void" argc="3">
+			<arg type="unit" />
+			<arg type="vehicle" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x0B6" name="unit_board_vehicle" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x0B7" name="unit_set_emotion" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x0B8" name="unit_set_emotion_animation" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x0B9" name="unit_set_emotional_state" returnType="void" argc="4">
+			<arg type="unit" />
+			<arg type="string" />
+			<arg type="real" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x0BA" name="unit_enable_eye_tracking" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x0BB" name="unit_in_vehicle" returnType="boolean" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x0BC" name="vehicle_test_seat_list" returnType="boolean" argc="3">
+			<arg type="vehicle" />
+			<arg type="string" />
+			<arg type="object_list" />
+		</function>
+		<function opcode="0x0BD" name="vehicle_test_seat" returnType="boolean" argc="3">
+			<arg type="vehicle" />
+			<arg type="string" />
+			<arg type="unit" />
+		</function>
+		<function opcode="0x0BE" name="unit_set_prefer_tight_camera_track" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x0BF" name="unit_exit_vehicle" returnType="void" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x0C0" name="unit_exit_vehicle" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x0C1" name="unit_set_maximum_vitality" returnType="void" argc="3">
+			<arg type="unit" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x0C2" name="units_set_maximum_vitality" returnType="void" argc="3">
+			<arg type="object_list" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x0C3" name="unit_set_current_vitality" returnType="void" argc="3">
+			<arg type="unit" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x0C4" name="units_set_current_vitality" returnType="void" argc="3">
+			<arg type="object_list" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x0C5" name="vehicle_load_magic" returnType="short" argc="3">
+			<arg type="unit" />
+			<arg type="string" />
+			<arg type="object_list" />
+		</function>
+		<function opcode="0x0C6" name="vehicle_unload" returnType="short" argc="2">
+			<arg type="unit" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x0C7" name="unit_set_animation_mode" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x0C8" name="magic_melee_attack" returnType="void" />
+		<function opcode="0x0C9" name="vehicle_riders" returnType="object_list" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x0CA" name="vehicle_driver" returnType="unit" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x0CB" name="vehicle_gunner" returnType="unit" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x0CC" name="unit_get_health" returnType="real" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x0CD" name="unit_get_shield" returnType="real" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x0CE" name="unit_get_total_grenade_count" returnType="short" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x0CF" name="unit_has_weapon" returnType="boolean" argc="2">
+			<arg type="unit" />
+			<arg type="object_definition" />
+		</function>
+		<function opcode="0x0D0" name="unit_has_weapon_readied" returnType="boolean" argc="2">
+			<arg type="unit" />
+			<arg type="object_definition" />
+		</function>
+		<function opcode="0x0D1" name="unit_lower_weapon" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x0D2" name="unit_raise_weapon" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x0D3" name="unit_animation_forced_seat" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x0D4" name="unit_doesnt_drop_items" returnType="void" argc="1">
+			<arg type="object_list" />
+		</function>
+		<function opcode="0x0D5" name="unit_impervious" returnType="void" argc="2">
+			<arg type="object_list" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x0D6" name="unit_suspended" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x0D7" name="unit_add_equipment" returnType="void" argc="4">
+			<arg type="unit" />
+			<arg type="starting_profile" />
+			<arg type="boolean" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x0D8" name="device_set_never_appears_locked" returnType="void" argc="2">
+			<arg type="device" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x0D9" name="device_set_power" returnType="void" argc="2">
+			<arg type="device" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x0DA" name="device_get_power" returnType="real" argc="1">
+			<arg type="device" />
+		</function>
+		<function opcode="0x0DB" name="device_set_position" returnType="boolean" argc="2">
+			<arg type="device" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x0DC" name="device_get_position" returnType="real" argc="1">
+			<arg type="device" />
+		</function>
+		<function opcode="0x0DD" name="device_set_position_immediate" returnType="void" argc="2">
+			<arg type="device" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x0DE" name="device_group_get" returnType="real" argc="1">
+			<arg type="device_group" />
+		</function>
+		<function opcode="0x0DF" name="device_group_set" returnType="boolean" argc="2">
+			<arg type="device_group" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x0E0" name="device_group_set_immediate" returnType="void" argc="2">
+			<arg type="device_group" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x0E1" name="device_one_sided_set" returnType="void" argc="2">
+			<arg type="device" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x0E2" name="device_operates_automatically_set" returnType="void" argc="2">
+			<arg type="device" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x0E3" name="device_group_change_only_once_more_set" returnType="void" argc="2">
+			<arg type="device_group" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x0E4" name="cheat_all_powerups" returnType="void" null="true" />
+		<function opcode="0x0E5" name="cheat_all_weapons" returnType="void" null="true" />
+		<function opcode="0x0E6" name="cheat_all_vehicles" returnType="void" null="true" />
+		<function opcode="0x0E7" name="cheat_teleport_to_camera" returnType="void" null="true" />
+		<function opcode="0x0E8" name="cheat_active_camouflage" returnType="void" null="true" />
+		<function opcode="0x0E9" name="cheat_active_camouflage_by_player" returnType="void" null="true" argc="2">
+			<arg type="short" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x0EA" name="cheats_load" returnType="void" null="true" />
+		<function opcode="0x0EB" name="drop" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x0EC" name="ai_enable" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x0ED" name="ai_enabled" returnType="boolean" />
+		<function opcode="0x0EE" name="ai_dialogue_triggers" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x0EF" name="ai_grenades" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x0F0" name="ai_get_object" returnType="object" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x0F1" name="ai_get_unit" returnType="unit" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x0F2" name="ai_attach" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="ai" />
+		</function>
+		<function opcode="0x0F3" name="ai_attach_units" returnType="void" argc="2">
+			<arg type="object_list" />
+			<arg type="ai" />
+		</function>
+		<function opcode="0x0F4" name="ai_detach" returnType="void" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x0F5" name="ai_detach_units" returnType="void" argc="1">
+			<arg type="object_list" />
+		</function>
+		<function opcode="0x0F6" name="ai_place" returnType="void" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x0F7" name="ai_place" returnType="void" argc="2">
+			<arg type="ai" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x0F8" name="ai_place_in_vehicle" returnType="void" argc="2">
+			<arg type="ai" />
+			<arg type="ai" />
+		</function>
+		<function opcode="0x0F9" name="ai_kill" returnType="void" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x0FA" name="ai_kill_silent" returnType="void" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x0FB" name="ai_erase" returnType="void" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x0FC" name="ai_erase_all" returnType="void" />
+		<function opcode="0x0FD" name="ai_select" returnType="void" null="true" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x0FE" name="ai_deselect" returnType="void" null="true" />
+		<function opcode="0x0FF" name="ai_set_deaf" returnType="void" argc="2">
+			<arg type="ai" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x100" name="ai_set_blind" returnType="void" argc="2">
+			<arg type="ai" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x101" name="ai_magically_see" returnType="void" argc="2">
+			<arg type="ai" />
+			<arg type="ai" />
+		</function>
+		<function opcode="0x102" name="ai_magically_see_object" returnType="void" argc="2">
+			<arg type="ai" />
+			<arg type="object" />
+		</function>
+		<function opcode="0x103" name="ai_timer_start" returnType="void" null="true" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x104" name="ai_timer_expire" returnType="void" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x105" name="ai_migrate" returnType="void" argc="2">
+			<arg type="ai" />
+			<arg type="ai" />
+		</function>
+		<function opcode="0x106" name="ai_allegiance" returnType="void" argc="2">
+			<arg type="team" />
+			<arg type="team" />
+		</function>
+		<function opcode="0x107" name="ai_allegiance_remove" returnType="void" argc="2">
+			<arg type="team" />
+			<arg type="team" />
+		</function>
+		<function opcode="0x108" name="ai_braindead" returnType="void" argc="2">
+			<arg type="ai" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x109" name="ai_braindead_by_unit" returnType="void" argc="2">
+			<arg type="object_list" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x10A" name="ai_disregard" returnType="void" argc="2">
+			<arg type="object_list" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x10B" name="ai_prefer_target" returnType="void" argc="2">
+			<arg type="object_list" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x10C" name="ai_teleport_to_starting_location" returnType="void" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x10D" name="ai_teleport_to_starting_location_if_unsupported" returnType="void" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x10E" name="ai_renew" returnType="void" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x10F" name="ai_force_active" returnType="void" argc="2">
+			<arg type="ai" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x110" name="ai_force_active_by_unit" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x111" name="ai_playfight" returnType="void" null="true" argc="2">
+			<arg type="ai" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x112" name="ai_reconnect" returnType="void" null="true" />
+		<function opcode="0x113" name="ai_vehicle_enterable_distance" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x114" name="ai_vehicle_enterable_team" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="team" />
+		</function>
+		<function opcode="0x115" name="ai_vehicle_enterable_actor_type" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="actor_type" />
+		</function>
+		<function opcode="0x116" name="ai_vehicle_enterable_actors" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="ai" />
+		</function>
+		<function opcode="0x117" name="ai_vehicle_enterable_disable" returnType="void" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x118" name="ai_look_at_object" returnType="void" null="true" argc="2">
+			<arg type="unit" />
+			<arg type="object" />
+		</function>
+		<function opcode="0x119" name="ai_stop_looking" returnType="void" null="true" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x11A" name="ai_automatic_migration_target" returnType="void" null="true" argc="2">
+			<arg type="ai" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x11B" name="ai_berserk" returnType="void" argc="2">
+			<arg type="ai" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x11C" name="ai_set_team" returnType="void" argc="2">
+			<arg type="ai" />
+			<arg type="team" />
+		</function>
+		<function opcode="0x11D" name="ai_allow_dormant" returnType="void" null="true" argc="2">
+			<arg type="ai" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x11E" name="ai_is_attacking" returnType="boolean" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x11F" name="ai_fighting_count" returnType="short" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x120" name="ai_living_count" returnType="short" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x121" name="ai_living_fraction" returnType="real" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x122" name="ai_strength" returnType="real" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x123" name="ai_swarm_count" returnType="short" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x124" name="ai_nonswarm_count" returnType="short" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x125" name="ai_actors" returnType="object_list" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x126" name="ai_allegiance_broken" returnType="boolean" argc="2">
+			<arg type="team" />
+			<arg type="team" />
+		</function>
+		<function opcode="0x127" name="ai_set_orders" returnType="void" argc="2">
+			<arg type="ai" />
+			<arg type="ai_orders" />
+		</function>
+		<function opcode="0x128" name="ai_spawn_count" returnType="short" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x129" name="ai_trigger_test" returnType="boolean" argc="2">
+			<arg type="string" />
+			<arg type="ai" />
+		</function>
+		<function opcode="0x12A" name="generate_pathfinding" returnType="boolean" />
+		<function opcode="0x12B" name="ai_sectors_intersect" returnType="boolean" argc="2">
+			<arg type="long" />
+			<arg type="long" />
+		</function>
+		<function opcode="0x12C" name="ai_sector_link_between" returnType="long" argc="2">
+			<arg type="long" />
+			<arg type="long" />
+		</function>
+		<function opcode="0x12D" name="ai_render_paths_all" returnType="void" null="true" />
+		<function opcode="0x12E" name="ai_vehicle_get" returnType="vehicle" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x12F" name="ai_vehicle_get_from_starting_location" returnType="vehicle" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x130" name="ai_vehicle_reserve_seat" returnType="boolean" argc="3">
+			<arg type="vehicle" />
+			<arg type="string" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x131" name="ai_vehicle_reserve" returnType="boolean" argc="2">
+			<arg type="vehicle" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x132" name="ai_vehicle_enter" returnType="void" argc="3">
+			<arg type="ai" />
+			<arg type="unit" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x133" name="ai_vehicle_enter" returnType="void" argc="2">
+			<arg type="ai" />
+			<arg type="unit" />
+		</function>
+		<function opcode="0x134" name="ai_vehicle_enter_immediate" returnType="void" argc="3">
+			<arg type="ai" />
+			<arg type="unit" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x135" name="ai_vehicle_enter_immediate" returnType="void" argc="2">
+			<arg type="ai" />
+			<arg type="unit" />
+		</function>
+		<function opcode="0x136" name="ai_vehicle_exit" returnType="void" argc="2">
+			<arg type="ai" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x137" name="ai_vehicle_exit" returnType="void" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x138" name="vehicle_overturned" returnType="boolean" argc="1">
+			<arg type="vehicle" />
+		</function>
+		<function opcode="0x139" name="vehicle_flip" returnType="void" argc="1">
+			<arg type="vehicle" />
+		</function>
+		<function opcode="0x13A" name="ai_combat_status" returnType="short" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x13B" name="ai_verify_tags" returnType="void" null="true" />
+		<function opcode="0x13C" name="ai_wall_lean" returnType="boolean" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x13D" name="cs_run_command_script" returnType="void" argc="2">
+			<arg type="ai" />
+			<arg type="ai_command_script" />
+		</function>
+		<function opcode="0x13E" name="cs_queue_command_script" returnType="void" argc="2">
+			<arg type="ai" />
+			<arg type="ai_command_script" />
+		</function>
+		<function opcode="0x13F" name="cs_stack_command_script" returnType="void" argc="2">
+			<arg type="ai" />
+			<arg type="ai_command_script" />
+		</function>
+		<function opcode="0x140" name="cs_run_joint_command_script" returnType="void" argc="3">
+			<arg type="ai_command_script" />
+			<arg type="ai" />
+			<arg type="ai" />
+		</function>
+		<function opcode="0x141" name="cs_run_joint_command_script" returnType="void" argc="4">
+			<arg type="ai_command_script" />
+			<arg type="ai" />
+			<arg type="ai" />
+			<arg type="ai" />
+		</function>
+		<function opcode="0x142" name="cs_command_script_running" returnType="boolean" argc="2">
+			<arg type="ai" />
+			<arg type="ai_command_script" />
+		</function>
+		<function opcode="0x143" name="cs_command_script_queued" returnType="boolean" argc="2">
+			<arg type="ai" />
+			<arg type="ai_command_script" />
+		</function>
+		<function opcode="0x144" name="cs_number_queued" returnType="short" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x145" name="cs_switch" returnType="void" argc="1">
+			<arg type="short" />
+		</function>
+		<function opcode="0x146" name="cs_transfer" returnType="void" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x147" name="cs_transfer_stack" returnType="void" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x148" name="cs_transfer_queue" returnType="void" argc="1">
+			<arg type="ai" />
+		</function>
+		<function opcode="0x149" name="cs_fly_to" returnType="void" argc="1">
+			<arg type="point_reference" />
+		</function>
+		<function opcode="0x14A" name="cs_fly_to" returnType="void" argc="2">
+			<arg type="point_reference" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x14B" name="cs_fly_to_and_face" returnType="void" argc="2">
+			<arg type="point_reference" />
+			<arg type="point_reference" />
+		</function>
+		<function opcode="0x14C" name="cs_fly_to_and_face" returnType="void" argc="3">
+			<arg type="point_reference" />
+			<arg type="point_reference" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x14D" name="cs_fly_by" returnType="void" argc="1">
+			<arg type="point_reference" />
+		</function>
+		<function opcode="0x14E" name="cs_fly_by" returnType="void" argc="2">
+			<arg type="point_reference" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x14F" name="cs_go_to" returnType="void" argc="1">
+			<arg type="point_reference" />
+		</function>
+		<function opcode="0x150" name="cs_go_to" returnType="void" argc="2">
+			<arg type="point_reference" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x151" name="cs_go_by" returnType="void" argc="2">
+			<arg type="point_reference" />
+			<arg type="point_reference" />
+		</function>
+		<function opcode="0x152" name="cs_go_by" returnType="void" argc="3">
+			<arg type="point_reference" />
+			<arg type="point_reference" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x153" name="cs_go_to_and_face" returnType="void" argc="2">
+			<arg type="point_reference" />
+			<arg type="point_reference" />
+		</function>
+		<function opcode="0x154" name="cs_look" returnType="void" argc="2">
+			<arg type="boolean" />
+			<arg type="point_reference" />
+		</function>
+		<function opcode="0x155" name="cs_look_player" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x156" name="cs_look_object" returnType="void" argc="2">
+			<arg type="boolean" />
+			<arg type="object" />
+		</function>
+		<function opcode="0x157" name="cs_aim" returnType="void" argc="2">
+			<arg type="boolean" />
+			<arg type="point_reference" />
+		</function>
+		<function opcode="0x158" name="cs_aim_player" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x159" name="cs_aim_object" returnType="void" argc="2">
+			<arg type="boolean" />
+			<arg type="object" />
+		</function>
+		<function opcode="0x15A" name="cs_face" returnType="void" argc="2">
+			<arg type="boolean" />
+			<arg type="point_reference" />
+		</function>
+		<function opcode="0x15B" name="cs_face_player" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x15C" name="cs_face_object" returnType="void" argc="2">
+			<arg type="boolean" />
+			<arg type="object" />
+		</function>
+		<function opcode="0x15D" name="cs_move_in_direction" returnType="void" argc="3">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x15E" name="cs_pause" returnType="void" argc="1">
+			<arg type="real" />
+		</function>
+		<function opcode="0x15F" name="cs_shoot" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x160" name="cs_shoot" returnType="void" argc="2">
+			<arg type="boolean" />
+			<arg type="object" />
+		</function>
+		<function opcode="0x161" name="cs_shoot_point" returnType="void" argc="2">
+			<arg type="boolean" />
+			<arg type="point_reference" />
+		</function>
+		<function opcode="0x162" name="cs_vehicle_speed" returnType="void" argc="1">
+			<arg type="real" />
+		</function>
+		<function opcode="0x163" name="cs_grenade" returnType="void" argc="2">
+			<arg type="point_reference" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x164" name="cs_jump" returnType="void" argc="2">
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x165" name="cs_jump_to_point" returnType="void" argc="2">
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x166" name="cs_vocalize" returnType="void" argc="1">
+			<arg type="short" />
+		</function>
+		<function opcode="0x167" name="cs_play_sound" returnType="void" argc="1">
+			<arg type="sound" />
+		</function>
+		<function opcode="0x168" name="cs_play_sound" returnType="void" argc="2">
+			<arg type="sound" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x169" name="cs_play_sound" returnType="void" argc="3">
+			<arg type="sound" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x16A" name="cs_stop_sound" returnType="void" argc="1">
+			<arg type="sound" />
+		</function>
+		<function opcode="0x16B" name="cs_custom_animation" returnType="void" argc="4">
+			<arg type="animation_graph" />
+			<arg type="string" />
+			<arg type="real" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x16C" name="cs_stop_custom_animation" returnType="void" />
+		<function opcode="0x16D" name="cs_die" returnType="void" argc="1">
+			<arg type="short" />
+		</function>
+		<function opcode="0x16E" name="cs_teleport" returnType="void" argc="2">
+			<arg type="point_reference" />
+			<arg type="point_reference" />
+		</function>
+		<function opcode="0x16F" name="cs_animate" returnType="void" argc="2">
+			<arg type="long" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x170" name="cs_animation_mode" returnType="void" argc="1">
+			<arg type="short" />
+		</function>
+		<function opcode="0x171" name="cs_crouch" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x172" name="cs_set_pathfinding_radius" returnType="void" argc="1">
+			<arg type="real" />
+		</function>
+		<function opcode="0x173" name="cs_go_to_vehicle" returnType="void" argc="1">
+			<arg type="vehicle" />
+		</function>
+		<function opcode="0x174" name="cs_set_behavior" returnType="void" argc="1">
+			<arg type="ai_behavior" />
+		</function>
+		<function opcode="0x175" name="cs_formation" returnType="void" argc="4">
+			<arg type="short" />
+			<arg type="ai" />
+			<arg type="point_reference" />
+			<arg type="point_reference" />
+		</function>
+		<function opcode="0x176" name="cs_ignore_obstacles" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x177" name="cs_turn_sharpness" returnType="void" argc="2">
+			<arg type="boolean" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x178" name="cs_vehicle_speed_instantaneous" returnType="void" argc="1">
+			<arg type="real" />
+		</function>
+		<function opcode="0x179" name="cs_abort_on_alert" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x17A" name="cs_abort_on_damage" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x17B" name="cs_enable_targeting" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x17C" name="cs_enable_looking" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x17D" name="cs_enable_moving" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x17E" name="cs_set_style" returnType="void" argc="1">
+			<arg type="style" />
+		</function>
+		<function opcode="0x17F" name="cs_force_combat_status" returnType="void" argc="1">
+			<arg type="short" />
+		</function>
+		<function opcode="0x180" name="cs_enable_pathfinding_failsafe" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x181" name="camera_control" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x182" name="camera_set" returnType="void" argc="2">
+			<arg type="cutscene_camera_point" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x183" name="camera_set_relative" returnType="void" argc="3">
+			<arg type="cutscene_camera_point" />
+			<arg type="short" />
+			<arg type="object" />
+		</function>
+		<function opcode="0x184" name="camera_set_animation" returnType="void" argc="2">
+			<arg type="animation_graph" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x185" name="camera_set_animation_relative" returnType="void" argc="4">
+			<arg type="animation_graph" />
+			<arg type="string" />
+			<arg type="unit" />
+			<arg type="cutscene_flag" />
+		</function>
+		<function opcode="0x186" name="camera_set_first_person" returnType="void" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x187" name="camera_set_dead" returnType="void" argc="1">
+			<arg type="unit" />
+		</function>
+		<function opcode="0x188" name="camera_place_relative" returnType="void" null="true" argc="1">
+			<arg type="object" />
+		</function>
+		<function opcode="0x189" name="camera_place_worldspace" returnType="void" null="true" />
+		<function opcode="0x18A" name="camera_time" returnType="short" />
+		<function opcode="0x18B" name="camera_set_field_of_view" returnType="void" argc="2">
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x18C" name="debug_camera_save" returnType="void" null="true" />
+		<function opcode="0x18D" name="debug_camera_load" returnType="void" null="true" />
+		<function opcode="0x18E" name="debug_camera_save_name" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x18F" name="debug_camera_load_name" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x190" name="director_debug_camera" returnType="void" null="true" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x191" name="camera_set_pan" returnType="void" argc="2">
+			<arg type="cutscene_camera_point" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x192" name="camera_pan" returnType="void" argc="7">
+			<arg type="cutscene_camera_point" />
+			<arg type="cutscene_camera_point" />
+			<arg type="short" />
+			<arg type="short" />
+			<arg type="real" />
+			<arg type="short" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x193" name="camera_predict" returnType="void" argc="1">
+			<arg type="cutscene_camera_point" />
+		</function>
+		<function opcode="0x194" name="game_time" returnType="long" />
+		<function opcode="0x195" name="game_difficulty_get" returnType="game_difficulty" />
+		<function opcode="0x196" name="game_difficulty_get_real" returnType="game_difficulty" />
+		<function opcode="0x197" name="pvs_set_object" returnType="void" argc="1">
+			<arg type="object" />
+		</function>
+		<function opcode="0x198" name="pvs_set_camera" returnType="void" argc="1">
+			<arg type="cutscene_camera_point" />
+		</function>
+		<function opcode="0x199" name="pvs_clear" returnType="void" />
+		<function opcode="0x19A" name="players_unzoom_all" returnType="void" />
+		<function opcode="0x19B" name="player_enable_input" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x19C" name="player_camera_control" returnType="boolean" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x19D" name="player_action_test_reset" returnType="void" />
+		<function opcode="0x19E" name="player_action_test_jump" returnType="boolean" />
+		<function opcode="0x19F" name="player_action_test_primary_trigger" returnType="boolean" />
+		<function opcode="0x1A0" name="player_action_test_grenade_trigger" returnType="boolean" />
+		<function opcode="0x1A1" name="player_action_test_vision_trigger" returnType="boolean" />
+		<function opcode="0x1A2" name="player_action_test_zoom" returnType="boolean" />
+		<function opcode="0x1A3" name="player_action_test_rotate_weapons" returnType="boolean" />
+		<function opcode="0x1A4" name="player_action_test_rotate_grenades" returnType="boolean" />
+		<function opcode="0x1A5" name="player_action_test_action" returnType="boolean" />
+		<function opcode="0x1A6" name="player_action_test_accept" returnType="boolean" />
+		<function opcode="0x1A7" name="player_action_test_cancel" returnType="boolean" />
+		<function opcode="0x1A8" name="player_action_test_look_relative_up" returnType="boolean" />
+		<function opcode="0x1A9" name="player_action_test_look_relative_down" returnType="boolean" />
+		<function opcode="0x1AA" name="player_action_test_look_relative_left" returnType="boolean" />
+		<function opcode="0x1AB" name="player_action_test_look_relative_right" returnType="boolean" />
+		<function opcode="0x1AC" name="player_action_test_look_relative_all_directions" returnType="boolean" />
+		<function opcode="0x1AD" name="player_action_test_move_relative_all_directions" returnType="boolean" />
+		<function opcode="0x1AE" name="player_action_test_start" returnType="boolean" />
+		<function opcode="0x1AF" name="player_action_test_back" returnType="boolean" />
+		<function opcode="0x1B0" name="debug_teleport_player" returnType="void" null="true" argc="2">
+			<arg type="long" />
+			<arg type="long" />
+		</function>
+		<function opcode="0x1B1" name="map_reset" returnType="void" null="true" />
+		<function opcode="0x1B2" name="switch_bsp" returnType="boolean" argc="1">
+			<arg type="short" />
+		</function>
+		<function opcode="0x1B3" name="switch_bsp_by_name" returnType="boolean" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x1B4" name="structure_bsp_index" returnType="short" />
+		<function opcode="0x1B5" name="crash" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x1B6" name="version" returnType="void" null="true" />
+		<function opcode="0x1B7" name="status" returnType="void" null="true" />
+		<function opcode="0x1B8" name="record_movie" returnType="void" null="true" argc="3">
+			<arg type="short" />
+			<arg type="long" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x1B9" name="record_movie_distributed" returnType="void" null="true" argc="5">
+			<arg type="short" />
+			<arg type="long" />
+			<arg type="short" />
+			<arg type="long" />
+			<arg type="long" />
+		</function>
+		<function opcode="0x1BA" name="screenshot" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x1BB" name="screenshot_big" returnType="void" null="true" argc="2">
+			<arg type="short" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x1BC" name="screenshot_big_jittered" returnType="void" null="true" argc="2">
+			<arg type="short" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x1BD" name="screenshot_cubemap" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x1BE" name="main_menu" returnType="void" null="true" />
+		<function opcode="0x1BF" name="main_halt" returnType="void" null="true" />
+		<function opcode="0x1C0" name="map_name" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x1C1" name="game_multiplayer" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x1C2" name="game_splitscreen" returnType="void" null="true" argc="1">
+			<arg type="long" />
+		</function>
+		<function opcode="0x1C3" name="game_difficulty" returnType="void" null="true" argc="1">
+			<arg type="game_difficulty" />
+		</function>
+		<function opcode="0x1C4" name="game_coop_players" returnType="void" null="true" argc="1">
+			<arg type="long" />
+		</function>
+		<function opcode="0x1C5" name="game_initial_bsp" returnType="void" null="true" argc="1">
+			<arg type="long" />
+		</function>
+		<function opcode="0x1C6" name="game_start" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x1C7" name="texture_cache_flush" returnType="void" null="true" />
+		<function opcode="0x1C8" name="geometry_cache_flush" returnType="void" null="true" />
+		<function opcode="0x1C9" name="sound_cache_flush" returnType="void" null="true" />
+		<function opcode="0x1CA" name="debug_memory" returnType="void" null="true" />
+		<function opcode="0x1CB" name="debug_memory_by_file" returnType="void" null="true" />
+		<function opcode="0x1CC" name="debug_memory_for_file" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x1CD" name="debug_tags" returnType="void" null="true" />
+		<function opcode="0x1CE" name="tags_verify_all" returnType="void" null="true" />
+		<function opcode="0x1CF" name="profile_reset" returnType="void" null="true" />
+		<function opcode="0x1D0" name="profile_activate" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x1D1" name="profile_deactivate" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x1D2" name="profile_mode" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x1D3" name="collision_log_enable" returnType="void" null="true" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x1D4" name="damage_control_get" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x1D5" name="damage_control_set" returnType="void" null="true" argc="2">
+			<arg type="string" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x1D6" name="ai_lines" returnType="void" null="true" />
+		<function opcode="0x1D7" name="ai_debug_sound_point_set" returnType="void" null="true" />
+		<function opcode="0x1D8" name="ai_debug_vocalize" returnType="void" null="true" argc="2">
+			<arg type="string" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x1D9" name="ai_debug_teleport_to" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x1DA" name="ai_debug_speak" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x1DB" name="ai_debug_speak_list" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x1DC" name="ai_dialogue_break_on_vocalization" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x1DD" name="fade_in" returnType="void" argc="4">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x1DE" name="fade_out" returnType="void" argc="4">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x1DF" name="cinematic_start" returnType="void" />
+		<function opcode="0x1E0" name="cinematic_stop" returnType="void" />
+		<function opcode="0x1E1" name="cinematic_skip_start_internal" returnType="void" />
+		<function opcode="0x1E2" name="cinematic_skip_stop_internal" returnType="void" />
+		<function opcode="0x1E3" name="cinematic_show_letterbox" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x1E4" name="cinematic_set_title" returnType="void" argc="1">
+			<arg type="cutscene_title" />
+		</function>
+		<function opcode="0x1E5" name="cinematic_set_title_delayed" returnType="void" argc="2">
+			<arg type="cutscene_title" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x1E6" name="cinematic_suppress_bsp_object_creation" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x1E7" name="cinematic_subtitle" returnType="void" argc="2">
+			<arg type="string" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x1E8" name="attract_mode_start" returnType="void" null="true" />
+		<function opcode="0x1E9" name="game_won" returnType="void" />
+		<function opcode="0x1EA" name="game_lost" returnType="void" />
+		<function opcode="0x1EB" name="game_is_cooperative" returnType="boolean" />
+		<function opcode="0x1EC" name="game_skip_ticks" returnType="void" argc="1">
+			<arg type="long" />
+		</function>
+		<function opcode="0x1ED" name="game_revert" returnType="void" null="true" />
+		<function opcode="0x1EE" name="game_save_and_quit" returnType="void" null="true" />
+		<function opcode="0x1EF" name="game_save_unsafe" returnType="void" null="true" />
+		<function opcode="0x1F0" name="debug_spawning" returnType="void" null="true" argc="2">
+			<arg type="string" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x1F1" name="king_set_hill" returnType="void" null="true" argc="1">
+			<arg type="long" />
+		</function>
+		<function opcode="0x1F2" name="headhunter_set_bin" returnType="void" null="true" argc="1">
+			<arg type="long" />
+		</function>
+		<function opcode="0x1F3" name="core_load" returnType="void" />
+		<function opcode="0x1F4" name="core_load_name" returnType="void" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x1F5" name="core_save" returnType="void" null="true" />
+		<function opcode="0x1F6" name="core_save_name" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x1F7" name="core_load_game" returnType="void" null="true" />
+		<function opcode="0x1F8" name="core_load_game_name" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x1F9" name="core_regular_upload_to_debug_server" returnType="void" null="true" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x1FA" name="core_set_upload_option" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x1FB" name="game_safe_to_save" returnType="boolean" />
+		<function opcode="0x1FC" name="game_all_quiet" returnType="boolean" />
+		<function opcode="0x1FD" name="game_safe_to_speak" returnType="boolean" />
+		<function opcode="0x1FE" name="game_save" returnType="void" />
+		<function opcode="0x1FF" name="game_save_cancel" returnType="void" />
+		<function opcode="0x200" name="game_save_no_timeout" returnType="void" />
+		<function opcode="0x201" name="game_save_immediate" returnType="void" />
+		<function opcode="0x202" name="game_saving" returnType="boolean" />
+		<function opcode="0x203" name="game_reverted" returnType="boolean" />
+		<function opcode="0x204" name="sound_set_tag_parameter_unsafe" returnType="void" null="true" argc="8">
+			<arg type="string" />
+			<arg type="string" />
+			<arg type="long" />
+			<arg type="long" />
+			<arg type="long" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x205" name="sound_impulse_predict" returnType="void" argc="1">
+			<arg type="sound" />
+		</function>
+		<function opcode="0x206" name="sound_impulse_trigger" returnType="void" argc="4">
+			<arg type="sound" />
+			<arg type="object" />
+			<arg type="real" />
+			<arg type="long" />
+		</function>
+		<function opcode="0x207" name="sound_impulse_start" returnType="void" argc="3">
+			<arg type="sound" />
+			<arg type="object" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x208" name="sound_impulse_start_cinematic" returnType="void" argc="5">
+			<arg type="sound" />
+			<arg type="object" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x209" name="sound_impulse_start_effect" returnType="void" argc="4">
+			<arg type="sound" />
+			<arg type="object" />
+			<arg type="real" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x20A" name="sound_impulse_time" returnType="long" argc="1">
+			<arg type="sound" />
+		</function>
+		<function opcode="0x20B" name="sound_impulse_time" returnType="long" argc="2">
+			<arg type="sound" />
+			<arg type="long" />
+		</function>
+		<function opcode="0x20C" name="sound_impulse_stop" returnType="void" argc="1">
+			<arg type="sound" />
+		</function>
+		<function opcode="0x20D" name="sound_looping_predict" returnType="void" argc="1">
+			<arg type="looping_sound" />
+		</function>
+		<function opcode="0x20E" name="sound_looping_start" returnType="void" argc="3">
+			<arg type="looping_sound" />
+			<arg type="object" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x20F" name="sound_looping_stop" returnType="void" argc="1">
+			<arg type="looping_sound" />
+		</function>
+		<function opcode="0x210" name="sound_looping_stop_immediately" returnType="void" argc="1">
+			<arg type="looping_sound" />
+		</function>
+		<function opcode="0x211" name="sound_looping_set_scale" returnType="void" argc="2">
+			<arg type="looping_sound" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x212" name="sound_looping_set_alternate" returnType="void" argc="2">
+			<arg type="looping_sound" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x213" name="sound_loop_spam" returnType="void" null="true" />
+		<function opcode="0x214" name="sound_class_show_channel" returnType="void" null="true" argc="2">
+			<arg type="string" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x215" name="sound_class_debug_sound_start" returnType="void" null="true" argc="2">
+			<arg type="string" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x216" name="debug_sounds_enable" returnType="void" null="true" argc="2">
+			<arg type="string" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x217" name="sound_class_set_gain" returnType="void" argc="3">
+			<arg type="string" />
+			<arg type="real" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x218" name="sound_class_set_gain_db" returnType="void" argc="3">
+			<arg type="string" />
+			<arg type="real" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x219" name="sound_class_enable_ducker" returnType="void" argc="2">
+			<arg type="string" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x21A" name="debug_sound_environment_parameter" returnType="void" null="true" argc="2">
+			<arg type="long" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x21B" name="sound_set_global_effect" returnType="void" argc="2">
+			<arg type="string" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x21C" name="sound_set_global_effect_scale" returnType="void" argc="2">
+			<arg type="string" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x21D" name="vehicle_hover" returnType="void" argc="2">
+			<arg type="vehicle" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x21E" name="vehicle_count_bipeds_killed" returnType="long" argc="1">
+			<arg type="vehicle" />
+		</function>
+		<function opcode="0x21F" name="show_hud" returnType="boolean" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x220" name="show_hud_help_text" returnType="boolean" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x221" name="show_hud_messages" returnType="boolean" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x222" name="enable_hud_help_flash" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x223" name="hud_help_flash_restart" returnType="void" />
+		<function opcode="0x224" name="activate_nav_point_flag" returnType="void" argc="4">
+			<arg type="navpoint" />
+			<arg type="unit" />
+			<arg type="cutscene_flag" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x225" name="activate_nav_point_object" returnType="void" argc="4">
+			<arg type="navpoint" />
+			<arg type="unit" />
+			<arg type="object" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x226" name="activate_team_nav_point_flag" returnType="void" argc="4">
+			<arg type="navpoint" />
+			<arg type="team" />
+			<arg type="cutscene_flag" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x227" name="activate_team_nav_point_object" returnType="void" argc="4">
+			<arg type="navpoint" />
+			<arg type="team" />
+			<arg type="object" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x228" name="deactivate_nav_point_flag" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="cutscene_flag" />
+		</function>
+		<function opcode="0x229" name="deactivate_nav_point_object" returnType="void" argc="2">
+			<arg type="unit" />
+			<arg type="object" />
+		</function>
+		<function opcode="0x22A" name="deactivate_team_nav_point_flag" returnType="void" argc="2">
+			<arg type="team" />
+			<arg type="cutscene_flag" />
+		</function>
+		<function opcode="0x22B" name="deactivate_team_nav_point_object" returnType="void" argc="2">
+			<arg type="team" />
+			<arg type="object" />
+		</function>
+		<function opcode="0x22C" name="cls" returnType="void" null="true" />
+		<function opcode="0x22D" name="error_overflow_suppression" returnType="void" null="true" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x22E" name="error_geometry_show" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x22F" name="error_geometry_hide" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x230" name="error_geometry_show_all" returnType="void" null="true" />
+		<function opcode="0x231" name="error_geometry_hide_all" returnType="void" null="true" />
+		<function opcode="0x232" name="error_geometry_list" returnType="void" null="true" />
+		<function opcode="0x233" name="player_effect_set_max_translation" returnType="void" argc="3">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x234" name="player_effect_set_max_rotation" returnType="void" argc="3">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x235" name="player_effect_set_max_rumble" returnType="void" argc="2">
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x236" name="player_effect_start" returnType="void" argc="2">
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x237" name="player_effect_stop" returnType="void" argc="1">
+			<arg type="real" />
+		</function>
+		<function opcode="0x238" name="hud_show_health" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x239" name="hud_blink_health" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x23A" name="hud_show_shield" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x23B" name="hud_blink_shield" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x23C" name="hud_show_motion_sensor" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x23D" name="hud_blink_motion_sensor" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x23E" name="hud_show_crosshair" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x23F" name="hud_show_ammo" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x240" name="hud_clear_messages" returnType="void" />
+		<function opcode="0x241" name="hud_set_help_text" returnType="void" argc="1">
+			<arg type="hud_message" />
+		</function>
+		<function opcode="0x242" name="hud_set_objective_text" returnType="void" argc="1">
+			<arg type="hud_message" />
+		</function>
+		<function opcode="0x243" name="hud_set_timer_time" returnType="void" argc="2">
+			<arg type="short" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x244" name="hud_set_timer_warning_time" returnType="void" argc="2">
+			<arg type="short" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x245" name="hud_set_timer_position" returnType="void" argc="3">
+			<arg type="short" />
+			<arg type="short" />
+			<arg type="hud_corner" />
+		</function>
+		<function opcode="0x246" name="show_hud_timer" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x247" name="pause_hud_timer" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x248" name="hud_get_timer_ticks" returnType="short" />
+		<function opcode="0x249" name="time_code_show" returnType="void" null="true" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x24A" name="time_code_start" returnType="void" null="true" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x24B" name="time_code_reset" returnType="void" null="true" />
+		<function opcode="0x24C" name="rasterizer_profile_include" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x24D" name="rasterizer_profile_include_all" returnType="void" null="true" />
+		<function opcode="0x24E" name="rasterizer_profile_include_all_except" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x24F" name="rasterizer_profile_exclude" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x250" name="rasterizer_profile_exclude_all" returnType="void" null="true" />
+		<function opcode="0x251" name="rasterizer_profile_exclude_all_except" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x252" name="rasterizer_artist_profile" returnType="void" null="true" argc="1">
+			<arg type="long" />
+		</function>
+		<function opcode="0x253" name="rasterizer_debug_display_bitmap" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x254" name="rasterizer_decals_flush" returnType="void" null="true" />
+		<function opcode="0x255" name="rasterizer_lens_flares_reset_for_new_map" returnType="void" />
+		<function opcode="0x256" name="rasterizer_test_screen" returnType="void" null="true" argc="3">
+			<arg type="long" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x257" name="rasterizer_test_screen_supablur" returnType="void" null="true" argc="5">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x258" name="rasterizer_test_screen_off" returnType="void" null="true" />
+		<function opcode="0x259" name="rasterizer_f2" returnType="void" null="true" argc="2">
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x25A" name="rasterizer_f3" returnType="void" null="true" argc="3">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x25B" name="rasterizer_f4" returnType="void" null="true" argc="4">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x25C" name="rasterizer_f5" returnType="void" null="true" argc="5">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x25D" name="rasterizer_f6" returnType="void" null="true" argc="6">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x25E" name="rasterizer_solid_model_color" returnType="void" null="true" argc="4">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x25F" name="rasterizer_solid_structure_color" returnType="void" null="true" argc="4">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x260" name="rasterizer_solid_structure_instanced_geometry_color" returnType="void" null="true" argc="4">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x261" name="rasterizer_solid_sky_color" returnType="void" null="true" argc="4">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x262" name="rasterizer_solid_decorator_color" returnType="void" null="true" argc="4">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x263" name="rasterizer_solid_decorator_model_color" returnType="void" null="true" argc="4">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x264" name="rasterizer_solid_decorator_decal_color" returnType="void" null="true" argc="4">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x265" name="rasterizer_solid_decorator_sprite_color" returnType="void" null="true" argc="4">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x266" name="decorator_debug_set_filter" returnType="void" null="true" argc="3">
+			<arg type="long" />
+			<arg type="long" />
+			<arg type="long" />
+		</function>
+		<function opcode="0x267" name="decorator_debug_precision_add" returnType="void" null="true" />
+		<function opcode="0x268" name="decorator_debug_density_erase" returnType="void" null="true" />
+		<function opcode="0x269" name="decorator_debug_density" returnType="void" null="true" />
+		<function opcode="0x26A" name="decorator_debug_undo" returnType="void" null="true" />
+		<function opcode="0x26B" name="decorator_debug_drop_projected_decal" returnType="void" null="true" />
+		<function opcode="0x26C" name="decorator_rebuild_all" returnType="void" null="true" />
+		<function opcode="0x26D" name="script_screen_effect_set_value" returnType="void" argc="2">
+			<arg type="short" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x26E" name="cinematic_screen_effect_start" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x26F" name="cinematic_screen_effect_set_convolution" returnType="void" argc="5">
+			<arg type="short" />
+			<arg type="short" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x270" name="cinematic_screen_effect_set_filter" returnType="void" argc="6">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="boolean" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x271" name="cinematic_screen_effect_set_filter_desaturation_tint" returnType="void" argc="3">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x272" name="cinematic_screen_effect_set_video" returnType="void" argc="2">
+			<arg type="short" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x273" name="cinematic_screen_effect_set_depth_of_field" returnType="void" argc="7">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x274" name="cinematic_screen_effect_bloom_LEGACY_OLD_SHIT" returnType="void" argc="4">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x275" name="cinematic_screen_effect_set_bloom" returnType="void" argc="5">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x276" name="bloom" returnType="void" argc="3">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x277" name="cinematic_bloom" returnType="void" argc="3">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x278" name="cinematic_screen_effect_set_bloom_transition" returnType="void" argc="6">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x279" name="cinematic_screen_effect_set_bloom_threshold_color" returnType="void" argc="3">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x27A" name="cinematic_screen_effect_set_bloom_overbright_color" returnType="void" argc="3">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x27B" name="cinematic_screen_effect_set_bloom_tint_color" returnType="void" argc="3">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x27C" name="cinematic_screen_effect_set_bloom_modulation_color" returnType="void" argc="3">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x27D" name="cinematic_screen_effect_set_crossfade" returnType="void" argc="1">
+			<arg type="real" />
+		</function>
+		<function opcode="0x27E" name="cinematic_screen_effect_set_crossfade2" returnType="void" argc="2">
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x27F" name="cinematic_screen_effect_stop" returnType="void" />
+		<function opcode="0x280" name="cinematic_set_near_clip_distance" returnType="void" argc="1">
+			<arg type="real" />
+		</function>
+		<function opcode="0x281" name="cinematic_set_far_clip_distance" returnType="void" argc="1">
+			<arg type="real" />
+		</function>
+		<function opcode="0x282" name="cinematic_set_environment_map_attenuation" returnType="void" argc="3">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x283" name="cinematic_set_environment_map_bitmap" returnType="void" argc="1">
+			<arg type="bitmap" />
+		</function>
+		<function opcode="0x284" name="cinematic_reset_environment_map_bitmap" returnType="void" />
+		<function opcode="0x285" name="cinematic_set_environment_map_tint" returnType="void" argc="8">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x286" name="cinematic_reset_environment_map_tint" returnType="void" />
+		<function opcode="0x287" name="cinematic_layer" returnType="void" argc="3">
+			<arg type="long" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x288" name="cinematic_dynamic_reflections" returnType="void" argc="2">
+			<arg type="boolean" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x289" name="lightmaps_expose" returnType="void" null="true" argc="3">
+			<arg type="real" />
+			<arg type="real" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x28A" name="player_profile_create" returnType="void" null="true" argc="6">
+			<arg type="string" />
+			<arg type="short" />
+			<arg type="short" />
+			<arg type="boolean" />
+			<arg type="boolean" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x28B" name="player_profile_create_corrupt" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x28C" name="controller_invert_look" returnType="void" null="true" />
+		<function opcode="0x28D" name="controller_look_speed" returnType="void" null="true" argc="1">
+			<arg type="short" />
+		</function>
+		<function opcode="0x28E" name="ui_debug_load_main_menu" returnType="void" null="true" />
+		<function opcode="0x28F" name="ui_debug_text_bounds" returnType="void" null="true" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x290" name="ui_debug_show_title_safe_bounds" returnType="void" null="true" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x291" name="ui_dispose" returnType="void" />
+		<function opcode="0x292" name="ui_debug_screen_tag" returnType="void" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x293" name="ui_transition_out_console_window" returnType="void" />
+		<function opcode="0x294" name="ui_debug_show_screen_tag_path" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x295" name="ui_set_beta" returnType="void" null="true" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x296" name="ui_set_automation_mode" returnType="void" null="true" argc="1">
+			<arg type="short" />
+		</function>
+		<function opcode="0x297" name="ui_set_automation_hopper_type" returnType="void" null="true" argc="1">
+			<arg type="short" />
+		</function>
+		<function opcode="0x298" name="ui_set_automation_playlist_linear" returnType="void" null="true" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x299" name="ui_set_automation_desired_local_user_count" returnType="void" null="true" argc="1">
+			<arg type="short" />
+		</function>
+		<function opcode="0x29A" name="ui_set_automation_desired_desired_network_game_player_count" returnType="void" null="true" argc="1">
+			<arg type="short" />
+		</function>
+		<function opcode="0x29B" name="ui_set_automation_desired_network_game_length_seconds" returnType="void" null="true" argc="1">
+			<arg type="long" />
+		</function>
+		<function opcode="0x29C" name="ui_set_automation_desired_network_session_name" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x29D" name="ui_set_automation_desired_controller_team" returnType="void" null="true" argc="2">
+			<arg type="short" />
+			<arg type="short" />
+		</function>
+		<function opcode="0x29E" name="ui_set_automation_desired_controller_player_profile" returnType="void" null="true" argc="4">
+			<arg type="short" />
+			<arg type="string" />
+			<arg type="string" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x29F" name="input_suppress_rumble" returnType="void" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x2A0" name="update_remote_camera" returnType="void" null="true" />
+		<function opcode="0x2A1" name="net_status_filter" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x2A2" name="net_sim_reset" returnType="void" null="true" />
+		<function opcode="0x2A3" name="net_sim_spike_now" returnType="void" null="true" />
+		<function opcode="0x2A4" name="net_sim_dropspike_now" returnType="void" null="true" />
+		<function opcode="0x2A5" name="net_test_ping" returnType="void" null="true" />
+		<function opcode="0x2A6" name="net_test_channel_loopback" returnType="void" null="true" />
+		<function opcode="0x2A7" name="net_test_channel_delete" returnType="void" null="true" />
+		<function opcode="0x2A8" name="net_test_leave_squad" returnType="void" null="true" />
+		<function opcode="0x2A9" name="net_test_delegate_leader" returnType="void" null="true" argc="1">
+			<arg type="long" />
+		</function>
+		<function opcode="0x2AA" name="net_test_map_name" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x2AB" name="net_test_player_color" returnType="void" null="true" argc="1">
+			<arg type="long" />
+		</function>
+		<function opcode="0x2AC" name="net_test_reset_objects" returnType="void" null="true" />
+		<function opcode="0x2AD" name="net_set_machine_name" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x2AE" name="net_event_display_category" returnType="void" null="true" argc="2">
+			<arg type="string" />
+			<arg type="network_event" />
+		</function>
+		<function opcode="0x2AF" name="net_event_log_category" returnType="void" null="true" argc="2">
+			<arg type="string" />
+			<arg type="network_event" />
+		</function>
+		<function opcode="0x2B0" name="net_event_list_categories" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x2B1" name="online_task_list" returnType="void" null="true" />
+		<function opcode="0x2B2" name="play_bink_movie" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x2B3" name="set_global_doppler_factor" returnType="void" null="true" argc="1">
+			<arg type="real" />
+		</function>
+		<function opcode="0x2B4" name="set_global_mixbin_headroom" returnType="void" argc="2">
+			<arg type="long" />
+			<arg type="long" />
+		</function>
+		<function opcode="0x2B5" name="debug_sound_environment_source_parameter" returnType="void" null="true" argc="2">
+			<arg type="long" />
+			<arg type="real" />
+		</function>
+		<function opcode="0x2B6" name="data_mine_insert" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x2B7" name="data_mine_upload" returnType="void" null="true" />
+		<function opcode="0x2B8" name="data_mine_playback" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x2B9" name="data_mine_playback_last" returnType="void" null="true" />
+		<function opcode="0x2BA" name="data_mine_playback_exit" returnType="void" null="true" />
+		<function opcode="0x2BB" name="data_mine_enable" returnType="void" null="true" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x2BC" name="data_mine_track_event" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x2BD" name="data_mine_display_event" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x2BE" name="data_mine_show_all_events" returnType="void" null="true" />
+		<function opcode="0x2BF" name="data_mine_show_tracked_events" returnType="void" null="true" />
+		<function opcode="0x2C0" name="data_mine_show_displayed_events" returnType="void" null="true" />
+		<function opcode="0x2C1" name="data_mine_display_session_data" returnType="void" null="true" />
+		<function opcode="0x2C2" name="data_mine_display_disk_writes" returnType="void" null="true" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x2C3" name="error_enable" returnType="void" null="true" argc="2">
+			<arg type="string" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x2C4" name="render_layer_enable" returnType="void" null="true" argc="2">
+			<arg type="string" />
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x2C5" name="render_layer_enable_all" returnType="void" null="true" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x2C6" name="rasterizer_overdraw_z" returnType="void" null="true" />
+		<function opcode="0x2C7" name="rasterizer_overdraw" returnType="void" null="true" />
+		<function opcode="0x2C8" name="test_memory_allocators" returnType="void" null="true" argc="5">
+			<arg type="long" />
+			<arg type="short" />
+			<arg type="short" />
+			<arg type="short" />
+			<arg type="long" />
+		</function>
+		<function opcode="0x2C9" name="test_memory_allocators" returnType="void" null="true" argc="6">
+			<arg type="long" />
+			<arg type="short" />
+			<arg type="short" />
+			<arg type="short" />
+			<arg type="long" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x2CA" name="test_xcr_monkey_enable" returnType="void" null="true" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x2CB" name="test_web_map_snapshot" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x2CC" name="test_telnet_status_enable" returnType="void" null="true" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x2CD" name="test_telnet_status_interval" returnType="void" null="true" argc="1">
+			<arg type="long" />
+		</function>
+		<function opcode="0x2CE" name="script_temporary_disable_lightmap_shadows" returnType="void" null="true" argc="1">
+			<arg type="boolean" />
+		</function>
+		<function opcode="0x2CF" name="flag_new" returnType="void" null="true" argc="2">
+			<arg type="string" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x2D0" name="flag_new_at_look" returnType="void" null="true" argc="2">
+			<arg type="string" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x2D1" name="flags_clear" returnType="void" null="true" />
+		<function opcode="0x2D2" name="flags_save" returnType="void" null="true" />
+		<function opcode="0x2D3" name="flags_save_filtered" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x2D4" name="flags_save_named" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x2D5" name="flags_save_named_filtered" returnType="void" null="true" argc="2">
+			<arg type="string" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x2D6" name="flags_default_name" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x2D7" name="flags_default_comment" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x2D8" name="flags_set_filter" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x2D9" name="flags_export" returnType="void" null="true" />
+		<function opcode="0x2DA" name="flags_export_filtered" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x2DB" name="flags_export_named" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x2DC" name="flags_export_named_filtered" returnType="void" null="true" argc="2">
+			<arg type="string" />
+			<arg type="string" />
+		</function>
+		<function opcode="0x2DD" name="bug_now" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x2DE" name="bug_now_lite" returnType="void" null="true" argc="1">
+			<arg type="string" />
+		</function>
+		<function opcode="0x2DF" name="e3_zanzibar_slayer" returnType="boolean" />
+	</functions>
+
+	<globals>
+		<global opcode="0x000" name="debug_no_drawing" null="true" type="boolean" />
+		<global opcode="0x001" name="debug_force_all_player_views_to_default_player" null="true" type="boolean" />
+		<global opcode="0x002" name="debug_render_freeze" null="true" type="boolean" />
+		<global opcode="0x003" name="debug_load_panic_to_main_menu" null="true" type="boolean" />
+		<global opcode="0x004" name="display_framerate" null="true" type="boolean" />
+		<global opcode="0x005" name="display_frame_deltas" null="true" type="boolean" />
+		<global opcode="0x006" name="console_pauses_game" null="true" type="boolean" />
+		<global opcode="0x007" name="framerate_infinite" null="true" type="boolean" />
+		<global opcode="0x008" name="framerate_debug" null="true" type="boolean" />
+		<global opcode="0x009" name="framerate_use_system_time" null="true" type="boolean" />
+		<global opcode="0x00A" name="framerate_stabilization" null="true" type="boolean" />
+		<global opcode="0x00B" name="debug_physical_memory" type="boolean" />
+		<global opcode="0x00C" name="terminal_render" null="true" type="boolean" />
+		<global opcode="0x00D" name="console_dump_to_file" null="true" type="boolean" />
+		<global opcode="0x00E" name="console_dump_to_debug_display" null="true" type="boolean" />
+		<global opcode="0x00F" name="camera_fov_scale" type="real" />
+		<global opcode="0x010" name="rasterizer_near_clip_distance" null="true" type="real" />
+		<global opcode="0x011" name="rasterizer_far_clip_distance" null="true" type="real" />
+		<global opcode="0x012" name="rasterizer_far_clip_nudge" null="true" type="boolean" />
+		<global opcode="0x013" name="rasterizer_wbuffer_clip_enable" null="true" type="boolean" />
+		<global opcode="0x014" name="rasterizer_frame_bounds_left" null="true" type="short" />
+		<global opcode="0x015" name="rasterizer_frame_bounds_right" null="true" type="short" />
+		<global opcode="0x016" name="rasterizer_frame_bounds_top" null="true" type="short" />
+		<global opcode="0x017" name="rasterizer_frame_bounds_bottom" null="true" type="short" />
+		<global opcode="0x018" name="rasterizer_floating_point_zbuffer" null="true" type="boolean" />
+		<global opcode="0x019" name="rasterizer_vblank_interval" null="true" type="short" />
+		<global opcode="0x01A" name="rasterizer_allow_lazy_swap" null="true" type="boolean" />
+		<global opcode="0x01B" name="rasterizer_flicker_filter" null="true" type="long" />
+		<global opcode="0x01C" name="rasterizer_soft_display_filter" null="true" type="boolean" />
+		<global opcode="0x01D" name="rasterizer_stats" null="true" type="short" />
+		<global opcode="0x01E" name="rasterizer_mode" null="true" type="short" />
+		<global opcode="0x01F" name="rasterizer_wireframe" null="true" type="boolean" />
+		<global opcode="0x020" name="rasterizer_gamma_power" null="true" type="real" />
+		<global opcode="0x021" name="rasterizer_shaders" null="true" type="boolean" />
+		<global opcode="0x022" name="rasterizer_shader_submit_unified" null="true" type="boolean" />
+		<global opcode="0x023" name="rasterizer_shader_submit_unified_safe" null="true" type="boolean" />
+		<global opcode="0x024" name="rasterizer_shader_submit_unified_super_safe" null="true" type="boolean" />
+		<global opcode="0x025" name="rasterizer_shader_submit_force_extern_refresh" null="true" type="boolean" />
+		<global opcode="0x026" name="rasterizer_sort" null="true" type="boolean" />
+		<global opcode="0x027" name="rasterizer_sort_force_layer" null="true" type="short" />
+		<global opcode="0x028" name="rasterizer_sort_force_order" null="true" type="short" />
+		<global opcode="0x029" name="rasterizer_smart" null="true" type="boolean" />
+		<global opcode="0x02A" name="rasterizer_karma_events" null="true" type="boolean" />
+		<global opcode="0x02B" name="rasterizer_karma_events_detailed" null="true" type="boolean" />
+		<global opcode="0x02C" name="rasterizer_debug_model_lod" null="true" type="short" />
+		<global opcode="0x02D" name="rasterizer_debug_transparents" null="true" type="boolean" />
+		<global opcode="0x02E" name="rasterizer_debug_meter_shader" null="true" type="boolean" />
+		<global opcode="0x02F" name="rasterizer_models" null="true" type="boolean" />
+		<global opcode="0x030" name="rasterizer_model_transparents" null="true" type="boolean" />
+		<global opcode="0x031" name="rasterizer_draw_first_person_weapon_first" null="true" type="boolean" />
+		<global opcode="0x032" name="rasterizer_stencil_mask" null="true" type="boolean" />
+		<global opcode="0x033" name="rasterizer_environment" null="true" type="boolean" />
+		<global opcode="0x034" name="rasterizer_decals" null="true" type="boolean" />
+		<global opcode="0x035" name="rasterizer_water" null="true" type="boolean" />
+		<global opcode="0x036" name="rasterizer_lens_flares" null="true" type="boolean" />
+		<global opcode="0x037" name="rasterizer_lens_flares_dof_region" null="true" type="short" />
+		<global opcode="0x038" name="rasterizer_dynamic_unlit_geometry" null="true" type="boolean" />
+		<global opcode="0x039" name="rasterizer_dynamic_lit_geometry" null="true" type="boolean" />
+		<global opcode="0x03A" name="rasterizer_dynamic_screen_geometry" null="true" type="boolean" />
+		<global opcode="0x03B" name="rasterizer_hud_motion_sensor" null="true" type="boolean" />
+		<global opcode="0x03C" name="rasterizer_detail_objects" null="true" type="boolean" />
+		<global opcode="0x03D" name="rasterizer_debug_geometry" null="true" type="boolean" />
+		<global opcode="0x03E" name="rasterizer_debug_geometry_multipass" null="true" type="boolean" />
+		<global opcode="0x03F" name="rasterizer_fog_atmosphere" null="true" type="boolean" />
+		<global opcode="0x040" name="rasterizer_fog_plane" null="true" type="boolean" />
+		<global opcode="0x041" name="rasterizer_bump_mapping" null="true" type="boolean" />
+		<global opcode="0x042" name="rasterizer_environment_alpha_testing" null="true" type="boolean" />
+		<global opcode="0x043" name="rasterizer_environment_specular_mask" null="true" type="boolean" />
+		<global opcode="0x044" name="rasterizer_shadows_convolution" null="true" type="boolean" />
+		<global opcode="0x045" name="rasterizer_shadows_debug" null="true" type="boolean" />
+		<global opcode="0x046" name="rasterizer_water_mipmapping" null="true" type="boolean" />
+		<global opcode="0x047" name="rasterizer_active_camouflage" null="true" type="boolean" />
+		<global opcode="0x048" name="rasterizer_active_camouflage_multipass" null="true" type="boolean" />
+		<global opcode="0x049" name="rasterizer_plasma_energy" null="true" type="boolean" />
+		<global opcode="0x04A" name="rasterizer_lens_flares_occlusion" null="true" type="boolean" />
+		<global opcode="0x04B" name="rasterizer_lens_flares_occlusion_debug" null="true" type="boolean" />
+		<global opcode="0x04C" name="rasterizer_ray_of_buddha" null="true" type="boolean" />
+		<global opcode="0x04D" name="rasterizer_screen_flashes" null="true" type="boolean" />
+		<global opcode="0x04E" name="rasterizer_screen_effects" null="true" type="boolean" />
+		<global opcode="0x04F" name="rasterizer_DXTC_noise" null="true" type="boolean" />
+		<global opcode="0x050" name="rasterizer_profile_log" null="true" type="boolean" />
+		<global opcode="0x051" name="rasterizer_detail_objects_offset_multiplier" null="true" type="real" />
+		<global opcode="0x052" name="rasterizer_decal_z_bias" null="true" type="long" />
+		<global opcode="0x053" name="rasterizer_decal_z_offset_slopescale_enabled" null="true" type="boolean" />
+		<global opcode="0x054" name="rasterizer_decal_z_offset" null="true" type="real" />
+		<global opcode="0x055" name="rasterizer_decal_z_slopescale" null="true" type="real" />
+		<global opcode="0x056" name="rasterizer_decal_z_geometry_offset" null="true" type="real" />
+		<global opcode="0x057" name="rasterizer_safe_frame_bounds" null="true" type="boolean" />
+		<global opcode="0x058" name="rasterizer_zsprites" null="true" type="boolean" />
+		<global opcode="0x059" name="rasterizer_filthy_decal_fog_hack" null="true" type="boolean" />
+		<global opcode="0x05A" name="rasterizer_splitscreen_VB_optimization" null="true" type="boolean" />
+		<global opcode="0x05B" name="rasterizer_counters_enabled" null="true" type="boolean" />
+		<global opcode="0x05C" name="rasterizer_markers_enabled" null="true" type="boolean" />
+		<global opcode="0x05D" name="rasterizer_profile_print_locks" null="true" type="boolean" />
+		<global opcode="0x05E" name="rasterizer_profile_objectlock_time" null="true" type="real" />
+		<global opcode="0x05F" name="rasterizer_tiny" null="true" type="boolean" />
+		<global opcode="0x060" name="rasterizer_busywork" null="true" type="long" />
+		<global opcode="0x061" name="rasterizer_shadow_buffer_use_offsets" null="true" type="boolean" />
+		<global opcode="0x062" name="rasterizer_shadow_buffer_z_offset" null="true" type="real" />
+		<global opcode="0x063" name="rasterizer_shadow_buffer_z_slope" null="true" type="real" />
+		<global opcode="0x064" name="rasterizer_shadow_buffer_env_z_offset" null="true" type="real" />
+		<global opcode="0x065" name="rasterizer_shadow_buffer_env_z_slope" null="true" type="real" />
+		<global opcode="0x066" name="rasterizer_shadow_buffer_blur" null="true" type="real" />
+		<global opcode="0x067" name="rasterizer_shadow_buffer_debug" null="true" type="boolean" />
+		<global opcode="0x068" name="rasterizer_shadow_buffer_lod_resolution_area_scale" null="true" type="real" />
+		<global opcode="0x069" name="rasterizer_shadow_buffer_lod_resolution_light_bias_scale" null="true" type="real" />
+		<global opcode="0x06A" name="rasterizer_shadow_buffer_lod_resolution_minimum" null="true" type="real" />
+		<global opcode="0x06B" name="rasterizer_shadow_buffer_lod_samples_area_scale" null="true" type="real" />
+		<global opcode="0x06C" name="rasterizer_shadow_buffer_lod_samples_light_bias_scale" null="true" type="real" />
+		<global opcode="0x06D" name="rasterizer_dynamic_gamma_mode" null="true" type="short" />
+		<global opcode="0x06E" name="rasterizer_dynamic_gamma_bias" null="true" type="real" />
+		<global opcode="0x06F" name="rasterizer_dynamic_gamma_dark_clamp" null="true" type="real" />
+		<global opcode="0x070" name="rasterizer_dynamic_gamma_light_clamp" null="true" type="real" />
+		<global opcode="0x071" name="rasterizer_dynamic_gamma_dark_adjust_dt" null="true" type="real" />
+		<global opcode="0x072" name="rasterizer_dynamic_gamma_light_adjust_dt" null="true" type="real" />
+		<global opcode="0x073" name="rasterizer_dynamic_gamma_contrast_adjust_dt" null="true" type="real" />
+		<global opcode="0x074" name="rasterizer_dynamic_gamma_dark_threshold" null="true" type="real" />
+		<global opcode="0x075" name="rasterizer_dynamic_gamma_light_threshold" null="true" type="real" />
+		<global opcode="0x076" name="rasterizer_dynamic_gamma_bloom_scale" null="true" type="real" />
+		<global opcode="0x077" name="rasterizer_dynamic_gamma_debug" null="true" type="boolean" />
+		<global opcode="0x078" name="rasterizer_vision_distance" null="true" type="real" />
+		<global opcode="0x079" name="rasterizer_vision_jitter_scale" null="true" type="real" />
+		<global opcode="0x07A" name="rasterizer_vision_noise_scale" null="true" type="real" />
+		<global opcode="0x07B" name="rasterizer_vision_scan_scale" null="true" type="real" />
+		<global opcode="0x07C" name="rasterizer_vision_scan_speed" null="true" type="real" />
+		<global opcode="0x07D" name="rasterizer_bloom_default_threshold" null="true" type="real" />
+		<global opcode="0x07E" name="rasterizer_selfibloomination_scale" null="true" type="real" />
+		<global opcode="0x07F" name="rasterizer_bloom_override" null="true" type="boolean" />
+		<global opcode="0x080" name="rasterizer_bloom_override_reset" null="true" type="boolean" />
+		<global opcode="0x081" name="rasterizer_bloom_override_blur_amount" null="true" type="real" />
+		<global opcode="0x082" name="rasterizer_bloom_override_threshold" null="true" type="real" />
+		<global opcode="0x083" name="rasterizer_bloom_override_brightness" null="true" type="real" />
+		<global opcode="0x084" name="rasterizer_bloom_override_box_factor" null="true" type="real" />
+		<global opcode="0x085" name="rasterizer_bloom_override_max_factor" null="true" type="real" />
+		<global opcode="0x086" name="rasterizer_bloom_override_silver_bullet" null="true" type="boolean" />
+		<global opcode="0x087" name="rasterizer_bloom_override_only" null="true" type="boolean" />
+		<global opcode="0x088" name="rasterizer_bloom_override_high_res" null="true" type="boolean" />
+		<global opcode="0x089" name="rasterizer_depth_of_field_near_filter_box_factor" null="true" type="real" />
+		<global opcode="0x08A" name="rasterizer_depth_of_field_near_filter_max_factor" null="true" type="real" />
+		<global opcode="0x08B" name="rasterizer_depth_of_field_far_filter_box_factor" null="true" type="real" />
+		<global opcode="0x08C" name="rasterizer_depth_of_field_far_filter_max_factor" null="true" type="real" />
+		<global opcode="0x08D" name="colorbars" null="true" type="boolean" />
+		<global opcode="0x08E" name="rasterizer_LMO_ambient" null="true" type="real" />
+		<global opcode="0x08F" name="rasterizer_LMO_direct" null="true" type="real" />
+		<global opcode="0x090" name="rasterizer_LMO_indirect" null="true" type="real" />
+		<global opcode="0x091" name="rasterizer_LMO_specular" null="true" type="real" />
+		<global opcode="0x092" name="rasterizer_lightmap_shadow_falloff_scale" null="true" type="real" />
+		<global opcode="0x093" name="rasterizer_lightmap_shadow_cutoff_scale" null="true" type="real" />
+		<global opcode="0x094" name="rasterizer_new_submission_interface" null="true" type="boolean" />
+		<global opcode="0x095" name="rasterizer_line_width" null="true" type="real" />
+		<global opcode="0x096" name="rasterizer_linear_gradients" null="true" type="boolean" />
+		<global opcode="0x097" name="rasterizer_fog_implementation" null="true" type="long" />
+		<global opcode="0x098" name="rasterizer_fog_atmospheric_auto_blend" null="true" type="boolean" />
+		<global opcode="0x099" name="rasterizer_solid_color_mode" null="true" type="long" />
+		<global opcode="0x09A" name="rasterizer_decorator_accuracy_min" null="true" type="real" />
+		<global opcode="0x09B" name="rasterizer_decorator_accuracy_max" null="true" type="real" />
+		<global opcode="0x09C" name="rasterizer_first_person_w_scale" null="true" type="real" />
+		<global opcode="0x09D" name="ssc_debug" null="true" type="boolean" />
+		<global opcode="0x09E" name="ssc_debug_lights" null="true" type="boolean" />
+		<global opcode="0x09F" name="ssc_debug_lights_gel" null="true" type="boolean" />
+		<global opcode="0x0A0" name="ssc_debug_text_mode" null="true" type="short" />
+		<global opcode="0x0A1" name="ssc_debug_hulls" null="true" type="boolean" />
+		<global opcode="0x0A2" name="ssc_debug_edges" null="true" type="boolean" />
+		<global opcode="0x0A3" name="ssc_viewport_scale" null="true" type="real" />
+		<global opcode="0x0A4" name="ssc_lightmaps" null="true" type="boolean" />
+		<global opcode="0x0A5" name="ssc_lightmap_control" null="true" type="long" />
+		<global opcode="0x0A6" name="ssc_lightmap_shadow_darkening" null="true" type="real" />
+		<global opcode="0x0A7" name="ssc_lightmap_shadow_extrusion" null="true" type="real" />
+		<global opcode="0x0A8" name="ssc_lightmap_shadow_carmack_optimization" null="true" type="boolean" />
+		<global opcode="0x0A9" name="ssc_lightmap_force_non_bumped" null="true" type="boolean" />
+		<global opcode="0x0AA" name="ssc_scissor_enable" null="true" type="boolean" />
+		<global opcode="0x0AB" name="ssc_force_legacy" null="true" type="boolean" />
+		<global opcode="0x0AC" name="ssc_multisample_enable" null="true" type="boolean" />
+		<global opcode="0x0AD" name="ssc_shadow" null="true" type="boolean" />
+		<global opcode="0x0AE" name="ssc_shadow_view" null="true" type="boolean" />
+		<global opcode="0x0AF" name="ssc_shadow_mode" null="true" type="long" />
+		<global opcode="0x0B0" name="ssc_shadow_debug_cluster" null="true" type="long" />
+		<global opcode="0x0B1" name="ssc_shadow_multi_region" null="true" type="boolean" />
+		<global opcode="0x0B2" name="ssc_shadow_cyborg" null="true" type="boolean" />
+		<global opcode="0x0B3" name="ssc_carmack_optimization" null="true" type="boolean" />
+		<global opcode="0x0B4" name="ssc_carmack_reverse" null="true" type="boolean" />
+		<global opcode="0x0B5" name="ssc_back_projection" null="true" type="boolean" />
+		<global opcode="0x0B6" name="ssc_single_pass_vol" null="true" type="boolean" />
+		<global opcode="0x0B7" name="ssc_dsq" null="true" type="boolean" />
+		<global opcode="0x0B8" name="ssc_dsq_vis" null="true" type="boolean" />
+		<global opcode="0x0B9" name="ssc_isq" null="true" type="boolean" />
+		<global opcode="0x0BA" name="ssc_isq_sse" null="true" type="boolean" />
+		<global opcode="0x0BB" name="ssc_isq_point_debug" null="true" type="boolean" />
+		<global opcode="0x0BC" name="ssc_subcluster_debug" null="true" type="boolean" />
+		<global opcode="0x0BD" name="ssc_subcluster_freeze" null="true" type="boolean" />
+		<global opcode="0x0BE" name="ssc_subcluster_optimization" null="true" type="boolean" />
+		<global opcode="0x0BF" name="ssc_subcluster_all_visible" null="true" type="boolean" />
+		<global opcode="0x0C0" name="ssc_overbright" null="true" type="real" />
+		<global opcode="0x0C1" name="ssc_ambient_diffuse" null="true" type="real" />
+		<global opcode="0x0C2" name="ssc_ambient_diffuse_bump" null="true" type="real" />
+		<global opcode="0x0C3" name="ssc_ambient_diffuse_radiosity" null="true" type="real" />
+		<global opcode="0x0C4" name="ssc_ambient_envmap" null="true" type="real" />
+		<global opcode="0x0C5" name="ssc_light_gel" null="true" type="boolean" />
+		<global opcode="0x0C6" name="ssc_light_n_dot_e_mask" null="true" type="boolean" />
+		<global opcode="0x0C7" name="ssc_light_diffuse" null="true" type="real" />
+		<global opcode="0x0C8" name="ssc_light_diffuse_shadow" null="true" type="boolean" />
+		<global opcode="0x0C9" name="ssc_light_diffuse_mask_flags" null="true" type="long" />
+		<global opcode="0x0CA" name="ssc_light_diffuse_n_dot_l" null="true" type="boolean" />
+		<global opcode="0x0CB" name="ssc_light_specular" null="true" type="real" />
+		<global opcode="0x0CC" name="ssc_light_specular_shadow" null="true" type="boolean" />
+		<global opcode="0x0CD" name="ssc_light_specular_mask_flags" null="true" type="long" />
+		<global opcode="0x0CE" name="ssc_light_specular_enable" null="true" type="boolean" />
+		<global opcode="0x0CF" name="ssc_texture_diffuse" null="true" type="real" />
+		<global opcode="0x0D0" name="ssc_texture_specular" null="true" type="real" />
+		<global opcode="0x0D1" name="ssc_texture_mode" null="true" type="short" />
+		<global opcode="0x0D2" name="ssc_stencil_mode" null="true" type="short" />
+		<global opcode="0x0D3" name="ssc_bump_mode" null="true" type="short" />
+		<global opcode="0x0D4" name="ssc_bump_aniso" null="true" type="short" />
+		<global opcode="0x0D5" name="ssc_bump_mode_debug" null="true" type="boolean" />
+		<global opcode="0x0D6" name="ssc_env_zge" null="true" type="boolean" />
+		<global opcode="0x0D7" name="ssc_env_brev" null="true" type="boolean" />
+		<global opcode="0x0D8" name="ssc_env_voltex" null="true" type="boolean" />
+		<global opcode="0x0D9" name="ssc_env_malice" null="true" type="boolean" />
+		<global opcode="0x0DA" name="ssc_pop_fix" null="true" type="boolean" />
+		<global opcode="0x0DB" name="ssc_pop_fix_factor" null="true" type="real" />
+		<global opcode="0x0DC" name="ssc_radiosity_hack" null="true" type="short" />
+		<global opcode="0x0DD" name="ssc_radiosity_hack_shadow" null="true" type="boolean" />
+		<global opcode="0x0DE" name="ssc_shader_profile_mode" null="true" type="long" />
+		<global opcode="0x0DF" name="ssc_shader_profile_layer" null="true" type="long" />
+		<global opcode="0x0E0" name="ssc_objects_env_map_enabled" null="true" type="boolean" />
+		<global opcode="0x0E1" name="ssc_environment_env_map_enabled" null="true" type="boolean" />
+		<global opcode="0x0E2" name="pad4" null="true" type="short" />
+		<global opcode="0x0E3" name="pad3" null="true" type="short" />
+		<global opcode="0x0E4" name="pad3_scale" null="true" type="real" />
+		<global opcode="0x0E5" name="pad_thai" null="true" type="real" />
+		<global opcode="0x0E6" name="taco_salad" null="true" type="short" />
+		<global opcode="0x0E7" name="anisotropic_binormal" null="true" type="short" />
+		<global opcode="0x0E8" name="f0" null="true" type="real" />
+		<global opcode="0x0E9" name="f1" null="true" type="real" />
+		<global opcode="0x0EA" name="f2" null="true" type="real" />
+		<global opcode="0x0EB" name="f3" null="true" type="real" />
+		<global opcode="0x0EC" name="f4" null="true" type="real" />
+		<global opcode="0x0ED" name="f5" null="true" type="real" />
+		<global opcode="0x0EE" name="g0" null="true" type="real" />
+		<global opcode="0x0EF" name="g1" null="true" type="real" />
+		<global opcode="0x0F0" name="g2" null="true" type="real" />
+		<global opcode="0x0F1" name="g3" null="true" type="real" />
+		<global opcode="0x0F2" name="g4" null="true" type="real" />
+		<global opcode="0x0F3" name="g5" null="true" type="real" />
+		<global opcode="0x0F4" name="g6" null="true" type="real" />
+		<global opcode="0x0F5" name="g7" null="true" type="real" />
+		<global opcode="0x0F6" name="g8" null="true" type="real" />
+		<global opcode="0x0F7" name="g9" null="true" type="real" />
+		<global opcode="0x0F8" name="g10" null="true" type="real" />
+		<global opcode="0x0F9" name="g11" null="true" type="real" />
+		<global opcode="0x0FA" name="rasterizer_frame_dump" null="true" type="boolean" />
+		<global opcode="0x0FB" name="rasterizer_transparent_pixel_counter" null="true" type="boolean" />
+		<global opcode="0x0FC" name="ssc_e3_clip_scale" null="true" type="real" />
+		<global opcode="0x0FD" name="async_display_statistics" null="true" type="boolean" />
+		<global opcode="0x0FE" name="async_record_statistics" null="true" type="boolean" />
+		<global opcode="0x0FF" name="suppress_upload_debug" null="true" type="boolean" />
+		<global opcode="0x100" name="lightmap_pointsample" null="true" type="boolean" />
+		<global opcode="0x101" name="debug_no_frustum_clip" null="true" type="boolean" />
+		<global opcode="0x102" name="debug_camera_projection" null="true" type="boolean" />
+		<global opcode="0x103" name="debug_bink" null="true" type="boolean" />
+		<global opcode="0x104" name="game_paused" null="true" type="boolean" />
+		<global opcode="0x105" name="game_speed" null="true" type="real" />
+		<global opcode="0x106" name="game_time_lock" null="true" type="boolean" />
+		<global opcode="0x107" name="game_time_statistics" null="true" type="boolean" />
+		<global opcode="0x108" name="debug_game_save" null="true" type="boolean" />
+		<global opcode="0x109" name="recover_saved_games_hack" null="true" type="boolean" />
+		<global opcode="0x10A" name="debug_detail_objects" null="true" type="boolean" />
+		<global opcode="0x10B" name="debug_structure_sampling" null="true" type="boolean" />
+		<global opcode="0x10C" name="display_precache_progress" null="true" type="boolean" />
+		<global opcode="0x10D" name="debug_object_garbage_collection" null="true" type="boolean" />
+		<global opcode="0x10E" name="debug_object_dump_log" null="true" type="boolean" />
+		<global opcode="0x10F" name="allow_all_sounds_on_player" null="true" type="boolean" />
+		<global opcode="0x110" name="temporary_hud" null="true" type="boolean" />
+		<global opcode="0x111" name="disable_hud" null="true" type="boolean" />
+		<global opcode="0x112" name="new_hud_debug_dashlights" null="true" type="boolean" />
+		<global opcode="0x113" name="debug_unit_all_animations" null="true" type="boolean" />
+		<global opcode="0x114" name="debug_unit_animations" null="true" type="boolean" />
+		<global opcode="0x115" name="debug_unit_illumination" null="true" type="boolean" />
+		<global opcode="0x116" name="debug_damage_taken" null="true" type="boolean" />
+		<global opcode="0x117" name="debug_player_melee_attack" null="true" type="boolean" />
+		<global opcode="0x118" name="debug_boarding_force_enemy" null="true" type="boolean" />
+		<global opcode="0x119" name="enable_analog_movement" null="true" type="boolean" />
+		<global opcode="0x11A" name="enable_eye_tracking" null="true" type="boolean" />
+		<global opcode="0x11B" name="enable_animation_influenced_flight" null="true" type="boolean" />
+		<global opcode="0x11C" name="enable_flight_noise" null="true" type="boolean" />
+		<global opcode="0x11D" name="cheat_deathless_player" null="true" type="boolean" />
+		<global opcode="0x11E" name="cheat_valhalla" null="true" type="boolean" />
+		<global opcode="0x11F" name="cheat_jetpack" null="true" type="boolean" />
+		<global opcode="0x120" name="cheat_infinite_ammo" null="true" type="boolean" />
+		<global opcode="0x121" name="cheat_bottomless_clip" null="true" type="boolean" />
+		<global opcode="0x122" name="cheat_bump_possession" null="true" type="boolean" />
+		<global opcode="0x123" name="cheat_super_jump" null="true" type="boolean" />
+		<global opcode="0x124" name="cheat_reflexive_damage_effects" null="true" type="boolean" />
+		<global opcode="0x125" name="cheat_medusa" null="true" type="boolean" />
+		<global opcode="0x126" name="cheat_omnipotent" null="true" type="boolean" />
+		<global opcode="0x127" name="cheat_controller" null="true" type="boolean" />
+		<global opcode="0x128" name="cheat_chevy" null="true" type="boolean" />
+		<global opcode="0x129" name="debug_simulate_gamepad" null="true" type="long" />
+		<global opcode="0x12A" name="effects_corpse_nonviolent" type="boolean" />
+		<global opcode="0x12B" name="debug_effects_nonviolent" null="true" type="boolean" />
+		<global opcode="0x12C" name="debug_effects_locations" null="true" type="boolean" />
+		<global opcode="0x12D" name="effects_enable" null="true" type="boolean" />
+		<global opcode="0x12E" name="debug_effects_allocation" null="true" type="boolean" />
+		<global opcode="0x12F" name="sound_global_room_gain" type="real" />
+		<global opcode="0x130" name="enable_pc_sound" null="true" type="boolean" />
+		<global opcode="0x131" name="debug_sound_cache" null="true" type="boolean" />
+		<global opcode="0x132" name="debug_sound" null="true" type="boolean" />
+		<global opcode="0x133" name="debug_looping_sound" null="true" type="boolean" />
+		<global opcode="0x134" name="debug_sound_channels" null="true" type="boolean" />
+		<global opcode="0x135" name="debug_sound_reverb" null="true" type="boolean" />
+		<global opcode="0x136" name="sound_cache_graph" null="true" type="boolean" />
+		<global opcode="0x137" name="debug_speaker_output_peak" null="true" type="boolean" />
+		<global opcode="0x138" name="debug_speaker_output_rms" null="true" type="boolean" />
+		<global opcode="0x139" name="debug_sound_listeners" type="boolean" />
+		<global opcode="0x13A" name="debug_sound_reference_counts" null="true" type="boolean" />
+		<global opcode="0x13B" name="background_sound_meter_display" null="true" type="boolean" />
+		<global opcode="0x13C" name="debug_sound_environment_parameters" null="true" type="boolean" />
+		<global opcode="0x13D" name="debug_sound_channel_overflow" null="true" type="boolean" />
+		<global opcode="0x13E" name="debug_sound_impulse_time" null="true" type="boolean" />
+		<global opcode="0x13F" name="debug_sound_impulse_spam" null="true" type="boolean" />
+		<global opcode="0x140" name="use_dynamic_object_obstruction" type="boolean" />
+		<global opcode="0x141" name="enable_dynamic_sound_cache" null="true" type="boolean" />
+		<global opcode="0x142" name="debug_sound_environment" null="true" type="boolean" />
+		<global opcode="0x143" name="object_light_ambient_base" type="real" />
+		<global opcode="0x144" name="object_light_ambient_scale" type="real" />
+		<global opcode="0x145" name="object_light_secondary_scale" type="real" />
+		<global opcode="0x146" name="object_light_secondary_direction_lerp" type="real" />
+		<global opcode="0x147" name="object_light_interpolate" type="boolean" />
+		<global opcode="0x148" name="object_light_accuracy_lower_bound" type="real" />
+		<global opcode="0x149" name="object_light_accuracy_upper_bound" type="real" />
+		<global opcode="0x14A" name="object_light_accuracy_exponent" type="real" />
+		<global opcode="0x14B" name="object_light_new" type="boolean" />
+		<global opcode="0x14C" name="object_light_ambient_brightness" type="real" />
+		<global opcode="0x14D" name="object_light_primary_brightness" type="real" />
+		<global opcode="0x14E" name="object_light_secondary_brightness" type="real" />
+		<global opcode="0x14F" name="object_light_primary_exclusion_cone_lower_bound" type="real" />
+		<global opcode="0x150" name="object_light_primary_exclusion_cone_upper_bound" type="real" />
+		<global opcode="0x151" name="object_light_secondary_exclusion_cone_lower_bound" type="real" />
+		<global opcode="0x152" name="object_light_secondary_exclusion_cone_upper_bound" type="real" />
+		<global opcode="0x153" name="object_light_secondary_rotation" type="real" />
+		<global opcode="0x154" name="light_local_basis" null="true" type="boolean" />
+		<global opcode="0x155" name="collision_log_render" null="true" type="boolean" />
+		<global opcode="0x156" name="collision_log_detailed" null="true" type="boolean" />
+		<global opcode="0x157" name="collision_log_extended" null="true" type="boolean" />
+		<global opcode="0x158" name="collision_log_totals_only" null="true" type="boolean" />
+		<global opcode="0x159" name="collision_log_time" null="true" type="boolean" />
+		<global opcode="0x15A" name="havok_collision_tolerance" null="true" type="real" />
+		<global opcode="0x15B" name="havok_debug_mode" null="true" type="long" />
+		<global opcode="0x15C" name="havok_environment_type" null="true" type="long" />
+		<global opcode="0x15D" name="havok_shape_radius" null="true" type="real" />
+		<global opcode="0x15E" name="havok_jumping_beans" null="true" type="boolean" />
+		<global opcode="0x15F" name="havok_weld_environment" null="true" type="boolean" />
+		<global opcode="0x160" name="havok_enable_back_stepping" null="true" type="boolean" />
+		<global opcode="0x161" name="havok_enable_sweep_shapes" null="true" type="boolean" />
+		<global opcode="0x162" name="havok_display_stats" null="true" type="boolean" />
+		<global opcode="0x163" name="havok_back_step_penetration_depth" null="true" type="real" />
+		<global opcode="0x164" name="impacts_debug" null="true" type="boolean" />
+		<global opcode="0x165" name="collision_damage_debug" null="true" type="boolean" />
+		<global opcode="0x166" name="havok_play_impact_effects" null="true" type="boolean" />
+		<global opcode="0x167" name="havok_play_biped_impact_effects" null="true" type="boolean" />
+		<global opcode="0x168" name="physics_debug" null="true" type="boolean" />
+		<global opcode="0x169" name="profile_enable" null="true" type="boolean" />
+		<global opcode="0x16A" name="profile_graph" null="true" type="boolean" />
+		<global opcode="0x16B" name="profile_graph_zoom" null="true" type="real" />
+		<global opcode="0x16C" name="profile_graph_speed" null="true" type="real" />
+		<global opcode="0x16D" name="profile_list" null="true" type="boolean" />
+		<global opcode="0x16E" name="profile_list_count" null="true" type="long" />
+		<global opcode="0x16F" name="profile_summary" null="true" type="boolean" />
+		<global opcode="0x170" name="profile_rasterizer" null="true" type="boolean" />
+		<global opcode="0x171" name="profile_dump_one_frame" null="true" type="boolean" />
+		<global opcode="0x172" name="profile_interval_dump" null="true" type="boolean" />
+		<global opcode="0x173" name="profile_interval_dump_threshold" null="true" type="real" />
+		<global opcode="0x174" name="profile_interval_dump_suppression_timeout" null="true" type="real" />
+		<global opcode="0x175" name="profile_fastcap_profile_buffer_size_bytes" null="true" type="long" />
+		<global opcode="0x176" name="debug_sprites" null="true" type="boolean" />
+		<global opcode="0x177" name="debug_portals" null="true" type="boolean" />
+		<global opcode="0x178" name="render_environment" null="true" type="boolean" />
+		<global opcode="0x179" name="render_objects" null="true" type="boolean" />
+		<global opcode="0x17A" name="render_instanced_geometry" null="true" type="boolean" />
+		<global opcode="0x17B" name="render_sky" null="true" type="boolean" />
+		<global opcode="0x17C" name="render_fog" null="true" type="boolean" />
+		<global opcode="0x17D" name="render_lens_flares" null="true" type="boolean" />
+		<global opcode="0x17E" name="render_decals" null="true" type="boolean" />
+		<global opcode="0x17F" name="render_colonies" null="true" type="boolean" />
+		<global opcode="0x180" name="render_contrails" null="true" type="boolean" />
+		<global opcode="0x181" name="render_particles" null="true" type="boolean" />
+		<global opcode="0x182" name="render_psystems" null="true" type="boolean" />
+		<global opcode="0x183" name="render_wsystems" null="true" type="boolean" />
+		<global opcode="0x184" name="render_decorators" null="true" type="boolean" />
+		<global opcode="0x185" name="render_old_dof" null="true" type="boolean" />
+		<global opcode="0x186" name="render_particles_use_visibility" null="true" type="boolean" />
+		<global opcode="0x187" name="render_particles_render_bounding_sphere" null="true" type="boolean" />
+		<global opcode="0x188" name="render_submit_opaque" null="true" type="boolean" />
+		<global opcode="0x189" name="render_submit_transparent" null="true" type="boolean" />
+		<global opcode="0x18A" name="render_debug_decorator_visibility" null="true" type="boolean" />
+		<global opcode="0x18B" name="render_debug_decorator_octree" null="true" type="boolean" />
+		<global opcode="0x18C" name="render_debug_decorator_group_visibility" null="true" type="boolean" />
+		<global opcode="0x18D" name="render_debug_decorators" null="true" type="boolean" />
+		<global opcode="0x18E" name="render_shadow_force_self_shadow" null="true" type="boolean" />
+		<global opcode="0x18F" name="render_debug_lightmap_shadows" null="true" type="boolean" />
+		<global opcode="0x190" name="render_disable_screen_effects_not_first_person" null="true" type="boolean" />
+		<global opcode="0x191" name="render_debug_cloth" null="true" type="boolean" />
+		<global opcode="0x192" name="render_debug_object_lighting" null="true" type="boolean" />
+		<global opcode="0x193" name="render_debug_object_lighting_refresh" null="true" type="boolean" />
+		<global opcode="0x194" name="render_debug_infinite_framerate" null="true" type="boolean" />
+		<global opcode="0x195" name="render_debug_set_pix_profile_mode" null="true" type="boolean" />
+		<global opcode="0x196" name="render_debug_toggle_default_lightmaps_texaccum" null="true" type="long" />
+		<global opcode="0x197" name="render_debug_single_shader" null="true" type="boolean" />
+		<global opcode="0x198" name="render_debug_simple_shader" null="true" type="boolean" />
+		<global opcode="0x199" name="render_debug_emitters" null="true" type="boolean" />
+		<global opcode="0x19A" name="render_debug_locations" null="true" type="boolean" />
+		<global opcode="0x19B" name="render_debug_particles" null="true" type="boolean" />
+		<global opcode="0x19C" name="render_submit_profile" null="true" type="boolean" />
+		<global opcode="0x19D" name="render_dyanmic_objects_sh" null="true" type="boolean" />
+		<global opcode="0x19E" name="render_shadow_with_chopper" null="true" type="boolean" />
+		<global opcode="0x19F" name="debug_inactive_objects" null="true" type="boolean" />
+		<global opcode="0x1A0" name="debug_pvs" null="true" type="boolean" />
+		<global opcode="0x1A1" name="debug_pvs_render_all" null="true" type="boolean" />
+		<global opcode="0x1A2" name="render_debug_use_sorted_cache" null="true" type="boolean" />
+		<global opcode="0x1A3" name="render_light_traversal" null="true" type="boolean" />
+		<global opcode="0x1A4" name="render_default_lighting" null="true" type="boolean" />
+		<global opcode="0x1A5" name="render_default_lighting_at_console" null="true" type="boolean" />
+		<global opcode="0x1A6" name="render_default_lighting_automatic" null="true" type="boolean" />
+		<global opcode="0x1A7" name="render_light_restrict_by_light_index" null="true" type="long" />
+		<global opcode="0x1A8" name="render_lights_specular_fade_disable" null="true" type="boolean" />
+		<global opcode="0x1A9" name="render_lod_cpu_memory_limit" null="true" type="long" />
+		<global opcode="0x1AA" name="render_lod_gpu_memory_limit" null="true" type="long" />
+		<global opcode="0x1AB" name="render_lod_gpu_frontend_limit" null="true" type="real" />
+		<global opcode="0x1AC" name="render_lod_simple_benefit" null="true" type="boolean" />
+		<global opcode="0x1AD" name="render_lod_force_level_of_detail" null="true" type="long" />
+		<global opcode="0x1AE" name="render_lod_distance_scale" null="true" type="real" />
+		<global opcode="0x1AF" name="render_lod_model_failure" null="true" type="boolean" />
+		<global opcode="0x1B0" name="visibility_debug_region_projections" null="true" type="boolean" />
+		<global opcode="0x1B1" name="visibility_debug_working_portals" null="true" type="boolean" />
+		<global opcode="0x1B2" name="visibility_debug_region_volumes" null="true" type="boolean" />
+		<global opcode="0x1B3" name="visibility_debug_volume_intersections" null="true" type="boolean" />
+		<global opcode="0x1B4" name="visibility_debug_region_volumes_by_cluster_index" null="true" type="boolean" />
+		<global opcode="0x1B5" name="visibility_debug_region_volumes_cluster_index" null="true" type="long" />
+		<global opcode="0x1B6" name="visibility_debug_portals" null="true" type="boolean" />
+		<global opcode="0x1B7" name="visibility_debug_portals_cluster_index" null="true" type="long" />
+		<global opcode="0x1B8" name="visibility_debug_subcluster_lighting" null="true" type="boolean" />
+		<global opcode="0x1B9" name="visibility_debug_subcluster_cycle" null="true" type="boolean" />
+		<global opcode="0x1BA" name="visibility_debug_subcluster_lighting_text_list" null="true" type="boolean" />
+		<global opcode="0x1BB" name="visibility_debug_light_cluster_intersections" null="true" type="boolean" />
+		<global opcode="0x1BC" name="visibility_debug_light_cluster_intersections_mode" null="true" type="long" />
+		<global opcode="0x1BD" name="visibility_debug_run_optimized" null="true" type="boolean" />
+		<global opcode="0x1BE" name="visibility_dont_use_precomputed_lights" null="true" type="boolean" />
+		<global opcode="0x1BF" name="visibility_perform_final_checks" null="true" type="boolean" />
+		<global opcode="0x1C0" name="visibility_merge_working_portals" null="true" type="boolean" />
+		<global opcode="0x1C1" name="visibility_merge_fudge_factor" null="true" type="real" />
+		<global opcode="0x1C2" name="error_geometry_draw_names" null="true" type="boolean" />
+		<global opcode="0x1C3" name="error_geometry_tangent_space" null="true" type="long" />
+		<global opcode="0x1C4" name="error_geometry_lightmap_lights" null="true" type="long" />
+		<global opcode="0x1C5" name="debug_objects" null="true" type="boolean" />
+		<global opcode="0x1C6" name="debug_objects_position_velocity" null="true" type="boolean" />
+		<global opcode="0x1C7" name="debug_objects_origin" null="true" type="boolean" />
+		<global opcode="0x1C8" name="debug_objects_root_node" null="true" type="boolean" />
+		<global opcode="0x1C9" name="debug_objects_bounding_spheres" null="true" type="boolean" />
+		<global opcode="0x1CA" name="debug_objects_render_models" null="true" type="boolean" />
+		<global opcode="0x1CB" name="debug_objects_collision_models" null="true" type="boolean" />
+		<global opcode="0x1CC" name="debug_objects_contact_points" null="true" type="boolean" />
+		<global opcode="0x1CD" name="debug_objects_constraints" null="true" type="boolean" />
+		<global opcode="0x1CE" name="debug_objects_vehicle_physics" null="true" type="boolean" />
+		<global opcode="0x1CF" name="debug_objects_mass" null="true" type="boolean" />
+		<global opcode="0x1D0" name="debug_objects_physics_models" null="true" type="boolean" />
+		<global opcode="0x1D1" name="debug_objects_names" null="true" type="boolean" />
+		<global opcode="0x1D2" name="debug_objects_indices" null="true" type="boolean" />
+		<global opcode="0x1D3" name="debug_objects_functions" null="true" type="boolean" />
+		<global opcode="0x1D4" name="debug_objects_model_targets" null="true" type="boolean" />
+		<global opcode="0x1D5" name="debug_objects_pathfinding" null="true" type="boolean" />
+		<global opcode="0x1D6" name="debug_objects_node_bounds" null="true" type="boolean" />
+		<global opcode="0x1D7" name="debug_objects_unit_vectors" null="true" type="boolean" />
+		<global opcode="0x1D8" name="debug_objects_unit_seats" null="true" type="boolean" />
+		<global opcode="0x1D9" name="debug_objects_unit_mouth_apeture" null="true" type="boolean" />
+		<global opcode="0x1DA" name="debug_objects_unit_firing" null="true" type="boolean" />
+		<global opcode="0x1DB" name="debug_objects_unit_state" null="true" type="boolean" />
+		<global opcode="0x1DC" name="debug_objects_unit_lipsync" null="true" type="boolean" />
+		<global opcode="0x1DD" name="debug_objects_unit_emotion" null="true" type="boolean" />
+		<global opcode="0x1DE" name="debug_objects_unit_acceleration" null="true" type="boolean" />
+		<global opcode="0x1DF" name="debug_objects_biped_autoaim_pills" null="true" type="boolean" />
+		<global opcode="0x1E0" name="debug_objects_physics_control_node" null="true" type="boolean" />
+		<global opcode="0x1E1" name="debug_objects_ground_plane" null="true" type="boolean" />
+		<global opcode="0x1E2" name="debug_objects_movement_mode" null="true" type="boolean" />
+		<global opcode="0x1E3" name="debug_objects_devices" null="true" type="boolean" />
+		<global opcode="0x1E4" name="debug_objects_garbage" null="true" type="boolean" />
+		<global opcode="0x1E5" name="debug_objects_type_mask" null="true" type="long" />
+		<global opcode="0x1E6" name="debug_objects_object" null="true" type="object" />
+		<global opcode="0x1E7" name="debug_objects_player_only" null="true" type="boolean" />
+		<global opcode="0x1E8" name="render_model_nodes" null="true" type="boolean" />
+		<global opcode="0x1E9" name="render_model_point_counts" null="true" type="boolean" />
+		<global opcode="0x1EA" name="render_model_vertex_counts" null="true" type="boolean" />
+		<global opcode="0x1EB" name="render_model_names" null="true" type="boolean" />
+		<global opcode="0x1EC" name="render_model_triangle_counts" null="true" type="boolean" />
+		<global opcode="0x1ED" name="render_model_collision_vertex_counts" null="true" type="boolean" />
+		<global opcode="0x1EE" name="render_model_collision_surface_counts" null="true" type="boolean" />
+		<global opcode="0x1EF" name="render_model_texture_usage" null="true" type="boolean" />
+		<global opcode="0x1F0" name="render_model_geometry_usage" null="true" type="boolean" />
+		<global opcode="0x1F1" name="render_model_cost" null="true" type="boolean" />
+		<global opcode="0x1F2" name="render_model_markers" null="true" type="boolean" />
+		<global opcode="0x1F3" name="render_model_no_geometry" null="true" type="boolean" />
+		<global opcode="0x1F4" name="render_model_skinning_disable" null="true" type="boolean" />
+		<global opcode="0x1F5" name="debug_damage" null="true" type="boolean" />
+		<global opcode="0x1F6" name="debug_damage_verbose" null="true" type="boolean" />
+		<global opcode="0x1F7" name="debug_damage_radius" null="true" type="boolean" />
+		<global opcode="0x1F8" name="debug_scripting" null="true" type="boolean" />
+		<global opcode="0x1F9" name="debug_trigger_volumes" null="true" type="boolean" />
+		<global opcode="0x1FA" name="debug_point_physics" null="true" type="boolean" />
+		<global opcode="0x1FB" name="debug_motion_sensor_draw_all_units" type="boolean" />
+		<global opcode="0x1FC" name="collision_debug" null="true" type="boolean" />
+		<global opcode="0x1FD" name="collision_debug_spray" null="true" type="boolean" />
+		<global opcode="0x1FE" name="collision_debug_features" null="true" type="boolean" />
+		<global opcode="0x1FF" name="collision_debug_phantom_bsp" null="true" type="boolean" />
+		<global opcode="0x200" name="collision_debug_flags" null="true" type="long" />
+		<global opcode="0x201" name="collision_debug_flag_structure" null="true" type="boolean" />
+		<global opcode="0x202" name="collision_debug_flag_media" null="true" type="boolean" />
+		<global opcode="0x203" name="collision_debug_flag_instanced_geometry" null="true" type="boolean" />
+		<global opcode="0x204" name="collision_debug_flag_objects" null="true" type="boolean" />
+		<global opcode="0x205" name="collision_debug_flag_objects_bipeds" null="true" type="boolean" />
+		<global opcode="0x206" name="collision_debug_flag_objects_vehicles" null="true" type="boolean" />
+		<global opcode="0x207" name="collision_debug_flag_objects_weapons" null="true" type="boolean" />
+		<global opcode="0x208" name="collision_debug_flag_objects_equipment" null="true" type="boolean" />
+		<global opcode="0x209" name="collision_debug_flag_objects_garbage" null="true" type="boolean" />
+		<global opcode="0x20A" name="collision_debug_flag_objects_projectiles" null="true" type="boolean" />
+		<global opcode="0x20B" name="collision_debug_flag_objects_scenery" null="true" type="boolean" />
+		<global opcode="0x20C" name="collision_debug_flag_objects_machines" null="true" type="boolean" />
+		<global opcode="0x20D" name="collision_debug_flag_objects_controls" null="true" type="boolean" />
+		<global opcode="0x20E" name="collision_debug_flag_objects_light_fixtures" null="true" type="boolean" />
+		<global opcode="0x20F" name="collision_debug_flag_objects_sound_scenery" null="true" type="boolean" />
+		<global opcode="0x210" name="collision_debug_flag_objects_crates" null="true" type="boolean" />
+		<global opcode="0x211" name="collision_debug_flag_objects_creatures" null="true" type="boolean" />
+		<global opcode="0x212" name="collision_debug_flag_ignore_child_objects" null="true" type="boolean" />
+		<global opcode="0x213" name="collision_debug_flag_ignore_nonpathfindable_objects" null="true" type="boolean" />
+		<global opcode="0x214" name="collision_debug_flag_ignore_cinematic_objects" null="true" type="boolean" />
+		<global opcode="0x215" name="collision_debug_flag_ignore_dead_bipeds" null="true" type="boolean" />
+		<global opcode="0x216" name="collision_debug_flag_ignore_passthrough_bipeds" null="true" type="boolean" />
+		<global opcode="0x217" name="collision_debug_flag_front_facing_surfaces" null="true" type="boolean" />
+		<global opcode="0x218" name="collision_debug_flag_back_facing_surfaces" null="true" type="boolean" />
+		<global opcode="0x219" name="collision_debug_flag_ignore_two_sided_surfaces" null="true" type="boolean" />
+		<global opcode="0x21A" name="collision_debug_flag_ignore_invisible_surfaces" null="true" type="boolean" />
+		<global opcode="0x21B" name="collision_debug_flag_ignore_breakable_surfaces" null="true" type="boolean" />
+		<global opcode="0x21C" name="collision_debug_flag_allow_early_out" null="true" type="boolean" />
+		<global opcode="0x21D" name="collision_debug_flag_try_to_keep_location_valid" null="true" type="boolean" />
+		<global opcode="0x21E" name="collision_debug_repeat" null="true" type="boolean" />
+		<global opcode="0x21F" name="collision_debug_point_x" null="true" type="real" />
+		<global opcode="0x220" name="collision_debug_point_y" null="true" type="real" />
+		<global opcode="0x221" name="collision_debug_point_z" null="true" type="real" />
+		<global opcode="0x222" name="collision_debug_vector_i" null="true" type="real" />
+		<global opcode="0x223" name="collision_debug_vector_j" null="true" type="real" />
+		<global opcode="0x224" name="collision_debug_vector_k" null="true" type="real" />
+		<global opcode="0x225" name="collision_debug_length" null="true" type="real" />
+		<global opcode="0x226" name="collision_debug_width" null="true" type="real" />
+		<global opcode="0x227" name="collision_debug_height" null="true" type="real" />
+		<global opcode="0x228" name="collision_debug_ignore_object_index" null="true" type="long" />
+		<global opcode="0x229" name="debug_obstacle_path" null="true" type="boolean" />
+		<global opcode="0x22A" name="debug_obstacle_path_on_failure" null="true" type="boolean" />
+		<global opcode="0x22B" name="debug_obstacle_path_start_point_x" null="true" type="real" />
+		<global opcode="0x22C" name="debug_obstacle_path_start_point_y" null="true" type="real" />
+		<global opcode="0x22D" name="debug_obstacle_path_start_sector_index" null="true" type="long" />
+		<global opcode="0x22E" name="debug_obstacle_path_goal_point_x" null="true" type="real" />
+		<global opcode="0x22F" name="debug_obstacle_path_goal_point_y" null="true" type="real" />
+		<global opcode="0x230" name="debug_obstacle_path_goal_sector_index" null="true" type="long" />
+		<global opcode="0x231" name="suppress_pathfinding_generation" null="true" type="boolean" />
+		<global opcode="0x232" name="enable_pathfinding_generation_xbox" null="true" type="boolean" />
+		<global opcode="0x233" name="debug_camera" null="true" type="boolean" />
+		<global opcode="0x234" name="debug_tangent_space" null="true" type="boolean" />
+		<global opcode="0x235" name="debug_player" null="true" type="boolean" />
+		<global opcode="0x236" name="debug_structure" null="true" type="boolean" />
+		<global opcode="0x237" name="debug_structure_automatic" null="true" type="boolean" />
+		<global opcode="0x238" name="debug_instanced_geometry" null="true" type="boolean" />
+		<global opcode="0x239" name="debug_structure_surface_references" null="true" type="boolean" />
+		<global opcode="0x23A" name="debug_subclusters" null="true" type="boolean" />
+		<global opcode="0x23B" name="debug_bsp" null="true" type="boolean" />
+		<global opcode="0x23C" name="debug_input" null="true" type="boolean" />
+		<global opcode="0x23D" name="debug_permanent_decals" null="true" type="boolean" />
+		<global opcode="0x23E" name="debug_vector_palette" null="true" type="boolean" />
+		<global opcode="0x23F" name="debug_leaf0_index" null="true" type="long" />
+		<global opcode="0x240" name="debug_leaf1_index" null="true" type="long" />
+		<global opcode="0x241" name="debug_leaf_connection_index" null="true" type="long" />
+		<global opcode="0x242" name="debug_cluster_index" null="true" type="long" />
+		<global opcode="0x243" name="debug_first_person_weapons" null="true" type="boolean" />
+		<global opcode="0x244" name="debug_first_person_models" null="true" type="boolean" />
+		<global opcode="0x245" name="debug_fog_planes" null="true" type="boolean" />
+		<global opcode="0x246" name="breakable_surfaces" type="boolean" />
+		<global opcode="0x247" name="decals" type="boolean" />
+		<global opcode="0x248" name="debug_decals" null="true" type="boolean" />
+		<global opcode="0x249" name="colonies" null="true" type="boolean" />
+		<global opcode="0x24A" name="colonies_time_scale" null="true" type="real" />
+		<global opcode="0x24B" name="debug_colonies" null="true" type="boolean" />
+		<global opcode="0x24C" name="debug_colonies_cells" null="true" type="boolean" />
+		<global opcode="0x24D" name="debug_colonies_spores" null="true" type="boolean" />
+		<global opcode="0x24E" name="debug_colonies_spore_pods" null="true" type="boolean" />
+		<global opcode="0x24F" name="debug_colonies_spore_desires" null="true" type="long" />
+		<global opcode="0x250" name="debug_colonies_spread" null="true" type="boolean" />
+		<global opcode="0x251" name="debug_colonies_change" null="true" type="boolean" />
+		<global opcode="0x252" name="debug_object_lights" null="true" type="boolean" />
+		<global opcode="0x253" name="debug_lights" null="true" type="boolean" />
+		<global opcode="0x254" name="debug_lightmap_sampling" null="true" type="boolean" />
+		<global opcode="0x255" name="debug_biped_physics" null="true" type="boolean" />
+		<global opcode="0x256" name="debug_biped_skip_collision" null="true" type="boolean" />
+		<global opcode="0x257" name="debug_biped_limp_body_disable" null="true" type="boolean" />
+		<global opcode="0x258" name="debug_biped_landing" null="true" type="boolean" />
+		<global opcode="0x259" name="debug_biped_throttle" null="true" type="boolean" />
+		<global opcode="0x25A" name="debug_collision_skip_instanced_geometry" null="true" type="boolean" />
+		<global opcode="0x25B" name="debug_collision_skip_objects" null="true" type="boolean" />
+		<global opcode="0x25C" name="debug_collision_skip_vectors" null="true" type="boolean" />
+		<global opcode="0x25D" name="debug_material_effects" null="true" type="boolean" />
+		<global opcode="0x25E" name="debug_material_default_effects" null="true" type="boolean" />
+		<global opcode="0x25F" name="ai_profile_disable" null="true" type="boolean" />
+		<global opcode="0x260" name="ai_profile_random" null="true" type="boolean" />
+		<global opcode="0x261" name="ai_show" null="true" type="boolean" />
+		<global opcode="0x262" name="ai_show_stats" null="true" type="boolean" />
+		<global opcode="0x263" name="ai_show_actors" null="true" type="boolean" />
+		<global opcode="0x264" name="ai_show_swarms" null="true" type="boolean" />
+		<global opcode="0x265" name="ai_show_paths" null="true" type="boolean" />
+		<global opcode="0x266" name="ai_show_line_of_sight" null="true" type="boolean" />
+		<global opcode="0x267" name="ai_show_prop_types" null="true" type="boolean" />
+		<global opcode="0x268" name="ai_show_sound_distance" null="true" type="boolean" />
+		<global opcode="0x269" name="ai_render" null="true" type="boolean" />
+		<global opcode="0x26A" name="ai_render_all_actors" null="true" type="boolean" />
+		<global opcode="0x26B" name="ai_render_inactive_actors" null="true" type="boolean" />
+		<global opcode="0x26C" name="ai_render_lineoffire_crouching" null="true" type="boolean" />
+		<global opcode="0x26D" name="ai_render_lineoffire" null="true" type="boolean" />
+		<global opcode="0x26E" name="ai_render_lineofsight" null="true" type="boolean" />
+		<global opcode="0x26F" name="ai_render_ballistic_lineoffire" null="true" type="boolean" />
+		<global opcode="0x270" name="ai_render_encounter_activeregion" null="true" type="boolean" />
+		<global opcode="0x271" name="ai_render_vision_cones" null="true" type="boolean" />
+		<global opcode="0x272" name="ai_render_current_state" null="true" type="boolean" />
+		<global opcode="0x273" name="ai_render_detailed_state" null="true" type="boolean" />
+		<global opcode="0x274" name="ai_render_props" null="true" type="boolean" />
+		<global opcode="0x275" name="ai_render_props_web" null="true" type="boolean" />
+		<global opcode="0x276" name="ai_render_props_no_friends" null="true" type="boolean" />
+		<global opcode="0x277" name="ai_render_props_unreachable" null="true" type="boolean" />
+		<global opcode="0x278" name="ai_render_props_unopposable" null="true" type="boolean" />
+		<global opcode="0x279" name="ai_render_props_target_weight" null="true" type="boolean" />
+		<global opcode="0x27A" name="ai_render_idle_look" null="true" type="boolean" />
+		<global opcode="0x27B" name="ai_render_support_surfaces" null="true" type="boolean" />
+		<global opcode="0x27C" name="ai_render_recent_damage" null="true" type="boolean" />
+		<global opcode="0x27D" name="ai_render_current_damage" null="true" type="boolean" />
+		<global opcode="0x27E" name="ai_render_threats" null="true" type="boolean" />
+		<global opcode="0x27F" name="ai_render_emotions" null="true" type="boolean" />
+		<global opcode="0x280" name="ai_render_audibility" null="true" type="boolean" />
+		<global opcode="0x281" name="ai_render_aiming_vectors" null="true" type="boolean" />
+		<global opcode="0x282" name="ai_render_secondary_looking" null="true" type="boolean" />
+		<global opcode="0x283" name="ai_render_targets" null="true" type="boolean" />
+		<global opcode="0x284" name="ai_render_targets_last_visible" null="true" type="boolean" />
+		<global opcode="0x285" name="ai_render_states" null="true" type="boolean" />
+		<global opcode="0x286" name="ai_render_vitality" null="true" type="boolean" />
+		<global opcode="0x287" name="ai_render_active_cover_seeking" null="true" type="boolean" />
+		<global opcode="0x288" name="ai_render_evaluations" null="true" type="boolean" />
+		<global opcode="0x289" name="ai_render_pursuit" null="true" type="boolean" />
+		<global opcode="0x28A" name="ai_render_shooting" null="true" type="boolean" />
+		<global opcode="0x28B" name="ai_render_trigger" null="true" type="boolean" />
+		<global opcode="0x28C" name="ai_render_projectile_aiming" null="true" type="boolean" />
+		<global opcode="0x28D" name="ai_render_aiming_validity" null="true" type="boolean" />
+		<global opcode="0x28E" name="ai_render_speech" null="true" type="boolean" />
+		<global opcode="0x28F" name="ai_render_dialogue" null="true" type="boolean" />
+		<global opcode="0x290" name="ai_render_dialogue_triggers" null="true" type="boolean" />
+		<global opcode="0x291" name="ai_render_dialogue_queue" null="true" type="boolean" />
+		<global opcode="0x292" name="ai_render_dialogue_queue_team" null="true" type="short" />
+		<global opcode="0x293" name="ai_dialogue_enable" null="true" type="boolean" />
+		<global opcode="0x294" name="ai_dialogue_test_mode" null="true" type="boolean" />
+		<global opcode="0x295" name="ai_render_teams" null="true" type="boolean" />
+		<global opcode="0x296" name="ai_render_player_ratings" null="true" type="boolean" />
+		<global opcode="0x297" name="ai_render_spatial_effects" null="true" type="boolean" />
+		<global opcode="0x298" name="ai_render_firing_positions" null="true" type="boolean" />
+		<global opcode="0x299" name="ai_render_gun_positions" null="true" type="boolean" />
+		<global opcode="0x29A" name="ai_render_burst_geometry" null="true" type="boolean" />
+		<global opcode="0x29B" name="ai_render_vehicle_avoidance" null="true" type="boolean" />
+		<global opcode="0x29C" name="ai_render_vehicles_enterable" null="true" type="boolean" />
+		<global opcode="0x29D" name="ai_render_melee_check" null="true" type="boolean" />
+		<global opcode="0x29E" name="ai_render_dialogue_variants" null="true" type="boolean" />
+		<global opcode="0x29F" name="ai_render_grenades" null="true" type="boolean" />
+		<global opcode="0x2A0" name="ai_render_danger_zones" null="true" type="boolean" />
+		<global opcode="0x2A1" name="ai_render_charge_decisions" null="true" type="boolean" />
+		<global opcode="0x2A2" name="ai_render_control" null="true" type="boolean" />
+		<global opcode="0x2A3" name="ai_render_activation" null="true" type="boolean" />
+		<global opcode="0x2A4" name="ai_render_paths" null="true" type="boolean" />
+		<global opcode="0x2A5" name="ai_render_paths_selected_only" null="true" type="boolean" />
+		<global opcode="0x2A6" name="ai_render_paths_destination" null="true" type="boolean" />
+		<global opcode="0x2A7" name="ai_render_paths_raw" null="true" type="boolean" />
+		<global opcode="0x2A8" name="ai_render_paths_current" null="true" type="boolean" />
+		<global opcode="0x2A9" name="ai_render_paths_failed" null="true" type="boolean" />
+		<global opcode="0x2AA" name="ai_render_paths_smoothed" null="true" type="boolean" />
+		<global opcode="0x2AB" name="ai_render_paths_avoided" null="true" type="boolean" />
+		<global opcode="0x2AC" name="ai_render_paths_error_thresholds" null="true" type="boolean" />
+		<global opcode="0x2AD" name="ai_render_paths_avoidance_segment" null="true" type="short" />
+		<global opcode="0x2AE" name="ai_render_paths_avoidance_obstacles" null="true" type="boolean" />
+		<global opcode="0x2AF" name="ai_render_paths_avoidance_search" null="true" type="boolean" />
+		<global opcode="0x2B0" name="ai_render_paths_nodes" null="true" type="boolean" />
+		<global opcode="0x2B1" name="ai_render_paths_nodes_all" null="true" type="boolean" />
+		<global opcode="0x2B2" name="ai_render_paths_nodes_polygons" null="true" type="boolean" />
+		<global opcode="0x2B3" name="ai_render_paths_nodes_costs" null="true" type="boolean" />
+		<global opcode="0x2B4" name="ai_render_paths_nodes_closest" null="true" type="boolean" />
+		<global opcode="0x2B5" name="ai_render_player_aiming_blocked" null="true" type="boolean" />
+		<global opcode="0x2B6" name="ai_render_vector_avoidance" null="true" type="boolean" />
+		<global opcode="0x2B7" name="ai_render_vector_avoidance_rays" null="true" type="boolean" />
+		<global opcode="0x2B8" name="ai_render_vector_avoidance_sense_t" null="true" type="boolean" />
+		<global opcode="0x2B9" name="ai_render_vector_avoidance_avoid_t" null="true" type="boolean" />
+		<global opcode="0x2BA" name="ai_render_vector_avoidance_clear_time" null="true" type="boolean" />
+		<global opcode="0x2BB" name="ai_render_vector_avoidance_weights" null="true" type="boolean" />
+		<global opcode="0x2BC" name="ai_render_vector_avoidance_objects" null="true" type="boolean" />
+		<global opcode="0x2BD" name="ai_render_vector_avoidance_intermediate" null="true" type="boolean" />
+		<global opcode="0x2BE" name="ai_render_postcombat" null="true" type="boolean" />
+		<global opcode="0x2BF" name="ai_render_dynamic_firing_positions" null="true" type="boolean" />
+		<global opcode="0x2C0" name="ai_render_clumps" null="true" type="boolean" />
+		<global opcode="0x2C1" name="ai_render_clump_props" null="true" type="boolean" />
+		<global opcode="0x2C2" name="ai_render_clump_props_all" null="true" type="boolean" />
+		<global opcode="0x2C3" name="ai_render_sectors" null="true" type="boolean" />
+		<global opcode="0x2C4" name="ai_render_sector_bsps" null="true" type="boolean" />
+		<global opcode="0x2C5" name="ai_render_sector_link_errors" null="true" type="boolean" />
+		<global opcode="0x2C6" name="ai_render_intersection_links" null="true" type="boolean" />
+		<global opcode="0x2C7" name="ai_render_non_walkable_sectors" null="true" type="boolean" />
+		<global opcode="0x2C8" name="ai_render_threshold_links" null="true" type="boolean" />
+		<global opcode="0x2C9" name="ai_render_sector_geometry_errors" null="true" type="boolean" />
+		<global opcode="0x2CA" name="ai_pathfinding_generation_verbose" null="true" type="boolean" />
+		<global opcode="0x2CB" name="ai_render_sectors_range_max" null="true" type="long" />
+		<global opcode="0x2CC" name="ai_render_sectors_range_min" null="true" type="long" />
+		<global opcode="0x2CD" name="ai_render_link_specific" null="true" type="long" />
+		<global opcode="0x2CE" name="ai_render_links" null="true" type="boolean" />
+		<global opcode="0x2CF" name="ai_render_user_hints" null="true" type="boolean" />
+		<global opcode="0x2D0" name="ai_render_hints" null="true" type="boolean" />
+		<global opcode="0x2D1" name="ai_render_object_hints" null="true" type="boolean" />
+		<global opcode="0x2D2" name="ai_render_object_hints_all" null="true" type="boolean" />
+		<global opcode="0x2D3" name="ai_render_object_properties" null="true" type="boolean" />
+		<global opcode="0x2D4" name="ai_orders_print_entries" null="true" type="boolean" />
+		<global opcode="0x2D5" name="ai_orders_print_entries_verbose" null="true" type="boolean" />
+		<global opcode="0x2D6" name="ai_render_orders" null="true" type="boolean" />
+		<global opcode="0x2D7" name="ai_render_behavior_stack" null="true" type="boolean" />
+		<global opcode="0x2D8" name="ai_render_behavior_stack_all" null="true" type="boolean" />
+		<global opcode="0x2D9" name="ai_render_combat_status" null="true" type="boolean" />
+		<global opcode="0x2DA" name="ai_render_decisions" null="true" type="boolean" />
+		<global opcode="0x2DB" name="ai_render_command_scripts" null="true" type="boolean" />
+		<global opcode="0x2DC" name="ai_hide_actor_errors" null="true" type="boolean" />
+		<global opcode="0x2DD" name="ai_debug_tracking_data" null="true" type="boolean" />
+		<global opcode="0x2DE" name="ai_debug_perception_data" null="true" type="boolean" />
+		<global opcode="0x2DF" name="ai_debug_combat_status" null="true" type="boolean" />
+		<global opcode="0x2E0" name="ai_render_tracked_props" null="true" type="boolean" />
+		<global opcode="0x2E1" name="ai_render_joint_behaviors" null="true" type="boolean" />
+		<global opcode="0x2E2" name="ai_debug_prop_refresh" null="true" type="boolean" />
+		<global opcode="0x2E3" name="ai_current_squad" type="ai" />
+		<global opcode="0x2E4" name="ai_current_actor" type="ai" />
+		<global opcode="0x2E5" name="ai_render_vehicle_turns" null="true" type="boolean" />
+		<global opcode="0x2E6" name="ai_render_discarded_firing_positions" null="true" type="boolean" />
+		<global opcode="0x2E7" name="ai_render_firing_positions_all" null="true" type="boolean" />
+		<global opcode="0x2E8" name="ai_render_firing_position_info" null="true" type="boolean" />
+		<global opcode="0x2E9" name="ai_inspect_avoidance_failure" null="true" type="boolean" />
+		<global opcode="0x2EA" name="ai_render_action_selection_failure" null="true" type="boolean" />
+		<global opcode="0x2EB" name="ai_combat_status_asleep" type="short" />
+		<global opcode="0x2EC" name="ai_combat_status_idle" type="short" />
+		<global opcode="0x2ED" name="ai_combat_status_alert" type="short" />
+		<global opcode="0x2EE" name="ai_combat_status_active" type="short" />
+		<global opcode="0x2EF" name="ai_combat_status_uninspected" type="short" />
+		<global opcode="0x2F0" name="ai_combat_status_definite" type="short" />
+		<global opcode="0x2F1" name="ai_combat_status_certain" type="short" />
+		<global opcode="0x2F2" name="ai_combat_status_visible" type="short" />
+		<global opcode="0x2F3" name="ai_combat_status_clear_los" type="short" />
+		<global opcode="0x2F4" name="ai_combat_status_dangerous" type="short" />
+		<global opcode="0x2F5" name="ai_print_pursuit_checks" null="true" type="boolean" />
+		<global opcode="0x2F6" name="ai_print_rules" null="true" type="boolean" />
+		<global opcode="0x2F7" name="ai_print_rule_values" null="true" type="boolean" />
+		<global opcode="0x2F8" name="ai_print_major_upgrade" null="true" type="boolean" />
+		<global opcode="0x2F9" name="ai_print_respawn" null="true" type="boolean" />
+		<global opcode="0x2FA" name="ai_print_evaluation_statistics" null="true" type="boolean" />
+		<global opcode="0x2FB" name="ai_print_communication" null="true" type="boolean" />
+		<global opcode="0x2FC" name="ai_print_communication_player" null="true" type="boolean" />
+		<global opcode="0x2FD" name="ai_print_vocalizations" null="true" type="boolean" />
+		<global opcode="0x2FE" name="ai_print_placement" null="true" type="boolean" />
+		<global opcode="0x2FF" name="ai_print_speech" null="true" type="boolean" />
+		<global opcode="0x300" name="ai_print_speech_timers" null="true" type="boolean" />
+		<global opcode="0x301" name="ai_print_allegiance" null="true" type="boolean" />
+		<global opcode="0x302" name="ai_print_lost_speech" null="true" type="boolean" />
+		<global opcode="0x303" name="ai_print_migration" null="true" type="boolean" />
+		<global opcode="0x304" name="ai_print_automatic_migration" null="true" type="boolean" />
+		<global opcode="0x305" name="ai_print_scripting" null="true" type="boolean" />
+		<global opcode="0x306" name="ai_print_surprise" null="true" type="boolean" />
+		<global opcode="0x307" name="ai_print_command_lists" null="true" type="boolean" />
+		<global opcode="0x308" name="ai_print_damage_modifiers" null="true" type="boolean" />
+		<global opcode="0x309" name="ai_print_secondary_looking" null="true" type="boolean" />
+		<global opcode="0x30A" name="ai_print_oversteer" null="true" type="boolean" />
+		<global opcode="0x30B" name="ai_print_conversations" null="true" type="boolean" />
+		<global opcode="0x30C" name="ai_print_killing_sprees" null="true" type="boolean" />
+		<global opcode="0x30D" name="ai_print_acknowledgement" null="true" type="boolean" />
+		<global opcode="0x30E" name="ai_print_unfinished_paths" null="true" type="boolean" />
+		<global opcode="0x30F" name="ai_print_bsp_transition" null="true" type="boolean" />
+		<global opcode="0x310" name="ai_print_uncovering" null="true" type="boolean" />
+		<global opcode="0x311" name="ai_naimad_spew" null="true" type="boolean" />
+		<global opcode="0x312" name="ai_debug_fast_los" null="true" type="boolean" />
+		<global opcode="0x313" name="ai_debug_oversteer_disable" null="true" type="boolean" />
+		<global opcode="0x314" name="ai_debug_evaluate_all_positions" null="true" type="boolean" />
+		<global opcode="0x315" name="ai_debug_path" null="true" type="boolean" />
+		<global opcode="0x316" name="ai_debug_path_start_freeze" null="true" type="boolean" />
+		<global opcode="0x317" name="ai_debug_path_end_freeze" null="true" type="boolean" />
+		<global opcode="0x318" name="ai_debug_path_flood" null="true" type="boolean" />
+		<global opcode="0x319" name="ai_debug_path_maximum_radius" null="true" type="real" />
+		<global opcode="0x31A" name="ai_debug_path_attractor" null="true" type="boolean" />
+		<global opcode="0x31B" name="ai_debug_path_attractor_radius" null="true" type="real" />
+		<global opcode="0x31C" name="ai_debug_path_attractor_weight" null="true" type="real" />
+		<global opcode="0x31D" name="ai_debug_path_accept_radius" null="true" type="real" />
+		<global opcode="0x31E" name="ai_debug_path_destructible" null="true" type="boolean" />
+		<global opcode="0x31F" name="ai_debug_ballistic_lineoffire_freeze" null="true" type="boolean" />
+		<global opcode="0x320" name="ai_debug_blind" null="true" type="boolean" />
+		<global opcode="0x321" name="ai_debug_deaf" null="true" type="boolean" />
+		<global opcode="0x322" name="ai_debug_invisible_player" null="true" type="boolean" />
+		<global opcode="0x323" name="ai_debug_ignore_player" null="true" type="boolean" />
+		<global opcode="0x324" name="ai_debug_flee_always" null="true" type="boolean" />
+		<global opcode="0x325" name="ai_debug_force_all_active" null="true" type="boolean" />
+		<global opcode="0x326" name="ai_debug_disable_wounded_sounds" null="true" type="boolean" />
+		<global opcode="0x327" name="ai_debug_force_vocalizations" null="true" type="boolean" />
+		<global opcode="0x328" name="ai_debug_force_crouch" null="true" type="boolean" />
+		<global opcode="0x329" name="ai_debug_path_disable_smoothing" null="true" type="boolean" />
+		<global opcode="0x32A" name="ai_debug_path_disable_obstacle_avoidance" null="true" type="boolean" />
+		<global opcode="0x32B" name="ai_fix_defending_guard_firing_positions" null="true" type="boolean" />
+		<global opcode="0x32C" name="ai_fix_actor_variants" null="true" type="boolean" />
+		<global opcode="0x32D" name="net_bitstream_debug" null="true" type="long" />
+		<global opcode="0x32E" name="net_bitstream_display_errors" null="true" type="boolean" />
+		<global opcode="0x32F" name="net_bitstream_capture_structure" null="true" type="boolean" />
+		<global opcode="0x330" name="net_never_timeout" null="true" type="boolean" />
+		<global opcode="0x331" name="net_use_local_time" null="true" type="boolean" />
+		<global opcode="0x332" name="net_traffic_warnings" null="true" type="boolean" />
+		<global opcode="0x333" name="net_traffic_print" null="true" type="boolean" />
+		<global opcode="0x334" name="net_messages_print" null="true" type="boolean" />
+		<global opcode="0x335" name="net_replication_requests_print" null="true" type="boolean" />
+		<global opcode="0x336" name="net_packet_print_mask" null="true" type="boolean" />
+		<global opcode="0x337" name="net_experimental" null="true" type="boolean" />
+		<global opcode="0x338" name="net_rate_unlimited" null="true" type="boolean" />
+		<global opcode="0x339" name="net_rate_server" null="true" type="long" />
+		<global opcode="0x33A" name="net_rate_client" null="true" type="long" />
+		<global opcode="0x33B" name="net_window_unlimited" null="true" type="boolean" />
+		<global opcode="0x33C" name="net_window_size" null="true" type="long" />
+		<global opcode="0x33D" name="net_bandwidth_unlimited" null="true" type="boolean" />
+		<global opcode="0x33E" name="net_bandwidth_per_channel" null="true" type="long" />
+		<global opcode="0x33F" name="net_skip_countdown" null="true" type="boolean" />
+		<global opcode="0x340" name="net_disable_flooding" null="true" type="boolean" />
+		<global opcode="0x341" name="net_ignore_version" null="true" type="boolean" />
+		<global opcode="0x342" name="net_ignore_join_checking" null="true" type="boolean" />
+		<global opcode="0x343" name="net_ignore_migration_checking" null="true" type="boolean" />
+		<global opcode="0x344" name="net_maximum_machine_count" null="true" type="long" />
+		<global opcode="0x345" name="net_maximum_player_count" null="true" type="long" />
+		<global opcode="0x346" name="net_debug_random_seeds" null="true" type="boolean" />
+		<global opcode="0x347" name="net_debug_object_logs" null="true" type="boolean" />
+		<global opcode="0x348" name="net_allow_out_of_sync" null="true" type="boolean" />
+		<global opcode="0x349" name="net_distributed_always" null="true" type="boolean" />
+		<global opcode="0x34A" name="net_distributed_never" null="true" type="boolean" />
+		<global opcode="0x34B" name="net_matchmaking_no_gather" null="true" type="boolean" />
+		<global opcode="0x34C" name="net_matchmaking_no_search" null="true" type="boolean" />
+		<global opcode="0x34D" name="net_event" null="true" type="boolean" />
+		<global opcode="0x34E" name="net_event_display" null="true" type="network_event" />
+		<global opcode="0x34F" name="net_event_log" null="true" type="network_event" />
+		<global opcode="0x350" name="net_event_log_remote" null="true" type="network_event" />
+		<global opcode="0x351" name="net_status_memory" null="true" type="boolean" />
+		<global opcode="0x352" name="net_status_link" null="true" type="boolean" />
+		<global opcode="0x353" name="net_status_sim" null="true" type="boolean" />
+		<global opcode="0x354" name="net_status_channels" null="true" type="boolean" />
+		<global opcode="0x355" name="net_status_connections" null="true" type="boolean" />
+		<global opcode="0x356" name="net_status_message_queues" null="true" type="boolean" />
+		<global opcode="0x357" name="net_status_observer" null="true" type="boolean" />
+		<global opcode="0x358" name="net_status_sessions" null="true" type="boolean" />
+		<global opcode="0x359" name="net_sim" null="true" type="boolean" />
+		<global opcode="0x35A" name="net_sim_latency" null="true" type="long" />
+		<global opcode="0x35B" name="net_sim_latency_wander" null="true" type="long" />
+		<global opcode="0x35C" name="net_sim_latency_period" null="true" type="long" />
+		<global opcode="0x35D" name="net_sim_latency_random" null="true" type="long" />
+		<global opcode="0x35E" name="net_sim_spike_chance" null="true" type="long" />
+		<global opcode="0x35F" name="net_sim_spike_amount" null="true" type="long" />
+		<global opcode="0x360" name="net_sim_spike_duration" null="true" type="long" />
+		<global opcode="0x361" name="net_sim_drop" null="true" type="long" />
+		<global opcode="0x362" name="net_sim_dropspike_chance" null="true" type="long" />
+		<global opcode="0x363" name="net_sim_dropspike_amount" null="true" type="long" />
+		<global opcode="0x364" name="net_sim_dropspike_duration" null="true" type="long" />
+		<global opcode="0x365" name="net_sim_bandwidth_down_rate" null="true" type="long" />
+		<global opcode="0x366" name="net_sim_bandwidth_up_rate" null="true" type="long" />
+		<global opcode="0x367" name="net_sim_bandwidth_down_buffer" null="true" type="long" />
+		<global opcode="0x368" name="net_sim_bandwidth_up_buffer" null="true" type="long" />
+		<global opcode="0x369" name="net_test" null="true" type="boolean" />
+		<global opcode="0x36A" name="net_test_rate" null="true" type="long" />
+		<global opcode="0x36B" name="net_test_update_server" null="true" type="boolean" />
+		<global opcode="0x36C" name="net_test_update_client" null="true" type="boolean" />
+		<global opcode="0x36D" name="net_test_replication_scheduler" null="true" type="boolean" />
+		<global opcode="0x36E" name="net_test_debug_spheres" null="true" type="boolean" />
+		<global opcode="0x36F" name="net_voice_diagnostics" null="true" type="boolean" />
+		<global opcode="0x370" name="net_display_qos" null="true" type="boolean" />
+		<global opcode="0x371" name="sim_status_world" null="true" type="boolean" />
+		<global opcode="0x372" name="sim_status_views" null="true" type="boolean" />
+		<global opcode="0x373" name="sim_entity_validate" null="true" type="boolean" />
+		<global opcode="0x374" name="sim_disable_aim_assist" null="true" type="boolean" />
+		<global opcode="0x375" name="sim_bandwidth_eater" null="true" type="long" />
+		<global opcode="0x376" name="debug_player_teleport" null="true" type="boolean" />
+		<global opcode="0x377" name="display_rumble_status_lines" null="true" type="boolean" />
+		<global opcode="0x378" name="texture_cache_graph" null="true" type="boolean" />
+		<global opcode="0x379" name="texture_cache_list" null="true" type="boolean" />
+		<global opcode="0x37A" name="texture_cache_force_low_detail" null="true" type="boolean" />
+		<global opcode="0x37B" name="texture_cache_force_medium_detail" null="true" type="boolean" />
+		<global opcode="0x37C" name="texture_cache_force_high_detail" null="true" type="boolean" />
+		<global opcode="0x37D" name="texture_cache_status" null="true" type="boolean" />
+		<global opcode="0x37E" name="texture_cache_block_warning" null="true" type="boolean" />
+		<global opcode="0x37F" name="texture_cache_lod_bias" null="true" type="boolean" />
+		<global opcode="0x380" name="texture_cache_dynamic_low_detail_texture" null="true" type="boolean" />
+		<global opcode="0x381" name="geometry_cache_graph" null="true" type="boolean" />
+		<global opcode="0x382" name="geometry_cache_list" null="true" type="boolean" />
+		<global opcode="0x383" name="geometry_cache_status" null="true" type="boolean" />
+		<global opcode="0x384" name="geometry_cache_block_warning" null="true" type="boolean" />
+		<global opcode="0x385" name="geometry_cache_never_block" null="true" type="boolean" />
+		<global opcode="0x386" name="geometry_cache_debug_display" null="true" type="boolean" />
+		<global opcode="0x387" name="director_camera_switch_fast" type="boolean" />
+		<global opcode="0x388" name="debug_recording" null="true" type="boolean" />
+		<global opcode="0x389" name="debug_recording_newlines" null="true" type="short" />
+		<global opcode="0x38A" name="cinematic_letterbox_style" null="true" type="long" />
+		<global opcode="0x38B" name="run_game_scripts" null="true" type="boolean" />
+		<global opcode="0x38C" name="vehicle_status_display" null="true" type="boolean" />
+		<global opcode="0x38D" name="biped_meter_display" null="true" type="boolean" />
+		<global opcode="0x38E" name="display_verbose_disk_usage" null="true" type="boolean" />
+		<global opcode="0x38F" name="display_disk_usage" null="true" type="boolean" />
+		<global opcode="0x390" name="default_scenario_ai_type" null="true" type="long" />
+		<global opcode="0x391" name="bitmap_downsample" null="true" type="boolean" />
+		<global opcode="0x392" name="debug_menu_enabled" null="true" type="boolean" />
+		<global opcode="0x393" name="lipsync_interpolation_method" null="true" type="long" />
+		<global opcode="0x394" name="catch_exceptions" null="true" type="boolean" />
+		<global opcode="0x395" name="debug_first_person_hide_base" null="true" type="boolean" />
+		<global opcode="0x396" name="debug_first_person_hide_movement" null="true" type="boolean" />
+		<global opcode="0x397" name="debug_first_person_hide_jitter" null="true" type="boolean" />
+		<global opcode="0x398" name="debug_first_person_hide_overlay" null="true" type="boolean" />
+		<global opcode="0x399" name="debug_first_person_hide_pitch_turn" null="true" type="boolean" />
+		<global opcode="0x39A" name="debug_first_person_hide_ammo" null="true" type="boolean" />
+		<global opcode="0x39B" name="g_override_logon_task" null="true" type="boolean" />
+		<global opcode="0x39C" name="g_logon_task_override_result_code" null="true" type="long" />
+		<global opcode="0x39D" name="render_comment_flags" null="true" type="boolean" />
+		<global opcode="0x39E" name="render_comment_flags_text" null="true" type="boolean" />
+		<global opcode="0x39F" name="render_comment_flags_look_at" null="true" type="boolean" />
+		<global opcode="0x3A0" name="enable_controller_flag_drop" null="true" type="boolean" />
+		<global opcode="0x3A1" name="decorator_brush_radius" null="true" type="real" />
+		<global opcode="0x3A2" name="decorator_brush_density" null="true" type="real" />
+		<global opcode="0x3A3" name="override_player_character_type" null="true" type="long" />
+		<global opcode="0x3A4" name="e3" type="boolean" />
+	</globals>
+</BlamScript>

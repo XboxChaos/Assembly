@@ -20,19 +20,21 @@ namespace Assembly.Helpers.Plugins
 		private readonly IList<PluginRevision> _pluginRevisions = new List<PluginRevision>();
 		private readonly List<TagBlockData> _tagBlocks = new List<TagBlockData>();
 		private readonly bool _showInvisibles;
+		private readonly bool _alwaysBasicColors;
 		private readonly bool _viewValueAs;
 		private readonly Trie _stringIDTrie;
 		private readonly TagHierarchy _tags;
 		private FlagData _currentFlags;
 		private EnumData _currentEnum;
 		private TagBlockData _currentTagBlock;
+		private TagDataCommandState _tagCommandState;
 
 		public bool ShowComments
 		{
 			get { return App.AssemblyStorage.AssemblySettings.PluginsShowComments; }
 		}
 		
-		public AssemblyPluginVisitor(TagHierarchy tags, Trie stringIDTrie, FileSegmentGroup metaArea, bool showInvisibles, bool viewValueAs = false)
+		public AssemblyPluginVisitor(TagHierarchy tags, Trie stringIDTrie, FileSegmentGroup metaArea, bool showInvisibles, TagDataCommandState tagCommandState, bool alwaysBasicColor, bool viewValueAs = false)
 		{
 			_tags = tags;
 			_stringIDTrie = stringIDTrie;
@@ -41,7 +43,9 @@ namespace Assembly.Helpers.Plugins
 			Values = new ObservableCollection<MetaField>();
 			TagBlocks = new ObservableCollection<TagBlockData>();
 			_showInvisibles = showInvisibles;
+			_alwaysBasicColors = alwaysBasicColor;
 			_viewValueAs = viewValueAs;
+			_tagCommandState = tagCommandState;
 		}
 
 		// Public Members
@@ -155,7 +159,7 @@ namespace Assembly.Helpers.Plugins
 		public void VisitColorF(string name, uint offset, bool visible, bool alpha, bool basic, uint pluginLine, string tooltip)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new ColorData(name, offset, 0, alpha, basic, "colorf", Colors.Transparent, pluginLine, tooltip));
+				AddValue(new ColorData(name, offset, 0, alpha, basic || _alwaysBasicColors, "colorf", Colors.Transparent, pluginLine, tooltip));
 		}
 
 		public void VisitStringID(string name, uint offset, bool visible, uint pluginLine, string tooltip)
@@ -185,7 +189,7 @@ namespace Assembly.Helpers.Plugins
 		public void VisitRawData(string name, uint offset, bool visible, int size, uint pluginLine, string tooltip)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new RawData(name, offset, "bytes", 0, "", size, pluginLine, tooltip, _metaArea));
+				AddValue(new RawData(name, offset, "bytes", 0, "", size, pluginLine, tooltip, _metaArea, _tagCommandState));
 		}
 
 		public void VisitTagReference(string name, uint offset, bool visible, bool withGroup, uint pluginLine, string tooltip)
@@ -198,7 +202,7 @@ namespace Assembly.Helpers.Plugins
 		public void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine, string tooltip)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new DataRef(name, offset, format, 0, 0, "", 0, pluginLine, tooltip, _metaArea));
+				AddValue(new DataRef(name, offset, format, 0, 0, "", 0, pluginLine, tooltip, _metaArea, _tagCommandState));
 		}
 
 		public void VisitShader(string name, uint offset, bool visible, ShaderType type, uint pluginLine, string tooltip)
@@ -355,7 +359,7 @@ namespace Assembly.Helpers.Plugins
 		{
 			if (visible || _showInvisibles)
 			{
-				var data = new TagBlockData(name, offset, 0, elementSize, align, sort, pluginLine, tooltip, _metaArea);
+				var data = new TagBlockData(name, offset, 0, elementSize, align, sort, pluginLine, tooltip, _metaArea, _tagCommandState);
 				AddValue(data);
 
 				_tagBlocks.Add(data);

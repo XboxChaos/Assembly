@@ -31,12 +31,12 @@ using CloseableTabItemDemo;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using XBDMCommunicator;
-using Blamite.Blam.SecondGen;
 using Blamite.Blam.ThirdGen;
 using Blamite.RTE.ThirdGen;
 using Blamite.Blam.Resources.Sounds;
-using System.Reflection;
 using Blamite.RTE.FirstGen;
+using Blamite.Blam.Eldorado;
+using Blamite.RTE.Eldorado;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -216,7 +216,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				}
 #endif
 
-				_mapManager = new FileStreamManager(_cacheLocation, reader.Endianness);
+				if (_buildInfo.Engine == EngineType.Eldorado)
+					_mapManager = new FileStreamManager(((EldoradoCacheFile)_cacheFile).TagFilePath, reader.Endianness);
+				else
+					_mapManager = new FileStreamManager(_cacheLocation, reader.Endianness);
 
 				// Build SID trie
 				_stringIdTrie = new Trie();
@@ -235,6 +238,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					default:
 					case RTEConnectionType.None:
 					case RTEConnectionType.ConsoleXbox:
+					case RTEConnectionType.ConsoleXboxOne:
 						break;
 					case RTEConnectionType.ConsoleXbox360:
 						_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm);
@@ -261,6 +265,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 								if (!string.IsNullOrEmpty(_buildInfo.PokingModule))
 									_rteProvider = new ThirdGenMCCRTEProvider(_buildInfo);
 							}
+							else if (_cacheFile.Engine == EngineType.Eldorado)
+							{
+								_rteProvider = new EldoradoRTEProvider(_buildInfo);
+							}
 							break;
 						}
 				}
@@ -275,7 +283,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					StatusUpdater.Update("Added To Recents");
 				}));
 
-				App.AssemblyStorage.AssemblyNetworkPoke.Maps.Add(new Tuple<ICacheFile, IRTEProvider>(_cacheFile, _rteProvider));
+				if (_cacheFile.Engine != EngineType.Eldorado)
+					App.AssemblyStorage.AssemblyNetworkPoke.Maps.Add(new Tuple<ICacheFile, IRTEProvider>(_cacheFile, _rteProvider));
 
 				/*ITag dice = _cacheFile.Tags[0x0102];
 				IRenderModel diceModel = _cacheFile.ResourceMetaLoader.LoadRenderModelMeta(dice, reader);
@@ -492,30 +501,30 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				totalStrings += language.StringCount;
 			Dispatcher.Invoke(new Action(delegate { lblLocaleTotalCount.Text = totalStrings.ToString(); }));*/
 
-			if (!_cacheFile.Languages.AvailableLanguages.Any())
+			if (_cacheFile.Languages == null || !_cacheFile.Languages.AvailableLanguages.Any())
 			{
 				Dispatcher.Invoke(new Action(() => tabStrings.Visibility = Visibility.Collapsed));
 				return;
 			}
 
 			// TODO: Define the language names in an XML file or something
-			AddLanguage("English", GameLanguage.English);
-			AddLanguage("Chinese (Traditional)", GameLanguage.ChineseTrad);
-			AddLanguage("Chinese (Simplified)", GameLanguage.ChineseSimp);
-			AddLanguage("Danish", GameLanguage.Danish);
-			AddLanguage("Dutch", GameLanguage.Dutch);
-			AddLanguage("Finnish", GameLanguage.Finnish);
-			AddLanguage("French", GameLanguage.French);
-			AddLanguage("German", GameLanguage.German);
-			AddLanguage("Italian", GameLanguage.Italian);
-			AddLanguage("Japanese", GameLanguage.Japanese);
-			AddLanguage("Korean", GameLanguage.Korean);
-			AddLanguage("Norwegian", GameLanguage.Norwegian);
-			AddLanguage("Polish", GameLanguage.Polish);
-			AddLanguage("Portuguese", GameLanguage.Portuguese);
-			AddLanguage("Russian", GameLanguage.Russian);
-			AddLanguage("Spanish", GameLanguage.Spanish);
-			AddLanguage("Spanish (Latin American)", GameLanguage.LatinAmericanSpanish);
+			AddLanguage(GameLanguage.English);
+			AddLanguage(GameLanguage.ChineseTrad);
+			AddLanguage(GameLanguage.ChineseSimp);
+			AddLanguage(GameLanguage.Danish);
+			AddLanguage(GameLanguage.Dutch);
+			AddLanguage(GameLanguage.Finnish);
+			AddLanguage(GameLanguage.French);
+			AddLanguage(GameLanguage.German);
+			AddLanguage(GameLanguage.Italian);
+			AddLanguage(GameLanguage.Japanese);
+			AddLanguage(GameLanguage.Korean);
+			AddLanguage(GameLanguage.Norwegian);
+			AddLanguage(GameLanguage.Polish);
+			AddLanguage(GameLanguage.Portuguese);
+			AddLanguage(GameLanguage.Russian);
+			AddLanguage(GameLanguage.Spanish);
+			AddLanguage(GameLanguage.LatinAmericanSpanish);
 
 			Dispatcher.Invoke(new Action(delegate
 			{
@@ -544,12 +553,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				Clipboard.SetText(((TextBlock) e.OriginalSource).Text);
 		}
 
-		private void AddLanguage(string name, GameLanguage lang)
+		private void AddLanguage(GameLanguage lang)
 		{
 			if (!_cacheFile.Languages.AvailableLanguages.Contains(lang))
 				return;
 
-			_languages.Add(new LanguageEntry(name, lang));
+			_languages.Add(new LanguageEntry(GameLanguageTools.GetPrettyName(lang), lang));
 		}
 
 		private void SettingsChanged(object sender, EventArgs e)
@@ -578,9 +587,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			// Update TreeView
 			UpdateTagFilter();
-
-			// Fuck bitches, get money
-			// #xboxscenefame
 		}
 
 		private void cbOpenDuplicate_Altered(object sender, RoutedEventArgs e)
@@ -1367,7 +1373,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			// Save it
 			using (IStream stream = _mapManager.OpenReadWrite())
-				_cacheFile.SaveChanges(stream);
+				_cacheFile.SaveTagNames(stream);
 
 			MetroMessageBox.Show("Success!", "Tag names saved successfully.");
 		}
@@ -1535,6 +1541,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private void TagContextMenu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
 			var tagContext = sender as ContextMenu;
+			var tag = tagContext.DataContext as TagEntry;
 
 			foreach (object tagItem in tagContext.Items)
 			{
@@ -1543,16 +1550,34 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				{
 					MenuItem tagMenuItem = tagItem as MenuItem;
 
-					if ((tagMenuItem.Name == "itemRename" ||
-						tagMenuItem.Name == "itemIsolate") &&
-						_cacheFile.Engine < EngineType.SecondGeneration)
-						tagMenuItem.Visibility = Visibility.Collapsed;
-					else if ((tagMenuItem.Name == "itemDuplicate" ||
-						tagMenuItem.Name == "itemExtract" ||
-						tagMenuItem.Name == "itemForce" ||
-						tagMenuItem.Name == "itemTagBatch")
-						&& (_cacheFile.Engine != EngineType.ThirdGeneration || (_cacheFile.Engine == EngineType.ThirdGeneration && _cacheFile.HeaderSize == 0x800)))
-						tagMenuItem.Visibility = Visibility.Collapsed;
+					switch (tagMenuItem.Name)
+					{
+						case "itemRename":
+						case "itemPasteName":
+							{
+								if (_cacheFile.Engine == EngineType.FirstGeneration)
+									tagMenuItem.Visibility = Visibility.Collapsed;
+								break;
+							}
+						case "itemIsolate":
+							{
+								if (_cacheFile.Engine == EngineType.FirstGeneration ||
+									tag?.RawTag.Source != TagSource.MetaArea)
+									tagMenuItem.Visibility = Visibility.Collapsed;
+								break;
+							}
+						case "itemDuplicate":
+						case "itemExtract":
+						case "itemForce":
+						case "itemTagBatch":
+							{
+								if (_cacheFile.Engine != EngineType.ThirdGeneration ||
+									(_cacheFile.Engine == EngineType.ThirdGeneration && _cacheFile.HeaderSize == 0x800))
+									tagMenuItem.Visibility = Visibility.Collapsed;
+								break;
+							}
+
+					}
 				}
 				if (tagItem is Separator)
 				{
@@ -2495,7 +2520,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			List<TabItem> tabs = contentTabs.Items.OfType<TabItem>().ToList();
 
-			App.AssemblyStorage.AssemblyNetworkPoke.Maps.Remove(new Tuple<ICacheFile, IRTEProvider>(_cacheFile, _rteProvider));
+			if (_cacheFile.Engine != EngineType.Eldorado)
+				App.AssemblyStorage.AssemblyNetworkPoke.Maps.Remove(new Tuple<ICacheFile, IRTEProvider>(_cacheFile, _rteProvider));
 
 			ExternalTabsClose(tabs, false);
 
@@ -2596,6 +2622,44 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			MetroMessageBox.Show("Free StringIDs", "A total of " + result + " bytes were freed.");
 				
+		}
+
+		private void itemCopyName_Click(object sender, RoutedEventArgs e)
+		{
+			var item = e.Source as MenuItem;
+			if (item == null)
+				return;
+
+			var tag = item.DataContext as TagEntry;
+			if (tag == null)
+				return;
+
+			Clipboard.SetText(tag.TagFileName);
+		}
+
+		private void itemPasteName_Click(object sender, RoutedEventArgs e)
+		{
+			var item = e.Source as MenuItem;
+			if (item == null)
+				return;
+
+			var tag = item.DataContext as TagEntry;
+			if (tag == null)
+				return;
+
+			if (tag.IsNull)
+				return;
+
+			string name = Clipboard.GetText();
+			if (name.Length > 256)
+				return;
+
+			if (!Keyboard.IsKeyDown(Key.LeftShift) && MetroMessageBox.Show("Rename Tag",
+				$"Are you sure you wish to rename\r\n{tag.TagFileName}\r\nto\r\n{name}",
+				MetroMessageBox.MessageBoxButtons.YesNoCancel) != MetroMessageBox.MessageBoxResult.Yes)
+				return;
+
+			tag.TagFileName = name;
 		}
 	}
 }

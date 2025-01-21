@@ -92,7 +92,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 
 		private void DoSingleWork(object sender, DoWorkEventArgs e)
 		{
-			e.Result = CacheCompressor.HandleCompression((string)e.Argument, App.AssemblyStorage.AssemblySettings.DefaultDatabase);
+			e.Result = CompressionManager.HandleCompression((string)e.Argument, App.AssemblyStorage.AssemblySettings.DefaultDatabase);
 		}
 
 		private void workerSingle_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -106,6 +106,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 					break;
 				case CompressionState.ReadOnly:
 					MetroMessageBox.Show("Map is Read Only", "The provided map is readonly and cannot be modified. Check the file's properties and try again.");
+					break;
+				case CompressionState.NotSupported:
+					MetroMessageBox.Show("Not supported", "The desired action is not supported for the provided map. It has not been modified.");
 					break;
 				default:
 					MetroMessageBox.Show("Action Complete", string.Format("The provided map was {0} successfully.", result.ToString().ToLowerInvariant()));
@@ -200,7 +203,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 		{
 			for (int i = 0; i < files.Count; i++)
 			{
-				CacheCompressor.HandleCompression(files[i], App.AssemblyStorage.AssemblySettings.DefaultDatabase, state);
+				CompressionManager.HandleCompression(files[i], App.AssemblyStorage.AssemblySettings.DefaultDatabase, state);
 
 				worker.ReportProgress((i + 1) * 100 / files.Count);
 			}

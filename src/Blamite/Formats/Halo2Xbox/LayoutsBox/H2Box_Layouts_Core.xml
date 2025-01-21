@@ -9,6 +9,7 @@
 		
 		<asciiz name="build string" offset="0x120" />
 		<int32 name="type" offset="0x140" />
+		<uint32 name="crc checksum" offset="0x144" />
 
 		<int32 name="low detail bitmap data count" offset="0x154" />
 		<int32 name="low detail bitmap data offset" offset="0x158" />
@@ -32,9 +33,9 @@
 	</layout>
 
 	<layout for="meta header" size="0x20">
-		<int32 name="tag group table offset" offset="0x0" />
+		<int32 name="tag group table address" offset="0x0" />
 		<int32 name="number of tag groups" offset="0x4" />
-		<int32 name="tag table offset" offset="0x8" />
+		<int32 name="tag table address" offset="0x8" />
 
 		<uint32 name="scenario datum index" offset="0xC" />
 		<uint32 name="map globals datum index" offset="0x10" />
@@ -53,14 +54,14 @@
 	<layout for="tag element" size="0x10">
 		<int32 name="tag group magic" offset="0x0" />
 		<uint32 name="datum index" offset="0x4" />
-		<int32 name="offset" offset="0x8" />
+		<uint32 name="memory address" offset="0x8" />
 		<int32 name="data size" offset="0xC" />
 	</layout>
 
 	<layout for="bsp header" size="0x10">
 		<int32 name="size" offset="0x0" />
-		<int32 name="bsp address" offset="0x4" />
-		<int32 name="lightmap address" offset="0x8" />
+		<uint32 name="bsp address" offset="0x4" />
+		<uint32 name="lightmap address" offset="0x8" />
 		<int32 name="magic" offset="0xC" />
 	</layout>
 
@@ -82,5 +83,21 @@
 		<uint32 name="flags" offset="0x4" />
 		<uint32 name="stream position" offset="0x8" />
 		<uint32 name="pointer" offset="0xC" />
+	</layout>
+
+	<!-- unic (multilingual_unicode_string_list) -->
+	<!-- named different to not get mixed with builds that rely on the globals tag -->
+	<layout for="unic table">
+		<int32 name="number of strings" offset="0x0" />
+		<uint32 name="string table address" offset="0x4" />
+		<int32 name="string data size" offset="0xC" />
+		<uint32 name="string data address" offset="0x18" />
+	</layout>
+
+	<layout for="unic table string reference" size="0x28">
+		<uint32 name="name stringid" offset="0x0" />
+		<array name="language offsets" offset="0x4" entrySize="0x4" count="9">
+			<int32 name="start offset" offset="0x0" />
+		</array>
 	</layout>
 </layouts>

@@ -20,7 +20,7 @@ namespace Assembly.Helpers.Net.Sockets
 
                 if (memory.BuildName == cacheFile.BuildString && memory.CacheName == cacheFile.InternalName)
                 {
-                    using (var metaStream = rteProvider.GetMetaStream(cacheFile))
+                    using (var metaStream = rteProvider.GetMetaStream(cacheFile, null))
                     {
                         if (metaStream != null)
                         {

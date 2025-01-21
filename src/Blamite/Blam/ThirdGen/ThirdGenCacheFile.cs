@@ -78,6 +78,11 @@ namespace Blamite.Blam.ThirdGen
 			}
 		}
 
+		public void SaveTagNames(IStream stream)
+		{
+			SaveChanges(stream);
+		}
+
 		public string FilePath { get; private set; }
 
 		public int HeaderSize
@@ -253,6 +258,11 @@ namespace Blamite.Blam.ThirdGen
 			get { return _soundGestalt; }
 		}
 
+		public FileSegmentGroup[] BSPAreas
+		{
+			get { return null; }
+		}
+
 		private void Load(IReader reader)
 		{
 			LoadHeader(reader);
@@ -308,7 +318,7 @@ namespace Blamite.Blam.ThirdGen
 					namespaces[i] = reader.ReadInt32();
 
 				//get layout info from formats
-				var sidLayout = _buildInfo.StringIDs.IDLayout;
+				var sidLayout = _buildInfo.StringIDInfo.IDLayout;
 				var resolver = new StringIDNamespaceResolver(sidLayout);
 
 				int indexMask = (1 << sidLayout.NamespaceStart) - 1;
@@ -317,10 +327,10 @@ namespace Blamite.Blam.ThirdGen
 				int counter = namespaces[0] & indexMask;
 				for (int i = 1; i < namespaces.Length; i++)
 				{
-					resolver.RegisterSet(i, 0, counter);
+					resolver.RegisterNamespace(i, 0, counter);
 					counter += namespaces[i] & indexMask;
 				}
-				resolver.RegisterSet(0, namespaces[0] & indexMask, counter);
+				resolver.RegisterNamespace(0, namespaces[0] & indexMask, counter);
 				return resolver;
 			}
 			else
@@ -333,7 +343,7 @@ namespace Blamite.Blam.ThirdGen
 			{
 				var stringTable = new IndexedStringTable(reader, _header.StringIDCount, _header.StringIDIndexTable,
 					_header.StringIDData, _buildInfo.StringIDKey);
-				_stringIds = new IndexedStringIDSource(stringTable, resolver != null ? resolver : _buildInfo.StringIDs);
+				_stringIds = new IndexedStringIDSource(stringTable, resolver != null ? resolver : new StringIDNamespaceResolver(_buildInfo.StringIDInfo));
 			}
 		}
 
@@ -431,7 +441,7 @@ namespace Blamite.Blam.ThirdGen
 
 				if (_buildInfo.Layouts.HasLayout("hsdt"))
 				{
-					ScriptFiles = _tags.FindTagsByGroup("hsdt").Select(t => new HsdtScriptFile(t, _fileNames.GetTagName(t.Index) ?? t.Index.ToString(), MetaArea, _buildInfo, StringIDs, _expander)).ToArray();
+					ScriptFiles = _tags.FindTagsByGroup("hsdt").Select(t => new HsdtScriptFile(t, _fileNames.GetTagName(t.Index) ?? t.Index.ToString(), t.MetaLocation.BaseGroup, _buildInfo, StringIDs, _expander)).ToArray();
 				}
 				else if (_buildInfo.Layouts.HasLayout("scnr"))
 				{
@@ -440,7 +450,7 @@ namespace Blamite.Blam.ThirdGen
 					if (hs != null)
 					{
 						ScriptFiles = new IScriptFile[1];
-						ScriptFiles[0] = new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index) ?? hs.Index.ToString(), MetaArea, _buildInfo, StringIDs, _expander, Allocator);
+						ScriptFiles[0] = new ScnrScriptFile(hs, _fileNames.GetTagName(hs.Index) ?? hs.Index.ToString(), hs.MetaLocation.BaseGroup, _buildInfo, StringIDs, _expander, Allocator);
 					}
 				}
 			}

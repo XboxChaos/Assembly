@@ -74,6 +74,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private AssemblyPluginVisitor _pluginVisitor;
 		private ObservableCollection<SearchResult> _searchResults;
 		private TagEntry _tag;
+		private FileSegmentGroup _srcSegmentGroup;
+		private TagDataCommandState _tagCommandState;
 
 		public MetaEditor(EngineDescription buildInfo, TagEntry tag, MetaContainer parentContainer, TagHierarchy tags,
 			ICacheFile cache, IStreamManager streamManager, IRTEProvider rteProvider, Trie stringIDTrie)
@@ -88,11 +90,26 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_rteProvider = rteProvider;
 			_searchTimer = new Timer(SearchTimer);
 			_stringIdTrie = stringIDTrie;
+			_srcSegmentGroup = tag.RawTag.MetaLocation.BaseGroup;
 
 			LoadNewTagEntry(tag);
 
 			// Set init finished
 			hasInitFinished = true;
+		}
+
+		private TagDataCommandState CheckTagDataCommand()
+		{
+			if (_cache.Engine == EngineType.Eldorado)
+				return TagDataCommandState.Eldorado;
+			else if (_tag.RawTag.Source != TagSource.MetaArea)
+				return TagDataCommandState.NotMainArea;
+			else if (_cache.Engine < EngineType.SecondGeneration)
+				return TagDataCommandState.FirstGenCache;
+			else if (_cache.Engine == EngineType.ThirdGeneration && _cache.HeaderSize == 0x800)
+				return TagDataCommandState.EarlyThirdGenCache;
+			else
+				return TagDataCommandState.None;
 		}
 
 		public void RefreshEditor(MetaReader.LoadType type)
@@ -130,13 +147,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					if (_rteProvider == null)
 						goto default;
 
-					if (_rteProvider.GetMetaStream(_cache) == null)
+					if (_rteProvider.GetMetaStream(_cache, _tag.RawTag) == null)
 					{
 						ShowConnectionError();
 						return;
 					}
 
-					streamManager = new RTEStreamManager(_rteProvider, _cache);
+					streamManager = new RTEStreamManager(_rteProvider, _cache, _tag.RawTag);
 					baseOffset = _tag.RawTag.MetaLocation.AsPointer();
 					break;
 
@@ -148,8 +165,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			// Load Plugin File
 			using (XmlReader xml = XmlReader.Create(_pluginPath))
 			{
-				_pluginVisitor = new AssemblyPluginVisitor(_tags, _stringIdTrie, _cache.MetaArea,
-					App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles);
+				_pluginVisitor = new AssemblyPluginVisitor(_tags, _stringIdTrie, _srcSegmentGroup,
+					App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles, _tagCommandState, _buildInfo.Engine < EngineType.ThirdGeneration);
 				AssemblyPluginLoader.LoadPlugin(xml, _pluginVisitor);
 			}
 
@@ -157,7 +174,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_fileChanges = new FieldChangeSet();
 			_memoryChanges = new FieldChangeSet();
 
-			var metaReader = new MetaReader(streamManager, baseOffset, _cache, _buildInfo, type, _fileChanges);
+			var metaReader = new MetaReader(streamManager, baseOffset, _cache, _buildInfo, type, _fileChanges, _srcSegmentGroup);
 			_flattener = new TagBlockFlattener(metaReader, _changeTracker, _fileChanges);
 			_flattener.Flatten(_pluginVisitor.Values);
 			metaReader.ReadFields(_pluginVisitor.Values);
@@ -236,10 +253,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				using (IStream stream = _fileManager.OpenReadWrite())
 				{
 #if DEBUG_SAVE_ALL
-                    MetaWriter metaUpdate = new MetaWriter(writer, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, null, _stringIdTrie);
+                    MetaWriter metaUpdate = new MetaWriter(writer, _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, null, _stringIdTrie);
 #else
-					var metaUpdate = new MetaWriter(stream, (uint) _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type,
-						_fileChanges, _stringIdTrie);
+					var metaUpdate = new MetaWriter(stream, _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type,
+						_fileChanges, _stringIdTrie, _srcSegmentGroup);
 #endif
 					metaUpdate.WriteFields(_pluginVisitor.Values);
 					_cache.SaveChanges(stream);
@@ -248,7 +265,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 				if (showActionDialog)
 					MetroMessageBox.Show("Tag Saved", "The changes have been saved back to the original file." +
-						(_buildInfo.UsesCompression && _cache.Engine == EngineType.SecondGeneration ? "\r\n\r\nNote: This file may need to be compressed from the Tools menu before attempting to load ingame." : ""));
+						(_buildInfo.Compression != Blamite.Compression.CompressionType.None ? "\r\n\r\nNote: This file may need to be compressed from the Tools menu before attempting to load ingame." : ""));
 			}
 			else if (_rteProvider != null)
 			{
@@ -258,13 +275,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					rteProvider = App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider;
 				}
 
-				using (IStream metaStream = rteProvider.GetMetaStream(_cache))
+				using (IStream metaStream = rteProvider.GetMetaStream(_cache, _tag.RawTag))
 				{
 					if (metaStream != null)
 					{
 						FieldChangeSet changes = onlyUpdateChanged ? _memoryChanges : null;
 						var metaUpdate = new MetaWriter(metaStream, _tag.RawTag.MetaLocation.AsPointer(), _cache, _buildInfo, type,
-							changes, _stringIdTrie);
+							changes, _stringIdTrie, _srcSegmentGroup);
 						metaUpdate.WriteFields(_pluginVisitor.Values);
 
 						if (showActionDialog)
@@ -309,11 +326,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		public void LoadNewTagEntry(TagEntry tag)
 		{
 			_tag = tag;
+			_tagCommandState = CheckTagDataCommand();
 
 			// Set Option boxes
 			cbShowInvisibles.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles;
 			cbShowComments.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowComments;
 			cbShowInformation.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInformation;
+			cbShowDataRefNotice.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowDataRefNotice;
 
 			cbEnumPrefix.SelectedIndex = (int)App.AssemblyStorage.AssemblySettings.PluginsEnumPrefix;
 
@@ -361,7 +380,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			if (!hasInitFinished) return;
 
-
 			App.AssemblyStorage.AssemblySettings.PluginsShowComments = (bool)cbShowComments.IsChecked;
 			RefreshEditor(MetaReader.LoadType.File);
 			btnOptions.IsChecked = false;
@@ -380,6 +398,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 
 			App.AssemblyStorage.AssemblySettings.PluginsShowInformation = (bool)cbShowInformation.IsChecked;
+			btnOptions.IsChecked = false;
+		}
+
+		private void cbShowDataRefNotice_Altered(object sender, RoutedEventArgs e)
+		{
+			if (!hasInitFinished) return;
+
+			App.AssemblyStorage.AssemblySettings.PluginsShowDataRefNotice = (bool)cbShowDataRefNotice.IsChecked;
 			btnOptions.IsChecked = false;
 		}
 
@@ -554,10 +580,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				}
 				else if (field is ValueField)
 				{
+					if (field is RawData)
+					{
+						RawData raw = field as RawData;
+						raw.ShowingNotice = false;
+					}
+
 					ValueField valueField = field as ValueField;
 					writer.WritePropertyName(valueField.Name);
 					WriteJSONContent(writer, valueField.GetAsJson());
-
 				}
 			}
 			writer.WriteEndObject();
@@ -591,7 +622,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					itw.Indent--;
 				}
 				else if (!(field is WrappedTagBlockEntry))
+				{
+					if (field is RawData)
+					{
+						RawData raw = field as RawData;
+						raw.ShowingNotice = false;
+					}
+
 					itw.WriteLine(field.AsString());
+				}
 			}
 		}
 
@@ -607,8 +646,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			if (field != null)
 			{
 				IList<MetaField> viewValueAsFields = LoadViewValueAsPlugin();
-				var offset = (uint) _cache.MetaArea.PointerToOffset(field.FieldAddress);
-				MetroViewValueAs.Show(_cache, _buildInfo, _fileManager, viewValueAsFields, offset);
+				var offset = _srcSegmentGroup.PointerToOffset(field.FieldAddress);
+				MetroViewValueAs.Show(_cache, _buildInfo, _fileManager, viewValueAsFields, offset, _tag);
 			}
 		}
 
@@ -648,14 +687,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					address = field.FieldAddress;
 				}
 
-				if (!_cache.MetaArea.ContainsPointer(address))
+				if (!_srcSegmentGroup.ContainsPointer(address))
 				{
 					MetroMessageBox.Show("View Value As", "This field has an invalid address. Cannot open a View Value As window for it.");
 					return;
 				}
 
-				var offset = _cache.MetaArea.PointerToOffset(address);
-				MetroViewValueAs.Show(_cache, _buildInfo, _fileManager, viewValueAsFields, offset);
+				var offset = _srcSegmentGroup.PointerToOffset(address);
+				MetroViewValueAs.Show(_cache, _buildInfo, _fileManager, viewValueAsFields, offset, _tag);
 			}
 		}
 
@@ -728,7 +767,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				VariousFunctions.GetApplicationLocation() + @"Plugins");
 			XmlReader reader = XmlReader.Create(path);
 
-			var plugin = new AssemblyPluginVisitor(_tags, _stringIdTrie, _cache.MetaArea, true, true);
+			var plugin = new AssemblyPluginVisitor(_tags, _stringIdTrie, _srcSegmentGroup, true, _tagCommandState, _buildInfo.Engine < EngineType.ThirdGeneration, true);
 			AssemblyPluginLoader.LoadPlugin(reader, plugin);
 			reader.Close();
 
@@ -1009,14 +1048,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void ReallocateBlockCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
 		{
-			e.CanExecute = true;
+			e.CanExecute = _tagCommandState == TagDataCommandState.None;
 		}
 
 		private void ReallocateBlockCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (_cache.Engine < EngineType.SecondGeneration || (_cache.Engine == EngineType.ThirdGeneration && _cache.HeaderSize == 0x800))
+			if (_tagCommandState != TagDataCommandState.None)
 			{
-				MetroMessageBox.Show("Tag Block Reallocator", "Only second and third generation cache files are currently supported by the block reallocator.");
+				MetroMessageBox.Show("Tag Block Reallocator", TagDataCommandStateResolver.GetStateDescription(_tagCommandState));
 				return;
 			}
 
@@ -1041,7 +1080,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				// If the block was made larger, zero extra data and null tagrefs
 				if (newAddress != 0 && newSize > oldSize)
 				{
-					stream.SeekTo(_cache.MetaArea.PointerToOffset(newAddress) + oldSize);
+					stream.SeekTo(_srcSegmentGroup.PointerToOffset(newAddress) + oldSize);
 					StreamUtil.Fill(stream, 0, (uint)(newSize - oldSize));
 
 					var tagRefLayout = _buildInfo.Layouts.GetLayout("tag reference");
@@ -1051,7 +1090,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					//go through each new page and write null for any tagrefs
 					for (int i = oldCount; i < newCount; i++)
 					{
-						var entryStart = _cache.MetaArea.PointerToOffset(newAddress) + (field.ElementSize * i);
+						var entryStart = _srcSegmentGroup.PointerToOffset(newAddress) + (field.ElementSize * i);
 						foreach (MetaField mf in field.Template)
 						{
 							if (mf.GetType() != typeof(TagRefData))
@@ -1084,8 +1123,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				// Force a save back to the file
 				var changes = new FieldChangeSet();
 				changes.MarkChanged(field);
-				var metaUpdate = new MetaWriter(stream, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
-					MetaWriter.SaveType.File, changes, _stringIdTrie);
+				var metaUpdate = new MetaWriter(stream, _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
+					MetaWriter.SaveType.File, changes, _stringIdTrie, _srcSegmentGroup);
 				metaUpdate.WriteFields(_pluginVisitor.Values);
 				_fileChanges.MarkUnchanged(field);
 
@@ -1115,14 +1154,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void IsolateBlockCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
 		{
-			e.CanExecute = true;
+			e.CanExecute = _tagCommandState == TagDataCommandState.None;
 		}
 
 		private void IsolateBlockCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (_cache.Engine < EngineType.SecondGeneration || (_cache.Engine == EngineType.ThirdGeneration && _cache.HeaderSize == 0x800))
+			if (_tagCommandState != TagDataCommandState.None)
 			{
-				MetroMessageBox.Show("Tag Block Isolation", "Only second and third generation cache files are currently supported.");
+				MetroMessageBox.Show("Tag Block Isolation", TagDataCommandStateResolver.GetStateDescription(_tagCommandState));
 				return;
 			}
 
@@ -1150,10 +1189,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				_cache.SaveChanges(stream);
 
 				//copy data
-				stream.SeekTo(_cache.MetaArea.PointerToOffset(oldAddress));
+				stream.SeekTo(_srcSegmentGroup.PointerToOffset(oldAddress));
 				var data = stream.ReadBlock(size);
 
-				stream.SeekTo(_cache.MetaArea.PointerToOffset(newAddress));
+				stream.SeekTo(_srcSegmentGroup.PointerToOffset(newAddress));
 				stream.WriteBlock(data);
 			}
 
@@ -1165,8 +1204,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				// Force a save back to the file
 				var changes = new FieldChangeSet();
 				changes.MarkChanged(field);
-				var metaUpdate = new MetaWriter(stream, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
-					MetaWriter.SaveType.File, changes, _stringIdTrie);
+				var metaUpdate = new MetaWriter(stream, _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
+					MetaWriter.SaveType.File, changes, _stringIdTrie, _srcSegmentGroup);
 				metaUpdate.WriteFields(_pluginVisitor.Values);
 				_fileChanges.MarkUnchanged(field);
 
@@ -1178,14 +1217,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void AllocateDataRefCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
 		{
-			e.CanExecute = true;
+			e.CanExecute = _tagCommandState == TagDataCommandState.None;
 		}
 
 		private void AllocateDataRefCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (_cache.Engine < EngineType.SecondGeneration || (_cache.Engine == EngineType.ThirdGeneration && _cache.HeaderSize == 0x800))
+			if (_tagCommandState != TagDataCommandState.None)
 			{
-				MetroMessageBox.Show("Data Reference Allocator", "Only second and third generation cache files are currently supported by the data reference allocator.");
+				MetroMessageBox.Show("Data Reference Allocator", TagDataCommandStateResolver.GetStateDescription(_tagCommandState));
 				return;
 			}
 
@@ -1215,8 +1254,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				// Force a save back to the file
 				var changes = new FieldChangeSet();
 				changes.MarkChanged(field);
-				var metaUpdate = new MetaWriter(stream, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
-					MetaWriter.SaveType.File, changes, _stringIdTrie);
+				var metaUpdate = new MetaWriter(stream, _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
+					MetaWriter.SaveType.File, changes, _stringIdTrie, _srcSegmentGroup);
 				metaUpdate.WriteFields(_pluginVisitor.Values);
 				_fileChanges.MarkUnchanged(field);
 
@@ -1229,17 +1268,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void IsolateDataRefCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
 		{
-			e.CanExecute = true;
+			e.CanExecute = _tagCommandState == TagDataCommandState.None;
 		}
 		
 		private void IsolateDataRefCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (_cache.Engine < EngineType.SecondGeneration || (_cache.Engine == EngineType.ThirdGeneration && _cache.HeaderSize == 0x800))
+			if (_tagCommandState != TagDataCommandState.None)
 			{
-				MetroMessageBox.Show("Data Reference Isolation", "Only second and third generation cache files are currently supported.");
+				MetroMessageBox.Show("Data Reference Isolation", TagDataCommandStateResolver.GetStateDescription(_tagCommandState));
 				return;
 			}
-		
+
 			var field = GetWrappedField(e.OriginalSource) as DataRef;
 			if (field == null)
 				return;
@@ -1264,10 +1303,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				_cache.SaveChanges(stream);
 		
 				//copy data
-				stream.SeekTo(_cache.MetaArea.PointerToOffset(oldAddress));
+				stream.SeekTo(_srcSegmentGroup.PointerToOffset(oldAddress));
 				var data = stream.ReadBlock(size);
 		
-				stream.SeekTo(_cache.MetaArea.PointerToOffset(newAddress));
+				stream.SeekTo(_srcSegmentGroup.PointerToOffset(newAddress));
 				stream.WriteBlock(data);
 			}
 		
@@ -1279,8 +1318,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				// Force a save back to the file
 				var changes = new FieldChangeSet();
 				changes.MarkChanged(field);
-				var metaUpdate = new MetaWriter(stream, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
-					MetaWriter.SaveType.File, changes, _stringIdTrie);
+				var metaUpdate = new MetaWriter(stream, _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
+					MetaWriter.SaveType.File, changes, _stringIdTrie, _srcSegmentGroup);
 				metaUpdate.WriteFields(_pluginVisitor.Values);
 				_fileChanges.MarkUnchanged(field);
 

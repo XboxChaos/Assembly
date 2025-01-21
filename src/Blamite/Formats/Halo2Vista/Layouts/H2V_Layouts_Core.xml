@@ -10,6 +10,7 @@
 
 		<asciiz name="build string" offset="0x12C" />
 		<int32 name="type" offset="0x14C" />
+		<uint32 name="crc checksum" offset="0x150" />
 
 		<int32 name="low detail bitmap data count" offset="0x160" />
 		<int32 name="low detail bitmap data offset" offset="0x164" />
@@ -28,6 +29,11 @@
 		<uint32 name="file table offset" offset="0x2D0" />
 		<int32 name="file table size" offset="0x2D4" />
 		<uint32 name="file index table offset" offset="0x2D8" />
+
+		<uint32 name="locale globals offset" offset="0x2DC" />
+		<uint32 name="locale globals size" offset="0x2E0" />
+		
+		<uint32 name="sound gestalt datum index" offset="0x2E4" />
 
 		<uint32 name="raw table offset" offset="0x2E8" />
 		<int32 name="raw table size" offset="0x2EC" />
@@ -57,15 +63,24 @@
 	<layout for="tag element" size="0x10">
 		<int32 name="tag group magic" offset="0x0" />
 		<uint32 name="datum index" offset="0x4" />
-		<int32 name="offset" offset="0x8" />
+		<uint32 name="memory address" offset="0x8" />
 		<int32 name="data size" offset="0xC" />
 	</layout>
 
 	<layout for="bsp header" size="0x10">
 		<int32 name="size" offset="0x0" />
-		<int32 name="bsp address" offset="0x4" />
-		<int32 name="lightmap address" offset="0x8" />
+		<uint32 name="bsp address" offset="0x4" />
+		<uint32 name="lightmap address" offset="0x8" />
 		<int32 name="magic" offset="0xC" />
+	</layout>
+
+	<layout for="locale globals">
+		<array name="languages" offset="0x8" entrySize="0x1C" count="9">
+			<uint32 name="string count" offset="0x0" />
+			<uint32 name="locale table size" offset="0x4" />
+			<uint32 name="locale index table offset" offset="0x8" />
+			<uint32 name="locale data index offset" offset="0xC" />
+		</array>
 	</layout>
 
 	<!-- Map globals meta -->

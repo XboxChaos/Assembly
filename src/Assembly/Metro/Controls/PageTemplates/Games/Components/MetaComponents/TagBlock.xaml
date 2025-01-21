@@ -82,10 +82,8 @@
 	</UserControl.Resources>
 
     <UserControl.CommandBindings>
-        <CommandBinding Command="{x:Static local:TagBlock.ReallocateCommand}"
-                        CanExecute="ReallocateCommand_CanExecute" />
-		<CommandBinding Command="{x:Static local:TagBlock.IsolateCommand}"
-                        CanExecute="IsolateCommand_CanExecute" />
+        <CommandBinding Command="{x:Static local:TagBlock.ReallocateCommand}" />
+        <CommandBinding Command="{x:Static local:TagBlock.IsolateCommand}" />
     </UserControl.CommandBindings>
 
     <Border HorizontalAlignment="Stretch" Grid.ZIndex="1" BorderBrush="#FF474747" Padding="4,4,4,4">
@@ -141,9 +139,9 @@
                 <Popup x:Name="popOptions" IsOpen="{Binding IsChecked, ElementName=btnOptions}" PlacementTarget="{x:Reference btnOptions}" StaysOpen="False" >
                     <Border BorderThickness="1" Background="#1b1b1c" BorderBrush="#333337">
                         <StackPanel>
-                            <MenuItem Header="Add or Remove Elements..." Foreground="White" ToolTip="Opens the Tag Block Reallocator tool to properly add or remove elements for this block."
+                            <MenuItem Header="Add or Remove Elements..." ToolTipService.ShowOnDisabled="True" ToolTipService.ToolTip="{Binding Path=IsolateTooltip}"
                                       Command="{x:Static local:TagBlock.ReallocateCommand}" CommandTarget="{Binding ElementName=tagBlock}"/>
-                            <MenuItem Header="Isolate Shared Block" Foreground="White" ToolTip="Isolates this block from other shared instances by copying to a new address."
+                            <MenuItem Header="Isolate Shared Block" ToolTipService.ShowOnDisabled="True" ToolTipService.ToolTip="{Binding Path=AllocateTooltip}"
                                       Command="{x:Static local:TagBlock.IsolateCommand}" CommandTarget="{Binding ElementName=tagBlock}"/>
                         </StackPanel>
                     </Border>
