@@ -2620,8 +2620,50 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			uint result = origLength - _cacheFile.StringIDDataTable.Size;
 
-			MetroMessageBox.Show("Free StringIDs", "A total of " + result + " bytes were freed.");
-				
+			MetroMessageBox.Show("Free StringIDs", "A total of " + result + " bytes were freed.");	
+		}
+
+		private void DumpTagsJSON(object sender, RoutedEventArgs e)
+		{
+			// Get the menu item and the tag group
+			var item = e.Source as MenuItem;
+			if (item == null)
+				return;
+
+			var tagGroup = item.DataContext as TagGroup;
+			if (tagGroup == null)
+				return;
+
+			// Ask the user where to save the dumps
+			var fbd = new System.Windows.Forms.FolderBrowserDialog();
+			if (!(fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK))
+				return;
+
+			BatchDumpTags(tagGroup.Children, fbd.SelectedPath);
+			MetroMessageBox.Show("Dump Successful", "Tags dumped successfully.");
+		}
+
+		private void BatchDumpTags(List<TagEntry> tags, string outPath)
+		{
+			// hack: make the tag editor the last metacontainer tab
+			App.AssemblyStorage.AssemblySettings.HalomapLastSelectedMetaEditor = Settings.LastMetaEditorType.MetaEditor;
+
+			foreach (TagEntry t in tags)
+			{
+				CloseableTabItem tab = new CloseableTabItem
+				{
+					Header = TabHeaderFromTag(t),
+					Tag = t,
+					Content =
+							new MetaContainer(_buildInfo, _cacheLocation, t, _allTags, _cacheFile, _mapManager, _rteProvider,
+								_stringIdTrie)
+				};
+				contentTabs.Items.Add(tab);
+
+				SelectTabFromTag(t);
+				((MetaContainer)tab.Content).ExternalDump(outPath);
+				ExternalTabClose(tab);
+			}
 		}
 
 		private void itemCopyName_Click(object sender, RoutedEventArgs e)

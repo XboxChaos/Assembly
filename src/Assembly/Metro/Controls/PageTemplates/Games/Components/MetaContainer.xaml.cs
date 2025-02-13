@@ -178,5 +178,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			if (_metaEditor != null)
 				_metaEditor.ExternalSave();
 		}
+
+		public void ExternalDump(string basePath)
+		{
+			if (_metaEditor != null)
+				_metaEditor.ExternalDump(basePath);
+		}
 	}
 }

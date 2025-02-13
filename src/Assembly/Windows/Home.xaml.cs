@@ -245,6 +245,11 @@ namespace Assembly.Windows
 			AddTabModule(TabGenre.NetworkPoking);
 		}
 
+		private void menuTagListings_Click(object sender, RoutedEventArgs e)
+		{
+			AddTabModule(TabGenre.TagListings);
+		}
+
 		//og console
 		private void ShowOGConnectError()
 		{
@@ -606,7 +611,8 @@ namespace Assembly.Windows
 			PostGenerator,
 			MapNames,
 			NetworkPoking,
-			MapCompressor
+			MapCompressor,
+			TagListings
 		}
 
 		public void ExternalTabClose(TabGenre tabGenre)
@@ -849,6 +855,11 @@ namespace Assembly.Windows
 				case TabGenre.MapCompressor:
 					tab.Title = "Map Compressor";
 					tab.Content = new MapCompressor();
+					break;
+
+				case TabGenre.TagListings:
+					tab.Title = "Tag Listings";
+					tab.Content = new TagListings();
 					break;
 			}
 

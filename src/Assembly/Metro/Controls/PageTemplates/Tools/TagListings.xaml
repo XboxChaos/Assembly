@@ -1,0 +1,158 @@
+﻿<UserControl x:Class="Assembly.Metro.Controls.PageTemplates.Tools.TagListings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Assembly.Metro.Controls.PageTemplates.Tools"
+             mc:Ignorable="d"
+             Background="#28282b"
+             d:DesignWidth="1000" d:DesignHeight="600">
+	<Grid>
+		<Grid x:Name="sideBar" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="350" Background="#2d2d30">
+			<Rectangle Fill="#FF545456" Width="2" Margin="0" VerticalAlignment="Stretch" HorizontalAlignment="Right"
+			           d:LayoutOverrides="Height" />
+
+			<Grid Margin="0,36,0,0" Height="48" VerticalAlignment="Top">
+				<TextBlock FontFamily="{DynamicResource MetroFontLight}" Text="Tag Listings" Foreground="White" FontSize="32"
+			           Margin="25,0,0,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+				<Polygon Points="0,0 20,24 0,48" Fill="#FF4A4A4C" HorizontalAlignment="Left" VerticalAlignment="Center" />
+			</Grid>
+
+			<Rectangle Fill="#FF363639" Height="1" Margin="25,114,25,0" VerticalAlignment="Top"
+			           d:LayoutOverrides="Height" />
+			<Grid VerticalAlignment="Top" Margin="25,120,15,20">
+				<ScrollViewer VerticalScrollBarVisibility="Auto">
+					<Grid>
+						<TextBlock TextWrapping="Wrap" Foreground="White" FontSize="12">
+							Quickly dump a list of tags for all selected (supported) maps in a given directory. Each map will output a separate .txt file.
+						</TextBlock>
+					</Grid>
+				</ScrollViewer>
+			</Grid>
+		</Grid>
+
+		<Grid x:Name="content" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="350,0,0,0">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="64px" />
+				<RowDefinition Height="*" />
+				<RowDefinition Height="95px" />
+			</Grid.RowDefinitions>
+
+			<Grid x:Name="selectInputFolder" Grid.Row="0">
+				<StackPanel Margin="20,10,0,0">
+					<TextBlock Text="Input Map Folder:" Foreground="White" FontSize="13" />
+					<Grid Margin="0,5,50,0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="35px" />
+						</Grid.ColumnDefinitions>
+						<TextBox x:Name="txtInputFolder" Grid.Column="0" />
+						<Button x:Name="btnInputFolder" Grid.Column="1" Content="..." Width="30" Click="btnInputFolder_Click" HorizontalAlignment="Right" />
+					</Grid>
+				</StackPanel>
+			</Grid>
+
+			<Border x:Name="mapSelector" Grid.Row="1" BorderThickness="0,1,0,1" BorderBrush="#FF545456" Background="#2d2d30">
+				<Grid>
+					<ListBox x:Name="generatorMapSelector" ItemsSource="{Binding}"
+					         IsSynchronizedWithCurrentItem="True" Margin="10"
+					         Visibility="Visible" Background="{x:Null}" Foreground="{x:Null}" BorderBrush="{x:Null}">
+						<ListBox.Resources>
+							<SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+							                 Color="{DynamicResource ExtryzeAccentBrushColourSecondary}" />
+						</ListBox.Resources>
+						<ListBox.ItemTemplate>
+							<DataTemplate>
+								<Grid Height="17">
+									<Grid VerticalAlignment="Center">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="40px" />
+											<ColumnDefinition Width="190px" />
+											<ColumnDefinition Width="*" />
+										</Grid.ColumnDefinitions>
+
+										<TextBlock Text="{Binding MapName}" TextTrimming="CharacterEllipsis" Foreground="White" Margin="0,0,10,0"
+										           Grid.Column="1" FontFamily="{DynamicResource MetroFontRegular}" />
+										<TextBlock Text="{Binding LocalMapPath}" TextTrimming="CharacterEllipsis" Foreground="White"
+										           Margin="0,0,10,0" Grid.Column="2" FontFamily="{DynamicResource MetroFontRegular}" />
+									</Grid>
+
+									<CheckBox IsChecked="{Binding IsSelected}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+										<CheckBox.Template>
+											<ControlTemplate TargetType="CheckBox">
+												<BulletDecorator Background="Transparent">
+													<BulletDecorator.Bullet>
+														<Border x:Name="Border"
+														        Width="13"
+														        Height="13"
+														        Margin="8,2,0,0"
+														        CornerRadius="0"
+														        Background="#3f3f3f"
+														        BorderBrush="#999999"
+														        BorderThickness="1">
+															<Path
+																Width="7" Height="7"
+																x:Name="CheckMark"
+																SnapsToDevicePixels="False"
+																Stroke="#979797"
+																StrokeThickness="2"
+																Data="M 0 0 L 7 7 M 0 7 L 7 0" />
+														</Border>
+													</BulletDecorator.Bullet>
+													<ContentPresenter Margin="8,0,0,0"
+													                  VerticalAlignment="Center"
+													                  HorizontalAlignment="Left"
+													                  RecognizesAccessKey="True" />
+												</BulletDecorator>
+												<ControlTemplate.Triggers>
+													<Trigger Property="IsChecked" Value="false">
+														<Setter TargetName="CheckMark" Property="Visibility" Value="Collapsed" />
+													</Trigger>
+													<Trigger Property="IsChecked" Value="{x:Null}">
+														<Setter TargetName="CheckMark" Property="Data" Value="M 0 7 L 7 0" />
+													</Trigger>
+													<Trigger Property="IsMouseOver" Value="true">
+														<Setter TargetName="Border" Property="Background" Value="#454545" />
+														<Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" />
+													</Trigger>
+													<Trigger Property="IsEnabled" Value="false">
+														<Setter Property="Foreground" Value="#c1c1c1" />
+													</Trigger>
+												</ControlTemplate.Triggers>
+											</ControlTemplate>
+										</CheckBox.Template>
+									</CheckBox>
+								</Grid>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
+				</Grid>
+			</Border>
+
+			<Grid x:Name="pluginOutputFolder" Grid.Row="2">
+				<StackPanel Margin="20,10,0,0">
+					<TextBlock Text="Output Folder:" Foreground="White" FontSize="13" />
+					<Grid Margin="0,5,50,0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="35px" />
+						</Grid.ColumnDefinitions>
+						<TextBox x:Name="txtOutputFolder" Grid.Column="0" />
+						<Button x:Name="btnOutputFolder" Grid.Column="1" Content="..." Width="30" Click="btnOutputFolder_Click" HorizontalAlignment="Right" />
+					</Grid>
+					<Button x:Name="btnGeneratePlugins" Grid.Column="1" Content="Dump Tag Names" Margin="0,8,50,0"
+					        HorizontalAlignment="Stretch" Click="btnGeneratePlugins_Click" />
+				</StackPanel>
+			</Grid>
+		</Grid>
+
+		<Grid x:Name="MaskingPage" Visibility="Collapsed" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+			<Rectangle Opacity="0.80" Fill="{DynamicResource HomeOpacityBrush}" />
+			<Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+				<TextBlock x:Name="lblProgressStatus" Text="Generating Plugins... (0%)" HorizontalAlignment="Center"
+				           VerticalAlignment="Center" Style="{DynamicResource GenericTextblock}" />
+				<ProgressBar x:Name="progressBar" Height="4" IsIndeterminate="True" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,25,0,0" />
+			</Grid>
+		</Grid>
+	</Grid>
+</UserControl>

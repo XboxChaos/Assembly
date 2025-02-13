@@ -488,12 +488,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			if (!result.Value)
 				return;
 
+			HandleDump(sfd.FileName, sfd.FilterIndex);
+			MetroMessageBox.Show("Tag dumped!");
+		}
+
+		private void HandleDump(string output, int filterIndex)
+		{
 			using (StringWriter sw = new StringWriter())
 			{
 				MetaField[] fields = new MetaField[panelMetaComponents.Items.Count];
 				panelMetaComponents.Items.CopyTo(fields, 0);
 
-				if (sfd.FilterIndex == 1)
+				if (filterIndex == 1)
 				{
 					using (JsonWriter writer = new JsonTextWriter(sw))
 					{
@@ -508,7 +514,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 						writer.WriteEndObject();
 					}
 				}
-				else if (sfd.FilterIndex == 2)
+				else if (filterIndex == 2)
 				{
 					IndentedTextWriter itw = new IndentedTextWriter(sw);
 					itw.WriteLine(_tag.TagFileName);
@@ -518,9 +524,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				}
 				else return;
 
-				File.WriteAllText(sfd.FileName, sw.ToString());
-
-				MetroMessageBox.Show("Tag dumped!");
+				Directory.CreateDirectory(Path.GetDirectoryName(output));
+				File.WriteAllText(output, sw.ToString());
 			}
 		}
 
@@ -562,6 +567,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				if (field is TagBlockData)
 				{
 					TagBlockData block = field as TagBlockData;
+					block.ResetPages();
 					int oldIndex = block.CurrentIndex;
 					writer.WritePropertyName(block.Name);
 					writer.WriteStartArray();
@@ -601,6 +607,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				if (field is TagBlockData)
 				{
 					TagBlockData block = field as TagBlockData;
+					block.ResetPages();
 
 					itw.WriteLine(field.AsString());
 					itw.Indent++;
@@ -1338,6 +1345,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			if (_pluginPath != null && File.Exists(_pluginPath))
 				UpdateMeta(MetaWriter.SaveType.File, true, false);
+		}
+
+		public void ExternalDump(string basePath)
+		{
+			HandleDump(Path.Combine(basePath, _tag.TagFileName + "[" + _tag.GroupName + "]" + ".json"), 1);
 		}
 	}
 }
