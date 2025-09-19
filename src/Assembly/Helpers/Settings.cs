@@ -13,10 +13,10 @@ using Assembly.Metro.Dialogs;
 using Assembly.Windows;
 using Blamite.Blam;
 using Blamite.RTE;
+using Blamite.RTE.Console;
 using Blamite.Serialization;
 using Blamite.Serialization.Settings;
 using Newtonsoft.Json;
-using XBDMCommunicator;
 
 namespace Assembly.Helpers
 {
@@ -24,7 +24,7 @@ namespace Assembly.Helpers
 	/// </summary>
 	public class Storage : INotifyPropertyChanged
 	{
-		private Settings _assemblySettings = new Settings();
+		private Settings _assemblySettings;
 		private NetworkPoke _networkPoke = new NetworkPoke();
 
 		#region Helpers
@@ -167,20 +167,21 @@ namespace Assembly.Helpers
 		private bool _startpageShowRecentsMap = true;
 		private bool _startpageShowRecentsMapInfo = true;
 		private bool _startpageShowRecentsCampaign = true;
-		private Xbdm _xbdm;
+		private XeConsole _xeConsole;
+		private XbConsole _xbConsole;
+		private XeConsole _xeFuConsole;
 		private bool _xdkAutoSave;
-		private string _xdkNameIp = "192.168.0.1";
+		private string _xeConsoleNameIp = "192.168.0.1";
+		private string _xbConsoleNameIp = "192.168.0.1";
 		private bool _xdkResizeImages;
-		private int _xdkResizeScreenshotHeight = 1080;
-		private int _xdkResizeScreenshotWidth = 1920;
 		private bool _xdkScreenshotFreeze = true;
 		private bool _xdkScreenshotGammaCorrect = true;
-		private double _xdkScreenshotGammaModifier = 0.5;
 		private string _xdkScreenshotPath = "";
 		private ObservableCollection<ImgurHistoryEntry> _imgurHistory = new ObservableCollection<ImgurHistoryEntry>();
 		private UpdateSource _updateChannel = UpdateSource.Stable;
 		private bool _shownCheatingDialog = false;
 		private bool _autoOpenDuplicates = false;
+		private bool _xdkOnly360 = false;
 		// Scripting
 		private bool _showScriptInfo = false;
 		private bool _outputCompilerDebugData = false;
@@ -439,15 +440,17 @@ namespace Assembly.Helpers
 
 		/// <summary>
 		/// </summary>
-		public string XdkNameIp
+		public string XeConsoleNameIp
 		{
-			get { return _xdkNameIp; }
+			get { return _xeConsoleNameIp; }
 			set
 			{
-				SetField(ref _xdkNameIp, value, "XdkNameIp");
+				SetField(ref _xeConsoleNameIp, value, "XeConsoleNameIp");
 
-				if (Xbdm != null)
-					Xbdm.UpdateDeviceIdent(value);
+				if (XenonConsole != null)
+					XenonConsole.UpdateIdentifier(value);
+				if (XenonFusionConsole != null)
+					XenonFusionConsole.UpdateIdentifier(value);
 			}
 		}
 
@@ -477,18 +480,16 @@ namespace Assembly.Helpers
 
 		/// <summary>
 		/// </summary>
-		public int XdkResizeScreenshotHeight
+		public string XbConsoleNameIp
 		{
-			get { return _xdkResizeScreenshotHeight; }
-			set { SetField(ref _xdkResizeScreenshotHeight, value, "XdkResizeScreenshotHeight"); }
-		}
+			get { return _xbConsoleNameIp; }
+			set
+			{
+				SetField(ref _xbConsoleNameIp, value, "XbConsoleNameIp");
 
-		/// <summary>
-		/// </summary>
-		public int XdkResizeScreenshotWidth
-		{
-			get { return _xdkResizeScreenshotWidth; }
-			set { SetField(ref _xdkResizeScreenshotWidth, value, "XdkResizeScreenshotWidth"); }
+				if (XboxConsole != null)
+					XboxConsole.UpdateIdentifier(value);
+			}
 		}
 
 		/// <summary>
@@ -497,14 +498,6 @@ namespace Assembly.Helpers
 		{
 			get { return _xdkScreenshotGammaCorrect; }
 			set { SetField(ref _xdkScreenshotGammaCorrect, value, "XdkScreenshotGammaCorrect"); }
-		}
-
-		/// <summary>
-		/// </summary>
-		public double XdkScreenshotGammaModifier
-		{
-			get { return _xdkScreenshotGammaModifier; }
-			set { SetField(ref _xdkScreenshotGammaModifier, value, "XdkScreenshotGammaModifier"); }
 		}
 
 		/// <summary>
@@ -706,6 +699,14 @@ namespace Assembly.Helpers
 
 		/// <summary>
 		/// </summary>
+		public bool XdkOnly360
+		{
+			get { return _xdkOnly360; }
+			set { SetField(ref _xdkOnly360, value, "XdkOnly360"); }
+		}
+
+		/// <summary>
+		/// </summary>
 		public bool ShowScriptInfo
 		{
 			get { return _showScriptInfo; }
@@ -728,12 +729,33 @@ namespace Assembly.Helpers
 		}
 
 		/// <summary>
+		/// The global Xbox 360 communication instance.
 		/// </summary>
 		[JsonIgnore]
-		public Xbdm Xbdm
+		public XeConsole XenonConsole
 		{
-			get { return _xbdm; }
-			set { SetField(ref _xbdm, value, "Xbdm"); }
+			get { return _xeConsole; }
+			set { SetField(ref _xeConsole, value, "XenonConsole"); }
+		}
+
+		/// <summary>
+		/// The global Original Xbox communication instance.
+		/// </summary>
+		[JsonIgnore]
+		public XbConsole XboxConsole
+		{
+			get { return _xbConsole; }
+			set { SetField(ref _xbConsole, value, "XboxConsole"); }
+		}
+
+		/// <summary>
+		/// The global Xbox 360 (modified for Original Xbox maps) communication instance.
+		/// </summary>
+		[JsonIgnore]
+		public XeConsole XenonFusionConsole
+		{
+			get { return _xeFuConsole; }
+			set { SetField(ref _xeFuConsole, value, "XenonFusionConsole"); }
 		}
 
 		/// <summary>
@@ -906,7 +928,7 @@ namespace Assembly.Helpers
 	{
 		private bool _isConnected;
 		private bool _isServer;
-		private List<Tuple<ICacheFile, IRTEProvider>> _maps = new List<Tuple<ICacheFile, IRTEProvider>>();
+		private List<Tuple<ICacheFile, RTEProvider>> _maps = new List<Tuple<ICacheFile, RTEProvider>>();
 		private IPokeSessionManager _pokeSessionManager = null;
 		private SocketRTEProvider _networkProvider = null;
 		private ObservableCollection<string> _clients = new ObservableCollection<string>();
@@ -927,7 +949,7 @@ namespace Assembly.Helpers
 			set { SetField(ref _isServer, value, "IsServer");  }
 		}
 
-		public List<Tuple<ICacheFile, IRTEProvider>> Maps
+		public List<Tuple<ICacheFile, RTEProvider>> Maps
 		{
 			get { return _maps; }
 			set { SetField(ref _maps, value, "Maps"); }

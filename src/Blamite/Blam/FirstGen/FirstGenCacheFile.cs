@@ -43,7 +43,7 @@ namespace Blamite.Blam.FirstGen
 		public void SaveChanges(IStream stream)
 		{
 			// TODO: Write the tag table
-			_header.Checksum = ICacheFileExtensions.GenerateChecksum(this, stream);
+			_header.Checksum = CacheFileExtensions.GenerateChecksum(this, stream);
 			WriteHeader(stream);
 		}
 
@@ -91,7 +91,11 @@ namespace Blamite.Blam.FirstGen
 		public int XDKVersion
 		{
 			get { return _header.XDKVersion; }
-			set { _header.XDKVersion = value; }
+		}
+
+		public DateTime? BuildDate
+		{
+			get { return _header.BuildDate; }
 		}
 
 		public bool ZoneOnly

@@ -24,6 +24,18 @@ namespace Blamite.Serialization.Settings
 		}
 
 		/// <summary>
+		///     Loads setting data from a path, with a secondary path.
+		/// </summary>
+		/// <param name="path">The path to load from.</param>
+		/// <param name="altPath">The alternate path to load from.</param>
+		/// <returns>The loaded setting data.</returns>
+		public object LoadSetting(string path, string altPath)
+		{
+			//alt not used
+			return LoadSetting(path);
+		}
+
+		/// <summary>
 		///     Loads all of the vertex layouts defined in an XML document.
 		/// </summary>
 		/// <param name="document">The XML document to load vertex layouts from.</param>

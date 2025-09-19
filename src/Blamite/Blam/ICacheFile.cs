@@ -7,6 +7,7 @@ using Blamite.Blam.Scripting;
 using Blamite.Blam.Shaders;
 using Blamite.Blam.Util;
 using Blamite.IO;
+using Blamite.Serialization;
 
 namespace Blamite.Blam
 {
@@ -58,7 +59,12 @@ namespace Blamite.Blam
 		/// <summary>
 		///     The XDK version that the cache file was developed with, or 0 if unknown.
 		/// </summary>
-		int XDKVersion { get; set; }
+		int XDKVersion { get; }
+
+		/// <summary>
+		///     The build date of the cache file (can be null if needed)
+		/// </summary>
+		DateTime? BuildDate { get; }
 
 		/// <summary>
 		///     True if the cache file's resource page information is located in the zone tag, rather than play.
@@ -218,7 +224,7 @@ namespace Blamite.Blam
 		FileSegmentGroup[] BSPAreas { get; }
 	}
 
-	public static class ICacheFileExtensions
+	public static class CacheFileExtensions
 	{
 		public static uint GenerateChecksum(this ICacheFile cacheFile, IReader reader, bool reverse = false)
 		{
@@ -248,5 +254,21 @@ namespace Blamite.Blam
 
 			return checksum;
 		}
+
+		public static DateTime? AssembleFileTime(StructureValueCollection values, string high, string low)
+		{
+			if (!values.HasInteger(high))
+				return null;
+
+			var hi = (long)values.GetInteger(high);
+			var lo = (long)values.GetInteger(low);
+			long time = (lo << 32) | hi;
+
+			if (time < 0 || time > DateTime.MaxValue.Ticks)
+				return null;
+
+			return DateTime.FromFileTimeUtc(time);
+		}
+
 	}
 }

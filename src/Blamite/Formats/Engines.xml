@@ -45,17 +45,21 @@
 		</pokingInfo>
 
 		<databases> - refer to the individual xmls for more information on their formatting. All paths are relative to Assembly.exe (or Blamite.dll), so include "Formats\".
-			<layouts>{layouts directory}</layouts> - The directory where xml layouts for this engine are located. XML names in the path are arbitrary but there is an existing pattern.
+			<layouts type="layouts" path="{file path}" altPath="{(optional) file path}" /> - The directory where xml layouts for this engine are located. XML names in the path are arbitrary but there is an existing pattern. Specifying an altPath allows layouts in {path} to inherit layouts from {altPath} by name.
 
-			!However there MUST be a layout defined for "header" somewhere in the directory WITH a valid size and field inside named "build string" containing the offset of the build string!
+				layout inherit example:
+					<layout for="tag block" inherit="tag block" />
+				The 'inherit="tag block"' will look for the "tag block" layout inside {altPath}. If "tag block" is not defined, or altPath is missing or bad, an exception will be thrown.
 
-			<stringIds>{file path}</stringIds> - The xml file which defines namespace information for the engine's string IDs, if the engine uses namespaces. (Third Generation)
-			<scripting>{file path}</scripting> - The xml file which defines scripting information (opcodes, types, globals) for the engine.
-			<localeSymbols>{file path}</localeSymbols> - The xml file which defines unicode characters used by localization for the engine. This allows for a more readible locale strings like <_a_button/> to be displayed instead of a bunch of "unsupported" squares.
-			<vertexLayouts>{file path}</vertexLayouts> - (Unused) The xml file which defines vertex layouts for the engine, for scrapped model extraction support.
-			<groupNames>{file path}</groupNames> - The xml file which defines the full names of tag groups if the cache file does not already suppy them. If no group names are available, you will see a bunch of "unknown_description"s in the tag tree.
-			<poking>{file path}</poking> - The xml file which defines the poking addresses and offsets for the engine. (PC)
-			<hudMessageSymbols>{file path}</hudMessageSymbols> - The xml which defines the special symbols used by hud message tags.
+			!However there MUST be a layout defined for "header" somewhere in the directory WITH a valid size and field inside named "build string" containing the offset of the build string! (Or inherits a layout with these)
+
+			<stringIds type="stringIds" path="{file path}" /> - The xml file which defines namespace information for the engine's string IDs, if the engine uses namespaces. (Third Generation/Eldorado)
+			<scripting type="scripting" path="{file path}" /> - The xml file which defines scripting information (opcodes, types, globals) for the engine.
+			<localeSymbols type="localeSymbols" path="{file path}" /> - The xml file which defines unicode characters used by localization for the engine. Intention is only engine-reserved unicodes. This allows for a more readable locale strings like &a_button to be displayed instead of a bunch of invalid squares. (Though some aren't always reserved by the engine!)
+			<vertexLayouts type="vertexLayouts" path="{file path}" /> - (Unused) The xml file which defines vertex layouts for the engine, for scrapped model extraction support.
+			<groupNames type="groupNames" path="{file path}" /> - The xml file which defines the full names of tag groups if the cache file does not already suppy them. If no group names are available, you will see a bunch of "unknown_description"s in the tag tree.
+			<poking type="poking" path="{file path}" /> - The xml file which defines the poking addresses and offsets for the engine. (PC)
+			<hudMessageSymbols type="hudMessageSymbols" path="{file path}" /> - The xml which defines the special symbols used by hud message tags. Similar to localeSymbols.
 		</databases>
 	</engine>-->
 
@@ -73,7 +77,7 @@
 			<platform>xbox</platform>
 		</pokingInfo>
 		<databases>
-			<layouts type="layouts" path="Formats/Halo1/LayoutsXbox" />
+			<layouts type="layouts" path="Formats/Halo1/LayoutsXbox" altPath="Formats/Halo1/Layouts" />
 			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
 			<scripting type="scripting" path="Formats/Halo1/H1X_Scripting.xml" />
 			<hudMessageSymbols type="hudMessageSymbols" path="Formats/Halo1/H1_HudMessageSymbols.xml" />
@@ -180,7 +184,7 @@
 			<executable>stubbsthezombie</executable>
 		</pokingInfo>
 		<databases>
-			<layouts type="layouts" path="Formats/Stubbs/LayoutsPC" />
+			<layouts type="layouts" path="Formats/Stubbs/LayoutsPC" altPath="Formats/Stubbs/LayoutsXbox" />
 			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
 			<scripting type="scripting" path="Formats/Stubbs/SPC_Scripting.xml" />
 			<hudMessageSymbols type="hudMessageSymbols" path="Formats/Stubbs/S_HudMessageSymbols.xml" />
@@ -203,6 +207,7 @@
 			<layouts type="layouts" path="Formats/Stubbs/LayoutsRerelease" />
 			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
 			<scripting type="scripting" path="Formats/Stubbs/SR_Scripting.xml" />
+			<poking type="poking" path="Formats/Stubbs/SR_Poking.xml" />
 			<hudMessageSymbols type="hudMessageSymbols" path="Formats/Stubbs/SR_HudMessageSymbols.xml" />
 		</databases>
 	</engine>
@@ -233,7 +238,7 @@
 	<engine name="Halo 1 PC Trial" version="6" build="01.00.00.0576" inherits="Halo 1 PC" >
 		<shortName>H1PCTrial</shortName>
 		<databases>
-			<layouts type="layouts" path="Formats/Halo1/LayoutsTrial" />
+			<layouts type="layouts" path="Formats/Halo1/LayoutsTrial" altPath="Formats/Halo1/Layouts" />
 			<poking type="poking" path="Formats/Halo1/H1T_Poking.xml" />
 		</databases>
 	</engine>
@@ -245,7 +250,7 @@
 			<executable>halocache</executable>
 		</pokingInfo>
 		<databases>
-			<layouts type="layouts" path="Formats/Halo1/LayoutsBeta" />
+			<layouts type="layouts" path="Formats/Halo1/LayoutsBeta" altPath="Formats/Halo1/Layouts" />
 		</databases>
 	</engine>
 
@@ -463,7 +468,7 @@
 			<stringIds type="stringIds" path="Formats/Halo3Alpha/H3P_StringIDs.xml" />
 			<localeSymbols type="localeSymbols" path="Formats/Halo3Alpha/H3A_LocaleSymbols.xml" />
 			<scripting type="scripting" path="Formats/Halo3Alpha/H3A_Scripting.xml" />
-			<layouts type="layouts" path="Formats/Halo3Alpha/LayoutsPlaytest" />
+			<layouts type="layouts" path="Formats/Halo3Alpha/LayoutsPlaytest" altPath="Formats/Halo3Alpha/Layouts" />
 		</databases>
 	</engine>
 
@@ -485,7 +490,7 @@
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo3Beta/H3BMarch7_StringIDs.xml" />
 			<scripting type="scripting" path="Formats/Halo3Beta/H3BMarch_Scripting.xml" />
-			<layouts type="layouts" path="Formats/Halo3Beta/LayoutsMarch" />
+			<layouts type="layouts" path="Formats/Halo3Beta/LayoutsMarch" altPath="Formats/Halo3Beta/Layouts" />
 		</databases>
 	</engine>
 
@@ -495,7 +500,7 @@
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo3Beta/H3BMarch8_StringIDs.xml" />
 			<scripting type="scripting" path="Formats/Halo3Beta/H3BMarch_Scripting.xml" />
-			<layouts type="layouts" path="Formats/Halo3Beta/LayoutsMarch" />
+			<layouts type="layouts" path="Formats/Halo3Beta/LayoutsMarch" altPath="Formats/Halo3Beta/Layouts" />
 		</databases>
 	</engine>
 
@@ -505,7 +510,7 @@
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo3Beta/H3BMarch8_StringIDs.xml" />
 			<scripting type="scripting" path="Formats/Halo3Beta/H3BMarch_Scripting.xml" />
-			<layouts type="layouts" path="Formats/Halo3Beta/LayoutsMarch" />
+			<layouts type="layouts" path="Formats/Halo3Beta/LayoutsMarch" altPath="Formats/Halo3Beta/Layouts" />
 		</databases>
 	</engine>
 
@@ -515,7 +520,7 @@
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo3Beta/H3BMarch8_StringIDs.xml" />
 			<scripting type="scripting" path="Formats/Halo3Beta/H3BMarch_Scripting.xml" />
-			<layouts type="layouts" path="Formats/Halo3Beta/LayoutsMarch" />
+			<layouts type="layouts" path="Formats/Halo3Beta/LayoutsMarch" altPath="Formats/Halo3Beta/Layouts" />
 		</databases>
 	</engine>
 
@@ -542,13 +547,13 @@
 	<engine name="Halo 3 Epsilon Refresh" version="10" build="11637.07.08.02.2348.release" inherits="Halo 3">
 		<shortName>H3Refresh</shortName>
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3/LayoutsRefresh" />
+			<layouts type="layouts" path="Formats/Halo3/LayoutsRefresh" altPath="Formats/Halo3/Layouts" />
 		</databases>
 	</engine>
 	<engine name="Halo 3 DLC Test" version="10" build="11687.07.08.06.1504.main" inherits="Halo 3">
 		<shortName>H3DLC</shortName>
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3/LayoutsDLC" />
+			<layouts type="layouts" path="Formats/Halo3/LayoutsDLC" altPath="Formats/Halo3/Layouts" />
 		</databases>
 	</engine>
 	<engine name="Halo 3 Expo" version="11" build="11729.07.08.10.0021.main" inherits="Halo 3">
@@ -714,14 +719,14 @@
 	<engine name="Halo 4 08912" version="12" build="08912.11.11.14.2334.jmalbert" inherits="Halo 4 07556">
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo4_2011/H4Nov2011_StringIDs.xml" />
-			<layouts type="layouts" path="Formats/Halo4_2011/LayoutsNov2011" />
+			<layouts type="layouts" path="Formats/Halo4_2011/LayoutsNov2011" altPath="Formats/Halo4_2011/LayoutsOct2011" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 4 09550" version="12" build="09550.11.12.21.0300.main" inherits="Halo 4 07556">
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo4_2011/H4Dec2011_StringIDs.xml" />
-			<layouts type="layouts" path="Formats/Halo4_2011/LayoutsDec2011" />
+			<layouts type="layouts" path="Formats/Halo4_2011/LayoutsDec2011" altPath="Formats/Halo4_2011/LayoutsOct2011" />
 		</databases>
 	</engine>
 
@@ -832,6 +837,18 @@
 	<engine name="Halo 4 TU7" version="12" build="21501.13.08.06.2311.main" inherits="Halo 4" />
 	<engine name="Halo 4 TU8" version="12" build="21522.13.10.17.1936.main" inherits="Halo 4" />
 
+	<!-- Halo 4 Testchambers -->
+	<engine name="Halo 4 TC 16316" version="12" build="16316.12.06.29.0200.main" inherits="Halo 4 E3 Keynote" />
+	<engine name="Halo 4 TC 16531" version="12" build="16531.12.07.05.0200.main" inherits="Halo 4 E3 Keynote" />
+	<engine name="Halo 4 TC 16587" version="12" build="16587.12.07.05.2141.precert" inherits="Halo 4 E3 Keynote" />
+	<engine name="Halo 4 TC Jul17" version="12" build="Jul 17 2012 19.41.27" inherits="Halo 4 E3 Keynote" />
+	<engine name="Halo 4 TC 17539" version="12" build="17539.12.07.24.0200.main" inherits="Halo 4 E3 Keynote" />
+	<engine name="Halo 4 TC 18223" version="12" build="18223.12.08.06.0200.main" inherits="Halo 4 E3 Keynote" />
+	<engine name="Halo 4 TC 18845" version="12" build="18845.12.08.16.0200.main" inherits="Halo 4" />
+	<engine name="Halo 4 TC 20190" version="12" build="20190.12.09.05.0200.main" inherits="Halo 4" />
+	<engine name="Halo 4 TC 20703" version="12" build="20703.12.09.16.0400.main" inherits="Halo 4" />
+	<engine name="Halo 4 TC 20744" version="12" build="20744.12.09.18.0100.main" inherits="Halo 4" />
+
 	<!-- Reach MCC -->
 	<engine name="Halo: Reach MCC Flight 1" version="12" build="Jun 24 2019 00:36:03">
 		<shortName>ReachMCC_F1</shortName>
@@ -852,6 +869,7 @@
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/ReachMCC/ReachMCC_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/ReachMCC/ReachMCC_U0_Scripting.xml" />
 			<poking type="poking" path="Formats/ReachMCC/ReachMCC_Poking.xml" />
 			<layouts type="layouts" path="Formats/ReachMCC/Layouts" />
 		</databases>
@@ -880,7 +898,7 @@
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/ReachMCC/ReachMCC_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_StringIDs.xml" />
-			<scripting type="scripting" path="Formats/ReachMCC/ReachMCC_Scripting.xml" />
+			<scripting type="scripting" path="Formats/ReachMCC/ReachMCC_U0_Scripting.xml" />
 			<poking type="poking" path="Formats/ReachMCC/ReachMCC_Poking.xml" />
 			<layouts type="layouts" path="Formats/ReachMCC/Layouts" />
 		</databases>
@@ -917,9 +935,9 @@
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/ReachMCC/ReachMCC_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_Stub_StringIDs.xml" />
-			<scripting type="scripting" path="Formats/ReachMCC/ReachMCC_Scripting.xml" />
+			<scripting type="scripting" path="Formats/ReachMCC/ReachMCC_U0_Scripting.xml" />
 			<poking type="poking" path="Formats/ReachMCC/ReachMCC_Poking.xml" />
-			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU3" />
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU3" altPath="Formats/ReachMCC/Layouts" />
 		</databases>
 	</engine>
 
@@ -935,96 +953,107 @@
 
 	<engine name="Halo: Reach MCC Flight 4" version="13" build="Aug 11 2021 15:50:30" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU8" />
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU8" altPath="Formats/ReachMCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo: Reach MCC Update 8" version="13" build="Sep 13 2021 09:49:52" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU8" />
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU8" altPath="Formats/ReachMCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo: Reach MCC Update 9" version="13" build="Sep 17 2021 13:25:40" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU8" />
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU8" altPath="Formats/ReachMCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo: Reach MCC Update 10" version="13" build="Jan 13 2022 00:54:50" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" />
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" altPath="Formats/ReachMCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo: Reach MCC Update 11" version="13" build="Aug  5 2022 20:35:02" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" />
+			<scripting type="scripting" path="Formats/ReachMCC/ReachMCC_U11_Scripting.xml" />
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" altPath="Formats/ReachMCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo: Reach MCC Toolset" version="13" build="Aug 31 2022 11:53:49" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" />
+			<scripting type="scripting" path="Formats/ReachMCC/ReachMCC_U11_Scripting.xml" />
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" altPath="Formats/ReachMCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo: Reach MCC Toolset Fast" version="13" build="Aug 31 2022 11:53:19" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" />
+			<scripting type="scripting" path="Formats/ReachMCC/ReachMCC_U11_Scripting.xml" />
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" altPath="Formats/ReachMCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo: Reach MCC Update 12" version="13" build="Oct 12 2022 01:55:01" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" />
+			<scripting type="scripting" path="Formats/ReachMCC/ReachMCC_U12_Scripting.xml" />
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" altPath="Formats/ReachMCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo: Reach MCC Toolset Update 1" version="13" build="Nov 16 2022 21:11:25" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" />
+			<scripting type="scripting" path="Formats/ReachMCC/ReachMCC_U12_Scripting.xml" />
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" altPath="Formats/ReachMCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo: Reach MCC Toolset Update 1 Fast" version="13" build="Nov 16 2022 21:13:04" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" />
+			<scripting type="scripting" path="Formats/ReachMCC/ReachMCC_U12_Scripting.xml" />
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU10" altPath="Formats/ReachMCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo: Reach MCC Update 13" version="13" build="Jun 21 2023 15:35:31" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU13" />
 			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U13_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/ReachMCC/ReachMCC_U13_Scripting.xml" />
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU13" altPath="Formats/ReachMCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo: Reach MCC Toolset Update 2" version="13" build="Jun 27 2023 08:55:51" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU13" />
 			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U13_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/ReachMCC/ReachMCC_U13_Scripting.xml" />
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU13" altPath="Formats/ReachMCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo: Reach MCC Toolset Update 2 Fast" version="13" build="Jun 27 2023 08:55:19" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU13" />
 			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U13_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/ReachMCC/ReachMCC_U13_Scripting.xml" />
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU13" altPath="Formats/ReachMCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo: Reach MCC Toolset Update 3" version="13" build="Jul 16 2023 16:12:13" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU13" />
 			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U13_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/ReachMCC/ReachMCC_U13_Scripting.xml" />
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU13" altPath="Formats/ReachMCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo: Reach MCC Toolset Update 3 Fast" version="13" build="Jul 16 2023 16:08:14" inherits="Halo: Reach MCC Update 3">
 		<databases>
-			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU13" />
 			<stringIds type="stringIds" path="Formats/ReachMCC/ReachMCC_U13_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/ReachMCC/ReachMCC_U13_Scripting.xml" />
+			<layouts type="layouts" path="Formats/ReachMCC/LayoutsU13" altPath="Formats/ReachMCC/Layouts" />
 		</databases>
 	</engine>
 
@@ -1049,7 +1078,7 @@
 		<databases>
 			<layouts type="layouts" path="Formats/Halo1/Layouts" />
 			<groupNames type="groupNames" path="Formats/Halo1/H1_GroupNames.xml" />
-			<scripting type="scripting" path="Formats/Halo1/H1AMCC_Scripting.xml" />
+			<scripting type="scripting" path="Formats/Halo1/H1AMCC_U0_Scripting.xml" />
 			<poking type="poking" path="Formats/Halo1/H1AMCC_Poking.xml" />
 			<hudMessageSymbols type="hudMessageSymbols" path="Formats/Halo1/H1_HudMessageSymbols.xml" />
 		</databases>
@@ -1060,6 +1089,9 @@
 			<segmentAlignment>0x1</segmentAlignment>
 			<compression>none</compression>
 		</engineInfo>
+		<databases>
+			<scripting type="scripting" path="Formats/Halo1/H1AMCC_U1_Scripting.xml" />
+		</databases>
 	</engine>
 	
 	<engine name="Halo 1 Anniversary MCC Invader" version="13" build="Invader " looseBuild="true" inherits="Halo 1 Anniversary MCC">
@@ -1097,14 +1129,16 @@
 			<localeSymbols type="localeSymbols" path="Formats/Halo2MCC/H2MCC_LocaleSymbols.xml" />
 			<layouts type="layouts" path="Formats/Halo2MCC/Layouts" />
 			<groupNames type="groupNames" path="Formats/Halo2Vista/H2V_GroupNames.xml" />
-			<scripting type="scripting" path="Formats/Halo2MCC/H2MCC_Scripting.xml" />
+			<scripting type="scripting" path="Formats/Halo2MCC/H2MCC_U0_Scripting.xml" />
 			<poking type="poking" path="Formats/Halo2MCC/H2MCC_Poking.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 2 MCC Update 1" version="13" build="" inherits="Halo 2 MCC">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo2MCC/LayoutsU1" />
+			<layouts type="layouts" path="Formats/Halo2MCC/LayoutsU1" altPath="Formats/Halo2MCC/Layouts" />
+			<!-- due to not having an untracked date string to create anchors, you will manually need to swap the script xml reference out with previous versions as needed. -->
+			<scripting type="scripting" path="Formats/Halo2MCC/H2MCC_2023Jul_Scripting.xml" />
 		</databases>
 	</engine>
 
@@ -1131,7 +1165,7 @@
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/Halo2AMCC/H2AMCC_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/Halo2AMCC/H2AMCC_UUI49_StringIDs.xml" />
-			<scripting type="scripting" path="Formats/Halo2AMCC/H2AMCC_Scripting.xml" />
+			<scripting type="scripting" path="Formats/Halo2AMCC/H2AMCC_U0_Scripting.xml" />
 			<layouts type="layouts" path="Formats/Halo2AMCC/Layouts" />
 		</databases>
 	</engine>
@@ -1162,7 +1196,7 @@
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/Halo2AMCC/H2AMCC_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/Halo2AMCC/H2AMCC_StringIDs.xml" />
-			<scripting type="scripting" path="Formats/Halo2AMCC/H2AMCC_Scripting.xml" />
+			<scripting type="scripting" path="Formats/Halo2AMCC/H2AMCC_U0_Scripting.xml" />
 			<poking type="poking" path="Formats/Halo2AMCC/H2AMCC_Poking.xml" />
 			<layouts type="layouts" path="Formats/Halo2AMCC/Layouts" />
 		</databases>
@@ -1242,9 +1276,9 @@
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/Halo2AMCC/H2AMCC_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/Halo2AMCC/H2AMCC_Stub_StringIDs.xml" />
-			<scripting type="scripting" path="Formats/Halo2AMCC/H2AMCC_Scripting.xml" />
+			<scripting type="scripting" path="Formats/Halo2AMCC/H2AMCC_U0_Scripting.xml" />
 			<poking type="poking" path="Formats/Halo2AMCC/H2AMCC_Poking.xml" />
-			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU8" />
+			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU8" altPath="Formats/Halo2AMCC/Layouts" />
 		</databases>
 	</engine>
 
@@ -1252,49 +1286,57 @@
 
 	<engine name="Halo 2 Anniversary MCC Update 10" version="13" build="Oct 14 2022 21:11:35" inherits="Halo 2 Anniversary MCC Update 8">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" />
+			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" altPath="Formats/Halo2AMCC/Layouts" />
+			<scripting type="scripting" path="Formats/Halo2AMCC/H2AMCC_U10_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 2 Anniversary MCC Toolset" version="13" build="Dec  6 2022 11:13:38" inherits="Halo 2 Anniversary MCC Update 8">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" />
+			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" altPath="Formats/Halo2AMCC/Layouts" />
+			<scripting type="scripting" path="Formats/Halo2AMCC/H2AMCC_U10_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 2 Anniversary MCC Toolset Fast" version="13" build="Dec  6 2022 11:13:46" inherits="Halo 2 Anniversary MCC Update 8">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" />
+			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" altPath="Formats/Halo2AMCC/Layouts" />
+			<scripting type="scripting" path="Formats/Halo2AMCC/H2AMCC_U10_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 2 Anniversary MCC Update 11" version="13" build="Jun 13 2023 20:21:18" inherits="Halo 2 Anniversary MCC Update 8">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" />
+			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" altPath="Formats/Halo2AMCC/Layouts" />
+			<scripting type="scripting" path="Formats/Halo2AMCC/H2AMCC_U11_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 2 Anniversary MCC Toolset Update 1" version="13" build="Jun 27 2023 08:47:43" inherits="Halo 2 Anniversary MCC Update 8">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" />
+			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" altPath="Formats/Halo2AMCC/Layouts" />
+			<scripting type="scripting" path="Formats/Halo2AMCC/H2AMCC_U11_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 2 Anniversary MCC Toolset Update 1 Fast" version="13" build="Jun 27 2023 08:47:52" inherits="Halo 2 Anniversary MCC Update 8">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" />
+			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" altPath="Formats/Halo2AMCC/Layouts" />
+			<scripting type="scripting" path="Formats/Halo2AMCC/H2AMCC_U11_Scripting.xml" />
 		</databases>
 	</engine>
 	
 	<engine name="Halo 2 Anniversary MCC Toolset Update 2" version="13" build="Jan  3 2024 10:26:12" inherits="Halo 2 Anniversary MCC Update 8">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" />
+			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" altPath="Formats/Halo2AMCC/Layouts" />
+			<scripting type="scripting" path="Formats/Halo2AMCC/H2AMCC_U11_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 2 Anniversary MCC Toolset Update 2 Fast" version="13" build="Jan  3 2024 10:26:11" inherits="Halo 2 Anniversary MCC Update 8">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" />
+			<layouts type="layouts" path="Formats/Halo2AMCC/LayoutsU10" altPath="Formats/Halo2AMCC/Layouts" />
+			<scripting type="scripting" path="Formats/Halo2AMCC/H2AMCC_U11_Scripting.xml" />
 		</databases>
 	</engine>
 
@@ -1320,7 +1362,7 @@
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/Halo3MCC/H3MCC_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC2014_StringIDs.xml" />
-			<scripting type="scripting" path="Formats/Halo3MCC/H3MCC_Scripting.xml" />
+			<scripting type="scripting" path="Formats/Halo3MCC/H3MCC_U0_Scripting.xml" />
 			<layouts type="layouts" path="Formats/Halo3MCC/Layouts" />
 		</databases>
 	</engine>
@@ -1364,7 +1406,7 @@
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/Halo3MCC/H3MCC_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_StringIDs.xml" />
-			<scripting type="scripting" path="Formats/Halo3MCC/H3MCC_Scripting.xml" />
+			<scripting type="scripting" path="Formats/Halo3MCC/H3MCC_U0_Scripting.xml" />
 			<poking type="poking" path="Formats/Halo3MCC/H3MCC_Poking.xml" />
 			<layouts type="layouts" path="Formats/Halo3MCC/Layouts" />
 		</databases>
@@ -1427,7 +1469,7 @@
 		</databases>
 	</engine>
 
-	<engine name="Halo 3 MCC Flight 3 Main Menu" version="11" build="Oct  7 2020 03:55:07" inherits="Halo 3 MCC Flight"><!-- mainmenu has a different build string -->
+	<engine name="Halo 3 MCC Flight 3 Main Menu" version="11" build="Oct  7 2020 03:55:07" inherits="Halo 3 MCC Flight"><!-- mainmenu had a different build string -->
 		<engineInfo>
 			<usesStringHashes>true</usesStringHashes>
 		</engineInfo>
@@ -1442,6 +1484,7 @@
 		</engineInfo>
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsFU4" altPath="Formats/Halo3MCC/Layouts" />
 		</databases>
 	</engine>
 
@@ -1451,6 +1494,7 @@
 		</engineInfo>
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsFU4" altPath="Formats/Halo3MCC/Layouts" />
 		</databases>
 	</engine>
 
@@ -1460,6 +1504,7 @@
 		</engineInfo>
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsFU4" altPath="Formats/Halo3MCC/Layouts" />
 		</databases>
 	</engine>
 
@@ -1469,6 +1514,7 @@
 		</engineInfo>
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U1_StringIDs.xml" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsFU4" altPath="Formats/Halo3MCC/Layouts" />
 		</databases>
 	</engine>
 
@@ -1478,7 +1524,7 @@
 		</engineInfo>
 		<databases>
 			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_Stub_StringIDs.xml" />
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU6" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsFU6" altPath="Formats/Halo3MCC/Layouts" />
 		</databases>
 	</engine>
 
@@ -1501,9 +1547,9 @@
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/Halo3MCC/H3MCC_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_Stub_StringIDs.xml" />
-			<scripting type="scripting" path="Formats/Halo3MCC/H3MCC_Scripting.xml" />
+			<scripting type="scripting" path="Formats/Halo3MCC/H3MCC_U0_Scripting.xml" />
 			<poking type="poking" path="Formats/Halo3MCC/H3MCC_Poking.xml" />
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU6" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU6" altPath="Formats/Halo3MCC/Layouts" />
 		</databases>
 	</engine>
 
@@ -1517,135 +1563,148 @@
 
 	<engine name="Halo 3 MCC Update 9" version="13" build="Feb 15 2022 01:35:34" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" altPath="Formats/Halo3MCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 3 MCC Toolset Update 2" version="13" build="Apr  6 2022 10:48:27" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" altPath="Formats/Halo3MCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 3 MCC Toolset Update 2 Fast" version="13" build="Apr  6 2022 10:48:46" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" altPath="Formats/Halo3MCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 3 MCC Toolset Update 3" version="13" build="Apr 20 2022 11:55:21" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" altPath="Formats/Halo3MCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 3 MCC Toolset Update 3 Fast" version="13" build="Apr 20 2022 11:56:23" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" altPath="Formats/Halo3MCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 3 MCC Update 10" version="13" build="May  3 2022 12:38:41" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" altPath="Formats/Halo3MCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 3 MCC Toolset Update 4" version="13" build="Jun  8 2022 16:05:04" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" altPath="Formats/Halo3MCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 3 MCC Toolset Update 4 Fast" version="13" build="Jun  8 2022 16:06:30" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" altPath="Formats/Halo3MCC/Layouts" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 3 MCC Update 11" version="13" build="Jul 21 2022 21:15:27" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" altPath="Formats/Halo3MCC/Layouts" />
+			<scripting type="scripting" path="Formats/Halo3MCC/H3MCC_U11_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 3 MCC Toolset Update 5" version="13" build="Aug 21 2022 17:23:29" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" altPath="Formats/Halo3MCC/Layouts" />
+			<scripting type="scripting" path="Formats/Halo3MCC/H3MCC_U11_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 3 MCC Toolset Update 5 Fast" version="13" build="Aug 21 2022 17:24:39" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU9" altPath="Formats/Halo3MCC/Layouts" />
+			<scripting type="scripting" path="Formats/Halo3MCC/H3MCC_U11_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 3 MCC Update 12" version="13" build="Oct 11 2022 04:34:53" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU12" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU12" altPath="Formats/Halo3MCC/Layouts" />
+			<scripting type="scripting" path="Formats/Halo3MCC/H3MCC_U12_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 3 MCC Toolset Update 6" version="13" build="Nov 16 2022 21:16:57" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU12" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU12" altPath="Formats/Halo3MCC/Layouts" />
+			<scripting type="scripting" path="Formats/Halo3MCC/H3MCC_U12_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 3 MCC Toolset Update 6 Fast" version="13" build="Nov 16 2022 21:18:10" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU12" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU12" altPath="Formats/Halo3MCC/Layouts" />
+			<scripting type="scripting" path="Formats/Halo3MCC/H3MCC_U12_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 3 MCC Update 13" version="13" build="May 22 2023 20:10:02" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU13" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU13" altPath="Formats/Halo3MCC/Layouts" />
 			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U13_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/Halo3MCC/H3MCC_U13_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 3 MCC Toolset Update 7" version="13" build="Jun 27 2023 08:39:36" inherits="Halo 3 MCC Update 6">
 		<!--tool and tool fast landed on the same build time so just need 1-->
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU13" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU13" altPath="Formats/Halo3MCC/Layouts" />
 			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U13_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/Halo3MCC/H3MCC_U13_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 3 MCC Toolset Update 8" version="13" build="Sep  1 2023 11:01:27" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU13" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU13" altPath="Formats/Halo3MCC/Layouts" />
 			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U13_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/Halo3MCC/H3MCC_U13_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 3 MCC Toolset Update 8 Fast" version="13" build="Sep  1 2023 11:01:50" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU13" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU13" altPath="Formats/Halo3MCC/Layouts" />
 			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U13_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/Halo3MCC/H3MCC_U13_Scripting.xml" />
 		</databases>
 	</engine>
 	
 	<engine name="Halo 3 MCC Update 14" version="13" build="Dec 21 2023 22:31:37" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU13" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU13" altPath="Formats/Halo3MCC/Layouts" />
 			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U13_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/Halo3MCC/H3MCC_U14_Scripting.xml" />
 		</databases>
 	</engine>
 	
 	<engine name="Halo 3 MCC Toolset Update 9" version="13" build="Jan  3 2024 10:08:58" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU13" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU13" altPath="Formats/Halo3MCC/Layouts" />
 			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U13_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/Halo3MCC/H3MCC_U14_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 3 MCC Toolset Update 9 Fast" version="13" build="Jan  3 2024 10:01:45" inherits="Halo 3 MCC Update 6">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU13" />
+			<layouts type="layouts" path="Formats/Halo3MCC/LayoutsU13" altPath="Formats/Halo3MCC/Layouts" />
 			<stringIds type="stringIds" path="Formats/Halo3MCC/H3MCC_U13_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/Halo3MCC/H3MCC_U14_Scripting.xml" />
 		</databases>
 	</engine>
 
@@ -1669,8 +1728,8 @@
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/ODSTMCC/ODSTMCC_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC2015_StringIDs.xml" />
-			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_Scripting.xml" />
-			<layouts type="layouts" path="Formats/ODSTMCC/Layouts2015" />
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_U0_Scripting.xml" />
+			<layouts type="layouts" path="Formats/ODSTMCC/Layouts2015" altPath="Formats/ODSTMCC/Layouts" />
 		</databases>
 	</engine>
 
@@ -1694,32 +1753,54 @@
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/ODSTMCC/ODSTMCC_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC_StringIDs.xml" />
-			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_Scripting.xml" />
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_U0_Scripting.xml" />
 			<poking type="poking" path="Formats/ODSTMCC/ODSTMCC_Poking.xml" />
 			<layouts type="layouts" path="Formats/ODSTMCC/Layouts" />
 		</databases>
 	</engine>
 
-	<engine name="Halo ODST MCC Flight 1" version="11" build="Aug 17 2020 01:12:27" inherits="Halo ODST MCC Flight" />
+	<engine name="Halo ODST MCC Flight 1" version="11" build="Aug 17 2020 01:12:27" inherits="Halo ODST MCC Flight">
+		<databases>
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_FU1_Scripting.xml" />
+		</databases>
+	</engine>
 
-	<engine name="Halo ODST MCC Flight 2" version="11" build="Aug 24 2020 08:37:26" inherits="Halo ODST MCC Flight" />
+	<engine name="Halo ODST MCC Flight 2" version="11" build="Aug 24 2020 08:37:26" inherits="Halo ODST MCC Flight">
+		<databases>
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_FU1_Scripting.xml" />
+		</databases>
+	</engine>
 
-	<engine name="Halo ODST MCC" version="11" build="Aug 28 2020 08:43:36" inherits="Halo ODST MCC Flight" />
+	<engine name="Halo ODST MCC" version="11" build="Aug 28 2020 08:43:36" inherits="Halo ODST MCC Flight">
+		<databases>
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_FU1_Scripting.xml" />
+		</databases>
+	</engine>
 
-	<engine name="Halo ODST MCC Update 1" version="11" build="Sep 29 2020 10:59:04" inherits="Halo ODST MCC Flight" />
+	<engine name="Halo ODST MCC Update 1" version="11" build="Sep 29 2020 10:59:04" inherits="Halo ODST MCC Flight">
+		<databases>
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_FU1_Scripting.xml" />
+		</databases>
+	</engine>
 
-	<engine name="Halo ODST MCC Update 2" version="11" build="Dec  4 2020 18:24:06" inherits="Halo ODST MCC Flight" />
+	<engine name="Halo ODST MCC Update 2" version="11" build="Dec  4 2020 18:24:06" inherits="Halo ODST MCC Flight">
+		<databases>
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_FU1_Scripting.xml" />
+		</databases>
+	</engine>
 
 	<engine name="Halo ODST MCC Flight 3" version="13" build="Aug 25 2021 03:35:05" inherits="Halo ODST MCC Flight">
 		<databases>
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU3" />
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsFU3" altPath="Formats/ODSTMCC/Layouts" />
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_FU3_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo ODST MCC Update 3" version="13" build="Sep 18 2021 21:15:55" inherits="Halo ODST MCC Flight">
 		<databases>
 			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC_Stub_StringIDs.xml" />
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU3" />
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU3" altPath="Formats/ODSTMCC/Layouts" />
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_U3_Scripting.xml" />
 		</databases>
 	</engine>
 
@@ -1742,9 +1823,9 @@
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/ODSTMCC/ODSTMCC_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC_Stub_StringIDs.xml" />
-			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_Scripting.xml" />
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_U4_Scripting.xml" />
 			<poking type="poking" path="Formats/ODSTMCC/ODSTMCC_Poking.xml" />
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU4" />
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU4" altPath="Formats/ODSTMCC/Layouts" />
 		</databases>
 	</engine>
 
@@ -1762,76 +1843,98 @@
 
 	<engine name="Halo ODST MCC Toolset Update 2 Fast" version="13" build="May  3 2022 12:27:08" inherits="Halo ODST MCC Update 4" />
 
-	<engine name="Halo ODST MCC Update 6" version="13" build="Jul 22 2022 05:55:30" inherits="Halo ODST MCC Update 4" />
+	<engine name="Halo ODST MCC Update 6" version="13" build="Jul 22 2022 05:55:30" inherits="Halo ODST MCC Update 4">
+		<databases>
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_U6_Scripting.xml" />
+		</databases>
+	</engine>
 
-	<engine name="Halo ODST MCC Toolset Update 3" version="13" build="Aug 21 2022 17:29:59" inherits="Halo ODST MCC Update 4" />
+	<engine name="Halo ODST MCC Toolset Update 3" version="13" build="Aug 21 2022 17:29:59" inherits="Halo ODST MCC Update 4">
+		<databases>
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_U6_Scripting.xml" />
+		</databases>
+	</engine>
 
-	<engine name="Halo ODST MCC Toolset Update 3 Fast" version="13" build="Aug 21 2022 17:30:28" inherits="Halo ODST MCC Update 4" />
+	<engine name="Halo ODST MCC Toolset Update 3 Fast" version="13" build="Aug 21 2022 17:30:28" inherits="Halo ODST MCC Update 4">
+		<databases>
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_U6_Scripting.xml" />
+		</databases>
+	</engine>
 
 	<engine name="Halo ODST MCC Update 7" version="13" build="Oct 24 2022 03:07:19" inherits="Halo ODST MCC Update 4">
 		<databases>
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU7" />
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU7" altPath="Formats/ODSTMCC/Layouts" />
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_U7_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo ODST MCC Toolset Update 4" version="13" build="Nov 16 2022 20:57:46" inherits="Halo ODST MCC Update 4">
 		<databases>
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU7" />
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU7" altPath="Formats/ODSTMCC/Layouts" />
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_U7_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo ODST MCC Toolset Update 4 Fast" version="13" build="Nov 16 2022 20:59:16" inherits="Halo ODST MCC Update 4">
 		<databases>
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU7" />
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU7" altPath="Formats/ODSTMCC/Layouts" />
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_U7_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo ODST MCC Update 8" version="13" build="May 16 2023 11:44:41" inherits="Halo ODST MCC Update 4">
 		<databases>
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" />
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" altPath="Formats/ODSTMCC/Layouts" />
 			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC_U8_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_U8_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo ODST MCC Toolset Update 5" version="13" build="Jun 27 2023 08:39:51" inherits="Halo ODST MCC Update 4">
 		<databases>
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" />
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" altPath="Formats/ODSTMCC/Layouts" />
 			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC_U8_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_U8_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo ODST MCC Toolset Update 5 Fast" version="13" build="Jun 27 2023 08:39:50" inherits="Halo ODST MCC Update 4">
 		<databases>
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" />
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" altPath="Formats/ODSTMCC/Layouts" />
 			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC_U8_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_U8_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo ODST MCC Toolset Update 6" version="13" build="Jul 16 2023 15:51:04" inherits="Halo ODST MCC Update 4">
 		<databases>
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" />
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" altPath="Formats/ODSTMCC/Layouts" />
 			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC_U8_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_U8_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo ODST MCC Toolset Update 6 Fast" version="13" build="Jul 16 2023 15:52:04" inherits="Halo ODST MCC Update 4">
 		<databases>
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" />
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" altPath="Formats/ODSTMCC/Layouts" />
 			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC_U8_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_U8_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo ODST MCC Toolset Update 7" version="13" build="Sep  1 2023 10:55:15" inherits="Halo ODST MCC Update 4">
 		<databases>
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" />
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" altPath="Formats/ODSTMCC/Layouts" />
 			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC_U8_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_U8_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo ODST MCC Toolset Update 7 Fast" version="13" build="Sep  1 2023 10:55:29" inherits="Halo ODST MCC Update 4">
 		<databases>
-			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" />
+			<layouts type="layouts" path="Formats/ODSTMCC/LayoutsU8" altPath="Formats/ODSTMCC/Layouts" />
 			<stringIds type="stringIds" path="Formats/ODSTMCC/ODSTMCC_U8_Stub_StringIDs.xml" />
+			<scripting type="scripting" path="Formats/ODSTMCC/ODSTMCC_U8_Scripting.xml" />
 		</databases>
 	</engine>
 
@@ -1859,7 +1962,7 @@
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/Halo4MCC/H4MCC_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/Halo4MCC/H4MCC2014B_StringIDs.xml" />
-			<scripting type="scripting" path="Formats/Halo4MCC/H4MCC_Scripting.xml" />
+			<scripting type="scripting" path="Formats/Halo4MCC/H4MCC_U0_Scripting.xml" />
 			<layouts type="layouts" path="Formats/Halo4MCC/Layouts" />
 		</databases>
 	</engine>
@@ -1901,7 +2004,7 @@
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/Halo4MCC/H4MCC_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/Halo4MCC/H4MCC_StringIDs.xml" />
-			<scripting type="scripting" path="Formats/Halo4MCC/H4MCC_Scripting.xml" />
+			<scripting type="scripting" path="Formats/Halo4MCC/H4MCC_U0_Scripting.xml" />
 			<poking type="poking" path="Formats/Halo4MCC/H4MCC_Poking.xml" />
 			<layouts type="layouts" path="Formats/Halo4MCC/Layouts" />
 		</databases>
@@ -1962,9 +2065,9 @@
 		<databases>
 			<localeSymbols type="localeSymbols" path="Formats/Halo4MCC/H4MCC_LocaleSymbols.xml" />
 			<stringIds type="stringIds" path="Formats/Halo4MCC/H4MCC_Stub_StringIDs.xml" />
-			<scripting type="scripting" path="Formats/Halo4MCC/H4MCC_Scripting.xml" />
+			<scripting type="scripting" path="Formats/Halo4MCC/H4MCC_U0_Scripting.xml" />
 			<poking type="poking" path="Formats/Halo4MCC/H4MCC_Poking.xml" />
-			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU4" />
+			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU4" altPath="Formats/Halo4MCC/Layouts" />
 		</databases>
 	</engine>
 
@@ -1972,37 +2075,43 @@
 
 	<engine name="Halo 4 MCC Update 6" version="13" build="Oct 17 2022 21:26:14" inherits="Halo 4 MCC Update 4">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU6" />
+			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU6" altPath="Formats/Halo4MCC/Layouts" />
+			<scripting type="scripting" path="Formats/Halo4MCC/H4MCC_U6_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 4 MCC Toolset" version="13" build="Dec  6 2022 11:23:50" inherits="Halo 4 MCC Update 4">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU6" />
+			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU6" altPath="Formats/Halo4MCC/Layouts" />
+			<scripting type="scripting" path="Formats/Halo4MCC/H4MCC_U6_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 4 MCC Toolset Fast" version="13" build="Dec  6 2022 11:26:37" inherits="Halo 4 MCC Update 4">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU6" />
+			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU6" altPath="Formats/Halo4MCC/Layouts" />
+			<scripting type="scripting" path="Formats/Halo4MCC/H4MCC_U6_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 4 MCC Update 7" version="13" build="Apr  1 2023 17:35:22" inherits="Halo 4 MCC Update 4">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU6" />
+			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU6" altPath="Formats/Halo4MCC/Layouts" />
+			<scripting type="scripting" path="Formats/Halo4MCC/H4MCC_U7_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 4 MCC Toolset Update 1" version="13" build="Jun 27 2023 08:46:47" inherits="Halo 4 MCC Update 4">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU6" />
+			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU6" altPath="Formats/Halo4MCC/Layouts" />
+			<scripting type="scripting" path="Formats/Halo4MCC/H4MCC_U7_Scripting.xml" />
 		</databases>
 	</engine>
 
 	<engine name="Halo 4 MCC Toolset Update 1 Fast" version="13" build="Jun 27 2023 08:47:24" inherits="Halo 4 MCC Update 4">
 		<databases>
-			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU6" />
+			<layouts type="layouts" path="Formats/Halo4MCC/LayoutsU6" altPath="Formats/Halo4MCC/Layouts" />
+			<scripting type="scripting" path="Formats/Halo4MCC/H4MCC_U7_Scripting.xml" />
 		</databases>
 	</engine>
 
@@ -2062,7 +2171,7 @@
 			<stringIds type="stringIds" path="Formats/HaloOnline/HO_StringIDs.xml" />
 			<localeSymbols type="localeSymbols" path="Formats/HaloOnline/HO_MS25_LocaleSymbols.xml" />
 			<scripting type="scripting" path="Formats/HaloOnline/HO_MS25_Scripting.xml" />
-			<layouts type="layouts" path="Formats/HaloOnline/LayoutsMS25" />
+			<layouts type="layouts" path="Formats/HaloOnline/LayoutsMS25" altPath="Formats/HaloOnline/Layouts" />
 			<poking type="poking" path="Formats/HaloOnline/HO_Poking.xml" />
 		</databases>
 	</engine>
@@ -2072,6 +2181,7 @@
 		<plugins>HaloOnline/MS26</plugins>
 		<databases>
 			<scripting type="scripting" path="Formats/HaloOnline/HO_MS26_Scripting.xml" />
+			<layouts type="layouts" path="Formats/HaloOnline/LayoutsMS26" altPath="Formats/HaloOnline/Layouts" />
 		</databases>
 	</engine>
 
@@ -2080,6 +2190,7 @@
 		<plugins>HaloOnline/MS26</plugins>
 		<databases>
 			<scripting type="scripting" path="Formats/HaloOnline/HO_MS26_Scripting.xml" />
+			<layouts type="layouts" path="Formats/HaloOnline/LayoutsMS26" altPath="Formats/HaloOnline/Layouts" />
 		</databases>
 	</engine>
 
@@ -2102,7 +2213,7 @@
 			<stringIds type="stringIds" path="Formats/HaloOnline/HO_StringIDs.xml" />
 			<localeSymbols type="localeSymbols" path="Formats/HaloOnline/HO_MS25_LocaleSymbols.xml" />
 			<scripting type="scripting" path="Formats/HaloOnline/HO_372_Scripting.xml" />
-			<layouts type="layouts" path="Formats/HaloOnline/LayoutsMS25" />
+			<layouts type="layouts" path="Formats/HaloOnline/LayoutsMS26" altPath="Formats/HaloOnline/Layouts" />
 			<poking type="poking" path="Formats/HaloOnline/HO_Poking.xml" />
 		</databases>
 	</engine>
@@ -2154,7 +2265,7 @@
 			<stringIds type="stringIds" path="Formats/HaloOnline/HO_ZBT_StringIDs.xml" />
 			<localeSymbols type="localeSymbols" path="Formats/HaloOnline/HO_MS25_LocaleSymbols.xml" />
 			<scripting type="scripting" path="Formats/HaloOnline/HO_ZBT_Scripting.xml" />
-			<layouts type="layouts" path="Formats/HaloOnline/LayoutsZBT" />
+			<layouts type="layouts" path="Formats/HaloOnline/LayoutsZBT" altPath="Formats/HaloOnline/Layouts" />
 			<poking type="poking" path="Formats/HaloOnline/HO_Poking.xml" />
 		</databases>
 	</engine>

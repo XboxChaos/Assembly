@@ -157,7 +157,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			if (!_zone)
 				return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("resource layout table"));
 			else
-				return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("resource layout table alt"));
+				return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("resource gestalt"));
 		}
 
 		private void SaveTag(StructureValueCollection values, IWriter writer)
@@ -166,7 +166,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			if (!_zone)
 				StructureWriter.WriteStructure(values, _buildInfo.Layouts.GetLayout("resource layout table"), writer);
 			else
-				StructureWriter.WriteStructure(values, _buildInfo.Layouts.GetLayout("resource layout table alt"), writer);
+				StructureWriter.WriteStructure(values, _buildInfo.Layouts.GetLayout("resource gestalt"), writer);
 		}
 
 		private ThirdGenCacheFileReference[] LoadExternalFiles(StructureValueCollection values, IReader reader)

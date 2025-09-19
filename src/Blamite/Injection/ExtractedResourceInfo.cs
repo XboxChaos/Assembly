@@ -168,17 +168,17 @@ namespace Blamite.Injection
 		public int BaseDefinitionAddress { get; set; }
 	}
 
-	public class ExtractedResourcePredictionD
+	public class ExtractedResourcePredictionMolecule
 	{
-		public ExtractedResourcePredictionD()
+		public ExtractedResourcePredictionMolecule()
 		{
-			CEntries = new List<ExtractedResourcePredictionC>();
-			AEntries = new List<ExtractedResourcePredictionA>();
+			MoleculeAtoms = new List<ExtractedResourcePredictionMoleculeAtom>();
+			Quantas = new List<ExtractedResourcePredictionQuanta>();
 		}
-		public ExtractedResourcePredictionD(ResourcePredictionD pred)
+		public ExtractedResourcePredictionMolecule(ResourcePredictionMolecule pred)
 		{
-			CEntries = new List<ExtractedResourcePredictionC>();
-			AEntries = new List<ExtractedResourcePredictionA>();
+			MoleculeAtoms = new List<ExtractedResourcePredictionMoleculeAtom>();
+			Quantas = new List<ExtractedResourcePredictionQuanta>();
 
 			OriginalIndex = pred.Index;
 			OriginalTagIndex = pred.Tag.Index;
@@ -191,50 +191,50 @@ namespace Blamite.Injection
 		public int Unknown1 { get; set; }
 		public int Unknown2 { get; set; }
 
-		public List<ExtractedResourcePredictionC> CEntries { get; private set; }
-		public List<ExtractedResourcePredictionA> AEntries { get; private set; }
+		public List<ExtractedResourcePredictionMoleculeAtom> MoleculeAtoms { get; private set; }
+		public List<ExtractedResourcePredictionQuanta> Quantas { get; private set; }
 
 		public int OriginalIndex { get; set; }
 	}
 
-	public class ExtractedResourcePredictionC
+	public class ExtractedResourcePredictionMoleculeAtom
 	{
-		public ExtractedResourcePredictionC() { }
-		public ExtractedResourcePredictionC(ResourcePredictionC pred)
+		public ExtractedResourcePredictionMoleculeAtom() { }
+		public ExtractedResourcePredictionMoleculeAtom(ResourcePredictionMoleculeAtom pred)
 		{
 			OriginalIndex = pred.Index;
+			Salt = pred.Salt;
+			BEntry = new ExtractedResourcePredictionAtom(pred.Atom);
+		}
+
+		public int OriginalIndex { get; set; }
+		public ushort Salt { get; set; }
+		public ExtractedResourcePredictionAtom BEntry { get; set; }
+	}
+
+	public class ExtractedResourcePredictionAtom
+	{
+		public ExtractedResourcePredictionAtom()
+		{
+			Quantas = new List<ExtractedResourcePredictionQuanta>();
+		}
+		public ExtractedResourcePredictionAtom(ResourcePredictionAtom pred)
+		{
+			Quantas = new List<ExtractedResourcePredictionQuanta>();
+
+			OriginalIndex = pred.Index;
 			OverallIndex = pred.OverallIndex;
-			BEntry = new ExtractedResourcePredictionB(pred.BEntry);
 		}
 
 		public int OriginalIndex { get; set; }
 		public short OverallIndex { get; set; }
-		public ExtractedResourcePredictionB BEntry { get; set; }
+		public List<ExtractedResourcePredictionQuanta> Quantas { get; private set; }
 	}
 
-	public class ExtractedResourcePredictionB
+	public class ExtractedResourcePredictionQuanta
 	{
-		public ExtractedResourcePredictionB()
-		{
-			AEntries = new List<ExtractedResourcePredictionA>();
-		}
-		public ExtractedResourcePredictionB(ResourcePredictionB pred)
-		{
-			AEntries = new List<ExtractedResourcePredictionA>();
-
-			OriginalIndex = pred.Index;
-			OverallIndex = pred.OverallIndex;
-		}
-
-		public int OriginalIndex { get; set; }
-		public short OverallIndex { get; set; }
-		public List<ExtractedResourcePredictionA> AEntries { get; private set; }
-	}
-
-	public class ExtractedResourcePredictionA
-	{
-		public ExtractedResourcePredictionA() { }
-		public ExtractedResourcePredictionA(ResourcePredictionA pred)
+		public ExtractedResourcePredictionQuanta() { }
+		public ExtractedResourcePredictionQuanta(ResourcePredictionQuanta pred)
 		{
 			OriginalIndex = pred.Index;
 			OriginalResourceIndex = pred.Resource;

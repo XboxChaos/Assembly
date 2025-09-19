@@ -81,6 +81,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		public uint Checksum { get; set; }
 
+		public DateTime? BuildDate { get; set; }
+
 		/// <summary>
 		///     Serializes the header's values, storing them into a StructureValueCollection.
 		/// </summary>
@@ -311,6 +313,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 			CalculateStringGroup(values, segmenter);
 
 			Checksum = (uint)values.GetIntegerOrDefault("checksum", 0);
+
+			BuildDate = CacheFileExtensions.AssembleFileTime(values, "cache build date high", "cache build date low");
 		}
 
 		private void LoadInteropData(StructureValueCollection headerValues)

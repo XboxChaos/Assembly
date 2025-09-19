@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using Assembly.Helpers;
+using Assembly.Helpers.Native;
 using Assembly.Helpers.Net;
 using Assembly.Helpers.PostGeneration;
 using Assembly.Metro.Dialogs;
+using Blamite.RTE.Console.Native;
 
 namespace Assembly.Metro.Controls.PageTemplates.Tools
 {
@@ -93,7 +95,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 					screenshotFileName = Path.GetTempFileName();
 					screenshotPng = Path.GetTempFileName();
 
-					if (!App.AssemblyStorage.AssemblySettings.Xbdm.GetScreenshot(screenshotFileName))
+					Screenshot shot = App.AssemblyStorage.AssemblySettings.XenonConsole.GetScreenshot();
+					Bitmap bitmap = shot.ConvertToBitmap(App.AssemblyStorage.AssemblySettings.XdkScreenshotGammaCorrect, App.AssemblyStorage.AssemblySettings.XdkResizeImages);
+
+					if (bitmap == null)
 					{
 						Dispatcher.Invoke(
 							new Action(
@@ -103,7 +108,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 					}
 
 					// do stuff
-					BitmapSource bitmapSource = DDSConversion.Deswizzle(screenshotFileName, 1204, 720, true, true);
+					BitmapSource bitmapSource = ScreenshotHelper.CreateBitmapSource(bitmap);
 
 					// convert to png
 					SaveImage(screenshotPng, bitmapSource);

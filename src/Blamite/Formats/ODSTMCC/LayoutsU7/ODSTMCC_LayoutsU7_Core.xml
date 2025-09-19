@@ -20,6 +20,9 @@
 		<int32 name="string namespace table count" offset="0x40" />
 		<int32 name="string namespace table offset" offset="0x44" />
 
+		<int32 name="cache build date high" offset ="0x50" />
+		<int32 name="cache build date low" offset ="0x54" />
+
 		<asciiz name="build string" offset="0xA0" />
 
 		<asciiz name="internal name" offset="0xC0" />
@@ -37,7 +40,6 @@
 		</array>
 
 		<!-- Interop data -->
-		<!-- S8 flight had these at 0x4AC and 0x4BC, respectively -->
 		<array name="offset masks" offset="0x4CC" count="4" entrySize="0x4">
 			<uint32 name="mask" offset="0x0" />
 		</array>
@@ -48,44 +50,19 @@
 	</layout>
 
 	<!-- Index table header -->
-	<layout for="index header" size="0x48">
-		<int32 name="number of tag groups" offset="0x0" />
-		<uint64 name="tag group table address" offset="0x8" />
-		<int32 name="number of tags" offset="0x10" />
-		<uint64 name="tag table address" offset="0x18" />
-		<int32 name="number of global tags" offset="0x20" />
-		<uint64 name="global tag table address" offset="0x28" />
-		<int32 name="number of tag interops" offset="0x30" />
-		<uint64 name="tag interop table address" offset="0x38" />
-		<int32 name="magic" offset="0x44" />
-	</layout>
+	<layout for="index header" inherits="index header" />
 
 	<!-- Tag group table entry -->
-	<layout for="tag group element" size="0x10">
-		<int32 name="magic" offset="0x0" />
-		<int32 name="parent magic" offset="0x4" />
-		<int32 name="grandparent magic" offset="0x8" />
-		<uint32 name="stringid" offset="0xC" />
-	</layout>
+	<layout for="tag group element" inherits="tag group element" />
 
 	<!-- Tag table entry -->
-	<layout for="tag element" size="0x8">
-		<int16 name="tag group index" offset="0x0" />
-		<uint16 name="datum index salt" offset="0x2" />
-		<uint32 name="memory address" offset="0x4" />
-	</layout>
+	<layout for="tag element" inherits="tag element" />
 
 	<!-- Global tag table entry -->
-	<layout for="global tag element" size="0x8">
-		<int32 name="tag group magic" offset="0x0" />
-		<uint32 name="datum index" offset="0x4" />
-	</layout>
+	<layout for="global tag element" inherits="global tag element" />
 
 	<!-- tag interop table entry -->
-	<layout for="tag interop element" size="0x8">
-		<uint32 name="pointer" offset ="0x0" />
-		<int32 name="type" offset="0x4" />
-	</layout>
+	<layout for="tag interop element" inherits="tag interop element" />
 
 	<!-- Map globals meta -->
 	<layout for="matg">
@@ -99,41 +76,19 @@
 		</array>
 	</layout>
 
-	<layout for="locale index table element" size="0x8">
-		<uint32 name="stringid" offset="0x0" />
-		<uint32 name="offset" offset="0x4" />
-	</layout>
+	<layout for="locale index table element" inherits="locale index table element" />
 
-	<layout for="tag block" size="0xC">
-		<int32 name="entry count" offset="0x0" />
-		<uint32 name="pointer" offset="0x4" />
-	</layout>
+	<layout for="tag block" inherits="tag block" />
 
-	<layout for="tag reference" size="0x10">
-		<int32 name="tag group magic" offset="0x0" />
-		<uint32 name="datum index" offset="0xC" />
-	</layout>
+	<layout for="tag reference" inherits="tag reference" />
 
-	<layout for="data reference" size="0x14">
-		<int32 name="size" offset="0x0" />
-		<uint32 name="pointer" offset="0xC" />
-	</layout>
+	<layout for="data reference" inherits="data reference" />
 
 	<!-- unic (multilingual_unicode_string_list) -->
-	<layout for="unic">
-		<array name="language ranges" offset="0x20" entrySize="0x4" count="12">
-			<int16 name="range start index" offset="0x0" />
-			<int16 name="range size" offset="0x2" />
-		</array>
-	</layout>
-	
+	<layout for="unic" inherits="unic" />
+
 	<!-- sbsp (scenario_structure_bsp) -->
-	<layout for="sbsp">
-		<int32 name="number of instanced geometry" offset="0x1B0" />
-		<uint32 name="instanced geometry table address" offset="0x1B4" />
-	</layout>
-	
-	<layout for="sbsp instanced geometry" size="0x78">
-		<int32 name="name stringid" offset="0x54" />
-	</layout>
+	<layout for="sbsp" inherits="sbsp" />
+
+	<layout for="sbsp instanced geometry" inherits="sbsp instanced geometry" />
 </layouts>

@@ -10,7 +10,7 @@ using Blamite.Serialization;
 using Blamite.Serialization.Settings;
 using Blamite.IO;
 using Blamite.Patching;
-using Blamite.RTE.ThirdGen;
+using Blamite.RTE.PC;
 
 namespace Assembly.Metro.Controls.PageTemplates
 {
@@ -847,8 +847,8 @@ namespace Assembly.Metro.Controls.PageTemplates
 		{
 			try
 			{
-				if (App.AssemblyStorage.AssemblySettings.Xbdm == null ||
-					String.IsNullOrEmpty(App.AssemblyStorage.AssemblySettings.Xbdm.DeviceIdent))
+				if (App.AssemblyStorage.AssemblySettings.XenonConsole == null ||
+					String.IsNullOrEmpty(App.AssemblyStorage.AssemblySettings.XenonConsole.Identifier))
 				{
 					MetroMessageBox.Show("No Xbox 360 Console Detected",
 						"Make sure your xbox 360 console is turned on, and the IP is entered in the App.AssemblyStorage.AssemblySettings.");
@@ -874,17 +874,17 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 					foreach (DataChange change in changes.DataChanges)
 					{
-						App.AssemblyStorage.AssemblySettings.Xbdm.MemoryStream.Seek(currentPatchToPoke.MetaPokeBase + change.Offset,
+						App.AssemblyStorage.AssemblySettings.XenonConsole.ConsoleStream.Seek(currentPatchToPoke.MetaPokeBase + change.Offset,
 							SeekOrigin.Begin);
-						App.AssemblyStorage.AssemblySettings.Xbdm.MemoryStream.Write(change.Data, 0x00, change.Data.Length);
+						App.AssemblyStorage.AssemblySettings.XenonConsole.ConsoleStream.Write(change.Data, 0x00, change.Data.Length);
 					}
 				}
 				else if (currentPatchToPoke.MetaChanges.Count > 0)
 				{
 					foreach (DataChange change in currentPatchToPoke.MetaChanges)
 					{
-						App.AssemblyStorage.AssemblySettings.Xbdm.MemoryStream.Seek(change.Offset, SeekOrigin.Begin);
-						App.AssemblyStorage.AssemblySettings.Xbdm.MemoryStream.Write(change.Data, 0x00, change.Data.Length);
+						App.AssemblyStorage.AssemblySettings.XenonConsole.ConsoleStream.Seek(change.Offset, SeekOrigin.Begin);
+						App.AssemblyStorage.AssemblySettings.XenonConsole.ConsoleStream.Write(change.Data, 0x00, change.Data.Length);
 					}
 				}
 
@@ -927,8 +927,14 @@ namespace Assembly.Metro.Controls.PageTemplates
 					return;
 				}
 
-				var gameRTE = new ThirdGenMCCRTEProvider(pokeInfo);
-				var gameStream = gameRTE.GetMetaStream();
+				var gameRTE = new PCThirdGenRTEProvider(pokeInfo);
+				var gameStream = gameRTE.GetCacheStream();
+				if (gameStream == null)
+				{
+					MetroMessageBox.Show("Poking Error",
+						gameRTE.ErrorMessage);
+					return;
+				}
 
 				if (currentPatchToPoke.MetaChangesIndex >= 0)
 				{

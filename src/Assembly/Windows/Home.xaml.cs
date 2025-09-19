@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -10,6 +11,8 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Resources;
 using System.Windows.Threading;
 using Assembly.Helpers;
@@ -23,9 +26,10 @@ using Assembly.Metro.Dialogs;
 using Xceed.Wpf.AvalonDock.Layout;
 using Blamite.Blam.ThirdGen;
 using Blamite.IO;
+using Blamite.RTE.Console.Native;
+using Blamite.RTE.Console;
 using Microsoft.Win32;
 using XboxChaos.Models;
-using XBDMCommunicator;
 using Xceed.Wpf.AvalonDock.Controls;
 using Assembly.Helpers.Net.Sockets;
 
@@ -241,41 +245,121 @@ namespace Assembly.Windows
 			AddTabModule(TabGenre.NetworkPoking);
 		}
 
-		//xbdm
-		private void menuScreenshot_Click(object sender, RoutedEventArgs e)
+		private void menuTagListings_Click(object sender, RoutedEventArgs e)
 		{
-			var screenshotFileName = Path.GetTempFileName();
+			AddTabModule(TabGenre.TagListings);
+		}
+
+		//og console
+		private void ShowOGConnectError()
+		{
+			MetroMessageBox.Show("Not Connected", "You are not connected to a debug Xbox.");
+		}
+
+		private void menuOGScreenshot_Click(object sender, RoutedEventArgs e)
+		{
 			try
 			{
-				if (App.AssemblyStorage.AssemblySettings.Xbdm.GetScreenshot(screenshotFileName))
-					App.AssemblyStorage.AssemblySettings.HomeWindow.AddScrenTabModule(screenshotFileName);
+				Screenshot shot = App.AssemblyStorage.AssemblySettings.XboxConsole.GetScreenshot(App.AssemblyStorage.AssemblySettings.XdkScreenshotFreeze);
+
+				if (shot != null)
+					App.AssemblyStorage.AssemblySettings.HomeWindow.AddScreenTabModule(shot, "Xbox");
 				else
-					MetroMessageBox.Show("Not Connected", "You are not connected to a debug Xbox 360.");
+					ShowOGConnectError();
 			}
-			finally
+			catch { }
+		}
+
+		private void menuOGStop_Click(object sender, RoutedEventArgs e)
+		{
+			if (!App.AssemblyStorage.AssemblySettings.XboxConsole.Stop())
+				ShowOGConnectError();
+		}
+
+
+		private void menuOGGo_Click(object sender, RoutedEventArgs e)
+		{
+			if (!App.AssemblyStorage.AssemblySettings.XboxConsole.Go())
+				ShowOGConnectError();
+		}
+
+		private void menuOGRebootCold_Click(object sender, RoutedEventArgs e)
+		{
+			if (!App.AssemblyStorage.AssemblySettings.XboxConsole.Reboot(RebootType.Cold))
+				ShowOGConnectError();
+		}
+
+		private void menuOGRebootSoft_Click(object sender, RoutedEventArgs e)
+		{
+			if (!App.AssemblyStorage.AssemblySettings.XboxConsole.Reboot(RebootType.Soft))
+				ShowOGConnectError();
+		}
+
+		private void menuOGRebootTitle_Click(object sender, RoutedEventArgs e)
+		{
+			if (!App.AssemblyStorage.AssemblySettings.XboxConsole.Reboot(RebootType.Title))
+				ShowOGConnectError();
+		}
+
+		private void menuOGSyncTime_Click(object sender, RoutedEventArgs e)
+		{
+			if (!App.AssemblyStorage.AssemblySettings.XboxConsole.SetSystemTime())
+				ShowOGConnectError();
+		}
+
+		//360 console
+		private void Show360ConnectError()
+		{
+			MetroMessageBox.Show("Not Connected", "You are not connected to a debug Xbox 360.");
+		}
+
+		private void menu360Screenshot_Click(object sender, RoutedEventArgs e)
+		{
+			try
 			{
-				File.Delete(screenshotFileName);
+				Screenshot shot = App.AssemblyStorage.AssemblySettings.XenonConsole.GetScreenshot(App.AssemblyStorage.AssemblySettings.XdkScreenshotFreeze);
+				if (shot != null)
+					App.AssemblyStorage.AssemblySettings.HomeWindow.AddScreenTabModule(shot, "Xbox 360");
+				else
+					Show360ConnectError();
 			}
+			catch { }
 		}
 
-		private void menuFreeze_Click(object sender, RoutedEventArgs e)
+		private void menu360Stop_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.Xbdm.Freeze();
+			if (!App.AssemblyStorage.AssemblySettings.XenonConsole.Stop())
+				Show360ConnectError();
 		}
 
-		private void menuUnfreeze_Click(object sender, RoutedEventArgs e)
+		private void menu360Go_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.Xbdm.Unfreeze();
+			if (!App.AssemblyStorage.AssemblySettings.XenonConsole.Go())
+				Show360ConnectError();
 		}
 
-		private void menuRebootTitle_Click(object sender, RoutedEventArgs e)
+		private void menu360RebootCold_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.Xbdm.Reboot(Xbdm.RebootType.Title);
+			if (!App.AssemblyStorage.AssemblySettings.XenonConsole.Reboot(RebootType.Cold))
+				Show360ConnectError(); ;
 		}
 
-		private void menuRebootCold_Click(object sender, RoutedEventArgs e)
+		private void menu360RebootSoft_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.Xbdm.Reboot(Xbdm.RebootType.Cold);
+			if (!App.AssemblyStorage.AssemblySettings.XenonConsole.Reboot(RebootType.Soft))
+				Show360ConnectError();
+		}
+
+		private void menu360RebootTitle_Click(object sender, RoutedEventArgs e)
+		{
+			if (!App.AssemblyStorage.AssemblySettings.XenonConsole.Reboot(RebootType.Title))
+				Show360ConnectError();
+		}
+
+		private void menu360SyncTime_Click(object sender, RoutedEventArgs e)
+		{
+			if (!App.AssemblyStorage.AssemblySettings.XenonConsole.SetSystemTime())
+				Show360ConnectError();
 		}
 
 		// Help
@@ -527,7 +611,8 @@ namespace Assembly.Windows
 			PostGenerator,
 			MapNames,
 			NetworkPoking,
-			MapCompressor
+			MapCompressor,
+			TagListings
 		}
 
 		public void ExternalTabClose(TabGenre tabGenre)
@@ -587,16 +672,16 @@ namespace Assembly.Windows
 		/// <summary>
 		///     Add a new XBox Screenshot Editor Container
 		/// </summary>
-		/// <param name="tempImageLocation">Path to the temporary location of the image</param>
-		public void AddScrenTabModule(string tempImageLocation)
+		/// <param name="bitmap">The image</param>
+		/// <param name="source">The console type that took the image, for tab title and tooltip</param>
+		public void AddScreenTabModule(Screenshot shot, string source)
 		{
 			var newScreenshotTab = new LayoutDocument
 			{
-				ContentId = tempImageLocation,
-				Title = "Screenshot",
-				ToolTip = tempImageLocation
+				ContentId = DateTime.Now.ToString(),
+				ToolTip = source + " Screenshot",
 			};
-			newScreenshotTab.Content = new HaloScreenshot(tempImageLocation, newScreenshotTab);
+			newScreenshotTab.Content = new HaloScreenshot(shot, newScreenshotTab, source);
 			documentManager.Children.Add(newScreenshotTab);
 			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newScreenshotTab);
 		}
@@ -770,6 +855,11 @@ namespace Assembly.Windows
 				case TabGenre.MapCompressor:
 					tab.Title = "Map Compressor";
 					tab.Content = new MapCompressor();
+					break;
+
+				case TabGenre.TagListings:
+					tab.Title = "Tag Listings";
+					tab.Content = new TagListings();
 					break;
 			}
 

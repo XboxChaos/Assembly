@@ -270,11 +270,11 @@ namespace Blamite.Blam.ThirdGen.Structures
 			values.SetInteger("resource info buffer address", cont);
 		}
 
-		public IEnumerable<ResourcePredictionD> LoadPredictions(IReader reader, TagTable tags, List<Resource> resources)
+		public IEnumerable<ResourcePredictionMolecule> LoadPredictions(IReader reader, TagTable tags, List<Resource> resources)
 		{
 			StructureValueCollection values = LoadTag(reader);
 
-			if (!values.HasInteger("number of prediction d2s") || !values.HasInteger("prediction d2 table address"))
+			if (!values.HasInteger("number of prediction molecule keys") || !values.HasInteger("prediction molecule key table address"))
 				return null;
 
 			int subcount = 2;
@@ -282,47 +282,48 @@ namespace Blamite.Blam.ThirdGen.Structures
 			if (templayout.HasField("tertiary page index"))
 				subcount = 3;
 
-			var result = new List<ResourcePredictionD>();
+			var result = new List<ResourcePredictionMolecule>();
 
-			StructureValueCollection[] d2entries = ReadTagBlock(values, reader, "number of prediction d2s", "prediction d2 table address", "prediction d2 element");
-			StructureValueCollection[] dentries = ReadTagBlock(values, reader, "number of prediction ds", "prediction d table address", "prediction d element");
-			StructureValueCollection[] centries = ReadTagBlock(values, reader, "number of prediction cs", "prediction c table address", "prediction c element");
-			StructureValueCollection[] bentries = ReadTagBlock(values, reader, "number of prediction bs", "prediction b table address", "prediction b element");
-			StructureValueCollection[] aentries = ReadTagBlock(values, reader, "number of prediction as", "prediction a table address", "prediction a element");
+			StructureValueCollection[] d2entries = ReadTagBlock(values, reader, "number of prediction molecule keys", "prediction molecule key table address", "prediction molecule key element");
+			StructureValueCollection[] dentries = ReadTagBlock(values, reader, "number of prediction molecules", "prediction molecule table address", "prediction molecule element");
+			StructureValueCollection[] centries = ReadTagBlock(values, reader, "number of prediction molecule atoms", "prediction molecule atom table address", "prediction molecule atom element");
+			StructureValueCollection[] bentries = ReadTagBlock(values, reader, "number of prediction atoms", "prediction atom table address", "prediction atom element");
+			StructureValueCollection[] aentries = ReadTagBlock(values, reader, "number of prediction quantas", "prediction quanta table address", "prediction quanta element");
 
 			for (int i = 0; i < d2entries.Length; i++)
 			{
-				ResourcePredictionD pd = new ResourcePredictionD();
+				ResourcePredictionMolecule pd = new ResourcePredictionMolecule();
 				pd.Index = i;
 				var tag = new DatumIndex(d2entries[i].GetInteger("tag datum"));
 				pd.Tag = tag.IsValid ? tags[tag] : null;
 				pd.Unknown1 = (int)d2entries[i].GetInteger("unknown 1");
 				pd.Unknown2 = (int)d2entries[i].GetInteger("unknown 2");
 
-				var dccount = (int)dentries[i].GetInteger("c count");
-				var dcindex = (int)dentries[i].GetInteger("c index");
+				var dccount = (int)dentries[i].GetInteger("molecule atom count");
+				var dcindex = (int)dentries[i].GetInteger("molecule atom index");
 
-				var dacount = (int)dentries[i].GetInteger("a count");
-				var daindex = (int)dentries[i].GetInteger("a index");
+				var dacount = (int)dentries[i].GetInteger("quanta count");
+				var daindex = (int)dentries[i].GetInteger("quanta index");
 
 				for (int c = dcindex; c < dcindex + dccount; c++)
 				{
-					ResourcePredictionC pc = new ResourcePredictionC();
+					ResourcePredictionMoleculeAtom pc = new ResourcePredictionMoleculeAtom();
 					pc.Index = c;
-					var cbindex = (int)centries[c].GetInteger("b index");
-					pc.OverallIndex = (short)centries[c].GetInteger("overall index");
 
-					ResourcePredictionB pb = new ResourcePredictionB();
-					pb.Index = cbindex;
-					var bacount = (int)bentries[cbindex].GetInteger("a count");
-					var baindex = (int)bentries[cbindex].GetInteger("a index");
-					pb.OverallIndex = (short)bentries[cbindex].GetInteger("overall index");
+					var cbdatum = new DatumIndex((uint)centries[c].GetInteger("atom datum"));
+					pc.Salt = cbdatum.Salt;
+
+					ResourcePredictionAtom pb = new ResourcePredictionAtom();
+					pb.Index = cbdatum.Index;
+					var bacount = (int)bentries[cbdatum.Index].GetInteger("quanta count");
+					var baindex = (int)bentries[cbdatum.Index].GetInteger("quanta index");
+					pb.OverallIndex = (short)bentries[cbdatum.Index].GetInteger("overall index");
 
 					for (int a = baindex; a < baindex + bacount; a++)
 					{
-						ResourcePredictionA pa = new ResourcePredictionA();
+						ResourcePredictionQuanta pa = new ResourcePredictionQuanta();
 						pa.Index = a;
-						pa.Value = new DatumIndex(aentries[a].GetInteger("value"));
+						pa.Value = new DatumIndex(aentries[a].GetInteger("asset datum"));
 
 						int resolvedresource = pa.Value.Index / subcount;
 						int subresource = pa.Value.Index - resolvedresource * subcount;
@@ -334,18 +335,18 @@ namespace Blamite.Blam.ThirdGen.Structures
 						pa.Resource = res.Index;
 						pa.SubResource = subresource;
 
-						pb.AEntries.Add(pa);
+						pb.Quantas.Add(pa);
 					}
 
-					pc.BEntry = pb;
-					pd.CEntries.Add(pc);
+					pc.Atom = pb;
+					pd.MoleculeAtoms.Add(pc);
 				}
 
 				for (int a = daindex; a < daindex + dacount; a++)
 				{
-					ResourcePredictionA pa = new ResourcePredictionA();
+					ResourcePredictionQuanta pa = new ResourcePredictionQuanta();
 					pa.Index = a;
-					pa.Value = new DatumIndex(aentries[a].GetInteger("value"));
+					pa.Value = new DatumIndex(aentries[a].GetInteger("asset datum"));
 
 					int resolvedresource = pa.Value.Index / subcount;
 					int subresource = pa.Value.Index - resolvedresource * subcount;
@@ -357,30 +358,45 @@ namespace Blamite.Blam.ThirdGen.Structures
 					pa.Resource = res.Index;
 					pa.SubResource = subresource;
 
-					pd.AEntries.Add(pa);
+					pd.Quantas.Add(pa);
 				}
 				result.Add(pd);
 			}
 			return result;
 		}
 
-		private StructureValueCollection SerializePredictionD(ResourcePredictionD prediction, int cStart, int aStart, IStream stream)
+		private StructureValueCollection SerializePredictionMolecule(ResourcePredictionMolecule prediction, int cStart, int aStart, IStream stream)
 		{
 			var result = new StructureValueCollection();
 			result.SetInteger("tag datum", prediction.Tag.Index.Value);
 			result.SetInteger("unknown 1", (uint)prediction.Unknown1);
 			result.SetInteger("unknown 2", (uint)prediction.Unknown2);
 
-			result.SetInteger("c index", (uint)cStart);
-			result.SetInteger("c count", (uint)prediction.CEntries.Count);
+			result.SetInteger("molecule atom index", (uint)cStart);
+			result.SetInteger("molecule atom count", (uint)prediction.MoleculeAtoms.Count);
 
-			result.SetInteger("a index", (uint)aStart);
-			result.SetInteger("a count", (uint)prediction.AEntries.Count);
+			result.SetInteger("quanta index", (uint)aStart);
+			result.SetInteger("quanta count", (uint)prediction.Quantas.Count);
 
 			return result;
 		}
 
-		private StructureValueCollection SerializePredictionC(ResourcePredictionC prediction, int bStart, int overall, IStream stream)
+		private StructureValueCollection SerializePredictionMoleculeAtom(ResourcePredictionMoleculeAtom prediction, int bStart, int salt, IStream stream)
+		{
+			var result = new StructureValueCollection();
+
+			ushort newSalt = prediction.Salt;
+
+			if (prediction.Salt == 0xFFFF)
+				newSalt = (ushort)salt;
+
+			var newDatum = new DatumIndex(newSalt, (ushort)bStart);
+			result.SetInteger("atom datum", newDatum.Value);
+
+			return result;
+		}
+
+		private StructureValueCollection SerializePredictionAtom(ResourcePredictionAtom prediction, int aStart, int overall, IStream stream)
 		{
 			var result = new StructureValueCollection();
 			if (prediction.OverallIndex == -1)
@@ -388,34 +404,21 @@ namespace Blamite.Blam.ThirdGen.Structures
 			else
 				result.SetInteger("overall index", (uint)prediction.OverallIndex);
 
-			result.SetInteger("b index", (uint)bStart);
+			result.SetInteger("quanta index", (uint)aStart);
+			result.SetInteger("quanta count", (uint)prediction.Quantas.Count);
 
 			return result;
 		}
 
-		private StructureValueCollection SerializePredictionB(ResourcePredictionB prediction, int aStart, int overall, IStream stream)
+		private StructureValueCollection SerializePredictionQuanta(ResourcePredictionQuanta prediction, IStream stream)
 		{
 			var result = new StructureValueCollection();
-			if (prediction.OverallIndex == -1)
-				result.SetInteger("overall index", (uint)overall);
-			else
-				result.SetInteger("overall index", (uint)prediction.OverallIndex);
-
-			result.SetInteger("a index", (uint)aStart);
-			result.SetInteger("a count", (uint)prediction.AEntries.Count);
+			result.SetInteger("asset datum", prediction.Value.Value);
 
 			return result;
 		}
 
-		private StructureValueCollection SerializePredictionA(ResourcePredictionA prediction, IStream stream)
-		{
-			var result = new StructureValueCollection();
-			result.SetInteger("value", prediction.Value.Value);
-
-			return result;
-		}
-
-		public void SavePredictions(ICollection<ResourcePredictionD> predictions, IStream stream)
+		public void SavePredictions(ICollection<ResourcePredictionMolecule> predictions, IStream stream)
 		{
 			StructureValueCollection values = LoadTag(stream);
 
@@ -433,23 +436,23 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			DatumIndex currenttag = DatumIndex.Null;
 
-			foreach (ResourcePredictionD pred in predictions)
+			foreach (ResourcePredictionMolecule pred in predictions)
 			{
-				long dchash = pred.GetCHash();
+				long dchash = pred.GetMoleculeAtomHash();
 
 				int dcstart = centries.Count();
 				int dastart = aentries.Count;
 
-				if (pred.CEntries.Count > 0)
+				if (pred.MoleculeAtoms.Count > 0)
 				{
 					int exist;
 					bool found = writtenc.TryGetValue(dchash, out exist);
 
 					if (!found)
 					{
-						foreach (ResourcePredictionC pc in pred.CEntries)
+						foreach (ResourcePredictionMoleculeAtom pc in pred.MoleculeAtoms)
 						{
-							long cbhash = pc.GetBHash();
+							long cbhash = pc.GetAtomHash();
 
 							int cbstart = bentries.Count;
 
@@ -460,19 +463,19 @@ namespace Blamite.Blam.ThirdGen.Structures
 							{
 								int bkstart = aentries.Count();
 
-								foreach (ResourcePredictionA pa in pc.BEntry.AEntries)
-									aentries.Add(SerializePredictionA(pa, stream));
+								foreach (ResourcePredictionQuanta pa in pc.Atom.Quantas)
+									aentries.Add(SerializePredictionQuanta(pa, stream));
 
 								writtenb[cbhash] = cbstart;
 
-								bentries.Add(SerializePredictionB(pc.BEntry, bkstart, cbstart, stream));
+								bentries.Add(SerializePredictionAtom(pc.Atom, bkstart, cbstart, stream));
 							}
 							else
 								cbstart = bexist;
 
 							writtenc[dchash] = dcstart;
 
-							centries.Add(SerializePredictionC(pc, cbstart, cbstart, stream));
+							centries.Add(SerializePredictionMoleculeAtom(pc, cbstart, cbstart, stream));
 						}
 					}
 					else
@@ -486,61 +489,61 @@ namespace Blamite.Blam.ThirdGen.Structures
 						dcstart = firstnullc;	
 				}
 
-				if (pred.AEntries.Count > 0)
+				if (pred.Quantas.Count > 0)
 				{
-					foreach (ResourcePredictionA pa in pred.AEntries)
-						aentries.Add(SerializePredictionA(pa, stream));
+					foreach (ResourcePredictionQuanta pa in pred.Quantas)
+						aentries.Add(SerializePredictionQuanta(pa, stream));
 				}
 				else
 					dastart = -1;
 
-				dentries.Add(SerializePredictionD(pred, dcstart, dastart, stream));
+				dentries.Add(SerializePredictionMolecule(pred, dcstart, dastart, stream));
 			}
 
 			// a
-			StructureLayout alayout = _buildInfo.Layouts.GetLayout("prediction a element");
+			StructureLayout alayout = _buildInfo.Layouts.GetLayout("prediction quanta element");
 			long newa = TagBlockWriter.WriteTagBlock(aentries, alayout, _metaArea, _allocator, stream);
 
 			uint conta = _expander.Contract(newa);
 
-			values.SetInteger("number of prediction as", (uint)aentries.Count);
-			values.SetInteger("prediction a table address", conta);
+			values.SetInteger("number of prediction quantas", (uint)aentries.Count);
+			values.SetInteger("prediction quanta table address", conta);
 
 			// b
-			StructureLayout blayout = _buildInfo.Layouts.GetLayout("prediction b element");
+			StructureLayout blayout = _buildInfo.Layouts.GetLayout("prediction atom element");
 			long newb = TagBlockWriter.WriteTagBlock(bentries, blayout, _metaArea, _allocator, stream);
 
 			uint contb = _expander.Contract(newb);
 
-			values.SetInteger("number of prediction bs", (uint)bentries.Count);
-			values.SetInteger("prediction b table address", contb);
+			values.SetInteger("number of prediction atoms", (uint)bentries.Count);
+			values.SetInteger("prediction atom table address", contb);
 
 			// cc
-			StructureLayout clayout = _buildInfo.Layouts.GetLayout("prediction c element");
+			StructureLayout clayout = _buildInfo.Layouts.GetLayout("prediction molecule atom element");
 			long newc = TagBlockWriter.WriteTagBlock(centries, clayout, _metaArea, _allocator, stream);
 
 			uint contc = _expander.Contract(newc);
 
-			values.SetInteger("number of prediction cs", (uint)centries.Count);
-			values.SetInteger("prediction c table address", contc);
+			values.SetInteger("number of prediction molecule atoms", (uint)centries.Count);
+			values.SetInteger("prediction molecule atom table address", contc);
 
 			// d
-			StructureLayout dlayout = _buildInfo.Layouts.GetLayout("prediction d element");
+			StructureLayout dlayout = _buildInfo.Layouts.GetLayout("prediction molecule element");
 			long newd = TagBlockWriter.WriteTagBlock(dentries, dlayout, _metaArea, _allocator, stream);
 
 			uint contd = _expander.Contract(newd);
 
-			values.SetInteger("number of prediction ds", (uint)dentries.Count);
-			values.SetInteger("prediction d table address", contd);
+			values.SetInteger("number of prediction molecules", (uint)dentries.Count);
+			values.SetInteger("prediction molecule table address", contd);
 
 			// d2
-			StructureLayout d2layout = _buildInfo.Layouts.GetLayout("prediction d2 element");
+			StructureLayout d2layout = _buildInfo.Layouts.GetLayout("prediction molecule key element");
 			long newd2 = TagBlockWriter.WriteTagBlock(dentries, d2layout, _metaArea, _allocator, stream);
 
 			uint contd2 = _expander.Contract(newd2);
 
-			values.SetInteger("number of prediction d2s", (uint)dentries.Count);
-			values.SetInteger("prediction d2 table address", contd2);
+			values.SetInteger("number of prediction molecule keys", (uint)dentries.Count);
+			values.SetInteger("prediction molecule key table address", contd2);
 
 			SaveTag(values, stream);
 		}
@@ -776,11 +779,11 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		private void FreePredictions(StructureValueCollection values)
 		{
-			FreeTagBlock(values, "number of prediction as", "prediction a table address", "prediction a element");
-			FreeTagBlock(values, "number of prediction bs", "prediction b table address", "prediction b element");
-			FreeTagBlock(values, "number of prediction cs", "prediction c table address", "prediction c element");
-			FreeTagBlock(values, "number of prediction ds", "prediction d table address", "prediction d element");
-			FreeTagBlock(values, "number of prediction d2s", "prediction d2 table address", "prediction d2 element");
+			FreeTagBlock(values, "number of prediction quantas", "prediction quanta table address", "prediction quanta element");
+			FreeTagBlock(values, "number of prediction atoms", "prediction atom table address", "prediction atom element");
+			FreeTagBlock(values, "number of prediction molecule atoms", "prediction molecule atom table address", "prediction molecule atom element");
+			FreeTagBlock(values, "number of prediction molecules", "prediction molecule table address", "prediction molecule element");
+			FreeTagBlock(values, "number of prediction molecule keys", "prediction molecule key table address", "prediction molecule key element");
 		}
 
 		private void FreeTagBlock(StructureValueCollection values, string countName, string addressName, string layoutName)

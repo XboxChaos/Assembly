@@ -13,6 +13,7 @@ using Blamite.Blam.Util;
 using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Util;
+using System;
 
 namespace Blamite.Blam.ThirdGen
 {
@@ -72,7 +73,7 @@ namespace Blamite.Blam.ThirdGen
 				//checksum needs to be handled last due to WriteLanguageInfo writing where we need to calculate,
 				//and WriteHeader updates important info for languages so it has to come before that, (but maybe that should be run separately?)
 				//leaving this hacky checksum writing
-				_header.Checksum = ICacheFileExtensions.GenerateChecksum(this, stream, _buildInfo.ReverseChecksum);
+				_header.Checksum = CacheFileExtensions.GenerateChecksum(this, stream, _buildInfo.ReverseChecksum);
 				stream.SeekTo(checksumOffset);
 				stream.WriteUInt32(_header.Checksum);
 			}
@@ -124,6 +125,11 @@ namespace Blamite.Blam.ThirdGen
 		{
 			get { return _header.XDKVersion; }
 			set { _header.XDKVersion = value; }
+		}
+
+		public DateTime? BuildDate
+		{
+			get { return _header.BuildDate; }
 		}
 
 		public bool ZoneOnly
@@ -394,7 +400,6 @@ namespace Blamite.Blam.ThirdGen
 			ITag playTag = _tags.GetGlobalTag(CharConstant.FromString("play"));
 			bool haveZoneLayout = _buildInfo.Layouts.HasLayout("resource gestalt");
 			bool havePlayLayout = _buildInfo.Layouts.HasLayout("resource layout table");
-			bool haveAltPlayLayout = _buildInfo.Layouts.HasLayout("resource layout table alt");
 			bool canLoadZone = zoneTag != null && zoneTag.MetaLocation != null && haveZoneLayout;
 			bool canLoadPlay = playTag != null && playTag.MetaLocation != null && havePlayLayout;
 			if (canLoadZone || canLoadPlay)
@@ -406,13 +411,12 @@ namespace Blamite.Blam.ThirdGen
 
 				if (canLoadPlay)
 					layoutTable = new ThirdGenResourceLayoutTable(playTag, MetaArea, Allocator, _buildInfo, _expander);
-				else if (canLoadZone && haveAltPlayLayout)
+				else if (canLoadZone)
 				{
 					layoutTable = new ThirdGenResourceLayoutTable(zoneTag, MetaArea, Allocator, _buildInfo, _expander);
 					_zoneOnly = true;
 				}
 					
-
 				_resources = new ThirdGenResourceManager(gestalt, layoutTable, _tags, MetaArea, Allocator, _buildInfo, _expander);
 			}
 		}

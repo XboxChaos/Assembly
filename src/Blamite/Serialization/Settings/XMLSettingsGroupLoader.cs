@@ -56,7 +56,9 @@ namespace Blamite.Serialization.Settings
 				string path = XMLUtil.GetStringAttribute(elem, "path", null);
 				if (path != null)
 				{
-					var info = new SettingInfo(type, path);
+					string altPath = XMLUtil.GetStringAttribute(elem, "altPath", null);
+
+					var info = new SettingInfo(type, path, altPath);
 					if (_settingCache.TryGetValue(info, out object cached))
 						return cached;
 
@@ -64,7 +66,7 @@ namespace Blamite.Serialization.Settings
 					if (!_settingLoaders.TryGetValue(type, out loader))
 						throw new InvalidOperationException("Unrecognized complex setting type \"" + type + "\"");
 
-					object setting = loader.LoadSetting(path);
+					object setting = loader.LoadSetting(path, altPath);
 					_settingCache[info] = setting;
 					return setting;
 				}
@@ -76,11 +78,13 @@ namespace Blamite.Serialization.Settings
 		{
 			public string Type { get; set; }
 			public string Path { get; set; }
+			public string AltPath { get; set; }
 
-			public SettingInfo(string type, string path)
+			public SettingInfo(string type, string path, string altPath)
 			{
 				Type = type;
 				Path = path;
+				AltPath = altPath;
 			}
 
 			public override bool Equals(object obj)
@@ -96,6 +100,10 @@ namespace Blamite.Serialization.Settings
 				int result = 7057;
 				result = result * 8171 + Type.GetHashCode();
 				result = result * 8171 + Path.GetHashCode();
+
+				if (AltPath != null)
+					result = result * 8171 + AltPath.GetHashCode();
+
 				return result;
 			}
 		}

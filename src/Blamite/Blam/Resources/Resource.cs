@@ -74,12 +74,12 @@ namespace Blamite.Blam.Resources
 		}
 	}
 
-	public class ResourcePredictionD
+	public class ResourcePredictionMolecule
 	{
-		public ResourcePredictionD()
+		public ResourcePredictionMolecule()
 		{
-			CEntries = new List<ResourcePredictionC>();
-			AEntries = new List<ResourcePredictionA>();
+			MoleculeAtoms = new List<ResourcePredictionMoleculeAtom>();
+			Quantas = new List<ResourcePredictionQuanta>();
 		}
 
 		public ITag Tag { get; set; }
@@ -87,74 +87,74 @@ namespace Blamite.Blam.Resources
 		public int Unknown1 { get; set; }
 		public int Unknown2 { get; set; }
 
-		public List<ResourcePredictionC> CEntries { get; private set; }
-		public List<ResourcePredictionA> AEntries { get; private set; }
+		public List<ResourcePredictionMoleculeAtom> MoleculeAtoms { get; private set; }
+		public List<ResourcePredictionQuanta> Quantas { get; private set; }
 
 		public int Index { get; set; }
 
-		public long GetCHash()
+		public long GetMoleculeAtomHash()
 		{
 			long result = 9103;
-			for (int i = 0; i < CEntries.Count; i++)
-				for (int k = 0; k < CEntries[i].BEntry.AEntries.Count; k++)
-					result = result * 8171 + CEntries[i].BEntry.AEntries[k].Value.Value;
+			for (int i = 0; i < MoleculeAtoms.Count; i++)
+				for (int k = 0; k < MoleculeAtoms[i].Atom.Quantas.Count; k++)
+					result = result * 8171 + MoleculeAtoms[i].Atom.Quantas[k].Value.Value;
 
 			return result;
 		}
 
 		public bool IsEmpty
 		{
-			get { return (CEntries == null || CEntries.Count == 0) &&
-					(AEntries == null || AEntries.Count == 0); }
+			get { return (MoleculeAtoms == null || MoleculeAtoms.Count == 0) &&
+					(Quantas == null || Quantas.Count == 0); }
 		}
 	}
 
-	public class ResourcePredictionC
+	public class ResourcePredictionMoleculeAtom
 	{
-		public short OverallIndex { get; set; }
-		public ResourcePredictionB BEntry { get; set; }
+		public ushort Salt { get; set; }
+		public ResourcePredictionAtom Atom { get; set; }
 
 		public int Index { get; set; }
 
-		public long GetBHash()
+		public long GetAtomHash()
 		{
-			return (BEntry.GetAHash() << 1) * 5233;
+			return (Atom.GetQuantaHash() << 1) * 5233;
 		}
 
 		public bool IsEmpty
 		{
-			get { return BEntry == null || BEntry.IsEmpty; }
+			get { return Atom == null || Atom.IsEmpty; }
 		}
 	}
 
-	public class ResourcePredictionB
+	public class ResourcePredictionAtom
 	{
-		public ResourcePredictionB()
+		public ResourcePredictionAtom()
 		{
-			AEntries = new List<ResourcePredictionA>();
+			Quantas = new List<ResourcePredictionQuanta>();
 		}
 
 		public short OverallIndex { get; set; }
-		public List<ResourcePredictionA> AEntries { get; private set; }
+		public List<ResourcePredictionQuanta> Quantas { get; private set; }
 
 		public int Index { get; set; }
 
-		public long GetAHash()
+		public long GetQuantaHash()
 		{
 			long result = 7057;
-			for (int i = 0; i < AEntries.Count; i++)
-				result = result * 8171 + (AEntries[i].Value.Value << i);
+			for (int i = 0; i < Quantas.Count; i++)
+				result = result * 8171 + (Quantas[i].Value.Value << i);
 
 			return result;
 		}
 
 		public bool IsEmpty
 		{
-			get { return AEntries == null || AEntries.Count == 0; }
+			get { return Quantas == null || Quantas.Count == 0; }
 		}
 	}
 
-	public class ResourcePredictionA
+	public class ResourcePredictionQuanta
 	{
 		public DatumIndex Value { get; set; }
 

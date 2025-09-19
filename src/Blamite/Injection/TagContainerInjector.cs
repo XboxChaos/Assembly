@@ -659,7 +659,7 @@ namespace Blamite.Injection
 			return newSID;
 		}
 
-		public void InjectPredictions(ICollection<ExtractedResourcePredictionD> predictions, IStream stream)
+		public void InjectPredictions(ICollection<ExtractedResourcePredictionMolecule> predictions, IStream stream)
 		{
 			if (predictions == null || predictions.Count == 0)
 				return;
@@ -669,19 +669,19 @@ namespace Blamite.Injection
 			//prediction tags are sorted by index, so step through the injected tags to add them that way
 			foreach (ExtractedTag tag in InjectedTags)
 			{
-				foreach (ExtractedResourcePredictionD pred in predictions.Where(p=>p.OriginalTagIndex == tag.OriginalIndex))
+				foreach (ExtractedResourcePredictionMolecule pred in predictions.Where(p=>p.OriginalTagIndex == tag.OriginalIndex))
 					InjectPrediction(pred);
 			}
 		}
 
-		private void InjectPrediction(ExtractedResourcePredictionD pred)
+		private void InjectPrediction(ExtractedResourcePredictionMolecule pred)
 		{
 			//was the tag for this prediction injected?
 			var tag = InjectedTags.FirstOrDefault(t => t.OriginalIndex == pred.OriginalTagIndex);
 			if (tag == null)
 				return;
 
-			ResourcePredictionD newpred = new ResourcePredictionD();
+			ResourcePredictionMolecule newpred = new ResourcePredictionMolecule();
 
 			var newtag = _tagIndices[tag];
 
@@ -691,32 +691,32 @@ namespace Blamite.Injection
 			newpred.Unknown1 = pred.Unknown1;
 			newpred.Unknown2 = pred.Unknown2;
 
-			foreach (ExtractedResourcePredictionC expc in pred.CEntries)
+			foreach (ExtractedResourcePredictionMoleculeAtom expc in pred.MoleculeAtoms)
 			{
-				ResourcePredictionC pc = new ResourcePredictionC();
-				pc.OverallIndex = -1;
+				ResourcePredictionMoleculeAtom pc = new ResourcePredictionMoleculeAtom();
+				pc.Salt = 0xFFFF;
 				pc.Index = -1;
-				pc.BEntry = new ResourcePredictionB();
+				pc.Atom = new ResourcePredictionAtom();
 
-				pc.BEntry.Index = -1;
-				pc.BEntry.OverallIndex = -1;
+				pc.Atom.Index = -1;
+				pc.Atom.OverallIndex = -1;
 
-				foreach (ExtractedResourcePredictionA expa in expc.BEntry.AEntries)
+				foreach (ExtractedResourcePredictionQuanta expa in expc.BEntry.Quantas)
 				{
-					ResourcePredictionA pa = GeneratePredictionA(expa);
+					ResourcePredictionQuanta pa = GeneratePredictionQuanta(expa);
 					if (pa != null)
-						pc.BEntry.AEntries.Add(pa);
+						pc.Atom.Quantas.Add(pa);
 				}
 
-				if (!pc.BEntry.IsEmpty)
-					newpred.CEntries.Add(pc);
+				if (!pc.Atom.IsEmpty)
+					newpred.MoleculeAtoms.Add(pc);
 			}
 
-			foreach (ExtractedResourcePredictionA expa in pred.AEntries)
+			foreach (ExtractedResourcePredictionQuanta expa in pred.Quantas)
 			{
-				ResourcePredictionA pa = GeneratePredictionA(expa);
+				ResourcePredictionQuanta pa = GeneratePredictionQuanta(expa);
 				if (pa != null)
-					newpred.AEntries.Add(pa);
+					newpred.Quantas.Add(pa);
 			}
 
 			if (!newpred.IsEmpty)
@@ -724,9 +724,9 @@ namespace Blamite.Injection
 			return;
 		}
 
-		private ResourcePredictionA GeneratePredictionA(ExtractedResourcePredictionA expa)
+		private ResourcePredictionQuanta GeneratePredictionQuanta(ExtractedResourcePredictionQuanta expa)
 		{
-			ResourcePredictionA result = new ResourcePredictionA();
+			ResourcePredictionQuanta result = new ResourcePredictionQuanta();
 			result.Index = -1;
 			result.SubResource = expa.OriginalResourceSubIndex;
 

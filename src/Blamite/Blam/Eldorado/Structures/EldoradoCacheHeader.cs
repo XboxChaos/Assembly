@@ -1,5 +1,6 @@
 ﻿using Blamite.Serialization;
 using Blamite.IO;
+using System;
 
 namespace Blamite.Blam.Eldorado.Structures
 {
@@ -44,6 +45,8 @@ namespace Blamite.Blam.Eldorado.Structures
 		public FileSegment StringBlock { get; private set; }
 		public SegmentPointer StringBlockLocation { get; set; }
 
+		public DateTime? BuildDate { get; set; }
+
 		/// <summary>
 		///     Serializes the header's values, storing them into a StructureValueCollection.
 		/// </summary>
@@ -70,6 +73,8 @@ namespace Blamite.Blam.Eldorado.Structures
 			Type = (CacheFileType)values.GetInteger("type");
 			InternalName = values.GetString("internal name");
 			ScenarioName = values.GetString("scenario name");
+
+			BuildDate = CacheFileExtensions.AssembleFileTime(values, "cache build date high", "cache build date low");
 		}
 
 	}

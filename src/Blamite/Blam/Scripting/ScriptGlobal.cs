@@ -34,8 +34,8 @@ namespace Blamite.Blam.Scripting
 
 		private void Load(StructureValueCollection values, StringIDSource stringIDs)
 		{
-			Name = values.HasInteger("name index")
-				? stringIDs.GetString(new StringID(values.GetInteger("name index")))
+			Name = values.HasInteger("name stringid")
+				? stringIDs.GetString(new StringID(values.GetInteger("name stringid")))
 				: values.GetString("name");
 
 			Type = (short) values.GetInteger("type");

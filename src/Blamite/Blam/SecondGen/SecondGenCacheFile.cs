@@ -66,7 +66,7 @@ namespace Blamite.Blam.SecondGen
 				//checksum needs to be handled last due to WriteLanguageInfo writing where we need to calculate,
 				//and WriteHeader updates important info for languages so it has to come before that, (but maybe that should be run separately?)
 				//leaving this hacky checksum writing
-				_header.Checksum = ICacheFileExtensions.GenerateChecksum(this, stream);
+				_header.Checksum = CacheFileExtensions.GenerateChecksum(this, stream);
 				stream.SeekTo(checksumOffset);
 				stream.WriteUInt32(_header.Checksum);
 			}
@@ -117,7 +117,11 @@ namespace Blamite.Blam.SecondGen
 		public int XDKVersion
 		{
 			get { return _header.XDKVersion; }
-			set { _header.XDKVersion = value; }
+		}
+
+		public DateTime? BuildDate
+		{
+			get { return _header.BuildDate; }
 		}
 
 		public bool ZoneOnly

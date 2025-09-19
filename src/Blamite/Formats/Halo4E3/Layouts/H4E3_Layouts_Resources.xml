@@ -5,6 +5,18 @@
 		<int32 name="number of resource types" offset="0x4" />
 		<uint32 name="resource type table address" offset="0x8" />
 
+		<int32 name="number of external cache files" offset="0x28" />
+		<uint32 name="external cache file table address" offset="0x2C" />
+
+		<int32 name="number of raw pages" offset="0x34" />
+		<uint32 name="raw page table address" offset="0x38" />
+
+		<int32 name="number of raw sizes" offset="0x40" />
+		<uint32 name="raw size table address" offset="0x44" />
+
+		<int32 name="number of raw segments" offset="0x4C" />
+		<uint32 name="raw segment table address" offset="0x50" />
+
 		<int32 name="number of resources" offset="0x58" />
 		<uint32 name="resource table address" offset="0x5C" />
 
@@ -36,16 +48,16 @@
 		<int32 name="resource info buffer size" offset="0x154" />
 		<uint32 name="resource info buffer address" offset="0x160" />
 
-		<int32 name="number of prediction as" offset="0x1E8" />
-		<uint32 name="prediction a table address" offset="0x1EC" />
-		<int32 name="number of prediction bs" offset="0x1F4" />
-		<uint32 name="prediction b table address" offset="0x1F8" />
-		<int32 name="number of prediction cs" offset="0x200" />
-		<uint32 name="prediction c table address" offset="0x204" />
-		<int32 name="number of prediction ds" offset="0x20C" />
-		<uint32 name="prediction d table address" offset="0x210" />
-		<int32 name="number of prediction d2s" offset="0x218" />
-		<uint32 name="prediction d2 table address" offset="0x21C" />
+		<int32 name="number of prediction quantas" offset="0x1E8" />
+		<uint32 name="prediction quanta table address" offset="0x1EC" />
+		<int32 name="number of prediction atoms" offset="0x1F4" />
+		<uint32 name="prediction atom table address" offset="0x1F8" />
+		<int32 name="number of prediction molecule atoms" offset="0x200" />
+		<uint32 name="prediction molecule atom table address" offset="0x204" />
+		<int32 name="number of prediction molecules" offset="0x20C" />
+		<uint32 name="prediction molecule table address" offset="0x210" />
+		<int32 name="number of prediction molecule keys" offset="0x218" />
+		<uint32 name="prediction molecule key table address" offset="0x21C" />
 	</layout>
 
 	<!-- Block at 0x4 in zone -->
@@ -107,33 +119,32 @@
 	</layout>
 
 	<!-- Block at 0x1E8 in resource table entry -->
-	<layout for="prediction a element" size="0x4">
-		<int32 name="value" offset="0x0" />
+	<layout for="prediction quanta element" size="0x4">
+		<int32 name="asset datum" offset="0x0" />
 	</layout>
 
 	<!-- Block at 0x1F4 in resource table entry -->
-	<layout for="prediction b element" size="0x8">
+	<layout for="prediction atom element" size="0x8">
 		<int16 name="overall index" offset="0x0" />
-		<int16 name="a count" offset="0x2" />
-		<int32 name="a index" offset="0x4" />
+		<int16 name="quanta count" offset="0x2" />
+		<int32 name="quanta index" offset="0x4" />
 	</layout>
 
 	<!-- Block at 0x200 in resource table entry -->
-	<layout for="prediction c element" size="0x4">
-		<int16 name="overall index" offset="0x0" />
-		<int16 name="b index" offset="0x2" />
+	<layout for="prediction molecule atom element" size="0x4">
+		<int32 name="atom datum" offset="0x0" />
 	</layout>
 
 	<!-- Block at 0x20C in resource table entry -->
-	<layout for="prediction d element" size="0x8">
-		<int16 name="c count" offset="0x0" />
-		<uint16 name="c index" offset="0x2" />
-		<int16 name="a count" offset="0x4" />
-		<int16 name="a index" offset="0x6" />
+	<layout for="prediction molecule element" size="0x8">
+		<int16 name="molecule atom count" offset="0x0" />
+		<uint16 name="molecule atom index" offset="0x2" />
+		<int16 name="quanta count" offset="0x4" />
+		<int16 name="quanta index" offset="0x6" />
 	</layout>
 
 	<!-- Block at 0x218 in resource table entry -->
-	<layout for="prediction d2 element" size="0xC">
+	<layout for="prediction molecule key element" size="0xC">
 		<int32 name="tag datum" offset="0x0" />
 		<int32 name="unknown 1" offset="0x4" />
 		<int32 name="unknown 2" offset="0x8" />
@@ -153,20 +164,6 @@
 
 		<int32 name="number of raw segments" offset="0x30" />
 		<uint32 name="raw segment table address" offset="0x34" />
-	</layout>
-	<!-- zone version of (cache_file_resource_layout_table) -->
-	<layout for="resource layout table alt">
-		<int32 name="number of external cache files" offset="0x28" />
-		<uint32 name="external cache file table address" offset="0x2C" />
-
-		<int32 name="number of raw pages" offset="0x34" />
-		<uint32 name="raw page table address" offset="0x38" />
-
-		<int32 name="number of raw sizes" offset="0x40" />
-		<uint32 name="raw size table address" offset="0x44" />
-
-		<int32 name="number of raw segments" offset="0x4C" />
-		<uint32 name="raw segment table address" offset="0x50" />
 	</layout>
 
 	<!-- Block at 0xC in play -->

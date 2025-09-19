@@ -74,8 +74,8 @@ namespace Blamite.Blam.Scripting
 		private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs,
 			EngineDescription buildInfo, IPointerExpander expander)
 		{
-			Name = values.HasInteger("name index")
-				? stringIDs.GetString(new StringID(values.GetInteger("name index")))
+			Name = values.HasInteger("name stringid")
+				? stringIDs.GetString(new StringID(values.GetInteger("name stringid")))
 				: values.GetString("name");
 			ExecutionType = (short) values.GetInteger("execution type");
 			ReturnType = (short) values.GetInteger("return type");

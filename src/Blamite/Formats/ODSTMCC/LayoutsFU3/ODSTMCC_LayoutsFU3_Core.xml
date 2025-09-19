@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layouts>
+	<!-- Map header (minus version info) -->
+	<layout for="header" size="0x4000">
+		<uint32 name="file size" offset="0x8" />
+		<uint32 name="tag buffer offset" offset="0x10" />
+		<uint32 name="virtual size" offset="0x14" />
+
+		<int16 name="type" offset="0x18" />
+
+		<int32 name="file table count" offset="0x20" />
+		<int32 name="file table offset" offset="0x24" />
+		<int32 name="file table size" offset="0x28" />
+		<int32 name="file index table offset" offset="0x2C" />
+
+		<int32 name="string table count" offset="0x30" />
+		<int32 name="string table offset" offset="0x34" />
+		<int32 name="string table size" offset="0x38" />
+		<int32 name="string index table offset" offset="0x3C" />
+		<int32 name="string namespace table count" offset="0x40" />
+		<int32 name="string namespace table offset" offset="0x44" />
+
+		<int32 name="cache build date high" offset ="0x50" />
+		<int32 name="cache build date low" offset ="0x54" />
+
+		<asciiz name="build string" offset="0xA0" />
+
+		<asciiz name="internal name" offset="0xC0" />
+		<asciiz name="scenario name" offset="0xE0" />
+
+		<int32 name="checksum" offset="0x360" />
+
+		<uint64 name="virtual base address" offset="0x2E0" />
+		<uint64 name="index header address" offset="0x2E8" />
+		<uint32 name="xdk version" offset="0x2F0" />
+
+		<array name="partitions" offset="0x300" count="6" entrySize="0x10">
+			<uint64 name="load address" offset="0x0" />
+			<uint64 name="size" offset="0x8" />
+		</array>
+
+		<!-- Interop data -->
+		<array name="offset masks" offset="0x4AC" count="4" entrySize="0x4">
+			<uint32 name="mask" offset="0x0" />
+		</array>
+		<array name="sections" offset="0x4BC" count="4" entrySize="0x8">
+			<uint32 name="virtual address" offset="0x0" />
+			<uint32 name="size" offset="0x4" />
+		</array>
+	</layout>
+
+	<!-- Index table header -->
+	<layout for="index header" inherits="index header" />
+
+	<!-- Tag group table entry -->
+	<layout for="tag group element" inherits="tag group element" />
+
+	<!-- Tag table entry -->
+	<layout for="tag element" inherits="tag element" />
+
+	<!-- Global tag table entry -->
+	<layout for="global tag element" inherits="global tag element" />
+
+	<!-- tag interop table entry -->
+	<layout for="tag interop element" inherits="tag interop element" />
+
+	<!-- Map globals meta -->
+	<layout for="matg" inherits="matg" />
+
+	<layout for="locale index table element" inherits="locale index table element" />
+
+	<layout for="tag block" inherits="tag block" />
+
+	<layout for="tag reference" inherits="tag reference" />
+
+	<layout for="data reference" inherits="data reference" />
+
+	<!-- unic (multilingual_unicode_string_list) -->
+	<layout for="unic" inherits="unic" />
+
+	<!-- sbsp (scenario_structure_bsp) -->
+	<layout for="sbsp" inherits="sbsp" />
+
+	<layout for="sbsp instanced geometry" inherits="sbsp instanced geometry" />
+</layouts>

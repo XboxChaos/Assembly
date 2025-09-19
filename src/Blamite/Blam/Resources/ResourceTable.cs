@@ -15,7 +15,7 @@ namespace Blamite.Blam.Resources
 			Resources = new List<Resource>();
 			Sizes = new List<ResourceSize>();
 			Pages = new List<ResourcePage>();
-			Predictions = new List<ResourcePredictionD>();
+			Predictions = new List<ResourcePredictionMolecule>();
 		}
 
 		/// <summary>
@@ -40,6 +40,6 @@ namespace Blamite.Blam.Resources
 		///     Gets a list of predictions in the table.
 		/// </summary>
 		/// <seealso cref="ResourcePredictionD" />
-		public List<ResourcePredictionD> Predictions { get; private set; }
+		public List<ResourcePredictionMolecule> Predictions { get; private set; }
 	}
 }

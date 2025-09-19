@@ -7,8 +7,8 @@ using System.Threading;
 using System.Windows;
 using Assembly.Helpers;
 using Assembly.Helpers.Net;
+using Blamite.RTE.Console;
 using Microsoft.Shell;
-using XBDMCommunicator;
 
 namespace Assembly
 {
@@ -82,8 +82,10 @@ namespace Assembly
 			// Create jumplist
 			JumpLists.UpdateJumplists();
 
-			// Create XBDM Instance
-			AssemblyStorage.AssemblySettings.Xbdm = new Xbdm(AssemblyStorage.AssemblySettings.XdkNameIp);
+			// Create XBDM Instances
+			AssemblyStorage.AssemblySettings.XenonConsole = new XeConsole(AssemblyStorage.AssemblySettings.XeConsoleNameIp);
+			AssemblyStorage.AssemblySettings.XboxConsole = new XbConsole(AssemblyStorage.AssemblySettings.XbConsoleNameIp);
+			AssemblyStorage.AssemblySettings.XenonFusionConsole = new XeConsole(AssemblyStorage.AssemblySettings.XeConsoleNameIp, true);
 
 			// Try and delete all temp data
 			VariousFunctions.EmptyUpdaterLocations();

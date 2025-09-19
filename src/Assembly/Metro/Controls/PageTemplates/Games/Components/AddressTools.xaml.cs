@@ -3,9 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using Blamite.Blam;
 using Blamite.RTE;
-using Blamite.RTE.ThirdGen;
-using Blamite.RTE.SecondGen;
-using Blamite.RTE.FirstGen;
+using Blamite.RTE.PC;
 using Blamite.Serialization;
 using Assembly.Metro.Dialogs;
 using Blamite.IO;
@@ -18,7 +16,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 	public partial class AddressTools
 	{
 		private readonly ICacheFile _cache;
-		private IRTEProvider realtime;
+		private RTEProvider realtime;
 
 		public AddressTools(ICacheFile cache, EngineDescription buildInfo)
 		{
@@ -32,20 +30,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			{
 				switch (_cache.Engine)
 				{
-					case EngineType.ThirdGeneration when !string.IsNullOrEmpty(buildInfo.PokingModule):
-						realtime = new ThirdGenMCCRTEProvider(buildInfo);
-						break;
-					case EngineType.SecondGeneration when !string.IsNullOrEmpty(buildInfo.PokingModule):
-						realtime = new SecondGenMCCRTEProvider(buildInfo);
+					case EngineType.ThirdGeneration:
+						realtime = new PCThirdGenRTEProvider(buildInfo);
 						break;
 					case EngineType.SecondGeneration:
-						realtime = new SecondGenRTEProvider(buildInfo);
-						break;
-					case EngineType.FirstGeneration when !string.IsNullOrEmpty(buildInfo.PokingModule):
-						realtime = new FirstGenMCCRTEProvider(buildInfo);
+						realtime = new PCSecondGenRTEProvider(buildInfo);
 						break;
 					case EngineType.FirstGeneration:
-						realtime = new FirstGenRTEProvider(buildInfo);
+						realtime = new PCFirstGenRTEProvider(buildInfo);
 						break;
 				}
 			}
@@ -69,16 +61,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				return;
 			}
 
-			var rteStream = realtime?.GetMetaStream(_cache, null);
+			var rteStream = realtime?.GetCacheStream(_cache, null);
+
 			long rteMagic = 0;
 			if (cbInputType.SelectedIndex == 3 || cbOutputType.SelectedIndex == 3)
 			{
 				if (rteStream == null)
 				{
-					MetroMessageBox.Show("Cannot convert using a runtime address. Possibly because:\r\n\r\n" +
-										"-The game is not running.\r\n" +
-										"-The game is not running the same map as the one you have open.\r\n" +
-										"-Or this engine doesn't use/support poking/runtime addresses.");
+					MetroMessageBox.Show("Cannot convert using a runtime address. Reason given:\r\n\r\n" +
+										realtime.ErrorMessage);
 					return;
 				}
 

@@ -50,6 +50,8 @@ namespace Blamite.Blam.SecondGen.Structures
 
 		public uint Checksum { get; set; }
 
+		public DateTime? BuildDate { get; set; }
+
 		public FileSegmentGroup LocalizationArea { get; set; }
 		public FileSegment LocalizationGlobals { get; set; }
 		public SegmentPointer LocalizationGlobalsLocation { get; set; }
@@ -211,6 +213,8 @@ namespace Blamite.Blam.SecondGen.Structures
 			}
 
 			Checksum = (uint)values.GetIntegerOrDefault("checksum", 0);
+
+			BuildDate = CacheFileExtensions.AssembleFileTime(values, "cache build date high", "cache build date low");
 
 			//vista mp maps dont have a globals tag so its referenced in the header
 			if (values.HasInteger("locale globals offset"))

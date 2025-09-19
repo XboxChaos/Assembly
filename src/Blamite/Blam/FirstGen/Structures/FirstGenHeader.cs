@@ -1,5 +1,6 @@
 ﻿using Blamite.IO;
 using Blamite.Serialization;
+using System;
 
 namespace Blamite.Blam.FirstGen.Structures
 {
@@ -53,6 +54,8 @@ namespace Blamite.Blam.FirstGen.Structures
 		public SegmentPointer FileNameDataLocation { get; set; }
 
 		public uint Checksum { get; set; }
+
+		public DateTime? BuildDate { get; set; }
 
 		private uint _bsp_size_hack = 0;
 
@@ -138,6 +141,8 @@ namespace Blamite.Blam.FirstGen.Structures
 			InternalName = values.GetString("internal name");
 
 			Checksum = (uint)values.GetIntegerOrDefault("checksum", 0);
+
+			BuildDate = CacheFileExtensions.AssembleFileTime(values, "cache build date high", "cache build date low");
 
 			// dummy partition
 			Partitions = new Partition[1];

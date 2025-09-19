@@ -10,6 +10,7 @@ using Blamite.Blam.Localization;
 using Blamite.Blam.Resources.Sounds;
 using System.IO;
 using System.Linq;
+using System;
 
 namespace Blamite.Blam.Eldorado
 {
@@ -99,7 +100,11 @@ namespace Blamite.Blam.Eldorado
 		public int XDKVersion
 		{
 			get { return 0; }
-			set { }
+		}
+
+		public DateTime? BuildDate
+		{
+			get { return _header.BuildDate; }
 		}
 
 		public bool ZoneOnly

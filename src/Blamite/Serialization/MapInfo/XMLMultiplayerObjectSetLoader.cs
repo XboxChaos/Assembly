@@ -21,6 +21,18 @@ namespace Blamite.Serialization.MapInfo
 		}
 
 		/// <summary>
+		///     Loads setting data from a path, with a secondary path.
+		/// </summary>
+		/// <param name="path">The path to load from.</param>
+		/// <param name="altPath">The alternate path to load from.</param>
+		/// <returns>The loaded setting data.</returns>
+		public object LoadSetting(string path, string altPath)
+		{
+			//alt not used
+			return LoadSetting(path);
+		}
+
+		/// <summary>
 		///     Loads multiplayer object set definitions from an XML document.
 		/// </summary>
 		/// <param name="document">The XML document to load set definitions from.</param>

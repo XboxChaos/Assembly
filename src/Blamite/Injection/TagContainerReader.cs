@@ -422,12 +422,12 @@ namespace Blamite.Injection
 			return resource;
 		}
 
-		private static ExtractedResourcePredictionD ReadPrediction(IReader reader, byte version)
+		private static ExtractedResourcePredictionMolecule ReadPrediction(IReader reader, byte version)
 		{
 			if (version > 0)
 				throw new InvalidOperationException("Unrecognized \"pdct\" block version");
 
-			var prediction = new ExtractedResourcePredictionD();
+			var prediction = new ExtractedResourcePredictionMolecule();
 
 			prediction.OriginalIndex = reader.ReadInt32();
 			prediction.OriginalTagIndex = new DatumIndex(reader.ReadUInt32());
@@ -438,32 +438,32 @@ namespace Blamite.Injection
 			int cCount = reader.ReadInt32();
 			for (int c = 0; c < cCount; c++)
 			{
-				var expc = new ExtractedResourcePredictionC();
+				var expc = new ExtractedResourcePredictionMoleculeAtom();
 
-				expc.BEntry = new ExtractedResourcePredictionB();
+				expc.BEntry = new ExtractedResourcePredictionAtom();
 
 				int baCount = reader.ReadInt32();
 				for (int a = 0; a < baCount; a++)
 				{
-					ExtractedResourcePredictionA expa = new ExtractedResourcePredictionA();
+					ExtractedResourcePredictionQuanta expa = new ExtractedResourcePredictionQuanta();
 					expa.OriginalResourceSubIndex = reader.ReadInt32();
 					expa.OriginalResourceIndex = new DatumIndex(reader.ReadUInt32());
 					expa.OriginalResourceGroup = reader.ReadInt32();
 					expa.OriginalResourceName = reader.ReadAscii();
-					expc.BEntry.AEntries.Add(expa);
+					expc.BEntry.Quantas.Add(expa);
 				}
-				prediction.CEntries.Add(expc);
+				prediction.MoleculeAtoms.Add(expc);
 			}
 
 			int aCount = reader.ReadInt32();
 			for (int a = 0; a < aCount; a++)
 			{
-				ExtractedResourcePredictionA expa = new ExtractedResourcePredictionA();
+				ExtractedResourcePredictionQuanta expa = new ExtractedResourcePredictionQuanta();
 				expa.OriginalResourceSubIndex = reader.ReadInt32();
 				expa.OriginalResourceIndex = new DatumIndex(reader.ReadUInt32());
 				expa.OriginalResourceGroup = reader.ReadInt32();
 				expa.OriginalResourceName = reader.ReadAscii();
-				prediction.AEntries.Add(expa);
+				prediction.Quantas.Add(expa);
 			}
 
 			return prediction;

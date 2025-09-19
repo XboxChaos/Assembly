@@ -26,8 +26,8 @@ namespace Blamite.Injection
 		private readonly Dictionary<DatumIndex, ExtractedTag> _tagsByIndex = 
 			new Dictionary<DatumIndex, ExtractedTag>();
 
-		private readonly List<ExtractedResourcePredictionD> _extractedPredictions =
-			new List<ExtractedResourcePredictionD>();
+		private readonly List<ExtractedResourcePredictionMolecule> _extractedPredictions =
+			new List<ExtractedResourcePredictionMolecule>();
 
 		private readonly Dictionary<int, ExtractedSoundCodec> _soundCodecsByIndex =
 			new Dictionary<int, ExtractedSoundCodec>();
@@ -96,7 +96,7 @@ namespace Blamite.Injection
 		/// <summary>
 		///     Gets a collection of all resource prediction objects in the container.
 		/// </summary>
-		public ICollection<ExtractedResourcePredictionD> Predictions
+		public ICollection<ExtractedResourcePredictionMolecule> Predictions
 		{
 			get { return _extractedPredictions; }
 		}
@@ -215,7 +215,7 @@ namespace Blamite.Injection
 		///     Adds information about a resource prediction to the container.
 		/// </summary>
 		/// <param name="prediction">The prediction to add.</param>
-		public void AddPrediction(ExtractedResourcePredictionD prediction)
+		public void AddPrediction(ExtractedResourcePredictionMolecule prediction)
 		{
 			_extractedPredictions.Add(prediction);
 		}

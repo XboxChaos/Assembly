@@ -15,6 +15,9 @@
 		<int32 name="string index table offset" offset="0x160" />
 		<int32 name="string table offset" offset="0x164" />
 
+		<int32 name="cache build date high" offset ="0x16C" />
+		<int32 name="cache build date low" offset ="0x170" />
+
 		<asciiz name="internal name" offset="0x18C" />
 		<asciiz name="scenario name" offset="0x1B0" />
 
@@ -136,14 +139,13 @@
 		</array>
 	</layout>
 
-  <layout for="hsc*">
-    <asciiz name="file name" offset="0x0" />
-    <int32 name="source size" offset="0x20" />
-    <uint32 name="source pointer" offset="0x2C" />
-  </layout>
+	<layout for="hsc*">
+		<asciiz name="file name" offset="0x0" />
+		<int32 name="source size" offset="0x20" />
+		<uint32 name="source pointer" offset="0x2C" />
+	</layout>
 
 	<layout for="hsdt">
-
 		<int32 name="script string table size" offset="0x54" />
 		<uint32 name="script string table address" offset="0x60" />
 
@@ -158,11 +160,10 @@
 
 		<int32 name="number of script expressions" offset="0x48" />
 		<uint32 name="script expression table address" offset="0x4C" />
-
 	</layout>
 
 	<layout for="script element" size="0x20">
-		<int32 name="name index" offset="0x0" />
+		<int32 name="name stringid" offset="0x0" />
 		<int16 name="execution type" offset="0x4" />
 		<int32 name="return type" offset="0x8" />
 		<int32 name="first expression index" offset="0xC" />
@@ -177,13 +178,13 @@
 	</layout>
 
 	<layout for="script global element" size="0xC">
-		<int32 name="name index" offset="0x0" />
+		<int32 name="name stringid" offset="0x0" />
 		<int32 name="type" offset="0x4" />
 		<uint32 name="expression index" offset="0x8" />
 	</layout>
 
 	<layout for="script variable element" size="0xC">
-		<int32 name="name index" offset="0x0" />
+		<int32 name="name stringid" offset="0x0" />
 		<int32 name="type" offset="0x4" />
 		<uint32 name="expression index" offset="0x8" />
 	</layout>
@@ -196,7 +197,6 @@
 		<uint32 name="string table offset" offset="0xC" />
 		<int32 name="value type" offset="0x10" />
 		<int16 name="expression type" offset="0x14" />
-		<!--<int32 name="source line" offset="0x18" />-->
 	</layout>
 	
 	<!-- sbsp (scenario_structure_bsp) -->

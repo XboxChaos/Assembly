@@ -306,11 +306,11 @@ namespace Blamite.Injection
 				writer.WriteInt32(prediction.Unknown1);
 				writer.WriteInt32(prediction.Unknown2);
 
-				writer.WriteInt32(prediction.CEntries.Count);
-				foreach (ExtractedResourcePredictionC expc in prediction.CEntries)
+				writer.WriteInt32(prediction.MoleculeAtoms.Count);
+				foreach (ExtractedResourcePredictionMoleculeAtom expc in prediction.MoleculeAtoms)
 				{
-					writer.WriteInt32(expc.BEntry.AEntries.Count);
-					foreach (ExtractedResourcePredictionA expa in expc.BEntry.AEntries)
+					writer.WriteInt32(expc.BEntry.Quantas.Count);
+					foreach (ExtractedResourcePredictionQuanta expa in expc.BEntry.Quantas)
 					{
 						writer.WriteInt32(expa.OriginalResourceSubIndex);
 						writer.WriteUInt32(expa.OriginalResourceIndex.Value);
@@ -319,8 +319,8 @@ namespace Blamite.Injection
 					}	
 				}
 
-				writer.WriteInt32(prediction.AEntries.Count);
-				foreach (ExtractedResourcePredictionA expa in prediction.AEntries)
+				writer.WriteInt32(prediction.Quantas.Count);
+				foreach (ExtractedResourcePredictionQuanta expa in prediction.Quantas)
 				{
 					writer.WriteInt32(expa.OriginalResourceSubIndex);
 					writer.WriteUInt32(expa.OriginalResourceIndex.Value);

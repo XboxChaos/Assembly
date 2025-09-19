@@ -4,6 +4,7 @@ using System.Xml.Linq;
 using System.Collections.Generic;
 using Blamite.Util;
 using System.Runtime.CompilerServices;
+using System.ComponentModel;
 
 namespace Blamite.Serialization.Settings
 {
@@ -14,6 +15,8 @@ namespace Blamite.Serialization.Settings
 	{
 		private Queue<QueuedStructure> _structs = new Queue<QueuedStructure>();
 
+		private Dictionary<string, StructureLayoutCollection> _cache = new Dictionary<string, StructureLayoutCollection>();
+
 		/// <summary>
 		///     Loads setting data from a path.
 		/// </summary>
@@ -23,12 +26,39 @@ namespace Blamite.Serialization.Settings
 		/// </returns>
 		public object LoadSetting(string path)
 		{
+			return HandlePath(path);
+		}
+
+		/// <summary>
+		///     Loads setting data from a path, with a secondary path.
+		/// </summary>
+		/// <param name="path">The path to load from.</param>
+		/// <param name="altPath">The alternate path to load from.</param>
+		/// <returns>The loaded setting data.</returns>
+		public object LoadSetting(string path, string altPath)
+		{
+			StructureLayoutCollection shared = null;
+			if (!string.IsNullOrEmpty(altPath))
+				shared = HandlePath(altPath);
+
+			return HandlePath(path, shared);
+		}
+
+		private StructureLayoutCollection HandlePath(string path, StructureLayoutCollection shared = null)
+		{
+			if (_cache.ContainsKey(path))
+				return _cache[path];
+
 			StructureLayoutCollection result;
 			if (Directory.Exists(path))
-				result = LoadLayoutsFromDirectory(path);
+				result = LoadLayoutsFromDirectory(path, shared);
 			else
-				result = LoadLayouts(path);
+				result = LoadLayouts(path, shared);
 			ProcessStructReferences(result, path);
+
+			if (!_cache.ContainsKey(path))
+				_cache[path] = result;
+
 			return result;
 		}
 
@@ -38,12 +68,16 @@ namespace Blamite.Serialization.Settings
 		/// <param name="document">The XML document to load structure layouts from.</param>
 		/// <param name="path">The path to the original XML. For debugging purposes.</param>
 		/// <returns>The layouts that were loaded.</returns>
-		private StructureLayoutCollection LoadLayouts(XDocument document, string path)
+		private StructureLayoutCollection LoadLayouts(XDocument document, string path, StructureLayoutCollection shared)
 		{
 			// Make sure there is a root <layouts> tag
 			XContainer layoutContainer = document.Element("layouts");
 			if (layoutContainer == null)
 				throw new ArgumentException($"Invalid layout document.\r\n{path}");
+
+			string parentPath = null;
+			if (XMLUtil.HasAttribute((XElement)layoutContainer, "parentLayouts"))
+				parentPath = XMLUtil.GetStringAttribute((XElement)layoutContainer, "parentLayouts");
 
 			// Layout tags have the format:
 			// <layout for="(layout's purpose)">(structure fields)</layout>
@@ -51,8 +85,21 @@ namespace Blamite.Serialization.Settings
 			foreach (XElement layout in layoutContainer.Elements("layout"))
 			{
 				string name = XMLUtil.GetStringAttribute(layout, "for");
-				int size = (int)XMLUtil.GetNumericAttribute(layout, "size", 0);
-				result.AddLayout(name, LoadLayout(layout, size));
+
+				if (XMLUtil.HasAttribute(layout, "inherits"))
+				{
+					string inherit = XMLUtil.GetStringAttribute(layout, "inherits");
+					if (shared == null || !shared.HasLayout(inherit))
+						throw new ArgumentException($"Unable to find inherited layout \"{inherit}\" for layout \"{name}\".\r\n{path}");
+
+					var inheritedLayout = shared.GetLayout(inherit);
+					result.AddLayout(name, inheritedLayout);
+				}
+				else
+				{
+					int size = (int)XMLUtil.GetNumericAttribute(layout, "size", 0);
+					result.AddLayout(name, LoadLayout(layout, size));
+				}
 			}
 			return result;
 		}
@@ -62,9 +109,9 @@ namespace Blamite.Serialization.Settings
 		/// </summary>
 		/// <param name="documentPath">The path to the XML document to load.</param>
 		/// <returns>The layouts that were loaded.</returns>
-		private StructureLayoutCollection LoadLayouts(string documentPath)
+		private StructureLayoutCollection LoadLayouts(string documentPath, StructureLayoutCollection shared)
 		{
-			return LoadLayouts(XDocument.Load(documentPath), documentPath);
+			return LoadLayouts(XDocument.Load(documentPath), documentPath, shared);
 		}
 
 		/// <summary>
@@ -72,12 +119,12 @@ namespace Blamite.Serialization.Settings
 		/// </summary>
 		/// <param name="dirPath">The path to the directory to load XML files from.</param>
 		/// <returns>The layouts that were loaded.</returns>
-		private StructureLayoutCollection LoadLayoutsFromDirectory(string dirPath)
+		private StructureLayoutCollection LoadLayoutsFromDirectory(string dirPath, StructureLayoutCollection shared)
 		{
 			var result = new StructureLayoutCollection();
 			foreach (string file in Directory.EnumerateFiles(dirPath, "*.xml"))
 			{
-				StructureLayoutCollection layouts = LoadLayouts(file);
+				StructureLayoutCollection layouts = LoadLayouts(file, shared);
 				result.Import(layouts);
 			}
 			return result;

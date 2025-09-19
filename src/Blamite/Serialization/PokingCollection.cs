@@ -38,6 +38,8 @@ namespace Blamite.Serialization
 		/// <returns>The pointer, otherwise -1.</returns>
 		public PokingInformation RetrieveInformation(string version)
 		{
+			if (string.IsNullOrEmpty(version))
+				return null;
 			Version v = new Version(version);
 			return RetrieveInformation(v);
 		}
