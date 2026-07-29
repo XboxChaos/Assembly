@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if NETFRAMEWORK
 using System.Runtime.Remoting.Messaging;
+#endif
 
 namespace Blamite.Serialization
 {

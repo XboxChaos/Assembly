@@ -30,6 +30,21 @@ namespace Blamite.RTE.Console
 	/// </summary>
 	public abstract class XConsole
 	{
+#if NETFRAMEWORK
+		private static readonly Encoding ProtocolEncoding = Encoding.Default;
+#else
+		// .NET Framework's Encoding.Default is the system ANSI code page (Windows-1252 on the
+		// machines this ships to); .NET Core's is UTF-8, which would decode 0x80-0xFF differently.
+		// Pin it so the devkit wire protocol is parsed byte-for-byte the same way on both.
+		private static readonly Encoding ProtocolEncoding;
+
+		static XConsole()
+		{
+			Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+			ProtocolEncoding = Encoding.GetEncoding(1252);
+		}
+#endif
+
 		public abstract Endian Endianness { get; }
 		internal TcpClient _tcpc;
 		internal NetworkStream _netStream;
@@ -278,7 +293,7 @@ namespace Blamite.RTE.Console
 			if (!TrySendCommand("screenshot"))
 				return null;
 
-			using (BinaryReader br = new BinaryReader(_netStream, Encoding.Default, true))
+			using (BinaryReader br = new BinaryReader(_netStream, ProtocolEncoding, true))
 			{
 				string response = ReadStringFromStream(br);
 
@@ -348,7 +363,7 @@ namespace Blamite.RTE.Console
 
 		protected string RecieveSimple()
 		{
-			using (BinaryReader br = new BinaryReader(_netStream, Encoding.Default, true))
+			using (BinaryReader br = new BinaryReader(_netStream, ProtocolEncoding, true))
 			{
 				return ReadStringFromStream(br);
 			}
@@ -359,7 +374,7 @@ namespace Blamite.RTE.Console
 			if (!TrySendCommand(command))
 				return null;
 
-			using (BinaryReader br = new BinaryReader(_netStream, Encoding.Default, true))
+			using (BinaryReader br = new BinaryReader(_netStream, ProtocolEncoding, true))
 			{
 				List<string> contents = new List<string>();
 
@@ -391,7 +406,7 @@ namespace Blamite.RTE.Console
 
 			int offset = prefixed ? 2 : 0;
 
-			using (BinaryReader br = new BinaryReader(_netStream, Encoding.Default, true))
+			using (BinaryReader br = new BinaryReader(_netStream, ProtocolEncoding, true))
 			{
 				response = ReadStringFromStream(br);
 

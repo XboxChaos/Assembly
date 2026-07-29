@@ -15,6 +15,15 @@ namespace Blamite.IO
 		private readonly Stream _stream;
 		private bool _bigEndian;
 
+#if !NETFRAMEWORK
+		static EndianReader()
+		{
+			// .NET Core and later only ship a handful of encodings in-box; Windows-1252 (used by
+			// ReadWin1252) is not one of them. .NET Framework has always had it built in.
+			Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+		}
+#endif
+
 		/// <summary>
 		///     Initializes a new instance of the <see cref="EndianReader" /> class.
 		/// </summary>
