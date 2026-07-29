@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layouts>
+	<!--
+		Halo: Campaign Evolved ships its content in Unreal Engine 5 IoStore containers: a .utoc
+		table of contents paired with a .ucas data blob. This file describes the fixed-size
+		.utoc header, and only that. Everything following it is a run of variable-length arrays
+		whose element counts come from the fields below, and several of those arrays are
+		bit-packed or mixed-endian in ways the layout dialect cannot express - those are decoded
+		in Blamite.IO.IoStore instead.
+
+		Every field in this header is little-endian.
+	-->
+	<layout for="toc header" size="0x90">
+		<!--
+			Always the same 16 ASCII characters: a dash, then "==" and a dash repeated, ending on
+			a dash. The literal cannot be written here because a double dash cannot appear inside
+			an XML comment; see IoStoreTableOfContents.Magic for the string itself.
+		-->
+		<raw name="magic" offset="0x0" size="0x10" />
+
+		<!-- 8 for every container shipped by Campaign Evolved. -->
+		<byte name="version" offset="0x10" />
+
+		<!--
+			0x11-0x13 are reserved and have only ever been observed as zero, so they are not
+			described here. "toc header size" is presumed to be the 0x90 this layout covers;
+			it is read for diagnostics only and nothing depends on its value.
+		-->
+		<uint32 name="toc header size" offset="0x14" />
+
+		<uint32 name="entry count" offset="0x18" />
+		<uint32 name="compressed block count" offset="0x1C" />
+
+		<!--
+			Presumed to be the size of one compressed block entry (12). Unconfirmed, so it is
+			surfaced to callers but never asserted on.
+		-->
+		<uint32 name="compressed block entry size" offset="0x20" />
+
+		<uint32 name="compression method name count" offset="0x24" />
+		<uint32 name="compression method name length" offset="0x28" />
+
+		<!-- 65536 for every container shipped by Campaign Evolved. -->
+		<uint32 name="compression block size" offset="0x2C" />
+
+		<!-- Zero for override containers, which carry no directory index at all. -->
+		<uint32 name="directory index size" offset="0x30" />
+
+		<uint32 name="partition count" offset="0x34" />
+		<uint64 name="container id" offset="0x38" />
+
+		<!-- All zero: Campaign Evolved containers are not encrypted and use no AES key. -->
+		<raw name="encryption key guid" offset="0x40" size="0x10" />
+
+		<!-- 0x01 Compressed, 0x02 Encrypted, 0x04 Signed, 0x08 Indexed. -->
+		<uint32 name="container flags" offset="0x50" />
+
+		<!--
+			The two perfect-hash arrays these count are skipped wholesale by the reader; chunks
+			are resolved by directory-index path or by scanning the chunk ID array instead.
+		-->
+		<uint32 name="perfect hash seed count" offset="0x54" />
+		<uint64 name="partition size" offset="0x58" />
+		<uint32 name="chunks without perfect hash count" offset="0x60" />
+
+		<!-- 0x64 is reserved and 0x68-0x8F is five reserved uint64s, all observed as zero. -->
+	</layout>
+</layouts>
