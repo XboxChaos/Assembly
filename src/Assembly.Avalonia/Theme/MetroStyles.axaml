@@ -1,0 +1,105 @@
+<!--
+  Metro control styling for Avalonia.
+
+  Ported from src/Assembly/Metro/Controls/*.xaml. The palette is verbatim; the
+  mechanical change is that WPF's <ControlTemplate.Triggers> with
+  <Trigger Property="IsMouseOver"> become Avalonia pseudo-class selectors
+  (:pointerover, :pressed, :selected, :focus).
+-->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <Style Selector="TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushPrimary}" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
+
+  <Style Selector="TextBlock.label">
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushSecondary}" />
+    <Setter Property="FontSize" Value="11" />
+  </Style>
+
+  <Style Selector="TextBlock.mono, SelectableTextBlock.mono">
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontMono}" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
+
+  <Style Selector="TextBlock.sectionHeader">
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushSecondary}" />
+    <Setter Property="FontSize" Value="11" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+
+  <Style Selector="SelectableTextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushPrimary}" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
+
+  <!-- Buttons: flat, square, accent on hover -->
+  <Style Selector="Button">
+    <Setter Property="Background" Value="#FF333337" />
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushPrimary}" />
+    <Setter Property="BorderBrush" Value="#FF54545a" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="0" />
+    <Setter Property="Padding" Value="14,6" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
+  <Style Selector="Button:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+  </Style>
+  <Style Selector="Button:pressed /template/ ContentPresenter">
+    <Setter Property="Background" Value="#FF005a99" />
+  </Style>
+
+  <!-- Text input -->
+  <Style Selector="TextBox">
+    <Setter Property="CornerRadius" Value="0" />
+    <Setter Property="Background" Value="#FF1e1e20" />
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushPrimary}" />
+    <Setter Property="BorderBrush" Value="#FF54545a" />
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="MinHeight" Value="26" />
+  </Style>
+  <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" />
+  </Style>
+
+  <!-- Tree -->
+  <Style Selector="TreeView">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+  </Style>
+  <Style Selector="TreeViewItem">
+    <Setter Property="CornerRadius" Value="0" />
+    <Setter Property="Padding" Value="2,1" />
+    <Setter Property="MinHeight" Value="21" />
+  </Style>
+  <Style Selector="TreeViewItem:selected /template/ Border#PART_LayoutRoot">
+    <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrush}" />
+  </Style>
+
+  <!-- Lists -->
+  <Style Selector="ListBox">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+  </Style>
+  <Style Selector="ListBoxItem">
+    <Setter Property="CornerRadius" Value="0" />
+    <Setter Property="Padding" Value="8,2" />
+    <Setter Property="MinHeight" Value="0" />
+  </Style>
+  <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource SidebarBlockBrush}" />
+  </Style>
+
+  <Style Selector="ComboBox">
+    <Setter Property="CornerRadius" Value="0" />
+    <Setter Property="Background" Value="#FF1e1e20" />
+    <Setter Property="BorderBrush" Value="#FF54545a" />
+    <Setter Property="MinHeight" Value="26" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
+
+</Styles>

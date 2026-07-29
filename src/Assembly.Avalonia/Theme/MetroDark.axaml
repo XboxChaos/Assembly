@@ -1,0 +1,47 @@
+<!--
+  Direct port of Assembly's WPF Metro theme to Avalonia, to measure port fidelity.
+
+  Brush values are copied VERBATIM from:
+    src/Assembly/Metro/Themes/Dark.xaml   (greys)
+    src/Assembly/Metro/Themes/Blue.xaml   (accent)
+
+  The only mechanical change needed for the brush dictionary was the xmlns
+  (WPF's schemas.microsoft.com/winfx/2006/xaml/presentation -> Avalonia's
+  https://github.com/avaloniaui). x:Key, SolidColorBrush, Color and
+  ResourceDictionary are otherwise identical. x:Name on a brush is not valid in
+  Avalonia and was dropped; it was redundant with x:Key in the original.
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- ==== from Metro/Themes/Dark.xaml ==== -->
+  <SolidColorBrush x:Key="TextBrushPrimary" Color="White" />
+  <SolidColorBrush x:Key="TextBrushSecondary" Color="#FF989898" />
+
+  <SolidColorBrush x:Key="VectorBrush" Color="#FFF4F4F5" />
+  <SolidColorBrush x:Key="WindowActionHoverBrush" Color="#FF3f3f41" />
+
+  <SolidColorBrush x:Key="HomeOpacityBrush" Color="#FF212121" />
+  <SolidColorBrush x:Key="HomeIWffBrush" Color="#99303030" />
+
+  <SolidColorBrush x:Key="SidebarBlockBrush" Color="#FF3f3f46" />
+  <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#FF252526" />
+  <SolidColorBrush x:Key="SidebarHeaderBrush" Color="#FF2d2d30" />
+  <SolidColorBrush x:Key="SidebarHeaderSeperatorBrush" Color="#FF46464a" />
+
+  <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FF2d2d30" />
+
+  <!-- ==== from Metro/Themes/Blue.xaml ==== -->
+  <SolidColorBrush x:Key="ExtryzeAccentBrush" Color="#0079cb" />
+  <SolidColorBrush x:Key="ExtryzeAccentBrushSecondary" Color="#1D98EB" />
+  <Color x:Key="ExtryzeAccentBrushColour">#FF0079cb</Color>
+  <Color x:Key="ExtryzeAccentBrushColourSecondary">#FF1D98EB</Color>
+
+  <!-- ==== PoC-only additions (not in the WPF theme) ==== -->
+  <!-- Assembly uses Consolas for byte-level data; it does not exist on macOS.
+       Menlo is the macOS system monospace. -->
+  <FontFamily x:Key="MetroFontMono">Menlo,Consolas,monospace</FontFamily>
+  <SolidColorBrush x:Key="ErrorBrush" Color="#FFE05252" />
+  <SolidColorBrush x:Key="RowHoverBrush" Color="#FF3f3f46" />
+
+</ResourceDictionary>

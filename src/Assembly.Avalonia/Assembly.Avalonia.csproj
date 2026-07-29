@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Assembly for macOS / Linux / Windows - Avalonia front-end.
+
+    Consumes src/Blamite as an in-process library exactly as the WPF app does.
+    No changes to Blamite are required or made.
+  -->
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
+    <AssemblyName>AssemblyAvalonia</AssemblyName>
+    <RootNamespace>Assembly.Avalonia</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
+    <EnableDefaultAvaloniaItems>true</EnableDefaultAvaloniaItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="12.1.1" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.1" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.1" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Blamite/Blamite.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      The tag-definition ("plugin") XML tree currently lives in the WPF project.
+      Link it rather than duplicating it, so both front-ends stay in sync from one
+      source of truth. Long term this should move to a shared content project.
+    -->
+    <Content Include="../Assembly/Plugins/**/*.xml"
+             Link="Plugins/%(RecursiveDir)%(Filename)%(Extension)"
+             CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

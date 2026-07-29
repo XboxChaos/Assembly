@@ -1,0 +1,214 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:Assembly.Avalonia.ViewModels"
+        x:Class="Assembly.Avalonia.Views.MainWindow"
+        Title="{Binding WindowTitle}"
+        Width="1320" Height="820"
+        MinWidth="860" MinHeight="520"
+        Background="{StaticResource MainBackgroundBrush}"
+        RequestedThemeVariant="Dark">
+
+  <!-- Native macOS menu bar. On Windows/Linux Avalonia renders this in-window. -->
+  <NativeMenu.Menu>
+    <NativeMenu>
+      <NativeMenuItem Header="File">
+        <NativeMenuItem.Menu>
+          <NativeMenu>
+            <NativeMenuItem Header="Open Cache File..." Gesture="Cmd+O" Click="OnMenuOpen" />
+            <NativeMenuItemSeparator />
+            <NativeMenuItem Header="Close Cache File" Click="OnMenuClose" />
+          </NativeMenu>
+        </NativeMenuItem.Menu>
+      </NativeMenuItem>
+      <NativeMenuItem Header="View">
+        <NativeMenuItem.Menu>
+          <NativeMenu>
+            <NativeMenuItem Header="Focus Search" Gesture="Cmd+F" Click="OnMenuFocusSearch" />
+          </NativeMenu>
+        </NativeMenuItem.Menu>
+      </NativeMenuItem>
+    </NativeMenu>
+  </NativeMenu.Menu>
+
+  <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+    <!-- header -->
+    <Border Grid.Row="0" Background="{StaticResource SidebarHeaderBrush}"
+            BorderBrush="{StaticResource ExtryzeAccentBrush}" BorderThickness="0,0,0,2">
+      <Grid ColumnDefinitions="Auto,*,Auto" Margin="14,10">
+        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+          <Border Background="{StaticResource ExtryzeAccentBrush}" Width="4" Height="20" />
+          <TextBlock Text="ASSEMBLY" FontSize="15" FontWeight="Light" VerticalAlignment="Center" />
+        </StackPanel>
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+          <Button Content="Open cache file..." Click="OnOpenClick" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <!-- status strip -->
+    <Border Grid.Row="1" Background="{StaticResource SidebarBackgroundBrush}"
+            BorderBrush="{StaticResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
+      <WrapPanel Margin="14,7">
+        <TextBlock Text="{Binding EngineStatus}" Classes="mono" Margin="0,0,18,0"
+                   Foreground="{Binding EngineStatusOk, Converter={StaticResource OkBrush}}" />
+        <TextBlock Text="{Binding RuntimeStatus}" Classes="mono"
+                   Foreground="{StaticResource TextBrushSecondary}" />
+      </WrapPanel>
+    </Border>
+
+    <!-- body -->
+    <Grid Grid.Row="2" ColumnDefinitions="380,1,*">
+
+      <!-- tag browser -->
+      <Border Grid.Column="0" Background="{StaticResource SidebarBackgroundBrush}">
+        <Grid RowDefinitions="Auto,Auto,*">
+          <Border Grid.Row="0" Background="{StaticResource SidebarHeaderBrush}"
+                  BorderBrush="{StaticResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
+            <TextBlock Text="TAG HIERARCHY" Classes="sectionHeader" Margin="12,8" />
+          </Border>
+
+          <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="8">
+            <TextBox Grid.Column="0" Name="SearchBox" Watermark="Filter tags..."
+                     Text="{Binding Search, Mode=TwoWay}" />
+            <ComboBox Grid.Column="1" Margin="6,0,0,0" Width="118"
+                      ItemsSource="{Binding TreeModes}"
+                      SelectedItem="{Binding TreeMode, Mode=TwoWay}"
+                      ToolTip.Tip="Group tags by their 4-char tag group, or by tag-name folder path" />
+          </Grid>
+
+          <TreeView Grid.Row="2" Name="TagTree" Margin="4,0,4,4"
+                    ItemsSource="{Binding Nodes}"
+                    SelectionChanged="OnTreeSelectionChanged">
+            <TreeView.Styles>
+              <Style Selector="TreeViewItem">
+                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay, FallbackValue=False}" />
+              </Style>
+            </TreeView.Styles>
+            <TreeView.DataTemplates>
+              <TreeDataTemplate DataType="vm:GroupNode" ItemsSource="{Binding Tags}">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                  <TextBlock Grid.Column="0" Text="{Binding Magic}" Classes="mono"
+                             Foreground="{StaticResource ExtryzeAccentBrushSecondary}" Width="42" />
+                  <TextBlock Grid.Column="1" Text="{Binding Description}" Classes="label"
+                             VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                  <TextBlock Grid.Column="2" Text="{Binding CountLabel}" Classes="label"
+                             Margin="8,0,4,0" VerticalAlignment="Center" />
+                </Grid>
+              </TreeDataTemplate>
+              <TreeDataTemplate DataType="vm:FolderNode" ItemsSource="{Binding Children}">
+                <Grid ColumnDefinitions="*,Auto">
+                  <TextBlock Grid.Column="0" Text="{Binding Name}" Classes="mono"
+                             Foreground="{StaticResource TextBrushPrimary}"
+                             TextTrimming="CharacterEllipsis" />
+                  <TextBlock Grid.Column="1" Text="{Binding CountLabel}" Classes="label"
+                             Margin="8,0,4,0" VerticalAlignment="Center" />
+                </Grid>
+              </TreeDataTemplate>
+
+              <DataTemplate DataType="vm:TagNode">
+                <Grid ColumnDefinitions="*,Auto">
+                  <TextBlock Grid.Column="0" Text="{Binding Name}" Classes="mono"
+                             TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding OffsetLabel}" />
+                  <TextBlock Grid.Column="1" Text="{Binding Group}" Classes="mono" FontSize="10"
+                             Foreground="{StaticResource TextBrushSecondary}"
+                             Margin="8,0,4,0" VerticalAlignment="Center" />
+                </Grid>
+              </DataTemplate>
+            </TreeView.DataTemplates>
+          </TreeView>
+        </Grid>
+      </Border>
+
+      <Border Grid.Column="1" Background="{StaticResource SidebarHeaderSeperatorBrush}" />
+
+      <!-- detail -->
+      <Grid Grid.Column="2" RowDefinitions="Auto,*">
+
+        <!-- cache summary -->
+        <Border Grid.Row="0" IsVisible="{Binding HasCache}" Padding="20,16"
+                BorderBrush="{StaticResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
+          <StackPanel Spacing="8">
+            <TextBlock Text="CACHE FILE" Classes="sectionHeader" />
+            <ItemsControl ItemsSource="{Binding CacheInfo}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate><WrapPanel Orientation="Horizontal" /></ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <StackPanel Margin="0,0,26,4">
+                    <TextBlock Text="{Binding Key}" Classes="label" />
+                    <SelectableTextBlock Text="{Binding Value}" Classes="mono" />
+                  </StackPanel>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+
+        <!-- meta -->
+        <Grid Grid.Row="1" RowDefinitions="Auto,Auto,*">
+          <Border Grid.Row="0" IsVisible="{Binding HasCache}" Padding="20,12,20,6">
+            <StackPanel Spacing="2">
+              <TextBlock Text="TAG META" Classes="sectionHeader" />
+              <SelectableTextBlock Text="{Binding TagHeader}" Classes="mono" FontSize="13"
+                                   Foreground="{StaticResource ExtryzeAccentBrushSecondary}" />
+              <TextBlock Text="{Binding MetaStatus}" Classes="label" />
+            </StackPanel>
+          </Border>
+
+          <!-- column headers -->
+          <Grid Grid.Row="1" ColumnDefinitions="90,110,*" Margin="20,4,20,2"
+                IsVisible="{Binding HasMeta}">
+            <TextBlock Grid.Column="0" Text="OFFSET" Classes="sectionHeader" />
+            <TextBlock Grid.Column="1" Text="TYPE" Classes="sectionHeader" />
+            <TextBlock Grid.Column="2" Text="FIELD / VALUE" Classes="sectionHeader" />
+          </Grid>
+
+          <ListBox Grid.Row="2" ItemsSource="{Binding MetaFields}" Margin="12,0,12,12"
+                   IsVisible="{Binding HasMeta}" Background="Transparent" BorderThickness="0">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <Grid ColumnDefinitions="90,110,2*,3*">
+                  <TextBlock Grid.Column="0" Text="{Binding OffsetLabel}" Classes="mono"
+                             Foreground="{StaticResource TextBrushSecondary}" />
+                  <TextBlock Grid.Column="1" Text="{Binding Def.KindLabel}" Classes="label" />
+                  <TextBlock Grid.Column="2" Text="{Binding DisplayName}" Classes="mono"
+                             TextTrimming="CharacterEllipsis" />
+                  <SelectableTextBlock Grid.Column="3" Text="{Binding Value}" Classes="mono"
+                                       Foreground="{StaticResource ExtryzeAccentBrushSecondary}"
+                                       TextTrimming="CharacterEllipsis" />
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+
+          <!-- message surface -->
+          <Border Grid.Row="2" IsVisible="{Binding HasMessage}" Padding="20" VerticalAlignment="Top">
+            <StackPanel Spacing="6">
+              <TextBlock Text="{Binding MessageTitle}" Classes="sectionHeader" />
+              <Border Background="{StaticResource HomeOpacityBrush}"
+                      BorderBrush="{StaticResource SidebarHeaderSeperatorBrush}"
+                      BorderThickness="1" Padding="14">
+                <SelectableTextBlock Text="{Binding Message}" Classes="mono" TextWrapping="Wrap"
+                                     Foreground="{StaticResource TextBrushSecondary}" />
+              </Border>
+            </StackPanel>
+          </Border>
+        </Grid>
+      </Grid>
+    </Grid>
+
+    <!-- footer -->
+    <Border Grid.Row="3" Height="22"
+            Background="{Binding IsSynthetic, Converter={StaticResource FooterBrush}}">
+      <Grid ColumnDefinitions="*,Auto" Margin="12,0">
+        <TextBlock Grid.Column="0" Text="{Binding StatusText}" Classes="mono" FontSize="11"
+                   VerticalAlignment="Center" Foreground="White" />
+        <TextBlock Grid.Column="1" Classes="mono" FontSize="11" VerticalAlignment="Center"
+                   Foreground="White" IsVisible="{Binding IsSynthetic}"
+                   Text="SYNTHETIC TEST FIXTURE - not a real Halo map" />
+      </Grid>
+    </Border>
+  </Grid>
+</Window>
