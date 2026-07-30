@@ -3,20 +3,35 @@
         xmlns:vm="clr-namespace:Assembly.Avalonia.ViewModels"
         x:Class="Assembly.Avalonia.Views.MainWindow"
         Title="{Binding WindowTitle}"
-        Width="1320" Height="820"
-        MinWidth="860" MinHeight="520"
+        Width="1400" Height="880"
+        MinWidth="900" MinHeight="560"
         Background="{StaticResource MainBackgroundBrush}"
         RequestedThemeVariant="Dark">
 
-  <!-- Native macOS menu bar. On Windows/Linux Avalonia renders this in-window. -->
+  <!--
+    Chrome decision: real Assembly is a borderless custom window (AllowsTransparency, custom
+    resize thumbs, hand-drawn min/restore/maximize/close glyphs) with its own drop shadow.
+    This shell deliberately keeps the native macOS window frame (real traffic lights, native
+    resize/snap/Mission-Space/Spaces/VoiceOver support) instead of reproducing that borderless
+    chrome: on macOS a custom-drawn titlebar actively fights window management and
+    accessibility, and it is not what "VS Code ergonomics" actually means in practice - VS Code
+    itself uses native chrome on macOS and only re-skins the *content* below it. Everything
+    below the native titlebar - the branded header band, the toolbar, the tag tree, the tabs,
+    the field table and the value/console panes - is a faithful port of Assembly's interior.
+  -->
+
   <NativeMenu.Menu>
     <NativeMenu>
       <NativeMenuItem Header="File">
         <NativeMenuItem.Menu>
           <NativeMenu>
-            <NativeMenuItem Header="Open Cache File..." Gesture="Cmd+O" Click="OnMenuOpen" />
+            <NativeMenuItem Header="Open Cache File..." Gesture="Cmd+O" Click="OnMenuOpenFile" />
+            <NativeMenuItem Header="Open Folder..." Gesture="Cmd+Shift+O" Click="OnMenuOpenFolder" />
+            <NativeMenuItem Header="Open Zip..." Click="OnMenuOpenZip" />
             <NativeMenuItemSeparator />
-            <NativeMenuItem Header="Close Cache File" Click="OnMenuClose" />
+            <NativeMenuItem Header="Save" Gesture="Cmd+S" Click="OnMenuSave" />
+            <NativeMenuItemSeparator />
+            <NativeMenuItem Header="Close All" Click="OnMenuCloseAll" />
           </NativeMenu>
         </NativeMenuItem.Menu>
       </NativeMenuItem>
@@ -24,60 +39,126 @@
         <NativeMenuItem.Menu>
           <NativeMenu>
             <NativeMenuItem Header="Focus Search" Gesture="Cmd+F" Click="OnMenuFocusSearch" />
+            <NativeMenuItemSeparator />
+            <NativeMenuItem Header="Toggle Tag Tree" Click="OnMenuToggleTagTree" />
+            <NativeMenuItem Header="Toggle Properties Sidebar" Click="OnMenuToggleValueSidebar" />
+            <NativeMenuItem Header="Toggle Console" Click="OnMenuToggleConsole" />
           </NativeMenu>
         </NativeMenuItem.Menu>
       </NativeMenuItem>
     </NativeMenu>
   </NativeMenu.Menu>
 
-  <Grid RowDefinitions="Auto,Auto,*,Auto">
+  <Grid Name="RootGrid">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="60" />
+      <RowDefinition Height="34" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="170" />
+      <RowDefinition Height="22" />
+    </Grid.RowDefinitions>
 
-    <!-- header -->
+    <!-- ================= header band (Home.xaml's homeHeader, 60px) ================= -->
     <Border Grid.Row="0" Background="{StaticResource SidebarHeaderBrush}"
             BorderBrush="{StaticResource ExtryzeAccentBrush}" BorderThickness="0,0,0,2">
-      <Grid ColumnDefinitions="Auto,*,Auto" Margin="14,10">
-        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-          <Border Background="{StaticResource ExtryzeAccentBrush}" Width="4" Height="20" />
-          <TextBlock Text="ASSEMBLY" FontSize="15" FontWeight="Light" VerticalAlignment="Center" />
+      <Grid ColumnDefinitions="Auto,*,Auto" Margin="16,0">
+        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+          <!-- exact AsmLogo path data ported from src/Assembly/App.xaml -->
+          <Path Width="26" Height="26" Stretch="Uniform" Fill="{StaticResource ExtryzeAccentBrush}"
+                Data="M1122.8,589.7c0,0-32.2,6.1-46.3-37.3c-14.1-43.4-80.5-145.9-328.8-203c-248.3-57.1-467.7,0-467.7,0
+                l-29.9,32.8c0,0-172.6,32.3-242.1,141.8l40.3,29.9c0,0,54.9-112.1,319.8-138.8c52.4-5.3,100.4-8,144.5-8.2l-54.8,61.3l-7.5-4.5
+                l-54.9,61.2h53.4l25.4-26.9l77.7,85.1H384.6l-19.4,28.4h-47.4L179.8,765.2H135v34.3h119.5v21.6c0,0,51.4,13.9,161.4,28.4
+                l35.9,25.4c0,0,258.6,4.5,415.4-50.8c156.8-55.3,206.8-158.7,215.2-171.7c8.4-13,14.2-27.9,37.4-25.4h73.2v-37.3H1122.8z
+                M679,765.2v20.4c-95.3,21.3-226.4,29.2-399.7-3l0.7-1h133v-17.9h-89.7l107.6-126.9h173.3l112.1,128.4H679z M886.7,689.8
+                c-3,2.5-20.8,19.4-56.1,39.4L528.9,406.9c169.7,1.4,279.6,40.2,356.3,106.7C983.8,599.2,896.7,681.3,886.7,689.8z" />
+          <StackPanel VerticalAlignment="Center" Spacing="1">
+            <TextBlock Text="ASSEMBLY" FontFamily="{StaticResource MetroFontLight}" FontSize="18" />
+            <TextBlock Text="{Binding WindowTitle}" Classes="label mono" FontSize="10" MaxWidth="520" TextTrimming="CharacterEllipsis" />
+          </StackPanel>
         </StackPanel>
-        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
-          <Button Content="Open cache file..." Click="OnOpenClick" />
+
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
+          <TextBlock Text="{Binding EngineStatus}" Classes="mono" FontSize="11"
+                     Foreground="{Binding EngineStatusOk, Converter={StaticResource OkBrush}}" />
+          <TextBlock Text="{Binding RuntimeStatus}" Classes="mono dim" FontSize="11" />
         </StackPanel>
       </Grid>
     </Border>
 
-    <!-- status strip -->
+    <!-- ================= toolbar ================= -->
     <Border Grid.Row="1" Background="{StaticResource SidebarBackgroundBrush}"
             BorderBrush="{StaticResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
-      <WrapPanel Margin="14,7">
-        <TextBlock Text="{Binding EngineStatus}" Classes="mono" Margin="0,0,18,0"
-                   Foreground="{Binding EngineStatusOk, Converter={StaticResource OkBrush}}" />
-        <TextBlock Text="{Binding RuntimeStatus}" Classes="mono"
-                   Foreground="{StaticResource TextBrushSecondary}" />
-      </WrapPanel>
+      <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto,Auto,Auto,Auto" Margin="8,0">
+        <Button Grid.Column="0" Content="Open File..." Click="OnOpenFileClick" Margin="2" />
+        <Button Grid.Column="1" Content="Open Folder..." Click="OnOpenFolderClick" Margin="2" />
+        <Button Grid.Column="2" Content="Open Zip..." Click="OnOpenZipClick" Margin="2" />
+        <Border Grid.Column="3" Width="1" Margin="6,6" Background="{StaticResource SidebarHeaderSeperatorBrush}" />
+        <Button Grid.Column="4" Content="Save" Classes="accent" Click="OnSaveClick" Margin="2"
+                IsEnabled="{Binding ActiveDocument.IsDirty, FallbackValue=False, TargetNullValue=False}" />
+
+        <StackPanel Grid.Column="6" Orientation="Horizontal" Spacing="4" IsVisible="{Binding HasAnySource}"
+                    VerticalAlignment="Center" Margin="0,0,10,0">
+          <TextBlock Text="{Binding Sources.Count, StringFormat='{}{0} source(s)'}" Classes="label" VerticalAlignment="Center" />
+        </StackPanel>
+
+        <ToggleButton Grid.Column="7" Classes="chrome" IsChecked="{Binding ShowTagTree}"
+                      ToolTip.Tip="Toggle tag tree (sidebar)" Content="&#9776;" Margin="2" />
+        <ToggleButton Grid.Column="8" Classes="chrome" IsChecked="{Binding ShowValueSidebar}"
+                      ToolTip.Tip="Toggle properties sidebar" Content="&#9635;" Margin="2" />
+        <ToggleButton Grid.Column="9" Classes="chrome" IsChecked="{Binding ShowConsole}"
+                      ToolTip.Tip="Toggle console" Content="&gt;_" Margin="2" />
+      </Grid>
     </Border>
 
-    <!-- body -->
-    <Grid Grid.Row="2" ColumnDefinitions="380,1,*">
+    <!-- ================= body: tag tree | documents | value sidebar ================= -->
+    <Grid Grid.Row="2" Name="BodyGrid">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="280" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="320" />
+      </Grid.ColumnDefinitions>
 
-      <!-- tag browser -->
-      <Border Grid.Column="0" Background="{StaticResource SidebarBackgroundBrush}">
-        <Grid RowDefinitions="Auto,Auto,*">
+      <!-- == tag tree sidebar == -->
+      <Border Grid.Column="0" Name="TagTreePane" Background="{StaticResource SidebarBackgroundBrush}"
+              IsVisible="{Binding ShowTagTree}">
+        <Grid RowDefinitions="Auto,Auto,Auto,*">
           <Border Grid.Row="0" Background="{StaticResource SidebarHeaderBrush}"
                   BorderBrush="{StaticResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
-            <TextBlock Text="TAG HIERARCHY" Classes="sectionHeader" Margin="12,8" />
+            <TextBlock Text="TAG NAMESPACE" Classes="sectionHeader" Margin="12,8" />
           </Border>
 
-          <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="8">
+          <!-- mounted sources: a "cache" is a mount of N containers, not one file -->
+          <Border Grid.Row="1" IsVisible="{Binding HasAnySource}"
+                  BorderBrush="{StaticResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
+            <ItemsControl ItemsSource="{Binding Sources}" Margin="8,6">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,2">
+                    <Border Grid.Column="0" Background="{StaticResource SidebarBlockBrush}" Padding="4,1" Margin="0,0,6,0">
+                      <TextBlock Text="{Binding Kind}" FontSize="9" Classes="mono" />
+                    </Border>
+                    <TextBlock Grid.Column="1" Text="{Binding DisplayName}" Classes="mono" FontSize="11"
+                               TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Path}" />
+                    <TextBlock Grid.Column="2" Text="{Binding SummaryLabel}" Classes="label" FontSize="10" Margin="6,0,0,0" />
+                  </Grid>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </Border>
+
+          <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="8">
             <TextBox Grid.Column="0" Name="SearchBox" Watermark="Filter tags..."
                      Text="{Binding Search, Mode=TwoWay}" />
-            <ComboBox Grid.Column="1" Margin="6,0,0,0" Width="118"
+            <ComboBox Grid.Column="1" Margin="6,0,0,0" Width="110"
                       ItemsSource="{Binding TreeModes}"
                       SelectedItem="{Binding TreeMode, Mode=TwoWay}"
                       ToolTip.Tip="Group tags by their 4-char tag group, or by tag-name folder path" />
           </Grid>
 
-          <TreeView Grid.Row="2" Name="TagTree" Margin="4,0,4,4"
+          <TreeView Grid.Row="3" Name="TagTree" Margin="2,0,2,4"
                     ItemsSource="{Binding Nodes}"
                     SelectionChanged="OnTreeSelectionChanged">
             <TreeView.Styles>
@@ -89,30 +170,32 @@
               <TreeDataTemplate DataType="vm:GroupNode" ItemsSource="{Binding Tags}">
                 <Grid ColumnDefinitions="Auto,*,Auto">
                   <TextBlock Grid.Column="0" Text="{Binding Magic}" Classes="mono"
-                             Foreground="{StaticResource ExtryzeAccentBrushSecondary}" Width="42" />
-                  <TextBlock Grid.Column="1" Text="{Binding Description}" Classes="label"
+                             Foreground="{StaticResource ExtryzeAccentBrushSecondary}" Width="38" FontSize="11" />
+                  <TextBlock Grid.Column="1" Text="{Binding Description}" FontSize="11"
                              VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
                   <TextBlock Grid.Column="2" Text="{Binding CountLabel}" Classes="label"
-                             Margin="8,0,4,0" VerticalAlignment="Center" />
+                             Margin="8,0,4,0" VerticalAlignment="Center" FontSize="10" />
                 </Grid>
               </TreeDataTemplate>
               <TreeDataTemplate DataType="vm:FolderNode" ItemsSource="{Binding Children}">
                 <Grid ColumnDefinitions="*,Auto">
-                  <TextBlock Grid.Column="0" Text="{Binding Name}" Classes="mono"
-                             Foreground="{StaticResource TextBrushPrimary}"
+                  <TextBlock Grid.Column="0" Text="{Binding Name}" FontSize="11"
                              TextTrimming="CharacterEllipsis" />
                   <TextBlock Grid.Column="1" Text="{Binding CountLabel}" Classes="label"
-                             Margin="8,0,4,0" VerticalAlignment="Center" />
+                             Margin="8,0,4,0" VerticalAlignment="Center" FontSize="10" />
                 </Grid>
               </TreeDataTemplate>
 
               <DataTemplate DataType="vm:TagNode">
-                <Grid ColumnDefinitions="*,Auto">
-                  <TextBlock Grid.Column="0" Text="{Binding Name}" Classes="mono"
+                <Grid ColumnDefinitions="*,Auto,Auto">
+                  <TextBlock Grid.Column="0" Text="{Binding Name}" FontSize="11"
                              TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding OffsetLabel}" />
-                  <TextBlock Grid.Column="1" Text="{Binding Group}" Classes="mono" FontSize="10"
+                  <TextBlock Grid.Column="1" Text="{Binding SourceName}" Classes="label" FontSize="9"
+                             IsVisible="{Binding #TagTree.DataContext.HasMultipleSources}"
+                             Margin="4,0,4,0" VerticalAlignment="Center" />
+                  <TextBlock Grid.Column="2" Text="{Binding Group}" Classes="mono" FontSize="10"
                              Foreground="{StaticResource TextBrushSecondary}"
-                             Margin="8,0,4,0" VerticalAlignment="Center" />
+                             Margin="4,0,4,0" VerticalAlignment="Center" />
                 </Grid>
               </DataTemplate>
             </TreeView.DataTemplates>
@@ -120,94 +203,155 @@
         </Grid>
       </Border>
 
-      <Border Grid.Column="1" Background="{StaticResource SidebarHeaderSeperatorBrush}" />
+      <GridSplitter Grid.Column="1" Width="1" Background="{StaticResource SidebarHeaderSeperatorBrush}"
+                    ResizeDirection="Columns" IsVisible="{Binding ShowTagTree}" />
 
-      <!-- detail -->
-      <Grid Grid.Column="2" RowDefinitions="Auto,*">
+      <!-- == document area: tab strip + field table == -->
+      <Grid Grid.Column="2" RowDefinitions="30,*" Background="{StaticResource MainBackgroundBrush}">
 
-        <!-- cache summary -->
-        <Border Grid.Row="0" IsVisible="{Binding HasCache}" Padding="20,16"
+        <!-- tab strip -->
+        <Border Grid.Row="0" Background="{StaticResource SidebarHeaderBrush}"
                 BorderBrush="{StaticResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
-          <StackPanel Spacing="8">
-            <TextBlock Text="CACHE FILE" Classes="sectionHeader" />
-            <ItemsControl ItemsSource="{Binding CacheInfo}">
+          <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+            <ItemsControl ItemsSource="{Binding Documents}">
               <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate><WrapPanel Orientation="Horizontal" /></ItemsPanelTemplate>
+                <ItemsPanelTemplate><StackPanel Orientation="Horizontal" /></ItemsPanelTemplate>
               </ItemsControl.ItemsPanel>
               <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                  <StackPanel Margin="0,0,26,4">
-                    <TextBlock Text="{Binding Key}" Classes="label" />
-                    <SelectableTextBlock Text="{Binding Value}" Classes="mono" />
-                  </StackPanel>
+                  <!-- "active" class toggled in code-behind (RefreshTabStyles) whenever ActiveDocument changes -->
+                  <Button Classes="tabHeader" Click="OnTabClick" Tag="{Binding}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <TextBlock Text="{Binding TabTitle}" VerticalAlignment="Center" FontSize="12" />
+                      <Button Classes="tabClose" Content="&#10005;" Click="OnTabCloseClick" Tag="{Binding}" />
+                    </StackPanel>
+                  </Button>
                 </DataTemplate>
               </ItemsControl.ItemTemplate>
             </ItemsControl>
-          </StackPanel>
+          </ScrollViewer>
         </Border>
 
-        <!-- meta -->
-        <Grid Grid.Row="1" RowDefinitions="Auto,Auto,*">
-          <Border Grid.Row="0" IsVisible="{Binding HasCache}" Padding="20,12,20,6">
-            <StackPanel Spacing="2">
-              <TextBlock Text="TAG META" Classes="sectionHeader" />
-              <SelectableTextBlock Text="{Binding TagHeader}" Classes="mono" FontSize="13"
-                                   Foreground="{StaticResource ExtryzeAccentBrushSecondary}" />
-              <TextBlock Text="{Binding MetaStatus}" Classes="label" />
-            </StackPanel>
+        <!-- empty state -->
+        <StackPanel Grid.Row="1" IsVisible="{Binding !HasDocuments}" VerticalAlignment="Center"
+                    HorizontalAlignment="Center" Spacing="10" MaxWidth="440">
+          <TextBlock Text="No tag open" Classes="h1" HorizontalAlignment="Center" />
+          <TextBlock Text="{Binding MessageTitle}" Classes="sectionHeader" HorizontalAlignment="Center"
+                     IsVisible="{Binding !HasAnySource}" />
+          <TextBlock Text="{Binding Message}" Classes="label" TextWrapping="Wrap" TextAlignment="Center" />
+        </StackPanel>
+
+        <!-- field table -->
+        <Grid Grid.Row="1" IsVisible="{Binding HasDocuments}" RowDefinitions="Auto,Auto,*">
+          <Border Grid.Row="0" Padding="14,8" BorderBrush="{StaticResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
+            <Grid ColumnDefinitions="*,Auto">
+              <StackPanel Grid.Column="0" Spacing="1">
+                <SelectableTextBlock Text="{Binding ActiveDocument.HeaderTitle}" Classes="mono accent" FontSize="13" />
+                <TextBlock Text="{Binding ActiveDocument.SchemaStatus}" Classes="label" FontSize="10" />
+              </StackPanel>
+              <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6">
+                <Button Content="Revert All" Click="OnRevertAllClick" IsEnabled="{Binding ActiveDocument.IsDirty, FallbackValue=False, TargetNullValue=False}" />
+                <Button Content="Save" Classes="accent" Click="OnSaveClick" IsEnabled="{Binding ActiveDocument.IsDirty, FallbackValue=False, TargetNullValue=False}" />
+              </StackPanel>
+            </Grid>
           </Border>
 
-          <!-- column headers -->
-          <Grid Grid.Row="1" ColumnDefinitions="90,110,*" Margin="20,4,20,2"
-                IsVisible="{Binding HasMeta}">
-            <TextBlock Grid.Column="0" Text="OFFSET" Classes="sectionHeader" />
-            <TextBlock Grid.Column="1" Text="TYPE" Classes="sectionHeader" />
-            <TextBlock Grid.Column="2" Text="FIELD / VALUE" Classes="sectionHeader" />
+          <Grid Grid.Row="1" ColumnDefinitions="26,90,120,*" Margin="6,4">
+            <TextBlock Grid.Column="1" Text="OFFSET" Classes="sectionHeader" />
+            <TextBlock Grid.Column="2" Text="TYPE" Classes="sectionHeader" />
+            <TextBlock Grid.Column="3" Text="FIELD / VALUE" Classes="sectionHeader" />
           </Grid>
 
-          <ListBox Grid.Row="2" ItemsSource="{Binding MetaFields}" Margin="12,0,12,12"
-                   IsVisible="{Binding HasMeta}" Background="Transparent" BorderThickness="0">
+          <ListBox Grid.Row="2" Name="FieldList" ItemsSource="{Binding ActiveDocument.Rows}"
+                    SelectedItem="{Binding ActiveDocument.SelectedRow, Mode=TwoWay}"
+                    SelectionChanged="OnRowSelectionChanged"
+                    Background="Transparent" BorderThickness="0">
             <ListBox.ItemTemplate>
-              <DataTemplate>
-                <Grid ColumnDefinitions="90,110,2*,3*">
-                  <TextBlock Grid.Column="0" Text="{Binding OffsetLabel}" Classes="mono"
-                             Foreground="{StaticResource TextBrushSecondary}" />
-                  <TextBlock Grid.Column="1" Text="{Binding Def.KindLabel}" Classes="label" />
-                  <TextBlock Grid.Column="2" Text="{Binding DisplayName}" Classes="mono"
-                             TextTrimming="CharacterEllipsis" />
-                  <SelectableTextBlock Grid.Column="3" Text="{Binding Value}" Classes="mono"
-                                       Foreground="{StaticResource ExtryzeAccentBrushSecondary}"
-                                       TextTrimming="CharacterEllipsis" />
+              <DataTemplate DataType="vm:MetaRowViewModel">
+                <Grid ColumnDefinitions="4,26,90,120,*">
+                  <!-- dirty-state accent strip: real per-row indicator, not just the tab title asterisk -->
+                  <Rectangle Grid.Column="0" Width="3" HorizontalAlignment="Left"
+                             Fill="{Binding IsDirty, Converter={StaticResource DirtyBrush}}" />
+                  <ToggleButton Grid.Column="1" Classes="blockExpander" IsChecked="{Binding IsExpanded}"
+                                IsVisible="{Binding IsBlock}" Click="OnBlockExpandClick" Tag="{Binding}">
+                    <Path Width="7" Height="7" Stretch="Uniform" Fill="{StaticResource TextBrushSecondary}"
+                          Data="{Binding IsExpanded, Converter={StaticResource ExpanderGlyph}}" />
+                  </ToggleButton>
+                  <TextBlock Grid.Column="2" Text="{Binding OffsetLabel}" Classes="mono" FontSize="11"
+                             Foreground="{StaticResource TextBrushSecondary}" VerticalAlignment="Center" />
+                  <TextBlock Grid.Column="3" Text="{Binding KindLabel}" Classes="label" FontSize="11" VerticalAlignment="Center" />
+                  <Grid Grid.Column="4" ColumnDefinitions="*,Auto">
+                    <TextBlock Grid.Column="0" Text="{Binding Name}"
+                               Margin="{Binding Depth, Converter={StaticResource DepthIndent}}"
+                               FontFamily="{StaticResource MetroFontRegular}" FontSize="11.5"
+                               VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                               ToolTip.Tip="{Binding Def.Tooltip}" />
+                    <TextBlock Grid.Column="1" Text="{Binding DisplayValue}" Classes="mono accent" FontSize="11"
+                               VerticalAlignment="Center" Margin="10,0,0,0" MaxWidth="380" TextTrimming="CharacterEllipsis" />
+                  </Grid>
                 </Grid>
               </DataTemplate>
             </ListBox.ItemTemplate>
           </ListBox>
-
-          <!-- message surface -->
-          <Border Grid.Row="2" IsVisible="{Binding HasMessage}" Padding="20" VerticalAlignment="Top">
-            <StackPanel Spacing="6">
-              <TextBlock Text="{Binding MessageTitle}" Classes="sectionHeader" />
-              <Border Background="{StaticResource HomeOpacityBrush}"
-                      BorderBrush="{StaticResource SidebarHeaderSeperatorBrush}"
-                      BorderThickness="1" Padding="14">
-                <SelectableTextBlock Text="{Binding Message}" Classes="mono" TextWrapping="Wrap"
-                                     Foreground="{StaticResource TextBrushSecondary}" />
-              </Border>
-            </StackPanel>
-          </Border>
         </Grid>
       </Grid>
+
+      <GridSplitter Grid.Column="3" Width="1" Background="{StaticResource SidebarHeaderSeperatorBrush}"
+                    ResizeDirection="Columns" IsVisible="{Binding ShowValueSidebar}" />
+
+      <!-- == value / properties sidebar == -->
+      <Border Grid.Column="4" Background="{StaticResource SidebarBackgroundBrush}"
+              IsVisible="{Binding ShowValueSidebar}">
+        <Grid RowDefinitions="Auto,*">
+          <Border Grid.Row="0" Background="{StaticResource SidebarHeaderBrush}"
+                  BorderBrush="{StaticResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
+            <TextBlock Text="PROPERTIES" Classes="sectionHeader" Margin="12,8" />
+          </Border>
+          <ScrollViewer Grid.Row="1">
+            <StackPanel Name="EditorHost" Margin="14,12" Spacing="10" />
+          </ScrollViewer>
+        </Grid>
+      </Border>
     </Grid>
 
-    <!-- footer -->
-    <Border Grid.Row="3" Height="22"
-            Background="{Binding IsSynthetic, Converter={StaticResource FooterBrush}}">
-      <Grid ColumnDefinitions="*,Auto" Margin="12,0">
+    <!-- ================= console splitter + console ================= -->
+    <GridSplitter Grid.Row="3" Height="1" Background="{StaticResource SidebarHeaderSeperatorBrush}"
+                  ResizeDirection="Rows" IsVisible="{Binding ShowConsole}" />
+
+    <Border Grid.Row="4" Background="#FF1e1e20" IsVisible="{Binding ShowConsole}" Height="170">
+      <Grid RowDefinitions="Auto,*">
+        <Border Grid.Row="0" Background="{StaticResource SidebarHeaderBrush}"
+                BorderBrush="{StaticResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
+          <Grid ColumnDefinitions="*,Auto">
+            <TextBlock Grid.Column="0" Text="CONSOLE" Classes="sectionHeader" Margin="12,6" />
+            <Button Grid.Column="1" Content="Clear" Click="OnConsoleClearClick" Margin="4" />
+          </Grid>
+        </Border>
+        <ListBox Grid.Row="1" Name="ConsoleList" ItemsSource="{Binding Log.Entries}"
+                  Background="Transparent" BorderThickness="0">
+          <ListBox.ItemTemplate>
+            <DataTemplate DataType="vm:LogEntry">
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="{Binding TimeLabel}" Classes="mono dim" FontSize="10.5" Width="56" />
+                <TextBlock Text="{Binding LevelLabel}" Classes="mono" FontSize="10.5" Width="42"
+                           Foreground="{Binding Level, Converter={StaticResource LogLevelBrush}}" />
+                <TextBlock Text="{Binding Message}" Classes="mono" FontSize="11" TextWrapping="Wrap" />
+              </StackPanel>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </Grid>
+    </Border>
+
+    <!-- ================= status bar ================= -->
+    <Border Grid.Row="5" Background="{Binding ActiveDocument.IsDirty, Converter={StaticResource FooterBrush}}">
+      <Grid ColumnDefinitions="*,Auto">
         <TextBlock Grid.Column="0" Text="{Binding StatusText}" Classes="mono" FontSize="11"
-                   VerticalAlignment="Center" Foreground="White" />
-        <TextBlock Grid.Column="1" Classes="mono" FontSize="11" VerticalAlignment="Center"
-                   Foreground="White" IsVisible="{Binding IsSynthetic}"
-                   Text="SYNTHETIC TEST FIXTURE - not a real Halo map" />
+                   VerticalAlignment="Center" Margin="12,0" Foreground="White" />
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" Margin="0,0,12,0">
+          <TextBlock Text="{Binding ActiveDocument.SelectedRow.OffsetLabel}" Classes="mono" FontSize="11"
+                     Foreground="White" IsVisible="{Binding ActiveDocument.SelectedRow, Converter={x:Static ObjectConverters.IsNotNull}}" />
+        </StackPanel>
       </Grid>
     </Border>
   </Grid>

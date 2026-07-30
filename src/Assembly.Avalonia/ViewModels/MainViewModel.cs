@@ -64,11 +64,12 @@ namespace Assembly.Avalonia.ViewModels
 
 		public string Group => Info.Group;
 		public string OffsetLabel => $"0x{Info.Offset:X8}";
+		public string SourceName => Info.SourceName;
 	}
 
 	public sealed class MainViewModel : ObservableObject
 	{
-		private CacheSession? _session;
+		private readonly TagNamespace _namespace = new();
 		private List<TagInfo> _allTags = new();
 		private Dictionary<string, TagGroupInfo> _groupInfo = new();
 
@@ -80,30 +81,37 @@ namespace Assembly.Avalonia.ViewModels
 			{
 				EngineStatus = "engine database: FAILED";
 				EngineStatusOk = false;
-				Message = EngineDatabaseService.Error;
-				MessageTitle = "Blamite engine database failed to load";
+				Log.Error("engine database failed to load: " + EngineDatabaseService.Error);
 			}
 			else
 			{
 				EngineStatus = $"engine database: {EngineDatabaseService.EngineCount} engines";
 				EngineStatusOk = true;
-				MessageTitle = "No cache file open";
-				Message = "Open a Halo cache file (.map) to browse its tags.";
+				Log.Info($"engine database loaded: {EngineDatabaseService.EngineCount} engines, plugins at {EngineDatabaseService.PluginsRoot ?? "(not found)"}");
 			}
 
 			PluginsAvailable = EngineDatabaseService.PluginsRoot != null;
+			_namespace.Log += Log.Info;
+
+			MessageTitle = "Nothing mounted";
+			Message = "Open a cache file, a folder, or a zip to mount a tag namespace.\n\n" +
+			          "A Halo cache is not always one file: Campaign Evolved mods ship as N separate " +
+			          "containers (one tag each), and the game's own Paks folder holds dozens. Opening " +
+			          "a folder or a zip mounts every cache file found inside as one namespace, exactly " +
+			          "like a single file does.";
 		}
 
 		// ---- environment ----
 		public string EngineStatus { get; }
 		public bool EngineStatusOk { get; }
 		public bool PluginsAvailable { get; }
+		public LogService Log { get; } = new();
 
 		public string RuntimeStatus =>
 			$"{System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription}  |  " +
 			$"{System.Runtime.InteropServices.RuntimeInformation.RuntimeIdentifier}";
 
-		// ---- message / error surface ----
+		// ---- message / error surface (shown when nothing is mounted, or on error) ----
 		private string _messageTitle = "";
 		public string MessageTitle { get => _messageTitle; set => Set(ref _messageTitle, value); }
 
@@ -116,20 +124,15 @@ namespace Assembly.Avalonia.ViewModels
 		private bool _hasMessage = true;
 		public bool HasMessage { get => _hasMessage; set => Set(ref _hasMessage, value); }
 
-		// ---- cache ----
-		private bool _hasCache;
-		public bool HasCache { get => _hasCache; set => Set(ref _hasCache, value); }
+		// ---- mounted namespace ----
+		public ObservableCollection<MountedSource> Sources => _namespace.Sources;
+		public bool HasAnySource => _namespace.HasAnySource;
+		public bool HasMultipleSources => _namespace.HasMultipleSources;
 
 		private string _windowTitle = "Assembly";
 		public string WindowTitle { get => _windowTitle; set => Set(ref _windowTitle, value); }
 
-		public ObservableCollection<KeyValuePair<string, string>> CacheInfo { get; } = new();
-
-		private bool _isSynthetic;
-		public bool IsSynthetic { get => _isSynthetic; set => Set(ref _isSynthetic, value); }
-
 		// ---- tag tree ----
-		/// <summary>Top-level tree items: GroupNode in group mode, FolderNode/TagNode in folder mode.</summary>
 		public ObservableCollection<object> Nodes { get; } = new();
 
 		public string[] TreeModes { get; } = { "Tag group", "Folder" };
@@ -154,89 +157,136 @@ namespace Assembly.Avalonia.ViewModels
 		public TagNode? SelectedTag
 		{
 			get => _selectedTag;
-			set { if (Set(ref _selectedTag, value)) LoadMeta(); }
+			set { if (Set(ref _selectedTag, value) && value != null) OpenTag(value); }
 		}
 
-		// ---- meta ----
-		public ObservableCollection<MetaFieldValue> MetaFields { get; } = new();
+		// ---- documents (tabs) ----
+		public ObservableCollection<TagDocumentViewModel> Documents { get; } = new();
 
-		private bool _hasMeta;
-		public bool HasMeta { get => _hasMeta; set => Set(ref _hasMeta, value); }
+		private TagDocumentViewModel? _activeDocument;
+		public TagDocumentViewModel? ActiveDocument
+		{
+			get => _activeDocument;
+			set => Set(ref _activeDocument, value);
+		}
 
-		private string _metaStatus = "";
-		public string MetaStatus { get => _metaStatus; set => Set(ref _metaStatus, value); }
+		public bool HasDocuments => Documents.Count > 0;
 
-		private string _tagHeader = "";
-		public string TagHeader { get => _tagHeader; set => Set(ref _tagHeader, value); }
+		// ---- panes ----
+		private bool _showTagTree = true;
+		public bool ShowTagTree { get => _showTagTree; set => Set(ref _showTagTree, value); }
+
+		private bool _showValueSidebar = true;
+		public bool ShowValueSidebar { get => _showValueSidebar; set => Set(ref _showValueSidebar, value); }
+
+		private bool _showConsole = true;
+		public bool ShowConsole { get => _showConsole; set => Set(ref _showConsole, value); }
 
 		private string _statusText = "Ready";
 		public string StatusText { get => _statusText; set => Set(ref _statusText, value); }
 
-		// ---- actions ----
-		public async Task OpenAsync(string path)
+		// ---- mount actions ----
+		public async Task OpenFileAsync(string path)
 		{
-			StatusText = $"Opening {System.IO.Path.GetFileName(path)}...";
-			MetaFields.Clear();
-			HasMeta = false;
-			TagHeader = "";
-
 			var db = EngineDatabaseService.Database;
-			if (db == null)
-			{
-				ShowError("Engine database unavailable", EngineDatabaseService.Error ?? "unknown");
-				return;
-			}
+			if (db == null) { ShowError("Engine database unavailable", EngineDatabaseService.Error ?? "unknown"); return; }
 
-			CacheSession session;
-			try
-			{
-				session = await Task.Run(() => CacheSession.Open(path, db));
-			}
-			catch (Exception ex)
-			{
-				Nodes.Clear();
-				_allTags.Clear();
-				_groupInfo.Clear();
-				HasCache = false;
-				ShowError("Could not open cache file", $"{path}\n\n{ex.Message}");
-				StatusText = "Open failed";
-				return;
-			}
+			StatusText = $"Mounting {System.IO.Path.GetFileName(path)}...";
+			var source = await Task.Run(() => _namespace.MountFile(path, db));
+			AfterMount(source);
+		}
 
-			_session?.Dispose();
-			_session = session;
+		public async Task OpenFolderAsync(string path)
+		{
+			var db = EngineDatabaseService.Database;
+			if (db == null) { ShowError("Engine database unavailable", EngineDatabaseService.Error ?? "unknown"); return; }
 
-			_allTags = session.Groups.SelectMany(g => g.Tags).ToList();
-			_groupInfo = session.Groups.ToDictionary(g => g.Magic, g => g);
+			StatusText = $"Scanning folder {System.IO.Path.GetFileName(path)}...";
+			var source = await Task.Run(() => _namespace.MountFolder(path, db));
+			AfterMount(source);
+		}
+
+		public async Task OpenZipAsync(string path)
+		{
+			var db = EngineDatabaseService.Database;
+			if (db == null) { ShowError("Engine database unavailable", EngineDatabaseService.Error ?? "unknown"); return; }
+
+			StatusText = $"Extracting {System.IO.Path.GetFileName(path)}...";
+			var source = await Task.Run(() => _namespace.MountZip(path, db));
+			AfterMount(source);
+		}
+
+		private void AfterMount(MountedSource source)
+		{
+			foreach (var (file, reason) in source.Failures)
+				Log.Warn($"  \"{file}\": {reason}");
+
+			RefreshAggregate();
+
+			if (source.Sessions.Count == 0 && source.Failures.Count > 0)
+				ShowError($"Could not mount \"{source.DisplayName}\"", source.Failures.First().Reason);
+			else
+				MessageIsError = false;
+		}
+
+		private void RefreshAggregate()
+		{
+			_allTags = _namespace.AllTags.ToList();
+			_groupInfo = _namespace.Sessions.SelectMany(s => s.Groups)
+				.GroupBy(g => g.Magic)
+				.ToDictionary(g => g.Key, g => g.First());
 
 			ApplyFilter();
+			Raise(nameof(HasAnySource));
+			Raise(nameof(HasMultipleSources));
+			Raise(nameof(Sources));
 
-			CacheInfo.Clear();
-			void Info(string k, string v) => CacheInfo.Add(new KeyValuePair<string, string>(k, v));
-			var c = session.Cache;
-			Info("path", session.FilePath);
-			Info("engine", session.Engine.Name);
-			Info("build", c.BuildString);
-			Info("internal name", c.InternalName);
-			Info("scenario", c.ScenarioName);
-			Info("type / generation", $"{c.Type} / {c.Engine}");
-			Info("endianness", c.Endianness.ToString());
-			Info("file size", $"{c.FileSize:N0} bytes");
-			Info("tag names", c.FileNames != null ? "present" : "absent");
-			Info("string IDs", $"{c.StringIDs?.Count ?? 0:N0}");
-			Info("tag groups", $"{session.Groups.Count}");
-			Info("tags", $"{session.TotalTags:N0} ({session.SkippedTags} skipped)");
-			if (session.AmbiguousMatches > 1)
-				Info("engine matches", $"{session.AmbiguousMatches} (first used)");
+			HasMessage = !_namespace.HasAnySource;
 
-			IsSynthetic = (c.InternalName ?? "").Contains("SYNTHETIC", StringComparison.OrdinalIgnoreCase);
+			WindowTitle = _namespace.HasAnySource
+				? $"{_namespace.Sources.Count} source{(_namespace.Sources.Count == 1 ? "" : "s")}, {_namespace.TotalTags:N0} tags - Assembly"
+				: "Assembly";
 
-			HasCache = true;
-			HasMessage = false;
-			WindowTitle = $"{session.DisplayName} - Assembly";
+			StatusText = $"{_allTags.Count:N0} tags across {_namespace.Sources.Count} source(s) in {_groupInfo.Count} groups";
 			if (!PluginsAvailable)
 				StatusText += "   (tag definitions not found - meta view unavailable)";
 		}
+
+		public void CloseAll()
+		{
+			foreach (var doc in Documents.ToList()) CloseDocument(doc);
+			_namespace.UnmountAll();
+			_allTags.Clear();
+			_groupInfo.Clear();
+			Nodes.Clear();
+			Raise(nameof(HasAnySource));
+			Raise(nameof(HasMultipleSources));
+			Raise(nameof(Sources));
+			WindowTitle = "Assembly";
+			MessageTitle = "Nothing mounted";
+			Message = "Open a cache file, a folder, or a zip to mount a tag namespace.";
+			MessageIsError = false;
+			HasMessage = true;
+			StatusText = "Ready";
+			Log.Info("unmounted everything");
+		}
+
+		public void Unmount(MountedSource source)
+		{
+			// Close any open tabs that belonged to this source before dropping its sessions.
+			foreach (var doc in Documents.Where(d => source.Sessions.Contains(GetOwnerSession(d))).ToList())
+				CloseDocument(doc);
+
+			_namespace.Unmount(source);
+			if (!_namespace.HasAnySource) { CloseAll(); return; }
+
+			RefreshAggregate();
+			Raise(nameof(HasAnySource));
+			Raise(nameof(HasMultipleSources));
+			Raise(nameof(Sources));
+		}
+
+		private static CacheSession? GetOwnerSession(TagDocumentViewModel doc) => doc.Tag.Owner;
 
 		private void ApplyFilter()
 		{
@@ -244,7 +294,6 @@ namespace Assembly.Avalonia.ViewModels
 			var q = _search.Trim();
 			bool filtering = q.Length > 0;
 
-			// Filter once, at the TagInfo level, then build whichever tree shape is selected.
 			var matches = _allTags.Where(t =>
 				!filtering ||
 				t.Name.Contains(q, StringComparison.OrdinalIgnoreCase) ||
@@ -271,62 +320,60 @@ namespace Assembly.Avalonia.ViewModels
 				}
 			}
 
-			StatusText = filtering
-				? $"{matches.Count:N0} tags match \"{q}\""
-				: $"{_allTags.Count:N0} tags in {_groupInfo.Count} groups";
+			if (_namespace.HasAnySource)
+				StatusText = filtering
+					? $"{matches.Count:N0} tags match \"{q}\""
+					: $"{_allTags.Count:N0} tags in {_groupInfo.Count} groups";
 		}
 
-		private void LoadMeta()
+		// ---- documents ----
+		private void OpenTag(TagNode node)
 		{
-			MetaFields.Clear();
-			HasMeta = false;
-
-			if (_selectedTag == null || _session == null)
+			var existing = Documents.FirstOrDefault(d => d.TagKey ==
+				$"{node.Info.SourceName}::{node.Info.Group}::{node.Info.Name}");
+			if (existing != null)
 			{
-				TagHeader = "";
-				MetaStatus = "";
+				ActiveDocument = existing;
 				return;
 			}
 
-			var t = _selectedTag.Info;
-			TagHeader = $"{t.Name}.{t.Group}";
-
-			var values = _session.ReadMeta(t, out var status);
-			MetaStatus = status;
-
-			if (values == null) return;
-
-			foreach (var v in values) MetaFields.Add(v);
-			HasMeta = MetaFields.Count > 0;
+			try
+			{
+				var doc = new TagDocumentViewModel(node.Info, Log);
+				Documents.Add(doc);
+				ActiveDocument = doc;
+				Raise(nameof(HasDocuments));
+				Log.Info($"opened {doc.HeaderTitle}  ({doc.SchemaStatus})");
+			}
+			catch (Exception ex)
+			{
+				Log.Error($"failed to open {node.Info.Name}.{node.Info.Group}: {ex.Message}");
+			}
 		}
 
-		/// <summary>Finds the first loaded tag whose name contains <paramref name="needle"/>.</summary>
+		public void CloseDocument(TagDocumentViewModel doc)
+		{
+			var idx = Documents.IndexOf(doc);
+			if (idx < 0) return;
+			Documents.RemoveAt(idx);
+			if (ActiveDocument == doc)
+				ActiveDocument = Documents.Count > 0 ? Documents[Math.Min(idx, Documents.Count - 1)] : null;
+			Raise(nameof(HasDocuments));
+		}
+
+		public void SaveActive()
+		{
+			if (ActiveDocument == null) return;
+			var (ok, message) = ActiveDocument.Save();
+			StatusText = message;
+			if (!ok) Log.Error(message);
+		}
+
+		/// <summary>Finds the first loaded tag whose name contains <paramref name="needle"/>. Used by the headless screenshot harness.</summary>
 		public TagNode? FindTag(string needle)
 		{
 			var hit = _allTags.FirstOrDefault(t => t.Name.Contains(needle, StringComparison.OrdinalIgnoreCase));
 			return hit == null ? null : new TagNode(hit);
-		}
-
-		public void CloseCache()
-		{
-			_session?.Dispose();
-			_session = null;
-			_allTags.Clear();
-			_groupInfo.Clear();
-			Nodes.Clear();
-			MetaFields.Clear();
-			CacheInfo.Clear();
-			HasCache = false;
-			HasMeta = false;
-			IsSynthetic = false;
-			TagHeader = "";
-			MetaStatus = "";
-			WindowTitle = "Assembly";
-			MessageTitle = "No cache file open";
-			Message = "Open a Halo cache file (.map) to browse its tags.";
-			MessageIsError = false;
-			HasMessage = true;
-			StatusText = "Ready";
 		}
 
 		private void ShowError(string title, string body)
@@ -335,6 +382,7 @@ namespace Assembly.Avalonia.ViewModels
 			Message = body;
 			MessageIsError = true;
 			HasMessage = true;
+			Log.Error($"{title}: {body}");
 		}
 	}
 }

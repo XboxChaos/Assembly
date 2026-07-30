@@ -21,9 +21,21 @@ namespace Assembly.Avalonia.Services
 		public bool IsBlock => Def.Kind == MetaFieldKind.TagBlock;
 	}
 
+	/// <summary>The live count/pointer header of a tag block, as read from the cache.</summary>
+	public readonly struct BlockHeader
+	{
+		public int Count { get; init; }
+		public uint PointerRaw { get; init; }
+
+		/// <summary>File offset of element 0, or -1 if the pointer couldn't be resolved (e.g. no MetaArea, or Count is 0).</summary>
+		public long BaseFileOffset { get; init; }
+
+		public bool HasElements => Count > 0 && BaseFileOffset >= 0;
+	}
+
 	/// <summary>
 	///     Reads concrete values for a set of <see cref="MetaFieldDef" />s out of an open
-	///     cache file. Read-only; nothing here writes to the cache.
+	///     cache file. Read-only; nothing here writes to the cache (see MetaValueWriter for that).
 	/// </summary>
 	public static class MetaValueReader
 	{
@@ -40,7 +52,7 @@ namespace Assembly.Avalonia.Services
 				string value;
 				try
 				{
-					value = ReadOne(reader, baseOffset, def, cache);
+					value = ReadValue(reader, baseOffset, def, cache);
 				}
 				catch (Exception ex)
 				{
@@ -51,6 +63,100 @@ namespace Assembly.Avalonia.Services
 			}
 
 			return result;
+		}
+
+		/// <summary>
+		///     Reads a tag block's live count and pointer, converting the pointer to a file
+		///     offset via the cache's meta-area pointer converter (<c>cache.MetaArea</c>) —
+		///     the same conversion Blamite's own tag reader uses. This is what makes reflexive
+		///     element navigation real rather than a mock: the element index spinner in the UI
+		///     drives this, not canned data.
+		/// </summary>
+		public static BlockHeader ReadBlockHeader(IReader r, long absOffset, ICacheFile cache)
+		{
+			r.SeekTo(absOffset);
+			int count = r.ReadInt32();
+			uint ptr = r.ReadUInt32();
+
+			long baseOffset = -1;
+			if (count > 0 && cache.MetaArea != null)
+			{
+				try { baseOffset = cache.MetaArea.PointerToOffset(ptr); }
+				catch { baseOffset = -1; }
+			}
+
+			return new BlockHeader { Count = count, PointerRaw = ptr, BaseFileOffset = baseOffset };
+		}
+
+		/// <summary>Formats a single field's value, reading from <paramref name="baseOffset" /> + <see cref="MetaFieldDef.Offset" />.</summary>
+		public static string ReadValue(IReader r, long baseOffset, MetaFieldDef d, ICacheFile cache) => ReadOne(r, baseOffset, d, cache);
+
+		/// <summary>
+		///     Reads a field's value into the structured shape <see cref="MetaValueWriter" />
+		///     writes back from, for fields where <see cref="MetaFieldDef.IsEditable" /> is true.
+		///     Used to seed a row's "original" and "current" edit state when a document is loaded
+		///     or a tag block element is navigated to.
+		/// </summary>
+		public static FieldEditState ReadEditState(IReader r, long baseOffset, MetaFieldDef d)
+		{
+			long at = baseOffset + d.Offset;
+			r.SeekTo(at);
+
+			switch (d.Kind)
+			{
+				case MetaFieldKind.UInt8: return new FieldEditState { Int = r.ReadByte() };
+				case MetaFieldKind.Int8: return new FieldEditState { Int = r.ReadSByte() };
+				case MetaFieldKind.UInt16: return new FieldEditState { Int = r.ReadUInt16() };
+				case MetaFieldKind.Int16: return new FieldEditState { Int = r.ReadInt16() };
+				case MetaFieldKind.UInt32: return new FieldEditState { Int = r.ReadUInt32() };
+				case MetaFieldKind.Int32: return new FieldEditState { Int = r.ReadInt32() };
+				case MetaFieldKind.UInt64: return new FieldEditState { Int = (long)r.ReadUInt64() };
+				case MetaFieldKind.Int64: return new FieldEditState { Int = r.ReadInt64() };
+
+				case MetaFieldKind.Float32:
+				case MetaFieldKind.Degree:
+					return new FieldEditState { Floats = new[] { r.ReadFloat() } };
+
+				case MetaFieldKind.Point2:
+				case MetaFieldKind.Vector2:
+				case MetaFieldKind.Degree2:
+					return new FieldEditState { Floats = new[] { r.ReadFloat(), r.ReadFloat() } };
+
+				case MetaFieldKind.Point3:
+				case MetaFieldKind.Vector3:
+				case MetaFieldKind.Degree3:
+					return new FieldEditState { Floats = new[] { r.ReadFloat(), r.ReadFloat(), r.ReadFloat() } };
+
+				case MetaFieldKind.Vector4:
+					return new FieldEditState { Floats = new[] { r.ReadFloat(), r.ReadFloat(), r.ReadFloat(), r.ReadFloat() } };
+
+				case MetaFieldKind.RangeFloat32:
+				case MetaFieldKind.RangeDegree:
+					return new FieldEditState { Floats = new[] { r.ReadFloat(), r.ReadFloat() } };
+
+				case MetaFieldKind.RangeInt16:
+					return new FieldEditState { Shorts = new[] { r.ReadInt16(), r.ReadInt16() } };
+
+				case MetaFieldKind.Enum:
+				case MetaFieldKind.Flags:
+					return new FieldEditState { Int = ReadSized(r, d.Size) };
+
+				case MetaFieldKind.ColorInt:
+					return new FieldEditState { Int = r.ReadUInt32() };
+
+				case MetaFieldKind.StringId:
+				case MetaFieldKind.OldStringId:
+					return new FieldEditState { Int = r.ReadUInt32() };
+
+				case MetaFieldKind.Ascii:
+					return new FieldEditState { Text = r.ReadAscii(Math.Max(0, d.Size)).TrimEnd('\0') };
+
+				case MetaFieldKind.Utf16:
+					return new FieldEditState { Text = r.ReadUTF16(Math.Max(0, d.Size)).TrimEnd('\0') };
+
+				default:
+					return new FieldEditState();
+			}
 		}
 
 		private static string ReadOne(IReader r, long baseOffset, MetaFieldDef d, ICacheFile cache)

@@ -1,16 +1,28 @@
 <!--
   Metro control styling for Avalonia.
 
-  Ported from src/Assembly/Metro/Controls/*.xaml. The palette is verbatim; the
-  mechanical change is that WPF's <ControlTemplate.Triggers> with
-  <Trigger Property="IsMouseOver"> become Avalonia pseudo-class selectors
-  (:pointerover, :pressed, :selected, :focus).
+  Ported from src/Assembly/Metro/Controls/*.xaml — geometry (heights, borders, colours) is
+  taken verbatim from the WPF ControlTemplates, not re-invented:
+
+    MetroControls.xaml  ({x:Type Button})        -> Button style below
+    MetroButtons.xaml    ({x:Type ToggleButton})  -> ToggleButton style below
+    MetroTreeView.xaml   (MetroTreeViewItem)      -> TreeViewItem theme-resource overrides
+                                                      (see "Tree" section for why this is
+                                                      resource overrides and not a full
+                                                      ControlTemplate rewrite)
+
+  The one systematic difference from WPF: <ControlTemplate.Triggers> / <Trigger
+  Property="IsMouseOver"> have no Avalonia equivalent and become pseudo-class selectors
+  (:pointerover, :pressed, :selected, :focus, :disabled).
 -->
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+  <!-- ============================== Text ============================== -->
+
   <Style Selector="TextBlock">
     <Setter Property="Foreground" Value="{DynamicResource TextBrushPrimary}" />
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
     <Setter Property="FontSize" Value="12" />
   </Style>
 
@@ -26,80 +38,383 @@
 
   <Style Selector="TextBlock.sectionHeader">
     <Setter Property="Foreground" Value="{DynamicResource TextBrushSecondary}" />
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontSemiBold}" />
     <Setter Property="FontSize" Value="11" />
-    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+
+  <Style Selector="TextBlock.dim">
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushSecondary}" />
+  </Style>
+
+  <Style Selector="TextBlock.accent">
+    <Setter Property="Foreground" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+  </Style>
+
+  <Style Selector="TextBlock.h1">
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontLight}" />
+    <Setter Property="FontSize" Value="26" />
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushPrimary}" />
   </Style>
 
   <Style Selector="SelectableTextBlock">
     <Setter Property="Foreground" Value="{DynamicResource TextBrushPrimary}" />
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
     <Setter Property="FontSize" Value="12" />
   </Style>
 
-  <!-- Buttons: flat, square, accent on hover -->
+  <!-- ============================== Buttons ==============================
+       Ported verbatim from Metro/Controls/MetroControls.xaml, {x:Type Button}:
+       22px tall, flat #222222 fill, #616161 border, #999999 text; on hover the
+       fill lightens to #393939 and the border becomes the secondary accent;
+       pressed darkens to #333333; disabled fades to #575757 / #8B8B8B.       -->
   <Style Selector="Button">
-    <Setter Property="Background" Value="#FF333337" />
-    <Setter Property="Foreground" Value="{DynamicResource TextBrushPrimary}" />
-    <Setter Property="BorderBrush" Value="#FF54545a" />
+    <Setter Property="Background" Value="{DynamicResource ButtonBackgroundBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="CornerRadius" Value="0" />
-    <Setter Property="Padding" Value="14,6" />
+    <Setter Property="Padding" Value="10,0" />
+    <Setter Property="Height" Value="22" />
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
     <Setter Property="FontSize" Value="12" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Border"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}">
+          <ContentPresenter Content="{TemplateBinding Content}"
+                             ContentTemplate="{TemplateBinding ContentTemplate}"
+                             Margin="{TemplateBinding Padding}"
+                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                             RecognizesAccessKey="True" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
   </Style>
-  <Style Selector="Button:pointerover /template/ ContentPresenter">
-    <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrush}" />
+  <Style Selector="Button:pointerover /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource ButtonHoverBackgroundBrush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
   </Style>
-  <Style Selector="Button:pressed /template/ ContentPresenter">
-    <Setter Property="Background" Value="#FF005a99" />
+  <Style Selector="Button:pressed /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource ButtonPressedBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+  </Style>
+  <Style Selector="Button:disabled /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource ButtonDisabledBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ButtonDisabledBorderBrush}" />
   </Style>
 
-  <!-- Text input -->
+  <!-- A borderless variant for chrome/toolbar icon buttons (Assembly's WindowActionButton /
+       SidebarHeaderButton pattern: transparent until hovered). -->
+  <Style Selector="Button.chrome">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="8,0" />
+  </Style>
+  <Style Selector="Button.chrome:pointerover /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource WindowActionHoverBrush}" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+  </Style>
+
+  <!-- Primary/accent action button (Save, Open) -->
+  <Style Selector="Button.accent">
+    <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" />
+    <Setter Property="Foreground" Value="White" />
+  </Style>
+  <Style Selector="Button.accent:pointerover /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+  </Style>
+
+  <!-- ============================== ToggleButton ==============================
+       Ported verbatim from Metro/Controls/MetroButtons.xaml, {x:Type ToggleButton}:
+       same 22px/#222222/#616161/#999999 base as Button, but IsChecked=true swaps to
+       the accent fill. -->
+  <Style Selector="ToggleButton">
+    <Setter Property="Background" Value="{DynamicResource ButtonBackgroundBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="0" />
+    <Setter Property="Padding" Value="10,0" />
+    <Setter Property="Height" Value="22" />
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Border"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}">
+          <ContentPresenter Content="{TemplateBinding Content}"
+                             ContentTemplate="{TemplateBinding ContentTemplate}"
+                             Margin="{TemplateBinding Padding}"
+                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                             RecognizesAccessKey="True" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+  <Style Selector="ToggleButton:pointerover /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource ButtonHoverBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+  </Style>
+  <Style Selector="ToggleButton:checked /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" />
+  </Style>
+  <Style Selector="ToggleButton:checked /template/ ContentPresenter">
+    <Setter Property="TextBlock.Foreground" Value="White" />
+  </Style>
+  <Style Selector="ToggleButton:disabled /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource ButtonDisabledBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ButtonDisabledBorderBrush}" />
+  </Style>
+
+  <!-- Icon-only chrome toggle (sidebar collapse handles, console toggle) -->
+  <Style Selector="ToggleButton.chrome">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Width" Value="26" />
+    <Setter Property="Padding" Value="0" />
+  </Style>
+  <Style Selector="ToggleButton.chrome:pointerover /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource WindowActionHoverBrush}" />
+  </Style>
+  <Style Selector="ToggleButton.chrome:checked /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource SidebarBlockBrush}" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+  </Style>
+
+  <!-- Document tab header (hand-rolled tab strip; see MainWindow.axaml). Assembly's own
+       MetroTabControlTop uses a similar flat-header-with-accent-underline pattern. -->
+  <Style Selector="Button.tabHeader">
+    <Setter Property="Background" Value="{DynamicResource SidebarHeaderBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SidebarHeaderSeperatorBrush}" />
+    <Setter Property="BorderThickness" Value="0,0,1,2" />
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushSecondary}" />
+    <Setter Property="Padding" Value="12,0" />
+    <Setter Property="Height" Value="30" />
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="HorizontalContentAlignment" Value="Left" />
+  </Style>
+  <Style Selector="Button.tabHeader:pointerover /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource SidebarBlockBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SidebarHeaderSeperatorBrush}" />
+  </Style>
+  <Style Selector="Button.tabHeader.active">
+    <Setter Property="Background" Value="{DynamicResource MainBackgroundBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushPrimary}" />
+  </Style>
+  <Style Selector="Button.tabHeader.active /template/ Border#PART_Border">
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" />
+  </Style>
+  <Style Selector="Button.tabHeader.active:pointerover /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource MainBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" />
+  </Style>
+  <Style Selector="Button.tabClose">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Height" Value="16" />
+    <Setter Property="Width" Value="16" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="FontSize" Value="11" />
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushSecondary}" />
+  </Style>
+  <Style Selector="Button.tabClose:pointerover /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrush}" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+  </Style>
+  <Style Selector="Button.tabClose:pointerover /template/ ContentPresenter">
+    <Setter Property="TextBlock.Foreground" Value="White" />
+  </Style>
+
+  <!-- ============================== Text input ============================== -->
   <Style Selector="TextBox">
     <Setter Property="CornerRadius" Value="0" />
     <Setter Property="Background" Value="#FF1e1e20" />
     <Setter Property="Foreground" Value="{DynamicResource TextBrushPrimary}" />
     <Setter Property="BorderBrush" Value="#FF54545a" />
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
     <Setter Property="FontSize" Value="12" />
-    <Setter Property="MinHeight" Value="26" />
+    <Setter Property="MinHeight" Value="22" />
+    <Setter Property="Padding" Value="6,2" />
+    <Setter Property="SelectionBrush" Value="{DynamicResource ExtryzeAccentBrush}" />
   </Style>
   <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
     <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" />
   </Style>
+  <Style Selector="TextBox.invalid">
+    <Setter Property="BorderBrush" Value="{DynamicResource ErrorBrush}" />
+  </Style>
+  <Style Selector="TextBox.invalid:focus /template/ Border#PART_BorderElement">
+    <Setter Property="BorderBrush" Value="{DynamicResource ErrorBrush}" />
+  </Style>
 
-  <!-- Tree -->
+  <!-- ============================== Tree ==============================
+       Assembly's real MetroTreeViewItem (Metro/Controls/MetroTreeView.xaml) is a fully
+       custom ControlTemplate: a 16x16 triangular expand glyph (path "M0,0 L0,6 L6,0 z",
+       rotated 135deg collapsed / 180deg expanded), IsSelected -> accent-secondary fill,
+       and an unfocused-selected state of #3f3f46.
+
+       Avalonia's FluentTreeViewItem is a ControlTheme whose ControlTemplate is *entirely
+       resource-driven* (TreeViewItemBackgroundSelected, TreeViewItemCollapsedChevronPathData,
+       etc: see AvaloniaUI/Avalonia src/Avalonia.Themes.Fluent/Controls/TreeViewItem.xaml).
+       Overriding those DynamicResource keys reproduces the real geometry/behaviour (triangle
+       glyph, accent-secondary selection, no per-item border) without reimplementing
+       virtualization, drag/drop and focus handling that a full ControlTemplate rewrite would
+       put at risk. -->
+  <Styles.Resources>
+    <ResourceDictionary>
+      <x:Double x:Key="TreeViewItemIndent">14</x:Double>
+      <x:Double x:Key="TreeViewItemMinHeight">21</x:Double>
+      <Thickness x:Key="TreeViewItemBorderThemeThickness">0</Thickness>
+      <x:Double x:Key="TreeViewItemExpandCollapseChevronSize">9</x:Double>
+      <Thickness x:Key="TreeViewItemExpandCollapseChevronMargin">2,0,4,0</Thickness>
+
+      <!-- right-pointing triangle (collapsed) / down-pointing triangle (expanded) -->
+      <StreamGeometry x:Key="TreeViewItemCollapsedChevronPathData">M0,0 L6,3 L0,6 Z</StreamGeometry>
+      <StreamGeometry x:Key="TreeViewItemExpandedChevronPathData">M0,0 L6,0 L3,6 Z</StreamGeometry>
+
+      <SolidColorBrush x:Key="TreeViewItemBackground">Transparent</SolidColorBrush>
+      <SolidColorBrush x:Key="TreeViewItemBackgroundPointerOver" Color="#FF3f3f46" />
+      <SolidColorBrush x:Key="TreeViewItemBackgroundPressed" Color="#FF3f3f46" />
+      <SolidColorBrush x:Key="TreeViewItemBackgroundSelected" Color="#1D98EB" />
+      <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPointerOver" Color="#1D98EB" />
+      <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPressed" Color="#1D98EB" />
+      <SolidColorBrush x:Key="TreeViewItemBackgroundDisabled">Transparent</SolidColorBrush>
+      <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedDisabled" Color="#FF3f3f46" />
+
+      <SolidColorBrush x:Key="TreeViewItemBorderBrush">Transparent</SolidColorBrush>
+      <SolidColorBrush x:Key="TreeViewItemBorderBrushPointerOver">Transparent</SolidColorBrush>
+      <SolidColorBrush x:Key="TreeViewItemBorderBrushPressed">Transparent</SolidColorBrush>
+      <SolidColorBrush x:Key="TreeViewItemBorderBrushSelected">Transparent</SolidColorBrush>
+      <SolidColorBrush x:Key="TreeViewItemBorderBrushSelectedPointerOver">Transparent</SolidColorBrush>
+      <SolidColorBrush x:Key="TreeViewItemBorderBrushSelectedPressed">Transparent</SolidColorBrush>
+      <SolidColorBrush x:Key="TreeViewItemBorderBrushDisabled">Transparent</SolidColorBrush>
+      <SolidColorBrush x:Key="TreeViewItemBorderBrushSelectedDisabled">Transparent</SolidColorBrush>
+
+      <SolidColorBrush x:Key="TreeViewItemForeground" Color="White" />
+      <SolidColorBrush x:Key="TreeViewItemForegroundPointerOver" Color="White" />
+      <SolidColorBrush x:Key="TreeViewItemForegroundPressed" Color="White" />
+      <SolidColorBrush x:Key="TreeViewItemForegroundSelected" Color="White" />
+      <SolidColorBrush x:Key="TreeViewItemForegroundSelectedPointerOver" Color="White" />
+      <SolidColorBrush x:Key="TreeViewItemForegroundSelectedPressed" Color="White" />
+      <SolidColorBrush x:Key="TreeViewItemForegroundDisabled" Color="#FF989898" />
+      <SolidColorBrush x:Key="TreeViewItemForegroundSelectedDisabled" Color="White" />
+    </ResourceDictionary>
+  </Styles.Resources>
+
   <Style Selector="TreeView">
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="0" />
   </Style>
   <Style Selector="TreeViewItem">
-    <Setter Property="CornerRadius" Value="0" />
-    <Setter Property="Padding" Value="2,1" />
-    <Setter Property="MinHeight" Value="21" />
-  </Style>
-  <Style Selector="TreeViewItem:selected /template/ Border#PART_LayoutRoot">
-    <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrush}" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
   </Style>
 
-  <!-- Lists -->
+  <!-- ============================== Lists ============================== -->
   <Style Selector="ListBox">
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="BorderThickness" Value="0" />
   </Style>
   <Style Selector="ListBoxItem">
     <Setter Property="CornerRadius" Value="0" />
-    <Setter Property="Padding" Value="8,2" />
+    <Setter Property="Padding" Value="8,3" />
     <Setter Property="MinHeight" Value="0" />
+  </Style>
+  <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="#FF35353a" />
   </Style>
   <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
     <Setter Property="Background" Value="{DynamicResource SidebarBlockBrush}" />
   </Style>
+  <!-- the field table (named so this doesn't have to fight the generic ListBoxItem style above) -->
+  <Style Selector="ListBox#FieldList ListBoxItem">
+    <Setter Property="Padding" Value="0,3,8,3" />
+    <Setter Property="BorderThickness" Value="0,0,0,1" />
+    <Setter Property="BorderBrush" Value="#FF313134" />
+  </Style>
+  <Style Selector="ListBox#FieldList ListBoxItem:selected /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource MetaSelectedRowBrush}" />
+  </Style>
 
+  <!-- ============================== ComboBox ============================== -->
   <Style Selector="ComboBox">
     <Setter Property="CornerRadius" Value="0" />
     <Setter Property="Background" Value="#FF1e1e20" />
     <Setter Property="BorderBrush" Value="#FF54545a" />
-    <Setter Property="MinHeight" Value="26" />
+    <Setter Property="MinHeight" Value="22" />
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
     <Setter Property="FontSize" Value="12" />
+    <Setter Property="Padding" Value="6,2" />
+  </Style>
+  <Style Selector="ComboBoxItem">
+    <Setter Property="Padding" Value="8,4" />
+    <Setter Property="MinHeight" Value="0" />
+  </Style>
+  <Style Selector="ComboBoxItem:selected /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrush}" />
+  </Style>
+
+  <!-- ============================== CheckBox ============================== -->
+  <Style Selector="CheckBox">
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushSecondary}" />
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="MinHeight" Value="17" />
+  </Style>
+  <Style Selector="CheckBox /template/ Border#NormalRectangle">
+    <Setter Property="Background" Value="#FF1e1e20" />
+    <Setter Property="BorderBrush" Value="#FF54545a" />
+  </Style>
+  <Style Selector="CheckBox:checked /template/ Border#NormalRectangle">
+    <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" />
+  </Style>
+
+  <!-- ============================== GridSplitter ============================== -->
+  <Style Selector="GridSplitter">
+    <Setter Property="Background" Value="{DynamicResource SidebarHeaderSeperatorBrush}" />
+  </Style>
+  <Style Selector="GridSplitter:pointerover">
+    <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrush}" />
+  </Style>
+
+  <!-- ============================== ScrollBar (compact / macOS-overlay-ish) ============================== -->
+  <Style Selector="ScrollBar">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+
+  <!-- ============================== Expander (used for tag block rows) ============================== -->
+  <Style Selector="ToggleButton.blockExpander">
+    <Setter Property="Width" Value="16" />
+    <Setter Property="Height" Value="16" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushSecondary}" />
+  </Style>
+  <Style Selector="ToggleButton.blockExpander /template/ Border#PART_Border">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+  <Style Selector="ToggleButton.blockExpander:pointerover /template/ Border#PART_Border">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+  <Style Selector="ToggleButton.blockExpander:checked /template/ Border#PART_Border">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="Transparent" />
   </Style>
 
 </Styles>

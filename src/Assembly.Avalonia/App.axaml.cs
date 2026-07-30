@@ -22,7 +22,7 @@ namespace Assembly.Avalonia
 				// Open a file passed on the command line, if any.
 				var args = desktop.Args;
 				if (args is { Length: > 0 } && System.IO.File.Exists(args[0]))
-					window.Opened += async (_, _) => await vm.OpenAsync(args[0]);
+					window.Opened += async (_, _) => await vm.OpenFileAsync(args[0]);
 			}
 
 			base.OnFrameworkInitializationCompleted();

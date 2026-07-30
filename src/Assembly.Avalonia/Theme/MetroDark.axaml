@@ -37,11 +37,46 @@
   <Color x:Key="ExtryzeAccentBrushColour">#FF0079cb</Color>
   <Color x:Key="ExtryzeAccentBrushColourSecondary">#FF1D98EB</Color>
 
-  <!-- ==== PoC-only additions (not in the WPF theme) ==== -->
-  <!-- Assembly uses Consolas for byte-level data; it does not exist on macOS.
-       Menlo is the macOS system monospace. -->
+  <!-- ==== from Metro/Controls/MetroButtons.xaml / MetroControls.xaml (button geometry colours) ==== -->
+  <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="#FF222222" />
+  <SolidColorBrush x:Key="ButtonBorderBrush" Color="#FF616161" />
+  <SolidColorBrush x:Key="ButtonForegroundBrush" Color="#FF999999" />
+  <SolidColorBrush x:Key="ButtonHoverBackgroundBrush" Color="#FF393939" />
+  <SolidColorBrush x:Key="ButtonPressedBackgroundBrush" Color="#FF333333" />
+  <SolidColorBrush x:Key="ButtonDisabledBackgroundBrush" Color="#FF575757" />
+  <SolidColorBrush x:Key="ButtonDisabledBorderBrush" Color="#FF8B8B8B" />
+
+  <!-- from Components/MetaEditor.xaml / MetaComponents/*.xaml (field-list panel chrome) -->
+  <SolidColorBrush x:Key="MetaBarBrush" Color="#FF303032" />
+  <SolidColorBrush x:Key="MetaBarBorderBrush" Color="#FF434346" />
+  <SolidColorBrush x:Key="MetaBlockBrush" Color="#FF474747" />
+  <SolidColorBrush x:Key="MetaSelectedRowBrush" Color="#FF181818" />
+  <SolidColorBrush x:Key="MetaInfoRowBrush" Color="#FF333337" />
+  <SolidColorBrush x:Key="PopupBackgroundBrush" Color="#FF1b1b1c" />
+  <SolidColorBrush x:Key="PopupBorderBrush" Color="#FF333337" />
+
+  <!--
+    Typography: Assembly's WPF Metro theme embeds "Segoe WP" (a Microsoft-internal font that
+    cannot legally be redistributed) at six weights, see Metro/Controls/MetroFonts.xaml.
+    Selawik is Microsoft's own open-source metric substitute for Segoe UI, released under the
+    SIL Open Font License 1.1 (Assets/Fonts/SELAWIK-LICENSE.txt), specifically so apps have a
+    legally embeddable stand-in when Segoe isn't available. Its five shipped weights map
+    directly onto the five MetroFont* resources below.
+  -->
+  <FontFamily x:Key="MetroFontLight">avares://AssemblyAvalonia/Assets/Fonts#Selawik Light</FontFamily>
+  <FontFamily x:Key="MetroFontSemiLight">avares://AssemblyAvalonia/Assets/Fonts#Selawik Semilight</FontFamily>
+  <FontFamily x:Key="MetroFontRegular">avares://AssemblyAvalonia/Assets/Fonts#Selawik</FontFamily>
+  <FontFamily x:Key="MetroFontSemiBold">avares://AssemblyAvalonia/Assets/Fonts#Selawik Semibold</FontFamily>
+  <!-- Selawik ships Bold as a style flag on the base family, not a separate face; pair with FontWeight="Bold". -->
+  <FontFamily x:Key="MetroFontBold">avares://AssemblyAvalonia/Assets/Fonts#Selawik</FontFamily>
+  <!-- Selawik has no Black weight; Semibold is the closest available and is the WPF theme's rarest weight anyway. -->
+  <FontFamily x:Key="MetroFontBlack">avares://AssemblyAvalonia/Assets/Fonts#Selawik Semibold</FontFamily>
+
+  <!-- Assembly uses Consolas for byte-level/tabular data; it does not exist on macOS. Menlo is the macOS system monospace. -->
   <FontFamily x:Key="MetroFontMono">Menlo,Consolas,monospace</FontFamily>
   <SolidColorBrush x:Key="ErrorBrush" Color="#FFE05252" />
   <SolidColorBrush x:Key="RowHoverBrush" Color="#FF3f3f46" />
+  <SolidColorBrush x:Key="WarnBrush" Color="#FFE0B020" />
+  <SolidColorBrush x:Key="OkBrush" Color="#FF6FCF6F" />
 
 </ResourceDictionary>

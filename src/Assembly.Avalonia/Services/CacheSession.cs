@@ -157,6 +157,10 @@ namespace Assembly.Avalonia.Services
 			}
 		}
 
+		/// <summary>Public entry point for consumers (e.g. TagDocumentViewModel) that need the raw
+		/// schema plus their own reader, instead of the flat pre-formatted value list <see cref="ReadMeta"/> returns.</summary>
+		public IReadOnlyList<MetaFieldDef> GetSchema(TagInfo tag, out string status) => GetSchema(tag.Group, out status);
+
 		private IReadOnlyList<MetaFieldDef> GetSchema(string groupMagic, out string status)
 		{
 			if (_pluginCache.TryGetValue(groupMagic, out var cached))
@@ -239,6 +243,18 @@ namespace Assembly.Avalonia.Services
 		public ITag Raw { get; }
 		public string Name { get; }
 		public string Group { get; }
+
+		/// <summary>
+		///     The mounted cache this tag belongs to. A "cache" here is a mount of N containers
+		///     (folder / zip / single file), not necessarily one file, so every tag carries a
+		///     back-reference to the specific session that owns it rather than the tree assuming
+		///     a single global session. Set once by <see cref="TagNamespace" /> right after the
+		///     owning session opens.
+		/// </summary>
+		public CacheSession? Owner { get; set; }
+
+		/// <summary>Display label for the mounted source this tag came from (e.g. a file name).</summary>
+		public string SourceName { get; set; } = "";
 
 		public uint Offset => Raw.MetaLocation?.AsOffset() ?? 0;
 		public long Pointer => Raw.MetaLocation?.AsPointer() ?? 0;

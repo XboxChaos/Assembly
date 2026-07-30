@@ -38,6 +38,8 @@ def u32(off, v):  struct.pack_into(BE + 'I', buf, off, v & 0xFFFFFFFF)
 def i32(off, v):  struct.pack_into(BE + 'i', buf, off, v)
 def i16(off, v):  struct.pack_into(BE + 'h', buf, off, v)
 def u16(off, v):  struct.pack_into(BE + 'H', buf, off, v)
+def u8(off, v):   struct.pack_into(BE + 'B', buf, off, v & 0xFF)
+def f32(off, v):  struct.pack_into(BE + 'f', buf, off, v)
 def asciiz(off, s):
     b = s.encode('ascii')
     buf[off:off + len(b)] = b
@@ -58,7 +60,8 @@ u32(0x14, TAG_BUF)                                   # tag buffer offset
 u32(0x18, VIRT_SIZE)                                 # virtual size
 asciiz(0x11C, '11855.07.08.20.2317.halo3_ship')      # build string (must match exactly)
 i16(0x13C, 0)                                        # type = SinglePlayer
-asciiz(0x18C, 'SYNTHETIC-NOT-A-REAL-MAP')            # internal name
+_suffix = sys.argv[2] if len(sys.argv) > 2 else ''
+asciiz(0x18C, ('SYNTHETIC-NOT-A-REAL-MAP' + _suffix)[:31])  # internal name (kept detectable as synthetic)
 asciiz(0x1B0, 'levels/synthetic/poc')                # scenario name
 # file table count is written after TAGS is defined (see below)
 i32(0x2B8, NAME_DATA)                                # file table offset (Debug mask=0 -> absolute)
@@ -131,6 +134,30 @@ for i, (_gi, _addr, name) in enumerate(TAGS):
     b = name.encode('ascii')
     buf[NAME_DATA + cursor: NAME_DATA + cursor + len(b)] = b
     cursor += len(b) + 1            # asciiz
+
+# ---------------- masterchief (bipd) meta content ----------------
+# The real Halo3/bipd.xml plugin (src/Assembly/Plugins/Halo3/bipd.xml) is used unmodified to
+# read this - these are genuine field offsets from that plugin, not an invented layout. This
+# populates a couple of top-level scalars plus a real tag block ("AI Properties", offset 0xA0,
+# element size 0x10) with two elements, so the UI's reflexive element-navigation and per-kind
+# editors have real, non-zero, multi-element data to exercise end to end - not just a
+# structurally-valid-but-all-zeroes tag.
+MC = 0x3400                      # masterchief's meta address (pointers == file offsets here)
+f32(MC + 0x20, 12.5)             # Dynamic Light Sphere Radius
+AI_BLOCK = MC + 0xA0             # AI Properties tagblock header (int32 count, uint32 pointer)
+AI_ELEMENTS = 0x5000             # free space well clear of any other tag's meta
+i32(AI_BLOCK + 0x0, 2)           # 2 elements
+u32(AI_BLOCK + 0x4, AI_ELEMENTS)
+
+# element 0: Destroyable Cover (bit 0) + Dynamic Cover (bit 2), AI Size=Medium(3), Leap=Step(2)
+u32(AI_ELEMENTS + 0x00, 0x5)     # AI Flags
+u16(AI_ELEMENTS + 0x0C, 3)       # AI Size
+u16(AI_ELEMENTS + 0x0E, 2)       # Leap Jump Speed
+
+# element 1: Has Corner Markers (bit 5), AI Size=Huge(5), Leap=None(0)
+u32(AI_ELEMENTS + 0x10, 0x20)    # AI Flags
+u16(AI_ELEMENTS + 0x1C, 5)       # AI Size
+u16(AI_ELEMENTS + 0x1E, 0)       # Leap Jump Speed
 
 out = sys.argv[1]
 open(out, 'wb').write(buf)
