@@ -1,0 +1,128 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="clr-namespace:Assembly.MultiPlatform.Views"
+             x:Class="Assembly.MultiPlatform.Views.CommandPalette"
+             Focusable="False" IsVisible="False" IsHitTestVisible="False">
+  <!--
+    Cmd+K / Cmd+P command palette overlay - see CommandPalette.axaml.cs's header comment for the
+    mode-prefix design (plain text = tag jump, a leading ">" = commands) and why one control with
+    two modes was chosen over either a merged ranked list or two separate widgets. Hosted full-
+    bleed over the whole window content (MainWindow.axaml's "hosting your overlay" section), so
+    the scrim below can dim and click-dismiss everything else while it's open; IsVisible/
+    IsHitTestVisible are driven from code-behind (Open/Close) rather than bound, since this
+    control already owns real keyboard focus while open and there is no separate view-model
+    property they would otherwise need to stay in sync with.
+
+    Visual language: the rest of this shell is deliberately flat (CornerRadius 0 throughout -
+    see MetroStyles.axaml's own header comment on why: fidelity to Assembly's real Metro chrome).
+    A command palette is not chrome, though - it is a floating surface that appears on top of
+    everything for a few seconds and disappears, closer to a launcher (Spotlight/Alfred/Raycast)
+    than a docked panel, so it gets its own quieter, rounded, elevated treatment (soft shadow,
+    16px corners, a pill-shaped search field, rounded per-row hover/selection) rather than
+    matching the flat panels underneath it - every colour is still a DynamicResource into the
+    existing palette (PopupBackgroundBrush, InputBackgroundBrush, RowHoverBrush,
+    ExtryzeAccentBrushMuted, ...), so it repaints correctly for light/dark and inherits whatever
+    the density pass's type/spacing scale resolves to; only the shape language (radius, shadow,
+    padding) is local to this control.
+  -->
+  <Grid Name="Scrim" Background="#8A000000" PointerPressed="OnScrimPointerPressed">
+    <Border Name="PaletteBox" Background="{DynamicResource PopupBackgroundBrush}"
+            BorderBrush="{DynamicResource PopupBorderBrush}" BorderThickness="1"
+            CornerRadius="16" ClipToBounds="True"
+            Width="660" MaxHeight="500" VerticalAlignment="Top" HorizontalAlignment="Center"
+            Margin="0,110,0,0" PointerPressed="OnPaletteBoxPointerPressed"
+            BoxShadow="0 24 64 -12 #73000000, 0 4 18 -6 #4D000000, 0 0 0 1 #14FFFFFF">
+      <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+        <!-- search header: a rounded "pill" input rather than a flush borderless box, so the
+             search field itself reads as the one obvious place to start typing. -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="18,18,18,14">
+          <Border Grid.Column="0" Background="{DynamicResource SidebarBlockBrush}"
+                  CornerRadius="20" Padding="11,4" Margin="0,0,10,0" VerticalAlignment="Center">
+            <TextBlock Name="ModeChipText" Classes="mono label" FontSize="10" LetterSpacing="0.4" />
+          </Border>
+          <Border Grid.Column="1" Background="{DynamicResource InputBackgroundBrush}"
+                  BorderBrush="{DynamicResource InputBorderBrush}" BorderThickness="1" CornerRadius="10">
+            <TextBox Name="QueryBox" BorderThickness="0" Background="Transparent"
+                      FontSize="{StaticResource FontSizeLarge}" MinHeight="0" Padding="14,11"
+                      PlaceholderText="Type a tag name, or &gt; for a command..." />
+          </Border>
+        </Grid>
+
+        <Border Grid.Row="1" Height="1" Margin="18,0" Background="{DynamicResource SidebarHeaderSeperatorBrush}" Opacity="0.55" />
+
+        <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
+          <ListBox Name="ResultsList" Background="Transparent" BorderThickness="0" Padding="10,8"
+                   Focusable="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox.ItemTemplate>
+              <DataTemplate DataType="views:PaletteResultItem">
+                <Border Classes="resultRow" CornerRadius="10" Padding="12,10" Opacity="{Binding RowOpacity}">
+                  <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Border Grid.Column="0" Background="{DynamicResource SidebarBlockBrush}"
+                            CornerRadius="5" Padding="5,2" Margin="0,0,11,0" VerticalAlignment="Center"
+                            IsVisible="{Binding HasChip}">
+                      <TextBlock Text="{Binding ChipText}" Classes="mono" FontSize="9" />
+                    </Border>
+                    <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+                      <TextBlock Text="{Binding PrimaryText}" FontSize="12.5" TextTrimming="CharacterEllipsis" />
+                      <TextBlock Text="{Binding SecondaryText}" Classes="label" FontSize="10"
+                                 IsVisible="{Binding HasSecondaryText}" TextTrimming="CharacterEllipsis" />
+                    </StackPanel>
+                    <TextBlock Grid.Column="2" Text="{Binding ShortcutLabel}" Classes="mono dim" FontSize="10.5"
+                               VerticalAlignment="Center" IsVisible="{Binding HasShortcut}" Margin="10,0,0,0" />
+                  </Grid>
+                </Border>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </ScrollViewer>
+
+        <!-- Empty state: shown by toggling ResultsList/EmptyHint visibility in code-behind rather
+             than an IsVisible binding, since both read off the same code-behind-owned _results
+             collection this control already rebuilds by hand (see Refresh()). -->
+        <TextBlock Grid.Row="2" Name="EmptyHint" Classes="label dim" FontSize="11"
+                   Margin="20,22" TextWrapping="Wrap" IsVisible="False" />
+
+        <Border Grid.Row="3" Background="{DynamicResource SidebarHeaderBrush}"
+                BorderBrush="{DynamicResource SidebarHeaderSeperatorBrush}" BorderThickness="0,1,0,0">
+          <TextBlock Name="FooterHint" Classes="label dim" FontSize="10" Margin="18,9" />
+        </Border>
+      </Grid>
+    </Border>
+  </Grid>
+
+  <UserControl.Styles>
+    <!--
+      Rounded, "hovery" result rows: the app-wide ListBoxItem styling (MetroStyles.axaml, not
+      this pass's to edit) paints a flat, square Background straight onto the item's template
+      ContentPresenter for :pointerover/:selected - fine for the field table, wrong for a floating
+      launcher-style surface. The two rules below neutralise that square fill for this list by
+      name (a Name-qualified selector outranks the app-wide unqualified one) and let a rounded
+      Border inside the DataTemplate itself (Classes="resultRow") carry the highlight instead, with
+      a short BrushTransition so hover/selection fades rather than snaps.
+    -->
+    <Style Selector="ListBox#ResultsList ListBoxItem">
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Margin" Value="0,1" />
+      <Setter Property="MinHeight" Value="0" />
+    </Style>
+    <Style Selector="ListBox#ResultsList ListBoxItem:pointerover /template/ ContentPresenter,
+                     ListBox#ResultsList ListBoxItem:selected /template/ ContentPresenter">
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+    <Style Selector="Border.resultRow">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.08" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="ListBox#ResultsList ListBoxItem:pointerover Border.resultRow">
+      <Setter Property="Background" Value="{DynamicResource RowHoverBrush}" />
+    </Style>
+    <Style Selector="ListBox#ResultsList ListBoxItem:selected Border.resultRow">
+      <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrushMuted}" />
+    </Style>
+  </UserControl.Styles>
+</UserControl>

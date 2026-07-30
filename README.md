@@ -24,7 +24,7 @@ Handing Assembly any one `.utoc` mounts every container beside it and resolves o
 
 ## macOS and Linux ##
 
-The Windows client is Windows Presentation Foundation and stays that way. There is also an [Avalonia front-end](src/Assembly.Avalonia/README.md) which runs on macOS, Linux and Windows, and which consumes the same Blamite library in-process. It opens cache files and edits tag meta; it is not at parity with the Windows client, and real-time editing, patch creation and the specialised editors remain Windows-only.
+The Windows client is Windows Presentation Foundation and stays that way. There is also an [Avalonia front-end](src/Assembly.MultiPlatform/README.md) which runs on macOS, Linux and Windows, and which consumes the same Blamite library in-process. It opens cache files and edits tag meta; it is not at parity with the Windows client, and real-time editing, patch creation and the specialised editors remain Windows-only.
 
 ## Downloading ##
 

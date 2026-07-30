@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Bundle metadata for the macOS .app produced by the BundleApp target in
+  Assembly.MultiPlatform.csproj. This file is a template: the target copies it into
+  Assembly.app/Contents/Info.plist and substitutes __VERSION__.
+
+  CFBundleName is what AppKit shows as the application menu (the bold one beside the Apple
+  logo) and under the app in the Dock, so it must stay in step with <AssemblyName>, which is
+  what that menu falls back to when the process is not inside a bundle - as it is not under
+  `dotnet run`.
+-->
+<plist version="1.0">
+<dict>
+	<key>CFBundleName</key>
+	<string>Assembly</string>
+	<key>CFBundleDisplayName</key>
+	<string>Assembly</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.xboxchaos.assembly</string>
+	<key>CFBundleExecutable</key>
+	<string>Assembly</string>
+	<key>CFBundleIconFile</key>
+	<string>Assembly</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleShortVersionString</key>
+	<string>__VERSION__</string>
+	<key>CFBundleVersion</key>
+	<string>__VERSION__</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>11.0</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.developer-tools</string>
+
+	<!--
+		Avalonia repaints for the OS light/dark setting (App.axaml leaves
+		RequestedThemeVariant at Default). Without this key AppKit forces the legacy
+		always-light appearance on the native chrome, so the titlebar and menus would
+		stay light while everything Avalonia draws below them went dark.
+	-->
+	<key>NSRequiresAquaSystemAppearance</key>
+	<false/>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+
+	<!--
+		Lets Finder offer Assembly under "Open With" for the containers it can actually
+		mount, and makes a double-click work: Program.cs is already given the path as
+		argv[0] and App.axaml.cs opens it. Declared as Viewer rather than Editor because
+		Assembly is not the system-default owner of these extensions and should not claim
+		to be - LSHandlerRank None keeps it out of the running for the default handler.
+	-->
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Halo Cache File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>None</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>map</string>
+				<string>dat</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Unreal IoStore Container</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>None</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>utoc</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -94,7 +94,7 @@ namespace Blamite.Blam.FifthGen.Structures
 	///         <c>Blamite.Plugins.AssemblyPluginLoader</c>'s <c>point2</c>/<c>point3</c>/
 	///         <c>vector2</c>/<c>vector3</c>/<c>vector4</c>/<c>quaternion</c>/<c>degree2</c>/
 	///         <c>degree3</c>/<c>plane2</c>/<c>plane3</c> cases, and the matching reads in
-	///         <c>Assembly.Avalonia.Services.MetaValueReader</c>), and the widths line up exactly:
+	///         <c>Assembly.MultiPlatform.Services.MetaValueReader</c>), and the widths line up exactly:
 	///         2 floats = 8 bytes for the "2d" and bounds-shaped names, 3 floats = 12 bytes for the
 	///         "3d" names and <c>real plane 2d</c> (a 2D normal plus a distance), 4 floats = 16
 	///         bytes for <c>real plane 3d</c> (a 3D normal plus a distance) and
@@ -174,7 +174,7 @@ namespace Blamite.Blam.FifthGen.Structures
 	///     bound is a different shape with a different role: a range's two numbers are ordered
 	///     (low, high) rather than being independent axes, which is why this is its own class
 	///     rather than reusing <see cref="FifthGenVectorValue" /> with a component count of two.
-	///     Classic tooling draws exactly the same distinction - <c>Assembly.Avalonia.Services.
+	///     Classic tooling draws exactly the same distinction - <c>Assembly.MultiPlatform.Services.
 	///     MetaValueReader</c> renders its <c>RangeFloat32</c>/<c>RangeDegree</c> kinds as
 	///     "lo .. hi" rather than "x, y" - and the same plausibility check
 	///     <see cref="FifthGenVectorValue" /> relies on applies here: both floats are checked for
@@ -239,7 +239,7 @@ namespace Blamite.Blam.FifthGen.Structures
 	///     <see cref="float" />s worth of anything, which the type's own name states directly (it
 	///     is the only "bounds" name in <see cref="FifthGenFieldTypes" /> that says "short" instead
 	///     of "real", "angle" or "fraction"). It mirrors classic <c>range16</c>
-	///     (<c>Assembly.Avalonia.Services.MetaFieldKind.RangeInt16</c>), which the same reader reads
+	///     (<c>Assembly.MultiPlatform.Services.MetaFieldKind.RangeInt16</c>), which the same reader reads
 	///     as two <see cref="short" />s and renders as "lo .. hi". There is nothing to a plausibility
 	///     check for a whole number the way there is for a float - every bit pattern is a valid
 	///     <see cref="short" /> - so none is applied here. 3,053 fields of this type decoded across a
@@ -293,7 +293,7 @@ namespace Blamite.Blam.FifthGen.Structures
 	///     <para>
 	///         <c>rgb color</c> and <c>argb color</c> are both 4 bytes - one byte per channel - which
 	///         is the only reading of that width that matches classic <c>color</c>/<c>color32</c>
-	///         (<c>Assembly.Avalonia.Services.MetaFieldKind.ColorInt</c>). That code path reads a
+	///         (<c>Assembly.MultiPlatform.Services.MetaFieldKind.ColorInt</c>). That code path reads a
 	///         single <c>UInt32</c> and decomposes it as <c>a = (v&gt;&gt;24)</c>,
 	///         <c>r = (v&gt;&gt;16)</c>, <c>g = (v&gt;&gt;8)</c>, <c>b = v</c>, each masked to a
 	///         byte, and treats the alpha byte as meaningful only when the field's declared type
@@ -402,7 +402,7 @@ namespace Blamite.Blam.FifthGen.Structures
 	/// </summary>
 	/// <remarks>
 	///     <c>real rgb color</c> (12 bytes) and <c>real argb color</c> (16 bytes) are 3 and 4 floats
-	///     respectively, matching classic <c>colorf</c> (<c>Assembly.Avalonia.Services.
+	///     respectively, matching classic <c>colorf</c> (<c>Assembly.MultiPlatform.Services.
 	///     MetaFieldKind.ColorF</c>), which reads <c>declared size / 4</c> floats with no further
 	///     structure of its own. Component order (alpha first when present) follows the name's own
 	///     spelling - "argb" - the same way the packed-byte sibling type is read; nothing in the
@@ -472,7 +472,7 @@ namespace Blamite.Blam.FifthGen.Structures
 	///     name in <see cref="FifthGenFieldTypes" /> either says "real" outright (<c>real point 2d</c>,
 	///     <c>real vector 2d</c>) or is a well-established real-valued bound (<c>angle bounds</c>,
 	///     <c>fraction bounds</c>, <c>real bounds</c>); <c>rectangle 2d</c> alone drops the "real"
-	///     qualifier, the same way classic <c>rect16</c> (<c>Assembly.Avalonia.Services.
+	///     qualifier, the same way classic <c>rect16</c> (<c>Assembly.MultiPlatform.Services.
 	///     MetaFieldKind.Rect16</c>) is spelled to say "16-bit" rather than "real", and that classic
 	///     type reads four <see cref="short" />s. There is no plausibility check for a whole number
 	///     the way there is for a float, so none is applied here; the width/name argument is the

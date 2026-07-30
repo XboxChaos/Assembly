@@ -1,0 +1,726 @@
+<!--
+  Metro control styling for Avalonia.
+
+  Ported from src/Assembly/Metro/Controls/*.xaml — geometry (heights, borders, colours) is
+  taken verbatim from the WPF ControlTemplates, not re-invented:
+
+    MetroControls.xaml  ({x:Type Button})        -> Button style below
+    MetroButtons.xaml    ({x:Type ToggleButton})  -> ToggleButton style below
+    MetroTreeView.xaml   (MetroTreeViewItem)      -> TreeViewItem theme-resource overrides
+                                                      (see "Tree" section for why this is
+                                                      resource overrides and not a full
+                                                      ControlTemplate rewrite)
+
+  The one systematic difference from WPF: <ControlTemplate.Triggers> / <Trigger
+  Property="IsMouseOver"> have no Avalonia equivalent and become pseudo-class selectors
+  (:pointerover, :pressed, :selected, :focus, :disabled).
+
+  All colour references below are DynamicResource; type-scale (FontSize*) references into
+  Theme/MetroTypography.axaml are DynamicResource too, even though the values themselves are
+  theme-invariant - a plain Styles document (as opposed to a Window/Control's own resource scope)
+  does not chain up to Application.Resources for StaticResource lookups the way a visual-tree
+  element does, so StaticResource here throws KeyNotFoundException at parse time no matter how
+  real the key is. MainWindow.axaml, being a Window, does not have this restriction and uses
+  StaticResource for the same keys there instead (cheaper, and correct in that context - see its
+  own comments). See MetroDark.axaml / MetroTypography.axaml's headers for why colour vs. type-
+  scale/spacing are split across files in the first place.
+
+  Two selectors below reach INTO the field table (ListBox#FieldList) and the tag tree
+  (TreeView#TagTree) - their row chrome (hover/selected background, hairlines, indent guides,
+  type/four-CC badges) is genuinely this file's to own, but the <ListBox Name="FieldList">,
+  <TreeView Name="TagTree"> elements and DataTemplates themselves are not (a separate pass is
+  rewriting those for virtualization/incremental expansion - see MainWindow.axaml). Every
+  selector here targets an existing class or column that pass's DataTemplates already declare
+  (TextBlock.label for the TYPE/four-CC columns, TextBlock.mono for the tree's magic/group
+  columns, the ListBoxItem/TreeViewItem containers themselves) rather than depending on any
+  structural change to those templates.
+-->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="clr-namespace:Assembly.MultiPlatform.Views">
+
+  <!-- ============================== Text ============================== -->
+
+  <Style Selector="TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushPrimary}" />
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
+    <Setter Property="FontSize" Value="{DynamicResource FontSizeBase}" />
+  </Style>
+
+  <Style Selector="TextBlock.label">
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushSecondary}" />
+    <Setter Property="FontSize" Value="{DynamicResource FontSizeSmall}" />
+  </Style>
+
+  <Style Selector="TextBlock.mono, SelectableTextBlock.mono">
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontMono}" />
+    <Setter Property="FontSize" Value="{DynamicResource FontSizeBase}" />
+  </Style>
+
+  <Style Selector="TextBlock.sectionHeader">
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushSecondary}" />
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontSemiBold}" />
+    <Setter Property="FontSize" Value="{DynamicResource FontSizeSmall}" />
+    <Setter Property="LetterSpacing" Value="0.4" />
+  </Style>
+
+  <Style Selector="TextBlock.dim">
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushSecondary}" />
+  </Style>
+
+  <Style Selector="TextBlock.disabled">
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushDisabled}" />
+  </Style>
+
+  <Style Selector="TextBlock.accent">
+    <Setter Property="Foreground" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+  </Style>
+
+  <Style Selector="TextBlock.h1">
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontLight}" />
+    <Setter Property="FontSize" Value="{DynamicResource FontSizeDisplay}" />
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushPrimary}" />
+  </Style>
+
+  <Style Selector="SelectableTextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushPrimary}" />
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
+    <Setter Property="FontSize" Value="{DynamicResource FontSizeBase}" />
+  </Style>
+
+  <!-- ============================== Buttons ==============================
+       Ported verbatim from Metro/Controls/MetroControls.xaml, {x:Type Button}:
+       22px tall, flat #222222 fill, #616161 border, #999999 text; on hover the
+       fill lightens to #393939 and the border becomes the secondary accent;
+       pressed darkens to #333333; disabled fades to #575757 / #8B8B8B.       -->
+  <Style Selector="Button">
+    <Setter Property="Background" Value="{DynamicResource ButtonBackgroundBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="0" />
+    <Setter Property="Padding" Value="10,0" />
+    <!-- 22px at the Default density tier - see MetroTypography.axaml's "Density-driven control
+         geometry" section and Services/DisplayDensity.cs for how this key moves with it. -->
+    <Setter Property="Height" Value="{DynamicResource ControlHeight}" />
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
+    <Setter Property="FontSize" Value="{DynamicResource FontSizeBase}" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Border"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}">
+          <ContentPresenter Content="{TemplateBinding Content}"
+                             ContentTemplate="{TemplateBinding ContentTemplate}"
+                             Margin="{TemplateBinding Padding}"
+                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                             RecognizesAccessKey="True" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+  <Style Selector="Button:pointerover /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource ButtonHoverBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+  </Style>
+  <Style Selector="Button:pressed /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource ButtonPressedBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+  </Style>
+  <Style Selector="Button:disabled /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource ButtonDisabledBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ButtonDisabledBorderBrush}" />
+  </Style>
+
+  <!-- A borderless variant for chrome/toolbar icon buttons (Assembly's WindowActionButton /
+       SidebarHeaderButton pattern: transparent until hovered). -->
+  <Style Selector="Button.chrome">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="8,0" />
+  </Style>
+  <Style Selector="Button.chrome:pointerover /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource WindowActionHoverBrush}" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+  </Style>
+
+  <!-- Primary/accent action button (Save, Open) -->
+  <Style Selector="Button.accent">
+    <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" />
+    <Setter Property="Foreground" Value="White" />
+  </Style>
+  <Style Selector="Button.accent:pointerover /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+  </Style>
+  <!-- Without this, a disabled accent button (Save with nothing dirty is the common case) kept
+       its unconditional Foreground="White" above while Button:disabled's own Background/BorderBrush
+       Setters (this file's base Button section) dimmed everything else - bold white text on a
+       muted grey field read as MORE emphasised than the enabled state, the opposite of what
+       "disabled" should communicate. Reusing the same muted grey every other disabled button's
+       text already falls back to keeps the two consistent. -->
+  <Style Selector="Button.accent:disabled">
+    <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundBrush}" />
+  </Style>
+
+  <!-- ============================== ToggleButton ==============================
+       Ported verbatim from Metro/Controls/MetroButtons.xaml, {x:Type ToggleButton}:
+       same 22px/#222222/#616161/#999999 base as Button, but IsChecked=true swaps to
+       the accent fill. -->
+  <Style Selector="ToggleButton">
+    <Setter Property="Background" Value="{DynamicResource ButtonBackgroundBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="0" />
+    <Setter Property="Padding" Value="10,0" />
+    <Setter Property="Height" Value="{DynamicResource ControlHeight}" />
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
+    <Setter Property="FontSize" Value="{DynamicResource FontSizeBase}" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Border"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}">
+          <ContentPresenter Content="{TemplateBinding Content}"
+                             ContentTemplate="{TemplateBinding ContentTemplate}"
+                             Margin="{TemplateBinding Padding}"
+                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                             RecognizesAccessKey="True" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+  <Style Selector="ToggleButton:pointerover /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource ButtonHoverBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+  </Style>
+  <Style Selector="ToggleButton:checked /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" />
+  </Style>
+  <Style Selector="ToggleButton:checked /template/ ContentPresenter">
+    <Setter Property="TextBlock.Foreground" Value="White" />
+  </Style>
+  <Style Selector="ToggleButton:disabled /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource ButtonDisabledBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ButtonDisabledBorderBrush}" />
+  </Style>
+
+  <!-- Icon-only chrome toggle (sidebar collapse handles, console toggle). "Active" reads as a
+       thin accent underline (BorderThickness reserves the bottom 2px always, Transparent at rest)
+       rather than a filled swatch behind the icon - the same "accent edge = active" language the
+       document tab strip already uses (Button.tabHeader.active below), so the toolbar and the tab
+       strip teach a reader one idiom instead of two. An earlier version filled the checked state
+       with SidebarBlockBrush, which on a 22px-tall toolbar button read as a small grey plaque
+       rather than a state change. -->
+  <Style Selector="ToggleButton.chrome">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0,0,0,2" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="Width" Value="{DynamicResource ChromeToggleWidth}" />
+    <Setter Property="Padding" Value="0" />
+  </Style>
+  <Style Selector="ToggleButton.chrome:pointerover /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource WindowActionHoverBrush}" />
+  </Style>
+  <Style Selector="ToggleButton.chrome:checked /template/ Border#PART_Border">
+    <!-- Background is re-asserted Transparent here, not left to inherit from the base
+         ToggleButton.chrome rule above: the generic ToggleButton:checked selector earlier in
+         this file sets Background to a solid ExtryzeAccentBrush fill, and it is more specific
+         than the class-only (no pseudo-class) base rule, so without this it wins and refills the
+         exact solid swatch this section's whole point was to replace with a thin edge instead. -->
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" />
+  </Style>
+
+  <!-- Fill/Stroke for every stroke-style toolbar/console pictogram (Theme/Icons.axaml's
+       IconSidebarLeft/Right/Console/Copy - see that file's header for the stroke-vs-fill split),
+       applied by class rather than as a local value on each Path (see MainWindow.axaml's own
+       remarks at each call site) specifically so the state selectors below CAN win: a Style
+       Setter can never override a property already carrying a local value in Avalonia (see
+       Services/DisplayDensity.cs's header), which is exactly what made the previous
+       ToggleButton.chrome:checked Path rule permanently dead - it targeted a Stroke every one of
+       these Paths already set locally, so it never once actually applied. -->
+  <Style Selector="Path.chromeIcon">
+    <Setter Property="Fill" Value="Transparent" />
+    <Setter Property="Stroke" Value="{DynamicResource TextBrushSecondary}" />
+  </Style>
+  <Style Selector="Button.chrome:pointerover Path.chromeIcon, ToggleButton.chrome:pointerover Path.chromeIcon">
+    <Setter Property="Stroke" Value="{DynamicResource TextBrushPrimary}" />
+  </Style>
+  <Style Selector="ToggleButton.chrome:checked Path.chromeIcon">
+    <Setter Property="Stroke" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+  </Style>
+
+  <!-- ============================== Document tabs ==============================
+       Hand-rolled tab strip (see MainWindow.axaml) styled to VS/VS Code ergonomics: the active
+       tab visually owns the content beneath it (background matches the document canvas, a
+       heavier accent underline than the inactive 1px separator), inactive tabs read as
+       secondary text, and the close glyph only appears on hover - a dirty dot sits in its place
+       otherwise - via plain :pointerover selectors below rather than any code-behind toggling.
+       Assembly's own MetroTabControlTop uses the same "flat header, accent fill/underline on
+       selection" idea (see that file for the WPF ControlTemplate this take is adapted from). -->
+  <!-- Height is NOT density-driven: MainWindow.axaml's tab strip sits in a fixed-pixel Grid row
+       ("30,*", the "document area" region outside this pass's ownership - see this pass's final
+       report), so a taller tab button at Comfortable would just clip against that row instead of
+       growing it, and a shorter one at Compact would float in unused space - worse than leaving
+       it alone. -->
+  <Style Selector="Button.tabHeader">
+    <Setter Property="Background" Value="{DynamicResource SidebarHeaderBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SidebarHeaderSeperatorBrush}" />
+    <Setter Property="BorderThickness" Value="0,0,1,2" />
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushSecondary}" />
+    <Setter Property="Padding" Value="12,0" />
+    <Setter Property="Height" Value="30" />
+    <Setter Property="FontSize" Value="{DynamicResource FontSizeBase}" />
+    <Setter Property="HorizontalContentAlignment" Value="Left" />
+  </Style>
+  <Style Selector="Button.tabHeader:pointerover /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource SidebarBlockBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SidebarHeaderSeperatorBrush}" />
+  </Style>
+  <Style Selector="Button.tabHeader.active">
+    <Setter Property="Background" Value="{DynamicResource MainBackgroundBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushPrimary}" />
+    <Setter Property="BorderThickness" Value="0,0,1,3" />
+  </Style>
+  <Style Selector="Button.tabHeader.active /template/ Border#PART_Border">
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" />
+  </Style>
+  <Style Selector="Button.tabHeader.active:pointerover /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource MainBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" />
+  </Style>
+  <Style Selector="TextBlock.tabTitle">
+    <Setter Property="FontSize" Value="{DynamicResource FontSizeBase}" />
+  </Style>
+
+  <!-- Dirty dot: visible whenever the document is dirty, but yields to the close glyph on hover
+       (see Button.tabClose below) so the two never compete for the same slot. -->
+  <Style Selector="Ellipse.tabDirtyDot">
+    <Setter Property="Opacity" Value="1" />
+    <Setter Property="Transitions">
+      <Transitions>
+        <DoubleTransition Property="Opacity" Duration="0:0:0.08" />
+      </Transitions>
+    </Setter>
+  </Style>
+  <Style Selector="Button.tabHeader:pointerover Ellipse.tabDirtyDot">
+    <Setter Property="Opacity" Value="0" />
+  </Style>
+
+  <Style Selector="Button.tabClose">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Height" Value="16" />
+    <Setter Property="Width" Value="16" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Opacity" Value="0" />
+    <Setter Property="Transitions">
+      <Transitions>
+        <DoubleTransition Property="Opacity" Duration="0:0:0.08" />
+      </Transitions>
+    </Setter>
+  </Style>
+  <!-- Shown on hover of the whole tab, or always for the active tab (so its close affordance
+       doesn't disappear the instant the pointer leaves) or a dirty tab (closing a dirty tab is
+       common enough - discarding a scratch edit - that it shouldn't require a hover first). -->
+  <Style Selector="Button.tabHeader:pointerover Button.tabClose, Button.tabHeader.active Button.tabClose">
+    <Setter Property="Opacity" Value="1" />
+  </Style>
+  <Style Selector="Button.tabClose:pointerover /template/ Border#PART_Border">
+    <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrush}" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+  </Style>
+  <Style Selector="Button.tabClose Path.tabCloseIcon">
+    <Setter Property="Stroke" Value="{DynamicResource TextBrushSecondary}" />
+  </Style>
+  <Style Selector="Button.tabClose:pointerover Path.tabCloseIcon">
+    <Setter Property="Stroke" Value="White" />
+  </Style>
+
+  <!-- ============================== Text input ============================== -->
+  <Style Selector="TextBox">
+    <Setter Property="CornerRadius" Value="0" />
+    <Setter Property="Background" Value="{DynamicResource InputBackgroundBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushPrimary}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource InputBorderBrush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
+    <Setter Property="FontSize" Value="{DynamicResource FontSizeBase}" />
+    <Setter Property="MinHeight" Value="{DynamicResource ControlHeight}" />
+    <Setter Property="Padding" Value="6,2" />
+    <Setter Property="SelectionBrush" Value="{DynamicResource ExtryzeAccentBrush}" />
+  </Style>
+  <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" />
+  </Style>
+  <Style Selector="TextBox.invalid">
+    <Setter Property="BorderBrush" Value="{DynamicResource ErrorBrush}" />
+  </Style>
+  <Style Selector="TextBox.invalid:focus /template/ Border#PART_BorderElement">
+    <Setter Property="BorderBrush" Value="{DynamicResource ErrorBrush}" />
+  </Style>
+
+  <!-- ============================== Tree ==============================
+       Assembly's real MetroTreeViewItem (Metro/Controls/MetroTreeView.xaml) is a fully
+       custom ControlTemplate: a 16x16 triangular expand glyph (path "M0,0 L0,6 L6,0 z",
+       rotated 135deg collapsed / 180deg expanded), IsSelected -> accent-secondary fill,
+       and an unfocused-selected state of #3f3f46.
+
+       Avalonia's FluentTreeViewItem is a ControlTheme whose ControlTemplate is *entirely
+       resource-driven* (TreeViewItemBackgroundSelected, TreeViewItemCollapsedChevronPathData,
+       etc: see AvaloniaUI/Avalonia src/Avalonia.Themes.Fluent/Controls/TreeViewItem.xaml).
+       Overriding those DynamicResource keys reproduces the real geometry/behaviour (triangle
+       glyph, accent-secondary selection, no per-item border) without reimplementing
+       virtualization, drag/drop and focus handling that a full ControlTemplate rewrite would
+       put at risk.
+
+       These overrides are colour, so - unlike the plain x:Double/Thickness/StreamGeometry
+       entries alongside them - they live inside ThemeDictionaries too: Dark's white
+       TreeViewItemForeground* set would be flatly illegible against Light's pale row
+       backgrounds, so both variants need their own values here exactly as MetroDark.axaml's
+       semantic palette does. -->
+  <Styles.Resources>
+    <ResourceDictionary>
+      <!--
+        This converter backs a Setter Property="Converter=..." binding further down this same
+        file (the field table's TYPE column colour). It is also registered in App.axaml's
+        Application.Resources under the same x:Key, for use from Window-level XAML
+        (MainWindow.axaml) via StaticResource - but a Setter's Converter sub-property needs a
+        concrete IValueConverter resolved at parse time, and a plain <Styles> document (unlike a
+        Window) does not chain up to Application.Resources for StaticResource lookups (see this
+        file's header). Declaring it again here, resolved from this file's own local resource
+        scope, is the only way a Style *in this file* can use it as a Converter - a
+        DynamicResource in that same position fails differently (Avalonia error AVLN3000: it
+        produces a deferred resource reference, not a concrete IValueConverter, and the Converter
+        setter has no overload that accepts one).
+      -->
+      <views:TypeBadgeForegroundConverter x:Key="TypeBadgeForeground" />
+
+      <!-- TreeViewItemIndent is fidelity to the original WPF measurement (see this file's own
+           header) and stays fixed across density on purpose. TreeViewItemMinHeight and
+           TreeViewItemExpandCollapseChevronSize are the tag tree's row-height density lever -
+           Services/DisplayDensity.cs overwrites both of these exact key names (by name, at the
+           Application.Resources level, which shadows the Default-tier values declared here - see
+           that file's header for why a plain resource mutation reaches even a FluentTheme-
+           internal DynamicResource like this one) on every density change, the same as
+           MetroTypography.axaml's own "Density-driven control geometry" section. -->
+      <x:Double x:Key="TreeViewItemIndent">14</x:Double>
+      <x:Double x:Key="TreeViewItemMinHeight">21</x:Double>
+      <!-- Left 2px reserved on every row, not just selected ones - see the selected-brush remarks
+           below for why (VS-Code-style "subtle tint plus a thin accent bar", not a saturated
+           slab): FluentTreeViewItem's ControlTemplate has one shared BorderThemeThickness for
+           every state, so the choice is either reserve this space always (Transparent brush at
+           rest, invisible) or have the row's own width shift by 2px the instant it is selected -
+           the field table's selected-row accent bar (this file's "Field table" section) makes the
+           same trade for the same reason. -->
+      <Thickness x:Key="TreeViewItemBorderThemeThickness">2,0,0,0</Thickness>
+      <x:Double x:Key="TreeViewItemExpandCollapseChevronSize">9</x:Double>
+      <Thickness x:Key="TreeViewItemExpandCollapseChevronMargin">2,0,4,0</Thickness>
+
+      <!-- right-pointing triangle (collapsed) / down-pointing triangle (expanded) -->
+      <StreamGeometry x:Key="TreeViewItemCollapsedChevronPathData">M0,0 L6,3 L0,6 Z</StreamGeometry>
+      <StreamGeometry x:Key="TreeViewItemExpandedChevronPathData">M0,0 L6,0 L3,6 Z</StreamGeometry>
+
+      <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Dark">
+          <SolidColorBrush x:Key="TreeViewItemBackground">Transparent</SolidColorBrush>
+          <SolidColorBrush x:Key="TreeViewItemBackgroundPointerOver" Color="#FF3f3f46" />
+          <SolidColorBrush x:Key="TreeViewItemBackgroundPressed" Color="#FF3f3f46" />
+          <!-- Subtle accent tint, not a saturated slab - same 20%-alpha accent MetroDark.axaml's
+               ExtryzeAccentBrushMuted already uses for the palette's own selected-row treatment,
+               kept as a literal here rather than a cross-file resource reference because this
+               ResourceDictionary.ThemeDictionaries block only accepts literal Color values (see
+               this file's header for why StaticResource/DynamicResource can't reach across merged
+               dictionaries from inside a Styles.Resources entry like this one). -->
+          <SolidColorBrush x:Key="TreeViewItemBackgroundSelected" Color="#330079cb" />
+          <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPointerOver" Color="#4D0079cb" />
+          <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPressed" Color="#4D0079cb" />
+          <SolidColorBrush x:Key="TreeViewItemBackgroundDisabled">Transparent</SolidColorBrush>
+          <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedDisabled" Color="#FF3f3f46" />
+
+          <SolidColorBrush x:Key="TreeViewItemBorderBrush">Transparent</SolidColorBrush>
+          <SolidColorBrush x:Key="TreeViewItemBorderBrushPointerOver">Transparent</SolidColorBrush>
+          <SolidColorBrush x:Key="TreeViewItemBorderBrushPressed">Transparent</SolidColorBrush>
+          <!-- The thin accent bar itself, in the 2px left inset TreeViewItemBorderThemeThickness
+               reserves above - same "1D98EB" secondary accent the field table's own
+               SelectedRowAccentBrush uses, so a reader learns one colour for "this row is
+               selected" across both the tree and the field table. -->
+          <SolidColorBrush x:Key="TreeViewItemBorderBrushSelected" Color="#FF1D98EB" />
+          <SolidColorBrush x:Key="TreeViewItemBorderBrushSelectedPointerOver" Color="#FF1D98EB" />
+          <SolidColorBrush x:Key="TreeViewItemBorderBrushSelectedPressed" Color="#FF1D98EB" />
+          <SolidColorBrush x:Key="TreeViewItemBorderBrushDisabled">Transparent</SolidColorBrush>
+          <SolidColorBrush x:Key="TreeViewItemBorderBrushSelectedDisabled">Transparent</SolidColorBrush>
+
+          <!-- A muted tint (rather than a solid fill) leaves the surface underneath legible, so
+               selected text stays the ordinary primary colour in both themes instead of being
+               forced white - a forced white was only ever needed to survive a fully-saturated
+               accent fill, which no longer happens here. -->
+          <SolidColorBrush x:Key="TreeViewItemForeground" Color="White" />
+          <SolidColorBrush x:Key="TreeViewItemForegroundPointerOver" Color="White" />
+          <SolidColorBrush x:Key="TreeViewItemForegroundPressed" Color="White" />
+          <SolidColorBrush x:Key="TreeViewItemForegroundSelected" Color="White" />
+          <SolidColorBrush x:Key="TreeViewItemForegroundSelectedPointerOver" Color="White" />
+          <SolidColorBrush x:Key="TreeViewItemForegroundSelectedPressed" Color="White" />
+          <SolidColorBrush x:Key="TreeViewItemForegroundDisabled" Color="#FF989898" />
+          <SolidColorBrush x:Key="TreeViewItemForegroundSelectedDisabled" Color="White" />
+        </ResourceDictionary>
+
+        <ResourceDictionary x:Key="Light">
+          <SolidColorBrush x:Key="TreeViewItemBackground">Transparent</SolidColorBrush>
+          <SolidColorBrush x:Key="TreeViewItemBackgroundPointerOver" Color="#FFE4E4E8" />
+          <SolidColorBrush x:Key="TreeViewItemBackgroundPressed" Color="#FFE4E4E8" />
+          <SolidColorBrush x:Key="TreeViewItemBackgroundSelected" Color="#1F0079cb" />
+          <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPointerOver" Color="#330079cb" />
+          <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPressed" Color="#330079cb" />
+          <SolidColorBrush x:Key="TreeViewItemBackgroundDisabled">Transparent</SolidColorBrush>
+          <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedDisabled" Color="#FFE4E4E8" />
+
+          <SolidColorBrush x:Key="TreeViewItemBorderBrush">Transparent</SolidColorBrush>
+          <SolidColorBrush x:Key="TreeViewItemBorderBrushPointerOver">Transparent</SolidColorBrush>
+          <SolidColorBrush x:Key="TreeViewItemBorderBrushPressed">Transparent</SolidColorBrush>
+          <SolidColorBrush x:Key="TreeViewItemBorderBrushSelected" Color="#FF0079cb" />
+          <SolidColorBrush x:Key="TreeViewItemBorderBrushSelectedPointerOver" Color="#FF0079cb" />
+          <SolidColorBrush x:Key="TreeViewItemBorderBrushSelectedPressed" Color="#FF0079cb" />
+          <SolidColorBrush x:Key="TreeViewItemBorderBrushDisabled">Transparent</SolidColorBrush>
+          <SolidColorBrush x:Key="TreeViewItemBorderBrushSelectedDisabled">Transparent</SolidColorBrush>
+
+          <!-- Selected rows are now a muted accent tint plus the left bar above, not a solid
+               fill, so selected text stays the ordinary dark-on-light primary colour - a forced
+               white here would be the one place in the whole Light palette where selection
+               *removed* contrast instead of adding it. -->
+          <SolidColorBrush x:Key="TreeViewItemForeground" Color="#FF1E1E1E" />
+          <SolidColorBrush x:Key="TreeViewItemForegroundPointerOver" Color="#FF1E1E1E" />
+          <SolidColorBrush x:Key="TreeViewItemForegroundPressed" Color="#FF1E1E1E" />
+          <SolidColorBrush x:Key="TreeViewItemForegroundSelected" Color="#FF1E1E1E" />
+          <SolidColorBrush x:Key="TreeViewItemForegroundSelectedPointerOver" Color="#FF1E1E1E" />
+          <SolidColorBrush x:Key="TreeViewItemForegroundSelectedPressed" Color="#FF1E1E1E" />
+          <SolidColorBrush x:Key="TreeViewItemForegroundDisabled" Color="#FFA0A0A3" />
+          <SolidColorBrush x:Key="TreeViewItemForegroundSelectedDisabled" Color="#FF1E1E1E" />
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
+    </ResourceDictionary>
+  </Styles.Resources>
+
+  <Style Selector="TreeView">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="0" />
+  </Style>
+  <Style Selector="TreeViewItem">
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
+  </Style>
+
+  <!-- Four-CC badges: the tag tree's group-magic ("weap") and per-tag group columns both use
+       Classes="mono" with no other badge chrome - this turns both into the same small tinted
+       chip (SidebarBlockBrush, the tree's existing "generic muted chip" colour, already used
+       for the mounted-source Kind badge above the tree). Foreground is left alone here
+       (TextBlock sets it inline per-column already) - only Background/Padding/CornerRadius-via-
+       Padding is new, so this can't fight the inline colour choices. -->
+  <Style Selector="TreeView#TagTree TextBlock.mono">
+    <Setter Property="Background" Value="{DynamicResource SidebarBlockBrush}" />
+    <Setter Property="Padding" Value="3,1" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+  </Style>
+
+  <!--
+    Coordination note (see this pass's final report): group/folder rows vs. leaf tag rows in the
+    tree read identically today - same TreeViewItem chrome regardless of which DataTemplate
+    matched. Distinguishing them needs a class on the DataTemplates' own root Grid (e.g.
+    Classes="treeGroupRow" on GroupNode/FolderNode's root, left off TagNode's), which lives
+    inside the <TreeView> element this pass doesn't touch. The selectors below are ready and
+    inert until that class exists.
+  -->
+  <Style Selector="TreeView#TagTree Grid.treeGroupRow">
+    <Setter Property="Background" Value="{DynamicResource SidebarHeaderBrush}" />
+  </Style>
+  <Style Selector="TreeView#TagTree Grid.treeGroupRow TextBlock:not(.mono):not(.label)">
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontSemiBold}" />
+  </Style>
+
+  <!-- ============================== Lists ============================== -->
+  <Style Selector="ListBox">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+  </Style>
+  <Style Selector="ListBoxItem">
+    <Setter Property="CornerRadius" Value="0" />
+    <Setter Property="Padding" Value="{DynamicResource ListBoxItemPadding}" />
+    <Setter Property="MinHeight" Value="0" />
+  </Style>
+  <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource RowHoverBrush}" />
+  </Style>
+  <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource SidebarBlockBrush}" />
+  </Style>
+
+  <!-- ============================== Field table (ListBox#FieldList) ==============================
+       Named so this doesn't have to fight the generic ListBoxItem style above.
+
+       Indent guides live in MainWindow.axaml's own row DataTemplate now (a small per-depth-level
+       ItemsControl ahead of the name text), not here - see Converters.cs's DepthRangeConverter
+       for why a Background-brush trick (this file's earlier approach) turned out not to render
+       reliably at all. This file still owns the row's other chrome below.
+
+       Selected-row accent bar: a 2px left border in the selected-row accent colour, additional
+       to the existing 1px bottom hairline - "obvious without being loud" per the brief, i.e. a
+       thin bar rather than a full-row colour change (the ContentPresenter fill is a near-black/
+       soft-tint wash on top of that, kept deliberately quiet - see MetroDark.axaml's
+       MetaSelectedRowBrush remarks).
+
+       Density: Padding is this row's whole density lever, and the only one available to it - the
+       row's own font sizes (offset/type/name/value, MainWindow.axaml's DataTemplate) are literal
+       values set directly on those TextBlocks, which in Avalonia outrank any Style Setter
+       unconditionally (see Services/DisplayDensity.cs's header for how this was actually
+       verified, not assumed), so no selector here can rescale them, triggered or not. That still
+       leaves a real range: at Compact this converges toward the row's fixed-size content (the
+       16px block-expander icon, itself density-driven below); at Comfortable it opens the row out
+       well past it. See this pass's final report for the measured row-height/rows-on-screen
+       numbers at each tier. -->
+  <Style Selector="ListBox#FieldList ListBoxItem">
+    <Setter Property="Padding" Value="{DynamicResource FieldRowPadding}" />
+    <Setter Property="BorderThickness" Value="0,0,0,1" />
+    <Setter Property="BorderBrush" Value="{DynamicResource FieldRowDividerBrush}" />
+  </Style>
+  <Style Selector="ListBox#FieldList ListBoxItem:selected">
+    <Setter Property="BorderThickness" Value="2,0,0,1" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SelectedRowAccentBrush}" />
+  </Style>
+  <Style Selector="ListBox#FieldList ListBoxItem:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource RowHoverBrush}" />
+  </Style>
+  <Style Selector="ListBox#FieldList ListBoxItem:selected /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource MetaSelectedRowBrush}" />
+  </Style>
+
+  <!-- Type column: the field table's TYPE column is the one plain TextBlock.label inside a
+       FieldList row (see MainWindow.axaml's DataTemplate) - Foreground here is bound straight to
+       the row's own KindLabel through TypeBadgeForeground (Converters.cs), which only colours the
+       structurally-significant kinds (block/array/struct/enum/flags/string-ish - see
+       TypeBadgeCategory's remarks for why substring matching is the only thing that works across
+       both classic and Campaign Evolved kind vocabularies) and leaves everything else (numeric,
+       vector, colour, ...) as plain secondary text, so the colouring stays meaningful instead of
+       tinting every row. Deliberately no Background/chip any more - see
+       TypeBadgeForegroundConverter's own remarks for why a coloured chip read as "candy" rather
+       than "scannable" once there were a few hundred of them on screen at once. -->
+  <Style Selector="ListBox#FieldList ListBoxItem TextBlock.label">
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontMono}" />
+    <Setter Property="FontSize" Value="{DynamicResource FontSizeMicro}" />
+    <Setter Property="Padding" Value="{DynamicResource TypeBadgePadding}" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="Foreground" Value="{Binding KindLabel, Converter={StaticResource TypeBadgeForeground}}" />
+  </Style>
+
+  <!-- ============================== Console ============================== -->
+  <Style Selector="TextBlock.consoleLevel">
+    <Setter Property="Padding" Value="4,1" />
+    <Setter Property="HorizontalAlignment" Value="Center" />
+  </Style>
+
+  <!-- ============================== ComboBox ============================== -->
+  <Style Selector="ComboBox">
+    <Setter Property="CornerRadius" Value="0" />
+    <Setter Property="Background" Value="{DynamicResource InputBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource InputBorderBrush}" />
+    <Setter Property="MinHeight" Value="{DynamicResource ControlHeight}" />
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
+    <Setter Property="FontSize" Value="{DynamicResource FontSizeBase}" />
+    <Setter Property="Padding" Value="6,2" />
+  </Style>
+  <Style Selector="ComboBoxItem">
+    <Setter Property="Padding" Value="8,4" />
+    <Setter Property="MinHeight" Value="0" />
+  </Style>
+  <Style Selector="ComboBoxItem:selected /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrush}" />
+  </Style>
+
+  <!-- ============================== CheckBox ============================== -->
+  <Style Selector="CheckBox">
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushSecondary}" />
+    <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
+    <Setter Property="FontSize" Value="{DynamicResource FontSizeBase}" />
+    <Setter Property="MinHeight" Value="17" />
+  </Style>
+  <Style Selector="CheckBox /template/ Border#NormalRectangle">
+    <Setter Property="Background" Value="{DynamicResource InputBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource InputBorderBrush}" />
+  </Style>
+  <Style Selector="CheckBox:checked /template/ Border#NormalRectangle">
+    <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" />
+  </Style>
+
+  <!-- ============================== GridSplitter ============================== -->
+  <Style Selector="GridSplitter">
+    <Setter Property="Background" Value="{DynamicResource SidebarHeaderSeperatorBrush}" />
+  </Style>
+  <Style Selector="GridSplitter:pointerover">
+    <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrush}" />
+  </Style>
+
+  <!-- ============================== ScrollBar (compact / macOS-overlay-ish) ============================== -->
+  <Style Selector="ScrollBar">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+
+  <!-- ============================== Expander (used for tag block rows) ==============================
+       Width/Height are this row's tallest fixed-size content (see the Field table section's
+       Density remark above) - the field row can never get shorter than this regardless of
+       FieldRowPadding, so it is density-driven too rather than left at a Default-only 16. -->
+  <Style Selector="ToggleButton.blockExpander">
+    <Setter Property="Width" Value="{DynamicResource BlockExpanderSize}" />
+    <Setter Property="Height" Value="{DynamicResource BlockExpanderSize}" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Foreground" Value="{DynamicResource TextBrushSecondary}" />
+  </Style>
+  <Style Selector="ToggleButton.blockExpander /template/ Border#PART_Border">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+  <Style Selector="ToggleButton.blockExpander:pointerover /template/ Border#PART_Border">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+  <Style Selector="ToggleButton.blockExpander:checked /template/ Border#PART_Border">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+  </Style>
+
+  <!--
+    Stroke on the glyph itself: found while screenshotting density (this pass) that the expander
+    triangle (MainWindow.axaml's DataTemplate: a 7x7 Path, Fill-only, no Stroke - outside this
+    pass's ownership, and pre-existing at every density including Default, so not something
+    density caused) renders as good as invisible in the real field table - reserves its column
+    space and is genuinely clickable (toggling it does expand/collapse the row), it just does not
+    read visually. Isolated Fill-only repros of the same Path/Style/ControlTemplate combination
+    render fine outside the real row context, so the fill itself is not provably broken - more
+    likely something about the geometry's very small (6x6 unit) bounding box anti-aliasing away
+    at this size/DPI once it is actually inside a virtualized ListBox row, which a synthetic
+    repro would not reproduce. Adding a Stroke sidesteps needing to nail that down further: Stroke
+    is not set locally in the DataTemplate (only Width/Height/Stretch/Fill/Data are), so - unlike
+    Fill, which a Style Setter can never win against a local value (see
+    Services/DisplayDensity.cs's header) - this one is guaranteed to actually apply, and a stroked
+    outline is far less likely to anti-alias into nothing than a thin flat fill at this size
+    regardless of the exact original cause.
+  -->
+  <Style Selector="ToggleButton.blockExpander Path">
+    <Setter Property="Stroke" Value="{DynamicResource TextBrushSecondary}" />
+    <Setter Property="StrokeThickness" Value="1.1" />
+    <Setter Property="StrokeLineCap" Value="Round" />
+    <Setter Property="StrokeJoin" Value="Round" />
+  </Style>
+
+</Styles>

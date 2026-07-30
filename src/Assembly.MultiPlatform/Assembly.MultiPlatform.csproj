@@ -1,0 +1,120 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Assembly for macOS / Linux / Windows - Avalonia front-end.
+
+    Consumes src/Blamite as an in-process library exactly as the WPF app does.
+    No changes to Blamite are required or made.
+  -->
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
+    <!--
+      The output file name, and on macOS also the name of the application menu - the leftmost,
+      bold menu next to the Apple logo. AppKit takes that title from CFBundleName when the process
+      is inside a .app, and from the executable's own file name when it is not, which is the case
+      for `dotnet run`. So this being "AssemblyAvalonia" meant the menu bar said "AssemblyAvalonia"
+      during development no matter what the bundle said; the two have to agree, and both say
+      "Assembly" because that is the product's name. The project keeps its own longer name so it
+      stays distinguishable from src/Assembly (the WPF client) in a solution list - the two write
+      to different bin directories, so identical assembly names do not collide.
+    -->
+    <AssemblyName>Assembly</AssemblyName>
+    <RootNamespace>Assembly.MultiPlatform</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
+    <EnableDefaultAvaloniaItems>true</EnableDefaultAvaloniaItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="12.1.1" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.1" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.1" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Blamite/Blamite.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      The tag-definition ("plugin") XML tree currently lives in the WPF project.
+      Link it rather than duplicating it, so both front-ends stay in sync from one
+      source of truth. Long term this should move to a shared content project.
+    -->
+    <Content Include="../Assembly/Plugins/**/*.xml"
+             Link="Plugins/%(RecursiveDir)%(Filename)%(Extension)"
+             CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      Assembly's WPF Metro theme embeds "Segoe WP" (a Microsoft-internal, non-redistributable
+      font). Selawik is Microsoft's own open-source metric-family substitute for Segoe UI
+      (SIL Open Font License 1.1 - see Assets/Fonts/SELAWIK-LICENSE.txt), and its five shipped
+      weights map 1:1 onto the five MetroFont* resources the Metro theme expects
+      (Light/Semilight/Regular/Semibold/Bold), so it is the closest legally-embeddable match.
+    -->
+    <AvaloniaResource Include="Assets/Fonts/*.ttf" />
+
+    <!--
+      Window.Icon (Views/MainWindow.axaml) wants a raster it can load at runtime, so the PNG
+      is embedded as a resource. The .icns beside it is not - it is only ever read by Finder,
+      from inside the bundle, so BundleApp copies it as a file instead. Assets/Icon/Assembly.svg
+      is the source both were rendered from; keep it and re-render rather than editing pixels.
+    -->
+    <AvaloniaResource Include="Assets/Icon/*.png" />
+  </ItemGroup>
+
+  <!--
+    macOS app bundle.
+
+    A bare executable gets no Dock icon and no bundle identity, which is why `dotnet run` shows a
+    generic rocket. Only a .app fixes that, and only Finder cares - so this is wired to Publish,
+    not Build: paying for a bundle on every inner-loop compile would be pure latency, and during
+    development <AssemblyName> already gets the menu-bar name right on its own.
+
+        dotnet publish src/Assembly.MultiPlatform -c Release -r osx-arm64 -p:SelfContained=true
+        open src/Assembly.MultiPlatform/bin/Release/net10.0/osx-arm64/publish/Assembly.app
+
+    The bundle is unsigned. macOS will refuse to launch it from Finder on first run until it is
+    either signed or cleared in System Settings > Privacy & Security; `open` from a terminal in
+    the same session is the usual way round that while developing.
+  -->
+  <Target Name="BundleApp" AfterTargets="Publish" Condition="'$([MSBuild]::IsOSPlatform(OSX))' == 'true'">
+    <PropertyGroup>
+      <_AppBundle>$(PublishDir)Assembly.app</_AppBundle>
+      <_BundleVersion Condition="'$(Version)' != ''">$(Version)</_BundleVersion>
+      <_BundleVersion Condition="'$(_BundleVersion)' == ''">1.0.0</_BundleVersion>
+    </PropertyGroup>
+
+    <!--
+      Rebuilt from scratch each time. An incremental copy would leave behind files deleted since
+      the last publish, and a stale binary inside a bundle is invisible until it misbehaves.
+    -->
+    <RemoveDir Directories="$(_AppBundle)" />
+    <MakeDir Directories="$(_AppBundle)/Contents/MacOS;$(_AppBundle)/Contents/Resources" />
+
+    <ItemGroup>
+      <_PublishedFile Include="$(PublishDir)**/*" Exclude="$(PublishDir)Assembly.app/**/*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_PublishedFile)"
+          DestinationFiles="@(_PublishedFile->'$(_AppBundle)/Contents/MacOS/%(RecursiveDir)%(Filename)%(Extension)')" />
+
+    <Copy SourceFiles="Assets/Icon/Assembly.icns" DestinationFolder="$(_AppBundle)/Contents/Resources" />
+
+    <WriteLinesToFile File="$(_AppBundle)/Contents/Info.plist" Overwrite="true" WriteOnlyWhenDifferent="true"
+                      Lines="$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)/Info.plist').Replace('__VERSION__', '$(_BundleVersion)'))" />
+
+    <!-- Copy drops the executable bit, and AppKit will not launch a bundle whose CFBundleExecutable is not executable. -->
+    <Exec Command="chmod +x &quot;$(_AppBundle)/Contents/MacOS/Assembly&quot;" />
+
+    <Message Importance="high" Text="Bundled $(_AppBundle)" />
+  </Target>
+
+</Project>
