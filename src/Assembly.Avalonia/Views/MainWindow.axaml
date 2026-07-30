@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:Assembly.Avalonia.ViewModels"
+        xmlns:views="clr-namespace:Assembly.Avalonia.Views"
         x:Class="Assembly.Avalonia.Views.MainWindow"
         Title="{Binding WindowTitle}"
         Width="1400" Height="880"
@@ -312,7 +313,8 @@
             <TextBlock Text="PROPERTIES" Classes="sectionHeader" Margin="12,8" />
           </Border>
           <ScrollViewer Grid.Row="1">
-            <StackPanel Name="EditorHost" Margin="14,12" Spacing="10" />
+            <views:PropertiesPanel Name="PropertiesPanelControl" Margin="14,12"
+                                    Document="{Binding ActiveDocument}" />
           </ScrollViewer>
         </Grid>
       </Border>
