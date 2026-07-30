@@ -374,10 +374,35 @@ namespace Assembly.Avalonia
 				Console.WriteLine($"matched={preview.MatchedCount} changed={preview.ChangedCount} unmatched={preview.UnmatchedCount} invalid={preview.InvalidCount} untouched-in-source={preview.UntouchedSourceTagCount}");
 				Console.WriteLine($"can proceed: {preview.CanProceed}");
 
-				var progress = new Progress<CEPackagingProgress>(p =>
-					Console.WriteLine($"  [{p.Stage}] {p.Completed}/{p.Total}  {p.Detail}"));
+				// --cancel-after-n-steps N cancels once N progress reports have arrived, so
+				// cancellation mid-run can be proven deterministically rather than raced with a
+				// timer - see this probe's remarks on why that matters for a feature that touches
+				// files on disk.
+				int cancelAfter = -1;
+				int cancelIndex = Array.IndexOf(args, "--cancel-after-n-steps");
+				if (cancelIndex >= 0 && cancelIndex + 1 < args.Length)
+					int.TryParse(args[cancelIndex + 1], out cancelAfter);
 
-				var result = CEPackagingService.Repack(args[1], args[2], args[3], EngineDatabaseService.Database!, progress, System.Threading.CancellationToken.None);
+				var cts = new System.Threading.CancellationTokenSource();
+				var stepCount = 0;
+				var progress = new Progress<CEPackagingProgress>(p =>
+				{
+					Console.WriteLine($"  [{p.Stage}] {p.Completed}/{p.Total}  {p.Detail}");
+					stepCount++;
+					if (cancelAfter >= 0 && stepCount >= cancelAfter)
+						cts.Cancel();
+				});
+
+				CERepackResult result;
+				try
+				{
+					result = CEPackagingService.Repack(args[1], args[2], args[3], EngineDatabaseService.Database!, progress, cts.Token);
+				}
+				catch (OperationCanceledException)
+				{
+					Console.WriteLine($"\n=== CANCELLED after {stepCount} progress step(s) ===");
+					return 0;
+				}
 
 				Console.WriteLine($"\n=== RESULT: success={result.Success} ===");
 				if (!result.Success) { Console.WriteLine("error: " + result.Error); return 2; }
