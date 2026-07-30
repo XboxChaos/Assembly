@@ -188,6 +188,13 @@ namespace Assembly.Avalonia.Views
 		private void OnCancelRunClick(object? sender, RoutedEventArgs e) => _runCts?.Cancel();
 
 		private void OnCloseClick(object? sender, RoutedEventArgs e) => Close();
+
+		/// <summary>
+		///     Drives the same preview path <see cref="OnPreviewClick" /> does, for the headless screenshot harness
+		///     (<c>ASM_CE_DIALOG</c> / <c>ASM_CE_PREVIEW</c> in <see cref="MainWindow" />'s <c>CaptureAsync</c>) to show
+		///     a populated preview without simulating a real pointer click.
+		/// </summary>
+		internal Task TriggerPreviewForScreenshotAsync() => RunPreviewAsync();
 	}
 
 	/// <summary>Presentation state for <see cref="CEPackagingDialog" />, updated from its code-behind.</summary>
