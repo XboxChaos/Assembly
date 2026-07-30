@@ -42,8 +42,82 @@ namespace Assembly.Avalonia
 				return RunCEUnpack(args);
 			if (args.Length > 0 && args[0] == "--ce-repack")
 				return RunCERepack(args);
+			if (args.Length > 0 && args[0] == "--ce-mutate-tag-file")
+				return RunCEMutateTagFile(args);
 
 			return RunProbe(args);
+		}
+
+		/// <summary>
+		///     Mutates one integer field in a loose <c>.ubulk</c> tag file on disk (the kind <c>--ce-unpack</c> writes)
+		///     and saves it back through <see cref="Blamite.Blam.FifthGen.Structures.FifthGenTagWriter" />, so a real
+		///     edit can be fed into <c>--ce-repack</c> without a GUI. The first field anywhere in the tag (searched
+		///     depth-first) whose name matches is changed; this is a test tool, not a general editor, so it does not
+		///     try to disambiguate same-named fields the way a real UI's field path would.
+		///     Usage: AssemblyAvalonia --ce-mutate-tag-file &lt;path-to-.ubulk&gt; &lt;field-name&gt; &lt;new-int-value&gt;
+		/// </summary>
+		private static int RunCEMutateTagFile(string[] args)
+		{
+			if (args.Length < 4)
+			{
+				Console.WriteLine("Usage: --ce-mutate-tag-file <path-to-.ubulk> <field-name> <new-int-value>");
+				return 1;
+			}
+
+			string path = args[1], fieldName = args[2];
+			long newValue = long.Parse(args[3], CultureInfo.InvariantCulture);
+
+			byte[] original = System.IO.File.ReadAllBytes(path);
+			var tagFile = new Blamite.Blam.FifthGen.FifthGenTagFile(original);
+
+			var found = FindIntegerField(tagFile.Data, fieldName);
+			if (found == null)
+			{
+				Console.WriteLine($"No integer field named \"{fieldName}\" found anywhere in this tag.");
+				return 2;
+			}
+
+			Console.WriteLine($"before: {found}");
+			found.SetValue(newValue, Blamite.IO.Endian.LittleEndian);
+			Console.WriteLine($"after:  {found}");
+
+			byte[] rewritten = Blamite.Blam.FifthGen.Structures.FifthGenTagWriter.Write(tagFile);
+			System.IO.File.WriteAllBytes(path, rewritten);
+			Console.WriteLine($"wrote {rewritten.Length:N0} bytes to {path} (was {original.Length:N0})");
+			return 0;
+		}
+
+		private static Blamite.Blam.FifthGen.Structures.FifthGenIntegerValue FindIntegerField(
+			Blamite.Blam.FifthGen.Structures.FifthGenTagBlock block, string fieldName)
+		{
+			foreach (var element in block.Elements)
+			{
+				var found = FindIntegerField(element, fieldName);
+				if (found != null) return found;
+			}
+			return null;
+		}
+
+		private static Blamite.Blam.FifthGen.Structures.FifthGenIntegerValue FindIntegerField(
+			Blamite.Blam.FifthGen.Structures.FifthGenTagStruct instance, string fieldName)
+		{
+			foreach (var value in instance.Values)
+			{
+				if (value is Blamite.Blam.FifthGen.Structures.FifthGenIntegerValue i &&
+				    string.Equals(i.Name, fieldName, StringComparison.OrdinalIgnoreCase))
+					return i;
+
+				Blamite.Blam.FifthGen.Structures.FifthGenIntegerValue nested = value switch
+				{
+					Blamite.Blam.FifthGen.Structures.FifthGenStructValue sv => FindIntegerField(sv.Value, fieldName),
+					Blamite.Blam.FifthGen.Structures.FifthGenArrayValue av => av.Elements
+						.Select(e => FindIntegerField(e, fieldName)).FirstOrDefault(f => f != null),
+					Blamite.Blam.FifthGen.Structures.FifthGenBlockValue bv when bv.Value != null => FindIntegerField(bv.Value, fieldName),
+					_ => null
+				};
+				if (nested != null) return nested;
+			}
+			return null;
 		}
 
 		/// <summary>
