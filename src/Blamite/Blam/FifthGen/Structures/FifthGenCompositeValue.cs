@@ -1,7 +1,76 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
+using Blamite.IO;
 
 namespace Blamite.Blam.FifthGen.Structures
 {
+	/// <summary>
+	///     Re-encodes a composite field's components back into its inline bytes.
+	/// </summary>
+	/// <remarks>
+	///     Every composite type in this file decodes as a plain run of same-width numbers read one
+	///     after another in the payload's endianness, with nothing between them - see
+	///     <c>FifthGenTagDataReader.ReadVector</c> and its siblings. Writing is therefore the exact
+	///     mirror of reading, and these helpers exist so that the symmetry lives in one place rather
+	///     than being restated across six setters that could then drift from the reader
+	///     independently. A field's inline width is fixed by the schema, so a component count is
+	///     never allowed to change.
+	/// </remarks>
+	internal static class FifthGenCompositeEncoding
+	{
+		public static byte[] Floats(IList<float> components, Endian endianness)
+		{
+			using (var stream = new MemoryStream())
+			{
+				var writer = new EndianWriter(stream, endianness);
+				foreach (float component in components)
+					writer.WriteFloat(component);
+				return stream.ToArray();
+			}
+		}
+
+		public static byte[] Shorts(IList<short> components, Endian endianness)
+		{
+			using (var stream = new MemoryStream())
+			{
+				var writer = new EndianWriter(stream, endianness);
+				foreach (short component in components)
+					writer.WriteInt16(component);
+				return stream.ToArray();
+			}
+		}
+
+		public static byte[] Word(uint value, Endian endianness)
+		{
+			using (var stream = new MemoryStream())
+			{
+				var writer = new EndianWriter(stream, endianness);
+				writer.WriteUInt32(value);
+				return stream.ToArray();
+			}
+		}
+
+		/// <summary>
+		///     Rejects a component count that differs from the one the field already holds.
+		/// </summary>
+		/// <remarks>
+		///     A three-float <c>real point 3d</c> cannot become a four-float one: the width belongs to
+		///     the schema, not to the value. Catching it here names the field and both counts, which
+		///     is a better error than the byte-width mismatch the raw-data replacement would raise a
+		///     moment later.
+		/// </remarks>
+		public static void RequireSameCount(FifthGenTagValue value, int existing, int given)
+		{
+			if (existing != given)
+			{
+				throw new ArgumentException(
+					$"Field '{value.Name}' ({value.TypeName}) has {existing} component(s); {given} were given. " +
+					"A field's component count is fixed by the schema.", nameof(given));
+			}
+		}
+	}
+
 	/// <summary>
 	///     A field whose inline bytes are a run of two, three or four IEEE-754 32-bit floats: a
 	///     point, a vector, a pair or triple of Euler angles, a plane's coefficients, or a
@@ -74,6 +143,21 @@ namespace Blamite.Blam.FifthGen.Structures
 		/// </summary>
 		public IList<float> Components { get; private set; }
 
+		/// <summary>
+		///     Sets the field's components, re-encoding <see cref="FifthGenTagValue.RawData" />.
+		/// </summary>
+		/// <param name="components">The new components, in file order. Must be as many as the field already has.</param>
+		/// <param name="endianness">The payload's endianness.</param>
+		public void SetComponents(IList<float> components, Endian endianness)
+		{
+			if (components == null)
+				throw new ArgumentNullException(nameof(components));
+			FifthGenCompositeEncoding.RequireSameCount(this, Components.Count, components.Count);
+
+			ReplaceRawData(FifthGenCompositeEncoding.Floats(components, endianness));
+			Components = new List<float>(components);
+		}
+
 		public override string ToString()
 		{
 			return $"{TypeName} '{Name}' = ({string.Join(", ", Components)})";
@@ -122,6 +206,24 @@ namespace Blamite.Blam.FifthGen.Structures
 		/// </summary>
 		public float Hi { get; private set; }
 
+		/// <summary>
+		///     Sets the range, re-encoding <see cref="FifthGenTagValue.RawData" />.
+		/// </summary>
+		/// <param name="lo">The new low end.</param>
+		/// <param name="hi">The new high end.</param>
+		/// <param name="endianness">The payload's endianness.</param>
+		/// <remarks>
+		///     An inverted range is written as given. Nothing in the format forbids one, several
+		///     engines have historically used <c>hi &lt; lo</c> to mean "disabled", and silently
+		///     reordering a caller's numbers would be this class inventing a rule it cannot support.
+		/// </remarks>
+		public void SetBounds(float lo, float hi, Endian endianness)
+		{
+			ReplaceRawData(FifthGenCompositeEncoding.Floats(new[] {lo, hi}, endianness));
+			Lo = lo;
+			Hi = hi;
+		}
+
 		public override string ToString()
 		{
 			return $"{TypeName} '{Name}' = {Lo} to {Hi}";
@@ -163,6 +265,19 @@ namespace Blamite.Blam.FifthGen.Structures
 		///     Gets the high end of the range.
 		/// </summary>
 		public short Hi { get; private set; }
+
+		/// <summary>
+		///     Sets the range, re-encoding <see cref="FifthGenTagValue.RawData" />.
+		/// </summary>
+		/// <param name="lo">The new low end.</param>
+		/// <param name="hi">The new high end.</param>
+		/// <param name="endianness">The payload's endianness.</param>
+		public void SetBounds(short lo, short hi, Endian endianness)
+		{
+			ReplaceRawData(FifthGenCompositeEncoding.Shorts(new[] {lo, hi}, endianness));
+			Lo = lo;
+			Hi = hi;
+		}
 
 		public override string ToString()
 		{
@@ -255,6 +370,24 @@ namespace Blamite.Blam.FifthGen.Structures
 			get { return (byte) (Packed & 0xFF); }
 		}
 
+		/// <summary>
+		///     Sets the packed colour word, re-encoding <see cref="FifthGenTagValue.RawData" />.
+		/// </summary>
+		/// <param name="packed">The new colour, packed as <c>0xAARRGGBB</c>.</param>
+		/// <param name="endianness">The payload's endianness.</param>
+		/// <remarks>
+		///     The alpha byte is written even for a type whose name says only <c>rgb</c>. Every one of
+		///     the 490 <c>rgb color</c> fields measured in a real mod's tags carried <c>0xFF</c> there
+		///     rather than zero, so the byte is clearly meaningful to the engine and blanking it
+		///     would be a change nobody asked for. Callers that want the classic behaviour should
+		///     pass the alpha they want; <see cref="A" /> reports what is currently stored.
+		/// </remarks>
+		public void SetPacked(uint packed, Endian endianness)
+		{
+			ReplaceRawData(FifthGenCompositeEncoding.Word(packed, endianness));
+			Packed = packed;
+		}
+
 		public override string ToString()
 		{
 			return HasAlpha
@@ -304,6 +437,26 @@ namespace Blamite.Blam.FifthGen.Structures
 		/// </summary>
 		public bool HasAlpha { get; private set; }
 
+		/// <summary>
+		///     Sets the colour's channels, re-encoding <see cref="FifthGenTagValue.RawData" />.
+		/// </summary>
+		/// <param name="components">The new channels, in file order. Must be as many as the field already has.</param>
+		/// <param name="endianness">The payload's endianness.</param>
+		/// <remarks>
+		///     Values are written exactly as given and are not clamped. Every real-colour field
+		///     measured so far sits in [0,1], but nothing in the format says a channel must, and
+		///     over-range colour is a real technique rather than obviously a mistake.
+		/// </remarks>
+		public void SetComponents(IList<float> components, Endian endianness)
+		{
+			if (components == null)
+				throw new ArgumentNullException(nameof(components));
+			FifthGenCompositeEncoding.RequireSameCount(this, Components.Count, components.Count);
+
+			ReplaceRawData(FifthGenCompositeEncoding.Floats(components, endianness));
+			Components = new List<float>(components);
+		}
+
 		public override string ToString()
 		{
 			return $"{TypeName} '{Name}' = ({string.Join(", ", Components)})";
@@ -343,6 +496,21 @@ namespace Blamite.Blam.FifthGen.Structures
 		///     determined; the file only fixes their count and width.
 		/// </summary>
 		public IList<short> Components { get; private set; }
+
+		/// <summary>
+		///     Sets the rectangle's components, re-encoding <see cref="FifthGenTagValue.RawData" />.
+		/// </summary>
+		/// <param name="components">The new components, in file order. Must be as many as the field already has.</param>
+		/// <param name="endianness">The payload's endianness.</param>
+		public void SetComponents(IList<short> components, Endian endianness)
+		{
+			if (components == null)
+				throw new ArgumentNullException(nameof(components));
+			FifthGenCompositeEncoding.RequireSameCount(this, Components.Count, components.Count);
+
+			ReplaceRawData(FifthGenCompositeEncoding.Shorts(components, endianness));
+			Components = new List<short>(components);
+		}
 
 		public override string ToString()
 		{
