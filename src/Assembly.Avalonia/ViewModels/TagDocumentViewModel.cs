@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using Assembly.Avalonia.Services;
 using Blamite.Blam;
@@ -15,7 +16,8 @@ namespace Assembly.Avalonia.ViewModels
 	public enum EditorKind
 	{
 		None, Integer, Float, Vector2, Vector3, Vector4, RangeFloat, RangeInt16,
-		Enum, Flags, Color, Ascii, Utf16, StringId, Block, ReadOnly
+		Enum, Flags, Color, Ascii, Utf16, StringId, Block, ReadOnly,
+		FifthGenStringId, FifthGenTagReference
 	}
 
 	/// <summary>One selectable option for an enum editor (wraps a (Name, Value) schema choice).</summary>
@@ -135,12 +137,27 @@ namespace Assembly.Avalonia.ViewModels
 		///     element list (see <see cref="TagDocumentViewModel.WalkFifthGenStruct" />), cached on
 		///     the row itself so <see cref="TagDocumentViewModel.ToggleExpand" /> and
 		///     <see cref="TagDocumentViewModel.SetElementIndex" /> can splice just this row's
-		///     subtree back in without re-walking from the document root. Safe to cache indefinitely
-		///     because a Campaign Evolved tag's parsed tree never mutates (the format is read-only
-		///     in this build) - the same field reached at the same tree position always yields the
-		///     same element list. Null for a classic row, or a fifth-generation scalar row.
+		///     subtree back in without re-walking from the document root. Reassigned on every walk
+		///     that reaches this row (see <see cref="TagDocumentViewModel.WalkFifthGenStruct" />), so
+		///     it stays correct even across a save: <see cref="TagDocumentViewModel.Save" />
+		///     reparses the tag's freshly-written bytes into a brand new object graph, and the next
+		///     walk overwrites this with elements from that graph rather than the one saved from.
+		///     Null for a classic row, or a fifth-generation scalar row.
 		/// </summary>
 		public IList<FifthGenTagStruct>? FifthGenElements { get; set; }
+
+		/// <summary>
+		///     For a fifth-generation scalar row: the underlying value object this row's edit state
+		///     reads from and (once edited) writes back to - see
+		///     <see cref="TagDocumentViewModel.ApplyFifthGenEdit" />. Reassigned on every walk that
+		///     reaches this row, exactly like <see cref="FifthGenElements" />; comparing a newly
+		///     reached value against what this already held (before overwriting it) is how
+		///     <see cref="TagDocumentViewModel.SeedFifthGenEditStateIfNeeded" /> tells "still the same
+		///     element, don't clobber an in-flight edit" apart from "a different element - or a
+		///     post-save reparse - so reseed". Null for a classic row, or a fifth-generation
+		///     container (block/array/struct) row, which has no single value of its own.
+		/// </summary>
+		public FifthGenTagValue? FifthGenSource { get; set; }
 
 		/// <summary>
 		///     What this row's field points at, when it is a tag reference (classic
@@ -190,6 +207,8 @@ namespace Assembly.Avalonia.ViewModels
 			MetaFieldKind.Ascii => EditorKind.Ascii,
 			MetaFieldKind.Utf16 => EditorKind.Utf16,
 			MetaFieldKind.StringId or MetaFieldKind.OldStringId => EditorKind.StringId,
+			MetaFieldKind.FifthGenStringId => EditorKind.FifthGenStringId,
+			MetaFieldKind.FifthGenTagReference => EditorKind.FifthGenTagReference,
 			_ => EditorKind.ReadOnly
 		};
 	}
@@ -232,7 +251,15 @@ namespace Assembly.Avalonia.ViewModels
 		// exact same Rows/MetaRowViewModel the classic path does so the table, tabs and properties
 		// sidebar need no changes to render it.
 		private readonly bool _isFifthGen;
-		private readonly FifthGenTagFile? _fifthGenFile;
+
+		/// <summary>
+		///     The parsed fifth-generation tag this document renders and edits. Not <c>readonly</c>:
+		///     <see cref="SaveFifthGen" /> replaces it with a fresh parse of the just-written bytes
+		///     once a save completes, the same way the classic path's <see cref="Rebuild" /> re-reads
+		///     from a stream after writing - see that method's remarks for why re-deriving state from
+		///     what actually landed on disk, rather than trusting the in-memory edit, is the point.
+		/// </summary>
+		private FifthGenTagFile? _fifthGenFile;
 		private readonly Dictionary<(int StructIndex, int FieldIndex), MetaFieldDef> _fifthGenDefCache = new();
 		private readonly Dictionary<int, MetaFieldDef> _fifthGenTrailingDefCache = new();
 		private readonly Dictionary<string, MetaRowViewModel> _fifthGenRowCache = new();
@@ -318,7 +345,10 @@ namespace Assembly.Avalonia.ViewModels
 
 		public void RecomputeDirty()
 		{
-			IsDirty = _rowCache.Values.Any(r => r.IsDirty);
+			// A fifth-generation document never populates _rowCache (see WalkFifthGenStruct) - its
+			// rows live in _fifthGenRowCache instead - so checking the wrong one here would make
+			// IsDirty permanently false for a CE tag no matter how many fields were edited.
+			IsDirty = _isFifthGen ? _fifthGenRowCache.Values.Any(r => r.IsDirty) : _rowCache.Values.Any(r => r.IsDirty);
 		}
 
 		// ================= field search / filter =================
@@ -840,6 +870,8 @@ namespace Assembly.Avalonia.ViewModels
 				try { srow.DisplayValue = FifthGenValueFormatter.Format(value); }
 				catch (Exception ex) { srow.DisplayValue = $"<format error: {ex.GetType().Name}>"; }
 				srow.RefTarget = ResolveFifthGenTagRef(value);
+				if (sdef.IsEditable) SeedFifthGenEditStateIfNeeded(srow, value);
+				else srow.FifthGenSource = value;
 				target.Add(srow);
 			}
 
@@ -937,6 +969,8 @@ namespace Assembly.Avalonia.ViewModels
 					srow.AbsoluteOffset = fieldOffset;
 					srow.DisplayValue = display;
 					srow.RefTarget = ResolveFifthGenTagRef(value);
+					if (sdef.IsEditable) SeedFifthGenEditStateIfNeeded(srow, value);
+					else srow.FifthGenSource = value;
 					target.Add(srow);
 					any = true;
 					_filterMatchAccumulator++;
@@ -1018,22 +1052,158 @@ namespace Assembly.Avalonia.ViewModels
 			return def;
 		}
 
+		// A field whose Blamite value type is an enumeration (an index into a shared option list -
+		// see FifthGenIntegerValue.OptionName), as opposed to a flag word (a bitmask, one option
+		// per bit - see FlagsTypes below). Both share the same FifthGenEnumDefinition/Options shape
+		// at the schema level (GetAuxKind resolves both through the same enum table), so only the
+		// type name says which reading applies; nothing in the payload states it more directly than
+		// that. This is Blamite's own type vocabulary (FifthGenFieldType), not a guess made here.
+		private static readonly HashSet<FifthGenFieldType> EnumTypes = new()
+		{
+			FifthGenFieldType.CharEnum, FifthGenFieldType.ShortEnum, FifthGenFieldType.LongEnum
+		};
+
+		private static readonly HashSet<FifthGenFieldType> FlagsTypes = new()
+		{
+			FifthGenFieldType.ByteFlags, FifthGenFieldType.WordFlags, FifthGenFieldType.LongFlags,
+			FifthGenFieldType.LongBlockFlags
+		};
+
+		/// <summary>
+		///     Builds (and caches) the row schema for one scalar field of a fifth-generation struct.
+		/// </summary>
+		/// <remarks>
+		///     Every field type Blamite's fifth-generation value classes expose a setter for (see
+		///     <c>FifthGenTagValue.cs</c>'s mutation surface: <c>FifthGenIntegerValue.SetValue</c>,
+		///     <c>FifthGenRealValue.SetValue</c>, <c>FifthGenStringValue.SetValue</c>,
+		///     <c>FifthGenStringIDValue.SetValue</c>, <c>FifthGenTagReferenceValue.SetReference</c>)
+		///     is mapped onto the matching classic <see cref="MetaFieldKind" /> - an integer stays an
+		///     integer, whatever generation wrote it - so it inherits that kind's real editor,
+		///     <see cref="MetaFieldDef.IsEditable" />, <see cref="MetaFieldDef.IntegerBits" /> and so
+		///     on for free; only <see cref="MetaFieldDef.KindLabelOverride" /> keeps the payload's own
+		///     declared type name visible. A field whose value type is a composite real (point,
+		///     vector, plane, quaternion, bounds pair, packed or float colour, rectangle - see
+		///     <c>FifthGenCompositeValue.cs</c>), a variable-length data/pageable-resource buffer, or
+		///     an unrecognized type stays <see cref="MetaFieldKind.FifthGenValue" /> and gets a
+		///     specific <see cref="MetaFieldDef.NotEditableReason" />: Blamite decodes all of those
+		///     today but exposes no setter for any of them, so writing one back would mean adding to
+		///     <c>src/Blamite</c>, which is out of scope here - see this pass's own report for the
+		///     precise list.
+		/// </remarks>
 		private MetaFieldDef GetFifthGenScalarDef(int structIndex, int fieldIndex, FifthGenFieldDefinition field, uint offset)
 		{
 			var key = (structIndex, fieldIndex);
 			if (_fifthGenDefCache.TryGetValue(key, out var cached)) return cached;
 
+			string typeLabel = field.TypeName ?? field.Type.ToString();
+			string? tooltip = field.Enum != null ? $"Options: {string.Join(", ", field.Enum.Options)}" : null;
+			int width = Math.Max(0, field.InlineSize);
+
+			MetaFieldKind kind;
+			List<(string Name, long Value)>? choices = null;
+			bool utf8Budget = false;
+			string? notEditableReason = null;
+
+			if (EnumTypes.Contains(field.Type))
+			{
+				kind = MetaFieldKind.Enum;
+				choices = field.Enum?.Options.Select((name, i) => (name, (long)i)).ToList();
+			}
+			else if (FlagsTypes.Contains(field.Type))
+			{
+				kind = MetaFieldKind.Flags;
+				choices = field.Enum?.Options.Select((name, i) => (name, 1L << i)).ToList();
+			}
+			else if (FifthGenFieldTypes.IsInteger(field.Type))
+			{
+				kind = IntegerKindFor(width, FifthGenFieldTypes.IsSignedInteger(field.Type));
+			}
+			else if (FifthGenFieldTypes.IsReal(field.Type))
+			{
+				kind = MetaFieldKind.Float32;
+			}
+			else if (field.Type == FifthGenFieldType.StringId)
+			{
+				kind = MetaFieldKind.FifthGenStringId;
+			}
+			else if (field.Type == FifthGenFieldType.TagReference)
+			{
+				kind = MetaFieldKind.FifthGenTagReference;
+			}
+			else if (field.Type is FifthGenFieldType.String or FifthGenFieldType.LongString)
+			{
+				kind = MetaFieldKind.Ascii;
+				utf8Budget = true;
+			}
+			else
+			{
+				kind = MetaFieldKind.FifthGenValue;
+				notEditableReason = NotEditableReasonFor(field.Type, typeLabel);
+			}
+
 			var def = new MetaFieldDef
 			{
-				Kind = MetaFieldKind.FifthGenValue,
+				Kind = kind,
 				Name = field.Name,
 				Offset = offset,
-				Size = Math.Max(0, field.InlineSize),
-				KindLabelOverride = field.TypeName ?? field.Type.ToString(),
-				Tooltip = field.Enum != null ? $"Options: {string.Join(", ", field.Enum.Options)}" : null
+				Size = width,
+				KindLabelOverride = typeLabel,
+				Tooltip = tooltip,
+				Choices = choices,
+				Utf8Budget = utf8Budget,
+				NotEditableReason = notEditableReason
 			};
 			_fifthGenDefCache[key] = def;
 			return def;
+		}
+
+		private static MetaFieldKind IntegerKindFor(int width, bool signed) => (width, signed) switch
+		{
+			(1, false) => MetaFieldKind.UInt8,
+			(1, true) => MetaFieldKind.Int8,
+			(2, false) => MetaFieldKind.UInt16,
+			(2, true) => MetaFieldKind.Int16,
+			(8, false) => MetaFieldKind.UInt64,
+			(8, true) => MetaFieldKind.Int64,
+			(_, true) => MetaFieldKind.Int32,
+			_ => MetaFieldKind.UInt32
+		};
+
+		/// <summary>
+		///     Names, for a field type Blamite decodes but cannot write back, which value class is
+		///     missing the setter - so the properties sidebar can say precisely why a field is inert
+		///     instead of repeating one blanket "Campaign Evolved is read-only" line for every kind
+		///     of field alike (that line stopped being true once <c>FifthGenTagWriter</c> and the
+		///     scalar mapping above landed, and a false blanket reason is worse than a narrow true
+		///     one - see this pass's brief).
+		/// </summary>
+		private static string NotEditableReasonFor(FifthGenFieldType type, string typeLabel)
+		{
+			if (FifthGenFieldTypes.IsVector(type))
+				return $"'{typeLabel}' decodes as N floats (FifthGenVectorValue), but that class exposes no setter yet - " +
+				       "only FifthGenIntegerValue, FifthGenRealValue, FifthGenStringValue, FifthGenStringIDValue, " +
+				       "FifthGenTagReferenceValue, FifthGenDataValue and FifthGenResourceValue can be written back in this build.";
+			if (FifthGenFieldTypes.IsRealBounds(type))
+				return $"'{typeLabel}' decodes as a (low, high) float pair (FifthGenBoundsValue), which has no setter yet.";
+			if (FifthGenFieldTypes.IsIntegerBounds(type))
+				return $"'{typeLabel}' decodes as a (low, high) short pair (FifthGenIntegerBoundsValue), which has no setter yet.";
+			if (FifthGenFieldTypes.IsPackedColor(type))
+				return $"'{typeLabel}' decodes as a packed byte colour (FifthGenColorValue), which has no setter yet.";
+			if (FifthGenFieldTypes.IsRealColor(type))
+				return $"'{typeLabel}' decodes as a float colour (FifthGenRealColorValue), which has no setter yet.";
+			if (FifthGenFieldTypes.IsRectangle(type))
+				return $"'{typeLabel}' decodes as four shorts (FifthGenRectangleValue), which has no setter yet.";
+			if (type == FifthGenFieldType.Data)
+				return "Blamite's FifthGenDataValue.SetContents can write a new byte buffer, but this build has no " +
+				       "byte-buffer editor UI to drive it.";
+			if (type == FifthGenFieldType.PageableResource)
+				return "Blamite's FifthGenResourceValue.SetContents can write a new byte buffer, but this build has " +
+				       "no editor UI for it, and the section magics a pageable resource is written with are inferred " +
+				       "rather than observed (see FifthGenFieldTypes.IsPageableResourceSection's remarks) - a write " +
+				       "here would be riskier than a plain data buffer even once an editor existed.";
+			return $"'{typeLabel}' has no decoded value in Blamite yet (it comes through as FifthGenOpaqueValue - " +
+			       "either the type name is outside its known vocabulary, or the type is known but nothing " +
+			       "attributes meaning to its bytes) - its bytes are preserved but there is nothing to edit.";
 		}
 
 		private MetaFieldDef GetFifthGenTrailingDef(int structIndex)
@@ -1068,20 +1238,127 @@ namespace Assembly.Avalonia.ViewModels
 			row.NotifyEdited();
 		}
 
+		/// <summary>
+		///     Seeds (or reseeds) a fifth-generation scalar row's edit state from the value object it
+		///     currently resolves to. Analogous to <see cref="SeedEditStateIfNeeded" />, not identical
+		///     to it: a classic row's "same context" test is a file offset, because its value has to
+		///     be re-read from a stream every time; a fifth-generation value is already a parsed
+		///     object living in <see cref="_fifthGenFile" />'s tree, so there is nothing to re-read -
+		///     the object itself either still <em>is</em> the one this row was last seeded from
+		///     (reference equality) or it is not, and that is exactly what changes when
+		///     <see cref="ToggleExpand" />/<see cref="SetElementIndex" /> moves this row to a
+		///     different block element, or <see cref="SaveFifthGen" /> replaces the whole tree with a
+		///     fresh parse of the just-written bytes.
+		/// </summary>
+		private void SeedFifthGenEditStateIfNeeded(MetaRowViewModel row, FifthGenTagValue value)
+		{
+			bool sameContext = ReferenceEquals(row.FifthGenSource, value);
+			row.FifthGenSource = value;
+			if (row.Original != null && sameContext)
+				return; // same underlying value object, and we're not overwriting live in-flight edits
+
+			FieldEditState? state = ReadFifthGenEditState(row.Def, value);
+			if (state == null)
+				return; // defensive: Def.IsEditable said yes but this Kind has no mapping below - should not happen
+
+			row.Original = state;
+			row.Current = state.Clone();
+			row.NotifyEdited();
+		}
+
+		/// <summary>
+		///     Reads a fifth-generation value object's current state into the same
+		///     <see cref="FieldEditState" /> shape <see cref="MetaValueReader.ReadEditState" /> builds
+		///     for a classic field, so every existing typed editor (built against that shape) works
+		///     unchanged regardless of which generation's field it is bound to. Only reached for a
+		///     <see cref="MetaFieldDef.Kind" /> <see cref="GetFifthGenScalarDef" /> actually maps a
+		///     fifth-generation type onto - see its remarks for the full list and why the rest stay
+		///     <see cref="MetaFieldKind.FifthGenValue" /> instead.
+		/// </summary>
+		private static FieldEditState? ReadFifthGenEditState(MetaFieldDef def, FifthGenTagValue value)
+		{
+			switch (def.Kind)
+			{
+				case MetaFieldKind.UInt8 or MetaFieldKind.Int8 or MetaFieldKind.UInt16 or MetaFieldKind.Int16 or
+					MetaFieldKind.UInt32 or MetaFieldKind.Int32 or MetaFieldKind.UInt64 or MetaFieldKind.Int64 or
+					MetaFieldKind.Enum or MetaFieldKind.Flags:
+					// FifthGenIntegerValue.SignedValue is always the field's bit pattern reinterpreted
+					// as a signed 64-bit integer, whatever the field's declared width or signedness
+					// (see ReadInteger in FifthGenTagDataReader) - exactly the representation
+					// FieldEditState.Int and IntegerEditor already agree UInt64 uses, so no width- or
+					// sign-specific handling is needed here the way MetaValueReader.ReadEditState needs
+					// for a classic field it has to read off a stream one width at a time.
+					return value is FifthGenIntegerValue iv ? new FieldEditState { Int = iv.SignedValue } : null;
+
+				case MetaFieldKind.Float32:
+					return value is FifthGenRealValue rv ? new FieldEditState { Floats = new[] { rv.Value } } : null;
+
+				case MetaFieldKind.Ascii:
+					return value is FifthGenStringValue sv ? new FieldEditState { Text = sv.Value } : null;
+
+				case MetaFieldKind.FifthGenStringId:
+					return value is FifthGenStringIDValue sid ? new FieldEditState { Text = sid.Value ?? "" } : null;
+
+				case MetaFieldKind.FifthGenTagReference:
+					// Int carries the group four-CC (small enough to fit losslessly) rather than
+					// adding a field to FieldEditState just for this one kind - see ApplyFifthGenEdit.
+					return value is FifthGenTagReferenceValue tr
+						? new FieldEditState { Int = tr.GroupMagic, Text = tr.Path ?? "" }
+						: null;
+
+				default:
+					return null;
+			}
+		}
+
+		/// <summary>
+		///     Writes one dirty fifth-generation row's <see cref="MetaRowViewModel.Current" /> back
+		///     onto its <see cref="MetaRowViewModel.FifthGenSource" /> value object, through whichever
+		///     of <see cref="FifthGenTagValue" />'s mutators matches - the inverse of
+		///     <see cref="ReadFifthGenEditState" />. This only marks the in-memory value dirty (see
+		///     <see cref="FifthGenTagValue.Dirty" />'s remarks); nothing is written to disk until
+		///     <see cref="SaveFifthGen" /> hands the whole tag off to
+		///     <see cref="FifthGenCacheFile.SaveChanges" />.
+		/// </summary>
+		private static void ApplyFifthGenEdit(MetaRowViewModel row, Endian endianness)
+		{
+			FifthGenTagValue? value = row.FifthGenSource;
+			FieldEditState edit = row.Current!;
+
+			switch (row.Def.Kind)
+			{
+				case MetaFieldKind.UInt8 or MetaFieldKind.Int8 or MetaFieldKind.UInt16 or MetaFieldKind.Int16 or
+					MetaFieldKind.UInt32 or MetaFieldKind.Int32 or MetaFieldKind.UInt64 or MetaFieldKind.Int64 or
+					MetaFieldKind.Enum or MetaFieldKind.Flags:
+					((FifthGenIntegerValue)value!).SetValue(edit.RequireInt(), endianness);
+					break;
+
+				case MetaFieldKind.Float32:
+					((FifthGenRealValue)value!).SetValue(edit.RequireFloats(1)[0], endianness);
+					break;
+
+				case MetaFieldKind.Ascii:
+					((FifthGenStringValue)value!).SetValue(edit.RequireText());
+					break;
+
+				case MetaFieldKind.FifthGenStringId:
+					((FifthGenStringIDValue)value!).SetValue(edit.RequireText());
+					break;
+
+				case MetaFieldKind.FifthGenTagReference:
+					((FifthGenTagReferenceValue)value!).SetReference((int)(edit.Int ?? 0), edit.Text ?? "", endianness);
+					break;
+
+				default:
+					throw new NotSupportedException($"{row.Def.Kind} is not editable yet.");
+			}
+		}
+
 		/// <summary>Writes every dirty, editable row back to the cache file and reloads to confirm the round-trip.</summary>
 		public (bool Ok, string Message) Save()
 		{
-			// No FifthGenValue/TagBlock row for a Campaign Evolved tag is ever seeded with edit
-			// state (see WalkFifthGenStruct), so _rowCache - which this method otherwise reads from
-			// - stays empty for one and this would already fall through to "Nothing to save."
-			// unaided. The explicit guard exists so that stays true on purpose rather than by
-			// accident: FifthGenCacheFile.SaveChanges throws NotSupportedException by design (a
-			// fifth-generation tag is a whole cooked IoStore chunk with no in-place write path this
-			// codebase implements), and a future edit path added to WalkFifthGenStruct without
-			// touching this guard would otherwise silently attempt - and fail - a save through
-			// _session.Streams, which isn't even the right stream for this tag's bytes.
 			if (_isFifthGen)
-				return (false, "Campaign Evolved tags are read-only in this build: FifthGenCacheFile.SaveChanges does not support writing them back.");
+				return SaveFifthGen();
 
 			// Dirty rows outside the currently-expanded block set still live in _rowCache even
 			// though they're not in the visible Rows collection right now.
@@ -1123,9 +1400,75 @@ namespace Assembly.Avalonia.ViewModels
 			}
 		}
 
+		/// <summary>
+		///     The fifth-generation counterpart to the classic branch of <see cref="Save" />: applies
+		///     every dirty, editable row's edit onto its own <see cref="FifthGenTagValue" />, hands
+		///     the whole edited <see cref="FifthGenTagFile" /> to
+		///     <see cref="FifthGenTag.PendingEdit" />, and calls
+		///     <see cref="FifthGenCacheFile.SaveChanges" /> - the contract its own remarks describe:
+		///     serialise with <see cref="FifthGenTagWriter" />, rewrite the owning container, and
+		///     update <see cref="FifthGenTag.RawPayload" /> in place.
+		/// </summary>
+		private (bool Ok, string Message) SaveFifthGen()
+		{
+			if (_fifthGenFile == null)
+				return (false, "No Campaign Evolved tag payload was parsed; nothing to save.");
+			if (Tag.Raw is not FifthGenTag tag)
+				return (false, "internal error: a fifth-generation document's Tag.Raw was not a FifthGenTag.");
+
+			var dirty = _fifthGenRowCache.Values.Where(rr => rr.IsDirty && rr.Def.IsEditable).ToList();
+			if (dirty.Count == 0)
+				return (true, "Nothing to save.");
+
+			try
+			{
+				Endian endianness = _fifthGenFile.Endianness; // per-payload, not assumed - see FifthGenTagFile.Endianness
+				foreach (var row in dirty)
+					ApplyFifthGenEdit(row, endianness);
+
+				tag.PendingEdit = _fifthGenFile;
+
+				// FifthGenCacheFile.SaveChanges(IStream) never actually reads or writes through the
+				// stream it is handed - see its own remarks, and FindBulkDataChunkId/SaveTag, which
+				// locate everything they touch through tag.Container/tag.PackageId instead. An
+				// in-memory throwaway therefore does exactly as much as a real handle on this
+				// session's .utoc path would, without the risk of holding that path open while
+				// IoStoreContainerWriter.ReplaceChunk rewrites the very same file underneath it.
+				using (var dummyStream = new EndianStream(new MemoryStream(), Endian.BigEndian))
+					_session.Cache.SaveChanges(dummyStream);
+
+				if (tag.PendingEdit != null)
+					throw new InvalidOperationException("FifthGenCacheFile.SaveChanges left a pending edit behind; the write did not go through.");
+
+				// tag.RawPayload now holds the freshly-written bytes. Re-parse them into a brand new
+				// tree rather than trusting the in-memory one just serialised, for the same reason
+				// the classic branch above re-reads from its stream after writing: this is what
+				// actually confirms the write round-tripped, and it is also required correctness
+				// here, not just a nicety - FifthGenTagValue.Dirty never resets to false (see its
+				// remarks), so the old tree's rows would show "modified" forever otherwise.
+				// SeedFifthGenEditStateIfNeeded's reference-equality check on FifthGenSource takes
+				// care of reseeding every row from the new tree the moment RebuildFifthGen() below
+				// walks it: none of the new tree's value objects can be reference-equal to the old
+				// tree's, precisely because it is a whole new parse.
+				_fifthGenFile = new FifthGenTagFile(tag.RawPayload);
+				foreach (string w in _fifthGenFile.Warnings)
+					_log?.Warn($"{Tag.Name}.{Tag.Group}: {w}");
+
+				_log?.Info($"saved {dirty.Count} field(s) to \"{Tag.SourceName}\" ({Tag.Name}.{Tag.Group})");
+				RebuildFifthGen();
+				return (true, $"Saved {dirty.Count} field(s).");
+			}
+			catch (Exception ex)
+			{
+				_log?.Error($"save failed for {Tag.Name}.{Tag.Group}: {ex.Message}");
+				return (false, ex.Message);
+			}
+		}
+
 		public void RevertAll()
 		{
-			foreach (var row in _rowCache.Values.Where(rr => rr.IsDirty))
+			var pool = _isFifthGen ? (IEnumerable<MetaRowViewModel>)_fifthGenRowCache.Values : _rowCache.Values;
+			foreach (var row in pool.Where(rr => rr.IsDirty))
 				row.Revert();
 			RecomputeDirty();
 		}
