@@ -191,7 +191,7 @@
                   <TextBlock Grid.Column="0" Text="{Binding Name}" FontSize="11"
                              TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding OffsetLabel}" />
                   <TextBlock Grid.Column="1" Text="{Binding SourceName}" Classes="label" FontSize="9"
-                             IsVisible="{Binding #TagTree.DataContext.HasMultipleSources}"
+                             IsVisible="{Binding $parent[TreeView].DataContext.HasMultipleSources}"
                              Margin="4,0,4,0" VerticalAlignment="Center" />
                   <TextBlock Grid.Column="2" Text="{Binding Group}" Classes="mono" FontSize="10"
                              Foreground="{StaticResource TextBrushSecondary}"
@@ -238,7 +238,11 @@
           <TextBlock Text="No tag open" Classes="h1" HorizontalAlignment="Center" />
           <TextBlock Text="{Binding MessageTitle}" Classes="sectionHeader" HorizontalAlignment="Center"
                      IsVisible="{Binding !HasAnySource}" />
-          <TextBlock Text="{Binding Message}" Classes="label" TextWrapping="Wrap" TextAlignment="Center" />
+          <TextBlock Text="{Binding Message}" Classes="label" TextWrapping="Wrap" TextAlignment="Center"
+                     IsVisible="{Binding !HasAnySource}" />
+          <TextBlock Text="A namespace is mounted - select a tag in the tree to open it."
+                     Classes="label" TextWrapping="Wrap" TextAlignment="Center"
+                     IsVisible="{Binding HasAnySource}" />
         </StackPanel>
 
         <!-- field table -->

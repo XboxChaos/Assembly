@@ -103,8 +103,17 @@ namespace Assembly.Avalonia.Views
 		private async void OnMenuOpenZip(object? sender, EventArgs e) => await OpenZipViaPickerAsync();
 		private async void OnOpenZipClick(object? sender, RoutedEventArgs e) => await OpenZipViaPickerAsync();
 
-		private void OnMenuSave(object? sender, EventArgs e) => Vm?.SaveActive();
-		private void OnSaveClick(object? sender, RoutedEventArgs e) => Vm?.SaveActive();
+		private void OnMenuSave(object? sender, EventArgs e) => SaveAndRefresh();
+		private void OnSaveClick(object? sender, RoutedEventArgs e) => SaveAndRefresh();
+
+		private void SaveAndRefresh()
+		{
+			Vm?.SaveActive();
+			// Save() reseeds every row's edit state from the freshly-written disk bytes, which
+			// clears dirty - but the sidebar was built for the pre-save row instance's state, so
+			// rebuild it to show "unchanged" instead of a stale "* modified".
+			BuildEditor(Vm?.ActiveDocument?.SelectedRow);
+		}
 
 		private void OnMenuCloseAll(object? sender, EventArgs e) => Vm?.CloseAll();
 
@@ -235,6 +244,7 @@ namespace Assembly.Avalonia.Views
 		{
 			if (_editorHost == null) return;
 			_editorHost.Children.Clear();
+			_refreshDirtyFooter = null;
 
 			var doc = Vm?.ActiveDocument;
 			if (row == null || doc == null)
@@ -288,15 +298,27 @@ namespace Assembly.Avalonia.Views
 			return panel;
 		}
 
+		// Set by BuildFooter each time the editor panel is (re)built for a row; Commit() calls
+		// this instead of rebuilding the whole panel on every keystroke, so typing doesn't tear
+		// down and recreate the very TextBox the user is typing into (which both steals focus
+		// and, transitively through re-entrant control attach/detach, is a real hang risk).
+		private Action? _refreshDirtyFooter;
+
 		private Control BuildFooter(MetaRowViewModel row, TagDocumentViewModel doc)
 		{
 			var bar = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 6, Margin = new Thickness(0, 8, 0, 0) };
 			var dirtyLabel = new TextBlock { Classes = { "label" }, VerticalAlignment = VerticalAlignment.Center, FontSize = 10.5 };
-			void RefreshDirty() => dirtyLabel.Text = row.IsDirty ? "* modified (not saved)" : "unchanged";
-			RefreshDirty();
-
 			var revert = new Button { Content = "Revert", IsEnabled = row.IsDirty };
-			revert.Click += (_, _) => { row.Revert(); doc.RecomputeDirty(); RefreshDirty(); revert.IsEnabled = row.IsDirty; };
+
+			void RefreshDirty()
+			{
+				dirtyLabel.Text = row.IsDirty ? "* modified (not saved)" : "unchanged";
+				revert.IsEnabled = row.IsDirty;
+			}
+			RefreshDirty();
+			_refreshDirtyFooter = RefreshDirty;
+
+			revert.Click += (_, _) => { row.Revert(); doc.RecomputeDirty(); RefreshDirty(); };
 
 			bar.Children.Add(revert);
 			bar.Children.Add(dirtyLabel);
@@ -307,7 +329,7 @@ namespace Assembly.Avalonia.Views
 		{
 			row.NotifyEdited();
 			doc.RecomputeDirty();
-			BuildEditor(row); // refresh footer's dirty label / revert-enabled state
+			_refreshDirtyFooter?.Invoke();
 		}
 
 		private static TextBox NumberBox(string initial) => new()
@@ -590,7 +612,9 @@ namespace Assembly.Avalonia.Views
 			expand.Click += (_, _) => { doc.ToggleExpand(row); BuildEditor(row); };
 			_editorHost.Children.Add(expand);
 
-			_editorHost.Children.Add(Hint("Element navigation reads the block's live count/pointer from the cache and resolves the pointer through the cache's own meta-area converter - not a canned list."));
+			_editorHost.Children.Add(Hint(doc.IsFifthGen
+				? "This tag is self-describing: its block/array/struct elements were already parsed from the payload's own 'bdat' chunk when the tag was opened, not resolved through a cache pointer."
+				: "Element navigation reads the block's live count/pointer from the cache and resolves the pointer through the cache's own meta-area converter - not a canned list."));
 		}
 
 		private void RefreshBlockNav(MetaRowViewModel row, TagDocumentViewModel doc) => BuildEditor(row);
@@ -605,7 +629,10 @@ namespace Assembly.Avalonia.Views
 					MetaFieldKind.DataReference => "Raw data references (variable-length blobs) aren't editable yet - they need the allocator.",
 					MetaFieldKind.RawData or MetaFieldKind.HexString => "Raw/hex byte blobs aren't editable yet.",
 					MetaFieldKind.Datum => "Datum indices are identifiers, not editable values.",
-					MetaFieldKind.Comment => "This is a plugin comment, not a field.",
+					MetaFieldKind.Comment => "This is an informational note, not a field.",
+					MetaFieldKind.FifthGenValue =>
+						"Campaign Evolved tag fields are read-only in this build: the tag carries its own schema " +
+						"instead of a plugin, and Blamite's FifthGenCacheFile.SaveChanges does not support writing them back.",
 					_ => $"{row.Def.Kind} fields are read-only in this pass."
 				},
 				Classes = { "label" },
@@ -639,8 +666,14 @@ namespace Assembly.Avalonia.Views
 					UpdateLayout();
 					await Task.Delay(200);
 
-					var tag = Vm.FindTag(select);
-					if (tag != null) Vm.SelectedTag = tag;
+					// Comma-separated: opens one tab per name, in order, so a single
+					// screenshot can show several tabs (the "tabs inside the main view"
+					// requirement) rather than just one document.
+					foreach (var needle in select.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+					{
+						var tag = Vm.FindTag(needle);
+						if (tag != null) Vm.SelectedTag = tag;
+					}
 				}
 
 				await Task.Delay(150);
@@ -683,18 +716,28 @@ namespace Assembly.Avalonia.Views
 						{
 							var box = _editorHost.GetVisualDescendants().OfType<TextBox>().FirstOrDefault();
 							if (box != null) box.Text = editValue;
+							// TextChanged is dispatched, not synchronous with the property set above;
+							// give it a turn of the UI loop before checking dirty state / saving.
+							await Task.Delay(50);
 						}
 
 						if (Environment.GetEnvironmentVariable("ASM_SAVE") == "1")
 						{
 							var (ok, message) = Vm.ActiveDocument.Save();
 							Console.WriteLine($"ASM_SAVE result: ok={ok} message=\"{message}\"");
+							BuildEditor(Vm.ActiveDocument.SelectedRow);
 						}
 					}
 				}
 
 				var consoleFlag = Environment.GetEnvironmentVariable("ASM_CONSOLE");
 				if (!string.IsNullOrEmpty(consoleFlag)) Vm.ShowConsole = consoleFlag != "0";
+
+				var tagTreeFlag = Environment.GetEnvironmentVariable("ASM_TAGTREE");
+				if (!string.IsNullOrEmpty(tagTreeFlag)) Vm.ShowTagTree = tagTreeFlag != "0";
+
+				var sidebarFlag = Environment.GetEnvironmentVariable("ASM_SIDEBAR");
+				if (!string.IsNullOrEmpty(sidebarFlag)) Vm.ShowValueSidebar = sidebarFlag != "0";
 			}
 
 			await Task.Delay(400);

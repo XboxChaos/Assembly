@@ -274,7 +274,7 @@ namespace Assembly.Avalonia.ViewModels
 		public void Unmount(MountedSource source)
 		{
 			// Close any open tabs that belonged to this source before dropping its sessions.
-			foreach (var doc in Documents.Where(d => source.Sessions.Contains(GetOwnerSession(d))).ToList())
+			foreach (var doc in Documents.Where(d => GetOwnerSession(d) is { } owner && source.Sessions.Contains(owner)).ToList())
 				CloseDocument(doc);
 
 			_namespace.Unmount(source);
