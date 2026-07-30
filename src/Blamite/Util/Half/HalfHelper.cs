@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 namespace Blamite.Util
 {
 	/// <summary>
-	///     Helper class for Half conversions and some low level operations.
-	///     This class is internally used in the Half class.
+	///     Helper class for HalfFloat conversions and some low level operations.
+	///     This class is internally used in the HalfFloat class.
 	/// </summary>
 	/// <remarks>
 	///     References:
-	///     - Fast Half Float Conversions, Jeroen van der Zijp, link:
+	///     - Fast HalfFloat Float Conversions, Jeroen van der Zijp, link:
 	///     http://www.fox-toolkit.org/ftp/fasthalffloatconversion.pdf
 	/// </remarks>
 	[ComVisible(false)]
@@ -174,46 +174,46 @@ namespace Blamite.Util
 			return shiftTable;
 		}
 
-		public static unsafe float HalfToSingle(Half half)
+		public static unsafe float HalfToSingle(HalfFloat half)
 		{
 			uint result = mantissaTable[offsetTable[half.value >> 10] + (half.value & 0x3ff)] + exponentTable[half.value >> 10];
 			return *((float*) &result);
 		}
 
-		public static unsafe Half SingleToHalf(float single)
+		public static unsafe HalfFloat SingleToHalf(float single)
 		{
 			uint value = *((uint*) &single);
 
 			var result = (ushort) (baseTable[(value >> 23) & 0x1ff] + ((value & 0x007fffff) >> shiftTable[value >> 23]));
-			return Half.ToHalf(result);
+			return HalfFloat.ToHalf(result);
 		}
 
-		public static Half Negate(Half half)
+		public static HalfFloat Negate(HalfFloat half)
 		{
-			return Half.ToHalf((ushort) (half.value ^ 0x8000));
+			return HalfFloat.ToHalf((ushort) (half.value ^ 0x8000));
 		}
 
-		public static Half Abs(Half half)
+		public static HalfFloat Abs(HalfFloat half)
 		{
-			return Half.ToHalf((ushort) (half.value & 0x7fff));
+			return HalfFloat.ToHalf((ushort) (half.value & 0x7fff));
 		}
 
-		public static bool IsNaN(Half half)
+		public static bool IsNaN(HalfFloat half)
 		{
 			return ((half.value & 0x7fff) > 0x7c00);
 		}
 
-		public static bool IsInfinity(Half half)
+		public static bool IsInfinity(HalfFloat half)
 		{
 			return ((half.value & 0x7fff) == 0x7c00);
 		}
 
-		public static bool IsPositiveInfinity(Half half)
+		public static bool IsPositiveInfinity(HalfFloat half)
 		{
 			return (half.value == 0x7c00);
 		}
 
-		public static bool IsNegativeInfinity(Half half)
+		public static bool IsNegativeInfinity(HalfFloat half)
 		{
 			return (half.value == 0xfc00);
 		}

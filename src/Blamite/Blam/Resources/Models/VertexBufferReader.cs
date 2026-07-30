@@ -1,10 +1,7 @@
 ﻿using System;
-using Blamite.Serialization;
-
-// Blamite vendors its own half-precision float (net48 has no System.Half). Aliased rather than
-// imported so the two never race: on net10.0 both types are in scope and only this one has ToHalf.
-using Half = Blamite.Util.Half;
 using Blamite.IO;
+using Blamite.Serialization;
+using Blamite.Util;
 
 namespace Blamite.Blam.Resources.Models
 {
@@ -126,15 +123,15 @@ namespace Blamite.Blam.Resources.Models
 					break;
 
 				case VertexElementType.Float16_2:
-					x = Half.ToHalf(reader.ReadUInt16());
-					y = Half.ToHalf(reader.ReadUInt16());
+					x = HalfFloat.ToHalf(reader.ReadUInt16());
+					y = HalfFloat.ToHalf(reader.ReadUInt16());
 					break;
 
 				case VertexElementType.Float16_4:
-					x = Half.ToHalf(reader.ReadUInt16());
-					y = Half.ToHalf(reader.ReadUInt16());
-					z = Half.ToHalf(reader.ReadUInt16());
-					w = Half.ToHalf(reader.ReadUInt16());
+					x = HalfFloat.ToHalf(reader.ReadUInt16());
+					y = HalfFloat.ToHalf(reader.ReadUInt16());
+					z = HalfFloat.ToHalf(reader.ReadUInt16());
+					w = HalfFloat.ToHalf(reader.ReadUInt16());
 					break;
 
 				case VertexElementType.UShort2:
