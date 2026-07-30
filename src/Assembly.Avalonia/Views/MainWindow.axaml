@@ -37,6 +37,12 @@
             <NativeMenuItemSeparator />
             <NativeMenuItem Header="Save" Gesture="Cmd+S" Click="OnMenuSave" />
             <NativeMenuItemSeparator />
+            <!-- Campaign Evolved's tags live in a folder of IoStore containers rather than one
+                 cache file (see ce-packaging's own remarks in CEPackagingService.cs), so getting
+                 them onto disk and back is its own workflow rather than another Open/Save pair. -->
+            <NativeMenuItem Header="Unpack Campaign Evolved Tags..." Click="OnMenuUnpack" />
+            <NativeMenuItem Header="Repack Campaign Evolved Tags..." Click="OnMenuRepack" />
+            <NativeMenuItemSeparator />
             <NativeMenuItem Header="Close All" Click="OnMenuCloseAll" />
           </NativeMenu>
         </NativeMenuItem.Menu>
@@ -116,15 +122,26 @@
     <!-- ================= toolbar ================= -->
     <Border Grid.Row="1" Background="{DynamicResource SidebarBackgroundBrush}"
             BorderBrush="{DynamicResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
-      <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto,Auto,Auto,Auto,Auto,Auto" Margin="8,0">
+      <!--
+        Column order groups by purpose: file operations left, view controls right, spacer between.
+        Two agents independently appended to this toolbar and both numbered from 10, so the
+        indices below were reassigned by hand at merge - if you add a control, renumber rather
+        than appending past the end.
+      -->
+      <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*,Auto,Auto,Auto,Auto,Auto,Auto,Auto" Margin="8,0">
         <Button Grid.Column="0" Content="Open File..." Click="OnOpenFileClick" Margin="2" />
         <Button Grid.Column="1" Content="Open Folder..." Click="OnOpenFolderClick" Margin="2" />
         <Button Grid.Column="2" Content="Open Zip..." Click="OnOpenZipClick" Margin="2" />
         <Border Grid.Column="3" Width="1" Margin="6,6" Background="{DynamicResource SidebarHeaderSeperatorBrush}" />
         <Button Grid.Column="4" Content="Save" Classes="accent" Click="OnSaveClick" Margin="2"
                 IsEnabled="{Binding ActiveDocument.IsDirty, FallbackValue=False, TargetNullValue=False}" />
+        <Border Grid.Column="5" Width="1" Margin="6,6" Background="{DynamicResource SidebarHeaderSeperatorBrush}" />
+        <Button Grid.Column="6" Content="Unpack..." Click="OnUnpackClick" Margin="2"
+                ToolTip.Tip="Extract a Campaign Evolved container set's tags to a folder" />
+        <Button Grid.Column="7" Content="Repack..." Click="OnRepackClick" Margin="2"
+                ToolTip.Tip="Build a Campaign Evolved container set from a folder of tags" />
 
-        <StackPanel Grid.Column="6" Orientation="Horizontal" Spacing="{DynamicResource Space1}" IsVisible="{Binding HasAnySource}"
+        <StackPanel Grid.Column="9" Orientation="Horizontal" Spacing="{DynamicResource Space1}" IsVisible="{Binding HasAnySource}"
                     VerticalAlignment="Center" Margin="0,0,10,0">
           <TextBlock Text="{Binding Sources.Count, StringFormat='{}{0} source(s)'}" Classes="label" VerticalAlignment="Center" />
         </StackPanel>
@@ -140,32 +157,32 @@
           (the View menu's radio items below, or a future command-palette entry - see
           AppSettings.Density's own remarks for the public API a palette command should call).
         -->
-        <ComboBox Grid.Column="7" Name="DensityBox" Width="122" Margin="0,0,6,0"
+        <ComboBox Grid.Column="10" Name="DensityBox" Width="122" Margin="0,0,6,0"
                   Loaded="OnDensityBoxLoaded" SelectionChanged="OnDensityChanged"
                   ToolTip.Tip="Display density - row height, spacing and control size in the field table and tag tree">
           <ComboBoxItem Content="Compact" Tag="Compact" />
           <ComboBoxItem Content="Default" Tag="Default" />
           <ComboBoxItem Content="Comfortable" Tag="Comfortable" />
         </ComboBox>
-        <Border Grid.Column="8" Width="1" Margin="6,6" Background="{DynamicResource SidebarHeaderSeperatorBrush}" />
+        <Border Grid.Column="11" Width="1" Margin="6,6" Background="{DynamicResource SidebarHeaderSeperatorBrush}" />
 
         <!-- Chrome toggles: hand-drawn vector pictograms (Theme/Icons.axaml) replacing the old
              "&#9776;" / "&#9635;" / "&gt;_" Unicode-glyph Content - see the brief's icon
              requirement. Each icon's shape mirrors what it does (a panel filled on the side it
              docks to; a terminal frame with a prompt) rather than being an arbitrary symbol. -->
-        <ToggleButton Grid.Column="9" Classes="chrome" IsChecked="{Binding ShowTagTree}"
+        <ToggleButton Grid.Column="12" Classes="chrome" IsChecked="{Binding ShowTagTree}"
                       ToolTip.Tip="Toggle tag tree (sidebar)" Margin="2">
           <Path Width="15" Height="15" Stretch="Uniform" Data="{StaticResource IconSidebarLeft}"
                 Fill="Transparent" Stroke="{DynamicResource VectorBrush}" StrokeThickness="1.6"
                 StrokeLineCap="Round" StrokeJoin="Round" />
         </ToggleButton>
-        <ToggleButton Grid.Column="10" Classes="chrome" IsChecked="{Binding ShowValueSidebar}"
+        <ToggleButton Grid.Column="13" Classes="chrome" IsChecked="{Binding ShowValueSidebar}"
                       ToolTip.Tip="Toggle properties sidebar" Margin="2">
           <Path Width="15" Height="15" Stretch="Uniform" Data="{StaticResource IconSidebarRight}"
                 Fill="Transparent" Stroke="{DynamicResource VectorBrush}" StrokeThickness="1.6"
                 StrokeLineCap="Round" StrokeJoin="Round" />
         </ToggleButton>
-        <ToggleButton Grid.Column="11" Classes="chrome" IsChecked="{Binding ShowConsole}"
+        <ToggleButton Grid.Column="14" Classes="chrome" IsChecked="{Binding ShowConsole}"
                       ToolTip.Tip="Toggle console" Margin="2">
           <Path Width="15" Height="15" Stretch="Uniform" Data="{StaticResource IconConsole}"
                 Fill="Transparent" Stroke="{DynamicResource VectorBrush}" StrokeThickness="1.6"

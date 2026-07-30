@@ -25,14 +25,6 @@ namespace Assembly.Avalonia
 	///     element spinner) and times it, so the row-list rebuild strategy can be measured from a
 	///     terminal instead of eyeballed in the running app.
 	///     Usage: AssemblyAvalonia --perf-test cache-file
-	///
-	///     Also carries --ce-fields, which lists a Campaign Evolved tag's rows - top-level plus,
-	///     optionally, every field under one expanded top-level block by name - with each row's
-	///     Editor/Kind/DisplayValue/IsDirty, since session.ReadMeta (what --headless's own meta
-	///     listing uses) is a classic plugin-XML path a fifth-generation tag never had any meta
-	///     for in the first place. Meant for finding real field names to point --edit-test at,
-	///     not as a proof of anything itself.
-	///     Usage: AssemblyAvalonia --ce-fields utoc-or-folder tag-name-substring [block-to-expand]
 	/// </summary>
 	internal static class HeadlessProbe
 	{
@@ -44,10 +36,28 @@ namespace Assembly.Avalonia
 				return RunPerfTest(args);
 			if (args.Length > 0 && args[0] == "--ce-fields")
 				return RunCeFields(args);
+			if (args.Length > 0 && args[0] == "--iostore-inspect")
+				return RunIoStoreInspect(args);
+			if (args.Length > 0 && args[0] == "--fifthgen-roundtrip")
+				return RunFifthGenRoundTrip(args);
+			if (args.Length > 0 && args[0] == "--ce-unpack")
+				return RunCEUnpack(args);
+			if (args.Length > 0 && args[0] == "--ce-repack")
+				return RunCERepack(args);
+			if (args.Length > 0 && args[0] == "--ce-mutate-tag-file")
+				return RunCEMutateTagFile(args);
 
 			return RunProbe(args);
 		}
 
+		/// <summary>
+		///     Mutates one integer field in a loose <c>.ubulk</c> tag file on disk (the kind <c>--ce-unpack</c> writes)
+		///     and saves it back through <see cref="Blamite.Blam.FifthGen.Structures.FifthGenTagWriter" />, so a real
+		///     edit can be fed into <c>--ce-repack</c> without a GUI. The first field anywhere in the tag (searched
+		///     depth-first) whose name matches is changed; this is a test tool, not a general editor, so it does not
+		///     try to disambiguate same-named fields the way a real UI's field path would.
+		///     Usage: AssemblyAvalonia --ce-mutate-tag-file &lt;path-to-.ubulk&gt; &lt;field-name&gt; &lt;new-int-value&gt;
+		/// </summary>
 		private static int RunCeFields(string[] args)
 		{
 			if (args.Length < 3)
@@ -94,6 +104,467 @@ namespace Assembly.Avalonia
 		}
 
 		private static string Truncate(string s, int max) => s.Length <= max ? s : s[..max] + "...";
+
+
+		private static int RunCEMutateTagFile(string[] args)
+		{
+			if (args.Length < 4)
+			{
+				Console.WriteLine("Usage: --ce-mutate-tag-file <path-to-.ubulk> <field-name> <new-int-value>");
+				return 1;
+			}
+
+			string path = args[1], fieldName = args[2];
+			long newValue = long.Parse(args[3], CultureInfo.InvariantCulture);
+
+			byte[] original = System.IO.File.ReadAllBytes(path);
+			var tagFile = new Blamite.Blam.FifthGen.FifthGenTagFile(original);
+
+			if (fieldName == "--list")
+			{
+				foreach (var f in tagFile.Layout.Fields.Where(f => !string.IsNullOrEmpty(f.Name)).Take(60))
+					Console.WriteLine($"  {f.TypeName,-14} {f.Name}");
+				return 0;
+			}
+
+			var found = FindIntegerField(tagFile.Data, fieldName);
+			if (found == null)
+			{
+				Console.WriteLine($"No integer field named \"{fieldName}\" found anywhere in this tag.");
+				return 2;
+			}
+
+			Console.WriteLine($"before: {found}");
+			found.SetValue(newValue, Blamite.IO.Endian.LittleEndian);
+			Console.WriteLine($"after:  {found}");
+
+			byte[] rewritten = Blamite.Blam.FifthGen.Structures.FifthGenTagWriter.Write(tagFile);
+			System.IO.File.WriteAllBytes(path, rewritten);
+			Console.WriteLine($"wrote {rewritten.Length:N0} bytes to {path} (was {original.Length:N0})");
+			return 0;
+		}
+
+		private static Blamite.Blam.FifthGen.Structures.FifthGenIntegerValue FindIntegerField(
+			Blamite.Blam.FifthGen.Structures.FifthGenTagBlock block, string fieldName)
+		{
+			foreach (var element in block.Elements)
+			{
+				var found = FindIntegerField(element, fieldName);
+				if (found != null) return found;
+			}
+			return null;
+		}
+
+		private static Blamite.Blam.FifthGen.Structures.FifthGenIntegerValue FindIntegerField(
+			Blamite.Blam.FifthGen.Structures.FifthGenTagStruct instance, string fieldName)
+		{
+			foreach (var value in instance.Values)
+			{
+				if (value is Blamite.Blam.FifthGen.Structures.FifthGenIntegerValue i &&
+				    string.Equals(i.Name, fieldName, StringComparison.OrdinalIgnoreCase))
+					return i;
+
+				Blamite.Blam.FifthGen.Structures.FifthGenIntegerValue nested = value switch
+				{
+					Blamite.Blam.FifthGen.Structures.FifthGenStructValue sv => FindIntegerField(sv.Value, fieldName),
+					Blamite.Blam.FifthGen.Structures.FifthGenArrayValue av => av.Elements
+						.Select(e => FindIntegerField(e, fieldName)).FirstOrDefault(f => f != null),
+					Blamite.Blam.FifthGen.Structures.FifthGenBlockValue bv when bv.Value != null => FindIntegerField(bv.Value, fieldName),
+					_ => null
+				};
+				if (nested != null) return nested;
+			}
+			return null;
+		}
+
+		/// <summary>
+		///     Proves (or disproves) that <see cref="Blamite.Blam.FifthGen.Structures.FifthGenTagWriter" />
+		///     round-trips every real tag byte-for-byte: parse each tag's raw payload, serialise it straight back with
+		///     nothing touched, and compare against the original bytes. Also runs a second, stronger pass that marks
+		///     every field dirty (forcing the writer's slow, re-encoding path instead of its "nothing changed, hand
+		///     back the original bytes" fast path) so a mismatch there is not hidden by the fast path masking a bug in
+		///     the part of the writer that actually re-derives bytes.
+		///     Usage: AssemblyAvalonia --fifthgen-roundtrip &lt;path-to-.utoc&gt;
+		/// </summary>
+		private static int RunFifthGenRoundTrip(string[] args)
+		{
+			if (args.Length < 2)
+			{
+				Console.WriteLine("Usage: --fifthgen-roundtrip <path-to-.utoc>");
+				return 1;
+			}
+
+			EngineDatabaseService.Initialize();
+			if (EngineDatabaseService.Database == null)
+			{
+				Console.WriteLine("ENGINE DATABASE: FAILED\n" + EngineDatabaseService.Error);
+				return 1;
+			}
+
+			CacheSession session;
+			try
+			{
+				session = CacheSession.Open(args[1], EngineDatabaseService.Database!);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("OPEN FAILED: " + ex.Message);
+				return 2;
+			}
+
+			var tags = session.Groups.SelectMany(g => g.Tags).OrderBy(t => t.Name, StringComparer.OrdinalIgnoreCase).ToList();
+			Console.WriteLine($"{tags.Count} tag(s) mounted from {args[1]}\n");
+
+			bool anyFailure = false;
+			foreach (var tag in tags)
+			{
+				var raw = (Blamite.Blam.FifthGen.Structures.FifthGenTag) tag.Raw;
+				byte[] original = raw.RawPayload;
+
+				// ---- pass 1: parse, then write back completely untouched ----
+				var parsed = new Blamite.Blam.FifthGen.FifthGenTagFile(original);
+				Console.WriteLine($"=== {tag.Name}.{tag.Group}  ({original.Length:N0} bytes, " +
+					$"{parsed.Layout.Fields.Count} field(s) / {parsed.Layout.Structs.Count} struct(s)) ===");
+				byte[] clean = Blamite.Blam.FifthGen.Structures.FifthGenTagWriter.Write(parsed);
+				bool cleanOk = ReportComparison("unedited round-trip", original, clean);
+				anyFailure |= !cleanOk;
+
+				// ---- pass 2: force every field dirty, forcing the writer's re-encode path ----
+				var parsed2 = new Blamite.Blam.FifthGen.FifthGenTagFile(original);
+				int touched = TouchEveryField(parsed2.Data);
+				byte[] forced = Blamite.Blam.FifthGen.Structures.FifthGenTagWriter.Write(parsed2);
+				bool forcedOk = ReportComparison($"forced re-encode ({touched} field(s) marked dirty)", original, forced);
+				// Not folded into anyFailure: the writer's own documented limitation (a stringID/tag
+				// reference's on-disk NUL terminator cannot be recovered from the decoded model - see
+				// FifthGenTagWriter's remarks) makes an exact match here a bonus, not a requirement.
+				if (!forcedOk)
+					Console.WriteLine("    (see FifthGenTagWriter's remarks: unterminated vs. NUL-terminated string sections are not distinguishable after decoding, so this pass is expected to diverge at those offsets and nowhere else.)");
+
+				Console.WriteLine();
+			}
+
+			Console.WriteLine(anyFailure
+				? "RESULT: at least one tag's unedited round-trip was NOT byte-exact. See above."
+				: $"RESULT: all {tags.Count} tag(s) round-trip byte-exact when unedited.");
+			return anyFailure ? 3 : 0;
+		}
+
+		/// <summary>Marks every leaf field in a parsed tag dirty by writing its own current value back through itself.</summary>
+		private static int TouchEveryField(Blamite.Blam.FifthGen.Structures.FifthGenTagBlock block)
+		{
+			int count = 0;
+			foreach (var element in block.Elements)
+				count += TouchEveryField(element);
+			return count;
+		}
+
+		private static int TouchEveryField(Blamite.Blam.FifthGen.Structures.FifthGenTagStruct instance)
+		{
+			int count = 0;
+			foreach (var value in instance.Values)
+			{
+				switch (value)
+				{
+					case Blamite.Blam.FifthGen.Structures.FifthGenIntegerValue i:
+						i.SetValue(i.SignedValue, Blamite.IO.Endian.LittleEndian);
+						count++;
+						break;
+					case Blamite.Blam.FifthGen.Structures.FifthGenRealValue r:
+						r.SetValue(r.Value, Blamite.IO.Endian.LittleEndian);
+						count++;
+						break;
+					case Blamite.Blam.FifthGen.Structures.FifthGenStringValue s:
+						s.SetValue(s.Value);
+						count++;
+						break;
+					case Blamite.Blam.FifthGen.Structures.FifthGenStringIDValue sid:
+						sid.SetValue(sid.Value);
+						count++;
+						break;
+					case Blamite.Blam.FifthGen.Structures.FifthGenTagReferenceValue tr:
+						tr.SetReference(tr.GroupMagic, tr.Path, Blamite.IO.Endian.LittleEndian);
+						count++;
+						break;
+					case Blamite.Blam.FifthGen.Structures.FifthGenDataValue d:
+						d.SetContents(d.Contents);
+						count++;
+						break;
+					case Blamite.Blam.FifthGen.Structures.FifthGenResourceValue res:
+						res.SetContents(res.Contents, res.IsAttached);
+						count++;
+						break;
+					case Blamite.Blam.FifthGen.Structures.FifthGenStructValue sv:
+						count += TouchEveryField(sv.Value);
+						break;
+					case Blamite.Blam.FifthGen.Structures.FifthGenArrayValue av:
+						foreach (var element in av.Elements)
+							count += TouchEveryField(element);
+						break;
+					case Blamite.Blam.FifthGen.Structures.FifthGenBlockValue bv:
+						if (bv.Value != null)
+							count += TouchEveryField(bv.Value);
+						break;
+				}
+			}
+			return count;
+		}
+
+		private static bool ReportComparison(string label, byte[] expected, byte[] actual)
+		{
+			if (expected.Length == actual.Length && expected.AsSpan().SequenceEqual(actual))
+			{
+				Console.WriteLine($"  {label}: OK - {expected.Length:N0} bytes, byte-exact.");
+				return true;
+			}
+
+			Console.WriteLine($"  {label}: MISMATCH - expected {expected.Length:N0} bytes, got {actual.Length:N0} bytes.");
+			int limit = Math.Min(expected.Length, actual.Length);
+			int firstDiff = -1;
+			for (var i = 0; i < limit; i++)
+			{
+				if (expected[i] != actual[i]) { firstDiff = i; break; }
+			}
+			if (firstDiff < 0 && expected.Length != actual.Length)
+				firstDiff = limit;
+
+			if (firstDiff >= 0)
+			{
+				int start = Math.Max(0, firstDiff - 8);
+				int endExpected = Math.Min(expected.Length, firstDiff + 24);
+				int endActual = Math.Min(actual.Length, firstDiff + 24);
+				Console.WriteLine($"    first difference at offset 0x{firstDiff:X}:");
+				Console.WriteLine($"      expected: {BitConverter.ToString(expected, start, endExpected - start)}");
+				Console.WriteLine($"      actual:   {BitConverter.ToString(actual, start, endActual - start)}");
+			}
+			return false;
+		}
+
+		/// <summary>
+		///     Runs an unpack against a real container set and reports what was written, so the packaging service can
+		///     be exercised end-to-end without the dialog.
+		///     Usage: AssemblyAvalonia --ce-unpack &lt;source&gt; &lt;output-dir&gt; [--all-chunks]
+		/// </summary>
+		private static int RunCEUnpack(string[] args)
+		{
+			if (args.Length < 3)
+			{
+				Console.WriteLine("Usage: --ce-unpack <source> <output-dir> [--all-chunks]");
+				return 1;
+			}
+
+			EngineDatabaseService.Initialize();
+			if (EngineDatabaseService.Database == null)
+			{
+				Console.WriteLine("ENGINE DATABASE: FAILED\n" + EngineDatabaseService.Error);
+				return 1;
+			}
+
+			bool allChunks = args.Contains("--all-chunks");
+
+			try
+			{
+				var preview = CEPackagingService.PreviewUnpack(args[1], EngineDatabaseService.Database!);
+				Console.WriteLine($"=== PREVIEW: {preview.ContainerCount} container(s), {preview.Tags.Count} tag(s), {preview.TotalTagBytes:N0} byte(s) total ===");
+				foreach (var t in preview.Tags)
+					Console.WriteLine($"  [{t.Group}] {t.Name}  {t.PayloadSize:N0} bytes");
+				foreach (var w in preview.MountWarnings)
+					Console.WriteLine($"  warning: {w}");
+
+				var progress = new Progress<CEPackagingProgress>(p =>
+					Console.WriteLine($"  [{p.Stage}] {p.Completed}/{p.Total}  {p.Detail}"));
+
+				var result = CEPackagingService.Unpack(args[1], args[2], EngineDatabaseService.Database!, allChunks, progress, System.Threading.CancellationToken.None);
+
+				Console.WriteLine($"\n=== RESULT: success={result.Success} ===");
+				if (!result.Success) { Console.WriteLine("error: " + result.Error); return 2; }
+				Console.WriteLine($"output           : {result.OutputDirectory}");
+				Console.WriteLine($"tags written     : {result.TagsWritten}");
+				Console.WriteLine($"tag bytes written: {result.TagBytesWritten:N0}");
+				Console.WriteLine($"chunks written   : {result.ChunksWritten}");
+				Console.WriteLine($"elapsed          : {result.Elapsed.TotalMilliseconds:0} ms");
+				foreach (var w in result.Warnings)
+					Console.WriteLine($"warning: {w}");
+				return 0;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("UNPACK FAILED: " + ex);
+				return 3;
+			}
+		}
+
+		/// <summary>
+		///     Runs a repack against a real container set and reports what was written.
+		///     Usage: AssemblyAvalonia --ce-repack &lt;source&gt; &lt;tags-dir&gt; &lt;output-dir&gt;
+		/// </summary>
+		private static int RunCERepack(string[] args)
+		{
+			if (args.Length < 4)
+			{
+				Console.WriteLine("Usage: --ce-repack <source> <tags-dir> <output-dir>");
+				return 1;
+			}
+
+			EngineDatabaseService.Initialize();
+			if (EngineDatabaseService.Database == null)
+			{
+				Console.WriteLine("ENGINE DATABASE: FAILED\n" + EngineDatabaseService.Error);
+				return 1;
+			}
+
+			try
+			{
+				var preview = CEPackagingService.PreviewRepack(args[1], args[2], EngineDatabaseService.Database!);
+				Console.WriteLine($"=== PREVIEW ===");
+				Console.WriteLine($"source     : {preview.SourceDirectory}");
+				Console.WriteLine($"tags dir   : {preview.TagsDirectory}");
+				Console.WriteLine($"containers : {preview.ContainerFiles.Count}");
+				foreach (var f in preview.TagFiles)
+					Console.WriteLine($"  {f.LogicalName}.{f.Group}: matched={f.MatchedExistingTag} parses={f.ParsesCleanly} identical={f.IdenticalToSource} ({f.FileSize:N0} bytes){(f.ParseProblem != null ? "  -- " + f.ParseProblem : "")}");
+				Console.WriteLine($"matched={preview.MatchedCount} changed={preview.ChangedCount} unmatched={preview.UnmatchedCount} invalid={preview.InvalidCount} untouched-in-source={preview.UntouchedSourceTagCount}");
+				Console.WriteLine($"can proceed: {preview.CanProceed}");
+
+				// --cancel-after-n-steps N cancels once N progress reports have arrived, so
+				// cancellation mid-run can be proven deterministically rather than raced with a
+				// timer - see this probe's remarks on why that matters for a feature that touches
+				// files on disk.
+				int cancelAfter = -1;
+				int cancelIndex = Array.IndexOf(args, "--cancel-after-n-steps");
+				if (cancelIndex >= 0 && cancelIndex + 1 < args.Length)
+					int.TryParse(args[cancelIndex + 1], out cancelAfter);
+
+				var cts = new System.Threading.CancellationTokenSource();
+				var stepCount = 0;
+				var progress = new Progress<CEPackagingProgress>(p =>
+				{
+					Console.WriteLine($"  [{p.Stage}] {p.Completed}/{p.Total}  {p.Detail}");
+					stepCount++;
+					if (cancelAfter >= 0 && stepCount >= cancelAfter)
+						cts.Cancel();
+				});
+
+				CERepackResult result;
+				try
+				{
+					result = CEPackagingService.Repack(args[1], args[2], args[3], EngineDatabaseService.Database!, progress, cts.Token);
+				}
+				catch (OperationCanceledException)
+				{
+					Console.WriteLine($"\n=== CANCELLED after {stepCount} progress step(s) ===");
+					return 0;
+				}
+
+				Console.WriteLine($"\n=== RESULT: success={result.Success} ===");
+				if (!result.Success) { Console.WriteLine("error: " + result.Error); return 2; }
+				Console.WriteLine($"output          : {result.OutputDirectory}");
+				Console.WriteLine($"files copied    : {result.FilesCopied}");
+				Console.WriteLine($"tags changed    : {result.TagsChanged}");
+				Console.WriteLine($"tags unchanged  : {result.TagsUnchanged}");
+				Console.WriteLine($"byte-identical  : {result.ByteIdenticalToSource}");
+				Console.WriteLine($"changed containers: {string.Join(", ", result.ChangedContainers)}");
+				Console.WriteLine($"elapsed         : {result.Elapsed.TotalMilliseconds:0} ms");
+				foreach (var w in result.Warnings)
+					Console.WriteLine($"warning: {w}");
+				return 0;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("REPACK FAILED: " + ex);
+				return 3;
+			}
+		}
+
+		/// <summary>
+		///     Dumps a mounted IoStore container's table-of-contents header and the physical layout of
+		///     its compressed block table, so the on-disk shape a container writer has to reproduce can
+		///     be read off real bytes instead of guessed at.
+		///     Usage: AssemblyAvalonia --iostore-inspect &lt;path-to-.utoc&gt;
+		/// </summary>
+		private static int RunIoStoreInspect(string[] args)
+		{
+			if (args.Length < 2)
+			{
+				Console.WriteLine("Usage: --iostore-inspect <path-to-.utoc>");
+				return 1;
+			}
+
+			string tocPath = args[1];
+
+			EngineDatabaseService.Initialize();
+			if (EngineDatabaseService.Database == null)
+			{
+				Console.WriteLine("ENGINE DATABASE: FAILED\n" + EngineDatabaseService.Error);
+				return 1;
+			}
+
+			var ce = EngineDatabaseService.Database!.FirstOrDefault(e => e.Name == "Halo: Campaign Evolved");
+			if (ce == null)
+			{
+				Console.WriteLine("No \"Halo: Campaign Evolved\" engine entry found.");
+				return 1;
+			}
+
+			using var container = Blamite.IO.IoStore.IoStoreContainer.Open(tocPath, ce.Layouts, null);
+			var toc = container.TableOfContents;
+
+			Console.WriteLine($"=== {tocPath} ===");
+			Console.WriteLine($"version                  : {toc.Version}");
+			Console.WriteLine($"declared header size     : 0x{toc.DeclaredHeaderSize:X}");
+			Console.WriteLine($"declared block entry sz  : {toc.DeclaredCompressedBlockEntrySize}");
+			Console.WriteLine($"container id             : 0x{toc.ContainerId:X16}");
+			Console.WriteLine($"flags                    : {toc.Flags} (0x{(int)toc.Flags:X})");
+			Console.WriteLine($"compression block size   : 0x{toc.CompressionBlockSize:X} ({toc.CompressionBlockSize})");
+			Console.WriteLine($"partition count/size     : {toc.PartitionCount} / 0x{toc.PartitionSize:X}");
+			Console.WriteLine($"entry count              : {toc.ChunkIds.Count}");
+			Console.WriteLine($"compressed block count   : {toc.CompressedBlocks.Count}");
+			Console.WriteLine($"perfect hash seed count  : {toc.PerfectHashSeedCount}");
+			Console.WriteLine($"chunks w/o perfect hash  : {toc.ChunksWithoutPerfectHashCount}");
+			Console.WriteLine($"raw perfect hash bytes   : {toc.RawPerfectHashData.Length}");
+			Console.WriteLine($"compression method count : {toc.CompressionMethods.Count} (name length {toc.CompressionMethodNameLength})");
+			foreach (var m in toc.CompressionMethods)
+				Console.WriteLine($"    \"{m}\"");
+			Console.WriteLine($"directory index offset   : 0x{toc.DirectoryIndexOffset:X}");
+			Console.WriteLine($"directory index size     : 0x{toc.DirectoryIndexSize:X}");
+			Console.WriteLine($"directory index present  : {toc.DirectoryIndex != null}");
+			if (toc.DirectoryIndex != null)
+			{
+				Console.WriteLine($"    mount point: \"{toc.DirectoryIndex.MountPoint}\"");
+				Console.WriteLine($"    directories: {toc.DirectoryIndex.DirectoryCount}, files: {toc.DirectoryIndex.FileCount}, paths: {toc.DirectoryIndex.Paths.Count}");
+			}
+
+			string ucasPath = System.IO.Path.ChangeExtension(tocPath, ".ucas");
+			long ucasLength = new System.IO.FileInfo(ucasPath).Length;
+			Console.WriteLine($"\n.ucas length             : 0x{ucasLength:X} ({ucasLength})");
+
+			Console.WriteLine("\n=== chunk table ===");
+			for (int i = 0; i < toc.ChunkIds.Count; i++)
+			{
+				var id = toc.ChunkIds[i];
+				var loc = toc.ChunkLocations[i];
+				Console.WriteLine($"  [{i,3}] {id}  logical 0x{loc.Offset:X} + 0x{loc.Length:X}");
+			}
+
+			Console.WriteLine("\n=== compressed block table ===");
+			long expectedOffset = 0;
+			bool anyGap = false, anyPadding = false, anyCompressed = false;
+			for (int i = 0; i < toc.CompressedBlocks.Count; i++)
+			{
+				var b = toc.CompressedBlocks[i];
+				bool gap = b.Offset != expectedOffset;
+				bool padded = b.CompressedSize != b.UncompressedSize && b.CompressionMethod == 0;
+				if (gap) anyGap = true;
+				if (padded) anyPadding = true;
+				if (b.CompressionMethod != 0) anyCompressed = true;
+				Console.WriteLine($"  [{i,3}] {b}{(gap ? "  <-- GAP (expected 0x" + expectedOffset.ToString("X") + ")" : "")}{(padded ? "  <-- PADDED" : "")}");
+				expectedOffset = b.Offset + b.CompressedSize;
+			}
+			Console.WriteLine($"\nlast block's physical end: 0x{expectedOffset:X}   .ucas length: 0x{ucasLength:X}   match: {expectedOffset == ucasLength}");
+			Console.WriteLine($"any gap between consecutive blocks' physical placement : {anyGap}");
+			Console.WriteLine($"any stored block padded beyond its uncompressed size   : {anyPadding}");
+			Console.WriteLine($"any compressed (non-stored) block                       : {anyCompressed}");
+
+			return 0;
+		}
 
 		private static int RunEditTest(string[] args)
 		{

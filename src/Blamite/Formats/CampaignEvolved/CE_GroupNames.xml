@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<tagGroups>
+	<!--
+		Human-readable names for the fifth-generation (Halo: Campaign Evolved) tag groups seen in
+		real data so far. A CE tag payload only ever states its own group as a four-CC (the
+		"group_tag" field of its 64-byte header - see FifthGenTagHeader.GroupTag); there is no
+		StringID table for this engine to resolve a description through the way a classic cache
+		file's tag group table does (FifthGenGroupInfo.Description is always StringID.Null, by
+		design - see that class's remarks), and no embedded English name anywhere in the payload
+		itself. A friendly name can only come from outside the format, the same way it already does
+		for Halo 1 and Halo 2 Vista below.
+
+		This list is deliberately restricted to groups actually observed in the one real Campaign
+		Evolved mod this codebase has been developed and tested against (see
+		src/Blamite.Tests/CampaignEvolvedTests.cs) - proj, weap, vehi, scnr - rather than guessed at
+		from a classic engine's much larger group table. The four-CCs themselves are not a CE
+		invention: every one of them already appears, with this exact spelling and this exact
+		English name, in both H1_GroupNames.xml and H2V_GroupNames.xml, which independently agree
+		with each other across two different games and roughly a decade. That agreement is the
+		basis for reusing the name here rather than guessing - Blam's core tag groups have kept
+		their four-CC and their meaning since the original engine, and nothing about the Unreal
+		Engine 5 rewrite changes what "weap" or "scnr" identifies. Extend this file as more groups
+		are confirmed against real Campaign Evolved data; do not pre-populate it from a classic
+		engine's full list on the assumption that every group carried forward unchanged.
+	-->
+	<group magic="proj" name="projectile" />
+	<group magic="scnr" name="scenario" />
+	<group magic="vehi" name="vehicle" />
+	<group magic="weap" name="weapon" />
+</tagGroups>

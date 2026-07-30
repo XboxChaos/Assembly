@@ -17,6 +17,22 @@ namespace Assembly.Avalonia.Services
 	/// </summary>
 	public sealed class CacheSession : IDisposable
 	{
+		/// <summary>
+		///     Shown in the tag tree's description column for a group neither the cache's own StringID table nor the
+		///     engine's <c>groupNames</c> database can name.
+		/// </summary>
+		/// <remarks>
+		///     Deliberately not "unknown": that word reads as an error, as if the lookup itself had failed, when what
+		///     is actually true is narrower - nobody has told this codebase what to call the group yet. This is the
+		///     honest ceiling for a fifth-generation (Campaign Evolved) group this codebase has not yet catalogued in
+		///     <c>Formats/CampaignEvolved/CE_GroupNames.xml</c> (see that file's own remarks): a CE tag payload states
+		///     only its own four-CC, never an English name, and there is no per-cache StringID table to fall back to
+		///     either (<see cref="Blamite.Blam.FifthGen.FifthGenCacheFile.StringIDs" /> is always <c>null</c>), so a
+		///     name for a group this file has not seen yet can only come from someone adding it once real data
+		///     confirms what it should say.
+		/// </remarks>
+		private const string NoGroupNameLabel = "(unnamed group)";
+
 		private readonly Dictionary<string, IReadOnlyList<MetaFieldDef>> _pluginCache = new();
 
 		private CacheSession(string path, ICacheFile cache, EngineDescription engine, FileStreamManager streams)
@@ -89,8 +105,8 @@ namespace Assembly.Avalonia.Services
 				if (g == null) continue;
 				string magic = CharConstant.ToString(g.Magic);
 				string desc = g.Description.Value == 0
-					? engine.GroupNames?.RetrieveName(magic) ?? "unknown"
-					: cache.StringIDs?.GetString(g.Description) ?? "unknown";
+					? engine.GroupNames?.RetrieveName(magic) ?? NoGroupNameLabel
+					: cache.StringIDs?.GetString(g.Description) ?? NoGroupNameLabel;
 				byMagic[g.Magic] = new TagGroupInfo(magic, desc);
 			}
 

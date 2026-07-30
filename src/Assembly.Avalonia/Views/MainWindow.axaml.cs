@@ -137,6 +137,48 @@ namespace Assembly.Avalonia.Views
 
 		private void OnMenuCloseAll(object? sender, EventArgs e) => Vm?.CloseAll();
 
+		// ---- Campaign Evolved unpack / repack ----
+		// Public and parameterless-at-the-call-site by design (see the remarks on each) so the
+		// command-palette pass can register them as commands without this window needing to know
+		// anything about how a command is invoked.
+		private void OnMenuUnpack(object? sender, EventArgs e) => ShowCEUnpackDialog();
+		private void OnUnpackClick(object? sender, RoutedEventArgs e) => ShowCEUnpackDialog();
+		private void OnMenuRepack(object? sender, EventArgs e) => ShowCERepackDialog();
+		private void OnRepackClick(object? sender, RoutedEventArgs e) => ShowCERepackDialog();
+
+		/// <summary>
+		///     Opens the Campaign Evolved unpack dialog (<see cref="CEPackagingDialog" />, <see cref="CEPackagingMode.Unpack" />).
+		/// </summary>
+		/// <remarks>
+		///     Does not require a Campaign Evolved source to already be mounted in the tag tree - the dialog has its
+		///     own folder picker - but pre-fills it with the mount directory of the first fifth-generation source
+		///     already open, if there is one, as a convenience.
+		/// </remarks>
+		public void ShowCEUnpackDialog() => ShowCEPackagingDialog(CEPackagingMode.Unpack);
+
+		/// <summary>Opens the Campaign Evolved repack dialog (<see cref="CEPackagingDialog" />, <see cref="CEPackagingMode.Repack" />).</summary>
+		public void ShowCERepackDialog() => ShowCEPackagingDialog(CEPackagingMode.Repack);
+
+		private void ShowCEPackagingDialog(CEPackagingMode mode)
+		{
+			var db = EngineDatabaseService.Database;
+			if (db == null)
+			{
+				Vm?.Log.Error("Cannot open the Campaign Evolved packaging dialog: the engine database failed to load.");
+				return;
+			}
+
+			string? initialSource = Vm?.Sources
+				.SelectMany(s => s.Sessions)
+				.FirstOrDefault(s => s.Cache is Blamite.Blam.FifthGen.FifthGenCacheFile)
+				?.Cache is Blamite.Blam.FifthGen.FifthGenCacheFile fifthGen
+				? fifthGen.MountDirectory
+				: null;
+
+			var dialog = new CEPackagingDialog(mode, db, initialSource);
+			dialog.ShowDialog(this);
+		}
+
 		private void OnMenuFocusSearch(object? sender, EventArgs e)
 			=> this.FindControl<TextBox>("SearchBox")?.Focus();
 
@@ -627,6 +669,19 @@ namespace Assembly.Avalonia.Views
 				if (!string.IsNullOrEmpty(sidebarFlag)) Vm.ShowValueSidebar = sidebarFlag != "0";
 			}
 
+			// ASM_CE_DIALOG=unpack|repack screenshots CEPackagingDialog instead of this window - a
+			// dialog is a separate native top-level, so it needs its own RenderTargetBitmap.Render
+			// call rather than being reachable through this window's own visual tree. ASM_CE_TAGS /
+			// ASM_CE_OUTPUT prefill the repack-only / shared fields; ASM_CE_PREVIEW=1 runs the same
+			// preview OnPreviewClick would, so the screenshot shows real preview output rather than
+			// an empty form.
+			var ceDialogMode = Environment.GetEnvironmentVariable("ASM_CE_DIALOG");
+			if (!string.IsNullOrEmpty(ceDialogMode))
+			{
+				await CaptureCEPackagingDialogAsync(ceDialogMode, path);
+				return;
+			}
+
 			await Task.Delay(400);
 			try
 			{
@@ -642,6 +697,58 @@ namespace Assembly.Avalonia.Views
 				Console.WriteLine("render failed: " + ex);
 			}
 
+			Close();
+		}
+
+		private async Task CaptureCEPackagingDialogAsync(string modeArg, string path)
+		{
+			var db = EngineDatabaseService.Database;
+			if (db == null)
+			{
+				Console.WriteLine("ASM_CE_DIALOG: engine database failed to load, cannot open the dialog.");
+				Close();
+				return;
+			}
+
+			var mode = string.Equals(modeArg, "repack", StringComparison.OrdinalIgnoreCase) ? CEPackagingMode.Repack : CEPackagingMode.Unpack;
+			var initialSource = Environment.GetEnvironmentVariable("ASM_FOLDER") ?? Environment.GetEnvironmentVariable("ASM_CE_SOURCE");
+
+			var dialog = new CEPackagingDialog(mode, db, initialSource);
+			dialog.Show(this);
+			await Task.Delay(200);
+
+			var tagsDir = Environment.GetEnvironmentVariable("ASM_CE_TAGS");
+			if (!string.IsNullOrEmpty(tagsDir)) dialog.Vm.TagsDirectory = tagsDir;
+			var outputDir = Environment.GetEnvironmentVariable("ASM_CE_OUTPUT");
+			if (!string.IsNullOrEmpty(outputDir)) dialog.Vm.OutputDirectory = outputDir;
+
+			if (Environment.GetEnvironmentVariable("ASM_CE_PREVIEW") == "1")
+			{
+				await dialog.TriggerPreviewForScreenshotAsync();
+				await Task.Delay(200);
+			}
+
+			if (Environment.GetEnvironmentVariable("ASM_CE_RUN") == "1")
+			{
+				await dialog.TriggerRunForScreenshotAsync();
+				await Task.Delay(200);
+			}
+
+			try
+			{
+				var px = new PixelSize((int)dialog.Bounds.Width, (int)dialog.Bounds.Height);
+				using var rtb = new global::Avalonia.Media.Imaging.RenderTargetBitmap(px, new Vector(96, 96));
+				dialog.UpdateLayout();
+				rtb.Render(dialog);
+				rtb.Save(path);
+				Console.WriteLine($"wrote {path} ({px.Width}x{px.Height}) [CEPackagingDialog, mode={mode}]");
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("render failed: " + ex);
+			}
+
+			dialog.Close();
 			Close();
 		}
 	}
