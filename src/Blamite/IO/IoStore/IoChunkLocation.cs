@@ -76,6 +76,26 @@ namespace Blamite.IO.IoStore
 		}
 
 		/// <summary>
+		///     Writes this offset/length pair to a stream.
+		/// </summary>
+		/// <param name="writer">The stream to write to, positioned at the start of the pair.</param>
+		/// <exception cref="IoStoreException">Thrown if <see cref="Offset" /> or <see cref="Length" /> does not fit in 40 bits.</exception>
+		public void Write(IWriter writer)
+		{
+			Endian originalEndianness = writer.Endianness;
+			try
+			{
+				writer.Endianness = Endian.BigEndian;
+				WriteUInt40(writer, Offset);
+				WriteUInt40(writer, Length);
+			}
+			finally
+			{
+				writer.Endianness = originalEndianness;
+			}
+		}
+
+		/// <summary>
 		///     Reads a 40-bit big-endian integer.
 		/// </summary>
 		/// <param name="reader">The stream to read from, already set to big-endian.</param>
@@ -88,6 +108,22 @@ namespace Blamite.IO.IoStore
 			long high = reader.ReadByte();
 			uint low = reader.ReadUInt32();
 			return (high << 32) | low;
+		}
+
+		/// <summary>
+		///     Writes a 40-bit big-endian integer, the counterpart of <see cref="ReadUInt40" />.
+		/// </summary>
+		/// <param name="writer">The stream to write to, already set to big-endian.</param>
+		/// <param name="value">The value to write. Must fit in 40 bits.</param>
+		private static void WriteUInt40(IWriter writer, long value)
+		{
+			if (value < 0 || value > 0xFFFFFFFFFFL)
+			{
+				throw new IoStoreException(string.Format(
+					"0x{0:X} does not fit in the 40 bits an IoChunkLocation field has to hold it in.", value));
+			}
+			writer.WriteByte((byte) (value >> 32));
+			writer.WriteUInt32((uint) value);
 		}
 	}
 }

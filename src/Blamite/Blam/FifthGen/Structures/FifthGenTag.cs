@@ -57,7 +57,12 @@ namespace Blamite.Blam.FifthGen.Structures
 		///     <see cref="FifthGen.FifthGenTagTable" />); everything past it - the <c>blay</c>/<c>bdat</c>
 		///     schema and data - is left for a tag body parser to consume.
 		/// </summary>
-		public byte[] RawPayload { get; private set; }
+		/// <remarks>
+		///     Updated by <see cref="FifthGen.FifthGenCacheFile.SaveChanges" /> once a pending edit has actually been
+		///     written back to the owning container, so that a caller reading this straight back afterward - without
+		///     re-mounting anything - sees the saved bytes rather than the ones this tag was constructed with.
+		/// </remarks>
+		public byte[] RawPayload { get; internal set; }
 
 		/// <summary>
 		///     Gets the mounted container this tag's data was last read from - the one that currently
@@ -65,5 +70,27 @@ namespace Blamite.Blam.FifthGen.Structures
 		///     (see <see cref="FifthGen.FifthGenTagTable" />).
 		/// </summary>
 		public FifthGenMountedContainer Container { get; private set; }
+
+		/// <summary>
+		///     Gets or sets a parsed, possibly-edited view of this tag awaiting a save.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         A fifth-generation tag has no fixed-offset fields to write through the way a classic engine's does -
+		///         see <see cref="FifthGenTagWriter" /> - so there is nothing for a per-field write path to hook into.
+		///         Instead, a caller that has parsed <see cref="RawPayload" /> into a <see cref="FifthGenTagFile" /> and
+		///         edited it through the mutation methods on <see cref="FifthGenTagValue" />,
+		///         <see cref="FifthGenTagStruct" /> and <see cref="FifthGenTagBlock" /> hands that same instance back
+		///         here, and the next <see cref="FifthGen.FifthGenCacheFile.SaveChanges" /> call serialises it and writes
+		///         it into this tag's owning container.
+		///     </para>
+		///     <para>
+		///         <c>null</c> - the default - means there is nothing pending. Set back to <c>null</c> once
+		///         <see cref="FifthGen.FifthGenCacheFile.SaveChanges" /> has written it, both so a repeat call does not
+		///         redundantly rewrite the container and so this property's own value answers "is a save pending"
+		///         honestly.
+		///     </para>
+		/// </remarks>
+		public FifthGenTagFile PendingEdit { get; set; }
 	}
 }

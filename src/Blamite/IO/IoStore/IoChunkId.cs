@@ -105,6 +105,30 @@ namespace Blamite.IO.IoStore
 		}
 
 		/// <summary>
+		///     Writes this chunk ID to a stream, honoring the same mixed endianness <see cref="Read" /> does.
+		/// </summary>
+		/// <param name="writer">The stream to write to, positioned at the start of the chunk ID's 12 bytes.</param>
+		public void Write(IWriter writer)
+		{
+			Endian originalEndianness = writer.Endianness;
+			try
+			{
+				writer.Endianness = Endian.LittleEndian;
+				writer.WriteUInt64(PackageId);
+
+				writer.Endianness = Endian.BigEndian;
+				writer.WriteUInt16(ChunkIndex);
+
+				writer.WriteByte(0);
+				writer.WriteByte(RawType);
+			}
+			finally
+			{
+				writer.Endianness = originalEndianness;
+			}
+		}
+
+		/// <summary>
 		///     Produces the ID of the sibling chunk of a given type in the same package.
 		/// </summary>
 		/// <param name="type">The type of the sibling chunk.</param>

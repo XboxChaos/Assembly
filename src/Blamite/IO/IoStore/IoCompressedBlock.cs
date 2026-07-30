@@ -122,5 +122,53 @@ namespace Blamite.IO.IoStore
 			return string.Format("0x{0:X} + 0x{1:X} -> 0x{2:X} bytes, method {3}", Offset, CompressedSize,
 				UncompressedSize, CompressionMethod);
 		}
+
+		/// <summary>
+		///     Writes this compressed block entry to a stream.
+		/// </summary>
+		/// <param name="writer">The stream to write to, positioned at the start of the entry.</param>
+		/// <exception cref="IoStoreException">Thrown if a field does not fit the packed representation's bit widths.</exception>
+		public void Write(IWriter writer)
+		{
+			if (Offset < 0 || (ulong) Offset > OffsetMask)
+			{
+				throw new IoStoreException(string.Format(
+					"0x{0:X} does not fit in the 40 bits an IoCompressedBlock's physical offset has to hold it in.",
+					Offset));
+			}
+			if (CompressedSize < 0 || (uint) CompressedSize > SizeMask)
+			{
+				throw new IoStoreException(string.Format(
+					"0x{0:X} does not fit in the 24 bits an IoCompressedBlock's compressed size has to hold it in.",
+					CompressedSize));
+			}
+			if (UncompressedSize < 0 || (uint) UncompressedSize > SizeMask)
+			{
+				throw new IoStoreException(string.Format(
+					"0x{0:X} does not fit in the 24 bits an IoCompressedBlock's uncompressed size has to hold it in.",
+					UncompressedSize));
+			}
+			if (CompressionMethod < 0 || CompressionMethod > 0xFF)
+			{
+				throw new IoStoreException(string.Format(
+					"{0} does not fit in the 8 bits an IoCompressedBlock's compression method has to hold it in.",
+					CompressionMethod));
+			}
+
+			ulong packedOffsetAndSize = ((ulong) Offset & OffsetMask) | ((ulong) (uint) CompressedSize << CompressedSizeShift);
+			uint packedSizeAndMethod = ((uint) UncompressedSize & SizeMask) | ((uint) CompressionMethod << MethodShift);
+
+			Endian originalEndianness = writer.Endianness;
+			try
+			{
+				writer.Endianness = Endian.LittleEndian;
+				writer.WriteUInt64(packedOffsetAndSize);
+				writer.WriteUInt32(packedSizeAndMethod);
+			}
+			finally
+			{
+				writer.Endianness = originalEndianness;
+			}
+		}
 	}
 }
