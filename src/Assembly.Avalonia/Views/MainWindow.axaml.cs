@@ -1053,7 +1053,7 @@ namespace Assembly.Avalonia.Views
 				using var rtb = new global::Avalonia.Media.Imaging.RenderTargetBitmap(px, new Vector(96, 96));
 				UpdateLayout();
 				rtb.Render(this);
-				rtb.Save(path);
+				rtb.Save(path, new global::Avalonia.Media.Imaging.PngBitmapEncoderOptions());
 				Console.WriteLine($"wrote {path} ({px.Width}x{px.Height})");
 			}
 			catch (Exception ex)
@@ -1104,7 +1104,7 @@ namespace Assembly.Avalonia.Views
 				using var rtb = new global::Avalonia.Media.Imaging.RenderTargetBitmap(px, new Vector(96, 96));
 				dialog.UpdateLayout();
 				rtb.Render(dialog);
-				rtb.Save(path);
+				rtb.Save(path, new global::Avalonia.Media.Imaging.PngBitmapEncoderOptions());
 				Console.WriteLine($"wrote {path} ({px.Width}x{px.Height}) [CEPackagingDialog, mode={mode}]");
 			}
 			catch (Exception ex)
