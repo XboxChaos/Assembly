@@ -64,7 +64,7 @@ namespace Blamite.Compression
 							using (DeflateStream ds = new DeflateStream(msOutput, CompressionLevel.Fastest, true))
 							{
 								byte[] chunkData = new byte[size];
-								fsInput.Read(chunkData, 0, size);
+								StreamUtil.ReadExactly(fsInput, chunkData, 0, size);
 								ds.Write(chunkData, 0, chunkData.Length);
 							}
 						}

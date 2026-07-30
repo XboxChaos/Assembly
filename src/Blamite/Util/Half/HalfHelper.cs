@@ -1,8 +1,9 @@
 ﻿// http://csharp-half.svn.sourceforge.net/
 
+using System;
 using System.Runtime.InteropServices;
 
-namespace System
+namespace Blamite.Util
 {
 	/// <summary>
 	///     Helper class for Half conversions and some low level operations.

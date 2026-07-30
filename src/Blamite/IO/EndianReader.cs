@@ -53,6 +53,38 @@ namespace Blamite.IO
 		}
 
 		/// <summary>
+		///     Reads exactly <paramref name="count" /> bytes into <paramref name="destination" />, or throws.
+		/// </summary>
+		/// <param name="destination">The array to read into.</param>
+		/// <param name="offset">The index in <paramref name="destination" /> to start writing at.</param>
+		/// <param name="count">The number of bytes required.</param>
+		/// <exception cref="EndOfStreamException">The stream ended before <paramref name="count" /> bytes were available.</exception>
+		/// <remarks>
+		///     <see cref="Stream.Read(byte[],int,int)" /> is allowed to return fewer bytes than asked for without
+		///     having reached the end of the stream, and every read in this class used to discard that count. A short
+		///     read therefore left the untouched tail of the buffer as zeroes and the parse carried on against data
+		///     that was never on disk - the worst failure mode for a format reader, because it yields a plausible
+		///     wrong answer instead of an error. Looping until the request is satisfied, and failing loudly at a
+		///     genuine end of stream, is what makes every other read here mean what it says.
+		/// </remarks>
+		private void ReadExactly(byte[] destination, int offset, int count)
+		{
+			var total = 0;
+			while (total < count)
+			{
+				int read = _stream.Read(destination, offset + total, count - total);
+				if (read <= 0)
+				{
+					throw new EndOfStreamException(
+						string.Format("Expected {0} byte(s) at 0x{1:X} but the stream ended after {2}.",
+							count, _stream.Position - total, total));
+				}
+
+				total += read;
+			}
+		}
+
+		/// <summary>
 		///     Reads a byte from the stream.
 		/// </summary>
 		/// <returns>
@@ -60,7 +92,7 @@ namespace Blamite.IO
 		/// </returns>
 		public byte ReadByte()
 		{
-			_stream.Read(_buffer, 0, 1);
+			ReadExactly(_buffer, 0, 1);
 			return _buffer[0];
 		}
 
@@ -83,7 +115,7 @@ namespace Blamite.IO
 		/// </returns>
 		public ushort ReadUInt16()
 		{
-			_stream.Read(_buffer, 0, 2);
+			ReadExactly(_buffer, 0, 2);
 			if (_bigEndian)
 				return (ushort) ((_buffer[0] << 8) | _buffer[1]);
 			return (ushort) ((_buffer[1] << 8) | _buffer[0]);
@@ -108,7 +140,7 @@ namespace Blamite.IO
 		/// </returns>
 		public uint ReadUInt32()
 		{
-			_stream.Read(_buffer, 0, 4);
+			ReadExactly(_buffer, 0, 4);
 			if (_bigEndian)
 				return (uint) ((_buffer[0] << 24) | (_buffer[1] << 16) | (_buffer[2] << 8) | _buffer[3]);
 			return (uint) ((_buffer[3] << 24) | (_buffer[2] << 16) | (_buffer[1] << 8) | _buffer[0]);
@@ -165,7 +197,7 @@ namespace Blamite.IO
 		/// </returns>
 		public float ReadFloat()
 		{
-			_stream.Read(_buffer, 0, 4);
+			ReadExactly(_buffer, 0, 4);
 			if (BitConverter.IsLittleEndian == _bigEndian)
 			{
 				// Flip the bytes
@@ -359,7 +391,7 @@ namespace Blamite.IO
 		public byte[] ReadBlock(int size)
 		{
 			var result = new byte[size];
-			_stream.Read(result, 0, size);
+			ReadExactly(result, 0, size);
 			return result;
 		}
 

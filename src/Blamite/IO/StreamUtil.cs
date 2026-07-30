@@ -6,6 +6,38 @@ namespace Blamite.IO
 	public sealed class StreamUtil
 	{
 		/// <summary>
+		///     Reads exactly <paramref name="count" /> bytes from a stream, or throws.
+		/// </summary>
+		/// <param name="input">The stream to read from.</param>
+		/// <param name="destination">The array to read into.</param>
+		/// <param name="offset">The index in <paramref name="destination" /> to start writing at.</param>
+		/// <param name="count">The number of bytes required.</param>
+		/// <exception cref="EndOfStreamException">The stream ended before <paramref name="count" /> bytes were available.</exception>
+		/// <remarks>
+		///     <see cref="Stream.Read(byte[],int,int)" /> may legally return fewer bytes than asked for without having
+		///     reached the end of the stream, so a caller that ignores the returned count reads whatever was in the
+		///     buffer already - zeroes, for a fresh array. In a format reader that yields a plausible wrong answer
+		///     instead of an error, which is the hardest kind of bug to notice. Every read of a known length should
+		///     come through here.
+		/// </remarks>
+		public static void ReadExactly(Stream input, byte[] destination, int offset, int count)
+		{
+			var total = 0;
+			while (total < count)
+			{
+				int read = input.Read(destination, offset + total, count - total);
+				if (read <= 0)
+				{
+					throw new EndOfStreamException(
+						string.Format("Expected {0} byte(s) at 0x{1:X} but the stream ended after {2}.",
+							count, input.Position - total, total));
+				}
+
+				total += read;
+			}
+		}
+
+		/// <summary>
 		///     Copies data between two different streams.
 		/// </summary>
 		/// <param name="input">The stream to read from.</param>

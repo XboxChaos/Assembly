@@ -66,7 +66,12 @@ namespace Assembly.Avalonia.Services
 			{
 				matches = CacheFileLoader.FindEngineDescriptions(reader, db);
 			}
-			catch (ArgumentException ex)
+			// EndOfStreamException belongs here alongside ArgumentException. Now that EndianReader
+			// reads exactly rather than tolerating a short read, handing detection a file that is
+			// too small, or simply not a cache - a .pak sitting beside a .utoc, say - fails by
+			// running out of bytes rather than by mismatching a value. Both mean the same thing to
+			// someone who just opened the wrong file, and both deserve the same sentence.
+			catch (Exception ex) when (ex is ArgumentException || ex is EndOfStreamException)
 			{
 				throw new InvalidDataException($"This does not look like a Halo cache file.\n\nBlamite said: {ex.Message}");
 			}

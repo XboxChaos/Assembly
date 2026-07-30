@@ -4,12 +4,28 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+#if !NETFRAMEWORK
+using System.Runtime.Versioning;
+#endif
 
 namespace Blamite.RTE.Console.Native
 {
 	/// <summary>
 	/// Container for data about a screenshot taken from a console.
 	/// </summary>
+	/// <remarks>
+	/// Windows-only, and declared so rather than suppressed. Turning the raw framebuffer this
+	/// carries into an image goes through System.Drawing's GDI+ types, which exist in the .NET 10
+	/// reference assemblies on every platform but throw at runtime anywhere except Windows.
+	/// Annotating the type states that precisely: it silences the analyser exactly where the
+	/// constraint is real and - unlike a project-wide NoWarn - keeps warning anyone who later calls
+	/// this from code meant to run cross-platform. Reaching it needs an Xbox 360 development kit
+	/// over XBDM in any case, so nothing in the macOS/Linux front-end can arrive here.
+	/// </remarks>
+#if !NETFRAMEWORK
+	// The attribute itself only exists outside .NET Framework; the constraint it states is true on both.
+	[SupportedOSPlatform("windows")]
+#endif
 	public class Screenshot
 	{
 		public int Pitch { get; set; }

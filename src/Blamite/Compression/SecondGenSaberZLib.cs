@@ -58,7 +58,7 @@ namespace Blamite.Compression
 
 						//header is uncompressed
 						byte[] header = new byte[headerSize];
-						fsInput.Read(header, 0, headerSize);
+						StreamUtil.ReadExactly(fsInput, header, 0, headerSize);
 						msOutput.Write(header, 0, headerSize);
 
 						int datalength = (int)fsInput.Length - headerSize;
@@ -79,7 +79,7 @@ namespace Blamite.Compression
 							using (DeflateStream ds = new DeflateStream(msOutput, CompressionMode.Compress, true))
 							{
 								byte[] chunkData = new byte[size];
-								fsInput.Read(chunkData, 0, size);
+								StreamUtil.ReadExactly(fsInput, chunkData, 0, size);
 								ds.Write(chunkData, 0, chunkData.Length);
 							}
 

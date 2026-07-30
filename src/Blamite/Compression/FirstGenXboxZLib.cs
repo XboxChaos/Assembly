@@ -46,7 +46,7 @@ namespace Blamite.Compression
 						byte[] chunkData = new byte[realsize];
 
 						fsInput.Seek(0x800, SeekOrigin.Begin);
-						fsInput.Read(chunkData, 0, realsize);
+						StreamUtil.ReadExactly(fsInput, chunkData, 0, realsize);
 
 						fsOutput.WriteByte(0x78);
 						fsOutput.WriteByte(0x9C);

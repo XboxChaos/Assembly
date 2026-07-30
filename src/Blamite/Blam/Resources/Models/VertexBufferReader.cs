@@ -1,5 +1,9 @@
 ﻿using System;
 using Blamite.Serialization;
+
+// Blamite vendors its own half-precision float (net48 has no System.Half). Aliased rather than
+// imported so the two never race: on net10.0 both types are in scope and only this one has ToHalf.
+using Half = Blamite.Util.Half;
 using Blamite.IO;
 
 namespace Blamite.Blam.Resources.Models

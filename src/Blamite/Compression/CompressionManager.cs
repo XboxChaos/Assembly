@@ -137,7 +137,7 @@ namespace Blamite.Compression
 			{
 				engineInfo = CacheFileLoader.FindEngineDescription(reader, engineDb);
 			}
-			catch (Exception e) // map had no header, assume its CEA
+			catch (Exception) // map had no header, assume its CEA
 			{
 				using (MemoryStream ms_header_out = new MemoryStream())
 				{

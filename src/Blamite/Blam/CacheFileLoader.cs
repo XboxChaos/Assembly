@@ -120,7 +120,8 @@ namespace Blamite.Blam
 			var endian = DetermineCacheFileEndianness(headerMagic);
 			var endianMod = DetermineModuleFileEndianness(headerMagic);
 			int fileVersion;
-			bool trial = false;
+			// (a "trial" flag was declared here and never read; the trial path below is taken by seeking
+			// to 0x2C0 instead, so the flag tracked nothing)
 
 			List<EngineDescription> matches = new List<EngineDescription>();
 

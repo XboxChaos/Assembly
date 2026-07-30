@@ -1,9 +1,10 @@
 ﻿// http://csharp-half.svn.sourceforge.net/
 
+using System;
 using System.Diagnostics;
 using System.Globalization;
 
-namespace System
+namespace Blamite.Util
 {
 	/// <summary>
 	///     Represents a half-precision floating point number.

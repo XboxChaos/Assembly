@@ -288,6 +288,10 @@ namespace Blamite.RTE.Console
 			return true;
 		}
 
+		// Builds a Screenshot, which is Windows-only for the GDI+ reasons its own remarks give.
+#if !NETFRAMEWORK
+		[System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
 		protected Screenshot GetScreenshotInternal()
 		{
 			if (!TrySendCommand("screenshot"))

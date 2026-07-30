@@ -115,9 +115,14 @@ namespace Blamite.Tests
 			{
 				matches = FindEngines(pak!);
 			}
-			catch (ArgumentException)
+			catch (Exception ex) when (ex is ArgumentException || ex is EndOfStreamException)
 			{
-				return; // Rejected outright, which is a correct outcome.
+				// Both are correct rejections. ArgumentException means a value did not match;
+				// EndOfStreamException means the file ran out before detection had what it needed,
+				// which is what a .pak does now that EndianReader refuses to pad a short read with
+				// zeroes rather than reporting it. Returning no matches is equally acceptable - the
+				// only unacceptable outcome is this file being claimed as a container.
+				return;
 			}
 
 			Assert.DoesNotContain(matches, m => m.Name == "Halo: Campaign Evolved");
