@@ -34,8 +34,102 @@ namespace Assembly.Avalonia
 				return RunEditTest(args);
 			if (args.Length > 0 && args[0] == "--perf-test")
 				return RunPerfTest(args);
+			if (args.Length > 0 && args[0] == "--iostore-inspect")
+				return RunIoStoreInspect(args);
 
 			return RunProbe(args);
+		}
+
+		/// <summary>
+		///     Dumps a mounted IoStore container's table-of-contents header and the physical layout of
+		///     its compressed block table, so the on-disk shape a container writer has to reproduce can
+		///     be read off real bytes instead of guessed at.
+		///     Usage: AssemblyAvalonia --iostore-inspect &lt;path-to-.utoc&gt;
+		/// </summary>
+		private static int RunIoStoreInspect(string[] args)
+		{
+			if (args.Length < 2)
+			{
+				Console.WriteLine("Usage: --iostore-inspect <path-to-.utoc>");
+				return 1;
+			}
+
+			string tocPath = args[1];
+
+			EngineDatabaseService.Initialize();
+			if (EngineDatabaseService.Database == null)
+			{
+				Console.WriteLine("ENGINE DATABASE: FAILED\n" + EngineDatabaseService.Error);
+				return 1;
+			}
+
+			var ce = EngineDatabaseService.Database!.FirstOrDefault(e => e.Name == "Halo: Campaign Evolved");
+			if (ce == null)
+			{
+				Console.WriteLine("No \"Halo: Campaign Evolved\" engine entry found.");
+				return 1;
+			}
+
+			using var container = Blamite.IO.IoStore.IoStoreContainer.Open(tocPath, ce.Layouts, null);
+			var toc = container.TableOfContents;
+
+			Console.WriteLine($"=== {tocPath} ===");
+			Console.WriteLine($"version                  : {toc.Version}");
+			Console.WriteLine($"declared header size     : 0x{toc.DeclaredHeaderSize:X}");
+			Console.WriteLine($"declared block entry sz  : {toc.DeclaredCompressedBlockEntrySize}");
+			Console.WriteLine($"container id             : 0x{toc.ContainerId:X16}");
+			Console.WriteLine($"flags                    : {toc.Flags} (0x{(int)toc.Flags:X})");
+			Console.WriteLine($"compression block size   : 0x{toc.CompressionBlockSize:X} ({toc.CompressionBlockSize})");
+			Console.WriteLine($"partition count/size     : {toc.PartitionCount} / 0x{toc.PartitionSize:X}");
+			Console.WriteLine($"entry count              : {toc.ChunkIds.Count}");
+			Console.WriteLine($"compressed block count   : {toc.CompressedBlocks.Count}");
+			Console.WriteLine($"perfect hash seed count  : {toc.PerfectHashSeedCount}");
+			Console.WriteLine($"chunks w/o perfect hash  : {toc.ChunksWithoutPerfectHashCount}");
+			Console.WriteLine($"raw perfect hash bytes   : {toc.RawPerfectHashData.Length}");
+			Console.WriteLine($"compression method count : {toc.CompressionMethods.Count} (name length {toc.CompressionMethodNameLength})");
+			foreach (var m in toc.CompressionMethods)
+				Console.WriteLine($"    \"{m}\"");
+			Console.WriteLine($"directory index offset   : 0x{toc.DirectoryIndexOffset:X}");
+			Console.WriteLine($"directory index size     : 0x{toc.DirectoryIndexSize:X}");
+			Console.WriteLine($"directory index present  : {toc.DirectoryIndex != null}");
+			if (toc.DirectoryIndex != null)
+			{
+				Console.WriteLine($"    mount point: \"{toc.DirectoryIndex.MountPoint}\"");
+				Console.WriteLine($"    directories: {toc.DirectoryIndex.DirectoryCount}, files: {toc.DirectoryIndex.FileCount}, paths: {toc.DirectoryIndex.Paths.Count}");
+			}
+
+			string ucasPath = System.IO.Path.ChangeExtension(tocPath, ".ucas");
+			long ucasLength = new System.IO.FileInfo(ucasPath).Length;
+			Console.WriteLine($"\n.ucas length             : 0x{ucasLength:X} ({ucasLength})");
+
+			Console.WriteLine("\n=== chunk table ===");
+			for (int i = 0; i < toc.ChunkIds.Count; i++)
+			{
+				var id = toc.ChunkIds[i];
+				var loc = toc.ChunkLocations[i];
+				Console.WriteLine($"  [{i,3}] {id}  logical 0x{loc.Offset:X} + 0x{loc.Length:X}");
+			}
+
+			Console.WriteLine("\n=== compressed block table ===");
+			long expectedOffset = 0;
+			bool anyGap = false, anyPadding = false, anyCompressed = false;
+			for (int i = 0; i < toc.CompressedBlocks.Count; i++)
+			{
+				var b = toc.CompressedBlocks[i];
+				bool gap = b.Offset != expectedOffset;
+				bool padded = b.CompressedSize != b.UncompressedSize && b.CompressionMethod == 0;
+				if (gap) anyGap = true;
+				if (padded) anyPadding = true;
+				if (b.CompressionMethod != 0) anyCompressed = true;
+				Console.WriteLine($"  [{i,3}] {b}{(gap ? "  <-- GAP (expected 0x" + expectedOffset.ToString("X") + ")" : "")}{(padded ? "  <-- PADDED" : "")}");
+				expectedOffset = b.Offset + b.CompressedSize;
+			}
+			Console.WriteLine($"\nlast block's physical end: 0x{expectedOffset:X}   .ucas length: 0x{ucasLength:X}   match: {expectedOffset == ucasLength}");
+			Console.WriteLine($"any gap between consecutive blocks' physical placement : {anyGap}");
+			Console.WriteLine($"any stored block padded beyond its uncompressed size   : {anyPadding}");
+			Console.WriteLine($"any compressed (non-stored) block                       : {anyCompressed}");
+
+			return 0;
 		}
 
 		private static int RunEditTest(string[] args)
