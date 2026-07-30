@@ -250,32 +250,32 @@
             </TreeView.Styles>
             <TreeView.DataTemplates>
               <TreeDataTemplate DataType="vm:GroupNode" ItemsSource="{Binding Tags}">
-                <Grid ColumnDefinitions="Auto,*,Auto">
+                <Grid ColumnDefinitions="Auto,*,Auto" Classes="treeGroupRow">
                   <TextBlock Grid.Column="0" Text="{Binding Magic}" Classes="mono"
-                             Foreground="{StaticResource ExtryzeAccentBrushSecondary}" Width="38" FontSize="11" />
-                  <TextBlock Grid.Column="1" Text="{Binding Description}" FontSize="11"
+                             Foreground="{StaticResource ExtryzeAccentBrushSecondary}" Width="38" FontSize="{DynamicResource FontSizeSmall}" />
+                  <TextBlock Grid.Column="1" Text="{Binding Description}" FontSize="{DynamicResource FontSizeSmall}"
                              VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
                   <TextBlock Grid.Column="2" Text="{Binding CountLabel}" Classes="label"
-                             Margin="8,0,4,0" VerticalAlignment="Center" FontSize="10" />
+                             Margin="8,0,4,0" VerticalAlignment="Center" FontSize="{DynamicResource FontSizeMicro}" />
                 </Grid>
               </TreeDataTemplate>
               <TreeDataTemplate DataType="vm:FolderNode" ItemsSource="{Binding Children}">
-                <Grid ColumnDefinitions="*,Auto">
-                  <TextBlock Grid.Column="0" Text="{Binding Name}" FontSize="11"
+                <Grid ColumnDefinitions="*,Auto" Classes="treeGroupRow">
+                  <TextBlock Grid.Column="0" Text="{Binding Name}" FontSize="{DynamicResource FontSizeSmall}"
                              TextTrimming="CharacterEllipsis" />
                   <TextBlock Grid.Column="1" Text="{Binding CountLabel}" Classes="label"
-                             Margin="8,0,4,0" VerticalAlignment="Center" FontSize="10" />
+                             Margin="8,0,4,0" VerticalAlignment="Center" FontSize="{DynamicResource FontSizeMicro}" />
                 </Grid>
               </TreeDataTemplate>
 
               <DataTemplate DataType="vm:TagNode">
                 <Grid ColumnDefinitions="*,Auto,Auto">
-                  <TextBlock Grid.Column="0" Text="{Binding Name}" FontSize="11"
+                  <TextBlock Grid.Column="0" Text="{Binding Name}" FontSize="{DynamicResource FontSizeSmall}"
                              TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding OffsetLabel}" />
                   <TextBlock Grid.Column="1" Text="{Binding SourceName}" Classes="label" FontSize="9"
                              IsVisible="{Binding $parent[TreeView].DataContext.HasMultipleSources}"
                              Margin="4,0,4,0" VerticalAlignment="Center" />
-                  <TextBlock Grid.Column="2" Text="{Binding Group}" Classes="mono" FontSize="10"
+                  <TextBlock Grid.Column="2" Text="{Binding Group}" Classes="mono" FontSize="{DynamicResource FontSizeMicro}"
                              Foreground="{StaticResource TextBrushSecondary}"
                              Margin="4,0,4,0" VerticalAlignment="Center" />
                 </Grid>
@@ -400,8 +400,8 @@
           <Border Grid.Row="0" Padding="14,8" BorderBrush="{StaticResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
             <Grid ColumnDefinitions="*,Auto">
               <StackPanel Grid.Column="0" Spacing="1">
-                <SelectableTextBlock Text="{Binding ActiveDocument.HeaderTitle}" Classes="mono accent" FontSize="13" />
-                <TextBlock Text="{Binding ActiveDocument.SchemaStatus}" Classes="label" FontSize="10" />
+                <SelectableTextBlock Text="{Binding ActiveDocument.HeaderTitle}" Classes="mono accent" FontSize="{DynamicResource FontSizeMedium}" />
+                <TextBlock Text="{Binding ActiveDocument.SchemaStatus}" Classes="label" FontSize="{DynamicResource FontSizeMicro}" />
               </StackPanel>
               <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6">
                 <Button Content="Revert All" Click="OnRevertAllClick" IsEnabled="{Binding ActiveDocument.IsDirty, FallbackValue=False, TargetNullValue=False}" />
@@ -420,7 +420,7 @@
             <TextBox Grid.Column="0" Name="FieldFilterBox" Watermark="Filter fields by name, type or value..."
                       Text="{Binding ActiveDocument.FilterQuery, Mode=TwoWay}"
                       KeyDown="OnFieldFilterKeyDown" />
-            <TextBlock Grid.Column="1" Classes="label" FontSize="10.5" VerticalAlignment="Center" Margin="8,0,4,0"
+            <TextBlock Grid.Column="1" Classes="label" FontSize="{DynamicResource FontSizeMicro}" VerticalAlignment="Center" Margin="8,0,4,0"
                        IsVisible="{Binding ActiveDocument.IsFiltering, FallbackValue=False}"
                        Text="{Binding ActiveDocument.FilterMatchCount, StringFormat='{}{0} match(es)'}" />
           </Grid>
@@ -456,16 +456,16 @@
                       <Path Width="7" Height="7" Stretch="Uniform" Fill="{StaticResource TextBrushSecondary}"
                             Data="{Binding IsExpanded, Converter={StaticResource ExpanderGlyph}}" />
                     </ToggleButton>
-                    <TextBlock Grid.Column="2" Text="{Binding OffsetLabel}" Classes="mono" FontSize="11"
+                    <TextBlock Grid.Column="2" Text="{Binding OffsetLabel}" Classes="mono" FontSize="{DynamicResource FontSizeSmall}"
                                Foreground="{StaticResource TextBrushSecondary}" VerticalAlignment="Center" />
-                    <TextBlock Grid.Column="3" Text="{Binding KindLabel}" Classes="label" FontSize="11" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="3" Text="{Binding KindLabel}" Classes="label" FontSize="{DynamicResource FontSizeSmall}" VerticalAlignment="Center" />
                     <Grid Grid.Column="4" ColumnDefinitions="*,Auto,Auto">
                       <TextBlock Grid.Column="0" Text="{Binding Name}"
                                  Margin="{Binding Depth, Converter={StaticResource DepthIndent}}"
-                                 FontFamily="{StaticResource MetroFontRegular}" FontSize="11.5"
+                                 FontFamily="{StaticResource MetroFontRegular}" FontSize="{DynamicResource FontSizeSmall}"
                                  VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
                                  ToolTip.Tip="{Binding Def.Tooltip}" />
-                      <TextBlock Grid.Column="1" Text="{Binding DisplayValue}" Classes="mono accent" FontSize="11"
+                      <TextBlock Grid.Column="1" Text="{Binding DisplayValue}" Classes="mono accent" FontSize="{DynamicResource FontSizeSmall}"
                                  VerticalAlignment="Center" Margin="10,0,0,0" MaxWidth="380" TextTrimming="CharacterEllipsis" />
                       <!--
                         Tag-reference navigation: a classic TagReference field resolves through the
@@ -490,9 +490,9 @@
                  is what tells the user something is actually happening instead of nothing. -->
             <Border IsVisible="{Binding IsOpeningTag}" Background="#D01e1e20">
               <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
-                <TextBlock Classes="label" FontSize="12" HorizontalAlignment="Center"
+                <TextBlock Classes="label" FontSize="{DynamicResource FontSizeBase}" HorizontalAlignment="Center"
                            Text="{Binding OpeningTagLabel, StringFormat='Opening {0}...'}" />
-                <TextBlock Classes="label dim" FontSize="10.5" HorizontalAlignment="Center"
+                <TextBlock Classes="label dim" FontSize="{DynamicResource FontSizeMicro}" HorizontalAlignment="Center"
                            Text="Parsing runs off the UI thread; the window stays responsive." />
               </StackPanel>
             </Border>
