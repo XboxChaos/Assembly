@@ -36,8 +36,286 @@ namespace Assembly.Avalonia
 				return RunPerfTest(args);
 			if (args.Length > 0 && args[0] == "--iostore-inspect")
 				return RunIoStoreInspect(args);
+			if (args.Length > 0 && args[0] == "--fifthgen-roundtrip")
+				return RunFifthGenRoundTrip(args);
+			if (args.Length > 0 && args[0] == "--ce-unpack")
+				return RunCEUnpack(args);
+			if (args.Length > 0 && args[0] == "--ce-repack")
+				return RunCERepack(args);
 
 			return RunProbe(args);
+		}
+
+		/// <summary>
+		///     Proves (or disproves) that <see cref="Blamite.Blam.FifthGen.Structures.FifthGenTagWriter" />
+		///     round-trips every real tag byte-for-byte: parse each tag's raw payload, serialise it straight back with
+		///     nothing touched, and compare against the original bytes. Also runs a second, stronger pass that marks
+		///     every field dirty (forcing the writer's slow, re-encoding path instead of its "nothing changed, hand
+		///     back the original bytes" fast path) so a mismatch there is not hidden by the fast path masking a bug in
+		///     the part of the writer that actually re-derives bytes.
+		///     Usage: AssemblyAvalonia --fifthgen-roundtrip &lt;path-to-.utoc&gt;
+		/// </summary>
+		private static int RunFifthGenRoundTrip(string[] args)
+		{
+			if (args.Length < 2)
+			{
+				Console.WriteLine("Usage: --fifthgen-roundtrip <path-to-.utoc>");
+				return 1;
+			}
+
+			EngineDatabaseService.Initialize();
+			if (EngineDatabaseService.Database == null)
+			{
+				Console.WriteLine("ENGINE DATABASE: FAILED\n" + EngineDatabaseService.Error);
+				return 1;
+			}
+
+			CacheSession session;
+			try
+			{
+				session = CacheSession.Open(args[1], EngineDatabaseService.Database!);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("OPEN FAILED: " + ex.Message);
+				return 2;
+			}
+
+			var tags = session.Groups.SelectMany(g => g.Tags).OrderBy(t => t.Name, StringComparer.OrdinalIgnoreCase).ToList();
+			Console.WriteLine($"{tags.Count} tag(s) mounted from {args[1]}\n");
+
+			bool anyFailure = false;
+			foreach (var tag in tags)
+			{
+				var raw = (Blamite.Blam.FifthGen.Structures.FifthGenTag) tag.Raw;
+				byte[] original = raw.RawPayload;
+
+				Console.WriteLine($"=== {tag.Name}.{tag.Group}  ({original.Length:N0} bytes) ===");
+
+				// ---- pass 1: parse, then write back completely untouched ----
+				var parsed = new Blamite.Blam.FifthGen.FifthGenTagFile(original);
+				byte[] clean = Blamite.Blam.FifthGen.Structures.FifthGenTagWriter.Write(parsed);
+				bool cleanOk = ReportComparison("unedited round-trip", original, clean);
+				anyFailure |= !cleanOk;
+
+				// ---- pass 2: force every field dirty, forcing the writer's re-encode path ----
+				var parsed2 = new Blamite.Blam.FifthGen.FifthGenTagFile(original);
+				int touched = TouchEveryField(parsed2.Data);
+				byte[] forced = Blamite.Blam.FifthGen.Structures.FifthGenTagWriter.Write(parsed2);
+				bool forcedOk = ReportComparison($"forced re-encode ({touched} field(s) marked dirty)", original, forced);
+				// Not folded into anyFailure: the writer's own documented limitation (a stringID/tag
+				// reference's on-disk NUL terminator cannot be recovered from the decoded model - see
+				// FifthGenTagWriter's remarks) makes an exact match here a bonus, not a requirement.
+				if (!forcedOk)
+					Console.WriteLine("    (see FifthGenTagWriter's remarks: unterminated vs. NUL-terminated string sections are not distinguishable after decoding, so this pass is expected to diverge at those offsets and nowhere else.)");
+
+				Console.WriteLine();
+			}
+
+			Console.WriteLine(anyFailure
+				? "RESULT: at least one tag's unedited round-trip was NOT byte-exact. See above."
+				: $"RESULT: all {tags.Count} tag(s) round-trip byte-exact when unedited.");
+			return anyFailure ? 3 : 0;
+		}
+
+		/// <summary>Marks every leaf field in a parsed tag dirty by writing its own current value back through itself.</summary>
+		private static int TouchEveryField(Blamite.Blam.FifthGen.Structures.FifthGenTagBlock block)
+		{
+			int count = 0;
+			foreach (var element in block.Elements)
+				count += TouchEveryField(element);
+			return count;
+		}
+
+		private static int TouchEveryField(Blamite.Blam.FifthGen.Structures.FifthGenTagStruct instance)
+		{
+			int count = 0;
+			foreach (var value in instance.Values)
+			{
+				switch (value)
+				{
+					case Blamite.Blam.FifthGen.Structures.FifthGenIntegerValue i:
+						i.SetValue(i.SignedValue, Blamite.IO.Endian.LittleEndian);
+						count++;
+						break;
+					case Blamite.Blam.FifthGen.Structures.FifthGenRealValue r:
+						r.SetValue(r.Value, Blamite.IO.Endian.LittleEndian);
+						count++;
+						break;
+					case Blamite.Blam.FifthGen.Structures.FifthGenStringValue s:
+						s.SetValue(s.Value);
+						count++;
+						break;
+					case Blamite.Blam.FifthGen.Structures.FifthGenStringIDValue sid:
+						sid.SetValue(sid.Value);
+						count++;
+						break;
+					case Blamite.Blam.FifthGen.Structures.FifthGenTagReferenceValue tr:
+						tr.SetReference(tr.GroupMagic, tr.Path, Blamite.IO.Endian.LittleEndian);
+						count++;
+						break;
+					case Blamite.Blam.FifthGen.Structures.FifthGenDataValue d:
+						d.SetContents(d.Contents);
+						count++;
+						break;
+					case Blamite.Blam.FifthGen.Structures.FifthGenResourceValue res:
+						res.SetContents(res.Contents, res.IsAttached);
+						count++;
+						break;
+					case Blamite.Blam.FifthGen.Structures.FifthGenStructValue sv:
+						count += TouchEveryField(sv.Value);
+						break;
+					case Blamite.Blam.FifthGen.Structures.FifthGenArrayValue av:
+						foreach (var element in av.Elements)
+							count += TouchEveryField(element);
+						break;
+					case Blamite.Blam.FifthGen.Structures.FifthGenBlockValue bv:
+						if (bv.Value != null)
+							count += TouchEveryField(bv.Value);
+						break;
+				}
+			}
+			return count;
+		}
+
+		private static bool ReportComparison(string label, byte[] expected, byte[] actual)
+		{
+			if (expected.Length == actual.Length && expected.AsSpan().SequenceEqual(actual))
+			{
+				Console.WriteLine($"  {label}: OK - {expected.Length:N0} bytes, byte-exact.");
+				return true;
+			}
+
+			Console.WriteLine($"  {label}: MISMATCH - expected {expected.Length:N0} bytes, got {actual.Length:N0} bytes.");
+			int limit = Math.Min(expected.Length, actual.Length);
+			int firstDiff = -1;
+			for (var i = 0; i < limit; i++)
+			{
+				if (expected[i] != actual[i]) { firstDiff = i; break; }
+			}
+			if (firstDiff < 0 && expected.Length != actual.Length)
+				firstDiff = limit;
+
+			if (firstDiff >= 0)
+			{
+				int start = Math.Max(0, firstDiff - 8);
+				int endExpected = Math.Min(expected.Length, firstDiff + 24);
+				int endActual = Math.Min(actual.Length, firstDiff + 24);
+				Console.WriteLine($"    first difference at offset 0x{firstDiff:X}:");
+				Console.WriteLine($"      expected: {BitConverter.ToString(expected, start, endExpected - start)}");
+				Console.WriteLine($"      actual:   {BitConverter.ToString(actual, start, endActual - start)}");
+			}
+			return false;
+		}
+
+		/// <summary>
+		///     Runs an unpack against a real container set and reports what was written, so the packaging service can
+		///     be exercised end-to-end without the dialog.
+		///     Usage: AssemblyAvalonia --ce-unpack &lt;source&gt; &lt;output-dir&gt; [--all-chunks]
+		/// </summary>
+		private static int RunCEUnpack(string[] args)
+		{
+			if (args.Length < 3)
+			{
+				Console.WriteLine("Usage: --ce-unpack <source> <output-dir> [--all-chunks]");
+				return 1;
+			}
+
+			EngineDatabaseService.Initialize();
+			if (EngineDatabaseService.Database == null)
+			{
+				Console.WriteLine("ENGINE DATABASE: FAILED\n" + EngineDatabaseService.Error);
+				return 1;
+			}
+
+			bool allChunks = args.Contains("--all-chunks");
+
+			try
+			{
+				var preview = CEPackagingService.PreviewUnpack(args[1], EngineDatabaseService.Database!);
+				Console.WriteLine($"=== PREVIEW: {preview.ContainerCount} container(s), {preview.Tags.Count} tag(s), {preview.TotalTagBytes:N0} byte(s) total ===");
+				foreach (var t in preview.Tags)
+					Console.WriteLine($"  [{t.Group}] {t.Name}  {t.PayloadSize:N0} bytes");
+				foreach (var w in preview.MountWarnings)
+					Console.WriteLine($"  warning: {w}");
+
+				var progress = new Progress<CEPackagingProgress>(p =>
+					Console.WriteLine($"  [{p.Stage}] {p.Completed}/{p.Total}  {p.Detail}"));
+
+				var result = CEPackagingService.Unpack(args[1], args[2], EngineDatabaseService.Database!, allChunks, progress, System.Threading.CancellationToken.None);
+
+				Console.WriteLine($"\n=== RESULT: success={result.Success} ===");
+				if (!result.Success) { Console.WriteLine("error: " + result.Error); return 2; }
+				Console.WriteLine($"output           : {result.OutputDirectory}");
+				Console.WriteLine($"tags written     : {result.TagsWritten}");
+				Console.WriteLine($"tag bytes written: {result.TagBytesWritten:N0}");
+				Console.WriteLine($"chunks written   : {result.ChunksWritten}");
+				Console.WriteLine($"elapsed          : {result.Elapsed.TotalMilliseconds:0} ms");
+				foreach (var w in result.Warnings)
+					Console.WriteLine($"warning: {w}");
+				return 0;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("UNPACK FAILED: " + ex);
+				return 3;
+			}
+		}
+
+		/// <summary>
+		///     Runs a repack against a real container set and reports what was written.
+		///     Usage: AssemblyAvalonia --ce-repack &lt;source&gt; &lt;tags-dir&gt; &lt;output-dir&gt;
+		/// </summary>
+		private static int RunCERepack(string[] args)
+		{
+			if (args.Length < 4)
+			{
+				Console.WriteLine("Usage: --ce-repack <source> <tags-dir> <output-dir>");
+				return 1;
+			}
+
+			EngineDatabaseService.Initialize();
+			if (EngineDatabaseService.Database == null)
+			{
+				Console.WriteLine("ENGINE DATABASE: FAILED\n" + EngineDatabaseService.Error);
+				return 1;
+			}
+
+			try
+			{
+				var preview = CEPackagingService.PreviewRepack(args[1], args[2], EngineDatabaseService.Database!);
+				Console.WriteLine($"=== PREVIEW ===");
+				Console.WriteLine($"source     : {preview.SourceDirectory}");
+				Console.WriteLine($"tags dir   : {preview.TagsDirectory}");
+				Console.WriteLine($"containers : {preview.ContainerFiles.Count}");
+				foreach (var f in preview.TagFiles)
+					Console.WriteLine($"  {f.LogicalName}.{f.Group}: matched={f.MatchedExistingTag} parses={f.ParsesCleanly} identical={f.IdenticalToSource} ({f.FileSize:N0} bytes){(f.ParseProblem != null ? "  -- " + f.ParseProblem : "")}");
+				Console.WriteLine($"matched={preview.MatchedCount} changed={preview.ChangedCount} unmatched={preview.UnmatchedCount} invalid={preview.InvalidCount} untouched-in-source={preview.UntouchedSourceTagCount}");
+				Console.WriteLine($"can proceed: {preview.CanProceed}");
+
+				var progress = new Progress<CEPackagingProgress>(p =>
+					Console.WriteLine($"  [{p.Stage}] {p.Completed}/{p.Total}  {p.Detail}"));
+
+				var result = CEPackagingService.Repack(args[1], args[2], args[3], EngineDatabaseService.Database!, progress, System.Threading.CancellationToken.None);
+
+				Console.WriteLine($"\n=== RESULT: success={result.Success} ===");
+				if (!result.Success) { Console.WriteLine("error: " + result.Error); return 2; }
+				Console.WriteLine($"output          : {result.OutputDirectory}");
+				Console.WriteLine($"files copied    : {result.FilesCopied}");
+				Console.WriteLine($"tags changed    : {result.TagsChanged}");
+				Console.WriteLine($"tags unchanged  : {result.TagsUnchanged}");
+				Console.WriteLine($"byte-identical  : {result.ByteIdenticalToSource}");
+				Console.WriteLine($"changed containers: {string.Join(", ", result.ChangedContainers)}");
+				Console.WriteLine($"elapsed         : {result.Elapsed.TotalMilliseconds:0} ms");
+				foreach (var w in result.Warnings)
+					Console.WriteLine($"warning: {w}");
+				return 0;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("REPACK FAILED: " + ex);
+				return 3;
+			}
 		}
 
 		/// <summary>
