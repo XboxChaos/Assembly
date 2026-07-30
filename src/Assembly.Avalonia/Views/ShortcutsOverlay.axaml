@@ -1,0 +1,59 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="clr-namespace:Assembly.Avalonia.Views"
+             x:Class="Assembly.Avalonia.Views.ShortcutsOverlay"
+             Focusable="False" IsVisible="False" IsHitTestVisible="False">
+  <!--
+    "?" reference sheet - see the brief's discoverability bullet: "a shortcut nobody can find does
+    not exist". Reachable via Cmd+/ (ShortcutsOverlay.axaml.cs's own gesture, registered as a
+    command too - "Show Keyboard Shortcuts" - so the palette itself can open this). Content is
+    built in code-behind from the same CommandRegistry the palette searches, grouped by category,
+    plus a short fixed list of shortcuts that aren't registry commands (Tab/Shift+Tab focus
+    movement, arrow-key field navigation, Enter/Escape) - see BuildGroups() remarks.
+  -->
+  <Grid Name="Scrim" Background="#8A000000" PointerPressed="OnScrimPointerPressed">
+    <Border Background="{DynamicResource PopupBackgroundBrush}"
+            BorderBrush="{DynamicResource PopupBorderBrush}" BorderThickness="1"
+            Width="620" MaxHeight="560" VerticalAlignment="Center" HorizontalAlignment="Center"
+            PointerPressed="OnBoxPointerPressed">
+      <Grid RowDefinitions="Auto,*,Auto">
+        <Border Grid.Row="0" Background="{DynamicResource SidebarHeaderBrush}"
+                BorderBrush="{DynamicResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
+          <Grid ColumnDefinitions="*,Auto" Margin="14,10">
+            <TextBlock Grid.Column="0" Text="Keyboard Shortcuts" Classes="h1" FontSize="{StaticResource FontSizeTitle}" />
+            <TextBlock Grid.Column="1" Text="esc to close" Classes="label dim" VerticalAlignment="Bottom" />
+          </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="1">
+          <ItemsControl Name="GroupList" Margin="14,10">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate DataType="views:ShortcutGroup">
+                <StackPanel Margin="0,0,0,14" Spacing="4">
+                  <TextBlock Text="{Binding Title}" Classes="sectionHeader" Margin="0,0,0,4" />
+                  <ItemsControl ItemsSource="{Binding Rows}">
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate DataType="views:ShortcutRow">
+                        <Grid ColumnDefinitions="*,Auto" Margin="0,2">
+                          <TextBlock Grid.Column="0" Text="{Binding Title}" FontSize="11.5" VerticalAlignment="Center" />
+                          <TextBlock Grid.Column="1" Text="{Binding Label}" Classes="mono dim" FontSize="10.5"
+                                     VerticalAlignment="Center" Margin="10,0,0,0" />
+                        </Grid>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </StackPanel>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ScrollViewer>
+
+        <Border Grid.Row="2" Background="{DynamicResource SidebarHeaderBrush}"
+                BorderBrush="{DynamicResource SidebarHeaderSeperatorBrush}" BorderThickness="0,1,0,0">
+          <TextBlock Classes="label dim" FontSize="10" Margin="14,6"
+                     Text="Every shortcut with a keystroke shown here also appears in the Cmd+K palette next to its command." />
+        </Border>
+      </Grid>
+    </Border>
+  </Grid>
+</UserControl>
