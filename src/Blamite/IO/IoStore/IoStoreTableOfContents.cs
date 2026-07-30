@@ -194,6 +194,35 @@ namespace Blamite.IO.IoStore
 		}
 
 		/// <summary>
+		///     Gets the fixed width in bytes of one entry in <see cref="CompressionMethods" />, as the header declares it.
+		///     Meaningless when <see cref="CompressionMethods" /> is empty.
+		/// </summary>
+		public int CompressionMethodNameLength { get; private set; }
+
+		/// <summary>
+		///     Gets the number of perfect hash seeds the header declares.
+		/// </summary>
+		/// <remarks>
+		///     How a seed is constructed, or what a reader would do with one, has never been documented anywhere and this
+		///     reader does not attempt it - chunks are found by ID or by directory index instead (see
+		///     <see cref="FindChunk(IoChunkId)" />). This and <see cref="RawPerfectHashData" /> exist so that a writer which
+		///     is not adding or removing chunks - <see cref="IoStoreContainerWriter" /> is the one that exists today - can
+		///     replay this section verbatim rather than needing to understand it.
+		/// </remarks>
+		public int PerfectHashSeedCount { get; private set; }
+
+		/// <summary>
+		///     Gets the number of chunks the header declares as having no perfect hash. See <see cref="PerfectHashSeedCount" />.
+		/// </summary>
+		public int ChunksWithoutPerfectHashCount { get; private set; }
+
+		/// <summary>
+		///     Gets the perfect hash seed array and the chunks-without-a-hash array, concatenated, exactly as they appear
+		///     on disk between the chunk location array and the compressed block array. See <see cref="PerfectHashSeedCount" />.
+		/// </summary>
+		public byte[] RawPerfectHashData { get; private set; }
+
+		/// <summary>
 		///     Gets whether any of the container's blocks are compressed.
 		/// </summary>
 		public bool IsCompressed
@@ -293,6 +322,9 @@ namespace Blamite.IO.IoStore
 				var withoutHashCount = (int) values.GetInteger("chunks without perfect hash count");
 				var methodNameCount = (int) values.GetInteger("compression method name count");
 				var methodNameLength = (int) values.GetInteger("compression method name length");
+				PerfectHashSeedCount = seedCount;
+				ChunksWithoutPerfectHashCount = withoutHashCount;
+				CompressionMethodNameLength = methodNameLength;
 
 				// Where the header's counts say the directory index has to begin, computed before
 				// any array is walked so that the walk can be checked against it afterwards.
@@ -443,20 +475,22 @@ namespace Blamite.IO.IoStore
 		}
 
 		/// <summary>
-		///     Steps over both perfect hash arrays.
+		///     Captures both perfect hash arrays verbatim, without interpreting them.
 		/// </summary>
 		/// <param name="reader">The stream to read from.</param>
-		/// <param name="seedCount">The number of hash seeds to skip.</param>
-		/// <param name="withoutHashCount">The number of chunks-without-hash entries to skip.</param>
+		/// <param name="seedCount">The number of hash seeds to capture.</param>
+		/// <param name="withoutHashCount">The number of chunks-without-hash entries to capture.</param>
 		/// <remarks>
 		///     How the seeds are constructed is not documented anywhere and a reader needs none of
-		///     it, so these are skipped by their declared counts and never interpreted. The counts
-		///     are not assumed to be zero: even a two-entry container writes two seeds.
+		///     it, so these are kept by their declared counts and never interpreted. The counts
+		///     are not assumed to be zero: even a two-entry container writes two seeds. Captured as
+		///     raw bytes, in <see cref="RawPerfectHashData" />, rather than as parsed arrays, both
+		///     because there is nothing to parse them into and so that <see cref="IoStoreContainerWriter" />
+		///     can replay them exactly rather than re-deriving them.
 		/// </remarks>
 		private void SkipPerfectHashData(IReader reader, int seedCount, int withoutHashCount)
 		{
-			reader.Skip((long) seedCount*sizeof(uint));
-			reader.Skip((long) withoutHashCount*sizeof(uint));
+			RawPerfectHashData = reader.ReadBlock((int) ((long) seedCount*sizeof(uint) + (long) withoutHashCount*sizeof(uint)));
 		}
 
 		/// <summary>

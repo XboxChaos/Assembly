@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Blamite.Serialization;
@@ -16,6 +17,73 @@ namespace Blamite.Blam.FifthGen.Structures
 		{
 			Definition = definition;
 			_values = values;
+		}
+
+		/// <summary>
+		///     Builds a struct instance with every field at a zeroed or empty default, for use as a freshly appended block
+		///     or array element that never came from a parse.
+		/// </summary>
+		/// <param name="definition">The struct definition to build an instance of.</param>
+		/// <returns>A new instance, none of whose fields are individually marked dirty.</returns>
+		/// <remarks>
+		///     An instance built this way has no counterpart anywhere in a payload's original bytes, so
+		///     <see cref="FifthGenTagWriter" /> can never replay bytes for it - it always has to be freshly encoded. That is
+		///     tracked at the block level (see <see cref="FifthGenTagBlock.ElementsDirty" />), not per field here, which is
+		///     why the fields this returns are left clean: nothing here needs its own <see cref="FifthGenTagValue.Dirty" />
+		///     to be true for the writer to do the right thing with it.
+		/// </remarks>
+		public static FifthGenTagStruct CreateDefault(FifthGenStructDefinition definition)
+		{
+			var values = new List<FifthGenTagValue>(definition.Fields.Count);
+			foreach (FifthGenFieldDefinition field in definition.Fields)
+				values.Add(CreateDefaultValue(field));
+			return new FifthGenTagStruct(definition, values);
+		}
+
+		private static FifthGenTagValue CreateDefaultValue(FifthGenFieldDefinition field)
+		{
+			var zero = new byte[field.InlineSize];
+			switch (field.Type)
+			{
+				case FifthGenFieldType.Struct:
+					return new FifthGenStructValue(field, zero, CreateDefault(field.Struct));
+
+				case FifthGenFieldType.Array:
+					var elements = new List<FifthGenTagStruct>((int) field.Array.Count);
+					for (var i = 0; i < field.Array.Count; i++)
+						elements.Add(CreateDefault(field.Array.Struct));
+					return new FifthGenArrayValue(field, zero, field.Array, elements);
+
+				case FifthGenFieldType.StringId:
+					return new FifthGenStringIDValue(field, zero, new StringID(0)) {Value = string.Empty};
+
+				case FifthGenFieldType.TagReference:
+					return new FifthGenTagReferenceValue(field, zero, 0, DatumIndex.Null) {GroupMagic = 0, Path = string.Empty};
+
+				case FifthGenFieldType.Data:
+					return new FifthGenDataValue(field, zero);
+
+				case FifthGenFieldType.PageableResource:
+					return new FifthGenResourceValue(field, zero);
+
+				case FifthGenFieldType.Block:
+					return new FifthGenBlockValue(field, zero, field.Block)
+					{
+						Value = new FifthGenTagBlock(field.Block, field.Block?.Struct, 0, 0, new List<FifthGenTagStruct>())
+					};
+
+				case FifthGenFieldType.String:
+				case FifthGenFieldType.LongString:
+					return new FifthGenStringValue(field, zero, string.Empty);
+			}
+
+			if (FifthGenFieldTypes.IsInteger(field.Type))
+				return new FifthGenIntegerValue(field, zero, 0, FifthGenFieldTypes.IsSignedInteger(field.Type), 0);
+
+			if (FifthGenFieldTypes.IsReal(field.Type) && field.InlineSize == 4)
+				return new FifthGenRealValue(field, zero, 0f);
+
+			return new FifthGenOpaqueValue(field, zero);
 		}
 
 		/// <summary>
@@ -38,6 +106,19 @@ namespace Blamite.Blam.FifthGen.Structures
 		public IList<FifthGenTagValue> Values
 		{
 			get { return _values; }
+		}
+
+		/// <summary>
+		///     Gets whether any field of this instance, or anything nested inside one, was written through since it was
+		///     parsed (or, for an instance built by <see cref="CreateDefault" />, since it was built).
+		/// </summary>
+		/// <remarks>
+		///     <see cref="TrailingSections" /> never contributes here - nothing in this codebase mutates them, so they are
+		///     always replayed verbatim by <see cref="FifthGenTagWriter" /> regardless of what else in the instance changed.
+		/// </remarks>
+		internal bool IsDirty
+		{
+			get { return _values.Any(v => v.IsDirtyRecursive); }
 		}
 
 		/// <summary>
@@ -188,6 +269,64 @@ namespace Blamite.Blam.FifthGen.Structures
 		public IList<FifthGenTagStruct> Elements
 		{
 			get { return _elements; }
+		}
+
+		/// <summary>
+		///     Gets whether elements have been added to, removed from, or reordered within this block since it was parsed.
+		/// </summary>
+		/// <remarks>
+		///     Tracked separately from an individual element's own dirtiness because it means something different to
+		///     <see cref="FifthGenTagWriter" />: once the element list itself no longer lines up with the payload it was
+		///     parsed from, no element's original bytes can be trusted as that element's bytes any more - not even an
+		///     element nobody touched, since everything after an insertion or removal has shifted. The writer falls back to
+		///     freshly encoding every element rather than trying to figure out which ones still line up.
+		/// </remarks>
+		public bool ElementsDirty { get; private set; }
+
+		/// <summary>
+		///     Gets whether this block's element list was reshaped, or any element in it (recursively) was written through,
+		///     since it was parsed.
+		/// </summary>
+		internal bool IsDirty
+		{
+			get { return ElementsDirty || _elements.Any(e => e.IsDirty); }
+		}
+
+		/// <summary>
+		///     Appends an element to the block.
+		/// </summary>
+		/// <param name="element">
+		///     The element to append, laid out as <see cref="ElementDefinition" /> - typically built with
+		///     <see cref="FifthGenTagStruct.CreateDefault" />.
+		/// </param>
+		public void AddElement(FifthGenTagStruct element)
+		{
+			InsertElement(_elements.Count, element);
+		}
+
+		/// <summary>
+		///     Inserts an element into the block at a given position.
+		/// </summary>
+		/// <param name="index">The position to insert at, from 0 to <see cref="Elements" />'s current count inclusive.</param>
+		/// <param name="element">The element to insert, laid out as <see cref="ElementDefinition" />.</param>
+		public void InsertElement(int index, FifthGenTagStruct element)
+		{
+			if (element == null)
+				throw new ArgumentNullException(nameof(element));
+			_elements.Insert(index, element);
+			DeclaredCount = (uint) _elements.Count;
+			ElementsDirty = true;
+		}
+
+		/// <summary>
+		///     Removes the element at a given position.
+		/// </summary>
+		/// <param name="index">The position of the element to remove.</param>
+		public void RemoveElementAt(int index)
+		{
+			_elements.RemoveAt(index);
+			DeclaredCount = (uint) _elements.Count;
+			ElementsDirty = true;
 		}
 
 		public override string ToString()

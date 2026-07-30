@@ -119,6 +119,19 @@ namespace Blamite.Blam.FifthGen
 		}
 
 		/// <summary>
+		///     Gets the exact bytes this instance was parsed from.
+		/// </summary>
+		/// <remarks>
+		///     <see cref="FifthGenTagWriter" /> is built around this: an unmodified region of a tag is proven byte-exact by
+		///     never having been re-derived from the decoded model in the first place, only ever copied out of here. Keeping
+		///     the whole payload rather than just, say, the <c>bdat</c> chunk's content also sidesteps needing to separately
+		///     remember every chunk version this parser does not otherwise attribute anywhere in the object graph (the tag
+		///     body's own version, the schema chunk's, the data chunk's) - the writer rereads them from here instead of
+		///     guessing.
+		/// </remarks>
+		public byte[] OriginalPayload { get; private set; }
+
+		/// <summary>
 		///     Determines whether a buffer is a Blam tag payload rather than some other kind of Unreal bulk data.
 		/// </summary>
 		/// <param name="payload">The decompressed buffer to test.</param>
@@ -142,6 +155,13 @@ namespace Blamite.Blam.FifthGen
 		{
 			RootStructIndex = rootStructIndex;
 			long baseOffset = reader.Position;
+
+			// Captured before anything else is read, and from baseOffset rather than 0, so that this still works if a
+			// caller ever hands in a reader positioned partway through a larger stream rather than one scoped to exactly
+			// one payload (the only shape actually exercised today - see the byte[]-based constructor).
+			reader.SeekTo(baseOffset);
+			OriginalPayload = reader.ReadBlock((int) (reader.Length - baseOffset));
+			reader.SeekTo(baseOffset);
 
 			Header = FifthGenTagHeader.Read(reader);
 			Group = new FifthGenTagGroup(Header);
