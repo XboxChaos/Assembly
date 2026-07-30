@@ -46,6 +46,11 @@ namespace Assembly.Avalonia.Services
 	{
 		private TagSearchEntry[] _entries = Array.Empty<TagSearchEntry>();
 
+		// Reused across calls to Search (see its own remarks) for the "group name" fallback scan -
+		// an instance field rather than a per-call local so a long tag name only ever grows this
+		// once, on the first keystroke that needs a buffer that big, rather than once per keystroke.
+		private char[] _scratch = Array.Empty<char>();
+
 		public int Count => _entries.Length;
 
 		public void Rebuild(IReadOnlyList<TagSearchEntry> entries)
@@ -69,18 +74,25 @@ namespace Assembly.Avalonia.Services
 			if (query.Length == 0 || _entries.Length == 0) return results;
 
 			string lowerQuery = query.ToLowerInvariant();
+			ReadOnlySpan<char> querySpan = lowerQuery;
 
 			foreach (var entry in _entries)
 			{
-				var score = FuzzyMatch.Score(entry.LowerName, lowerQuery);
+				var score = FuzzyMatch.Score(entry.LowerName, querySpan);
 				if (score == null)
 				{
 					// A tag name rarely contains the group magic, but "weap pelican" (group-
 					// qualified search) is a real thing someone might type - fall back to scoring
-					// "group name" as one string so that still matches, at a flat discount so a
-					// pure name match is never outranked by a weaker group-assisted one.
-					var combined = entry.LowerGroup + " " + entry.LowerName;
-					var groupScore = FuzzyMatch.Score(combined, lowerQuery);
+					// "group name" as one span (built in _scratch, not a fresh heap string per
+					// candidate - see that field's own remarks) so that still matches, at a flat
+					// discount so a pure name match is never outranked by a weaker group-assisted one.
+					int needed = entry.LowerGroup.Length + 1 + entry.LowerName.Length;
+					if (_scratch.Length < needed) _scratch = new char[needed];
+					entry.LowerGroup.AsSpan().CopyTo(_scratch);
+					_scratch[entry.LowerGroup.Length] = ' ';
+					entry.LowerName.AsSpan().CopyTo(_scratch.AsSpan(entry.LowerGroup.Length + 1));
+
+					var groupScore = FuzzyMatch.Score(_scratch.AsSpan(0, needed), querySpan);
 					if (groupScore == null) continue;
 					score = groupScore - 30;
 				}

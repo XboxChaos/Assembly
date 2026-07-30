@@ -25,6 +25,13 @@ namespace Assembly.Avalonia
 	///     element spinner) and times it, so the row-list rebuild strategy can be measured from a
 	///     terminal instead of eyeballed in the running app.
 	///     Usage: AssemblyAvalonia --perf-test cache-file
+	///
+	///     Also carries --palette-bench, which measures the command palette's tag-search latency
+	///     (Services/TagSearchIndex.cs + FuzzyMatch.cs) against a synthesized corpus - the real
+	///     test mod carries only 5 tags, nowhere near the ~12,000 a retail mount resolves to (see
+	///     the brief), so this is the only way to get a real number for "does the palette stay
+	///     fast at that scale" rather than asserting it.
+	///     Usage: AssemblyAvalonia --palette-bench [tag-count, default 12000]
 	/// </summary>
 	internal static class HeadlessProbe
 	{
@@ -34,6 +41,8 @@ namespace Assembly.Avalonia
 				return RunEditTest(args);
 			if (args.Length > 0 && args[0] == "--perf-test")
 				return RunPerfTest(args);
+			if (args.Length > 0 && args[0] == "--palette-bench")
+				return RunPaletteBench(args);
 
 			return RunProbe(args);
 		}
@@ -314,6 +323,136 @@ namespace Assembly.Avalonia
 			Console.WriteLine($"  IsOpeningTag transitions observed: [{string.Join(", ", isOpeningTagObserved)}] (expected: true then false - drives the field table's loading overlay)");
 
 			return 0;
+		}
+
+		/// <summary>
+		///     Measures <see cref="TagSearchIndex" />'s per-keystroke search latency against a
+		///     synthesized corpus, since the only real test data available (five tags) says nothing
+		///     about whether the palette stays fast at the ~12,000-tag scale a retail mount
+		///     resolves to. The corpus is generated from generic, publicly-known Halo tag-naming
+		///     conventions (faction/category/weapon/vehicle vocabulary, hyphenated group suffixes,
+		///     folder-qualified paths) rather than drawn from any specific game's real asset list -
+		///     plausible in shape, not an attempt to reproduce real content.
+		/// </summary>
+		private static int RunPaletteBench(string[] args)
+		{
+			int count = 12000;
+			if (args.Length > 1 && int.TryParse(args[1], out var n)) count = n;
+
+			Console.WriteLine($"=== command palette tag-search benchmark: synthetic corpus of {count:N0} tags ===");
+			Console.WriteLine();
+
+			var entries = SynthesizeTagCorpus(count);
+			var index = new TagSearchIndex();
+
+			var buildWatch = Stopwatch.StartNew();
+			index.Rebuild(entries);
+			buildWatch.Stop();
+			Console.WriteLine($"index build ({count:N0} lightweight structs, built once per mount - not per keystroke): " +
+			                   $"{buildWatch.Elapsed.TotalMilliseconds:0.000} ms");
+			Console.WriteLine();
+
+			// A single-character query is the worst case for scan cost (almost everything matches
+			// a subsequence of length 1), not a long one, so that is deliberately first rather than
+			// last.
+			string[] queries =
+			{
+				"p", "pe", "pel", "pelican", "wrthg", "chngun", "sniper_rifle",
+				"banshee-vehicle", "human\\weapons", "xyz_nonexistent_tag_name"
+			};
+
+			Console.WriteLine("=== per-query search latency (TagSearchIndex.Search, max=40 results, 30 trials each) ===");
+			var allTimings = new List<double>();
+			foreach (var q in queries)
+			{
+				index.Search(q, 40); // JIT warm-up - not timed, so tiering cost isn't attributed to the first real query
+
+				const int trials = 30;
+				var times = new double[trials];
+				int hitCount = 0;
+				for (int i = 0; i < trials; i++)
+				{
+					var sw = Stopwatch.StartNew();
+					var results = index.Search(q, 40);
+					sw.Stop();
+					times[i] = sw.Elapsed.TotalMilliseconds;
+					hitCount = results.Count;
+				}
+
+				Array.Sort(times);
+				allTimings.AddRange(times);
+				Console.WriteLine($"  \"{q,-26}\" {hitCount,3} hit(s)   median {times[trials / 2],7:0.000} ms   " +
+				                   $"max {times[^1],7:0.000} ms   min {times[0],7:0.000} ms");
+			}
+
+			allTimings.Sort();
+			double p95 = allTimings[(int)(0.95 * (allTimings.Count - 1))];
+			Console.WriteLine();
+			Console.WriteLine($"overall across {allTimings.Count} calls / {queries.Length} distinct queries: " +
+			                   $"median {allTimings[allTimings.Count / 2]:0.000} ms   p95 {p95:0.000} ms   max {allTimings[^1]:0.000} ms");
+
+			// The number that actually matters for "typing feels instant": the cumulative time
+			// across every keystroke of one realistic search, not any single call in isolation.
+			Console.WriteLine();
+			Console.WriteLine("=== full keystroke sequence, typing \"pelican\" one character at a time ===");
+			string typed = "";
+			double total = 0;
+			foreach (char c in "pelican")
+			{
+				typed += c;
+				var sw = Stopwatch.StartNew();
+				var results = index.Search(typed, 40);
+				sw.Stop();
+				total += sw.Elapsed.TotalMilliseconds;
+				Console.WriteLine($"  after \"{typed}\": {sw.Elapsed.TotalMilliseconds,7:0.000} ms   {results.Count} hit(s)");
+			}
+			Console.WriteLine($"  total wall time for the whole word: {total:0.000} ms across {"pelican".Length} keystrokes");
+
+			return 0;
+		}
+
+		private static List<TagSearchEntry> SynthesizeTagCorpus(int count)
+		{
+			string[] factions = { "human", "covenant", "banished", "forerunner", "flood" };
+			string[] categories = { "weapons", "vehicles", "characters", "objects", "scenery", "effects", "levels", "sound", "cinematics" };
+			string[] bases =
+			{
+				"assault_rifle", "battle_rifle", "sniper_rifle", "shotgun", "smg", "needler", "plasma_pistol",
+				"plasma_rifle", "carbine", "spiker", "mauler", "brute_shot", "gravity_hammer", "energy_sword",
+				"rocket_launcher", "sentinel_beam", "fuel_rod_gun", "beam_rifle", "concussion_rifle",
+				"warthog", "ghost", "banshee", "wraith", "scorpion", "mongoose", "pelican", "phantom",
+				"spectre", "chopper", "prowler", "falcon", "mantis", "hornet", "elephant", "shade",
+				"chief", "elite", "grunt", "jackal", "brute", "hunter", "marine", "odst", "spartan",
+				"crate", "barrier", "console", "door", "light", "generator", "antenna", "flag", "bomb",
+				"explosion", "smoke", "spark", "blood", "dust", "fire", "shield_impact", "muzzle_flash",
+				"gunshot", "explode", "footstep", "impact", "ambient", "music_stinger", "dialogue",
+				"chin_gun", "bullet", "grenade", "frag", "plasma", "sticky", "emp", "spike", "clip"
+			};
+			string[] suffixes = { "weapon", "vehicle", "biped", "projectile", "effect", "scenery", "sound_looping", "sound", "object", "equipment", "device_machine", "cinematic" };
+			string[] groupMagics = { "weap", "vehi", "bipd", "proj", "effe", "scen", "lsnd", "snd!", "obje", "eqip", "mach", "cin*" };
+
+			var rng = new Random(12345); // fixed seed - a reproducible corpus, not a different one per run
+			var entries = new List<TagSearchEntry>(count);
+			var seenNames = new HashSet<string>();
+
+			while (entries.Count < count)
+			{
+				string faction = factions[rng.Next(factions.Length)];
+				string category = categories[rng.Next(categories.Length)];
+				string baseName = bases[rng.Next(bases.Length)];
+				int groupIdx = rng.Next(groupMagics.Length);
+
+				// A folder-qualified name, echoing the real mount's own "objects\vehicles\human\
+				// pelican\pelican" shape (see RunPerfTest's own remarks on that path), plus a
+				// trailing counter so a base word reused across factions/categories still yields a
+				// distinct tag name instead of an immediate duplicate.
+				string name = $"{category}\\{faction}\\{baseName}\\{baseName}_{entries.Count % 37:D2}-{suffixes[groupIdx]}";
+				if (!seenNames.Add(name)) continue;
+
+				entries.Add(new TagSearchEntry(name, groupMagics[groupIdx], $"{faction}_{category}.utoc", null));
+			}
+
+			return entries;
 		}
 
 		private static int RunProbe(string[] args)

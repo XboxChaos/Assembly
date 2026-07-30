@@ -676,6 +676,14 @@ namespace Assembly.Avalonia.Views
 				var mode = Environment.GetEnvironmentVariable("ASM_MODE");
 				if (!string.IsNullOrEmpty(mode)) Vm.TreeMode = mode;
 
+				// ASM_TAGSEARCH=<query> - sets the tag-tree filter directly (Vm.Search is the
+				// same TwoWay-bound property SearchBox's Text drives), for screenshotting the
+				// filtered tree or exercising OnGlobalKeyDown's Escape-clears-a-filter branch
+				// without needing a real TextInput event (KeyDown alone, as ASM_KEYS above raises,
+				// does not type characters into a TextBox - only a genuine text-input event does).
+				var tagSearch = Environment.GetEnvironmentVariable("ASM_TAGSEARCH");
+				if (!string.IsNullOrEmpty(tagSearch)) Vm.Search = tagSearch;
+
 				var select = Environment.GetEnvironmentVariable("ASM_SELECT");
 				if (!string.IsNullOrEmpty(select))
 				{
@@ -752,6 +760,93 @@ namespace Assembly.Avalonia.Views
 
 				var sidebarFlag = Environment.GetEnvironmentVariable("ASM_SIDEBAR");
 				if (!string.IsNullOrEmpty(sidebarFlag)) Vm.ShowValueSidebar = sidebarFlag != "0";
+
+				// ASM_KEYS="Cmd+K,Escape,..." - raises real, routed KeyDown events (RaiseEvent, not
+				// a direct method call) sourced from whatever control currently has keyboard focus
+				// - not this Window - so the event genuinely bubbles up through it (a palette
+				// QueryBox's own OnQueryBoxKeyDown, PropertiesPanel's Cmd+Z override, ...) exactly
+				// the way a real physical keypress would, before OnGlobalKeyDown ever sees it. That
+				// is what makes this a faithful test of the Escape priority chain specifically -
+				// sourcing the event from the Window itself would skip every nearer handler and
+				// always exercise the same fallback branch regardless of what is actually focused.
+				// One token per comma-separated KeyGesture.Parse-compatible entry; each is logged
+				// with whether it ended up Handled, so a run's console output is itself the
+				// evidence a shortcut was actually exercised, not just wired up. Digits need the
+				// "D1".."D9" form (KeyGesture.Parse("Cmd+1") does not parse to Key.D1 - verified
+				// directly against Avalonia 12.1.1; "Cmd+D1" does).
+				var keysFlag = Environment.GetEnvironmentVariable("ASM_KEYS");
+				if (!string.IsNullOrEmpty(keysFlag))
+				{
+					// ASM_SELECT above opens each name as a fire-and-forget OpenTagAsync (see
+					// MainViewModel.SelectedTag's own remarks on why it has to be) - several such
+					// calls fired back-to-back all set IsOpeningTag=true at entry, before any of
+					// them actually wait on OpenTagAsync's own serializing gate, so an earlier call
+					// finishing and clearing IsOpeningTag=false in its `finally` can make that flag
+					// read "false" even while a later call is still queued on the gate behind it.
+					// Waiting on the flag alone is therefore not reliable for "every ASM_SELECT
+					// name has finished opening"; polling Documents.Count against how many names
+					// were actually found is - a Campaign Evolved tag's parse can run ~400ms
+					// (b30-scenario, per this project's own measurements), and without waiting for
+					// all of them a shortcut fired too early could race a still-in-flight open for
+					// a *different* tab, which then completes afterwards and reassigns
+					// ActiveDocument out from under it - a harness timing artifact, not a real user
+					// interleaving (nobody presses Cmd+1 mid-mount), so it is the harness's job to
+					// wait it out rather than the product's.
+					int expectedDocs = string.IsNullOrEmpty(select)
+						? 0
+						: select.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Length;
+					var deadline = DateTime.UtcNow.AddSeconds(5);
+					while (Vm != null && Vm.Documents.Count < expectedDocs && DateTime.UtcNow < deadline) await Task.Delay(20);
+					while (Vm?.IsOpeningTag == true && DateTime.UtcNow < deadline) await Task.Delay(20);
+
+					foreach (var token in keysFlag.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+					{
+						var gesture = KeyGesture.Parse(token);
+						var focused = TopLevel.GetTopLevel(this)?.FocusManager?.GetFocusedElement();
+						var args = new KeyEventArgs
+						{
+							RoutedEvent = InputElement.KeyDownEvent,
+							Route = RoutingStrategies.Bubble,
+							Key = gesture.Key,
+							KeyModifiers = gesture.KeyModifiers,
+							Source = focused ?? this
+						};
+						(focused as Control ?? this).RaiseEvent(args);
+						Console.WriteLine($"ASM_KEYS: \"{token}\" (source={(focused as Control)?.Name ?? focused?.GetType().Name ?? "Window"}) -> Key={gesture.Key} Mods={gesture.KeyModifiers} handled={args.Handled}");
+						await Task.Delay(150);
+					}
+				}
+
+				// ASM_PALETTE=commands|tags[:<query>] - opens the command palette for a screenshot,
+				// following the same "set up state, then let the final delay+render below capture
+				// it" shape every other ASM_* flag above already uses. The query (if any) is typed
+				// into QueryBox the same way ASM_EDIT_VALUE types into a field editor further up -
+				// by reaching into the realized visual tree, not a testing-only public setter, to
+				// exercise the exact TextChanged path a real keystroke drives.
+				var paletteFlag = Environment.GetEnvironmentVariable("ASM_PALETTE");
+				if (!string.IsNullOrEmpty(paletteFlag))
+				{
+					bool commandMode = paletteFlag.StartsWith("commands", StringComparison.OrdinalIgnoreCase);
+					string? query = paletteFlag.Contains(':') ? paletteFlag[(paletteFlag.IndexOf(':') + 1)..] : null;
+					_palette?.Open(commandMode);
+					await Task.Delay(50);
+					if (query != null && _palette != null)
+					{
+						var queryBox = _palette.GetVisualDescendants().OfType<TextBox>().FirstOrDefault(t => t.Name == "QueryBox");
+						if (queryBox != null)
+						{
+							queryBox.Text = (commandMode ? ">" : "") + query;
+							queryBox.CaretIndex = queryBox.Text.Length;
+						}
+					}
+					await Task.Delay(150);
+				}
+
+				if (Environment.GetEnvironmentVariable("ASM_SHORTCUTS") == "1")
+				{
+					_shortcuts?.Open(_commands);
+					await Task.Delay(100);
+				}
 			}
 
 			await Task.Delay(400);
