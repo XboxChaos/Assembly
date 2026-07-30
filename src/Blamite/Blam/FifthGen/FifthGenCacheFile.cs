@@ -303,14 +303,83 @@ namespace Blamite.Blam.FifthGen
 			get { return null; }
 		}
 
+		/// <summary>
+		///     Writes every tag carrying a pending edit back into its owning container.
+		/// </summary>
+		/// <param name="stream">
+		///     Unused. Unlike a classic engine's single cache file, a Campaign Evolved namespace has no one stream
+		///     changes could be written to in the first place (see <see cref="FifthGenCacheFile" />'s own remarks); each
+		///     edited tag instead carries the change itself, in <see cref="FifthGenTag.PendingEdit" />, and this writes
+		///     it into that tag's own <c>.utoc</c>/<c>.ucas</c> pair. Accepted only so this matches
+		///     <see cref="ICacheFile.SaveChanges" />'s signature.
+		/// </param>
+		/// <remarks>
+		///     A caller that has parsed a tag's <see cref="FifthGenTag.RawPayload" /> into a <see cref="FifthGenTagFile" />
+		///     and edited it through the mutation methods on <see cref="FifthGenTagValue" />, <see cref="FifthGenTagStruct" />
+		///     and <see cref="FifthGenTagBlock" /> assigns that instance to the tag's <see cref="FifthGenTag.PendingEdit" />
+		///     and then calls this. Each such tag is: serialised with <see cref="FifthGenTagWriter" />; written into its
+		///     owning container with <see cref="IoStoreContainerWriter" />, which rewrites the whole
+		///     <c>.utoc</c>/<c>.ucas</c> pair rather than patching either in place (see that class's remarks for why); and
+		///     has its <see cref="FifthGenTag.RawPayload" /> updated to match, so reading it straight back afterward -
+		///     without re-mounting anything - already sees the saved bytes.
+		/// </remarks>
 		public void SaveChanges(IStream stream)
 		{
-			throw new NotSupportedException("Saving changes to Campaign Evolved tags is not supported yet.");
+			foreach (ITag genericTag in _tags)
+			{
+				var tag = genericTag as FifthGenTag;
+				if (tag?.PendingEdit != null)
+					SaveTag(tag);
+			}
 		}
 
 		public void SaveTagNames(IStream stream)
 		{
 			throw new NotSupportedException("Saving Campaign Evolved tag names is not supported yet.");
+		}
+
+		/// <summary>
+		///     Serialises one tag's pending edit and writes it into the container that currently owns its data.
+		/// </summary>
+		private void SaveTag(FifthGenTag tag)
+		{
+			byte[] newPayload = FifthGenTagWriter.Write(tag.PendingEdit);
+
+			FifthGenMountedContainer mounted = tag.Container;
+			IoChunkId chunkId = FindBulkDataChunkId(mounted.Container.TableOfContents, tag.PackageId.Value);
+
+			// The container's own open streams have to be closed before its files are rewritten on disk - see
+			// FifthGenMountedContainer.SetContainer - and reopened once the rewrite has finished, or failed, either
+			// way: a namespace left with a permanently-closed container after one tag's write throws would take every
+			// other tag sharing it down too.
+			mounted.SetContainer(null);
+			try
+			{
+				IoStoreContainerWriter.ReplaceChunk(mounted.TocPath, _buildInfo.Layouts, chunkId, newPayload);
+			}
+			finally
+			{
+				mounted.SetContainer(IoStoreContainer.Open(mounted.TocPath, _buildInfo.Layouts, null));
+			}
+
+			tag.RawPayload = newPayload;
+			tag.PendingEdit = null;
+		}
+
+		/// <summary>
+		///     Finds the <c>BulkData</c> chunk sibling to a package's tag data - the one <see cref="FifthGenTagTable" />
+		///     originally read <see cref="FifthGenTag.RawPayload" /> from - by package ID, the way
+		///     <see cref="FifthGenTagTable" /> itself does while mounting.
+		/// </summary>
+		private static IoChunkId FindBulkDataChunkId(IoStoreTableOfContents toc, ulong packageId)
+		{
+			foreach (IoChunkId id in toc.ChunkIds)
+			{
+				if (id.PackageId == packageId && id.Type == IoChunkType.BulkData)
+					return id;
+			}
+			throw new IoStoreException(string.Format(
+				"No BulkData chunk for package 0x{0:X16} was found in the container this tag was read from.", packageId));
 		}
 
 		private void Load()

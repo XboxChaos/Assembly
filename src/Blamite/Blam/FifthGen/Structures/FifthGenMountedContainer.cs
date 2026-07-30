@@ -39,5 +39,23 @@ namespace Blamite.Blam.FifthGen.Structures
 		///     Gets the opened container.
 		/// </summary>
 		public IoStoreContainer Container { get; private set; }
+
+		/// <summary>
+		///     Replaces the open container this wraps with a different one, disposing the one being replaced.
+		/// </summary>
+		/// <remarks>
+		///     Used around <see cref="Blamite.IO.IoStore.IoStoreContainerWriter" /> rewriting this container's
+		///     <c>.utoc</c>/<c>.ucas</c> pair on disk: the streams this instance already has open have to be closed
+		///     before the rewrite (it deletes and replaces those very files) and a fresh container opened on what is on
+		///     disk afterward, rather than left stale for the rest of the mounted namespace's lifetime. Two separate
+		///     calls - <c>SetContainer(null)</c> to close, then <c>SetContainer(freshlyOpened)</c> after the rewrite -
+		///     rather than one method that does both, because the container has to stay closed for the whole rewrite.
+		/// </remarks>
+		/// <param name="container">The container to switch to, or <c>null</c> to just close the current one.</param>
+		internal void SetContainer(IoStoreContainer container)
+		{
+			Container?.Dispose();
+			Container = container;
+		}
 	}
 }
