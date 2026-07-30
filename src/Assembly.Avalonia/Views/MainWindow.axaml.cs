@@ -761,6 +761,45 @@ namespace Assembly.Avalonia.Views
 				var sidebarFlag = Environment.GetEnvironmentVariable("ASM_SIDEBAR");
 				if (!string.IsNullOrEmpty(sidebarFlag)) Vm.ShowValueSidebar = sidebarFlag != "0";
 
+				// ASM_FOCUS=<control name> - moves real keyboard focus to a named control (e.g.
+				// "TagTree" or "FieldList"), for screenshotting the :focus-visible styling
+				// (MainWindow.axaml's Window.Styles) on a control this harness has no shortcut
+				// that already lands on - Tab-cycling there itself is real OS-level focus-
+				// navigation Avalonia intercepts ahead of ordinary routed KeyDown handlers, which
+				// ASM_KEYS's synthetic RaiseEvent calls do not faithfully reproduce. Focusing a
+				// ListBox/TreeView itself is not the same as a real Tab landing inside it - a real
+				// Tab (or an arrow-key press once inside) moves focus to the *selected item's own
+				// container*, which is what :focus-visible on ListBoxItem/TreeViewItem actually
+				// keys off; ContainerFromItem finds that container directly.
+				var focusTarget = Environment.GetEnvironmentVariable("ASM_FOCUS");
+				if (!string.IsNullOrEmpty(focusTarget))
+				{
+					var control = this.FindControl<Control>(focusTarget);
+					control?.Focus();
+					UpdateLayout();
+
+					InputElement? itemContainer = control switch
+					{
+						ListBox { SelectedItem: { } sel } lb => lb.ContainerFromItem(sel) as InputElement,
+						TreeView { SelectedItem: { } sel } tv => tv.ContainerFromItem(sel) as InputElement,
+						// No selection to key off (e.g. the tag tree - SelectedTag is one-way,
+						// view -> view model only, so ASM_SELECT never populates TreeView's own
+						// SelectedItem) - fall back to whatever container is already realized and
+						// on screen, same source CaptureAsync's own ASM_SELECT handling already
+						// reads from a few lines up.
+						ListBox lb => lb.GetRealizedContainers().OfType<InputElement>().FirstOrDefault(),
+						TreeView tv => tv.GetRealizedContainers().OfType<InputElement>().FirstOrDefault(),
+						_ => null
+					};
+					// NavigationMethod.Tab, not the parameterless Focus() overload's default
+					// (Unspecified) - :focus-visible specifically distinguishes keyboard-driven
+					// focus from a plain programmatic/pointer one, so proving the style fires at
+					// all means asking for focus the same way Avalonia's own Tab handling does.
+					itemContainer?.Focus(NavigationMethod.Tab);
+
+					await Task.Delay(50);
+				}
+
 				// ASM_KEYS="Cmd+K,Escape,..." - raises real, routed KeyDown events (RaiseEvent, not
 				// a direct method call) sourced from whatever control currently has keyboard focus
 				// - not this Window - so the event genuinely bubbles up through it (a palette
