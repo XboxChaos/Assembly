@@ -1,0 +1,70 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="clr-namespace:Assembly.Avalonia.Views"
+             x:Class="Assembly.Avalonia.Views.CommandPalette"
+             Focusable="False" IsVisible="False" IsHitTestVisible="False">
+  <!--
+    Cmd+K / Cmd+P command palette overlay - see CommandPalette.axaml.cs's header comment for the
+    mode-prefix design (plain text = tag jump, a leading ">" = commands) and why one control with
+    two modes was chosen over either a merged ranked list or two separate widgets. Hosted full-
+    bleed over the whole window content (MainWindow.axaml's "hosting your overlay" section), so
+    the scrim below can dim and click-dismiss everything else while it's open; IsVisible/
+    IsHitTestVisible are driven from code-behind (Open/Close) rather than bound, since this
+    control already owns real keyboard focus while open and there is no separate view-model
+    property they would otherwise need to stay in sync with.
+  -->
+  <Grid Name="Scrim" Background="#8A000000" PointerPressed="OnScrimPointerPressed">
+    <Border Name="PaletteBox" Background="{DynamicResource PopupBackgroundBrush}"
+            BorderBrush="{DynamicResource PopupBorderBrush}" BorderThickness="1"
+            Width="640" MaxHeight="480" VerticalAlignment="Top" HorizontalAlignment="Center"
+            Margin="0,110,0,0" PointerPressed="OnPaletteBoxPointerPressed">
+      <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="10,8">
+          <Border Grid.Column="0" Background="{DynamicResource SidebarBlockBrush}"
+                  Padding="6,2" Margin="0,0,8,0" VerticalAlignment="Center">
+            <TextBlock Name="ModeChipText" Classes="mono label" FontSize="10" />
+          </Border>
+          <TextBox Grid.Column="1" Name="QueryBox" BorderThickness="0" Background="Transparent"
+                    FontSize="{StaticResource FontSizeLarge}" MinHeight="0" Padding="0,2"
+                    Watermark="Type a tag name, or &gt; for a command..." />
+        </Grid>
+
+        <Border Grid.Row="1" Height="1" Background="{DynamicResource SidebarHeaderSeperatorBrush}" />
+
+        <ListBox Grid.Row="2" Name="ResultsList" Background="Transparent" BorderThickness="0"
+                 Focusable="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+          <ListBox.ItemTemplate>
+            <DataTemplate DataType="views:PaletteResultItem">
+              <Grid ColumnDefinitions="Auto,*,Auto" Margin="10,6" Opacity="{Binding RowOpacity}">
+                <Border Grid.Column="0" Background="{DynamicResource SidebarBlockBrush}"
+                        Padding="4,1" Margin="0,0,8,0" VerticalAlignment="Center"
+                        IsVisible="{Binding HasChip}">
+                  <TextBlock Text="{Binding ChipText}" Classes="mono" FontSize="9" />
+                </Border>
+                <StackPanel Grid.Column="1" Spacing="1" VerticalAlignment="Center">
+                  <TextBlock Text="{Binding PrimaryText}" FontSize="12" TextTrimming="CharacterEllipsis" />
+                  <TextBlock Text="{Binding SecondaryText}" Classes="label" FontSize="10"
+                             IsVisible="{Binding HasSecondaryText}" TextTrimming="CharacterEllipsis" />
+                </StackPanel>
+                <TextBlock Grid.Column="2" Text="{Binding ShortcutLabel}" Classes="mono dim" FontSize="10.5"
+                           VerticalAlignment="Center" IsVisible="{Binding HasShortcut}" Margin="8,0,0,0" />
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+
+        <!-- Empty state: shown by toggling ResultsList/EmptyHint visibility in code-behind rather
+             than an IsVisible binding, since both read off the same code-behind-owned _results
+             collection this control already rebuilds by hand (see Refresh()). -->
+        <TextBlock Grid.Row="2" Name="EmptyHint" Classes="label dim" FontSize="11"
+                   Margin="14,16" TextWrapping="Wrap" IsVisible="False" />
+
+        <Border Grid.Row="3" Background="{DynamicResource SidebarHeaderBrush}"
+                BorderBrush="{DynamicResource SidebarHeaderSeperatorBrush}" BorderThickness="0,1,0,0">
+          <TextBlock Name="FooterHint" Classes="label dim" FontSize="10" Margin="10,5" />
+        </Border>
+      </Grid>
+    </Border>
+  </Grid>
+</UserControl>
