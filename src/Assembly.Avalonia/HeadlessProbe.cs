@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -17,6 +19,12 @@ namespace Assembly.Avalonia
 	///     the sidebar editors use, save, then re-open the file in a fresh CacheSession and
 	///     confirm the new bytes are really on disk - independent of any Avalonia UI wiring.
 	///     Usage: AssemblyAvalonia --edit-test cache-file tag-name-substring field-name new-value
+	///
+	///     Also carries --perf-test, which exercises TagDocumentViewModel exactly the way the
+	///     shell does (construct on open, ToggleExpand on a block click, SetElementIndex on the
+	///     element spinner) and times it, so the row-list rebuild strategy can be measured from a
+	///     terminal instead of eyeballed in the running app.
+	///     Usage: AssemblyAvalonia --perf-test cache-file
 	/// </summary>
 	internal static class HeadlessProbe
 	{
@@ -24,6 +32,8 @@ namespace Assembly.Avalonia
 		{
 			if (args.Length > 0 && args[0] == "--edit-test")
 				return RunEditTest(args);
+			if (args.Length > 0 && args[0] == "--perf-test")
+				return RunPerfTest(args);
 
 			return RunProbe(args);
 		}
@@ -98,6 +108,210 @@ namespace Assembly.Avalonia
 			Console.WriteLine("--- AFTER (fresh CacheSession, re-read from disk) ---");
 			var afterResult = Read();
 			Console.WriteLine($"{fieldName} = {afterResult.after}");
+
+			return 0;
+		}
+
+		private static int RunPerfTest(string[] args)
+		{
+			if (args.Length < 2)
+			{
+				Console.WriteLine("Usage: --perf-test <cache-file-or-utoc>");
+				return 1;
+			}
+
+			string path = args[1];
+
+			EngineDatabaseService.Initialize();
+			if (EngineDatabaseService.Database == null)
+			{
+				Console.WriteLine("ENGINE DATABASE: FAILED\n" + EngineDatabaseService.Error);
+				return 1;
+			}
+
+			var log = new LogService();
+
+			var openWatch = Stopwatch.StartNew();
+			CacheSession session;
+			try
+			{
+				session = CacheSession.Open(path, EngineDatabaseService.Database!);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("OPEN FAILED: " + ex.Message);
+				return 2;
+			}
+			openWatch.Stop();
+
+			foreach (var g in session.Groups) foreach (var t in g.Tags) t.Owner = session;
+			var allTags = session.Groups.SelectMany(g => g.Tags).ToList();
+
+			Console.WriteLine($"session open (mount + directory walk): {openWatch.ElapsedMilliseconds} ms, {allTags.Count} tag(s)");
+			Console.WriteLine();
+			Console.WriteLine("=== per-tag open time: tag click -> TagDocumentViewModel ctor returns, rows visible ===");
+
+			var docs = new Dictionary<string, TagDocumentViewModel>();
+			foreach (var tag in allTags)
+			{
+				GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
+				long memBefore = GC.GetTotalMemory(true);
+				var sw = Stopwatch.StartNew();
+				var doc = new TagDocumentViewModel(tag, log);
+				sw.Stop();
+				long memAfter = GC.GetTotalMemory(false);
+				docs[tag.Name] = doc;
+				Console.WriteLine($"  {tag.Name,-40} {sw.ElapsedMilliseconds,6} ms   rootRows={doc.Rows.Count,-6} +{(memAfter - memBefore) / 1024,6} KB   {doc.SchemaStatus}");
+			}
+
+			var scenario = docs.Values.FirstOrDefault(d => d.Tag.Name.Contains("scenario", StringComparison.OrdinalIgnoreCase))
+			               ?? docs.Values.OrderByDescending(d => d.Rows.Count).FirstOrDefault();
+
+			if (scenario == null)
+			{
+				Console.WriteLine("\nno tag opened; skipping expand/collapse timing.");
+				return 0;
+			}
+
+			Console.WriteLine();
+			Console.WriteLine($"=== expand/collapse/element-index timing on \"{scenario.Tag.Name}\" ({scenario.Rows.Count} root rows) ===");
+
+			// Discover the top-level block whose subtree is biggest, to make the "does cost scale
+			// with total open rows, or just with what this one call touches" comparison stark.
+			MetaRowViewModel? biggest = null;
+			int biggestSize = 0;
+			foreach (var row in scenario.Rows.Where(r => r.IsBlock && r.ElementCount > 0).ToList())
+			{
+				int before = scenario.Rows.Count;
+				scenario.ToggleExpand(row);
+				int size = scenario.Rows.Count - before;
+				scenario.ToggleExpand(row); // collapse back to a clean slate
+				if (size > biggestSize) { biggestSize = size; biggest = row; }
+			}
+
+			if (biggest == null)
+			{
+				Console.WriteLine("no expandable top-level block found on this tag.");
+				return 0;
+			}
+
+			Console.WriteLine($"largest top-level block: \"{biggest.Name}\" ({biggest.ElementCount} entries, subtree = {biggestSize} rows at element 0)");
+
+			var tExpand1 = Stopwatch.StartNew();
+			scenario.ToggleExpand(biggest);
+			tExpand1.Stop();
+			Console.WriteLine($"expand (nothing else open):      {tExpand1.Elapsed.TotalMilliseconds,7:0.000} ms   rows now {scenario.Rows.Count}");
+
+			var tCollapse1 = Stopwatch.StartNew();
+			scenario.ToggleExpand(biggest);
+			tCollapse1.Stop();
+			Console.WriteLine($"collapse:                         {tCollapse1.Elapsed.TotalMilliseconds,7:0.000} ms   rows now {scenario.Rows.Count}");
+
+			// Open a handful of unrelated blocks first, then re-time expanding the same block: a
+			// row-list rebuild that walks the whole document on every interaction would get slower
+			// here; one that only touches the row's own subtree would not.
+			var others = scenario.Rows.Where(r => r.IsBlock && r.ElementCount > 0 && r != biggest).Take(10).ToList();
+			foreach (var o in others) scenario.ToggleExpand(o);
+			Console.WriteLine($"(expanded {others.Count} other top-level block(s) first; rows now {scenario.Rows.Count})");
+
+			var tExpand2 = Stopwatch.StartNew();
+			scenario.ToggleExpand(biggest);
+			tExpand2.Stop();
+			Console.WriteLine($"expand same block, {others.Count} siblings already open: {tExpand2.Elapsed.TotalMilliseconds,7:0.000} ms   rows now {scenario.Rows.Count}");
+
+			if (biggest.ElementCount > 1)
+			{
+				int steps = Math.Min(20, biggest.ElementCount);
+				var tStep = Stopwatch.StartNew();
+				for (int i = 0; i < steps; i++)
+					scenario.SetElementIndex(biggest, i);
+				tStep.Stop();
+				Console.WriteLine($"step element index x{steps}: {tStep.Elapsed.TotalMilliseconds,7:0.000} ms total, {tStep.Elapsed.TotalMilliseconds / steps:0.000} ms/step   rows steady at {scenario.Rows.Count}");
+			}
+
+			// Peak rows / memory for a fully deep expansion: every top-level block, open at once.
+			scenario.ToggleExpand(biggest);
+			foreach (var o in others) scenario.ToggleExpand(o);
+
+			var allBlocks = scenario.Rows.Where(r => r.IsBlock && r.ElementCount > 0).ToList();
+			GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
+			long memBeforeDeep = GC.GetTotalMemory(true);
+			var tDeep = Stopwatch.StartNew();
+			foreach (var row in allBlocks)
+				scenario.ToggleExpand(row);
+			tDeep.Stop();
+			long memAfterDeep = GC.GetTotalMemory(false);
+
+			Console.WriteLine();
+			Console.WriteLine($"deep expansion of all {allBlocks.Count} top-level block(s): {tDeep.Elapsed.TotalMilliseconds:0.000} ms, peak rows={scenario.Rows.Count}, +{(memAfterDeep - memBeforeDeep) / 1024} KB");
+
+			// ---- feature sanity checks: filter + tag-reference resolution ----
+			Console.WriteLine();
+			Console.WriteLine("=== field filter ===");
+			foreach (var query in new[] { "structure", "trigger volumes", "nonexistent_field_xyz" })
+			{
+				var tFilter = Stopwatch.StartNew();
+				scenario.FilterQuery = query;
+				tFilter.Stop();
+				Console.WriteLine($"  \"{query}\": {tFilter.Elapsed.TotalMilliseconds,7:0.000} ms   {scenario.FilterMatchCount} match(es), {scenario.Rows.Count} row(s) shown (context included)");
+			}
+			scenario.FilterQuery = "";
+			Console.WriteLine($"  (cleared): rows back to {scenario.Rows.Count}");
+
+			Console.WriteLine();
+			Console.WriteLine("=== tag reference resolution (currently-visible rows) ===");
+			var refs = scenario.Rows.Where(r => r.RefTarget != null).ToList();
+			Console.WriteLine($"  {refs.Count} reference row(s) found among {scenario.Rows.Count} visible rows");
+			foreach (var r in refs.Take(10))
+				Console.WriteLine($"    {r.Name,-28} -> group={r.RefTarget!.Group,-6} name={r.RefTarget.Name ?? "(null)"}  followable={r.RefTarget.IsFollowable}");
+
+			// ---- reference navigation end-to-end, through MainViewModel exactly as the shell uses it ----
+			Console.WriteLine();
+			Console.WriteLine("=== MainViewModel.NavigateToTagReference ===");
+			var vm = new MainViewModel();
+			vm.OpenFileAsync(path).GetAwaiter().GetResult();
+			Console.WriteLine($"  status after mount: {vm.StatusText}");
+
+			// scenario references a structure bsp ("...sb_main") that isn't one of this mod's 5
+			// tags - the honest "not mounted" path.
+			var unmounted = refs.FirstOrDefault(r => r.RefTarget!.Name != null && r.RefTarget.Name.Contains("sb_main"));
+			if (unmounted != null)
+			{
+				vm.NavigateToTagReference(unmounted.RefTarget!);
+				Console.WriteLine($"  navigate to \"{unmounted.RefTarget!.Name}.{unmounted.RefTarget.Group}\" (expected: not mounted): {vm.StatusText}");
+			}
+
+			// None of this mod's own 5 tags share a name with any reference the scenario tag
+			// itself carries (its references name real retail asset paths like
+			// "objects\vehicles\human\pelican\pelican" - this mod's own containers are named
+			// after the file the modder shipped, "pelican-vehicle", not that in-game path), so
+			// there is no naturally-occurring in-mod reference to exercise the "found" case with.
+			// Build a synthetic target that names one of the 5 mounted tags directly instead, to
+			// verify the matching logic itself rather than this mod's happenstance content.
+			var syntheticTarget = new TagRefTarget("vehi", "pelican-vehicle", null);
+			int docsBefore = vm.Documents.Count;
+
+			// IsOpeningTag/OpeningTagLabel drive the field table's loading overlay (MainWindow.axaml)
+			// - catching that overlay in the act with a screenshot is a race against however fast
+			// this machine happens to open the tag, so verify the state machine directly instead:
+			// record every value IsOpeningTag actually takes across the call.
+			var isOpeningTagObserved = new List<bool>();
+			System.ComponentModel.PropertyChangedEventHandler handler = (_, ev) =>
+			{
+				if (ev.PropertyName == nameof(MainViewModel.IsOpeningTag))
+					isOpeningTagObserved.Add(vm.IsOpeningTag);
+			};
+			vm.PropertyChanged += handler;
+
+			vm.NavigateToTagReference(syntheticTarget); // fire-and-forget, like the real UI call site - wait for it the same way the shell's own loading overlay would
+			var deadline = DateTime.UtcNow.AddSeconds(5);
+			while (vm.IsOpeningTag && DateTime.UtcNow < deadline)
+				System.Threading.Thread.Sleep(10);
+			vm.PropertyChanged -= handler;
+
+			Console.WriteLine($"  navigate to synthetic \"pelican-vehicle.vehi\" (expected: opens a tab): {vm.StatusText}");
+			Console.WriteLine($"  documents: {docsBefore} -> {vm.Documents.Count}, active = {vm.ActiveDocument?.HeaderTitle}");
+			Console.WriteLine($"  IsOpeningTag transitions observed: [{string.Join(", ", isOpeningTagObserved)}] (expected: true then false - drives the field table's loading overlay)");
 
 			return 0;
 		}

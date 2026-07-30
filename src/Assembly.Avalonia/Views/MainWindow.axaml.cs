@@ -231,6 +231,98 @@ namespace Assembly.Avalonia.Views
 			}
 		}
 
+		// ---- in-tag field filter ----
+		private void OnFieldFilterKeyDown(object? sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Escape && Vm?.ActiveDocument != null)
+			{
+				Vm.ActiveDocument.FilterQuery = "";
+				e.Handled = true;
+			}
+		}
+
+		// ---- tag reference navigation ----
+		private void OnFollowReferenceClick(object? sender, RoutedEventArgs e)
+		{
+			if ((sender as Button)?.Tag is MetaRowViewModel row)
+				FollowReference(row);
+		}
+
+		private void OnFieldListDoubleTapped(object? sender, TappedEventArgs e)
+		{
+			if ((sender as ListBox)?.SelectedItem is MetaRowViewModel row)
+				FollowReference(row);
+		}
+
+		private void FollowReference(MetaRowViewModel row)
+		{
+			if (Vm == null || row.RefTarget == null) return;
+			Vm.NavigateToTagReference(row.RefTarget);
+		}
+
+		// ---- field table keyboard navigation: arrows move selection (Avalonia's ListBox already
+		// does that), Left/Right collapse/expand or step to the parent row, Enter follows a
+		// reference or toggles a block, matching the ToggleButton/"open" glyph the mouse already has.
+		// Cmd+[ / Cmd+] also drive tag-navigation back/forward here - macOS's own convention for
+		// history navigation (Safari, Xcode) and this shell is native-chrome, macOS-first - since
+		// there is nowhere in this file's owned elements to put a visible back/forward button (the
+		// header band and toolbar are a different agent's region). ----
+		private void OnFieldListKeyDown(object? sender, KeyEventArgs e)
+		{
+			if (Vm != null && e.KeyModifiers.HasFlag(KeyModifiers.Meta))
+			{
+				if (e.Key == Key.OemOpenBrackets) { Vm.GoBack(); e.Handled = true; return; }
+				if (e.Key == Key.OemCloseBrackets) { Vm.GoForward(); e.Handled = true; return; }
+			}
+
+			if (sender is not ListBox listBox || Vm?.ActiveDocument is not { } doc) return;
+			if (listBox.SelectedItem is not MetaRowViewModel row) return;
+
+			switch (e.Key)
+			{
+				case Key.Right when row.IsBlock && !row.IsExpanded:
+					doc.ToggleExpand(row);
+					e.Handled = true;
+					break;
+
+				case Key.Left when row.IsBlock && row.IsExpanded:
+					doc.ToggleExpand(row);
+					e.Handled = true;
+					break;
+
+				case Key.Left when row.Depth > 0:
+				{
+					// Nothing to collapse on a leaf/collapsed row - step selection up to the
+					// nearest visible ancestor instead, the way a file tree's Left arrow does once
+					// a node is already collapsed.
+					int idx = doc.Rows.IndexOf(row);
+					for (int i = idx - 1; i >= 0; i--)
+					{
+						if (doc.Rows[i].Depth < row.Depth)
+						{
+							doc.SelectedRow = doc.Rows[i];
+							listBox.ScrollIntoView(doc.Rows[i]);
+							break;
+						}
+					}
+					e.Handled = true;
+					break;
+				}
+
+				case Key.Enter when row.RefTarget != null:
+					FollowReference(row);
+					e.Handled = true;
+					return; // navigation may switch ActiveDocument - the sidebar refresh below is only for this document
+
+				case Key.Enter when row.IsBlock:
+					doc.ToggleExpand(row);
+					e.Handled = true;
+					break;
+			}
+
+			if (e.Handled && doc.SelectedRow == row) BuildEditor(row);
+		}
+
 		// ================= value / properties sidebar =================
 		//
 		// Built imperatively rather than through XAML DataTemplates: the row's editable value
