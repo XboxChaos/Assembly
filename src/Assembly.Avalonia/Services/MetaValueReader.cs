@@ -159,6 +159,23 @@ namespace Assembly.Avalonia.Services
 			}
 		}
 
+		/// <summary>
+		///     Reads a field's raw on-disk bytes without interpreting them - the source of truth
+		///     for the read-only hex view and the "copy raw bytes" action. Bounds-checked the same
+		///     way <see cref="ReadOne" /> is, so a corrupt or out-of-range offset degrades to an
+		///     empty read instead of throwing past the caller.
+		/// </summary>
+		public static byte[] ReadRawBytes(IReader r, long absOffset, int size)
+		{
+			int want = Math.Max(0, size);
+			if (want == 0 || absOffset < 0 || absOffset >= r.Length)
+				return Array.Empty<byte>();
+
+			r.SeekTo(absOffset);
+			int n = (int)Math.Min(want, r.Length - absOffset);
+			return r.ReadBlock(n);
+		}
+
 		private static string ReadOne(IReader r, long baseOffset, MetaFieldDef d, ICacheFile cache)
 		{
 			if (d.Kind == MetaFieldKind.Comment)

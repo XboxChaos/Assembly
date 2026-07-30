@@ -1,18 +1,13 @@
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Assembly.Avalonia.Services;
 using Assembly.Avalonia.ViewModels;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
-using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using Avalonia.VisualTree;
 
@@ -29,7 +24,7 @@ namespace Assembly.Avalonia.Views
 		private Grid? _bodyGrid;
 		private Grid? _rootGrid;
 		private ItemsControl? _tabStrip;
-		private StackPanel? _editorHost;
+		private PropertiesPanel? _propertiesPanel;
 
 		public MainWindow()
 		{
@@ -37,15 +32,13 @@ namespace Assembly.Avalonia.Views
 
 			_bodyGrid = this.FindControl<Grid>("BodyGrid");
 			_rootGrid = this.FindControl<Grid>("RootGrid");
-			_editorHost = this.FindControl<StackPanel>("EditorHost");
+			_propertiesPanel = this.FindControl<PropertiesPanel>("PropertiesPanelControl");
 
 			DataContextChanged += (_, _) =>
 			{
 				if (Vm != null)
 					Vm.PropertyChanged += OnVmPropertyChanged;
 			};
-
-			BuildEditor(null);
 
 			// Optional automated screenshot hook (see docs/dev notes).
 			var shot = Environment.GetEnvironmentVariable("ASM_SHOT");
@@ -108,11 +101,11 @@ namespace Assembly.Avalonia.Views
 
 		private void SaveAndRefresh()
 		{
+			// Save() reseeds every dirty row's edit state from the freshly-written disk bytes and
+			// calls MetaRowViewModel.NotifyEdited() for each one, so the properties sidebar (which
+			// subscribes to each row it shows) picks up "unchanged" on its own - nothing further
+			// to nudge here.
 			Vm?.SaveActive();
-			// Save() reseeds every row's edit state from the freshly-written disk bytes, which
-			// clears dirty - but the sidebar was built for the pre-save row instance's state, so
-			// rebuild it to show "unchanged" instead of a stale "* modified".
-			BuildEditor(Vm?.ActiveDocument?.SelectedRow);
 		}
 
 		private void OnMenuCloseAll(object? sender, EventArgs e) => Vm?.CloseAll();
@@ -124,11 +117,7 @@ namespace Assembly.Avalonia.Views
 		private void OnMenuToggleValueSidebar(object? sender, EventArgs e) { if (Vm != null) Vm.ShowValueSidebar = !Vm.ShowValueSidebar; }
 		private void OnMenuToggleConsole(object? sender, EventArgs e) { if (Vm != null) Vm.ShowConsole = !Vm.ShowConsole; }
 
-		private void OnRevertAllClick(object? sender, RoutedEventArgs e)
-		{
-			Vm?.ActiveDocument?.RevertAll();
-			BuildEditor(Vm?.ActiveDocument?.SelectedRow);
-		}
+		private void OnRevertAllClick(object? sender, RoutedEventArgs e) => Vm?.ActiveDocument?.RevertAll();
 
 		private void OnConsoleClearClick(object? sender, RoutedEventArgs e) => Vm?.Log.Clear();
 
@@ -216,19 +205,22 @@ namespace Assembly.Avalonia.Views
 		}
 
 		// ---- field table / tag block navigation ----
+		//
+		// The properties sidebar (PropertiesPanel) now binds directly to ActiveDocument and
+		// reacts to TagDocumentViewModel.SelectedRow / MetaRowViewModel property-change
+		// notifications on its own, so selecting a row or expanding a block no longer needs an
+		// explicit rebuild call from here - see PropertiesPanel.axaml.cs. This handler stays only
+		// because FieldList's SelectionChanged is wired to it in XAML outside the region this
+		// file's owner may touch; ListBox.SelectedItem's own TwoWay binding already keeps
+		// ActiveDocument.SelectedRow in sync without any code here.
 		private void OnRowSelectionChanged(object? sender, SelectionChangedEventArgs e)
 		{
-			var row = (sender as ListBox)?.SelectedItem as MetaRowViewModel;
-			BuildEditor(row);
 		}
 
 		private void OnBlockExpandClick(object? sender, RoutedEventArgs e)
 		{
 			if ((sender as ToggleButton)?.Tag is MetaRowViewModel row && Vm?.ActiveDocument != null)
-			{
 				Vm.ActiveDocument.ToggleExpand(row);
-				if (Vm.ActiveDocument.SelectedRow == row) BuildEditor(row);
-			}
 		}
 
 		// ---- in-tag field filter ----
@@ -319,417 +311,6 @@ namespace Assembly.Avalonia.Views
 					e.Handled = true;
 					break;
 			}
-
-			if (e.Handled && doc.SelectedRow == row) BuildEditor(row);
-		}
-
-		// ================= value / properties sidebar =================
-		//
-		// Built imperatively rather than through XAML DataTemplates: the row's editable value
-		// lives in a plain (non-bindable-by-field) FieldEditState, and each field kind needs its
-		// own inline-validated widget set (flags -> a checkbox per bit computed from the schema,
-		// enum -> a live dropdown, vectors -> N numeric boxes, etc). Building it in code keeps
-		// that per-kind logic in one place and matches this codebase's existing convention of
-		// plain code-behind event handlers rather than an ICommand/MVVM framework.
-
-		private void BuildEditor(MetaRowViewModel? row)
-		{
-			if (_editorHost == null) return;
-			_editorHost.Children.Clear();
-			_refreshDirtyFooter = null;
-
-			var doc = Vm?.ActiveDocument;
-			if (row == null || doc == null)
-			{
-				_editorHost.Children.Add(Hint("Select a field in the table to edit its value here."));
-				return;
-			}
-
-			_editorHost.Children.Add(BuildHeader(row));
-
-			switch (row.Editor)
-			{
-				case EditorKind.Integer: AddIntegerEditor(row, doc); break;
-				case EditorKind.Float: AddFloatComponents(row, doc, "Value"); break;
-				case EditorKind.Vector2: AddFloatComponents(row, doc, "X", "Y"); break;
-				case EditorKind.Vector3: AddFloatComponents(row, doc, "X", "Y", "Z"); break;
-				case EditorKind.Vector4: AddFloatComponents(row, doc, "X", "Y", "Z", "W"); break;
-				case EditorKind.RangeFloat: AddFloatComponents(row, doc, "Min", "Max"); break;
-				case EditorKind.RangeInt16: AddShortRangeEditor(row, doc); break;
-				case EditorKind.Enum: AddEnumEditor(row, doc); break;
-				case EditorKind.Flags: AddFlagsEditor(row, doc); break;
-				case EditorKind.Color: AddColorEditor(row, doc); break;
-				case EditorKind.Ascii: AddTextEditor(row, doc, ascii: true); break;
-				case EditorKind.Utf16: AddTextEditor(row, doc, ascii: false); break;
-				case EditorKind.StringId: AddStringIdEditor(row, doc); break;
-				case EditorKind.Block: AddBlockNavEditor(row, doc); break;
-				default: AddReadOnlyNotice(row); break;
-			}
-
-			if (row.Def.IsEditable)
-				_editorHost.Children.Add(BuildFooter(row, doc));
-		}
-
-		private static Control Hint(string text) => new TextBlock
-		{
-			Text = text, Classes = { "label" }, TextWrapping = TextWrapping.Wrap
-		};
-
-		private static readonly FontFamily SemiBoldFont = new("avares://AssemblyAvalonia/Assets/Fonts#Selawik Semibold");
-		private static readonly IBrush SeparatorBrush = new SolidColorBrush(Color.Parse("#FF46464a"));
-
-		private Control BuildHeader(MetaRowViewModel row)
-		{
-			var panel = new StackPanel { Spacing = 2, Margin = new Thickness(0, 0, 0, 4) };
-			panel.Children.Add(new TextBlock { Text = row.Name, FontFamily = SemiBoldFont, FontSize = 14 });
-			panel.Children.Add(new TextBlock { Text = row.KindLabel, Classes = { "label" }, FontSize = 11 });
-			panel.Children.Add(new SelectableTextBlock { Text = row.OffsetLabel, Classes = { "mono", "dim" }, FontSize = 10.5 });
-			if (!string.IsNullOrWhiteSpace(row.Def.Tooltip))
-				panel.Children.Add(new TextBlock { Text = row.Def.Tooltip, Classes = { "label" }, FontSize = 10.5, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 2, 0, 0) });
-			panel.Children.Add(new Border { Height = 1, Background = SeparatorBrush, Margin = new Thickness(0, 6, 0, 0) });
-			return panel;
-		}
-
-		// Set by BuildFooter each time the editor panel is (re)built for a row; Commit() calls
-		// this instead of rebuilding the whole panel on every keystroke, so typing doesn't tear
-		// down and recreate the very TextBox the user is typing into (which both steals focus
-		// and, transitively through re-entrant control attach/detach, is a real hang risk).
-		private Action? _refreshDirtyFooter;
-
-		private Control BuildFooter(MetaRowViewModel row, TagDocumentViewModel doc)
-		{
-			var bar = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 6, Margin = new Thickness(0, 8, 0, 0) };
-			var dirtyLabel = new TextBlock { Classes = { "label" }, VerticalAlignment = VerticalAlignment.Center, FontSize = 10.5 };
-			var revert = new Button { Content = "Revert", IsEnabled = row.IsDirty };
-
-			void RefreshDirty()
-			{
-				dirtyLabel.Text = row.IsDirty ? "* modified (not saved)" : "unchanged";
-				revert.IsEnabled = row.IsDirty;
-			}
-			RefreshDirty();
-			_refreshDirtyFooter = RefreshDirty;
-
-			revert.Click += (_, _) => { row.Revert(); doc.RecomputeDirty(); RefreshDirty(); };
-
-			bar.Children.Add(revert);
-			bar.Children.Add(dirtyLabel);
-			return bar;
-		}
-
-		private void Commit(MetaRowViewModel row, TagDocumentViewModel doc)
-		{
-			row.NotifyEdited();
-			doc.RecomputeDirty();
-			_refreshDirtyFooter?.Invoke();
-		}
-
-		private static TextBox NumberBox(string initial) => new()
-		{
-			Text = initial, Width = 140, HorizontalAlignment = HorizontalAlignment.Left
-		};
-
-		private static TextBlock ErrorText() => new()
-		{
-			Classes = { "label" }, Foreground = Brushes.OrangeRed, FontSize = 10.5, IsVisible = false, TextWrapping = TextWrapping.Wrap
-		};
-
-		private void AddLabeledRow(string label, Control editor, TextBlock? error = null)
-		{
-			var row = new StackPanel { Spacing = 3, Margin = new Thickness(0, 0, 0, 6) };
-			row.Children.Add(new TextBlock { Text = label, Classes = { "label" }, FontSize = 10.5 });
-			row.Children.Add(editor);
-			if (error != null) row.Children.Add(error);
-			_editorHost!.Children.Add(row);
-		}
-
-		private void AddIntegerEditor(MetaRowViewModel row, TagDocumentViewModel doc)
-		{
-			var edit = row.Current!;
-			var box = NumberBox(edit.Int?.ToString(CultureInfo.InvariantCulture) ?? "0");
-			var err = ErrorText();
-			box.TextChanged += (_, _) =>
-			{
-				if (long.TryParse(box.Text, NumberStyles.Integer | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var v)
-				    || TryParseHex(box.Text, out v))
-				{
-					edit.Int = v;
-					err.IsVisible = false;
-					box.Classes.Remove("invalid");
-					Commit(row, doc);
-				}
-				else
-				{
-					err.Text = "not a valid integer (decimal or 0x hex)";
-					err.IsVisible = true;
-					box.Classes.Add("invalid");
-				}
-			};
-			AddLabeledRow("Value", box, err);
-		}
-
-		private static bool TryParseHex(string? text, out long value)
-		{
-			value = 0;
-			if (text == null) return false;
-			var t = text.Trim();
-			if (t.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
-				return long.TryParse(t[2..], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out value);
-			return false;
-		}
-
-		private void AddFloatComponents(MetaRowViewModel row, TagDocumentViewModel doc, params string[] labels)
-		{
-			var edit = row.Current!;
-			for (int i = 0; i < labels.Length; i++)
-			{
-				int idx = i;
-				float initial = edit.Floats != null && idx < edit.Floats.Length ? edit.Floats[idx] : 0f;
-				var box = NumberBox(initial.ToString("0.######", CultureInfo.InvariantCulture));
-				var err = ErrorText();
-				box.TextChanged += (_, _) =>
-				{
-					if (float.TryParse(box.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out var v) && edit.Floats != null && idx < edit.Floats.Length)
-					{
-						edit.Floats[idx] = v;
-						err.IsVisible = false;
-						box.Classes.Remove("invalid");
-						Commit(row, doc);
-					}
-					else
-					{
-						err.Text = "not a valid number";
-						err.IsVisible = true;
-						box.Classes.Add("invalid");
-					}
-				};
-				AddLabeledRow(labels[idx], box, err);
-			}
-		}
-
-		private void AddShortRangeEditor(MetaRowViewModel row, TagDocumentViewModel doc)
-		{
-			var edit = row.Current!;
-			AddShortBox("Min", () => edit.ShortLo, v => edit.ShortLo = v, row, doc);
-			AddShortBox("Max", () => edit.ShortHi, v => edit.ShortHi = v, row, doc);
-		}
-
-		private void AddShortBox(string label, Func<short> get, Action<short> set, MetaRowViewModel row, TagDocumentViewModel doc)
-		{
-			var box = NumberBox(get().ToString(CultureInfo.InvariantCulture));
-			var err = ErrorText();
-			box.TextChanged += (_, _) =>
-			{
-				if (short.TryParse(box.Text, NumberStyles.Integer | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var v))
-				{
-					set(v);
-					err.IsVisible = false;
-					box.Classes.Remove("invalid");
-					Commit(row, doc);
-				}
-				else
-				{
-					err.Text = "not a valid 16-bit integer";
-					err.IsVisible = true;
-					box.Classes.Add("invalid");
-				}
-			};
-			AddLabeledRow(label, box, err);
-		}
-
-		private void AddEnumEditor(MetaRowViewModel row, TagDocumentViewModel doc)
-		{
-			var edit = row.Current!;
-			var combo = new ComboBox { ItemsSource = row.Choices, HorizontalAlignment = HorizontalAlignment.Stretch };
-			combo.SelectedItem = row.Choices.FirstOrDefault(c => c.Value == edit.Int);
-			combo.SelectionChanged += (_, _) =>
-			{
-				if (combo.SelectedItem is ChoiceOption c)
-				{
-					edit.Int = c.Value;
-					Commit(row, doc);
-				}
-			};
-			AddLabeledRow("Selected option", combo);
-
-			if (combo.SelectedItem == null && edit.Int != null)
-				AddLabeledRow("Raw value (no matching option)", new TextBlock { Text = edit.Int.ToString(), Classes = { "mono" } });
-		}
-
-		private void AddFlagsEditor(MetaRowViewModel row, TagDocumentViewModel doc)
-		{
-			var edit = row.Current!;
-			var list = new StackPanel { Spacing = 2 };
-			foreach (var choice in row.Choices)
-			{
-				var cb = new CheckBox
-				{
-					Content = choice.Name,
-					IsChecked = ((edit.Int ?? 0) & choice.Value) != 0,
-					FontSize = 11.5
-				};
-				cb.PropertyChanged += (_, ev) =>
-				{
-					if (ev.Property != ToggleButton.IsCheckedProperty) return;
-					if (cb.IsChecked == true) edit.Int = (edit.Int ?? 0) | choice.Value;
-					else edit.Int = (edit.Int ?? 0) & ~choice.Value;
-					Commit(row, doc);
-				};
-				list.Children.Add(cb);
-			}
-			if (row.Choices.Count == 0)
-				list.Children.Add(Hint("This bitfield has no named bits in the plugin."));
-			_editorHost!.Children.Add(list);
-		}
-
-		private void AddColorEditor(MetaRowViewModel row, TagDocumentViewModel doc)
-		{
-			var edit = row.Current!;
-			uint raw = (uint)(edit.Int ?? 0);
-			bool hasAlpha = row.Def.Note == "argb";
-
-			var swatch = new Border { Width = 32, Height = 22, BorderBrush = Brushes.Gray, BorderThickness = new Thickness(1) };
-			void Repaint(uint v) => swatch.Background = new SolidColorBrush(new Color(
-				hasAlpha ? (byte)(v >> 24) : (byte)255, (byte)(v >> 16), (byte)(v >> 8), (byte)v));
-			Repaint(raw);
-
-			var hexBox = NumberBox($"{raw:X8}");
-			var err = ErrorText();
-			var row1 = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
-			row1.Children.Add(swatch);
-			row1.Children.Add(hexBox);
-
-			hexBox.TextChanged += (_, _) =>
-			{
-				var t = hexBox.Text?.TrimStart('#') ?? "";
-				if (uint.TryParse(t, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var v))
-				{
-					edit.Int = v;
-					Repaint(v);
-					err.IsVisible = false;
-					hexBox.Classes.Remove("invalid");
-					Commit(row, doc);
-				}
-				else
-				{
-					err.Text = "not a valid hex colour (e.g. FF8800)";
-					err.IsVisible = true;
-					hexBox.Classes.Add("invalid");
-				}
-			};
-
-			_editorHost!.Children.Add(new TextBlock { Text = hasAlpha ? "ARGB (hex)" : "RGB (hex)", Classes = { "label" }, FontSize = 10.5, Margin = new Thickness(0, 0, 0, 3) });
-			_editorHost.Children.Add(row1);
-			_editorHost.Children.Add(err);
-		}
-
-		private void AddTextEditor(MetaRowViewModel row, TagDocumentViewModel doc, bool ascii)
-		{
-			var edit = row.Current!;
-			int maxChars = ascii ? row.Def.Size : row.Def.Size / 2;
-			var box = new TextBox { Text = edit.Text ?? "", Width = 240 };
-			var err = ErrorText();
-			box.TextChanged += (_, _) =>
-			{
-				var text = box.Text ?? "";
-				if (text.Length > maxChars)
-				{
-					err.Text = $"too long: {text.Length}/{maxChars} characters (fixed-size field)";
-					err.IsVisible = true;
-					box.Classes.Add("invalid");
-					return;
-				}
-				edit.Text = text;
-				err.IsVisible = false;
-				box.Classes.Remove("invalid");
-				Commit(row, doc);
-			};
-			AddLabeledRow($"Text (max {maxChars} chars)", box, err);
-		}
-
-		private void AddStringIdEditor(MetaRowViewModel row, TagDocumentViewModel doc)
-		{
-			var edit = row.Current!;
-			_editorHost!.Children.Add(new TextBlock { Text = "Current: " + row.DisplayValue, Classes = { "mono" }, FontSize = 11, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 6) });
-
-			var search = new TextBox { Watermark = "Search existing string IDs...", Width = 240 };
-			var results = new ListBox { Height = 120, Width = 240 };
-			_editorHost.Children.Add(search);
-			_editorHost.Children.Add(results);
-
-			search.TextChanged += (_, _) =>
-			{
-				results.ItemsSource = doc.SearchStringIds(search.Text ?? "", 30);
-			};
-			results.SelectionChanged += (_, _) =>
-			{
-				if (results.SelectedItem is string s)
-				{
-					var sid = doc.FindStringId(s);
-					if (sid != null)
-					{
-						edit.Int = sid.Value;
-						Commit(row, doc);
-					}
-				}
-			};
-
-			_editorHost.Children.Add(Hint("Picking from existing string IDs writes a real value. Adding brand-new strings isn't supported yet (it needs the cache's string table to grow)."));
-		}
-
-		private void AddBlockNavEditor(MetaRowViewModel row, TagDocumentViewModel doc)
-		{
-			_editorHost!.Children.Add(new TextBlock { Text = row.ElementSummary, Classes = { "mono" }, FontSize = 12 });
-
-			var nav = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 6, Margin = new Thickness(0, 8, 0, 8) };
-			var prev = new Button { Content = "< Prev" };
-			var next = new Button { Content = "Next >" };
-			var indexBox = new TextBox { Text = row.ElementIndex.ToString(), Width = 60 };
-			prev.Click += (_, _) => { doc.SetElementIndex(row, row.ElementIndex - 1); RefreshBlockNav(row, doc); };
-			next.Click += (_, _) => { doc.SetElementIndex(row, row.ElementIndex + 1); RefreshBlockNav(row, doc); };
-			indexBox.KeyDown += (_, ke) =>
-			{
-				if (ke.Key == Key.Enter && int.TryParse(indexBox.Text, out var i))
-				{
-					doc.SetElementIndex(row, i);
-					RefreshBlockNav(row, doc);
-				}
-			};
-			nav.Children.Add(prev);
-			nav.Children.Add(indexBox);
-			nav.Children.Add(next);
-			_editorHost.Children.Add(nav);
-
-			var expand = new ToggleButton { Content = row.IsExpanded ? "Collapse in table" : "Expand in table", IsChecked = row.IsExpanded };
-			expand.Click += (_, _) => { doc.ToggleExpand(row); BuildEditor(row); };
-			_editorHost.Children.Add(expand);
-
-			_editorHost.Children.Add(Hint(doc.IsFifthGen
-				? "This tag is self-describing: its block/array/struct elements were already parsed from the payload's own 'bdat' chunk when the tag was opened, not resolved through a cache pointer."
-				: "Element navigation reads the block's live count/pointer from the cache and resolves the pointer through the cache's own meta-area converter - not a canned list."));
-		}
-
-		private void RefreshBlockNav(MetaRowViewModel row, TagDocumentViewModel doc) => BuildEditor(row);
-
-		private void AddReadOnlyNotice(MetaRowViewModel row)
-		{
-			_editorHost!.Children.Add(new TextBlock
-			{
-				Text = row.Def.Kind switch
-				{
-					MetaFieldKind.TagReference => "Tag references are shown resolved, but retargeting them isn't wired up yet.",
-					MetaFieldKind.DataReference => "Raw data references (variable-length blobs) aren't editable yet - they need the allocator.",
-					MetaFieldKind.RawData or MetaFieldKind.HexString => "Raw/hex byte blobs aren't editable yet.",
-					MetaFieldKind.Datum => "Datum indices are identifiers, not editable values.",
-					MetaFieldKind.Comment => "This is an informational note, not a field.",
-					MetaFieldKind.FifthGenValue =>
-						"Campaign Evolved tag fields are read-only in this build: the tag carries its own schema " +
-						"instead of a plugin, and Blamite's FifthGenCacheFile.SaveChanges does not support writing them back.",
-					_ => $"{row.Def.Kind} fields are read-only in this pass."
-				},
-				Classes = { "label" },
-				TextWrapping = TextWrapping.Wrap
-			});
 		}
 
 		private async Task CaptureAsync(string path)
@@ -778,14 +359,10 @@ namespace Assembly.Avalonia.Views
 					{
 						Vm.ActiveDocument.ToggleExpand(blockRow);
 						Vm.ActiveDocument.SelectedRow = blockRow;
-						BuildEditor(blockRow);
 
 						var elementIndexStr = Environment.GetEnvironmentVariable("ASM_ELEMENT");
 						if (!string.IsNullOrEmpty(elementIndexStr) && int.TryParse(elementIndexStr, out var elIdx))
-						{
 							Vm.ActiveDocument.SetElementIndex(blockRow, elIdx);
-							BuildEditor(blockRow);
-						}
 					}
 				}
 
@@ -796,7 +373,6 @@ namespace Assembly.Avalonia.Views
 					if (target != null)
 					{
 						Vm.ActiveDocument.SelectedRow = target;
-						BuildEditor(target);
 						var fieldList = this.FindControl<ListBox>("FieldList");
 						fieldList?.ScrollIntoView(target);
 
@@ -804,9 +380,9 @@ namespace Assembly.Avalonia.Views
 						// screenshot can show a genuinely dirty, validated edit rather than a
 						// static mock of one.
 						var editValue = Environment.GetEnvironmentVariable("ASM_EDIT_VALUE");
-						if (editValue != null && _editorHost != null)
+						if (editValue != null && _propertiesPanel != null)
 						{
-							var box = _editorHost.GetVisualDescendants().OfType<TextBox>().FirstOrDefault();
+							var box = _propertiesPanel.GetVisualDescendants().OfType<TextBox>().FirstOrDefault();
 							if (box != null) box.Text = editValue;
 							// TextChanged is dispatched, not synchronous with the property set above;
 							// give it a turn of the UI loop before checking dirty state / saving.
@@ -817,7 +393,6 @@ namespace Assembly.Avalonia.Views
 						{
 							var (ok, message) = Vm.ActiveDocument.Save();
 							Console.WriteLine($"ASM_SAVE result: ok={ok} message=\"{message}\"");
-							BuildEditor(Vm.ActiveDocument.SelectedRow);
 						}
 					}
 				}

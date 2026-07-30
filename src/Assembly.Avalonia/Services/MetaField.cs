@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Assembly.Avalonia.Services
@@ -89,6 +90,51 @@ namespace Assembly.Avalonia.Services
 			MetaFieldKind.Ascii or MetaFieldKind.Utf16 or
 			MetaFieldKind.StringId or MetaFieldKind.OldStringId => true,
 			_ => false
+		};
+
+		/// <summary>For an integer <see cref="Kind" />, the field's declared bit width (8/16/32/64).
+		/// Zero for anything else. Used to validate a typed value against the width the plugin
+		/// actually declared instead of the 64 bits <see cref="FieldEditState.Int" /> happens to be
+		/// stored in - see the integer editor's remarks on why silently truncating an overflow is
+		/// not acceptable here.</summary>
+		public int IntegerBits => Kind switch
+		{
+			MetaFieldKind.UInt8 or MetaFieldKind.Int8 => 8,
+			MetaFieldKind.UInt16 or MetaFieldKind.Int16 => 16,
+			MetaFieldKind.UInt32 or MetaFieldKind.Int32 => 32,
+			MetaFieldKind.UInt64 or MetaFieldKind.Int64 => 64,
+			_ => 0
+		};
+
+		/// <summary>Whether an integer <see cref="Kind" /> is two's-complement signed. Meaningless
+		/// (and false) for a non-integer kind.</summary>
+		public bool IsSignedInteger => Kind is MetaFieldKind.Int8 or MetaFieldKind.Int16 or MetaFieldKind.Int32 or MetaFieldKind.Int64;
+
+		/// <summary>
+		///     Per-component axis labels for a float/vector-shaped field, matching the convention
+		///     this codebase's own WPF meta editor already uses (see
+		///     Multi2Value.xaml/Multi3Value.xaml's per-<c>Type</c> label triggers): "x/y/z" for a
+		///     position (<see cref="MetaFieldKind.Point2" />/<see cref="MetaFieldKind.Point3" />),
+		///     "i/j/k[/w]" for a direction or quaternion (<see cref="MetaFieldKind.Vector2" />
+		///     through <see cref="MetaFieldKind.Vector4" />, the default for anything 4-wide), and
+		///     "yaw/pitch[/roll]" for an orientation (<see cref="MetaFieldKind.Degree2" />/
+		///     <see cref="MetaFieldKind.Degree3" />). Empty for anything that is not this shape of
+		///     field; length always matches how many floats <see cref="FieldEditState.Floats" />
+		///     holds for this <see cref="Kind" />.
+		/// </summary>
+		public string[] ComponentLabels => Kind switch
+		{
+			MetaFieldKind.Float32 => new[] { "Value" },
+			MetaFieldKind.Degree => new[] { "Angle" },
+			MetaFieldKind.Point2 => new[] { "X", "Y" },
+			MetaFieldKind.Point3 => new[] { "X", "Y", "Z" },
+			MetaFieldKind.Vector2 => new[] { "I", "J" },
+			MetaFieldKind.Vector3 => new[] { "I", "J", "K" },
+			MetaFieldKind.Vector4 => new[] { "I", "J", "K", "W" },
+			MetaFieldKind.Degree2 => new[] { "Yaw", "Pitch" },
+			MetaFieldKind.Degree3 => new[] { "Yaw", "Pitch", "Roll" },
+			MetaFieldKind.RangeFloat32 or MetaFieldKind.RangeDegree => new[] { "Min", "Max" },
+			_ => Array.Empty<string>()
 		};
 	}
 }
