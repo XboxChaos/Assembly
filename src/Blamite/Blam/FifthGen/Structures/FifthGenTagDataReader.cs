@@ -22,6 +22,15 @@ namespace Blamite.Blam.FifthGen.Structures
 	///         succeed while quietly skipping a section type it has never heard of. Checking each wrapper individually is what
 	///         turns that into a precise error naming the chunk and the offset.
 	///     </para>
+	///     <para>
+	///         A struct instance's wrapper can hold more sections than its field list has fields to contribute them - a shipped
+	///         scenario writes an empty struct-field wrapper immediately followed by a second, populated one for the same
+	///         struct, with no field left to attribute the second wrapper to. Which field the extra section belongs to, and why
+	///         the writer duplicated it, is not recoverable from the schema; what is recoverable is that a <c>tgst</c>
+	///         section's content is always itself a run of further sections, so leftover bytes after the declared fields are
+	///         read are walked the same schema-agnostic way - by their own magics - rather than discarded or rejected. See
+	///         <see cref="ReadTrailingSections" />.
+	///     </para>
 	/// </remarks>
 	public class FifthGenTagDataReader
 	{
@@ -45,6 +54,12 @@ namespace Blamite.Blam.FifthGen.Structures
 		///     element of a block.
 		/// </summary>
 		private readonly HashSet<int> _elidedStructs = new HashSet<int>();
+
+		/// <summary>
+		///     The structs already reported as carrying more sections than their field list accounts for, so that the warning is
+		///     not repeated for every element of a block.
+		/// </summary>
+		private readonly HashSet<int> _trailingStructs = new HashSet<int>();
 
 		/// <summary>
 		///     Initializes a new instance of the <see cref="FifthGenTagDataReader" /> class.
@@ -99,8 +114,7 @@ namespace Blamite.Blam.FifthGen.Structures
 					FifthGenChunk wrapper = FifthGenChunk.ReadExpecting(reader, chunk.ContentEnd, _structMagic,
 						Where($"element {i} of block '{label}'"));
 					_path.Add($"{label}[{i}]");
-					ReadSections(reader, elements[i], wrapper);
-					wrapper.EnsureConsumed(reader);
+					ReadStructInstanceSections(reader, elements[i], wrapper);
 					_path.RemoveAt(_path.Count - 1);
 				}
 			}
@@ -294,8 +308,87 @@ namespace Blamite.Blam.FifthGen.Structures
 				return;
 			}
 
+			ReadStructInstanceSections(reader, instance, wrapper);
+		}
+
+		/// <summary>
+		///     Reads a struct instance's wrapper in full: its fields' sections against the schema, then whatever the wrapper still
+		///     holds beyond them, then asserts the wrapper was consumed exactly.
+		/// </summary>
+		/// <remarks>
+		///     This is the one place the strict-consumption assertion is applied to a struct's own wrapper, so both the schema
+		///     walk and the fallback that covers what it misses run before it, and the assertion still has the last word: if the
+		///     fallback cannot account for what is left either, the wrapper is exactly as unconsumed as it would have been
+		///     without it, and the same error fires.
+		/// </remarks>
+		private void ReadStructInstanceSections(IReader reader, FifthGenTagStruct instance, FifthGenChunk wrapper)
+		{
 			ReadSections(reader, instance, wrapper);
+			ReadTrailingSections(reader, instance, wrapper);
 			wrapper.EnsureConsumed(reader);
+		}
+
+		/// <summary>
+		///     Reads whatever a struct instance's wrapper still holds after its declared fields' sections have been read.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         A shipped scenario's <c>scenario_effect_scenery_block</c> writes an empty <c>struct</c>-field wrapper for
+		///         <c>multiplayer data</c> immediately followed by a second, fully populated wrapper of the same shape - two
+		///         <c>tgst</c> sections where the field list has one field left to read a section for. Nothing in the schema
+		///         names a second field to attribute it to, in this struct or any other, so it cannot be modelled as a field's
+		///         value the way every other section in this reader is.
+		///     </para>
+		///     <para>
+		///         What can be shown from the bytes themselves: a <c>tgst</c> section's content is never anything other than a
+		///         run of further sections - that is the whole of what a struct's wrapper is for - so it can be walked by magic
+		///         alone, with no struct definition to check field-by-field against, the same way the outermost schema-driven
+		///         walk would if it had one. Every other section shape declares its own length and needs no schema either. A
+		///         <c>tgbl</c> is the one shape this cannot cover: a block's bounds depend on an element struct and a count this
+		///         fallback has no way to learn, so one turning up here remains a hard failure rather than a guess.
+		///     </para>
+		/// </remarks>
+		private void ReadTrailingSections(IReader reader, FifthGenTagStruct instance, FifthGenChunk wrapper)
+		{
+			if (reader.Position >= wrapper.ContentEnd)
+				return;
+
+			var extra = new List<FifthGenTrailingSection>();
+			while (reader.Position < wrapper.ContentEnd)
+				extra.Add(ReadGenericSection(reader, wrapper.ContentEnd));
+			instance.TrailingSections = extra;
+
+			if (_trailingStructs.Add(instance.Definition.Index))
+			{
+				_warnings.Add(
+					$"{Where($"struct '{instance.Definition.Name}'")} holds {extra.Count} more section(s) at 0x{extra[0].HeaderOffset:X} beyond what its field list accounts for. They were preserved without being attributed to a field; see FifthGenTrailingSection.");
+			}
+		}
+
+		/// <summary>
+		///     Reads one section by its magic alone, with no field or struct definition to check it against.
+		/// </summary>
+		private FifthGenTrailingSection ReadGenericSection(IReader reader, long limit)
+		{
+			FifthGenChunk section = FifthGenChunk.Read(reader, limit, Where("an unattributed trailing section"));
+
+			if (section.Magic == _structMagic)
+			{
+				var children = new List<FifthGenTrailingSection>();
+				while (reader.Position < section.ContentEnd)
+					children.Add(ReadGenericSection(reader, section.ContentEnd));
+				section.EnsureConsumed(reader);
+				return new FifthGenTrailingSection(section.Magic, section.HeaderOffset, null, children);
+			}
+
+			if (section.Magic == _stringIdMagic || section.Magic == _dataMagic || section.Magic == _referenceMagic ||
+				FifthGenFieldTypes.IsPageableResourceSection(section.Magic))
+			{
+				return new FifthGenTrailingSection(section.Magic, section.HeaderOffset, section.ReadContent(reader), null);
+			}
+
+			throw new FifthGenFormatException(
+				$"{Where("an unattributed trailing section")} at 0x{section.HeaderOffset:X} has magic '{section.MagicString}', which cannot be bounded without a field to match it against.");
 		}
 
 		/// <summary>
