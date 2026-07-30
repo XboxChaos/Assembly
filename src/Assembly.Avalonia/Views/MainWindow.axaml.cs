@@ -626,6 +626,12 @@ namespace Assembly.Avalonia.Views
 				await Task.Delay(200);
 			}
 
+			if (Environment.GetEnvironmentVariable("ASM_CE_RUN") == "1")
+			{
+				await dialog.TriggerRunForScreenshotAsync();
+				await Task.Delay(200);
+			}
+
 			try
 			{
 				var px = new PixelSize((int)dialog.Bounds.Width, (int)dialog.Bounds.Height);

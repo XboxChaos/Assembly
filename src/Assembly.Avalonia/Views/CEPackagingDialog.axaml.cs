@@ -134,7 +134,12 @@ namespace Assembly.Avalonia.Views
 
 		// ---- run ----
 
-		private async void OnRunClick(object? sender, RoutedEventArgs e)
+		private async void OnRunClick(object? sender, RoutedEventArgs e) => await RunAsync();
+
+		/// <summary>Drives the same run path <see cref="OnRunClick" /> does, for the headless screenshot harness.</summary>
+		internal Task TriggerRunForScreenshotAsync() => RunAsync();
+
+		private async Task RunAsync()
 		{
 			if (!Vm.HasPreview) await RunPreviewAsync();
 			if (!Vm.CanRun) return;
