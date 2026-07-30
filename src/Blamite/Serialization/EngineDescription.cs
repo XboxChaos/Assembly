@@ -186,6 +186,12 @@ namespace Blamite.Serialization
 		public EngineType Engine { get; set; }
 
 		/// <summary>
+		///		How the engine's on-disk data is packaged. Defaults to <see cref="EngineContainerType.Cache" />,
+		///		which is every engine before Campaign Evolved; set via <c>&lt;engineInfo&gt;&lt;container&gt;</c>.
+		/// </summary>
+		public EngineContainerType Container { get; private set; }
+
+		/// <summary>
 		///     Gets the platform of the game for poking purposes.
 		/// </summary>
 		public RTEConnectionType PokingPlatform { get; private set; }
@@ -261,8 +267,19 @@ namespace Blamite.Serialization
 				Engine = EngineType.ThirdGeneration;
 			else if (generation.Contains("eldorado"))
 				Engine = EngineType.Eldorado;
+			else if (generation.Contains("fifth"))
+				Engine = EngineType.FifthGeneration;
 			else
-				throw new System.Exception("Invalid generation type \"" + generation + "\" for build " + Name + "in engines.xml. Only \"first\", \"second\", \"third\", and \"eldorado\" are valid.");
+				throw new System.Exception("Invalid generation type \"" + generation + "\" for build " + Name + "in engines.xml. Only \"first\", \"second\", \"third\", \"eldorado\", and \"fifth\" are valid.");
+
+			string container = Settings.GetSettingOrDefault("engineInfo/container", "cache");
+
+			if (container.Contains("iostore"))
+				Container = EngineContainerType.IoStore;
+			else if (container.Contains("cache"))
+				Container = EngineContainerType.Cache;
+			else
+				throw new System.Exception("Invalid container type \"" + container + "\" for build " + Name + "in engines.xml. Only \"cache\" and \"iostore\" are valid.");
 
 			string compression = Settings.GetSettingOrDefault("engineInfo/compression", "none");
 
@@ -332,6 +349,15 @@ namespace Blamite.Serialization
 
 		private void LoadCrucialLayoutInfo()
 		{
+			// "header" and "build string" exist to serve build-string matching in
+			// CacheFileLoader.FindEngineDescriptions, which only applies to the single-file "head"/
+			// "daeh" cache format every non-cache container predates. A container-packaged engine
+			// (Campaign Evolved's IoStore .utoc/.ucas pairs) has neither a fixed header nor an
+			// embedded build string to match - it is told apart by its own container magic and a
+			// version number instead, so there is nothing here to validate.
+			if (Container != EngineContainerType.Cache)
+				return;
+
 			var header = Layouts.GetLayout("header");
 			if (header == null)
 				throw new System.Exception("Build " + Name + "in engines.xml is missing a layout for \"header\".");

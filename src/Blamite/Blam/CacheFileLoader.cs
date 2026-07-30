@@ -6,6 +6,7 @@ using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Blam.FirstGen;
 using Blamite.Blam.Eldorado;
+using Blamite.Blam.FifthGen;
 using System.Collections.Generic;
 
 namespace Blamite.Blam
@@ -79,6 +80,9 @@ namespace Blamite.Blam
 				case EngineType.Eldorado:
 					return new EldoradoCacheFile(reader, engineInfo, filePath);
 
+				case EngineType.FifthGeneration:
+					return new FifthGenCacheFile(reader, engineInfo, filePath);
+
 				default:
 					throw new NotSupportedException("Engine not supported");
 			}
@@ -122,6 +126,14 @@ namespace Blamite.Blam
 
 			if (endianMod != null)
 				return matches;
+
+			// A .utoc always starts "-==--==--==--==-", which - unlike every "head"/"daeh"/"dhom"/
+			// "mohd" magic this loader otherwise looks for - repeats the same 4 bytes 4 times over,
+			// so the leading 4 bytes already identify it uniquely. Campaign Evolved has no single
+			// cache file to carry a build string, so it is matched by container magic and TOC
+			// version alone; see FindIoStoreEngineDescriptions.
+			if (IsIoStoreMagic(headerMagic))
+				return FindIoStoreEngineDescriptions(reader, engineDb);
 
 			if (endian != null)
 			{
@@ -238,6 +250,56 @@ namespace Blamite.Blam
 				return Endian.LittleEndian;
 
 			return null;
+		}
+
+		/// <summary>
+		///     Determines whether a 4-byte header magic is the start of an IoStore .utoc's
+		///     "-==--==--==--==-" signature.
+		/// </summary>
+		/// <param name="headerMagic">The first 4 bytes of the file.</param>
+		/// <returns><c>true</c> if the file is an IoStore table of contents.</returns>
+		public static bool IsIoStoreMagic(byte[] headerMagic)
+		{
+			return headerMagic[0] == '-' && headerMagic[1] == '=' && headerMagic[2] == '=' && headerMagic[3] == '-';
+		}
+
+		/// <summary>
+		///     Finds engine descriptions matching an IoStore .utoc file, the container format
+		///     Campaign Evolved uses.
+		/// </summary>
+		/// <param name="reader">
+		///     The stream to read from, positioned anywhere - it is reseeked. Left positioned just
+		///     past the version byte at 0x11 on return.
+		/// </param>
+		/// <param name="engineDb">The engine database to search.</param>
+		/// <returns>
+		///     Every registered <see cref="EngineContainerType.IoStore" /> engine whose declared
+		///     version matches the file's TOC version.
+		/// </returns>
+		/// <remarks>
+		///     Detection reads only the fixed 16-byte magic and the 1-byte version that follows it at
+		///     0x10 - never the directory index, which a shipped container can carry megabytes of.
+		///     Nothing past those 17 bytes is needed to tell one supported Campaign Evolved build
+		///     from another; the real per-tag work happens once a build is chosen and its containers
+		///     are actually mounted (see FifthGenCacheFile), where the presence of at least one Blam
+		///     tag is verified explicitly.
+		/// </remarks>
+		private static List<EngineDescription> FindIoStoreEngineDescriptions(IReader reader, EngineDatabase engineDb)
+		{
+			var matches = new List<EngineDescription>();
+
+			// Every field in a .utoc header is little-endian, including the version byte itself.
+			reader.Endianness = Endian.LittleEndian;
+			reader.SeekTo(0x10);
+			int version = reader.ReadByte();
+
+			foreach (EngineDescription engine in engineDb.FindEnginesByVersion(version, reader.Endianness))
+			{
+				if (engine.Container == EngineContainerType.IoStore)
+					matches.Add(engine);
+			}
+
+			return matches;
 		}
 
 		public static bool CheckFooter(byte[] footerMagic)
