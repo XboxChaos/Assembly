@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+#if NETFRAMEWORK
 using System.Windows.Forms;
+#endif
 using Blamite.Blam;
 using Blamite.Blam.Localization;
 using Blamite.Serialization;
@@ -16,6 +18,7 @@ namespace StringDump
 		[STAThread]
 		private static void Main(string[] args)
 		{
+#if NETFRAMEWORK
 			var ofd = new OpenFileDialog();
 			ofd.Title = "Open Cache File";
 			ofd.Filter = "Blam Cache Files|*.map";
@@ -30,6 +33,18 @@ namespace StringDump
 
 			string mapPath = ofd.FileName;
 			string dumpPath = sfd.FileName;
+#else
+			// System.Windows.Forms only exists on .NET Framework, so take the paths from the
+			// command line instead of prompting, like the other console tools in this repo do.
+			if (args.Length != 2)
+			{
+				Console.WriteLine("Usage: StringDump <map file> <output text file>");
+				return;
+			}
+
+			string mapPath = args[0];
+			string dumpPath = args[1];
+#endif
 
 			EngineDatabase engineDb = XMLEngineDatabaseLoader.LoadDatabase("Formats/Engines.xml");
 			ICacheFile cacheFile;

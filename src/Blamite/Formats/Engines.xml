@@ -2394,4 +2394,27 @@
 			<scripting type="scripting" path="Formats/HaloOnline/HO_ZBT70_Scripting.xml" />
 		</databases>
 	</engine>
+
+	<!--
+		Halo: Campaign Evolved. Not a single cache file - a folder of Unreal Engine IoStore
+		.utoc/.ucas container pairs (a mod's several "_P" override sets, or the shipped game's own
+		Meteorite/Content/Paks/, 28 pairs). <container>iostore</container> tells both
+		EngineDescription and CacheFileLoader to skip the "header"/"build string" matching every
+		other engine here needs, since there is neither - detection instead reads a .utoc's own
+		16-byte magic and 1-byte TOC version. version="8" is that TOC version, not a build-specific
+		number, so - unlike every other engine below - it is expected to match many different actual
+		game builds; only one Campaign Evolved TOC version has ever shipped so far.
+	-->
+	<engine name="Halo: Campaign Evolved" version="8" build="">
+		<shortName>CE</shortName>
+		<plugins>CampaignEvolved</plugins>
+		<engineInfo>
+			<generation>fifth</generation>
+			<container>iostore</container>
+			<endian>little</endian>
+		</engineInfo>
+		<databases>
+			<layouts type="layouts" path="Formats/CampaignEvolved/Layouts" />
+		</databases>
+	</engine>
 </engines>
