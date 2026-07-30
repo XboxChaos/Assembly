@@ -7,7 +7,9 @@ namespace Assembly.Avalonia
 		[System.STAThread]
 		public static int Main(string[] args)
 		{
-			if (args.Length > 0 && (args[0] == "--headless" || args[0] == "--edit-test" || args[0] == "--perf-test"))
+			if (args.Length > 0 && (args[0] == "--headless" || args[0] == "--edit-test" || args[0] == "--perf-test" ||
+			                        args[0] == "--iostore-inspect" || args[0] == "--fifthgen-roundtrip" ||
+			                        args[0] == "--ce-unpack" || args[0] == "--ce-repack"))
 				return HeadlessProbe.Run(args);
 
 			return BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
