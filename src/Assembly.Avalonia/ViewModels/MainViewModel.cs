@@ -130,6 +130,17 @@ namespace Assembly.Avalonia.ViewModels
 		public bool HasAnySource => _namespace.HasAnySource;
 		public bool HasMultipleSources => _namespace.HasMultipleSources;
 
+		/// <summary>Read-only view over the flattened tag list, for the command palette's tag
+		/// search (Services/TagSearchIndex.cs) to build its own lightweight index from without
+		/// needing its own reference to <see cref="TagNamespace" />. Same list <see cref="ApplyFilter" />
+		/// already filters the tree from - not a copy, just not writable from outside.</summary>
+		public IReadOnlyList<TagInfo> AllTagsSnapshot => _allTags;
+
+		/// <summary>Bumped every time <see cref="_allTags" /> is rebuilt (a mount or unmount).
+		/// The palette rebuilds its tag search index only when this changes, rather than on every
+		/// open - see CommandPalette.EnsureTagIndexFresh.</summary>
+		public int TagsVersion { get; private set; }
+
 		private string _windowTitle = "Assembly";
 		public string WindowTitle { get => _windowTitle; set => Set(ref _windowTitle, value); }
 
@@ -329,6 +340,7 @@ namespace Assembly.Avalonia.ViewModels
 			_groupInfo = _namespace.Sessions.SelectMany(s => s.Groups)
 				.GroupBy(g => g.Magic)
 				.ToDictionary(g => g.Key, g => g.First());
+			TagsVersion++;
 
 			ApplyFilter();
 			Raise(nameof(HasAnySource));
@@ -353,6 +365,7 @@ namespace Assembly.Avalonia.ViewModels
 			_allTags.Clear();
 			_groupInfo.Clear();
 			Nodes.Clear();
+			TagsVersion++;
 			Raise(nameof(HasAnySource));
 			Raise(nameof(HasMultipleSources));
 			Raise(nameof(Sources));

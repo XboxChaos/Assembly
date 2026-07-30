@@ -26,7 +26,8 @@ namespace Assembly.Avalonia
 			"--fifthgen-roundtrip",
 			"--ce-unpack",
 			"--ce-repack",
-			"--ce-mutate-tag-file"
+			"--ce-mutate-tag-file",
+			"--palette-bench"
 		};
 
 		[STAThread]

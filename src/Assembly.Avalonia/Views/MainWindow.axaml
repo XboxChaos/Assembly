@@ -26,6 +26,18 @@
     repaints correctly for whichever variant that resolves to.
   -->
 
+  <!--
+    Every Gesture string below is a NativeMenuItem-XAML-only concern - Avalonia's KeyGestureConverter
+    parses it with a literal "Cmd" token (Meta), not the platform-primary-modifier lookup
+    Services/PlatformKeys.cs uses for the in-window global handler (MainWindow.axaml.cs's
+    OnGlobalKeyDown), because a NativeMenu is macOS's own menu bar - it has no meaning on a
+    platform that would otherwise want Ctrl here, so there is no cross-platform label to get right
+    in the first place (see NativeMenu's own Avalonia docs: it only renders at all on macOS).
+    Bracket/backslash/question-mark keys have to be spelled as their Key enum names
+    (OemOpenBrackets, not "[") - the literal punctuation characters fail to parse (verified
+    against Avalonia 12.1.1's KeyGestureConverter directly - "Cmd+[" throws, "Cmd+OemOpenBrackets"
+    does not).
+  -->
   <NativeMenu.Menu>
     <NativeMenu>
       <NativeMenuItem Header="File">
@@ -36,6 +48,7 @@
             <NativeMenuItem Header="Open Zip..." Click="OnMenuOpenZip" />
             <NativeMenuItemSeparator />
             <NativeMenuItem Header="Save" Gesture="Cmd+S" Click="OnMenuSave" />
+            <NativeMenuItem Header="Revert All Changes" Click="OnMenuRevertAll" />
             <NativeMenuItemSeparator />
             <!-- Campaign Evolved's tags live in a folder of IoStore containers rather than one
                  cache file (see ce-packaging's own remarks in CEPackagingService.cs), so getting
@@ -43,6 +56,7 @@
             <NativeMenuItem Header="Unpack Campaign Evolved Tags..." Click="OnMenuUnpack" />
             <NativeMenuItem Header="Repack Campaign Evolved Tags..." Click="OnMenuRepack" />
             <NativeMenuItemSeparator />
+            <NativeMenuItem Header="Close Tab" Gesture="Cmd+W" Click="OnMenuCloseTab" />
             <NativeMenuItem Header="Close All" Click="OnMenuCloseAll" />
           </NativeMenu>
         </NativeMenuItem.Menu>
@@ -50,11 +64,22 @@
       <NativeMenuItem Header="View">
         <NativeMenuItem.Menu>
           <NativeMenu>
-            <NativeMenuItem Header="Focus Search" Gesture="Cmd+F" Click="OnMenuFocusSearch" />
+            <NativeMenuItem Header="Command Palette..." Gesture="Cmd+K" Click="OnMenuCommandPalette" />
+            <NativeMenuItem Header="Go to Tag..." Gesture="Cmd+P" Click="OnMenuGoToTag" />
             <NativeMenuItemSeparator />
-            <NativeMenuItem Header="Toggle Tag Tree" Click="OnMenuToggleTagTree" />
-            <NativeMenuItem Header="Toggle Properties Sidebar" Click="OnMenuToggleValueSidebar" />
-            <NativeMenuItem Header="Toggle Console" Click="OnMenuToggleConsole" />
+            <NativeMenuItem Header="Focus Tag Filter" Gesture="Cmd+F" Click="OnMenuFocusSearch" />
+            <NativeMenuItem Header="Focus Field Filter" Gesture="Cmd+Shift+F" Click="OnMenuFocusFieldFilter" />
+            <NativeMenuItemSeparator />
+            <NativeMenuItem Header="Toggle Tag Tree" Gesture="Cmd+OemBackslash" Click="OnMenuToggleTagTree" />
+            <NativeMenuItem Header="Toggle Properties Sidebar" Gesture="Cmd+Shift+OemBackslash" Click="OnMenuToggleValueSidebar" />
+            <NativeMenuItem Header="Toggle Console" Gesture="Cmd+Alt+OemBackslash" Click="OnMenuToggleConsole" />
+            <NativeMenuItemSeparator />
+            <NativeMenuItem Header="Go Back" Gesture="Cmd+OemOpenBrackets" Click="OnMenuGoBack" />
+            <NativeMenuItem Header="Go Forward" Gesture="Cmd+OemCloseBrackets" Click="OnMenuGoForward" />
+            <NativeMenuItemSeparator />
+            <NativeMenuItem Header="Switch Theme" Click="OnMenuSwitchTheme" />
+            <NativeMenuItemSeparator />
+            <NativeMenuItem Header="Keyboard Shortcuts" Gesture="Cmd+OemQuestion" Click="OnMenuShowShortcuts" />
             <NativeMenuItemSeparator />
             <!--
               Density radio group: the toolbar's DensityBox ComboBox is the primary control (see
@@ -79,6 +104,48 @@
     </NativeMenu>
   </NativeMenu.Menu>
 
+  <!--
+    Focus visibility: Avalonia/FluentTheme's default keyboard-focus indication is easy to miss at
+    this shell's font sizes (the brief calls it out explicitly - "make focus obvious without
+    making it ugly"). ListBoxItem/TreeViewItem's Fluent ControlThemes already TemplateBind
+    BorderBrush/BorderThickness straight from the item (see MetroStyles.axaml's own
+    "ListBox#FieldList ListBoxItem:selected" rule, which sets those same two properties directly
+    on the item to draw the selected-row accent bar) - so the same mechanism, keyed off
+    :focus-visible (keyboard focus only; a pointer click that focuses a row doesn't also ring it,
+    which would be noisy since :selected already marks it) rather than :focus (which also fires
+    for pointer-acquired focus), reuses a path already proven to render rather than guessing at
+    template part names for a control this pass doesn't otherwise touch. Buttons/TextBoxes/
+    ComboBoxes already get a reasonable default ring from FluentTheme and are left alone.
+  -->
+  <Window.Styles>
+    <Style Selector="TreeViewItem:focus-visible">
+      <Setter Property="BorderThickness" Value="2" />
+      <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+    </Style>
+    <Style Selector="ListBox#FieldList ListBoxItem:focus-visible">
+      <Setter Property="BorderThickness" Value="2,0,0,1" />
+      <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+    </Style>
+    <Style Selector="ListBoxItem:focus-visible /template/ ContentPresenter">
+      <Setter Property="Background" Value="{DynamicResource RowHoverBrush}" />
+    </Style>
+    <Style Selector="Button:focus-visible /template/ Border#PART_Border, ToggleButton:focus-visible /template/ Border#PART_Border">
+      <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+      <Setter Property="BorderThickness" Value="2" />
+    </Style>
+  </Window.Styles>
+
+  <!--
+    ================= overlay host =================
+    Wraps the existing content Grid in a Panel so the command palette and shortcuts cheatsheet can
+    stack on top of everything else (including the console/status bar) as the last two children -
+    Panel/Grid render children in declaration order, so "declared last" is "drawn on top". Both
+    start IsVisible="False"/IsHitTestVisible="False" (see their own control headers) and are
+    toggled from code-behind by OnGlobalKeyDown / the command registry, not bound to a view-model
+    property - see this file's own remarks up top on why NativeMenu gestures and the in-window
+    global handler are necessarily two separate things.
+  -->
+  <Panel>
   <Grid Name="RootGrid">
     <Grid.RowDefinitions>
       <RowDefinition Height="60" />
@@ -613,4 +680,8 @@
       </Grid>
     </Border>
   </Grid>
+
+  <views:CommandPalette x:Name="Palette" />
+  <views:ShortcutsOverlay x:Name="Shortcuts" />
+  </Panel>
 </Window>

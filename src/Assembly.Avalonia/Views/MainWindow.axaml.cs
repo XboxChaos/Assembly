@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Globalization;
@@ -15,6 +16,7 @@ using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
+using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
@@ -45,6 +47,14 @@ namespace Assembly.Avalonia.Views
 		private ComboBox? _densityBox;
 		private bool _syncingDensityUi; // re-entrancy guard: SyncDensityUi below sets DensityBox.SelectedItem itself, which would otherwise fire OnDensityChanged and write the same value back through AppSettings.Instance.Density a second time
 
+		// ---- command palette / shortcuts overlay / global shortcuts (see CommandPalette.axaml.cs
+		// and InitializeCommands() below for why this is one registry rather than a hardcoded list
+		// scattered across menu/toolbar handlers) ----
+		private readonly CommandRegistry _commands = new();
+		private CommandPalette? _palette;
+		private ShortcutsOverlay? _shortcuts;
+		private TextBox? _fieldFilterBox;
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -55,7 +65,26 @@ namespace Assembly.Avalonia.Views
 			_consoleList = this.FindControl<ListBox>("ConsoleList");
 			_consoleFilterBox = this.FindControl<TextBox>("ConsoleFilterBox");
 			_consoleLevelBox = this.FindControl<ComboBox>("ConsoleLevelBox");
+			_fieldFilterBox = this.FindControl<TextBox>("FieldFilterBox");
 			if (_consoleList != null) _consoleList.ItemsSource = _consoleFiltered;
+
+			_palette = this.FindControl<CommandPalette>("Palette");
+			_shortcuts = this.FindControl<ShortcutsOverlay>("Shortcuts");
+			InitializeCommands();
+			_palette?.Configure(_commands,
+				tagsVersion: () => Vm?.TagsVersion ?? 0,
+				tagEntries: () => Vm == null
+					? Array.Empty<TagSearchEntry>()
+					: Vm.AllTagsSnapshot.Select(t => new TagSearchEntry(t.Name, t.Group, t.SourceName, t)).ToList(),
+				onSelectTag: token => { if (Vm != null && token is TagInfo info) Vm.SelectedTag = new TagNode(info); });
+
+			// Bubble-phase (the default for a plain "+="), deliberately not Tunnel: a handler
+			// closer to the focused element - the palette's own QueryBox Escape case, or the field
+			// filter's existing OnFieldFilterKeyDown - runs first and can mark the key handled,
+			// which is exactly the "closes the palette, clears a filter, cancels an edit, in that
+			// priority order" precedence the brief asks for without this handler needing to know
+			// which of those elements currently has focus - see OnGlobalKeyDown's own remarks.
+			KeyDown += OnGlobalKeyDown;
 
 			DataContextChanged += (_, _) =>
 			{
@@ -114,17 +143,25 @@ namespace Assembly.Avalonia.Views
 		}
 
 		// ---- menu / toolbar ----
-		private async void OnMenuOpenFile(object? sender, EventArgs e) => await OpenFileViaPickerAsync();
-		private async void OnOpenFileClick(object? sender, RoutedEventArgs e) => await OpenFileViaPickerAsync();
+		//
+		// Every one of these is a thin trigger that calls into the CommandRegistry rather than
+		// the underlying action directly - see InitializeCommands() below. That is what lets a
+		// command executed from the toolbar or the native menu still count as "recently used" for
+		// the palette's own recency ranking, and it means there is exactly one place (the
+		// registry entry's Enabled predicate) that decides whether e.g. Save is currently
+		// available, instead of that logic living once in a Button's IsEnabled binding and again
+		// in whatever guards the menu/shortcut path.
+		private void OnMenuOpenFile(object? sender, EventArgs e) => _commands.Invoke("file.openFile");
+		private void OnOpenFileClick(object? sender, RoutedEventArgs e) => _commands.Invoke("file.openFile");
 
-		private async void OnMenuOpenFolder(object? sender, EventArgs e) => await OpenFolderViaPickerAsync();
-		private async void OnOpenFolderClick(object? sender, RoutedEventArgs e) => await OpenFolderViaPickerAsync();
+		private void OnMenuOpenFolder(object? sender, EventArgs e) => _commands.Invoke("file.openFolder");
+		private void OnOpenFolderClick(object? sender, RoutedEventArgs e) => _commands.Invoke("file.openFolder");
 
-		private async void OnMenuOpenZip(object? sender, EventArgs e) => await OpenZipViaPickerAsync();
-		private async void OnOpenZipClick(object? sender, RoutedEventArgs e) => await OpenZipViaPickerAsync();
+		private void OnMenuOpenZip(object? sender, EventArgs e) => _commands.Invoke("file.openZip");
+		private void OnOpenZipClick(object? sender, RoutedEventArgs e) => _commands.Invoke("file.openZip");
 
-		private void OnMenuSave(object? sender, EventArgs e) => SaveAndRefresh();
-		private void OnSaveClick(object? sender, RoutedEventArgs e) => SaveAndRefresh();
+		private void OnMenuSave(object? sender, EventArgs e) => _commands.Invoke("file.save");
+		private void OnSaveClick(object? sender, RoutedEventArgs e) => _commands.Invoke("file.save");
 
 		private void SaveAndRefresh()
 		{
@@ -135,7 +172,8 @@ namespace Assembly.Avalonia.Views
 			Vm?.SaveActive();
 		}
 
-		private void OnMenuCloseAll(object? sender, EventArgs e) => Vm?.CloseAll();
+		private void OnMenuRevertAll(object? sender, EventArgs e) => _commands.Invoke("file.revertAll");
+		private void OnRevertAllClick(object? sender, RoutedEventArgs e) => _commands.Invoke("file.revertAll");
 
 		// ---- Campaign Evolved unpack / repack ----
 		// Public and parameterless-at-the-call-site by design (see the remarks on each) so the
@@ -179,12 +217,11 @@ namespace Assembly.Avalonia.Views
 			dialog.ShowDialog(this);
 		}
 
-		private void OnMenuFocusSearch(object? sender, EventArgs e)
-			=> this.FindControl<TextBox>("SearchBox")?.Focus();
+		private void OnMenuCloseTab(object? sender, EventArgs e) => _commands.Invoke("file.closeTab");
+		private void OnMenuCloseAll(object? sender, EventArgs e) => _commands.Invoke("file.closeAll");
 
-		private void OnMenuToggleTagTree(object? sender, EventArgs e) { if (Vm != null) Vm.ShowTagTree = !Vm.ShowTagTree; }
-		private void OnMenuToggleValueSidebar(object? sender, EventArgs e) { if (Vm != null) Vm.ShowValueSidebar = !Vm.ShowValueSidebar; }
-		private void OnMenuToggleConsole(object? sender, EventArgs e) { if (Vm != null) Vm.ShowConsole = !Vm.ShowConsole; }
+		private void OnMenuFocusSearch(object? sender, EventArgs e) => _commands.Invoke("nav.focusTagFilter");
+		private void OnMenuFocusFieldFilter(object? sender, EventArgs e) => _commands.Invoke("nav.focusFieldFilter");
 
 		// ---- display density ----
 		//
@@ -284,9 +321,206 @@ namespace Assembly.Avalonia.Views
 			}
 		}
 
-		private void OnRevertAllClick(object? sender, RoutedEventArgs e) => Vm?.ActiveDocument?.RevertAll();
+
+		private void OnMenuToggleTagTree(object? sender, EventArgs e) => _commands.Invoke("view.toggleTagTree");
+		private void OnMenuToggleValueSidebar(object? sender, EventArgs e) => _commands.Invoke("view.toggleProperties");
+		private void OnMenuToggleConsole(object? sender, EventArgs e) => _commands.Invoke("view.toggleConsole");
+		private void OnMenuSwitchTheme(object? sender, EventArgs e) => _commands.Invoke("view.switchTheme");
+
+		private void OnMenuGoBack(object? sender, EventArgs e) => _commands.Invoke("nav.back");
+		private void OnMenuGoForward(object? sender, EventArgs e) => _commands.Invoke("nav.forward");
+		private void OnMenuCommandPalette(object? sender, EventArgs e) => _commands.Invoke("nav.commandPalette");
+		private void OnMenuGoToTag(object? sender, EventArgs e) => _commands.Invoke("nav.goToTag");
+		private void OnMenuShowShortcuts(object? sender, EventArgs e) => _commands.Invoke("help.shortcuts");
 
 		private void OnConsoleClearClick(object? sender, RoutedEventArgs e) => Vm?.Log.Clear();
+
+		/// <summary>
+		///     Every command this shell exposes - id, title, category, action, and (where one
+		///     exists) an <see cref="Func{Boolean}" /> availability check and a bound
+		///     <see cref="KeyGesture" />. Registered once, here, because this is the one place
+		///     that already has direct access to everything a command could touch (the view model,
+		///     every toolbar/menu action above, the palette and shortcuts overlay instances). Every
+		///     trigger path - toolbar, native menu, the global key handler, and the palette itself
+		///     - goes through <see cref="CommandRegistry.Invoke" />/<see cref="CommandRegistry.TryInvokeForGesture" />
+		///     rather than duplicating any of this, so a command's behaviour, its shortcut and its
+		///     palette entry can never independently drift the way three hand-maintained lists
+		///     could. Declaration order doubles as the palette's empty-query browse order for
+		///     commands nothing has made "recently used" yet, hence the grouping by category below.
+		/// </summary>
+		private void InitializeCommands()
+		{
+			_commands.Register(new CommandDefinition("file.openFile", "Open Cache File...", "File",
+				() => _ = OpenFileViaPickerAsync(),
+				gesture: PlatformKeys.Gesture(Key.O), shortcutLabel: PlatformKeys.Label(Key.O)));
+
+			_commands.Register(new CommandDefinition("file.openFolder", "Open Folder...", "File",
+				() => _ = OpenFolderViaPickerAsync(),
+				gesture: PlatformKeys.Gesture(Key.O, KeyModifiers.Shift),
+				shortcutLabel: PlatformKeys.Label(Key.O, KeyModifiers.Shift)));
+
+			_commands.Register(new CommandDefinition("file.openZip", "Open Zip...", "File",
+				() => _ = OpenZipViaPickerAsync()));
+
+			_commands.Register(new CommandDefinition("file.save", "Save", "File",
+				SaveAndRefresh,
+				enabled: () => Vm?.ActiveDocument?.IsDirty == true,
+				gesture: PlatformKeys.Gesture(Key.S), shortcutLabel: PlatformKeys.Label(Key.S)));
+
+			_commands.Register(new CommandDefinition("file.revertAll", "Revert All Changes", "File",
+				() => Vm?.ActiveDocument?.RevertAll(),
+				enabled: () => Vm?.ActiveDocument?.IsDirty == true));
+
+			_commands.Register(new CommandDefinition("file.closeTab", "Close Tab", "File",
+				() => { if (Vm?.ActiveDocument != null) Vm.CloseDocument(Vm.ActiveDocument); },
+				enabled: () => Vm?.ActiveDocument != null,
+				gesture: PlatformKeys.Gesture(Key.W), shortcutLabel: PlatformKeys.Label(Key.W)));
+
+			_commands.Register(new CommandDefinition("file.closeAll", "Close All Tabs", "File",
+				() => Vm?.CloseAll(),
+				enabled: () => Vm?.HasDocuments == true));
+
+			_commands.Register(new CommandDefinition("view.toggleTagTree", "Toggle Tag Tree", "View",
+				() => { if (Vm != null) Vm.ShowTagTree = !Vm.ShowTagTree; },
+				gesture: PlatformKeys.Gesture(Key.OemBackslash), shortcutLabel: PlatformKeys.Label(Key.OemBackslash)));
+
+			_commands.Register(new CommandDefinition("view.toggleProperties", "Toggle Properties Sidebar", "View",
+				() => { if (Vm != null) Vm.ShowValueSidebar = !Vm.ShowValueSidebar; },
+				gesture: PlatformKeys.Gesture(Key.OemBackslash, KeyModifiers.Shift),
+				shortcutLabel: PlatformKeys.Label(Key.OemBackslash, KeyModifiers.Shift)));
+
+			_commands.Register(new CommandDefinition("view.toggleConsole", "Toggle Console", "View",
+				() => { if (Vm != null) Vm.ShowConsole = !Vm.ShowConsole; },
+				gesture: PlatformKeys.Gesture(Key.OemBackslash, KeyModifiers.Alt),
+				shortcutLabel: PlatformKeys.Label(Key.OemBackslash, KeyModifiers.Alt)));
+
+			_commands.Register(new CommandDefinition("view.switchTheme", "Switch Theme (Light / Dark)", "View", SwitchTheme));
+
+			// TODO(ui-density): the density pass (a separate agent this wave, per the brief's
+			// file-ownership table) is exposing a public API for switching display density from
+			// Theme/App.axaml - neither of which this pass may touch. Wire Execute/Enabled to
+			// that API once it lands. Until then this is a real, visible-but-disabled palette
+			// entry rather than a silently missing one, per the brief: "disabled commands should
+			// be visible but clearly unavailable rather than absent".
+			_commands.Register(new CommandDefinition("view.switchDensity", "Switch Display Density", "View",
+				() => { }, enabled: () => false));
+
+			_commands.Register(new CommandDefinition("nav.commandPalette", "Command Palette...", "Navigate",
+				() => _palette?.Open(commandMode: true),
+				gesture: PlatformKeys.Gesture(Key.K), shortcutLabel: PlatformKeys.Label(Key.K)));
+
+			_commands.Register(new CommandDefinition("nav.goToTag", "Go to Tag...", "Navigate",
+				() => _palette?.Open(commandMode: false),
+				enabled: () => Vm?.HasAnySource == true,
+				gesture: PlatformKeys.Gesture(Key.P), shortcutLabel: PlatformKeys.Label(Key.P)));
+
+			_commands.Register(new CommandDefinition("nav.focusTagFilter", "Focus Tag Filter", "Navigate",
+				() => this.FindControl<TextBox>("SearchBox")?.Focus(),
+				gesture: PlatformKeys.Gesture(Key.F), shortcutLabel: PlatformKeys.Label(Key.F)));
+
+			_commands.Register(new CommandDefinition("nav.focusFieldFilter", "Focus Field Filter", "Navigate",
+				() => _fieldFilterBox?.Focus(),
+				enabled: () => Vm?.ActiveDocument != null,
+				gesture: PlatformKeys.Gesture(Key.F, KeyModifiers.Shift),
+				shortcutLabel: PlatformKeys.Label(Key.F, KeyModifiers.Shift)));
+
+			_commands.Register(new CommandDefinition("nav.back", "Go Back", "Navigate",
+				() => Vm?.GoBack(),
+				enabled: () => Vm?.CanGoBack == true,
+				gesture: PlatformKeys.Gesture(Key.OemOpenBrackets), shortcutLabel: PlatformKeys.Label(Key.OemOpenBrackets)));
+
+			_commands.Register(new CommandDefinition("nav.forward", "Go Forward", "Navigate",
+				() => Vm?.GoForward(),
+				enabled: () => Vm?.CanGoForward == true,
+				gesture: PlatformKeys.Gesture(Key.OemCloseBrackets), shortcutLabel: PlatformKeys.Label(Key.OemCloseBrackets)));
+
+			// One command per tab slot rather than a single hand-rolled digit switch in the global
+			// key handler - TryInvokeForGesture already knows how to match a KeyGesture, so this
+			// reuses that instead of adding a second, parallel way to bind a shortcut.
+			for (int i = 1; i <= 9; i++)
+			{
+				int index = i - 1;
+				var digitKey = DigitKey(i);
+				_commands.Register(new CommandDefinition($"nav.selectTab{i}", $"Select Tab {i}", "Navigate",
+					() => { if (Vm != null && index < Vm.Documents.Count) Vm.ActiveDocument = Vm.Documents[index]; },
+					enabled: () => Vm != null && index < Vm.Documents.Count,
+					gesture: PlatformKeys.Gesture(digitKey), shortcutLabel: PlatformKeys.Label(digitKey)));
+			}
+
+			_commands.Register(new CommandDefinition("help.shortcuts", "Keyboard Shortcuts", "Help",
+				() => _shortcuts?.Open(_commands),
+				gesture: PlatformKeys.Gesture(Key.OemQuestion), shortcutLabel: PlatformKeys.Label(Key.OemQuestion)));
+		}
+
+		private static Key DigitKey(int oneBased) => oneBased switch
+		{
+			1 => Key.D1, 2 => Key.D2, 3 => Key.D3, 4 => Key.D4, 5 => Key.D5,
+			6 => Key.D6, 7 => Key.D7, 8 => Key.D8, 9 => Key.D9,
+			_ => throw new ArgumentOutOfRangeException(nameof(oneBased))
+		};
+
+		private void SwitchTheme()
+		{
+			var app = Application.Current;
+			if (app == null) return;
+			// ActualThemeVariant (not RequestedThemeVariant) is read here so the first press
+			// always visibly flips something even when nothing has ever pinned a variant yet -
+			// App.axaml's own RequestedThemeVariant="Default" means "follow the OS" (see its
+			// remarks), so RequestedThemeVariant itself can be "Default" indefinitely while
+			// ActualThemeVariant is always resolved to a real Light/Dark.
+			app.RequestedThemeVariant = app.ActualThemeVariant == ThemeVariant.Dark
+				? ThemeVariant.Light
+				: ThemeVariant.Dark;
+		}
+
+		/// <summary>
+		///     Recognises every shortcut this shell defines regardless of which control currently
+		///     has focus - the brief calls this out as a real, existing gap: Cmd+[ / Cmd+] back/
+		///     forward used to only fire from inside <see cref="OnFieldListKeyDown" /> (the field
+		///     table's own local handler), so it silently did nothing whenever focus was anywhere
+		///     else - the tag tree, a filter box, the properties sidebar. Subscribed as a plain
+		///     bubble-phase handler (see the constructor), so anything closer to the focused
+		///     element that already marked the key handled - the palette's own Escape case in
+		///     <c>CommandPalette.OnQueryBoxKeyDown</c>, <c>PropertiesPanel</c>'s Cmd+Z/Cmd+Shift+Z -
+		///     is not overridden here; that is what makes "closes the palette, clears a filter,
+		///     cancels an edit, in that priority order" fall out of ordinary event routing instead
+		///     of this method needing to know where focus currently is.
+		/// </summary>
+		private void OnGlobalKeyDown(object? sender, KeyEventArgs e)
+		{
+			if (e.Handled) return;
+
+			if (e.Key == Key.Escape)
+			{
+				// Reached only when nothing closer to the focused element already handled Escape -
+				// in particular this means the palette/shortcuts overlay, if open, get one more
+				// chance here in case focus hasn't landed inside them yet (Open() posts its
+				// Focus() call to the dispatcher queue rather than focusing synchronously - see
+				// CommandPalette.Open's own remarks), so the overlay still closes on Escape even
+				// during that brief window instead of the key falling through to "clear a filter".
+				if (_palette?.IsOpen == true) { _palette.Close(); e.Handled = true; return; }
+				if (_shortcuts?.IsOpen == true) { _shortcuts.Close(); e.Handled = true; return; }
+
+				if (Vm?.ActiveDocument?.IsFiltering == true) { Vm.ActiveDocument.FilterQuery = ""; e.Handled = true; return; }
+				if (!string.IsNullOrEmpty(Vm?.Search)) { Vm!.Search = ""; e.Handled = true; return; }
+
+				// Nothing to close or clear - "cancel an in-flight edit" as the last resort: move
+				// focus off whatever TextBox currently has it (a field editor's input - Views/
+				// Editors/* is not this pass's to change, so backing out of it generically by
+				// dropping focus is the one thing a global handler can safely do without knowing
+				// that editor's own commit semantics) rather than leaving Escape with nothing left
+				// to do while text is being edited.
+				if (TopLevel.GetTopLevel(this)?.FocusManager?.GetFocusedElement() is TextBox) { this.Focus(); e.Handled = true; }
+				return;
+			}
+
+			// While an overlay owns input, every other shortcut is suppressed rather than also
+			// firing underneath it - Cmd+S saving silently while the user is mid-search in the
+			// palette would be a surprise, not a convenience.
+			if (_palette?.IsOpen == true || _shortcuts?.IsOpen == true) return;
+
+			if (_commands.TryInvokeForGesture(e)) e.Handled = true;
+		}
 
 		// ---- console filter / copy / auto-scroll ----
 
@@ -517,18 +751,14 @@ namespace Assembly.Avalonia.Views
 		// ---- field table keyboard navigation: arrows move selection (Avalonia's ListBox already
 		// does that), Left/Right collapse/expand or step to the parent row, Enter follows a
 		// reference or toggles a block, matching the ToggleButton/"open" glyph the mouse already has.
-		// Cmd+[ / Cmd+] also drive tag-navigation back/forward here - macOS's own convention for
-		// history navigation (Safari, Xcode) and this shell is native-chrome, macOS-first - since
-		// there is nowhere in this file's owned elements to put a visible back/forward button (the
-		// header band and toolbar are a different agent's region). ----
+		// Cmd+[ / Cmd+] back/forward used to be handled only here (Meta+bracket, checked before
+		// falling into the row-selection switch below) - that was the exact "wired only in the
+		// field table's handler where it should be global" gap the brief calls out, since it did
+		// nothing when focus was in the tag tree or a filter box. It is now a registered command
+		// (InitializeCommands' "nav.back"/"nav.forward") matched by the window-level
+		// OnGlobalKeyDown for every focus location, so there is nothing bracket-specific left here. ----
 		private void OnFieldListKeyDown(object? sender, KeyEventArgs e)
 		{
-			if (Vm != null && e.KeyModifiers.HasFlag(KeyModifiers.Meta))
-			{
-				if (e.Key == Key.OemOpenBrackets) { Vm.GoBack(); e.Handled = true; return; }
-				if (e.Key == Key.OemCloseBrackets) { Vm.GoForward(); e.Handled = true; return; }
-			}
-
 			if (sender is not ListBox listBox || Vm?.ActiveDocument is not { } doc) return;
 			if (listBox.SelectedItem is not MetaRowViewModel row) return;
 
@@ -590,6 +820,14 @@ namespace Assembly.Avalonia.Views
 
 				var mode = Environment.GetEnvironmentVariable("ASM_MODE");
 				if (!string.IsNullOrEmpty(mode)) Vm.TreeMode = mode;
+
+				// ASM_TAGSEARCH=<query> - sets the tag-tree filter directly (Vm.Search is the
+				// same TwoWay-bound property SearchBox's Text drives), for screenshotting the
+				// filtered tree or exercising OnGlobalKeyDown's Escape-clears-a-filter branch
+				// without needing a real TextInput event (KeyDown alone, as ASM_KEYS above raises,
+				// does not type characters into a TextBox - only a genuine text-input event does).
+				var tagSearch = Environment.GetEnvironmentVariable("ASM_TAGSEARCH");
+				if (!string.IsNullOrEmpty(tagSearch)) Vm.Search = tagSearch;
 
 				var select = Environment.GetEnvironmentVariable("ASM_SELECT");
 				if (!string.IsNullOrEmpty(select))
@@ -667,6 +905,132 @@ namespace Assembly.Avalonia.Views
 
 				var sidebarFlag = Environment.GetEnvironmentVariable("ASM_SIDEBAR");
 				if (!string.IsNullOrEmpty(sidebarFlag)) Vm.ShowValueSidebar = sidebarFlag != "0";
+
+				// ASM_FOCUS=<control name> - moves real keyboard focus to a named control (e.g.
+				// "TagTree" or "FieldList"), for screenshotting the :focus-visible styling
+				// (MainWindow.axaml's Window.Styles) on a control this harness has no shortcut
+				// that already lands on - Tab-cycling there itself is real OS-level focus-
+				// navigation Avalonia intercepts ahead of ordinary routed KeyDown handlers, which
+				// ASM_KEYS's synthetic RaiseEvent calls do not faithfully reproduce. Focusing a
+				// ListBox/TreeView itself is not the same as a real Tab landing inside it - a real
+				// Tab (or an arrow-key press once inside) moves focus to the *selected item's own
+				// container*, which is what :focus-visible on ListBoxItem/TreeViewItem actually
+				// keys off; ContainerFromItem finds that container directly.
+				var focusTarget = Environment.GetEnvironmentVariable("ASM_FOCUS");
+				if (!string.IsNullOrEmpty(focusTarget))
+				{
+					var control = this.FindControl<Control>(focusTarget);
+					control?.Focus();
+					UpdateLayout();
+
+					InputElement? itemContainer = control switch
+					{
+						ListBox { SelectedItem: { } sel } lb => lb.ContainerFromItem(sel) as InputElement,
+						TreeView { SelectedItem: { } sel } tv => tv.ContainerFromItem(sel) as InputElement,
+						// No selection to key off (e.g. the tag tree - SelectedTag is one-way,
+						// view -> view model only, so ASM_SELECT never populates TreeView's own
+						// SelectedItem) - fall back to whatever container is already realized and
+						// on screen, same source CaptureAsync's own ASM_SELECT handling already
+						// reads from a few lines up.
+						ListBox lb => lb.GetRealizedContainers().OfType<InputElement>().FirstOrDefault(),
+						TreeView tv => tv.GetRealizedContainers().OfType<InputElement>().FirstOrDefault(),
+						_ => null
+					};
+					// NavigationMethod.Tab, not the parameterless Focus() overload's default
+					// (Unspecified) - :focus-visible specifically distinguishes keyboard-driven
+					// focus from a plain programmatic/pointer one, so proving the style fires at
+					// all means asking for focus the same way Avalonia's own Tab handling does.
+					itemContainer?.Focus(NavigationMethod.Tab);
+
+					await Task.Delay(50);
+				}
+
+				// ASM_KEYS="Cmd+K,Escape,..." - raises real, routed KeyDown events (RaiseEvent, not
+				// a direct method call) sourced from whatever control currently has keyboard focus
+				// - not this Window - so the event genuinely bubbles up through it (a palette
+				// QueryBox's own OnQueryBoxKeyDown, PropertiesPanel's Cmd+Z override, ...) exactly
+				// the way a real physical keypress would, before OnGlobalKeyDown ever sees it. That
+				// is what makes this a faithful test of the Escape priority chain specifically -
+				// sourcing the event from the Window itself would skip every nearer handler and
+				// always exercise the same fallback branch regardless of what is actually focused.
+				// One token per comma-separated KeyGesture.Parse-compatible entry; each is logged
+				// with whether it ended up Handled, so a run's console output is itself the
+				// evidence a shortcut was actually exercised, not just wired up. Digits need the
+				// "D1".."D9" form (KeyGesture.Parse("Cmd+1") does not parse to Key.D1 - verified
+				// directly against Avalonia 12.1.1; "Cmd+D1" does).
+				var keysFlag = Environment.GetEnvironmentVariable("ASM_KEYS");
+				if (!string.IsNullOrEmpty(keysFlag))
+				{
+					// ASM_SELECT above opens each name as a fire-and-forget OpenTagAsync (see
+					// MainViewModel.SelectedTag's own remarks on why it has to be) - several such
+					// calls fired back-to-back all set IsOpeningTag=true at entry, before any of
+					// them actually wait on OpenTagAsync's own serializing gate, so an earlier call
+					// finishing and clearing IsOpeningTag=false in its `finally` can make that flag
+					// read "false" even while a later call is still queued on the gate behind it.
+					// Waiting on the flag alone is therefore not reliable for "every ASM_SELECT
+					// name has finished opening"; polling Documents.Count against how many names
+					// were actually found is - a Campaign Evolved tag's parse can run ~400ms
+					// (b30-scenario, per this project's own measurements), and without waiting for
+					// all of them a shortcut fired too early could race a still-in-flight open for
+					// a *different* tab, which then completes afterwards and reassigns
+					// ActiveDocument out from under it - a harness timing artifact, not a real user
+					// interleaving (nobody presses Cmd+1 mid-mount), so it is the harness's job to
+					// wait it out rather than the product's.
+					int expectedDocs = string.IsNullOrEmpty(select)
+						? 0
+						: select.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Length;
+					var deadline = DateTime.UtcNow.AddSeconds(5);
+					while (Vm != null && Vm.Documents.Count < expectedDocs && DateTime.UtcNow < deadline) await Task.Delay(20);
+					while (Vm?.IsOpeningTag == true && DateTime.UtcNow < deadline) await Task.Delay(20);
+
+					foreach (var token in keysFlag.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+					{
+						var gesture = KeyGesture.Parse(token);
+						var focused = TopLevel.GetTopLevel(this)?.FocusManager?.GetFocusedElement();
+						var args = new KeyEventArgs
+						{
+							RoutedEvent = InputElement.KeyDownEvent,
+							Route = RoutingStrategies.Bubble,
+							Key = gesture.Key,
+							KeyModifiers = gesture.KeyModifiers,
+							Source = focused ?? this
+						};
+						(focused as Control ?? this).RaiseEvent(args);
+						Console.WriteLine($"ASM_KEYS: \"{token}\" (source={(focused as Control)?.Name ?? focused?.GetType().Name ?? "Window"}) -> Key={gesture.Key} Mods={gesture.KeyModifiers} handled={args.Handled}");
+						await Task.Delay(150);
+					}
+				}
+
+				// ASM_PALETTE=commands|tags[:<query>] - opens the command palette for a screenshot,
+				// following the same "set up state, then let the final delay+render below capture
+				// it" shape every other ASM_* flag above already uses. The query (if any) is typed
+				// into QueryBox the same way ASM_EDIT_VALUE types into a field editor further up -
+				// by reaching into the realized visual tree, not a testing-only public setter, to
+				// exercise the exact TextChanged path a real keystroke drives.
+				var paletteFlag = Environment.GetEnvironmentVariable("ASM_PALETTE");
+				if (!string.IsNullOrEmpty(paletteFlag))
+				{
+					bool commandMode = paletteFlag.StartsWith("commands", StringComparison.OrdinalIgnoreCase);
+					string? query = paletteFlag.Contains(':') ? paletteFlag[(paletteFlag.IndexOf(':') + 1)..] : null;
+					_palette?.Open(commandMode);
+					await Task.Delay(50);
+					if (query != null && _palette != null)
+					{
+						var queryBox = _palette.GetVisualDescendants().OfType<TextBox>().FirstOrDefault(t => t.Name == "QueryBox");
+						if (queryBox != null)
+						{
+							queryBox.Text = (commandMode ? ">" : "") + query;
+							queryBox.CaretIndex = queryBox.Text.Length;
+						}
+					}
+					await Task.Delay(150);
+				}
+
+				if (Environment.GetEnvironmentVariable("ASM_SHORTCUTS") == "1")
+				{
+					_shortcuts?.Open(_commands);
+					await Task.Delay(100);
+				}
 			}
 
 			// ASM_CE_DIALOG=unpack|repack screenshots CEPackagingDialog instead of this window - a
