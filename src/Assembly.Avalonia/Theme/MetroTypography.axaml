@@ -18,6 +18,17 @@
   These are theme-invariant (a font size doesn't change between light and dark), so they live
   outside MetroDark.axaml's <ResourceDictionary.ThemeDictionaries> - see that file's header for
   why colour and typography are split into separate dictionaries.
+
+  Density: every x:Double/Thickness below is a fallback value only - the one this file's XAML
+  parses to at design time and whatever a screen renders before Services/AppSettings.cs's static
+  constructor has run. Services/DisplayDensity.cs overwrites every one of these keys (by name, at
+  the Application.Resources level) the moment the app starts, and again on every density change a
+  user makes afterwards; see that file's header for exactly how a plain resource-dictionary
+  mutation reaches every DynamicResource consumer live, and for which consumers it *cannot* reach
+  (anything with a locally-set value, which rules out most of the field-table/tag-tree row
+  content - that gap is spelled out there, not repeated here). The values below are the "Default"
+  density tier specifically - DisplayDensity.MetricsFor's own "Default" case is required to match
+  them exactly, so picking that tier at runtime is a no-op against whatever ships in this file.
 -->
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
@@ -50,5 +61,26 @@
   <x:Double x:Key="Space4">16</x:Double>
   <x:Double x:Key="Space5">20</x:Double>
   <x:Double x:Key="Space6">24</x:Double>
+
+  <!-- ============================== Density-driven control geometry ==============================
+       Consumed from MetroStyles.axaml's Button/ToggleButton/TextBox/ComboBox/ListBoxItem/
+       ListBox#FieldList/ToggleButton.blockExpander/ToggleButton.chrome Setters (search each key
+       there) instead of each one's old separate literal, so a density change is one write per key
+       here rather than a dozen scattered ones. Deliberately NOT every geometry constant in the
+       app - Button.tabHeader's Height stays a fixed 30 (see its own comment in MetroStyles.axaml)
+       because the tab strip's containing Grid row is a fixed pixel height outside this pass's
+       ownership, and scaling one without the other would clip or float the tab buttons instead of
+       actually changing anything. TreeViewItemMinHeight and TreeViewItemExpandCollapseChevronSize
+       are declared in MetroStyles.axaml's own <Styles.Resources> instead of here - they override
+       two of Avalonia's Fluent TreeViewItem ControlTheme's own resource keys, by name, and that
+       override has to live where it already does (see that file's "Tree" section) - but
+       DisplayDensity.Apply writes to those same key names too, shadowing whichever tier that
+       section currently declares, exactly as it does for every key below. -->
+  <x:Double x:Key="ControlHeight">22</x:Double>
+  <x:Double x:Key="ChromeToggleWidth">26</x:Double>
+  <Thickness x:Key="ListBoxItemPadding">8,3</Thickness>
+  <Thickness x:Key="FieldRowPadding">0,3,8,3</Thickness>
+  <x:Double x:Key="BlockExpanderSize">16</x:Double>
+  <Thickness x:Key="TypeBadgePadding">4,1</Thickness>
 
 </ResourceDictionary>

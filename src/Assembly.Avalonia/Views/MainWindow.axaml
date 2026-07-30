@@ -49,6 +49,24 @@
             <NativeMenuItem Header="Toggle Tag Tree" Click="OnMenuToggleTagTree" />
             <NativeMenuItem Header="Toggle Properties Sidebar" Click="OnMenuToggleValueSidebar" />
             <NativeMenuItem Header="Toggle Console" Click="OnMenuToggleConsole" />
+            <NativeMenuItemSeparator />
+            <!--
+              Density radio group: the toolbar's DensityBox ComboBox is the primary control (see
+              its own comment), this is the "and/or a View menu entry" half. ToggleType="Radio" +
+              IsChecked below are only the Default-tier starting state matching
+              DisplayDensity.Current's own default; OnDensityBoxLoaded/OnDensityMenuClick
+              (MainWindow.axaml.cs) keep the real state in sync from there. Deliberately unnamed:
+              NativeMenuItem does not support x:Name/Name in this Avalonia build (verified against
+              the actual package - it throws "Unable to resolve suitable regular or attached
+              property Name" at parse time, since NativeMenuItem is an AvaloniaObject rather than
+              a StyledElement and has no naming/NameScope registration path), so code-behind finds
+              these three by walking NativeMenu.GetMenu(this)'s Items and matching on Header text
+              instead of FindControl (also unusable here - it is constrained to T : Control, which
+              NativeMenuItem is not).
+            -->
+            <NativeMenuItem Header="Density: Compact" ToggleType="Radio" Click="OnDensityMenuClick" />
+            <NativeMenuItem Header="Density: Default" ToggleType="Radio" IsChecked="True" Click="OnDensityMenuClick" />
+            <NativeMenuItem Header="Density: Comfortable" ToggleType="Radio" Click="OnDensityMenuClick" />
           </NativeMenu>
         </NativeMenuItem.Menu>
       </NativeMenuItem>
@@ -98,7 +116,7 @@
     <!-- ================= toolbar ================= -->
     <Border Grid.Row="1" Background="{DynamicResource SidebarBackgroundBrush}"
             BorderBrush="{DynamicResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
-      <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto,Auto,Auto,Auto" Margin="8,0">
+      <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto,Auto,Auto,Auto,Auto,Auto" Margin="8,0">
         <Button Grid.Column="0" Content="Open File..." Click="OnOpenFileClick" Margin="2" />
         <Button Grid.Column="1" Content="Open Folder..." Click="OnOpenFolderClick" Margin="2" />
         <Button Grid.Column="2" Content="Open Zip..." Click="OnOpenZipClick" Margin="2" />
@@ -106,28 +124,48 @@
         <Button Grid.Column="4" Content="Save" Classes="accent" Click="OnSaveClick" Margin="2"
                 IsEnabled="{Binding ActiveDocument.IsDirty, FallbackValue=False, TargetNullValue=False}" />
 
-        <StackPanel Grid.Column="6" Orientation="Horizontal" Spacing="4" IsVisible="{Binding HasAnySource}"
+        <StackPanel Grid.Column="6" Orientation="Horizontal" Spacing="{DynamicResource Space1}" IsVisible="{Binding HasAnySource}"
                     VerticalAlignment="Center" Margin="0,0,10,0">
           <TextBlock Text="{Binding Sources.Count, StringFormat='{}{0} source(s)'}" Classes="label" VerticalAlignment="Center" />
         </StackPanel>
+
+        <!--
+          Display density: Compact/Default/Comfortable (Services/DisplayDensity.cs), driving row
+          height in the field table and tag tree, control height, and the type/spacing scale -
+          see that file's header for exactly what does and doesn't reflow. Not bound to
+          MainViewModel (density is a standalone, non-tag-session concern, and ViewModels/ is
+          another pass's this wave) - OnDensityBoxLoaded/OnDensityChanged (MainWindow.axaml.cs)
+          read and write Services/AppSettings.cs's Density property directly, and
+          DisplayDensity.Changed keeps this box in sync if density is ever changed from elsewhere
+          (the View menu's radio items below, or a future command-palette entry - see
+          AppSettings.Density's own remarks for the public API a palette command should call).
+        -->
+        <ComboBox Grid.Column="7" Name="DensityBox" Width="122" Margin="0,0,6,0"
+                  Loaded="OnDensityBoxLoaded" SelectionChanged="OnDensityChanged"
+                  ToolTip.Tip="Display density - row height, spacing and control size in the field table and tag tree">
+          <ComboBoxItem Content="Compact" Tag="Compact" />
+          <ComboBoxItem Content="Default" Tag="Default" />
+          <ComboBoxItem Content="Comfortable" Tag="Comfortable" />
+        </ComboBox>
+        <Border Grid.Column="8" Width="1" Margin="6,6" Background="{DynamicResource SidebarHeaderSeperatorBrush}" />
 
         <!-- Chrome toggles: hand-drawn vector pictograms (Theme/Icons.axaml) replacing the old
              "&#9776;" / "&#9635;" / "&gt;_" Unicode-glyph Content - see the brief's icon
              requirement. Each icon's shape mirrors what it does (a panel filled on the side it
              docks to; a terminal frame with a prompt) rather than being an arbitrary symbol. -->
-        <ToggleButton Grid.Column="7" Classes="chrome" IsChecked="{Binding ShowTagTree}"
+        <ToggleButton Grid.Column="9" Classes="chrome" IsChecked="{Binding ShowTagTree}"
                       ToolTip.Tip="Toggle tag tree (sidebar)" Margin="2">
           <Path Width="15" Height="15" Stretch="Uniform" Data="{StaticResource IconSidebarLeft}"
                 Fill="Transparent" Stroke="{DynamicResource VectorBrush}" StrokeThickness="1.6"
                 StrokeLineCap="Round" StrokeJoin="Round" />
         </ToggleButton>
-        <ToggleButton Grid.Column="8" Classes="chrome" IsChecked="{Binding ShowValueSidebar}"
+        <ToggleButton Grid.Column="10" Classes="chrome" IsChecked="{Binding ShowValueSidebar}"
                       ToolTip.Tip="Toggle properties sidebar" Margin="2">
           <Path Width="15" Height="15" Stretch="Uniform" Data="{StaticResource IconSidebarRight}"
                 Fill="Transparent" Stroke="{DynamicResource VectorBrush}" StrokeThickness="1.6"
                 StrokeLineCap="Round" StrokeJoin="Round" />
         </ToggleButton>
-        <ToggleButton Grid.Column="9" Classes="chrome" IsChecked="{Binding ShowConsole}"
+        <ToggleButton Grid.Column="11" Classes="chrome" IsChecked="{Binding ShowConsole}"
                       ToolTip.Tip="Toggle console" Margin="2">
           <Path Width="15" Height="15" Stretch="Uniform" Data="{StaticResource IconConsole}"
                 Fill="Transparent" Stroke="{DynamicResource VectorBrush}" StrokeThickness="1.6"
