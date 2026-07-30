@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using Assembly.Avalonia.Services;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -7,26 +8,39 @@ namespace Assembly.Avalonia.Views.Editors
 {
 	/// <summary>
 	///     Editor for <see cref="MetaFieldKind.Ascii" /> and <see cref="MetaFieldKind.Utf16" />: a
-	///     fixed-width string field. The budget (the plugin's declared byte size, halved for UTF-16)
-	///     is always shown, a live counter tracks how much of it is used, and text longer than the
-	///     budget is never silently cut down to fit - it is left uncommitted with a visible warning
-	///     until the user shortens it, exactly like an out-of-range number is rejected rather than
-	///     wrapped.
+	///     fixed-width string field. The budget is always shown, a live counter tracks how much of
+	///     it is used, and text longer than the budget is never silently cut down to fit - it is
+	///     left uncommitted with a visible warning until the user shortens it, exactly like an
+	///     out-of-range number is rejected rather than wrapped.
 	/// </summary>
+	/// <remarks>
+	///     A classic plugin's <c>ascii</c>/<c>utf16</c> field and a Campaign Evolved "string"/"long
+	///     string" field (mapped onto <see cref="MetaFieldKind.Ascii" /> by
+	///     <see cref="Assembly.Avalonia.ViewModels.TagDocumentViewModel.GetFifthGenScalarDef" />)
+	///     share this editor's shape - a fixed-width text box with a live budget - but not its
+	///     byte-counting rule: <see cref="MetaFieldDef.Utf8Budget" /> switches the budget from
+	///     one-byte-per-character (classic <c>ascii</c>'s Latin-1 write path, or the character count
+	///     classic <c>utf16</c> writes two bytes each for) to a UTF-8 byte count with one byte
+	///     reserved for the terminator <c>FifthGenStringValue.SetValue</c> requires - the same
+	///     encoding and the same reservation that class's own write path enforces, so a value this
+	///     editor accepts is always one that write path will too.
+	/// </remarks>
 	public sealed class TextFieldEditor : FieldEditorBase
 	{
 		private TextBox _box = null!;
 		private TextBlock _budget = null!;
 		private TextBlock _warn = null!;
 		private FieldEditState? _before;
-		private int _maxChars;
+		private int _maxUnits;
+		private bool _utf8;
 
 		protected override void OnBind()
 		{
 			var def = Context.Row.Def;
 			var edit = Context.Row.Current!;
 			bool ascii = def.Kind == MetaFieldKind.Ascii;
-			_maxChars = ascii ? def.Size : def.Size / 2;
+			_utf8 = def.Utf8Budget;
+			_maxUnits = _utf8 ? Math.Max(0, def.Size - 1) : ascii ? def.Size : def.Size / 2;
 
 			_box = new TextBox { Text = edit.Text ?? "", Width = 260 };
 			_budget = EditorVisuals.Hint("");
@@ -41,7 +55,10 @@ namespace Assembly.Avalonia.Views.Editors
 			};
 			_box.TextChanged += (_, _) => ApplyLiveText();
 
-			Children.Add(EditorVisuals.LabeledRow($"Text ({(ascii ? "ASCII" : "UTF-16")}, fixed-width budget: {_maxChars} chars)", _box, _warn));
+			string label = _utf8
+				? $"Text (UTF-8, byte budget: {_maxUnits} - one more reserved for the terminator)"
+				: $"Text ({(ascii ? "ASCII" : "UTF-16")}, fixed-width budget: {_maxUnits} chars)";
+			Children.Add(EditorVisuals.LabeledRow(label, _box, _warn));
 			Children.Add(_budget);
 			RefreshBudget();
 		}
@@ -53,10 +70,13 @@ namespace Assembly.Avalonia.Views.Editors
 			RefreshBudget();
 		}
 
+		private int Measure(string text) => _utf8 ? Encoding.UTF8.GetByteCount(text) : text.Length;
+		private string Unit(int n) => _utf8 ? (n == 1 ? "byte" : "bytes") : (n == 1 ? "character" : "characters");
+
 		private void RefreshBudget()
 		{
-			int len = (_box.Text ?? "").Length;
-			_budget.Text = $"{len} / {_maxChars} characters used";
+			int len = Measure(_box.Text ?? "");
+			_budget.Text = _utf8 ? $"{len} / {_maxUnits} bytes used" : $"{len} / {_maxUnits} characters used";
 		}
 
 		private void ApplyLiveText()
@@ -64,9 +84,10 @@ namespace Assembly.Avalonia.Views.Editors
 			var text = _box.Text ?? "";
 			RefreshBudget();
 
-			if (text.Length > _maxChars)
+			int len = Measure(text);
+			if (len > _maxUnits)
 			{
-				EditorVisuals.MarkInvalid(_box, _warn, $"too long by {text.Length - _maxChars} character(s) - this field is fixed-width and will not be saved until it fits.");
+				EditorVisuals.MarkInvalid(_box, _warn, $"too long by {len - _maxUnits} {Unit(len - _maxUnits)} - this field is fixed-width and will not be saved until it fits.");
 				return;
 			}
 			EditorVisuals.MarkValid(_box, _warn);
@@ -84,7 +105,7 @@ namespace Assembly.Avalonia.Views.Editors
 			_before = null;
 			// A trailing over-budget attempt never made it into edit.Text (see ApplyLiveText); show
 			// the last value that actually stuck rather than leaving the rejected text on screen.
-			if ((_box.Text ?? "").Length > _maxChars)
+			if (Measure(_box.Text ?? "") > _maxUnits)
 			{
 				_box.Text = Context.Row.Current!.Text ?? "";
 				EditorVisuals.MarkValid(_box, _warn);
@@ -105,7 +126,7 @@ namespace Assembly.Avalonia.Views.Editors
 
 		public override bool TryPasteValue(string text)
 		{
-			if (text.Length > _maxChars) return false;
+			if (Measure(text) > _maxUnits) return false;
 
 			var before = Context.Snapshot();
 			var edit = Context.Row.Current!;

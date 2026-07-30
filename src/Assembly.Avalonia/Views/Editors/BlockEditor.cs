@@ -70,6 +70,19 @@ namespace Assembly.Avalonia.Views.Editors
 				? "This tag is self-describing: its block/array/struct elements were already parsed from the payload's own 'bdat' chunk when the tag was opened, not resolved through a cache pointer."
 				: "Element navigation reads the block's live count/pointer from the cache and resolves the pointer through the cache's own meta-area converter - not a canned list."));
 
+			// Only a genuine "block" field is a resizable collection - a fixed-size "array" has no
+			// add/remove concept at all (FifthGenArrayValue.Elements has no such API), and a
+			// "struct" container always has exactly one, inlined instance. See
+			// TagDocumentViewModel.GetFifthGenContainerDef for where this shape label comes from.
+			if (Context.Doc.IsFifthGen && row.Def.KindLabelOverride == "block")
+			{
+				Children.Add(EditorVisuals.Hint(
+					"Adding or removing elements is not wired up here yet. Blamite's FifthGenTagBlock.AddElement/" +
+					"InsertElement/RemoveElementAt exist and FifthGenTagStruct.CreateDefault can build a blank " +
+					"element, but nothing in this build has exercised that path end to end, so it is left off " +
+					"rather than offered untested."));
+			}
+
 			RefreshDisplay();
 		}
 

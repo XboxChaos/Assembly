@@ -23,14 +23,40 @@ namespace Assembly.Avalonia.Services
 		Shader, UnicList,
 
 		/// <summary>
-		///     A scalar field of a fifth-generation (Campaign Evolved) tag: the tag's own
-		///     <c>blay</c> chunk states its real type name (see <see cref="MetaFieldDef.KindLabelOverride"/>)
-		///     and the value was already formatted by <c>FifthGenValueFormatter</c>. Deliberately
-		///     not one of the classic scalar kinds above: those are exactly the kinds
-		///     <see cref="MetaFieldDef.IsEditable"/> and the sidebar's editor factory agree carry
-		///     real edit state, and a fifth-generation field never does (see TagDocumentViewModel).
+		///     A scalar field of a fifth-generation (Campaign Evolved) tag whose type Blamite
+		///     decodes but exposes no write-back API for: every composite "real" shape (a point,
+		///     vector, Euler pair/triple, plane, quaternion, bounds pair, packed or float colour,
+		///     rectangle - see <c>FifthGenCompositeValue.cs</c>), a variable-length data or
+		///     pageable-resource buffer, and anything the payload's own type table does not name at
+		///     all. <see cref="TagDocumentViewModel.GetFifthGenScalarDef" /> maps every fifth-generation
+		///     field whose type Blamite <em>can</em> write - an integer, a float, an enumeration, a
+		///     flag word, a fixed-width inline string - onto the matching classic
+		///     <see cref="MetaFieldKind" /> instead, so it gets that kind's real editor for free; this
+		///     value is what is left over once that mapping runs out of API to lean on. See
+		///     <see cref="MetaFieldDef.NotEditableReason" /> for why, field by field.
 		/// </summary>
-		FifthGenValue
+		FifthGenValue,
+
+		/// <summary>
+		///     A fifth-generation stringID field. Unlike a classic <see cref="StringId" /> - an
+		///     index into a cache-wide table, so only an existing string can ever be picked - a
+		///     Campaign Evolved stringID carries its own literal text in a section of its own (see
+		///     <c>FifthGenStringIDValue</c>'s remarks), so it can be freely retyped. Kept as its own
+		///     kind rather than folded into <see cref="StringId" /> because the two are not
+		///     interchangeable: an editor built for one would either wrongly restrict the other to
+		///     an existing table, or wrongly let a classic field grow one that cannot.
+		/// </summary>
+		FifthGenStringId,
+
+		/// <summary>
+		///     A fifth-generation tag-reference field: a target group four-CC plus a path, both
+		///     travelling with the field itself (see <c>FifthGenTagReferenceValue</c>'s remarks)
+		///     rather than resolved through a cache's datum-index table the way classic
+		///     <see cref="TagReference" /> is. Retargeting is <c>FifthGenTagReferenceValue.SetReference</c>,
+		///     which has no classic equivalent this codebase's write path drives yet - see
+		///     <c>ReadOnlyEditor.ReasonFor</c>'s <see cref="TagReference" /> case.
+		/// </summary>
+		FifthGenTagReference
 	}
 
 	/// <summary>
@@ -60,6 +86,29 @@ namespace Assembly.Avalonia.Services
 		/// <summary>Bit names for flags, or option names for enums.</summary>
 		public List<(string Name, long Value)>? Choices { get; init; }
 
+		/// <summary>
+		///     For a fixed-width inline string field ("string"/"long string" in a Campaign Evolved
+		///     tag's own type vocabulary, mapped onto <see cref="MetaFieldKind.Ascii" /> - see
+		///     <see cref="TagDocumentViewModel.GetFifthGenScalarDef" />): whether <see cref="Size" />
+		///     is a UTF-8 byte budget, one byte of which is always reserved for the terminator
+		///     <c>FifthGenStringValue.SetValue</c> requires, rather than a one-byte-per-character
+		///     Latin-1 budget the way a classic plugin's <c>ascii</c> field is. False for every
+		///     classic field, so <c>TextFieldEditor</c>'s existing char-counting behaviour is
+		///     unchanged for them.
+		/// </summary>
+		public bool Utf8Budget { get; init; }
+
+		/// <summary>
+		///     A precise, field-specific reason <see cref="IsEditable" /> is false, when the generic
+		///     per-<see cref="Kind" /> text <c>ReadOnlyEditor.ReasonFor</c> falls back to would not
+		///     say anything true about <em>this</em> field. Set by
+		///     <see cref="TagDocumentViewModel.GetFifthGenScalarDef" /> for a Campaign Evolved field
+		///     whose type decodes today but has no write-back API in Blamite yet (see
+		///     <see cref="MetaFieldKind.FifthGenValue" />'s remarks) - naming the concrete value type
+		///     that is missing a setter, not just "this isn't editable". Null everywhere else.
+		/// </summary>
+		public string? NotEditableReason { get; init; }
+
 		/// <summary>For <see cref="MetaFieldKind.TagBlock" />: the byte size of one element.</summary>
 		public uint EntrySize { get; init; }
 
@@ -88,7 +137,8 @@ namespace Assembly.Avalonia.Services
 			MetaFieldKind.Enum or MetaFieldKind.Flags or
 			MetaFieldKind.ColorInt or
 			MetaFieldKind.Ascii or MetaFieldKind.Utf16 or
-			MetaFieldKind.StringId or MetaFieldKind.OldStringId => true,
+			MetaFieldKind.StringId or MetaFieldKind.OldStringId or
+			MetaFieldKind.FifthGenStringId or MetaFieldKind.FifthGenTagReference => true,
 			_ => false
 		};
 

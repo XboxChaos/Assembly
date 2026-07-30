@@ -152,6 +152,9 @@ namespace Assembly.Avalonia.Views
 			EditorKind.Color => new ColorEditor(),
 			EditorKind.Ascii or EditorKind.Utf16 => new TextFieldEditor(),
 			EditorKind.StringId => new StringIdEditor(),
+			EditorKind.FifthGenStringId => new FifthGenStringIdEditor(),
+			EditorKind.FifthGenTagReference => new FifthGenTagReferenceEditor(),
+			EditorKind.FifthGenComposite => new FifthGenCompositeEditor(),
 			EditorKind.Block => new BlockEditor(),
 			_ => new ReadOnlyEditor()
 		};

@@ -6,12 +6,14 @@ namespace Assembly.Avalonia.Views.Editors
 {
 	/// <summary>
 	///     Editor for every field kind this pass does not write back (raw/hex blobs, tag and data
-	///     references, datum indices, comments, and every Campaign Evolved field). Read-only does
-	///     not mean uninspectable: whenever the bytes can actually be re-read (any classic-engine
-	///     field - see <see cref="FieldEditorContext.TryReadRawBytes" />), this shows a real hex
-	///     view with an ASCII gutter rather than the field table's own truncated preview string.
-	///     A Campaign Evolved field has no file offset to re-read from at all, so it falls back to
-	///     the value already resolved when the tag was opened (<see cref="MetaRowViewModel.DisplayValue" />).
+	///     references, datum indices, comments, and every Campaign Evolved field whose value type
+	///     has no write-back API - see <see cref="MetaFieldDef.NotEditableReason" />). Read-only
+	///     does not mean uninspectable: whenever the bytes can actually be re-read (any
+	///     classic-engine field - see <see cref="FieldEditorContext.TryReadRawBytes" />), this shows
+	///     a real hex view with an ASCII gutter rather than the field table's own truncated preview
+	///     string. A Campaign Evolved field has no file offset to re-read from at all, so it falls
+	///     back to the value already resolved when the tag was opened
+	///     (<see cref="MetaRowViewModel.DisplayValue" />).
 	/// </summary>
 	public sealed class ReadOnlyEditor : FieldEditorBase
 	{
@@ -21,7 +23,7 @@ namespace Assembly.Avalonia.Views.Editors
 		{
 			Children.Add(new TextBlock
 			{
-				Text = ReasonFor(Context.Row.Def.Kind),
+				Text = Context.Row.Def.NotEditableReason ?? ReasonFor(Context.Row.Def.Kind),
 				Classes = { "label" },
 				TextWrapping = TextWrapping.Wrap
 			});
@@ -63,9 +65,12 @@ namespace Assembly.Avalonia.Views.Editors
 			MetaFieldKind.RawData or MetaFieldKind.HexString => "Raw/hex byte blobs aren't editable yet.",
 			MetaFieldKind.Datum => "Datum indices are identifiers, not editable values.",
 			MetaFieldKind.Comment => "This is an informational note, not a field.",
+			// Def.NotEditableReason (set by TagDocumentViewModel.GetFifthGenScalarDef) always wins
+			// for an actual FifthGenValue row - see OnBind above - so reaching this case at all
+			// would mean that reason was somehow null; kept as a defensive fallback rather than
+			// a real day-to-day message.
 			MetaFieldKind.FifthGenValue =>
-				"Campaign Evolved tag fields are read-only in this build: the tag carries its own schema " +
-				"instead of a plugin, and Blamite's FifthGenCacheFile.SaveChanges does not support writing them back.",
+				"This Campaign Evolved field's value type has no write-back API in Blamite yet.",
 			_ => $"{kind} fields are read-only in this pass."
 		};
 	}
