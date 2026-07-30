@@ -1,59 +1,247 @@
 <!--
-  Direct port of Assembly's WPF Metro theme to Avalonia, to measure port fidelity.
+  Semantic colour palette, dark and light.
 
-  Brush values are copied VERBATIM from:
-    src/Assembly/Metro/Themes/Dark.xaml   (greys)
-    src/Assembly/Metro/Themes/Blue.xaml   (accent)
+  This file started as a byte-for-byte port of Assembly's WPF Metro theme (see the git history
+  for the original header: brushes copied verbatim from src/Assembly/Metro/Themes/Dark.xaml and
+  Blue.xaml). That palette is still here, unchanged - every original x:Key still resolves to the
+  same colour it always did in the dark variant, and nothing that already depended on those keys
+  needed to change.
 
-  The only mechanical change needed for the brush dictionary was the xmlns
-  (WPF's schemas.microsoft.com/winfx/2006/xaml/presentation -> Avalonia's
-  https://github.com/avaloniaui). x:Key, SolidColorBrush, Color and
-  ResourceDictionary are otherwise identical. x:Name on a brush is not valid in
-  Avalonia and was dropped; it was redundant with x:Key in the original.
+  What changed is the *shape* of the file: it now declares two things -
+
+   1. A "Dark" and a "Light" <ResourceDictionary> nested under
+      <ResourceDictionary.ThemeDictionaries>, Avalonia's built-in mechanism for a resource that
+      resolves differently depending on the active Avalonia.Styling.ThemeVariant. Every brush a
+      control might pull via {DynamicResource ...} exists in both dictionaries under the same
+      key, so nothing consuming this file needs to know or care which variant is active - that
+      is the entire point of using DynamicResource throughout MetroStyles.axaml (see that file's
+      header) rather than hardcoding colours at each call site.
+   2. A handful of new semantic keys the original palette didn't have words for: disabled text,
+      a muted/tinted form of the accent and each state colour (for badge chips - solid state
+      colours are too loud tiled across a few hundred field-table rows), a dedicated "dirty"
+      colour distinct from both the accent and the warning amber (see below), and four category
+      colours for the field-table type badges (container/enum/flags/string).
+
+  Colour choices for Light are not the Dark values with the lightness inverted - a few of the
+  Dark palette's colours (WarnBrush #E0B020, the original OkBrush #6FCF6F, ErrorBrush #E05252)
+  read as roughly WCAG AA-contrast text on the dark surfaces they were designed against, but
+  drop under 3:1 against a white surface. Light's versions of those three, plus the badge
+  category colours and ExtryzeAccentBrushSecondary where it is used as small text (the tag-tree
+  four-CC badge), are deepened equivalents chosen to clear 4.5:1 on white while staying in the
+  same hue family, so "red still reads as red" across both themes. ExtryzeAccentBrush itself -
+  the actual Extryze brand blue - is deliberately identical in both dictionaries; that colour is
+  the one thing here that should never shift with the theme.
+
+  Why DirtyBrush is its own colour rather than reusing ExtryzeAccentBrush: the per-row dirty
+  strip in the field table originally used the accent blue (DirtyBrushConverter in
+  Converters.cs), which put the same colour on "this row is dirty" and "this is the selected
+  tree item / the primary action button" - two states a user very much needs to tell apart at a
+  glance in a data-dense editor. The per-row strip, the tab dirty dot, the footer tint and the
+  properties-panel "modified" indicator now all pull from one shared "DirtyStateBrush" key below
+  - a warm gold, reusing the exact colour the status-bar footer already used for "unsaved
+  changes" (FooterBrushConverter's old inline #FFB8860B) instead of inventing a fourth colour -
+  so all four now show one consistent colour that means one consistent thing, distinct from
+  WarnBrush (amber vs a deeper gold-brown) and from the accent.
+
+  That brush is named "DirtyStateBrush", not the more obvious "DirtyBrush": App.axaml already
+  registers a DirtyBrushConverter under the key "DirtyBrush" (pre-existing, consumed by the field
+  table's per-row dirty strip via Converter={StaticResource DirtyBrush}), and Application.
+  Resources' own local entries shadow a same-named key arriving through a merged dictionary like
+  this one. A SolidColorBrush here called "DirtyBrush" would not just be unreachable - any code
+  that did try to resolve "DirtyBrush" as a resource would get the *converter instance* back and
+  throw an invalid-cast trying to use it as a brush. This is not a hypothetical: exactly that
+  crash showed up in the console pane during this pass's own ASM_SHOT verification before the
+  brush below was renamed away from the colliding key. "OkBrush" has the identical hazard against
+  OkBrushConverter (also App.axaml) - see "SuccessBrush" below for that one's resolution.
+
+  Type scale (FontSize*) and spacing (Space*) live in the sibling MetroTypography.axaml, and the
+  hand-authored icon paths in Icons.axaml, both merged separately in App.axaml - neither varies
+  by theme, so neither belongs inside ThemeDictionaries.
 -->
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-  <!-- ==== from Metro/Themes/Dark.xaml ==== -->
-  <SolidColorBrush x:Key="TextBrushPrimary" Color="White" />
-  <SolidColorBrush x:Key="TextBrushSecondary" Color="#FF989898" />
+  <ResourceDictionary.ThemeDictionaries>
 
-  <SolidColorBrush x:Key="VectorBrush" Color="#FFF4F4F5" />
-  <SolidColorBrush x:Key="WindowActionHoverBrush" Color="#FF3f3f41" />
+    <!-- ============================================================ Dark ============ -->
+    <ResourceDictionary x:Key="Dark">
 
-  <SolidColorBrush x:Key="HomeOpacityBrush" Color="#FF212121" />
-  <SolidColorBrush x:Key="HomeIWffBrush" Color="#99303030" />
+      <!-- ==== from Metro/Themes/Dark.xaml (verbatim) ==== -->
+      <SolidColorBrush x:Key="TextBrushPrimary" Color="White" />
+      <SolidColorBrush x:Key="TextBrushSecondary" Color="#FF989898" />
 
-  <SolidColorBrush x:Key="SidebarBlockBrush" Color="#FF3f3f46" />
-  <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#FF252526" />
-  <SolidColorBrush x:Key="SidebarHeaderBrush" Color="#FF2d2d30" />
-  <SolidColorBrush x:Key="SidebarHeaderSeperatorBrush" Color="#FF46464a" />
+      <SolidColorBrush x:Key="VectorBrush" Color="#FFF4F4F5" />
+      <SolidColorBrush x:Key="WindowActionHoverBrush" Color="#FF3f3f41" />
 
-  <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FF2d2d30" />
+      <SolidColorBrush x:Key="HomeOpacityBrush" Color="#FF212121" />
+      <SolidColorBrush x:Key="HomeIWffBrush" Color="#99303030" />
 
-  <!-- ==== from Metro/Themes/Blue.xaml ==== -->
-  <SolidColorBrush x:Key="ExtryzeAccentBrush" Color="#0079cb" />
-  <SolidColorBrush x:Key="ExtryzeAccentBrushSecondary" Color="#1D98EB" />
-  <Color x:Key="ExtryzeAccentBrushColour">#FF0079cb</Color>
-  <Color x:Key="ExtryzeAccentBrushColourSecondary">#FF1D98EB</Color>
+      <SolidColorBrush x:Key="SidebarBlockBrush" Color="#FF3f3f46" />
+      <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#FF252526" />
+      <SolidColorBrush x:Key="SidebarHeaderBrush" Color="#FF2d2d30" />
+      <SolidColorBrush x:Key="SidebarHeaderSeperatorBrush" Color="#FF46464a" />
 
-  <!-- ==== from Metro/Controls/MetroButtons.xaml / MetroControls.xaml (button geometry colours) ==== -->
-  <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="#FF222222" />
-  <SolidColorBrush x:Key="ButtonBorderBrush" Color="#FF616161" />
-  <SolidColorBrush x:Key="ButtonForegroundBrush" Color="#FF999999" />
-  <SolidColorBrush x:Key="ButtonHoverBackgroundBrush" Color="#FF393939" />
-  <SolidColorBrush x:Key="ButtonPressedBackgroundBrush" Color="#FF333333" />
-  <SolidColorBrush x:Key="ButtonDisabledBackgroundBrush" Color="#FF575757" />
-  <SolidColorBrush x:Key="ButtonDisabledBorderBrush" Color="#FF8B8B8B" />
+      <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FF2d2d30" />
 
-  <!-- from Components/MetaEditor.xaml / MetaComponents/*.xaml (field-list panel chrome) -->
-  <SolidColorBrush x:Key="MetaBarBrush" Color="#FF303032" />
-  <SolidColorBrush x:Key="MetaBarBorderBrush" Color="#FF434346" />
-  <SolidColorBrush x:Key="MetaBlockBrush" Color="#FF474747" />
-  <SolidColorBrush x:Key="MetaSelectedRowBrush" Color="#FF181818" />
-  <SolidColorBrush x:Key="MetaInfoRowBrush" Color="#FF333337" />
-  <SolidColorBrush x:Key="PopupBackgroundBrush" Color="#FF1b1b1c" />
-  <SolidColorBrush x:Key="PopupBorderBrush" Color="#FF333337" />
+      <!-- ==== from Metro/Themes/Blue.xaml (verbatim - the Extryze brand blue; identical in
+           both theme dictionaries, see header) ==== -->
+      <SolidColorBrush x:Key="ExtryzeAccentBrush" Color="#0079cb" />
+      <SolidColorBrush x:Key="ExtryzeAccentBrushSecondary" Color="#1D98EB" />
+      <Color x:Key="ExtryzeAccentBrushColour">#FF0079cb</Color>
+      <Color x:Key="ExtryzeAccentBrushColourSecondary">#FF1D98EB</Color>
+      <SolidColorBrush x:Key="ExtryzeAccentBrushMuted" Color="#330079cb" />
+
+      <!-- ==== from Metro/Controls/MetroButtons.xaml / MetroControls.xaml ==== -->
+      <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="#FF222222" />
+      <SolidColorBrush x:Key="ButtonBorderBrush" Color="#FF616161" />
+      <SolidColorBrush x:Key="ButtonForegroundBrush" Color="#FF999999" />
+      <SolidColorBrush x:Key="ButtonHoverBackgroundBrush" Color="#FF393939" />
+      <SolidColorBrush x:Key="ButtonPressedBackgroundBrush" Color="#FF333333" />
+      <SolidColorBrush x:Key="ButtonDisabledBackgroundBrush" Color="#FF575757" />
+      <SolidColorBrush x:Key="ButtonDisabledBorderBrush" Color="#FF8B8B8B" />
+
+      <!-- from Components/MetaEditor.xaml / MetaComponents/*.xaml (field-list panel chrome;
+           MetaBar*/MetaBlock/MetaInfoRow/Popup* are not wired up to anything in this pass -
+           kept defined, with light equivalents, for whatever dialog/meta-bar work picks them
+           up next, so that work inherits theme support for free). -->
+      <SolidColorBrush x:Key="MetaBarBrush" Color="#FF303032" />
+      <SolidColorBrush x:Key="MetaBarBorderBrush" Color="#FF434346" />
+      <SolidColorBrush x:Key="MetaBlockBrush" Color="#FF474747" />
+      <SolidColorBrush x:Key="MetaSelectedRowBrush" Color="#FF181818" />
+      <SolidColorBrush x:Key="MetaInfoRowBrush" Color="#FF333337" />
+      <SolidColorBrush x:Key="PopupBackgroundBrush" Color="#FF1b1b1c" />
+      <SolidColorBrush x:Key="PopupBorderBrush" Color="#FF333337" />
+
+      <SolidColorBrush x:Key="ErrorBrush" Color="#FFE05252" />
+      <SolidColorBrush x:Key="ErrorBrushMuted" Color="#33E05252" />
+      <SolidColorBrush x:Key="RowHoverBrush" Color="#FF35353a" />
+      <SolidColorBrush x:Key="WarnBrush" Color="#FFE0B020" />
+      <SolidColorBrush x:Key="WarnBrushMuted" Color="#33E0B020" />
+      <!-- NOT "OkBrush" - Converters.cs/App.axaml already register an OkBrushConverter under
+           that exact key (pre-existing, used from MainWindow.axaml as
+           Converter={StaticResource OkBrush}), and Application.Resources' own local entries
+           shadow a same-named key arriving through a merged dictionary like this one - a brush
+           here named "OkBrush" would silently be unreachable, and worse, any code trying to
+           resolve it would get the converter instance back instead and throw an invalid cast
+           (exactly what happened during this pass's own testing before this brush was renamed -
+           see "DirtyStateBrush" below for the repeat of the same mistake). -->
+      <SolidColorBrush x:Key="SuccessBrush" Color="#FF6FCF6F" />
+      <SolidColorBrush x:Key="SuccessBrushMuted" Color="#336FCF6F" />
+
+      <!-- ==== new semantic states ==== -->
+      <SolidColorBrush x:Key="TextBrushDisabled" Color="#FF6A6A6E" />
+      <!-- NOT "DirtyBrush" - same key-shadowing hazard as "OkBrush" above: DirtyBrushConverter
+           is already registered under that exact key and a per-row Fill={Converter=
+           {StaticResource DirtyBrush}} binding inside the field table (MainWindow.axaml, not
+           owned by this pass) depends on that name resolving to the converter. Caught this one
+           the hard way - ASM_SHOT's console pane genuinely logged "Unable to cast object of type
+           DirtyBrushConverter to IBrush" while opening pelican-vehicle.vehi during verification,
+           which is exactly what a colliding key looks like at runtime. -->
+      <SolidColorBrush x:Key="DirtyStateBrush" Color="#FFCE8B3C" />
+      <SolidColorBrush x:Key="SelectedRowAccentBrush" Color="#FF1D98EB" />
+      <SolidColorBrush x:Key="FieldRowDividerBrush" Color="#FF313134" />
+      <SolidColorBrush x:Key="InputBackgroundBrush" Color="#FF1e1e20" />
+      <SolidColorBrush x:Key="InputBorderBrush" Color="#FF54545a" />
+
+      <!-- field-table / tag-tree type badges: container shapes (block/array/struct), enum,
+           flags, string-ish. Deliberately NOT used for numeric fields - see MetroStyles.axaml,
+           badges are for the rarer structurally-significant kinds a reader needs to spot while
+           scanning, not for the common case. -->
+      <SolidColorBrush x:Key="BadgeContainerForeground" Color="#FFDDD6FE" />
+      <SolidColorBrush x:Key="BadgeContainerBackground" Color="#33A78BFA" />
+      <SolidColorBrush x:Key="BadgeEnumForeground" Color="#FFA5F3FC" />
+      <SolidColorBrush x:Key="BadgeEnumBackground" Color="#3322D3EE" />
+      <SolidColorBrush x:Key="BadgeFlagsForeground" Color="#FFF5D0FE" />
+      <SolidColorBrush x:Key="BadgeFlagsBackground" Color="#33E879F9" />
+      <SolidColorBrush x:Key="BadgeStringForeground" Color="#FFA7F3D0" />
+      <SolidColorBrush x:Key="BadgeStringBackground" Color="#3334D399" />
+
+    </ResourceDictionary>
+
+    <!-- ============================================================ Light =========== -->
+    <ResourceDictionary x:Key="Light">
+
+      <SolidColorBrush x:Key="TextBrushPrimary" Color="#FF1E1E1E" />
+      <SolidColorBrush x:Key="TextBrushSecondary" Color="#FF5B5B5E" />
+
+      <SolidColorBrush x:Key="VectorBrush" Color="#FF2B2B2E" />
+      <SolidColorBrush x:Key="WindowActionHoverBrush" Color="#FFE1E1E4" />
+
+      <SolidColorBrush x:Key="HomeOpacityBrush" Color="#FFF3F3F3" />
+      <SolidColorBrush x:Key="HomeIWffBrush" Color="#99DDDDDD" />
+
+      <SolidColorBrush x:Key="SidebarBlockBrush" Color="#FFE4E4E8" />
+      <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#FFF3F3F5" />
+      <SolidColorBrush x:Key="SidebarHeaderBrush" Color="#FFECECEF" />
+      <SolidColorBrush x:Key="SidebarHeaderSeperatorBrush" Color="#FFD3D3D8" />
+
+      <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FFFDFDFE" />
+
+      <!-- Extryze brand blue - identical to Dark, see header. ExtryzeAccentBrushSecondary is
+           the one accent that DOES shift: on Dark it is a brighter supporting blue used for
+           hover/selection chrome; on Light it also has to work as small text (the tag-tree
+           four-CC badge foreground), where #1D98EB clears only ~3:1 on white. Deepened to clear
+           AA (~5.4:1) while staying the same hue. -->
+      <SolidColorBrush x:Key="ExtryzeAccentBrush" Color="#0079cb" />
+      <SolidColorBrush x:Key="ExtryzeAccentBrushSecondary" Color="#FF0F6FB0" />
+      <Color x:Key="ExtryzeAccentBrushColour">#FF0079cb</Color>
+      <Color x:Key="ExtryzeAccentBrushColourSecondary">#FF0F6FB0</Color>
+      <SolidColorBrush x:Key="ExtryzeAccentBrushMuted" Color="#1F0079cb" />
+
+      <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="#FFF0F0F2" />
+      <SolidColorBrush x:Key="ButtonBorderBrush" Color="#FFC6C6CC" />
+      <SolidColorBrush x:Key="ButtonForegroundBrush" Color="#FF3C3C40" />
+      <SolidColorBrush x:Key="ButtonHoverBackgroundBrush" Color="#FFE2E2E6" />
+      <SolidColorBrush x:Key="ButtonPressedBackgroundBrush" Color="#FFD3D3D8" />
+      <SolidColorBrush x:Key="ButtonDisabledBackgroundBrush" Color="#FFEDEDEF" />
+      <SolidColorBrush x:Key="ButtonDisabledBorderBrush" Color="#FFD8D8DC" />
+
+      <SolidColorBrush x:Key="MetaBarBrush" Color="#FFEFEFF1" />
+      <SolidColorBrush x:Key="MetaBarBorderBrush" Color="#FFD6D6DA" />
+      <SolidColorBrush x:Key="MetaBlockBrush" Color="#FFDCDCE1" />
+      <!-- Dark's selected-row treatment is a near-black well - on a light surface "darker"
+           doesn't read as "selected" the way it does on a dark one, so Light uses a soft
+           accent-tinted fill instead. A deliberate per-theme deviation, not an oversight. -->
+      <SolidColorBrush x:Key="MetaSelectedRowBrush" Color="#FFE3EFFA" />
+      <SolidColorBrush x:Key="MetaInfoRowBrush" Color="#FFEAEAEE" />
+      <SolidColorBrush x:Key="PopupBackgroundBrush" Color="#FFFFFFFF" />
+      <SolidColorBrush x:Key="PopupBorderBrush" Color="#FFD6D6DA" />
+
+      <!-- Deepened equivalents of Dark's state colours - see header for the contrast rationale. -->
+      <SolidColorBrush x:Key="ErrorBrush" Color="#FFB91C1C" />
+      <SolidColorBrush x:Key="ErrorBrushMuted" Color="#1FB91C1C" />
+      <SolidColorBrush x:Key="RowHoverBrush" Color="#FFEDEDF1" />
+      <SolidColorBrush x:Key="WarnBrush" Color="#FFB45309" />
+      <SolidColorBrush x:Key="WarnBrushMuted" Color="#1FB45309" />
+      <!-- Not "OkBrush" - see the Dark dictionary's comment above; that key belongs to
+           OkBrushConverter (App.axaml), and a same-named brush arriving through this merged
+           dictionary would be unreachable at best. -->
+      <SolidColorBrush x:Key="SuccessBrush" Color="#FF15803D" />
+      <SolidColorBrush x:Key="SuccessBrushMuted" Color="#1F15803D" />
+
+      <SolidColorBrush x:Key="TextBrushDisabled" Color="#FFA0A0A3" />
+      <!-- Not "DirtyBrush" - see the Dark dictionary's comment above (DirtyBrushConverter owns
+           that key). Same brown-gold hue family as Dark's DirtyStateBrush, deepened for
+           contrast, and kept visually distinct from WarnBrush (amber vs brown) even though both
+           had to darken. -->
+      <SolidColorBrush x:Key="DirtyStateBrush" Color="#FF92400E" />
+      <SolidColorBrush x:Key="SelectedRowAccentBrush" Color="#FF0079cb" />
+      <SolidColorBrush x:Key="FieldRowDividerBrush" Color="#FFE4E4E8" />
+      <SolidColorBrush x:Key="InputBackgroundBrush" Color="#FFFFFFFF" />
+      <SolidColorBrush x:Key="InputBorderBrush" Color="#FFC6C6CC" />
+
+      <SolidColorBrush x:Key="BadgeContainerForeground" Color="#FF6D28D9" />
+      <SolidColorBrush x:Key="BadgeContainerBackground" Color="#1F6D28D9" />
+      <SolidColorBrush x:Key="BadgeEnumForeground" Color="#FF0E7490" />
+      <SolidColorBrush x:Key="BadgeEnumBackground" Color="#1F0E7490" />
+      <SolidColorBrush x:Key="BadgeFlagsForeground" Color="#FFA21CAF" />
+      <SolidColorBrush x:Key="BadgeFlagsBackground" Color="#1FA21CAF" />
+      <SolidColorBrush x:Key="BadgeStringForeground" Color="#FF047857" />
+      <SolidColorBrush x:Key="BadgeStringBackground" Color="#1F047857" />
+
+    </ResourceDictionary>
+
+  </ResourceDictionary.ThemeDictionaries>
 
   <!--
     Typography: Assembly's WPF Metro theme embeds "Segoe WP" (a Microsoft-internal font that
@@ -61,7 +249,8 @@
     Selawik is Microsoft's own open-source metric substitute for Segoe UI, released under the
     SIL Open Font License 1.1 (Assets/Fonts/SELAWIK-LICENSE.txt), specifically so apps have a
     legally embeddable stand-in when Segoe isn't available. Its five shipped weights map
-    directly onto the five MetroFont* resources below.
+    directly onto the five MetroFont* resources below. Theme-invariant, so it sits outside
+    ThemeDictionaries alongside the rest of this file's non-colour resources.
   -->
   <FontFamily x:Key="MetroFontLight">avares://AssemblyAvalonia/Assets/Fonts#Selawik Light</FontFamily>
   <FontFamily x:Key="MetroFontSemiLight">avares://AssemblyAvalonia/Assets/Fonts#Selawik Semilight</FontFamily>
@@ -74,9 +263,5 @@
 
   <!-- Assembly uses Consolas for byte-level/tabular data; it does not exist on macOS. Menlo is the macOS system monospace. -->
   <FontFamily x:Key="MetroFontMono">Menlo,Consolas,monospace</FontFamily>
-  <SolidColorBrush x:Key="ErrorBrush" Color="#FFE05252" />
-  <SolidColorBrush x:Key="RowHoverBrush" Color="#FF3f3f46" />
-  <SolidColorBrush x:Key="WarnBrush" Color="#FFE0B020" />
-  <SolidColorBrush x:Key="OkBrush" Color="#FF6FCF6F" />
 
 </ResourceDictionary>

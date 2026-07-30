@@ -1,0 +1,54 @@
+<!--
+  Type scale and spacing scale.
+
+  Before this file, FontSize was a scattered inline literal at every call site - 10, 10.5, 11,
+  11.5, 12, 13, 14, 18, 26 all appeared somewhere, several of them ("10.5", "11.5") existing only
+  because two nearby call sites had each picked a slightly different round number for what was
+  meant to be the same "small label" or "body text" role. There was no way to tell, from a given
+  FontSize="11.5", whether that size was load-bearing or just drift.
+
+  This collapses that down to seven named steps and a five-step spacing scale (base unit 4, the
+  same unit the existing Metro geometry already uses informally - button height 22, row padding
+  8/3, tree indent 14 - so the scale documents an existing rhythm rather than inventing a new
+  one). Not every existing literal maps onto a clean multiple of 4 (the 22px button height and
+  14px tree indent both come from ported-verbatim WPF ControlTemplate measurements - see
+  MetroStyles.axaml's header comment - and are left as-is rather than rounded, since they are
+  fidelity to the original, not drift).
+
+  These are theme-invariant (a font size doesn't change between light and dark), so they live
+  outside MetroDark.axaml's <ResourceDictionary.ThemeDictionaries> - see that file's header for
+  why colour and typography are split into separate dictionaries.
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- ============================== Type scale ==============================
+       Usage guide:
+         Micro  - timestamps, badge/chip text, offsets in the field table
+         Small  - secondary labels, section headers, tree rows
+         Base   - default body text (TextBlock's own default already matches this)
+         Medium - emphasised inline text (tag document header title)
+         Large  - dialog/panel field headers
+         Title  - the ASSEMBLY wordmark
+         Display- the empty-state headline                                        -->
+  <x:Double x:Key="FontSizeMicro">10</x:Double>
+  <x:Double x:Key="FontSizeSmall">11</x:Double>
+  <x:Double x:Key="FontSizeBase">12</x:Double>
+  <x:Double x:Key="FontSizeMedium">13</x:Double>
+  <x:Double x:Key="FontSizeLarge">15</x:Double>
+  <x:Double x:Key="FontSizeTitle">18</x:Double>
+  <x:Double x:Key="FontSizeDisplay">26</x:Double>
+
+  <!-- ============================== Spacing scale ==============================
+       Base unit 4px. Used for Margin/Spacing/Padding in the chrome this pass owns (header
+       band, toolbar, tab strip, console, status bar, empty state). Kept as plain x:Double
+       rather than Thickness, since most call sites need it as one side of an asymmetric
+       Thickness or as a StackPanel.Spacing, not a uniform four-sided inset. -->
+  <x:Double x:Key="Space1">4</x:Double>
+  <x:Double x:Key="Space2">8</x:Double>
+  <x:Double x:Key="Space3">12</x:Double>
+  <x:Double x:Key="Space4">16</x:Double>
+  <x:Double x:Key="Space5">20</x:Double>
+  <x:Double x:Key="Space6">24</x:Double>
+
+</ResourceDictionary>

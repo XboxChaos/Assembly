@@ -60,11 +60,25 @@ opens without complaint is making a claim, and the claim is meant to be checkabl
 ├── Views/          # MainWindow and friends — XAML plus the code-behind driving it
 ├── ViewModels/     # Tag tree, open documents, per-row edit state
 ├── Services/       # Mounting, cache sessions, meta read/write, plugin schema
-├── Theme/          # The Metro styles ported from the WPF app
+├── Theme/          # Metro palette, type scale, icon geometry — see below
 ├── Assets/Fonts/   # Selawik — see gotchas
 ├── HeadlessProbe.cs
 └── README.md       # 📍 You are here
 ```
+
+## theming
+
+`MetroDark.axaml` carries the WPF Metro palette across — the greys from
+`src/Assembly/Metro/Themes/Dark.xaml` and the `#0079cb` accent from `Blue.xaml`, unchanged — now
+as the Dark half of a `ResourceDictionary.ThemeDictionaries` with a Light half beside it. Light
+deepens the state colours that don't clear WCAG contrast on a white surface; that file's header
+shows the arithmetic.
+
+The app follows the OS light/dark setting. `ASM_THEME=Light|Dark` pins one for testing.
+
+`MetroTypography.axaml` holds the type scale and an 8px spacing scale; `Icons.axaml` holds
+hand-authored `StreamGeometry` for the chrome icons that used to be bare Unicode glyphs. Both are
+theme-invariant, hence separate files from the palette.
 
 ## headless mode
 
