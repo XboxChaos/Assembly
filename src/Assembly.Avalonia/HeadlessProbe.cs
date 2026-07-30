@@ -25,6 +25,14 @@ namespace Assembly.Avalonia
 	///     element spinner) and times it, so the row-list rebuild strategy can be measured from a
 	///     terminal instead of eyeballed in the running app.
 	///     Usage: AssemblyAvalonia --perf-test cache-file
+	///
+	///     Also carries --ce-fields, which lists a Campaign Evolved tag's rows - top-level plus,
+	///     optionally, every field under one expanded top-level block by name - with each row's
+	///     Editor/Kind/DisplayValue/IsDirty, since session.ReadMeta (what --headless's own meta
+	///     listing uses) is a classic plugin-XML path a fifth-generation tag never had any meta
+	///     for in the first place. Meant for finding real field names to point --edit-test at,
+	///     not as a proof of anything itself.
+	///     Usage: AssemblyAvalonia --ce-fields utoc-or-folder tag-name-substring [block-to-expand]
 	/// </summary>
 	internal static class HeadlessProbe
 	{
@@ -34,9 +42,58 @@ namespace Assembly.Avalonia
 				return RunEditTest(args);
 			if (args.Length > 0 && args[0] == "--perf-test")
 				return RunPerfTest(args);
+			if (args.Length > 0 && args[0] == "--ce-fields")
+				return RunCeFields(args);
 
 			return RunProbe(args);
 		}
+
+		private static int RunCeFields(string[] args)
+		{
+			if (args.Length < 3)
+			{
+				Console.WriteLine("Usage: --ce-fields <utoc-or-folder> <tag-name-substring> [block-to-expand]");
+				return 1;
+			}
+
+			string path = args[1], tagNeedle = args[2];
+			string? blockToExpand = args.Length > 3 ? args[3] : null;
+
+			EngineDatabaseService.Initialize();
+			if (EngineDatabaseService.Database == null)
+			{
+				Console.WriteLine("ENGINE DATABASE: FAILED\n" + EngineDatabaseService.Error);
+				return 1;
+			}
+
+			var session = CacheSession.Open(path, EngineDatabaseService.Database!);
+			foreach (var g in session.Groups) foreach (var t in g.Tags) t.Owner = session;
+
+			var tag = session.Groups.SelectMany(g => g.Tags)
+				.FirstOrDefault(t => t.Name.Contains(tagNeedle, StringComparison.OrdinalIgnoreCase));
+			if (tag == null) { Console.WriteLine($"no tag matching \"{tagNeedle}\""); return 2; }
+
+			var doc = new TagDocumentViewModel(tag);
+			Console.WriteLine($"{tag.Name}.{tag.Group}  ({doc.SchemaStatus})");
+
+			if (blockToExpand != null)
+			{
+				var blockRow = doc.Rows.FirstOrDefault(r => r.IsBlock && r.Name.Contains(blockToExpand, StringComparison.OrdinalIgnoreCase));
+				if (blockRow == null) { Console.WriteLine($"no top-level block matching \"{blockToExpand}\""); return 3; }
+				doc.ToggleExpand(blockRow);
+			}
+
+			foreach (var row in doc.Rows)
+			{
+				string indent = new string(' ', row.Depth * 2);
+				string editable = row.Def.IsEditable ? "editable" : "-";
+				Console.WriteLine($"{indent}{row.Name,-32} editor={row.Editor,-20} kind={row.KindLabel,-16} {editable,-9} dirty={row.IsDirty}  {Truncate(row.DisplayValue, 60)}");
+			}
+
+			return 0;
+		}
+
+		private static string Truncate(string s, int max) => s.Length <= max ? s : s[..max] + "...";
 
 		private static int RunEditTest(string[] args)
 		{
@@ -95,6 +152,22 @@ namespace Assembly.Avalonia
 					case EditorKind.Float:
 						row.Current.Floats![0] = float.Parse(newValue, CultureInfo.InvariantCulture);
 						break;
+					// Free text for a Campaign Evolved stringID - see FifthGenStringIdEditor's remarks
+					// on why this differs from classic EditorKind.StringId above (an index into a
+					// shared table, so --edit-test sets a numeric id for that one instead of text).
+					case EditorKind.FifthGenStringId:
+						row.Current.Text = newValue;
+						break;
+					// "group|path", pipe-delimited since a group four-CC and a path won't naturally
+					// contain one - see FifthGenTagReferenceEditor's remarks for the same encoding.
+					case EditorKind.FifthGenTagReference:
+					{
+						var parts = newValue.Split('|', 2);
+						if (parts.Length != 2) { Console.WriteLine("--edit-test needs \"group|path\" for a FifthGenTagReference field"); return 4; }
+						row.Current.Int = Blamite.Util.CharConstant.FromString(parts[0]);
+						row.Current.Text = parts[1];
+						break;
+					}
 					default:
 						Console.WriteLine($"--edit-test doesn't know how to set a {row.Editor} field; extend the switch if needed.");
 						return 4;

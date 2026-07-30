@@ -17,7 +17,7 @@ namespace Assembly.Avalonia.ViewModels
 	{
 		None, Integer, Float, Vector2, Vector3, Vector4, RangeFloat, RangeInt16,
 		Enum, Flags, Color, Ascii, Utf16, StringId, Block, ReadOnly,
-		FifthGenStringId, FifthGenTagReference
+		FifthGenStringId, FifthGenTagReference, FifthGenComposite
 	}
 
 	/// <summary>One selectable option for an enum editor (wraps a (Name, Value) schema choice).</summary>
@@ -209,6 +209,7 @@ namespace Assembly.Avalonia.ViewModels
 			MetaFieldKind.StringId or MetaFieldKind.OldStringId => EditorKind.StringId,
 			MetaFieldKind.FifthGenStringId => EditorKind.FifthGenStringId,
 			MetaFieldKind.FifthGenTagReference => EditorKind.FifthGenTagReference,
+			MetaFieldKind.FifthGenValue => EditorKind.FifthGenComposite,
 			_ => EditorKind.ReadOnly
 		};
 	}
