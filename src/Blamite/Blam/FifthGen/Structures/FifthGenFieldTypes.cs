@@ -19,6 +19,12 @@ namespace Blamite.Blam.FifthGen.Structures
 		private static readonly HashSet<FifthGenFieldType> _integerTypes;
 		private static readonly HashSet<FifthGenFieldType> _signedIntegerTypes;
 		private static readonly HashSet<FifthGenFieldType> _realTypes;
+		private static readonly HashSet<FifthGenFieldType> _vectorTypes;
+		private static readonly HashSet<FifthGenFieldType> _realBoundsTypes;
+		private static readonly HashSet<FifthGenFieldType> _integerBoundsTypes;
+		private static readonly HashSet<FifthGenFieldType> _packedColorTypes;
+		private static readonly HashSet<FifthGenFieldType> _realColorTypes;
+		private static readonly HashSet<FifthGenFieldType> _rectangleTypes;
 
 		static FifthGenFieldTypes()
 		{
@@ -90,8 +96,9 @@ namespace Blamite.Blam.FifthGen.Structures
 			Define("long string", FifthGenFieldType.LongString, 256);
 
 			// Types whose inline bytes are a single whole number. Enumerations, flag words and block indexes are
-			// included: they are integers with a name attached. Composite types - points, bounds, colours, planes - are
-			// not, because nothing in the format states how they are laid out internally, so they stay opaque bytes.
+			// included: they are integers with a name attached. The composite types - points, bounds, colours,
+			// planes - are not here; see _vectorTypes, _realBoundsTypes, _integerBoundsTypes, _packedColorTypes,
+			// _realColorTypes and _rectangleTypes below, which classify those instead.
 			_integerTypes = new HashSet<FifthGenFieldType>
 			{
 				FifthGenFieldType.ByteFlags,
@@ -139,6 +146,47 @@ namespace Blamite.Blam.FifthGen.Structures
 				FifthGenFieldType.Real,
 				FifthGenFieldType.RealFraction
 			};
+
+			// Two, three or four floats end to end: a point, a vector, an Euler pair/triple, a plane's
+			// coefficients or a quaternion. See FifthGenVectorValue's remarks for the width arithmetic and the
+			// classic-plugin precedent this rests on.
+			_vectorTypes = new HashSet<FifthGenFieldType>
+			{
+				FifthGenFieldType.RealPoint2D,
+				FifthGenFieldType.RealVector2D,
+				FifthGenFieldType.RealEulerAngles2D,
+				FifthGenFieldType.RealPoint3D,
+				FifthGenFieldType.RealVector3D,
+				FifthGenFieldType.RealEulerAngles3D,
+				FifthGenFieldType.RealPlane2D,
+				FifthGenFieldType.RealPlane3D,
+				FifthGenFieldType.RealQuaternion
+			};
+
+			// Two floats read as (low, high) rather than as tuple components. See FifthGenBoundsValue's remarks.
+			_realBoundsTypes = new HashSet<FifthGenFieldType>
+			{
+				FifthGenFieldType.RealBounds,
+				FifthGenFieldType.AngleBounds,
+				FifthGenFieldType.FractionBounds
+			};
+
+			// Two shorts read as (low, high). See FifthGenIntegerBoundsValue's remarks.
+			_integerBoundsTypes = new HashSet<FifthGenFieldType> {FifthGenFieldType.ShortIntegerBounds};
+
+			// A colour packed as four bytes. See FifthGenColorValue's remarks.
+			_packedColorTypes = new HashSet<FifthGenFieldType> {FifthGenFieldType.RgbColor, FifthGenFieldType.ArgbColor};
+
+			// A colour packed as three or four floats. See FifthGenRealColorValue's remarks.
+			_realColorTypes = new HashSet<FifthGenFieldType>
+			{
+				FifthGenFieldType.RealRgbColor,
+				FifthGenFieldType.RealArgbColor
+			};
+
+			// Four shorts. See FifthGenRectangleValue's remarks for why this is shorts and not floats despite
+			// sharing an 8-byte width with a 2-float vector.
+			_rectangleTypes = new HashSet<FifthGenFieldType> {FifthGenFieldType.Rectangle2D};
 		}
 
 		/// <summary>
@@ -212,6 +260,68 @@ namespace Blamite.Blam.FifthGen.Structures
 		public static bool IsReal(FifthGenFieldType type)
 		{
 			return _realTypes.Contains(type);
+		}
+
+		/// <summary>
+		///     Determines whether a field type's inline bytes are a run of two, three or four 32-bit floats: a point,
+		///     a vector, an Euler pair/triple, a plane or a quaternion. See <see cref="FifthGenVectorValue" />.
+		/// </summary>
+		public static bool IsVector(FifthGenFieldType type)
+		{
+			return _vectorTypes.Contains(type);
+		}
+
+		/// <summary>
+		///     Determines whether a field type's inline bytes are two 32-bit floats read as (low, high). See
+		///     <see cref="FifthGenBoundsValue" />.
+		/// </summary>
+		public static bool IsRealBounds(FifthGenFieldType type)
+		{
+			return _realBoundsTypes.Contains(type);
+		}
+
+		/// <summary>
+		///     Determines whether a field type's inline bytes are two 16-bit integers read as (low, high). See
+		///     <see cref="FifthGenIntegerBoundsValue" />.
+		/// </summary>
+		public static bool IsIntegerBounds(FifthGenFieldType type)
+		{
+			return _integerBoundsTypes.Contains(type);
+		}
+
+		/// <summary>
+		///     Determines whether a field type's inline bytes are a colour packed as four bytes. See
+		///     <see cref="FifthGenColorValue" />.
+		/// </summary>
+		public static bool IsPackedColor(FifthGenFieldType type)
+		{
+			return _packedColorTypes.Contains(type);
+		}
+
+		/// <summary>
+		///     Determines whether a field type's inline bytes are a colour packed as three or four 32-bit floats. See
+		///     <see cref="FifthGenRealColorValue" />.
+		/// </summary>
+		public static bool IsRealColor(FifthGenFieldType type)
+		{
+			return _realColorTypes.Contains(type);
+		}
+
+		/// <summary>
+		///     Determines whether a field type's inline bytes are four 16-bit integers. See
+		///     <see cref="FifthGenRectangleValue" />.
+		/// </summary>
+		public static bool IsRectangle(FifthGenFieldType type)
+		{
+			return _rectangleTypes.Contains(type);
+		}
+
+		/// <summary>
+		///     Determines whether a packed-colour field type's alpha channel is meaningful.
+		/// </summary>
+		public static bool HasAlpha(FifthGenFieldType type)
+		{
+			return type == FifthGenFieldType.ArgbColor || type == FifthGenFieldType.RealArgbColor;
 		}
 
 		/// <summary>

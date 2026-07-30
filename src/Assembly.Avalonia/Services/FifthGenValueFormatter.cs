@@ -18,10 +18,14 @@ namespace Assembly.Avalonia.Services
 	///     rather than a reader and an offset the way <see cref="MetaValueReader" /> does for
 	///     classic engines.
 	///
-	///     Composite "real" types (points, colours, planes, bounds) are deliberately rendered as
-	///     raw bytes here, matching <see cref="FifthGenOpaqueValue" />'s own remarks: the format
-	///     states their width but never their internal layout, so guessing which bytes are which
-	///     component would be fabricating behaviour nobody observed.
+	///     Composite "real" types (points, vectors, colours, planes, bounds, rectangles) are
+	///     decoded by <see cref="Blamite.Blam.FifthGen.Structures.FifthGenTagDataReader" /> into the
+	///     typed value classes in <c>FifthGenCompositeValue.cs</c>, and rendered here from their
+	///     decoded components rather than as raw bytes - see those classes' remarks for what each
+	///     layout rests on. What genuinely has no known layout (an unrecognized type, or a composite
+	///     type whose declared width did not match what its shape needs) still comes through as
+	///     <see cref="FifthGenOpaqueValue" /> and is rendered as raw bytes, matching that class's own
+	///     remarks: guessing would be worse than handing back the bytes.
 	/// </remarks>
 	public static class FifthGenValueFormatter
 	{
@@ -34,6 +38,24 @@ namespace Assembly.Avalonia.Services
 
 				case FifthGenRealValue rv:
 					return F(rv.Value);
+
+				case FifthGenVectorValue vv:
+					return "(" + string.Join(", ", vv.Components.Select(F)) + ")";
+
+				case FifthGenBoundsValue bv:
+					return $"{F(bv.Lo)} to {F(bv.Hi)}";
+
+				case FifthGenIntegerBoundsValue ibv:
+					return $"{ibv.Lo} to {ibv.Hi}";
+
+				case FifthGenColorValue cv:
+					return FormatPackedColor(cv);
+
+				case FifthGenRealColorValue rcv:
+					return "(" + string.Join(", ", rcv.Components.Select(F)) + ")";
+
+				case FifthGenRectangleValue rev:
+					return "(" + string.Join(", ", rev.Components) + ")";
 
 				case FifthGenStringValue sv:
 					return $"\"{sv.Value}\"";
@@ -67,6 +89,20 @@ namespace Assembly.Avalonia.Services
 			string rendered = iv.IsSigned ? iv.SignedValue.ToString(CultureInfo.InvariantCulture) : iv.Value.ToString(CultureInfo.InvariantCulture);
 			string? option = iv.OptionName;
 			return option != null ? $"{rendered}  ({option})" : rendered;
+		}
+
+		/// <summary>
+		///     Renders a packed-byte colour as its channels plus a hex swatch value - exact and
+		///     lossless, since the field's bytes already are the channel bytes. The float-packed
+		///     colour ("real rgb/argb color") deliberately gets no equivalent swatch: turning its
+		///     components into a byte would mean assuming they are normalized to 0..1, which nothing
+		///     observed confirms and an HDR value would silently misrepresent.
+		/// </summary>
+		private static string FormatPackedColor(FifthGenColorValue cv)
+		{
+			return cv.HasAlpha
+				? $"#{cv.Packed:X8}  (a{cv.A} r{cv.R} g{cv.G} b{cv.B})"
+				: $"#{(cv.Packed & 0xFFFFFF):X6}  (r{cv.R} g{cv.G} b{cv.B})";
 		}
 
 		private static string FormatBytes(byte[] bytes)

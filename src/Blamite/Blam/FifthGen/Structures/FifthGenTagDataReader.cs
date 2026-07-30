@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Blamite.IO;
@@ -60,6 +61,13 @@ namespace Blamite.Blam.FifthGen.Structures
 		///     not repeated for every element of a block.
 		/// </summary>
 		private readonly HashSet<int> _trailingStructs = new HashSet<int>();
+
+		/// <summary>
+		///     The fields (by <see cref="FifthGenFieldDefinition.Index" />) already reported as decoding to an implausible float
+		///     - NaN, infinity or a denormal - so that the warning is not repeated for every element of a block that shares the
+		///     same field definition.
+		/// </summary>
+		private readonly HashSet<int> _implausibleFields = new HashSet<int>();
 
 		/// <summary>
 		///     Initializes a new instance of the <see cref="FifthGenTagDataReader" /> class.
@@ -227,7 +235,183 @@ namespace Blamite.Blam.FifthGen.Structures
 				return new FifthGenRealValue(field, ReadRaw(reader, start, size), value);
 			}
 
+			if (FifthGenFieldTypes.IsVector(field.Type))
+				return ReadVector(reader, field, start, size);
+
+			if (FifthGenFieldTypes.IsRealBounds(field.Type))
+				return ReadRealBounds(reader, field, start, size);
+
+			if (FifthGenFieldTypes.IsIntegerBounds(field.Type))
+				return ReadIntegerBounds(reader, field, start, size);
+
+			if (FifthGenFieldTypes.IsPackedColor(field.Type))
+				return ReadPackedColor(reader, field, start, size);
+
+			if (FifthGenFieldTypes.IsRealColor(field.Type))
+				return ReadRealColor(reader, field, start, size);
+
+			if (FifthGenFieldTypes.IsRectangle(field.Type))
+				return ReadRectangle(reader, field, start, size);
+
 			return new FifthGenOpaqueValue(field, ReadRaw(reader, start, size));
+		}
+
+		/// <summary>
+		///     Reads a point, vector, Euler pair/triple, plane or quaternion: two to four floats end to end, with the count
+		///     fixed by the field's declared width. See <see cref="FifthGenVectorValue" />'s remarks for why this is the only
+		///     reading of those widths that fits every name in <see cref="FifthGenFieldTypes.IsVector" />.
+		/// </summary>
+		private FifthGenTagValue ReadVector(IReader reader, FifthGenFieldDefinition field, long start, int size)
+		{
+			int count = size/4;
+			if (size%4 != 0 || count < 2 || count > 4)
+			{
+				_warnings.Add(
+					$"Field '{field.Name}' ({field.TypeName}) is a vector-shaped type of {size} byte(s), which is not a 2-, 3- or 4-float width this parser expects. Its bytes are preserved.");
+				return new FifthGenOpaqueValue(field, ReadRaw(reader, start, size));
+			}
+
+			var components = new float[count];
+			for (var i = 0; i < count; i++)
+				components[i] = reader.ReadFloat();
+
+			CheckFloatPlausibility(field, components);
+			return new FifthGenVectorValue(field, ReadRaw(reader, start, size), components);
+		}
+
+		/// <summary>
+		///     Reads a <c>real bounds</c>, <c>angle bounds</c> or <c>fraction bounds</c> field: two floats read as (low, high).
+		/// </summary>
+		private FifthGenTagValue ReadRealBounds(IReader reader, FifthGenFieldDefinition field, long start, int size)
+		{
+			if (size != 8)
+			{
+				_warnings.Add(
+					$"Field '{field.Name}' ({field.TypeName}) is a real-bounds type of {size} byte(s), not the 8 this parser expects for two floats. Its bytes are preserved.");
+				return new FifthGenOpaqueValue(field, ReadRaw(reader, start, size));
+			}
+
+			float lo = reader.ReadFloat();
+			float hi = reader.ReadFloat();
+			CheckFloatPlausibility(field, new[] {lo, hi});
+			return new FifthGenBoundsValue(field, ReadRaw(reader, start, size), lo, hi);
+		}
+
+		/// <summary>
+		///     Reads a <c>short integer bounds</c> field: two 16-bit integers read as (low, high).
+		/// </summary>
+		private FifthGenTagValue ReadIntegerBounds(IReader reader, FifthGenFieldDefinition field, long start, int size)
+		{
+			if (size != 4)
+			{
+				_warnings.Add(
+					$"Field '{field.Name}' ({field.TypeName}) is a short-integer-bounds type of {size} byte(s), not the 4 this parser expects for two shorts. Its bytes are preserved.");
+				return new FifthGenOpaqueValue(field, ReadRaw(reader, start, size));
+			}
+
+			short lo = reader.ReadInt16();
+			short hi = reader.ReadInt16();
+			return new FifthGenIntegerBoundsValue(field, ReadRaw(reader, start, size), lo, hi);
+		}
+
+		/// <summary>
+		///     Reads an <c>rgb color</c> or <c>argb color</c> field: a colour packed into a single 32-bit word.
+		/// </summary>
+		private FifthGenTagValue ReadPackedColor(IReader reader, FifthGenFieldDefinition field, long start, int size)
+		{
+			if (size != 4)
+			{
+				_warnings.Add(
+					$"Field '{field.Name}' ({field.TypeName}) is a packed-colour type of {size} byte(s), not the 4 this parser expects for one word. Its bytes are preserved.");
+				return new FifthGenOpaqueValue(field, ReadRaw(reader, start, size));
+			}
+
+			uint packed = reader.ReadUInt32();
+			return new FifthGenColorValue(field, ReadRaw(reader, start, size), packed, FifthGenFieldTypes.HasAlpha(field.Type));
+		}
+
+		/// <summary>
+		///     Reads a <c>real rgb color</c> or <c>real argb color</c> field: three or four floats read as colour channels.
+		/// </summary>
+		private FifthGenTagValue ReadRealColor(IReader reader, FifthGenFieldDefinition field, long start, int size)
+		{
+			int count = size/4;
+			if (size%4 != 0 || (count != 3 && count != 4))
+			{
+				_warnings.Add(
+					$"Field '{field.Name}' ({field.TypeName}) is a real-colour type of {size} byte(s), not the 12 or 16 this parser expects for three or four floats. Its bytes are preserved.");
+				return new FifthGenOpaqueValue(field, ReadRaw(reader, start, size));
+			}
+
+			var components = new float[count];
+			for (var i = 0; i < count; i++)
+				components[i] = reader.ReadFloat();
+
+			CheckFloatPlausibility(field, components);
+			return new FifthGenRealColorValue(field, ReadRaw(reader, start, size), components,
+				FifthGenFieldTypes.HasAlpha(field.Type));
+		}
+
+		/// <summary>
+		///     Reads a <c>rectangle 2d</c> field: four 16-bit integers. See <see cref="FifthGenRectangleValue" />'s remarks for
+		///     why this is shorts rather than the two floats the same 8-byte width would give a <see cref="FifthGenVectorValue" />.
+		/// </summary>
+		private FifthGenTagValue ReadRectangle(IReader reader, FifthGenFieldDefinition field, long start, int size)
+		{
+			if (size != 8)
+			{
+				_warnings.Add(
+					$"Field '{field.Name}' ({field.TypeName}) is a rectangle type of {size} byte(s), not the 8 this parser expects for four shorts. Its bytes are preserved.");
+				return new FifthGenOpaqueValue(field, ReadRaw(reader, start, size));
+			}
+
+			var components = new short[4];
+			for (var i = 0; i < 4; i++)
+				components[i] = reader.ReadInt16();
+
+			return new FifthGenRectangleValue(field, ReadRaw(reader, start, size), components);
+		}
+
+		/// <summary>
+		///     Checks a composite real field's components for NaN, infinity or a denormal - what garbage looks like once it is
+		///     misread as a float - and records a warning the first time a given field definition fails so that one bad field
+		///     does not produce one warning per element of a block.
+		/// </summary>
+		/// <remarks>
+		///     This is a plausibility check, not a proof: a wrong-but-finite-and-normal float layout would pass it. It exists to
+		///     catch the failure mode that is easy to produce by accident - reading the wrong number of components, or reading
+		///     floats over bytes that are not floats at all - which is exactly the mistake a wrong composite layout would make.
+		/// </remarks>
+		private void CheckFloatPlausibility(FifthGenFieldDefinition field, IReadOnlyList<float> components)
+		{
+			for (var i = 0; i < components.Count; i++)
+			{
+				if (IsPlausibleFloat(components[i]))
+					continue;
+
+				if (_implausibleFields.Add(field.Index))
+				{
+					_warnings.Add(
+						$"{Where($"field '{field.Name}' ({field.TypeName})")} decoded component {i} of {components.Count} as {components[i]}, which is NaN, infinite or a denormal. The float layout assumed for '{field.TypeName}' may not hold for this field; its bytes are preserved regardless.");
+				}
+				return;
+			}
+		}
+
+		/// <summary>
+		///     Determines whether a float looks like a value a tag author or the engine would plausibly have written, as
+		///     opposed to what turns up when unrelated bytes are misread as a float: NaN, infinity, or a denormal (an exponent
+		///     of all zero bits with a non-zero mantissa).
+		/// </summary>
+		private static bool IsPlausibleFloat(float value)
+		{
+			if (float.IsNaN(value) || float.IsInfinity(value))
+				return false;
+			if (value == 0f)
+				return true;
+
+			int bits = BitConverter.ToInt32(BitConverter.GetBytes(value), 0);
+			return ((bits >> 23) & 0xFF) != 0;
 		}
 
 		private FifthGenTagValue ReadInteger(IReader reader, FifthGenFieldDefinition field, long start, int size)
