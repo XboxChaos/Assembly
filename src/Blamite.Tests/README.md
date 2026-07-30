@@ -5,11 +5,13 @@ almost everything the parser knows was established by reading real bytes rather 
 published documentation — which means nothing upstream will tell us when a refactor quietly
 changes what a tag parses into.
 
-```
-dotnet test src/Blamite.Tests
+Run from this directory:
+
+```bash
+$ dotnet test
 ```
 
-## The two halves
+## The three parts
 
 **`IoStorePrimitiveTests`** builds its buffers by hand and needs no game files, so it runs
 anywhere — including on a machine that has never seen the game. It pins the byte-level rules
@@ -21,6 +23,16 @@ the fact that every four-CC in a tag payload is stored backwards.
 engine detection, mounting every sibling container from one file, override resolution, tag naming,
 and payload parsing. It opens everything read-only.
 
+**`CampaignEvolvedWriterTests`** pins the property the write path rests on: an unedited tag
+serialises back to the bytes it was parsed from, exactly. That is the mechanism, not a nicety —
+two things are unrecoverable from the decoded model (whether a stringID or tag-reference text
+section was NUL-terminated on disk, and whether a struct field's wrapper was elided to zero
+bytes), and the writer sidesteps both by replaying anything undirtied verbatim. A regression means
+it has begun inventing bytes, which no round-trip of its own output would reveal.
+
+Container repack is deliberately not covered here. It writes files, and the only real container
+set available is a third-party mod these tests must not touch.
+
 ## Test data
 
 The reference container set is a third-party mod. It is deliberately **not** vendored here — it
@@ -28,7 +40,7 @@ is not ours to redistribute, and it is four megabytes. Tests that need it skip b
 explanation, rather than passing vacuously:
 
 ```
-Passed!  - Failed: 0, Passed: 13, Skipped: 23
+Passed!  - Failed: 0, Passed: 13, Skipped: 35, Total: 48
 ```
 
 Point `ASM_CE_TEST_DATA` at any directory containing a `.utoc`/`.ucas` pair to run them. The

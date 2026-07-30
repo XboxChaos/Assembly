@@ -16,8 +16,10 @@ the UI — no IPC, no serialisation boundary, nothing reimplemented.
 
 ## running it
 
+Paths below are relative to this directory.
+
 ```bash
-$ dotnet run --project src/Assembly.Avalonia
+$ dotnet run
 ```
 
 Use `--` before any arguments of your own, or msbuild eats them and you get a
@@ -28,7 +30,7 @@ Use `--` before any arguments of your own, or msbuild eats them and you get a
 | kind | extensions | state |
 | --- | --- | --- |
 | Classic caches | `.map`, `.yelo`, `.campaign` | Full meta editing, written back to disk |
-| Campaign Evolved | `.utoc` + `.ucas` | Read-only — see below |
+| Campaign Evolved | `.utoc` + `.ucas` | Parses and renders; write-back see below |
 | Folders | scanned recursively | Everything recognised mounted into one namespace |
 | Zips | extracted to temp | Same as a folder |
 
@@ -39,7 +41,9 @@ for a folder full of classic maps.
 
 ## campaign evolved
 
-Partial. Tags mount, parse and render. Nothing writes back yet.
+Partial. Tags mount, parse and render, and Blamite can write an edited tag back into its
+container — see [`../Blamite/Blam/FifthGen`](../Blamite/Blam/FifthGen). Wiring that through to
+the editors in this app is in progress.
 
 CE ships its tags inside Unreal Engine 5.5 IoStore containers, and the payload in each `.ubulk`
 chunk is a self-describing Halo Reach-era MCC tag file. **Self-describing is the important part**:
@@ -87,10 +91,10 @@ is how the Campaign Evolved work got verified without clicking anything:
 
 ```bash
 # open a cache, print what mounted
-$ dotnet run --project src/Assembly.Avalonia -- --headless <cache-file> [tag-name-substring]
+$ dotnet run -- --headless <cache-file> [tag-name-substring]
 
 # open, edit a field, save, reopen, prove the new bytes are on disk
-$ dotnet run --project src/Assembly.Avalonia -- --edit-test <cache-file> <tag> <field> <value>
+$ dotnet run -- --edit-test <cache-file> <tag> <field> <value>
 ```
 
 `--edit-test` goes through the same `TagDocumentViewModel` and `MetaValueWriter` the sidebar
@@ -123,15 +127,12 @@ editors use, so it proves the real write path rather than a parallel one.
   ~12,000, because nobody working on this has the retail containers.
 - **The Oodle decompressor is unexercised.** Mod containers store everything uncompressed, so the
   pure-managed Kraken decoder has never had real shipped-game data through it.
-- **`TestFixtures/forge_halo3_fixture.py` is orphaned.** It still writes a synthetic Halo 3 cache,
-  but the in-app "SYNTHETIC TEST FIXTURE" banner that made such a file impossible to mistake for a
-  real map is gone. Don't rely on it until that's back.
 
 ## tests
 
 ```bash
-$ dotnet test src/Blamite.Tests
+$ dotnet test ../Blamite.Tests
 ```
 
-Format-level tests live with Blamite. Roughly two thirds need a real Campaign Evolved container set
-and skip by name when it's absent — see [`../Blamite.Tests/README.md`](../Blamite.Tests/README.md).
+Format-level tests live with Blamite. Most of them need a real Campaign Evolved container set and
+skip by name when it's absent — see [`../Blamite.Tests/README.md`](../Blamite.Tests/README.md).

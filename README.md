@@ -16,7 +16,7 @@ Assembly was designed with three goals in mind:
 
 ## Halo: Campaign Evolved ##
 
-Support for Campaign Evolved is __partial__. Its tags can be mounted, parsed and viewed; they cannot yet be edited or saved.
+Support for Campaign Evolved is __partial__. Its tags can be mounted, parsed and viewed, and an edited tag can be written back into its container. Editing them through the user interface is still being wired up.
 
 Campaign Evolved does not ship cache files. It ships its tags inside Unreal Engine 5.5 IoStore containers (`.utoc`/`.ucas`), and the tag inside each one is self-describing - it carries its own field names, types, enumeration options and block definitions. That means it needs no plugins, and none should be written for it: a hand-maintained copy of what the tag already states would only drift on every game patch.
 
