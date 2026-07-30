@@ -70,6 +70,13 @@ namespace Assembly.Avalonia
 			byte[] original = System.IO.File.ReadAllBytes(path);
 			var tagFile = new Blamite.Blam.FifthGen.FifthGenTagFile(original);
 
+			if (fieldName == "--list")
+			{
+				foreach (var f in tagFile.Layout.Fields.Where(f => !string.IsNullOrEmpty(f.Name)).Take(60))
+					Console.WriteLine($"  {f.TypeName,-14} {f.Name}");
+				return 0;
+			}
+
 			var found = FindIntegerField(tagFile.Data, fieldName);
 			if (found == null)
 			{
@@ -164,10 +171,10 @@ namespace Assembly.Avalonia
 				var raw = (Blamite.Blam.FifthGen.Structures.FifthGenTag) tag.Raw;
 				byte[] original = raw.RawPayload;
 
-				Console.WriteLine($"=== {tag.Name}.{tag.Group}  ({original.Length:N0} bytes) ===");
-
 				// ---- pass 1: parse, then write back completely untouched ----
 				var parsed = new Blamite.Blam.FifthGen.FifthGenTagFile(original);
+				Console.WriteLine($"=== {tag.Name}.{tag.Group}  ({original.Length:N0} bytes, " +
+					$"{parsed.Layout.Fields.Count} field(s) / {parsed.Layout.Structs.Count} struct(s)) ===");
 				byte[] clean = Blamite.Blam.FifthGen.Structures.FifthGenTagWriter.Write(parsed);
 				bool cleanOk = ReportComparison("unedited round-trip", original, clean);
 				anyFailure |= !cleanOk;
