@@ -87,7 +87,6 @@ namespace Assembly.Avalonia.Views
 		private readonly TextBlock _modeChipText;
 		private readonly TextBlock _footerHint;
 		private readonly TextBlock _emptyHint;
-		private readonly Border _scrim;
 
 		private CommandRegistry? _commands;
 		private Func<int>? _tagsVersionProvider;
@@ -107,7 +106,6 @@ namespace Assembly.Avalonia.Views
 			_modeChipText = this.FindControl<TextBlock>("ModeChipText")!;
 			_footerHint = this.FindControl<TextBlock>("FooterHint")!;
 			_emptyHint = this.FindControl<TextBlock>("EmptyHint")!;
-			_scrim = this.FindControl<Border>("PaletteBox")!;
 
 			_resultsList.ItemsSource = _results;
 			_queryBox.TextChanged += (_, _) => Refresh();
