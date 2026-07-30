@@ -171,8 +171,15 @@
                 c-3,2.5-20.8,19.4-56.1,39.4L528.9,406.9c169.7,1.4,279.6,40.2,356.3,106.7C983.8,599.2,896.7,681.3,886.7,689.8z" />
           <StackPanel VerticalAlignment="Center" Spacing="1">
             <TextBlock Text="ASSEMBLY" FontFamily="{StaticResource MetroFontLight}"
-                       FontSize="{StaticResource FontSizeTitle}" LetterSpacing="1.4" />
-            <TextBlock Text="{Binding WindowTitle}" Classes="label mono"
+                       FontSize="{StaticResource FontSizeDisplay}" LetterSpacing="2" />
+            <!--
+              HeaderSubtitle (Converters.cs) trims WindowTitle's own trailing " - Assembly" - that
+              suffix belongs on the native window title bar just above this band (where repeating
+              the app name is normal), not on a second line 20px under a wordmark that already
+              says "ASSEMBLY". Two readings of the same word in one glance was one of the concrete
+              defects called out for this pass - see that converter's remarks for the full case.
+            -->
+            <TextBlock Text="{Binding WindowTitle, Converter={StaticResource HeaderSubtitle}}" Classes="label mono"
                        FontSize="{StaticResource FontSizeMicro}" MaxWidth="520" TextTrimming="CharacterEllipsis" />
           </StackPanel>
         </StackPanel>
@@ -236,24 +243,30 @@
         <!-- Chrome toggles: hand-drawn vector pictograms (Theme/Icons.axaml) replacing the old
              "&#9776;" / "&#9635;" / "&gt;_" Unicode-glyph Content - see the brief's icon
              requirement. Each icon's shape mirrors what it does (a panel filled on the side it
-             docks to; a terminal frame with a prompt) rather than being an arbitrary symbol. -->
+             docks to; a terminal frame with a prompt) rather than being an arbitrary symbol.
+
+             Fill/Stroke are deliberately NOT set here any more (they were local literals -
+             Fill="Transparent" Stroke="{DynamicResource VectorBrush}" - which, being local values,
+             could never be overridden by MetroStyles.axaml's ToggleButton.chrome:checked Path
+             Style Setter; see Services/DisplayDensity.cs's header for why a Style Setter can never
+             win against a local value in Avalonia). Classes="chromeIcon" moves both into that
+             file's own Style selectors instead, which is what actually lets the checked/hover
+             states change the icon's colour - see MetroStyles.axaml's "Icon-only chrome toggle"
+             section. -->
         <ToggleButton Grid.Column="12" Classes="chrome" IsChecked="{Binding ShowTagTree}"
                       ToolTip.Tip="Toggle tag tree (sidebar)" Margin="2">
-          <Path Width="15" Height="15" Stretch="Uniform" Data="{StaticResource IconSidebarLeft}"
-                Fill="Transparent" Stroke="{DynamicResource VectorBrush}" StrokeThickness="1.6"
-                StrokeLineCap="Round" StrokeJoin="Round" />
+          <Path Classes="chromeIcon" Width="15" Height="15" Stretch="Uniform" Data="{StaticResource IconSidebarLeft}"
+                StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round" />
         </ToggleButton>
         <ToggleButton Grid.Column="13" Classes="chrome" IsChecked="{Binding ShowValueSidebar}"
                       ToolTip.Tip="Toggle properties sidebar" Margin="2">
-          <Path Width="15" Height="15" Stretch="Uniform" Data="{StaticResource IconSidebarRight}"
-                Fill="Transparent" Stroke="{DynamicResource VectorBrush}" StrokeThickness="1.6"
-                StrokeLineCap="Round" StrokeJoin="Round" />
+          <Path Classes="chromeIcon" Width="15" Height="15" Stretch="Uniform" Data="{StaticResource IconSidebarRight}"
+                StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round" />
         </ToggleButton>
         <ToggleButton Grid.Column="14" Classes="chrome" IsChecked="{Binding ShowConsole}"
                       ToolTip.Tip="Toggle console" Margin="2">
-          <Path Width="15" Height="15" Stretch="Uniform" Data="{StaticResource IconConsole}"
-                Fill="Transparent" Stroke="{DynamicResource VectorBrush}" StrokeThickness="1.6"
-                StrokeLineCap="Round" StrokeJoin="Round" />
+          <Path Classes="chromeIcon" Width="15" Height="15" Stretch="Uniform" Data="{StaticResource IconConsole}"
+                StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round" />
         </ToggleButton>
       </Grid>
     </Border>
@@ -542,14 +555,39 @@
                     </ToggleButton>
                     <TextBlock Grid.Column="2" Text="{Binding OffsetLabel}" Classes="mono" FontSize="{DynamicResource FontSizeSmall}"
                                Foreground="{StaticResource TextBrushSecondary}" VerticalAlignment="Center" />
-                    <TextBlock Grid.Column="3" Text="{Binding KindLabel}" Classes="label" FontSize="{DynamicResource FontSizeSmall}" VerticalAlignment="Center" />
-                    <Grid Grid.Column="4" ColumnDefinitions="*,Auto,Auto">
-                      <TextBlock Grid.Column="0" Text="{Binding Name}"
-                                 Margin="{Binding Depth, Converter={StaticResource DepthIndent}}"
+                    <TextBlock Grid.Column="3" Text="{Binding KindLabel}" Classes="label" VerticalAlignment="Center" />
+                    <Grid Grid.Column="4" ColumnDefinitions="Auto,*,Auto,Auto">
+                      <!--
+                        Indent guides: one 16px-wide slot per ancestor level (DepthRangeConverter,
+                        Converters.cs), each holding a single vertical hairline, real elements
+                        rather than a container-level Background trick - see that converter's
+                        remarks for why the previous DrawingBrush approach never actually rendered
+                        (this pass found it invisible at every zoom level once a real block was
+                        expanded, not merely "artifact"-looking as first suspected). Placed ahead
+                        of the Name text in the same row rather than as a Margin on it, so the
+                        guides are visible siblings instead of dead space - what used to be
+                        DepthIndentConverter's job (widening a Margin) is now just "however wide
+                        this ItemsControl's own realized items are", so no separate indent
+                        calculation is needed any more.
+                      -->
+                      <ItemsControl Grid.Column="0" ItemsSource="{Binding Depth, Converter={StaticResource DepthRange}}" Focusable="False">
+                        <ItemsControl.ItemsPanel>
+                          <ItemsPanelTemplate><StackPanel Orientation="Horizontal" /></ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                          <DataTemplate>
+                            <Border Width="16" VerticalAlignment="Stretch">
+                              <Rectangle Width="1" HorizontalAlignment="Center" VerticalAlignment="Stretch"
+                                         Fill="{DynamicResource FieldRowDividerBrush}" />
+                            </Border>
+                          </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                      </ItemsControl>
+                      <TextBlock Grid.Column="1" Text="{Binding Name}"
                                  FontFamily="{StaticResource MetroFontRegular}" FontSize="{DynamicResource FontSizeSmall}"
                                  VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
                                  ToolTip.Tip="{Binding Def.Tooltip}" />
-                      <TextBlock Grid.Column="1" Text="{Binding DisplayValue}" Classes="mono accent" FontSize="{DynamicResource FontSizeSmall}"
+                      <TextBlock Grid.Column="2" Text="{Binding DisplayValue}" Classes="mono accent" FontSize="{DynamicResource FontSizeSmall}"
                                  VerticalAlignment="Center" Margin="10,0,0,0" MaxWidth="380" TextTrimming="CharacterEllipsis" />
                       <!--
                         Tag-reference navigation: a classic TagReference field resolves through the
@@ -558,7 +596,7 @@
                         way RefTarget is non-null only when there is something to follow - double-click
                         or Enter on the row do the same thing this button does.
                       -->
-                      <Button Grid.Column="2" Content="open &#8594;" FontSize="9.5" Padding="5,1" Margin="8,0,0,0"
+                      <Button Grid.Column="3" Content="open &#8594;" FontSize="9.5" Padding="5,1" Margin="8,0,0,0"
                               VerticalAlignment="Center" IsVisible="{Binding IsReference}"
                               Click="OnFollowReferenceClick" Tag="{Binding}"
                               ToolTip.Tip="Open the referenced tag in a new tab" />
@@ -639,8 +677,8 @@
               <ComboBoxItem>Errors</ComboBoxItem>
             </ComboBox>
             <Button Grid.Column="4" Classes="chrome" Click="OnConsoleCopyClick" ToolTip.Tip="Copy visible lines" Margin="2">
-              <Path Width="13" Height="13" Stretch="Uniform" Data="{StaticResource IconCopy}"
-                    Fill="Transparent" Stroke="{DynamicResource VectorBrush}" StrokeThickness="1.4" StrokeLineCap="Round" StrokeJoin="Round" />
+              <Path Classes="chromeIcon" Width="13" Height="13" Stretch="Uniform" Data="{StaticResource IconCopy}"
+                    StrokeThickness="1.4" StrokeLineCap="Round" StrokeJoin="Round" />
             </Button>
             <Button Grid.Column="5" Content="Clear" Click="OnConsoleClearClick" Margin="4,0,10,0" />
           </Grid>
@@ -663,11 +701,24 @@
       </Grid>
     </Border>
 
-    <!-- ================= status bar ================= -->
-    <Border Grid.Row="5" Background="{Binding ActiveDocument.IsDirty, Converter={StaticResource FooterBrush}}">
+    <!--
+      ================= status bar =================
+      Quiet chrome normally, the shared dirty gold only when there is actually something to
+      report - see FooterBrushConverter/FooterForegroundBrushConverter (Converters.cs) for why:
+      a status bar filled with the solid accent blue at all times was "a coloured strip bolted
+      on" (one of the concrete defects called out for this pass) rather than chrome the accent
+      could ever stand out against, since a reader has already seen that exact blue on the
+      header's top edge, the active tab underline and every accent button by the time they reach
+      the bottom of the window. The top hairline is new too, for the same reason every other
+      panel header in this shell (tag namespace, properties, console) gets one against the
+      surface above it - this bar wasn't previously chrome so much as a colour swatch.
+    -->
+    <Border Grid.Row="5" Background="{Binding ActiveDocument.IsDirty, Converter={StaticResource FooterBrush}}"
+            BorderBrush="{DynamicResource SidebarHeaderSeperatorBrush}" BorderThickness="0,1,0,0">
       <Grid ColumnDefinitions="*,Auto,Auto">
         <TextBlock Grid.Column="0" Text="{Binding StatusText}" Classes="mono" FontSize="{StaticResource FontSizeSmall}"
-                   VerticalAlignment="Center" Margin="12,0" Foreground="White" />
+                   VerticalAlignment="Center" Margin="12,0"
+                   Foreground="{Binding ActiveDocument.IsDirty, Converter={StaticResource FooterForegroundBrush}}" />
         <!-- Colour alone (the footer's gold dirty tint) isn't a safe-enough signal on its own -
              this spells "unsaved" out as text too. -->
         <TextBlock Grid.Column="1" Text="● unsaved changes" Classes="mono" FontSize="{StaticResource FontSizeSmall}"
@@ -675,7 +726,8 @@
                    IsVisible="{Binding ActiveDocument.IsDirty, FallbackValue=False, TargetNullValue=False}" />
         <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" Margin="0,0,12,0">
           <TextBlock Text="{Binding ActiveDocument.SelectedRow.OffsetLabel}" Classes="mono" FontSize="{StaticResource FontSizeSmall}"
-                     Foreground="White" IsVisible="{Binding ActiveDocument.SelectedRow, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                     Foreground="{Binding ActiveDocument.IsDirty, Converter={StaticResource FooterForegroundBrush}}"
+                     IsVisible="{Binding ActiveDocument.SelectedRow, Converter={x:Static ObjectConverters.IsNotNull}}" />
         </StackPanel>
       </Grid>
     </Border>

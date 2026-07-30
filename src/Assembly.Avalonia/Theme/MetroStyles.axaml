@@ -207,10 +207,17 @@
     <Setter Property="BorderBrush" Value="{DynamicResource ButtonDisabledBorderBrush}" />
   </Style>
 
-  <!-- Icon-only chrome toggle (sidebar collapse handles, console toggle) -->
+  <!-- Icon-only chrome toggle (sidebar collapse handles, console toggle). "Active" reads as a
+       thin accent underline (BorderThickness reserves the bottom 2px always, Transparent at rest)
+       rather than a filled swatch behind the icon - the same "accent edge = active" language the
+       document tab strip already uses (Button.tabHeader.active below), so the toolbar and the tab
+       strip teach a reader one idiom instead of two. An earlier version filled the checked state
+       with SidebarBlockBrush, which on a 22px-tall toolbar button read as a small grey plaque
+       rather than a state change. -->
   <Style Selector="ToggleButton.chrome">
     <Setter Property="Background" Value="Transparent" />
-    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="BorderThickness" Value="0,0,0,2" />
+    <Setter Property="BorderBrush" Value="Transparent" />
     <Setter Property="Width" Value="{DynamicResource ChromeToggleWidth}" />
     <Setter Property="Padding" Value="0" />
   </Style>
@@ -218,18 +225,26 @@
     <Setter Property="Background" Value="{DynamicResource WindowActionHoverBrush}" />
   </Style>
   <Style Selector="ToggleButton.chrome:checked /template/ Border#PART_Border">
-    <Setter Property="Background" Value="{DynamicResource SidebarBlockBrush}" />
-    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" />
   </Style>
-  <!-- Icon colour follows the checked state too, so an active chrome toggle doesn't leave its
-       icon the same muted grey as an inactive one. Stroke only, deliberately not Fill: every
-       icon this currently reaches (Icons.axaml's IconSidebarLeft/Right/Console) is stroke-style
-       line art built from a closed rectangle subpath for the frame - a Style-level Fill setter
-       here would flood-fill that rectangle solid, turning the outline into a block (this was
-       caught during this pass's own screenshot verification: the three toolbar toggles rendered
-       as plain white squares, because all three default to IsChecked="True"). -->
-  <Style Selector="ToggleButton.chrome:checked Path">
-    <Setter Property="Stroke" Value="White" />
+
+  <!-- Fill/Stroke for every stroke-style toolbar/console pictogram (Theme/Icons.axaml's
+       IconSidebarLeft/Right/Console/Copy - see that file's header for the stroke-vs-fill split),
+       applied by class rather than as a local value on each Path (see MainWindow.axaml's own
+       remarks at each call site) specifically so the state selectors below CAN win: a Style
+       Setter can never override a property already carrying a local value in Avalonia (see
+       Services/DisplayDensity.cs's header), which is exactly what made the previous
+       ToggleButton.chrome:checked Path rule permanently dead - it targeted a Stroke every one of
+       these Paths already set locally, so it never once actually applied. -->
+  <Style Selector="Path.chromeIcon">
+    <Setter Property="Fill" Value="Transparent" />
+    <Setter Property="Stroke" Value="{DynamicResource TextBrushSecondary}" />
+  </Style>
+  <Style Selector="Button.chrome:pointerover Path.chromeIcon, ToggleButton.chrome:pointerover Path.chromeIcon">
+    <Setter Property="Stroke" Value="{DynamicResource TextBrushPrimary}" />
+  </Style>
+  <Style Selector="ToggleButton.chrome:checked Path.chromeIcon">
+    <Setter Property="Stroke" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
   </Style>
 
   <!-- ============================== Document tabs ==============================
@@ -363,21 +378,19 @@
   <Styles.Resources>
     <ResourceDictionary>
       <!--
-        These three converters back Setter Property="Converter=..." bindings further down this
-        same file (the field table's indent guides and type badges). They are also registered in
-        App.axaml's Application.Resources under the same x:Key, for use from Window-level XAML
+        This converter backs a Setter Property="Converter=..." binding further down this same
+        file (the field table's TYPE column colour). It is also registered in App.axaml's
+        Application.Resources under the same x:Key, for use from Window-level XAML
         (MainWindow.axaml) via StaticResource - but a Setter's Converter sub-property needs a
         concrete IValueConverter resolved at parse time, and a plain <Styles> document (unlike a
         Window) does not chain up to Application.Resources for StaticResource lookups (see this
-        file's header). Declaring them again here, resolved from this file's own local resource
-        scope, is the only way a Style *in this file* can use them as a Converter - a
+        file's header). Declaring it again here, resolved from this file's own local resource
+        scope, is the only way a Style *in this file* can use it as a Converter - a
         DynamicResource in that same position fails differently (Avalonia error AVLN3000: it
         produces a deferred resource reference, not a concrete IValueConverter, and the Converter
         setter has no overload that accepts one).
       -->
-      <views:IndentGuideBrushConverter x:Key="IndentGuideBrush" />
       <views:TypeBadgeForegroundConverter x:Key="TypeBadgeForeground" />
-      <views:TypeBadgeBackgroundConverter x:Key="TypeBadgeBackground" />
 
       <!-- TreeViewItemIndent is fidelity to the original WPF measurement (see this file's own
            header) and stays fixed across density on purpose. TreeViewItemMinHeight and
@@ -389,7 +402,14 @@
            MetroTypography.axaml's own "Density-driven control geometry" section. -->
       <x:Double x:Key="TreeViewItemIndent">14</x:Double>
       <x:Double x:Key="TreeViewItemMinHeight">21</x:Double>
-      <Thickness x:Key="TreeViewItemBorderThemeThickness">0</Thickness>
+      <!-- Left 2px reserved on every row, not just selected ones - see the selected-brush remarks
+           below for why (VS-Code-style "subtle tint plus a thin accent bar", not a saturated
+           slab): FluentTreeViewItem's ControlTemplate has one shared BorderThemeThickness for
+           every state, so the choice is either reserve this space always (Transparent brush at
+           rest, invisible) or have the row's own width shift by 2px the instant it is selected -
+           the field table's selected-row accent bar (this file's "Field table" section) makes the
+           same trade for the same reason. -->
+      <Thickness x:Key="TreeViewItemBorderThemeThickness">2,0,0,0</Thickness>
       <x:Double x:Key="TreeViewItemExpandCollapseChevronSize">9</x:Double>
       <Thickness x:Key="TreeViewItemExpandCollapseChevronMargin">2,0,4,0</Thickness>
 
@@ -402,21 +422,35 @@
           <SolidColorBrush x:Key="TreeViewItemBackground">Transparent</SolidColorBrush>
           <SolidColorBrush x:Key="TreeViewItemBackgroundPointerOver" Color="#FF3f3f46" />
           <SolidColorBrush x:Key="TreeViewItemBackgroundPressed" Color="#FF3f3f46" />
-          <SolidColorBrush x:Key="TreeViewItemBackgroundSelected" Color="#1D98EB" />
-          <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPointerOver" Color="#1D98EB" />
-          <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPressed" Color="#1D98EB" />
+          <!-- Subtle accent tint, not a saturated slab - same 20%-alpha accent MetroDark.axaml's
+               ExtryzeAccentBrushMuted already uses for the palette's own selected-row treatment,
+               kept as a literal here rather than a cross-file resource reference because this
+               ResourceDictionary.ThemeDictionaries block only accepts literal Color values (see
+               this file's header for why StaticResource/DynamicResource can't reach across merged
+               dictionaries from inside a Styles.Resources entry like this one). -->
+          <SolidColorBrush x:Key="TreeViewItemBackgroundSelected" Color="#330079cb" />
+          <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPointerOver" Color="#4D0079cb" />
+          <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPressed" Color="#4D0079cb" />
           <SolidColorBrush x:Key="TreeViewItemBackgroundDisabled">Transparent</SolidColorBrush>
           <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedDisabled" Color="#FF3f3f46" />
 
           <SolidColorBrush x:Key="TreeViewItemBorderBrush">Transparent</SolidColorBrush>
           <SolidColorBrush x:Key="TreeViewItemBorderBrushPointerOver">Transparent</SolidColorBrush>
           <SolidColorBrush x:Key="TreeViewItemBorderBrushPressed">Transparent</SolidColorBrush>
-          <SolidColorBrush x:Key="TreeViewItemBorderBrushSelected">Transparent</SolidColorBrush>
-          <SolidColorBrush x:Key="TreeViewItemBorderBrushSelectedPointerOver">Transparent</SolidColorBrush>
-          <SolidColorBrush x:Key="TreeViewItemBorderBrushSelectedPressed">Transparent</SolidColorBrush>
+          <!-- The thin accent bar itself, in the 2px left inset TreeViewItemBorderThemeThickness
+               reserves above - same "1D98EB" secondary accent the field table's own
+               SelectedRowAccentBrush uses, so a reader learns one colour for "this row is
+               selected" across both the tree and the field table. -->
+          <SolidColorBrush x:Key="TreeViewItemBorderBrushSelected" Color="#FF1D98EB" />
+          <SolidColorBrush x:Key="TreeViewItemBorderBrushSelectedPointerOver" Color="#FF1D98EB" />
+          <SolidColorBrush x:Key="TreeViewItemBorderBrushSelectedPressed" Color="#FF1D98EB" />
           <SolidColorBrush x:Key="TreeViewItemBorderBrushDisabled">Transparent</SolidColorBrush>
           <SolidColorBrush x:Key="TreeViewItemBorderBrushSelectedDisabled">Transparent</SolidColorBrush>
 
+          <!-- A muted tint (rather than a solid fill) leaves the surface underneath legible, so
+               selected text stays the ordinary primary colour in both themes instead of being
+               forced white - a forced white was only ever needed to survive a fully-saturated
+               accent fill, which no longer happens here. -->
           <SolidColorBrush x:Key="TreeViewItemForeground" Color="White" />
           <SolidColorBrush x:Key="TreeViewItemForegroundPointerOver" Color="White" />
           <SolidColorBrush x:Key="TreeViewItemForegroundPressed" Color="White" />
@@ -431,33 +465,33 @@
           <SolidColorBrush x:Key="TreeViewItemBackground">Transparent</SolidColorBrush>
           <SolidColorBrush x:Key="TreeViewItemBackgroundPointerOver" Color="#FFE4E4E8" />
           <SolidColorBrush x:Key="TreeViewItemBackgroundPressed" Color="#FFE4E4E8" />
-          <SolidColorBrush x:Key="TreeViewItemBackgroundSelected" Color="#0079cb" />
-          <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPointerOver" Color="#0079cb" />
-          <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPressed" Color="#0079cb" />
+          <SolidColorBrush x:Key="TreeViewItemBackgroundSelected" Color="#1F0079cb" />
+          <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPointerOver" Color="#330079cb" />
+          <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPressed" Color="#330079cb" />
           <SolidColorBrush x:Key="TreeViewItemBackgroundDisabled">Transparent</SolidColorBrush>
           <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedDisabled" Color="#FFE4E4E8" />
 
           <SolidColorBrush x:Key="TreeViewItemBorderBrush">Transparent</SolidColorBrush>
           <SolidColorBrush x:Key="TreeViewItemBorderBrushPointerOver">Transparent</SolidColorBrush>
           <SolidColorBrush x:Key="TreeViewItemBorderBrushPressed">Transparent</SolidColorBrush>
-          <SolidColorBrush x:Key="TreeViewItemBorderBrushSelected">Transparent</SolidColorBrush>
-          <SolidColorBrush x:Key="TreeViewItemBorderBrushSelectedPointerOver">Transparent</SolidColorBrush>
-          <SolidColorBrush x:Key="TreeViewItemBorderBrushSelectedPressed">Transparent</SolidColorBrush>
+          <SolidColorBrush x:Key="TreeViewItemBorderBrushSelected" Color="#FF0079cb" />
+          <SolidColorBrush x:Key="TreeViewItemBorderBrushSelectedPointerOver" Color="#FF0079cb" />
+          <SolidColorBrush x:Key="TreeViewItemBorderBrushSelectedPressed" Color="#FF0079cb" />
           <SolidColorBrush x:Key="TreeViewItemBorderBrushDisabled">Transparent</SolidColorBrush>
           <SolidColorBrush x:Key="TreeViewItemBorderBrushSelectedDisabled">Transparent</SolidColorBrush>
 
-          <!-- Selected rows use the primary accent as a solid fill (same as Dark), so selected
-               text has to go white in both variants - a dark-on-light row would otherwise be the
-               only place in the whole Light palette where selection *removes* contrast instead
-               of adding it. -->
+          <!-- Selected rows are now a muted accent tint plus the left bar above, not a solid
+               fill, so selected text stays the ordinary dark-on-light primary colour - a forced
+               white here would be the one place in the whole Light palette where selection
+               *removed* contrast instead of adding it. -->
           <SolidColorBrush x:Key="TreeViewItemForeground" Color="#FF1E1E1E" />
           <SolidColorBrush x:Key="TreeViewItemForegroundPointerOver" Color="#FF1E1E1E" />
           <SolidColorBrush x:Key="TreeViewItemForegroundPressed" Color="#FF1E1E1E" />
-          <SolidColorBrush x:Key="TreeViewItemForegroundSelected" Color="White" />
-          <SolidColorBrush x:Key="TreeViewItemForegroundSelectedPointerOver" Color="White" />
-          <SolidColorBrush x:Key="TreeViewItemForegroundSelectedPressed" Color="White" />
+          <SolidColorBrush x:Key="TreeViewItemForegroundSelected" Color="#FF1E1E1E" />
+          <SolidColorBrush x:Key="TreeViewItemForegroundSelectedPointerOver" Color="#FF1E1E1E" />
+          <SolidColorBrush x:Key="TreeViewItemForegroundSelectedPressed" Color="#FF1E1E1E" />
           <SolidColorBrush x:Key="TreeViewItemForegroundDisabled" Color="#FFA0A0A3" />
-          <SolidColorBrush x:Key="TreeViewItemForegroundSelectedDisabled" Color="White" />
+          <SolidColorBrush x:Key="TreeViewItemForegroundSelectedDisabled" Color="#FF1E1E1E" />
         </ResourceDictionary>
       </ResourceDictionary.ThemeDictionaries>
     </ResourceDictionary>
@@ -520,14 +554,10 @@
   <!-- ============================== Field table (ListBox#FieldList) ==============================
        Named so this doesn't have to fight the generic ListBoxItem style above.
 
-       Indent guides: IndentGuideBrush (Converters.cs) paints thin vertical hairlines at each
-       16px nesting level as the ListBoxItem's own Background, positioned past the fixed offset/
-       type columns - see that converter's header comment for exactly why a background brush is
-       the mechanism (the row DataTemplate itself isn't ours to add elements to) and for the
-       column-width assumption it's built on. It only shows in the resting state: :pointerover
-       and :selected below both set an opaque Background on /template/ ContentPresenter, which
-       paints in front of the ListBoxItem's own Background and hides the guide - selection/hover
-       already communicate "this row" well enough without also showing depth.
+       Indent guides live in MainWindow.axaml's own row DataTemplate now (a small per-depth-level
+       ItemsControl ahead of the name text), not here - see Converters.cs's DepthRangeConverter
+       for why a Background-brush trick (this file's earlier approach) turned out not to render
+       reliably at all. This file still owns the row's other chrome below.
 
        Selected-row accent bar: a 2px left border in the selected-row accent colour, additional
        to the existing 1px bottom hairline - "obvious without being loud" per the brief, i.e. a
@@ -548,7 +578,6 @@
     <Setter Property="Padding" Value="{DynamicResource FieldRowPadding}" />
     <Setter Property="BorderThickness" Value="0,0,0,1" />
     <Setter Property="BorderBrush" Value="{DynamicResource FieldRowDividerBrush}" />
-    <Setter Property="Background" Value="{Binding Depth, Converter={StaticResource IndentGuideBrush}}" />
   </Style>
   <Style Selector="ListBox#FieldList ListBoxItem:selected">
     <Setter Property="BorderThickness" Value="2,0,0,1" />
@@ -561,29 +590,22 @@
     <Setter Property="Background" Value="{DynamicResource MetaSelectedRowBrush}" />
   </Style>
 
-  <!-- Type badge: the field table's TYPE column is the one plain TextBlock.label inside a
-       FieldList row (see MainWindow.axaml's DataTemplate) - Background/Foreground here are
-       bound straight to the row's own KindLabel through TypeBadgeBackground/Foreground
-       (Converters.cs), which only colours the structurally-significant kinds (block/array/
-       struct/enum/flags/string-ish - see TypeBadgeCategory's remarks for why substring
-       matching is the only thing that works across both classic and Campaign Evolved kind
-       vocabularies) and leaves everything else (numeric, vector, colour, ...) as plain
-       secondary text, so the badges stay meaningful instead of colouring every row.
-
-       FontSize below is a pre-existing dead setter, not something this pass introduced or can
-       fix: that TextBlock also carries a literal FontSize="11" in MainWindow.axaml's DataTemplate
-       (outside this pass's ownership), and a local value always wins over a Style Setter in
-       Avalonia (see Services/DisplayDensity.cs's header) - so the badge text renders at that
-       literal 11 regardless of FontSizeMicro or density. Left in place rather than deleted, since
-       it is at worst inert and becomes correct again the moment that literal is removed. Padding
-       is not shadowed the same way (nothing sets it locally) and is density-driven below. -->
+  <!-- Type column: the field table's TYPE column is the one plain TextBlock.label inside a
+       FieldList row (see MainWindow.axaml's DataTemplate) - Foreground here is bound straight to
+       the row's own KindLabel through TypeBadgeForeground (Converters.cs), which only colours the
+       structurally-significant kinds (block/array/struct/enum/flags/string-ish - see
+       TypeBadgeCategory's remarks for why substring matching is the only thing that works across
+       both classic and Campaign Evolved kind vocabularies) and leaves everything else (numeric,
+       vector, colour, ...) as plain secondary text, so the colouring stays meaningful instead of
+       tinting every row. Deliberately no Background/chip any more - see
+       TypeBadgeForegroundConverter's own remarks for why a coloured chip read as "candy" rather
+       than "scannable" once there were a few hundred of them on screen at once. -->
   <Style Selector="ListBox#FieldList ListBoxItem TextBlock.label">
     <Setter Property="FontFamily" Value="{DynamicResource MetroFontMono}" />
     <Setter Property="FontSize" Value="{DynamicResource FontSizeMicro}" />
     <Setter Property="Padding" Value="{DynamicResource TypeBadgePadding}" />
     <Setter Property="HorizontalAlignment" Value="Left" />
     <Setter Property="Foreground" Value="{Binding KindLabel, Converter={StaticResource TypeBadgeForeground}}" />
-    <Setter Property="Background" Value="{Binding KindLabel, Converter={StaticResource TypeBadgeBackground}}" />
   </Style>
 
   <!-- ============================== Console ============================== -->

@@ -179,9 +179,19 @@ namespace Assembly.Avalonia.Views
 		private Control BuildFooter(FieldEditorContext context, IFieldEditor editor, MetaRowViewModel row)
 		{
 			var panel = new StackPanel { Spacing = 6, Margin = new Thickness(0, 4, 0, 0) };
-			var buttons = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 6 };
-			buttons.Children.Add(CopyButton(editor));
-			buttons.Children.Add(RawCopyButton(context));
+			// WrapPanel, not a fixed-width horizontal StackPanel: an editable field's footer can
+			// carry up to four buttons (Copy Value / Copy Raw Bytes (hex) / Revert / Paste), which
+			// do not fit on one line in this sidebar's ~290px content width at any density -
+			// "Revert" was clipped clean off the right edge (one of the concrete defects called
+			// out for this pass), with "Paste" pushed entirely out of view behind it. A
+			// WrapPanel just flows the overflow onto a second line instead of past the edge,
+			// which stays correct regardless of how many buttons a future editor kind adds here.
+			var buttons = new WrapPanel();
+			// WrapPanel has no Spacing property of its own (unlike StackPanel); a per-button
+			// trailing margin does the same job and still collapses cleanly at a wrapped line's end.
+			void AddButton(Button b) { b.Margin = new Thickness(0, 0, 6, 6); buttons.Children.Add(b); }
+			AddButton(CopyButton(editor));
+			AddButton(RawCopyButton(context));
 
 			if (row.Def.IsEditable)
 			{
@@ -208,8 +218,8 @@ namespace Assembly.Avalonia.Views
 				_footerRow = row;
 
 				revert.Click += (_, _) => { row.Revert(); context.Doc.RecomputeDirty(); };
-				buttons.Children.Add(revert);
-				buttons.Children.Add(PasteButton(editor));
+				AddButton(revert);
+				AddButton(PasteButton(editor));
 
 				panel.Children.Add(originalLabel);
 				panel.Children.Add(currentLabel);
