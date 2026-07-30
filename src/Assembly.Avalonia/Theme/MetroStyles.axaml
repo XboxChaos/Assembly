@@ -158,6 +158,15 @@
     <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
     <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
   </Style>
+  <!-- Without this, a disabled accent button (Save with nothing dirty is the common case) kept
+       its unconditional Foreground="White" above while Button:disabled's own Background/BorderBrush
+       Setters (this file's base Button section) dimmed everything else - bold white text on a
+       muted grey field read as MORE emphasised than the enabled state, the opposite of what
+       "disabled" should communicate. Reusing the same muted grey every other disabled button's
+       text already falls back to keeps the two consistent. -->
+  <Style Selector="Button.accent:disabled">
+    <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundBrush}" />
+  </Style>
 
   <!-- ============================== ToggleButton ==============================
        Ported verbatim from Metro/Controls/MetroButtons.xaml, {x:Type ToggleButton}:
@@ -225,6 +234,12 @@
     <Setter Property="Background" Value="{DynamicResource WindowActionHoverBrush}" />
   </Style>
   <Style Selector="ToggleButton.chrome:checked /template/ Border#PART_Border">
+    <!-- Background is re-asserted Transparent here, not left to inherit from the base
+         ToggleButton.chrome rule above: the generic ToggleButton:checked selector earlier in
+         this file sets Background to a solid ExtryzeAccentBrush fill, and it is more specific
+         than the class-only (no pseudo-class) base rule, so without this it wins and refills the
+         exact solid swatch this section's whole point was to replace with a thin edge instead. -->
+    <Setter Property="Background" Value="Transparent" />
     <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" />
   </Style>
 

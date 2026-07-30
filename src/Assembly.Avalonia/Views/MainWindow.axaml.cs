@@ -805,6 +805,34 @@ namespace Assembly.Avalonia.Views
 			}
 		}
 
+		/// <summary>
+		///     Walks <see cref="MainViewModel.Nodes" /> (a mix of <c>GroupNode</c>/<c>FolderNode</c>/
+		///     <c>TagNode</c> - see MainViewModel.cs and FolderNode.cs) looking for the <c>TagNode</c>
+		///     that wraps <paramref name="info" />, for <see cref="CaptureAsync" />'s ASM_SELECT
+		///     handling - see the call site's own remarks for why this is needed at all rather than
+		///     just using whatever <c>MainViewModel.FindTag</c> already returned.
+		/// </summary>
+		private static TagNode? FindMatchingTagNode(System.Collections.IEnumerable nodes, TagInfo info)
+		{
+			foreach (var node in nodes)
+			{
+				switch (node)
+				{
+					case TagNode t when ReferenceEquals(t.Info, info):
+						return t;
+					case GroupNode g:
+						var fromGroup = FindMatchingTagNode(g.Tags, info);
+						if (fromGroup != null) return fromGroup;
+						break;
+					case FolderNode f:
+						var fromFolder = FindMatchingTagNode(f.Children, info);
+						if (fromFolder != null) return fromFolder;
+						break;
+				}
+			}
+			return null;
+		}
+
 		private async Task CaptureAsync(string path)
 		{
 			var open = Environment.GetEnvironmentVariable("ASM_OPEN");
@@ -845,7 +873,24 @@ namespace Assembly.Avalonia.Views
 					foreach (var needle in select.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
 					{
 						var tag = Vm.FindTag(needle);
-						if (tag != null) Vm.SelectedTag = tag;
+						if (tag != null)
+						{
+							Vm.SelectedTag = tag;
+							// Also mark the tree's own SelectedItem, purely for screenshotting the
+							// :selected row styling (MetroStyles.axaml's TreeViewItem
+							// ThemeDictionaries) - Vm.SelectedTag alone never reaches the TreeView's
+							// own selection state (one-way view -> view model only, see this
+							// method's remarks further down), so without this every ASM_SHOT of a
+							// populated tree showed no row selected at all. FindTag hands back a
+							// freshly-constructed TagNode (MainViewModel.FindTag - ViewModels/, not
+							// this pass's to change), a different reference than whatever TagNode
+							// instance actually lives inside Vm.Nodes, so setting SelectedItem to
+							// that instance directly matches nothing; FindMatchingTagNode below
+							// walks the real tree data to find the one Avalonia's selection model
+							// will actually recognise.
+							var realNode = FindMatchingTagNode(Vm.Nodes, tag.Info);
+							if (realNode != null) tree.SelectedItem = realNode;
+						}
 					}
 				}
 

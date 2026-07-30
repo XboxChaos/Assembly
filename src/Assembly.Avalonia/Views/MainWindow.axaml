@@ -556,7 +556,7 @@
                     <TextBlock Grid.Column="2" Text="{Binding OffsetLabel}" Classes="mono" FontSize="{DynamicResource FontSizeSmall}"
                                Foreground="{StaticResource TextBrushSecondary}" VerticalAlignment="Center" />
                     <TextBlock Grid.Column="3" Text="{Binding KindLabel}" Classes="label" VerticalAlignment="Center" />
-                    <Grid Grid.Column="4" ColumnDefinitions="Auto,*,Auto,Auto">
+                    <Grid Grid.Column="4" ColumnDefinitions="Auto,Auto,*,Auto">
                       <!--
                         Indent guides: one 16px-wide slot per ancestor level (DepthRangeConverter,
                         Converters.cs), each holding a single vertical hairline, real elements
@@ -583,12 +583,24 @@
                           </DataTemplate>
                         </ItemsControl.ItemTemplate>
                       </ItemsControl>
-                      <TextBlock Grid.Column="1" Text="{Binding Name}"
+                      <!--
+                        Name is Auto (capped by its own MaxWidth), Value is the star column, not the
+                        other way around as this used to be: with Value as an Auto column sized up
+                        to a 380px MaxWidth, a long Campaign Evolved tag-reference path (these run
+                        60-80 characters) plus this row's own Name pushed the tag-reference "open"
+                        button below past the field table's own right edge, off-screen and
+                        unreachable - found while checking these exact rows after adding the indent
+                        guide column. Value truncating instead of Name (and never being able to push
+                        the reference button out) is also just a better default: a value is far more
+                        likely to legitimately run long (a full tag path; a big flags/enum
+                        description) than a field name is.
+                      -->
+                      <TextBlock Grid.Column="1" Text="{Binding Name}" MaxWidth="240"
                                  FontFamily="{StaticResource MetroFontRegular}" FontSize="{DynamicResource FontSizeSmall}"
                                  VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
                                  ToolTip.Tip="{Binding Def.Tooltip}" />
                       <TextBlock Grid.Column="2" Text="{Binding DisplayValue}" Classes="mono accent" FontSize="{DynamicResource FontSizeSmall}"
-                                 VerticalAlignment="Center" Margin="10,0,0,0" MaxWidth="380" TextTrimming="CharacterEllipsis" />
+                                 VerticalAlignment="Center" Margin="10,0,0,0" TextTrimming="CharacterEllipsis" />
                       <!--
                         Tag-reference navigation: a classic TagReference field resolves through the
                         owning cache (TagDocumentViewModel.TryResolveClassicTagRef); a fifth-generation
