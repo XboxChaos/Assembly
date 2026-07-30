@@ -146,17 +146,26 @@ namespace Assembly.Avalonia.Views
 
 		// ---- display density ----
 		//
-		// AppSettings.Instance.Density (Services/AppSettings.cs) is the single source of truth;
-		// both the toolbar ComboBox and the View menu's radio group only ever read it (via
-		// SyncDensityUi, driven by DisplayDensity.Changed so either surface picks up a change
-		// made through the other - or, eventually, through a command-palette entry) and write to
-		// it (OnDensityChanged / OnDensityMenuClick below) - neither owns state of its own.
+		// AppSettings.Instance.Density (Services/AppSettings.cs) is where a user's choice is
+		// written and persisted; DisplayDensity.Current is what is actually live right now, which
+		// is not always the same value - ASM_DENSITY (App.axaml.cs) deliberately calls
+		// DisplayDensity.Apply directly, bypassing AppSettings, so a screenshot/QA override does
+		// not overwrite a real saved preference. Reading AppSettings.Instance.Density here instead
+		// of DisplayDensity.Current was tried first and was wrong for exactly that case: the
+		// picker kept showing "Default" under ASM_DENSITY=Comfortable, because the persisted
+		// setting genuinely hadn't changed even though the live density had - caught by actually
+		// looking at this pass's own screenshots, not by inspection. Both the toolbar ComboBox and
+		// the View menu's radio group only ever read DisplayDensity.Current (via SyncDensityUi,
+		// driven by DisplayDensity.Changed so either surface picks up a change made through the
+		// other - or, eventually, through a command-palette entry) and write to
+		// AppSettings.Instance.Density (OnDensityChanged / OnDensityMenuClick below) - neither
+		// owns UI state of its own.
 		private void OnDensityBoxLoaded(object? sender, RoutedEventArgs e)
 		{
 			_densityBox = sender as ComboBox;
 			DisplayDensity.Changed -= OnDisplayDensityChanged; // guard against double subscription if this control is ever reloaded
 			DisplayDensity.Changed += OnDisplayDensityChanged;
-			SyncDensityUi(AppSettings.Instance.Density);
+			SyncDensityUi(DisplayDensity.Current);
 		}
 
 		private void OnDisplayDensityChanged(object? sender, EventArgs e) => SyncDensityUi(DisplayDensity.Current);

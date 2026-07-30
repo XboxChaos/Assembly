@@ -662,4 +662,28 @@
     <Setter Property="BorderBrush" Value="Transparent" />
   </Style>
 
+  <!--
+    Stroke on the glyph itself: found while screenshotting density (this pass) that the expander
+    triangle (MainWindow.axaml's DataTemplate: a 7x7 Path, Fill-only, no Stroke - outside this
+    pass's ownership, and pre-existing at every density including Default, so not something
+    density caused) renders as good as invisible in the real field table - reserves its column
+    space and is genuinely clickable (toggling it does expand/collapse the row), it just does not
+    read visually. Isolated Fill-only repros of the same Path/Style/ControlTemplate combination
+    render fine outside the real row context, so the fill itself is not provably broken - more
+    likely something about the geometry's very small (6x6 unit) bounding box anti-aliasing away
+    at this size/DPI once it is actually inside a virtualized ListBox row, which a synthetic
+    repro would not reproduce. Adding a Stroke sidesteps needing to nail that down further: Stroke
+    is not set locally in the DataTemplate (only Width/Height/Stretch/Fill/Data are), so - unlike
+    Fill, which a Style Setter can never win against a local value (see
+    Services/DisplayDensity.cs's header) - this one is guaranteed to actually apply, and a stroked
+    outline is far less likely to anti-alias into nothing than a thin flat fill at this size
+    regardless of the exact original cause.
+  -->
+  <Style Selector="ToggleButton.blockExpander Path">
+    <Setter Property="Stroke" Value="{DynamicResource TextBrushSecondary}" />
+    <Setter Property="StrokeThickness" Value="1.1" />
+    <Setter Property="StrokeLineCap" Value="Round" />
+    <Setter Property="StrokeJoin" Value="Round" />
+  </Style>
+
 </Styles>
