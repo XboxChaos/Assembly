@@ -98,7 +98,14 @@ namespace Assembly.Avalonia.Services
 			foreach (ITag tag in cache.Tags)
 			{
 				if (tag?.Group == null) { skipped++; continue; }
-				if (cache.Engine != EngineType.SecondGeneration && tag.MetaLocation == null) { skipped++; continue; }
+
+				// A null MetaLocation only means "empty tag" for engines that address meta by a
+				// pointer into the cache file. Second-generation caches legitimately leave it
+				// null, and fifth-generation tags are whole files carried in their own IoStore
+				// chunk, so they have no cache-relative location to point at at all.
+				bool addressesMetaByPointer = cache.Engine != EngineType.SecondGeneration
+				                              && cache.Engine != EngineType.FifthGeneration;
+				if (addressesMetaByPointer && tag.MetaLocation == null) { skipped++; continue; }
 
 				if (!byMagic.TryGetValue(tag.Group.Magic, out var gi))
 				{

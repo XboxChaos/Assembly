@@ -684,6 +684,12 @@ namespace Assembly.Avalonia.Views
 							var box = _editorHost.GetVisualDescendants().OfType<TextBox>().FirstOrDefault();
 							if (box != null) box.Text = editValue;
 						}
+
+						if (Environment.GetEnvironmentVariable("ASM_SAVE") == "1")
+						{
+							var (ok, message) = Vm.ActiveDocument.Save();
+							Console.WriteLine($"ASM_SAVE result: ok={ok} message=\"{message}\"");
+						}
 					}
 				}
 

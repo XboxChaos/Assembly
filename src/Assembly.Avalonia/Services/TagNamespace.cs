@@ -55,12 +55,18 @@ namespace Assembly.Avalonia.Services
 	///     tag each; the game's Paks folder has 28), and the scenario tag is one tag among
 	///     ~12,000 in a flat namespace rather than a natural tree root. Opening a folder or a
 	///     zip full of classic .map files exercises the same "many containers, one namespace"
-	///     shape for real, even though Blamite cannot yet parse CE's UE5 IoStore containers
-	///     themselves (see README "Known gaps").
+	///     shape for real. Blamite now parses CE's UE5 IoStore containers too, so a folder of
+	///     .utoc files mounts natively as well.
 	/// </summary>
 	public sealed class TagNamespace : IDisposable
 	{
-		private static readonly string[] CacheExtensions = { ".map", ".yelo", ".campaign" };
+		private static readonly string[] CacheExtensions = { ".map", ".yelo", ".campaign", ".utoc" };
+
+		/// <summary>
+		///     Extensions whose loader mounts every sibling container in the same directory by
+		///     itself, so only one of them should ever be opened per directory.
+		/// </summary>
+		private static readonly string[] SelfMountingExtensions = { ".utoc" };
 
 		public ObservableCollection<MountedSource> Sources { get; } = new();
 
@@ -109,6 +115,18 @@ namespace Assembly.Avalonia.Services
 				Emit($"failed to scan folder \"{path}\": {ex.Message}");
 				return source;
 			}
+
+			// A Campaign Evolved cache file already *is* a mount: handed any one .utoc,
+			// FifthGenCacheFile mounts every container sitting beside it and resolves overrides
+			// across the lot. Opening all six of a mod's containers individually would therefore
+			// produce six sessions showing the same five tags. Keep only the first self-mounting
+			// container per directory and let the loader expand it.
+			candidates = candidates
+				.GroupBy(f => System.IO.Path.GetDirectoryName(f) ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+				.SelectMany(dir => dir
+					.GroupBy(f => SelfMountingExtensions.Contains(System.IO.Path.GetExtension(f).ToLowerInvariant()))
+					.SelectMany(kind => kind.Key ? kind.Take(1) : kind))
+				.OrderBy(f => f, StringComparer.OrdinalIgnoreCase);
 
 			int found = 0;
 			foreach (var file in candidates)
