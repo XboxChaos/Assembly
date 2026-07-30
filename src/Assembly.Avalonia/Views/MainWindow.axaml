@@ -161,9 +161,28 @@
           <TreeView Grid.Row="3" Name="TagTree" Margin="2,0,2,4"
                     ItemsSource="{Binding Nodes}"
                     SelectionChanged="OnTreeSelectionChanged">
+            <!--
+              Avalonia's ItemsControl defaults to a plain StackPanel (realizes every item, no
+              matter how many); ListBox overrides that default to VirtualizingStackPanel in its
+              static constructor, but TreeView and TreeViewItem do not - each level of the tree
+              would realize its full child list the moment its parent is expanded otherwise.
+              A tag group or folder can hold thousands of tags (a retail mount's tag tree runs to
+              ~12,000 entries total), so both the root level (ItemsPanel below) and every expanded
+              node's own child level (the TreeViewItem style's ItemsPanel setter) need this.
+            -->
+            <TreeView.ItemsPanel>
+              <ItemsPanelTemplate>
+                <VirtualizingStackPanel />
+              </ItemsPanelTemplate>
+            </TreeView.ItemsPanel>
             <TreeView.Styles>
               <Style Selector="TreeViewItem">
                 <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay, FallbackValue=False}" />
+                <Setter Property="ItemsPanel">
+                  <ItemsPanelTemplate>
+                    <VirtualizingStackPanel />
+                  </ItemsPanelTemplate>
+                </Setter>
               </Style>
             </TreeView.Styles>
             <TreeView.DataTemplates>
@@ -246,7 +265,7 @@
         </StackPanel>
 
         <!-- field table -->
-        <Grid Grid.Row="1" IsVisible="{Binding HasDocuments}" RowDefinitions="Auto,Auto,*">
+        <Grid Grid.Row="1" IsVisible="{Binding HasDocuments}" RowDefinitions="Auto,Auto,Auto,*">
           <Border Grid.Row="0" Padding="14,8" BorderBrush="{StaticResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
             <Grid ColumnDefinitions="*,Auto">
               <StackPanel Grid.Column="0" Spacing="1">
@@ -260,43 +279,93 @@
             </Grid>
           </Border>
 
-          <Grid Grid.Row="1" ColumnDefinitions="26,90,120,*" Margin="6,4">
+          <!--
+            In-tag field filter: matches a row's name, its TYPE column text, or its formatted
+            value, and (see TagDocumentViewModel's "field search / filter" remarks) searches
+            unexpanded blocks too - on a 1806-field scenario tag almost everything is unexpanded
+            at any given time, so a filter limited to what's on screen would rarely find anything.
+          -->
+          <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="6,4">
+            <TextBox Grid.Column="0" Name="FieldFilterBox" Watermark="Filter fields by name, type or value..."
+                      Text="{Binding ActiveDocument.FilterQuery, Mode=TwoWay}"
+                      KeyDown="OnFieldFilterKeyDown" />
+            <TextBlock Grid.Column="1" Classes="label" FontSize="10.5" VerticalAlignment="Center" Margin="8,0,4,0"
+                       IsVisible="{Binding ActiveDocument.IsFiltering, FallbackValue=False}"
+                       Text="{Binding ActiveDocument.FilterMatchCount, StringFormat='{}{0} match(es)'}" />
+          </Grid>
+
+          <Grid Grid.Row="2" ColumnDefinitions="26,90,120,*" Margin="6,4">
             <TextBlock Grid.Column="1" Text="OFFSET" Classes="sectionHeader" />
             <TextBlock Grid.Column="2" Text="TYPE" Classes="sectionHeader" />
             <TextBlock Grid.Column="3" Text="FIELD / VALUE" Classes="sectionHeader" />
           </Grid>
 
-          <ListBox Grid.Row="2" Name="FieldList" ItemsSource="{Binding ActiveDocument.Rows}"
-                    SelectedItem="{Binding ActiveDocument.SelectedRow, Mode=TwoWay}"
-                    SelectionChanged="OnRowSelectionChanged"
-                    Background="Transparent" BorderThickness="0">
-            <ListBox.ItemTemplate>
-              <DataTemplate DataType="vm:MetaRowViewModel">
-                <Grid ColumnDefinitions="4,26,90,120,*">
-                  <!-- dirty-state accent strip: real per-row indicator, not just the tab title asterisk -->
-                  <Rectangle Grid.Column="0" Width="3" HorizontalAlignment="Left"
-                             Fill="{Binding IsDirty, Converter={StaticResource DirtyBrush}}" />
-                  <ToggleButton Grid.Column="1" Classes="blockExpander" IsChecked="{Binding IsExpanded}"
-                                IsVisible="{Binding IsBlock}" Click="OnBlockExpandClick" Tag="{Binding}">
-                    <Path Width="7" Height="7" Stretch="Uniform" Fill="{StaticResource TextBrushSecondary}"
-                          Data="{Binding IsExpanded, Converter={StaticResource ExpanderGlyph}}" />
-                  </ToggleButton>
-                  <TextBlock Grid.Column="2" Text="{Binding OffsetLabel}" Classes="mono" FontSize="11"
-                             Foreground="{StaticResource TextBrushSecondary}" VerticalAlignment="Center" />
-                  <TextBlock Grid.Column="3" Text="{Binding KindLabel}" Classes="label" FontSize="11" VerticalAlignment="Center" />
-                  <Grid Grid.Column="4" ColumnDefinitions="*,Auto">
-                    <TextBlock Grid.Column="0" Text="{Binding Name}"
-                               Margin="{Binding Depth, Converter={StaticResource DepthIndent}}"
-                               FontFamily="{StaticResource MetroFontRegular}" FontSize="11.5"
-                               VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
-                               ToolTip.Tip="{Binding Def.Tooltip}" />
-                    <TextBlock Grid.Column="1" Text="{Binding DisplayValue}" Classes="mono accent" FontSize="11"
-                               VerticalAlignment="Center" Margin="10,0,0,0" MaxWidth="380" TextTrimming="CharacterEllipsis" />
+          <!--
+            The ListBox is left at Avalonia's default ItemsPanel (ListBox overrides ItemsControl's
+            own default to VirtualizingStackPanel in its static constructor - see TagTree's remarks
+            on the equivalent TreeView gap), which is what makes a fully-expanded scenario tag's row
+            count (hundreds to low thousands) cheap to display: only the rows actually on screen,
+            plus a small buffer, are ever realized as real controls.
+          -->
+          <Grid Grid.Row="3">
+            <ListBox Name="FieldList" ItemsSource="{Binding ActiveDocument.Rows}"
+                      SelectedItem="{Binding ActiveDocument.SelectedRow, Mode=TwoWay}"
+                      SelectionChanged="OnRowSelectionChanged"
+                      DoubleTapped="OnFieldListDoubleTapped"
+                      KeyDown="OnFieldListKeyDown"
+                      Background="Transparent" BorderThickness="0">
+              <ListBox.ItemTemplate>
+                <DataTemplate DataType="vm:MetaRowViewModel">
+                  <Grid ColumnDefinitions="4,26,90,120,*">
+                    <!-- dirty-state accent strip: real per-row indicator, not just the tab title asterisk -->
+                    <Rectangle Grid.Column="0" Width="3" HorizontalAlignment="Left"
+                               Fill="{Binding IsDirty, Converter={StaticResource DirtyBrush}}" />
+                    <ToggleButton Grid.Column="1" Classes="blockExpander" IsChecked="{Binding IsExpanded, Mode=OneWay}"
+                                  IsVisible="{Binding IsBlock}" Click="OnBlockExpandClick" Tag="{Binding}">
+                      <Path Width="7" Height="7" Stretch="Uniform" Fill="{StaticResource TextBrushSecondary}"
+                            Data="{Binding IsExpanded, Converter={StaticResource ExpanderGlyph}}" />
+                    </ToggleButton>
+                    <TextBlock Grid.Column="2" Text="{Binding OffsetLabel}" Classes="mono" FontSize="11"
+                               Foreground="{StaticResource TextBrushSecondary}" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="3" Text="{Binding KindLabel}" Classes="label" FontSize="11" VerticalAlignment="Center" />
+                    <Grid Grid.Column="4" ColumnDefinitions="*,Auto,Auto">
+                      <TextBlock Grid.Column="0" Text="{Binding Name}"
+                                 Margin="{Binding Depth, Converter={StaticResource DepthIndent}}"
+                                 FontFamily="{StaticResource MetroFontRegular}" FontSize="11.5"
+                                 VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                                 ToolTip.Tip="{Binding Def.Tooltip}" />
+                      <TextBlock Grid.Column="1" Text="{Binding DisplayValue}" Classes="mono accent" FontSize="11"
+                                 VerticalAlignment="Center" Margin="10,0,0,0" MaxWidth="380" TextTrimming="CharacterEllipsis" />
+                      <!--
+                        Tag-reference navigation: a classic TagReference field resolves through the
+                        owning cache (TagDocumentViewModel.TryResolveClassicTagRef); a fifth-generation
+                        one carries its target path/group directly (FifthGenTagReferenceValue). Either
+                        way RefTarget is non-null only when there is something to follow - double-click
+                        or Enter on the row do the same thing this button does.
+                      -->
+                      <Button Grid.Column="2" Content="open &#8594;" FontSize="9.5" Padding="5,1" Margin="8,0,0,0"
+                              VerticalAlignment="Center" IsVisible="{Binding IsReference}"
+                              Click="OnFollowReferenceClick" Tag="{Binding}"
+                              ToolTip.Tip="Open the referenced tag in a new tab" />
+                    </Grid>
                   </Grid>
-                </Grid>
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+
+            <!-- loading state: TagDocumentViewModel's constructor (and, for a Campaign Evolved
+                 tag, the ~400ms FifthGenTagFile parse inside it) now runs off the UI thread - see
+                 MainViewModel.OpenTagAsync - so the shell stays responsive while it runs, and this
+                 is what tells the user something is actually happening instead of nothing. -->
+            <Border IsVisible="{Binding IsOpeningTag}" Background="#D01e1e20">
+              <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
+                <TextBlock Classes="label" FontSize="12" HorizontalAlignment="Center"
+                           Text="{Binding OpeningTagLabel, StringFormat='Opening {0}...'}" />
+                <TextBlock Classes="label dim" FontSize="10.5" HorizontalAlignment="Center"
+                           Text="Parsing runs off the UI thread; the window stays responsive." />
+              </StackPanel>
+            </Border>
+          </Grid>
         </Grid>
       </Grid>
 

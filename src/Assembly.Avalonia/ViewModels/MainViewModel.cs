@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Assembly.Avalonia.Services;
 
@@ -156,8 +157,11 @@ namespace Assembly.Avalonia.ViewModels
 		private TagNode? _selectedTag;
 		public TagNode? SelectedTag
 		{
+			// Fire-and-forget: a property setter can't be async, and OpenTagAsync already reports
+			// failure through Log/StatusText rather than an exception the caller would need to
+			// observe (see its own try/catch), so there is nothing useful to await here anyway.
 			get => _selectedTag;
-			set { if (Set(ref _selectedTag, value) && value != null) OpenTag(value); }
+			set { if (Set(ref _selectedTag, value) && value != null) _ = OpenTagAsync(value); }
 		}
 
 		// ---- documents (tabs) ----
@@ -171,6 +175,96 @@ namespace Assembly.Avalonia.ViewModels
 		}
 
 		public bool HasDocuments => Documents.Count > 0;
+
+		// ---- tag-open loading state ----
+		//
+		// TagDocumentViewModel's constructor does real, non-trivial work for a Campaign Evolved
+		// tag - parsing the whole self-describing payload (FifthGenTagFile), ~400ms measured
+		// against b30-scenario - and used to run it synchronously on the UI thread the moment a
+		// tag was clicked. OpenTagAsync below moves that onto a background thread; these two
+		// properties are what the field table binds to show something other than a frozen window
+		// while it runs (see the loading overlay in MainWindow.axaml's field-table Grid).
+
+		private bool _isOpeningTag;
+		public bool IsOpeningTag { get => _isOpeningTag; private set => Set(ref _isOpeningTag, value); }
+
+		private string _openingTagLabel = "";
+		public string OpeningTagLabel { get => _openingTagLabel; private set => Set(ref _openingTagLabel, value); }
+
+		// Serializes tag opens rather than letting them run concurrently: TagDocumentViewModel's
+		// constructor reads through the owning CacheSession (GetSchema's plugin cache, the shared
+		// FileStreamManager), none of which is written to expect concurrent callers. One open at a
+		// time keeps that honest without needing to touch CacheSession (owned elsewhere) to add
+		// locking of its own; a second click while one is in flight just waits its turn instead of
+		// racing it.
+		private readonly SemaphoreSlim _openGate = new(1, 1);
+
+		// ---- back/forward navigation history ----
+		//
+		// Tracks tag keys (TagDocumentViewModel.TagKey) rather than document instances, so a
+		// history entry survives the tab it pointed at being closed - going back to it re-opens the
+		// tag from the namespace instead of silently landing nowhere. Only OpenTagAsync's own two
+		// call sites (tree selection, tag-reference navigation) push new entries; clicking an
+		// already-open tab directly (OnTabClick, in the tab strip - not this file's to change) does
+		// not, so switching tabs doesn't spam the history the way every browser also doesn't.
+		private readonly List<string> _history = new();
+		private int _historyIndex = -1;
+
+		public bool CanGoBack => _historyIndex > 0;
+		public bool CanGoForward => _historyIndex >= 0 && _historyIndex < _history.Count - 1;
+
+		private void PushHistory(TagDocumentViewModel doc)
+		{
+			if (_historyIndex >= 0 && _historyIndex < _history.Count && _history[_historyIndex] == doc.TagKey)
+				return; // re-activating the current history entry isn't a new navigation
+
+			if (_historyIndex < _history.Count - 1)
+				_history.RemoveRange(_historyIndex + 1, _history.Count - _historyIndex - 1);
+
+			_history.Add(doc.TagKey);
+			_historyIndex = _history.Count - 1;
+			Raise(nameof(CanGoBack));
+			Raise(nameof(CanGoForward));
+		}
+
+		public void GoBack()
+		{
+			if (!CanGoBack) return;
+			_historyIndex--;
+			NavigateToHistoryEntry();
+		}
+
+		public void GoForward()
+		{
+			if (!CanGoForward) return;
+			_historyIndex++;
+			NavigateToHistoryEntry();
+		}
+
+		private void NavigateToHistoryEntry()
+		{
+			Raise(nameof(CanGoBack));
+			Raise(nameof(CanGoForward));
+			if (_historyIndex < 0 || _historyIndex >= _history.Count) return;
+
+			string key = _history[_historyIndex];
+			var open = Documents.FirstOrDefault(d => d.TagKey == key);
+			if (open != null) { ActiveDocument = open; return; }
+
+			// The tab was closed since this entry was recorded - re-open the same tag rather than
+			// landing on nothing, unless the source it came from was unmounted entirely, in which
+			// case there is nothing left to reopen and this entry is just dead weight.
+			string[] parts = key.Split("::", 3);
+			var tag = parts.Length == 3
+				? _allTags.FirstOrDefault(t => t.SourceName == parts[0] && t.Group == parts[1] && t.Name == parts[2])
+				: null;
+
+			if (tag != null) { _ = OpenTagAsync(new TagNode(tag), recordHistory: false); return; }
+
+			_history.RemoveAt(_historyIndex);
+			if (_historyIndex >= _history.Count) _historyIndex = _history.Count - 1;
+			NavigateToHistoryEntry();
+		}
 
 		// ---- panes ----
 		private bool _showTagTree = true;
@@ -327,28 +421,113 @@ namespace Assembly.Avalonia.ViewModels
 		}
 
 		// ---- documents ----
-		private void OpenTag(TagNode node)
+
+		/// <summary>
+		///     Opens a tag as a new tab, or activates its existing one. The construction itself -
+		///     <see cref="TagDocumentViewModel" />'s constructor, which for a Campaign Evolved tag
+		///     means <c>new FifthGenTagFile(payload)</c> - runs on a thread-pool thread via
+		///     <see cref="Task.Run(Func{TagDocumentViewModel})" />; everything that touches
+		///     UI-bound collections (<see cref="Documents" />, <see cref="ActiveDocument" />, the
+		///     new document's own <c>Rows</c> once it's handed back) happens after the await, back
+		///     on whatever thread called this - the UI thread for every real caller. The freshly
+		///     constructed <see cref="TagDocumentViewModel" /> itself is safe to build off-thread
+		///     precisely because nothing is bound to it yet: its own <c>Rows</c> collection is
+		///     populated by <c>Rebuild()</c> inside the constructor, but no ListBox observes it
+		///     until <see cref="Documents" />.Add below runs on the UI thread.
+		/// </summary>
+		/// <param name="recordHistory">False when this open is itself a back/forward navigation
+		/// re-opening a closed tab - that must not push a new history entry on top of the one
+		/// already being navigated to.</param>
+		private async Task OpenTagAsync(TagNode node, bool recordHistory = true)
 		{
-			var existing = Documents.FirstOrDefault(d => d.TagKey ==
-				$"{node.Info.SourceName}::{node.Info.Group}::{node.Info.Name}");
+			string key = $"{node.Info.SourceName}::{node.Info.Group}::{node.Info.Name}";
+			var existing = Documents.FirstOrDefault(d => d.TagKey == key);
 			if (existing != null)
 			{
 				ActiveDocument = existing;
+				if (recordHistory) PushHistory(existing);
 				return;
 			}
 
+			IsOpeningTag = true;
+			OpeningTagLabel = $"{node.Info.Name}.{node.Info.Group}";
+			StatusText = $"Opening {OpeningTagLabel}...";
+
+			await _openGate.WaitAsync();
 			try
 			{
-				var doc = new TagDocumentViewModel(node.Info, Log);
+				// TagDocumentViewModel still gets a real Log reference (Save(), later, logs directly
+				// through it - that always runs on the UI thread already) but parsing itself never
+				// writes through it - see PendingLogMessages' remarks for why not, given this runs
+				// inside Task.Run. Replay whatever parsing collected now that we're back on this
+				// thread, which is the UI thread for every real caller.
+				var doc = await Task.Run(() => new TagDocumentViewModel(node.Info, Log));
+				foreach (var (level, message) in doc.PendingLogMessages)
+				{
+					switch (level)
+					{
+						case LogLevel.Warn: Log.Warn(message); break;
+						case LogLevel.Error: Log.Error(message); break;
+						default: Log.Info(message); break;
+					}
+				}
+
 				Documents.Add(doc);
 				ActiveDocument = doc;
 				Raise(nameof(HasDocuments));
 				Log.Info($"opened {doc.HeaderTitle}  ({doc.SchemaStatus})");
+				StatusText = $"Opened {doc.HeaderTitle}";
+				if (recordHistory) PushHistory(doc);
 			}
 			catch (Exception ex)
 			{
 				Log.Error($"failed to open {node.Info.Name}.{node.Info.Group}: {ex.Message}");
+				StatusText = $"Failed to open {node.Info.Name}.{node.Info.Group}: {ex.Message}";
 			}
+			finally
+			{
+				_openGate.Release();
+				IsOpeningTag = false;
+			}
+		}
+
+		/// <summary>
+		///     Follows a tag-reference row's target (see <see cref="TagRefTarget" />), searching the
+		///     whole mounted namespace rather than just the currently open tag's own cache - a
+		///     Campaign Evolved reference names a path that can legitimately resolve to a tag mounted
+		///     from a different sibling container than the one carrying the reference. When the
+		///     target isn't mounted, this says so through <see cref="StatusText" /> and the console
+		///     rather than doing nothing, which is what silently failing to find a match would look
+		///     like to a user with no other signal.
+		/// </summary>
+		public void NavigateToTagReference(TagRefTarget target)
+		{
+			if (!target.IsFollowable)
+			{
+				StatusText = "This reference is null - there is nothing to open.";
+				return;
+			}
+
+			TagInfo? hit = target.SameSourceHint != null
+				? _allTags.FirstOrDefault(t =>
+					string.Equals(t.SourceName, target.SameSourceHint, StringComparison.OrdinalIgnoreCase) &&
+					string.Equals(t.Group, target.Group, StringComparison.OrdinalIgnoreCase) &&
+					string.Equals(t.Name, target.Name, StringComparison.OrdinalIgnoreCase))
+				: null;
+
+			hit ??= _allTags.FirstOrDefault(t =>
+				string.Equals(t.Group, target.Group, StringComparison.OrdinalIgnoreCase) &&
+				string.Equals(t.Name, target.Name, StringComparison.OrdinalIgnoreCase));
+
+			if (hit == null)
+			{
+				string where = target.SameSourceHint != null ? $" in \"{target.SameSourceHint}\"" : " in the mounted namespace";
+				StatusText = $"\"{target.Name}.{target.Group}\" is not mounted{where} - open its container first.";
+				Log.Warn($"reference navigation: {StatusText}");
+				return;
+			}
+
+			_ = OpenTagAsync(new TagNode(hit));
 		}
 
 		public void CloseDocument(TagDocumentViewModel doc)

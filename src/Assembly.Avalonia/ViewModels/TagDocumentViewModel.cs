@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Assembly.Avalonia.Services;
+using Blamite.Blam;
 using Blamite.Blam.FifthGen;
 using Blamite.Blam.FifthGen.Structures;
 using Blamite.IO;
+using Blamite.Util;
 
 namespace Assembly.Avalonia.ViewModels
 {
@@ -23,6 +25,47 @@ namespace Assembly.Avalonia.ViewModels
 		public string Name { get; }
 		public long Value { get; }
 		public override string ToString() => Name;
+	}
+
+	/// <summary>
+	///     What a tag-reference field points at, as read straight out of the field's own bytes -
+	///     never resolved eagerly against the mounted namespace, since resolving means searching
+	///     every mounted source and the field itself is read far more often than it is followed.
+	///     <see cref="MainViewModel.NavigateToTagReference" /> does that search only when the row
+	///     is actually activated (double-click, the field table's "Open" glyph, or Enter).
+	/// </summary>
+	public sealed class TagRefTarget
+	{
+		public TagRefTarget(string group, string? name, string? sameSourceHint)
+		{
+			Group = group;
+			Name = name;
+			SameSourceHint = sameSourceHint;
+		}
+
+		/// <summary>The target's tag group four-CC, e.g. "weap". Falls back to "????" when even
+		/// the group could not be determined (a classic reference with no inline group magic
+		/// pointing at a datum index the owning cache doesn't recognize).</summary>
+		public string Group { get; }
+
+		/// <summary>
+		///     The target's name/path, or <c>null</c> when the field carries no resolvable name:
+		///     an explicit null reference, or (classic only) a datum index that doesn't resolve
+		///     against this tag's own cache. <see cref="IsFollowable" /> is exactly this being set.
+		/// </summary>
+		public string? Name { get; }
+
+		/// <summary>
+		///     For a classic reference: the mounted source (file name) the target is expected in,
+		///     since a classic datum index only ever resolves within the cache it came from. Tried
+		///     first by navigation, before falling back to a namespace-wide search, so two mounted
+		///     sources that happen to share a tag name/group can't be confused. Null for a
+		///     fifth-generation reference, whose path can legitimately name a tag mounted from a
+		///     different sibling container than the one carrying the reference.
+		/// </summary>
+		public string? SameSourceHint { get; }
+
+		public bool IsFollowable => !string.IsNullOrEmpty(Name);
 	}
 
 	/// <summary>One row in a tag document's field table: a scalar field, a comment, or a tag
@@ -87,6 +130,28 @@ namespace Assembly.Avalonia.ViewModels
 		public long ElementsBaseFileOffset { get; set; } = -1;
 		public string ElementSummary => ElementCount == 0 ? "0 entries" : $"element {ElementIndex + 1} of {ElementCount}  (index {ElementIndex})";
 
+		/// <summary>
+		///     For a fifth-generation block/array/(singular) struct row: the already-resolved child
+		///     element list (see <see cref="TagDocumentViewModel.WalkFifthGenStruct" />), cached on
+		///     the row itself so <see cref="TagDocumentViewModel.ToggleExpand" /> and
+		///     <see cref="TagDocumentViewModel.SetElementIndex" /> can splice just this row's
+		///     subtree back in without re-walking from the document root. Safe to cache indefinitely
+		///     because a Campaign Evolved tag's parsed tree never mutates (the format is read-only
+		///     in this build) - the same field reached at the same tree position always yields the
+		///     same element list. Null for a classic row, or a fifth-generation scalar row.
+		/// </summary>
+		public IList<FifthGenTagStruct>? FifthGenElements { get; set; }
+
+		/// <summary>
+		///     What this row's field points at, when it is a tag reference (classic
+		///     <see cref="MetaFieldKind.TagReference" />, or a fifth-generation field of type
+		///     <c>TagReference</c>) and the reference isn't explicitly null. Null for every other
+		///     row, including a null reference - see <see cref="TagRefTarget.IsFollowable" />.
+		/// </summary>
+		public TagRefTarget? RefTarget { get; set; }
+
+		public bool IsReference => RefTarget != null;
+
 		// ---- edit state ----
 		public FieldEditState? Original { get; set; }
 		public FieldEditState? Current { get; set; }
@@ -144,6 +209,19 @@ namespace Assembly.Avalonia.ViewModels
 		private readonly Dictionary<int, MetaRowViewModel> _rowCache = new();
 		private readonly LogService? _log;
 
+		/// <summary>
+		///     Warnings raised while parsing (fifth-generation only - see the constructor) are
+		///     buffered here instead of written straight through <see cref="_log" />, because the
+		///     constructor itself now commonly runs on a background thread
+		///     (<see cref="MainViewModel.OpenTagAsync" />) and <see cref="LogService.Entries" /> is
+		///     bound to the console's ListBox - mutating it off the UI thread is exactly the kind of
+		///     bug this pass exists to remove, not add one of its own. The caller replays these into
+		///     the real log once construction hands back control on its own thread (the UI thread,
+		///     for every real caller).
+		/// </summary>
+		private readonly List<(LogLevel Level, string Message)> _pendingLog = new();
+		public IReadOnlyList<(LogLevel Level, string Message)> PendingLogMessages => _pendingLog;
+
 		// ---- fifth-generation (Campaign Evolved) support ----
 		//
 		// A fifth-generation tag carries its own schema (see FifthGenTagFile.Layout) instead of
@@ -191,19 +269,19 @@ namespace Assembly.Avalonia.ViewModels
 						// The payload's own parser is the authority on what it could and could not
 						// make sense of - surface that honestly rather than silently dropping it.
 						foreach (string w in _fifthGenFile.Warnings)
-							_log?.Warn($"{Tag.Name}.{Tag.Group}: {w}");
+							_pendingLog.Add((LogLevel.Warn, $"{Tag.Name}.{Tag.Group}: {w}"));
 
 						int rootCount = _fifthGenFile.Data.Elements.Count;
 						if (rootCount != 1)
 						{
-							_log?.Warn($"{Tag.Name}.{Tag.Group}: tag root block has {rootCount} element(s) (expected 1); " +
-							           (rootCount == 0 ? "the field table will be empty." : "showing element 0."));
+							_pendingLog.Add((LogLevel.Warn, $"{Tag.Name}.{Tag.Group}: tag root block has {rootCount} element(s) (expected 1); " +
+							           (rootCount == 0 ? "the field table will be empty." : "showing element 0.")));
 						}
 					}
 					catch (Exception ex)
 					{
 						SchemaStatus = $"Failed to parse Campaign Evolved tag: {ex.Message}";
-						_log?.Error($"{Tag.Name}.{Tag.Group}: {ex.Message}");
+						_pendingLog.Add((LogLevel.Error, $"{Tag.Name}.{Tag.Group}: {ex.Message}"));
 					}
 				}
 			}
@@ -243,30 +321,192 @@ namespace Assembly.Avalonia.ViewModels
 			IsDirty = _rowCache.Values.Any(r => r.IsDirty);
 		}
 
+		// ================= field search / filter =================
+		//
+		// Decision: the filter searches unexpanded subtrees too, not just what's currently on
+		// screen. On a 1806-field scenario tag, most fields live inside a block nobody has expanded
+		// yet, so a filter that only matched visible rows would be close to useless for exactly the
+		// tag this feature exists for. That is affordable here because a Campaign Evolved tag's
+		// whole tree is already parsed into memory (FifthGenTagFile.Data) - descending into every
+		// field costs CPU only, no disk I/O, however deep the tag goes. For a classic (plugin-XML)
+		// tag, the same "always descend" approach still costs one MetaValueReader read per field in
+		// the flattened schema (bounded by the schema's total size, not multiplied by block element
+		// counts, since - like the rest of this UI - only one representative element per block is
+		// ever inspected). There is no classic (.map) fixture in this repo big enough to measure
+		// that cost against, so this is the one place in this file whose performance is reasoned
+		// about rather than proven; if a future large classic mount makes it visibly slow, it should
+		// get the same debounce/async treatment tag-opening got rather than being trusted blind.
+
+		private string _filterQuery = "";
+		public string FilterQuery
+		{
+			get => _filterQuery;
+			set
+			{
+				value ??= "";
+				if (_filterQuery == value) return;
+				_filterQuery = value;
+				Raise();
+				Raise(nameof(IsFiltering));
+				if (IsFiltering) RebuildFilteredNow();
+				else Rebuild();
+			}
+		}
+
+		public bool IsFiltering => _filterQuery.Trim().Length > 0;
+
+		private int _filterMatchCount;
+		public int FilterMatchCount { get => _filterMatchCount; private set => Set(ref _filterMatchCount, value); }
+
+		/// <summary>Accumulates leaf-field matches during a filtered walk (see <see cref="Matches"/>
+		/// call sites in <see cref="WalkFiltered"/>/<see cref="WalkFifthGenFiltered"/>) - reset at
+		/// the start of <see cref="RebuildFilteredNow"/> and read back into <see cref="FilterMatchCount"/>
+		/// once the walk completes. A field accumulator rather than a returned count because both
+		/// walkers are recursive and every recursive call needs to add to the same running total.</summary>
+		private int _filterMatchAccumulator;
+
+		private void RebuildFilteredNow()
+		{
+			string ql = _filterQuery.Trim();
+			var selectedIndex = SelectedRow?.SchemaIndex;
+			string? selectedPath = SelectedRow?.FifthGenPath;
+
+			Rows.Clear();
+			_filterMatchAccumulator = 0;
+			var target = new List<MetaRowViewModel>();
+
+			if (_isFifthGen)
+			{
+				if (_fifthGenFile != null && _fifthGenFile.Data.Elements.Count > 0)
+					WalkFifthGenFiltered(_fifthGenFile.Data.Elements[0], 0, "", ql, target);
+			}
+			else if (_schema.Count > 0)
+			{
+				using var reader = _session.Streams.OpenRead();
+				WalkFiltered(reader, 0, _schema.Count, TagBaseOffset, 0, ql, target);
+			}
+
+			foreach (var row in target) Rows.Add(row);
+			FilterMatchCount = _filterMatchAccumulator;
+
+			if (_isFifthGen)
+			{
+				if (selectedPath != null && _fifthGenRowCache.TryGetValue(selectedPath, out var reselect) && Rows.Contains(reselect))
+					SelectedRow = reselect;
+			}
+			else if (selectedIndex.HasValue && _rowCache.TryGetValue(selectedIndex.Value, out var reselectClassic) && Rows.Contains(reselectClassic))
+			{
+				SelectedRow = reselectClassic;
+			}
+		}
+
+		private static bool Matches(string ql, params string?[] fields)
+		{
+			foreach (var f in fields)
+				if (f != null && f.Contains(ql, StringComparison.OrdinalIgnoreCase))
+					return true;
+			return false;
+		}
+
+		// ================= expand / collapse / element navigation =================
+		//
+		// These used to call Rebuild() - Rows.Clear() plus a full re-walk of the document - for
+		// literally any change, which is a full teardown/rebuild of the ListBox's visual tree on
+		// every click and throws away scroll position and selection (see the reselect-by-identity
+		// hack in Rebuild()/RebuildFifthGen()). What actually changed is always one row's own
+		// subtree, so the fix is to compute just that subtree and splice it into Rows in place:
+		// ObservableCollection.Insert/RemoveAt raise Add/Remove, which Avalonia's virtualizing
+		// panel and the ListBox's selection both handle incrementally, unlike a Reset (which is
+		// what Clear() raises and is exactly as disruptive as it sounds).
+
 		public void ToggleExpand(MetaRowViewModel row)
 		{
 			if (!row.IsBlock) return;
-			row.IsExpanded = !row.IsExpanded;
-			Rebuild();
+
+			// A filtered view's shape is driven entirely by which rows currently match, not by
+			// IsExpanded (see WalkFiltered/WalkFifthGenFiltered) - splicing a subtree into it here
+			// would assume positions the filtered walk never guaranteed. Flip the flag so it takes
+			// effect the moment the filter is cleared, but leave Rows alone until then.
+			if (IsFiltering) { row.IsExpanded = !row.IsExpanded; return; }
+
+			int pos = Rows.IndexOf(row);
+			if (pos < 0) { row.IsExpanded = !row.IsExpanded; return; } // defensive: row not currently visible
+
+			if (row.IsExpanded)
+			{
+				RemoveSubtreeAfter(pos, row.Depth);
+				row.IsExpanded = false;
+				return;
+			}
+
+			row.IsExpanded = true;
+			ExpandChildrenInPlace(row, pos);
 		}
 
 		public void SetElementIndex(MetaRowViewModel row, int index)
 		{
 			if (!row.IsBlock) return;
-			row.ElementIndex = Math.Max(0, Math.Min(index, Math.Max(0, row.ElementCount - 1)));
-			Rebuild();
+			int clamped = Math.Max(0, Math.Min(index, Math.Max(0, row.ElementCount - 1)));
+			if (clamped == row.ElementIndex) return;
+			row.ElementIndex = clamped; // updates ElementSummary via its own PropertyChanged regardless of visibility
+
+			if (IsFiltering) { RebuildFilteredNow(); return; } // the representative element the filtered view descends into just changed
+			if (!row.IsExpanded) return; // nothing visible depends on which element is selected while collapsed
+
+			int pos = Rows.IndexOf(row);
+			if (pos < 0) return;
+			RemoveSubtreeAfter(pos, row.Depth);
+			ExpandChildrenInPlace(row, pos);
+		}
+
+		/// <summary>Removes every row after <paramref name="pos" /> whose depth is greater than
+		/// <paramref name="parentDepth" /> - i.e. exactly the subtree rooted at <paramref name="pos" />,
+		/// however deeply nested (a previously-expanded grandchild included), and nothing else.</summary>
+		private void RemoveSubtreeAfter(int pos, int parentDepth)
+		{
+			while (pos + 1 < Rows.Count && Rows[pos + 1].Depth > parentDepth)
+				Rows.RemoveAt(pos + 1);
+		}
+
+		private void InsertSubtreeAt(int pos, IReadOnlyList<MetaRowViewModel> children)
+		{
+			for (int i = 0; i < children.Count; i++)
+				Rows.Insert(pos + 1 + i, children[i]);
+		}
+
+		private void ExpandChildrenInPlace(MetaRowViewModel row, int pos)
+		{
+			if (_isFifthGen) ExpandFifthGenChildrenInPlace(row, pos);
+			else ExpandClassicChildrenInPlace(row, pos);
+		}
+
+		private void ExpandClassicChildrenInPlace(MetaRowViewModel row, int pos)
+		{
+			if (row.Def.ChildStart < 0 || row.ElementCount == 0 || row.ElementsBaseFileOffset < 0) return;
+
+			using var reader = _session.Streams.OpenRead();
+			long elemBase = row.ElementsBaseFileOffset + (long)row.ElementIndex * row.Def.EntrySize;
+			var children = new List<MetaRowViewModel>();
+			Walk(reader, row.Def.ChildStart, row.Def.ChildEnd, elemBase, row.Depth + 1, children);
+			InsertSubtreeAt(pos, children);
 		}
 
 		public void Rebuild()
 		{
 			if (_isFifthGen) { RebuildFifthGen(); return; }
+			if (IsFiltering) { RebuildFilteredNow(); return; }
 
+			// Only reachable from the constructor and from Save()'s post-write reload now that
+			// expand/collapse/element-index no longer call this - both are full-document, low
+			// frequency operations where re-seeding the selection by identity is still doing real
+			// work (unlike the incremental paths above, where the selected row object never leaves
+			// Rows in the first place unless its own ancestor was just collapsed).
 			var selectedIndex = SelectedRow?.SchemaIndex;
 			Rows.Clear();
 			if (_schema.Count == 0) return;
 
 			using var reader = _session.Streams.OpenRead();
-			Walk(reader, 0, _schema.Count, TagBaseOffset, 0);
+			Walk(reader, 0, _schema.Count, TagBaseOffset, 0, Rows);
 
 			if (selectedIndex.HasValue && _rowCache.TryGetValue(selectedIndex.Value, out var reselect) && Rows.Contains(reselect))
 				SelectedRow = reselect;
@@ -274,7 +514,7 @@ namespace Assembly.Avalonia.ViewModels
 			RecomputeDirty();
 		}
 
-		private void Walk(IReader r, int start, int end, long baseOffset, int depth)
+		private void Walk(IReader r, int start, int end, long baseOffset, int depth, IList<MetaRowViewModel> target)
 		{
 			int i = start;
 			while (i < end)
@@ -289,7 +529,7 @@ namespace Assembly.Avalonia.ViewModels
 				if (def.Kind == MetaFieldKind.Comment)
 				{
 					row.DisplayValue = def.Note ?? "";
-					Rows.Add(row);
+					target.Add(row);
 					i++;
 					continue;
 				}
@@ -308,12 +548,12 @@ namespace Assembly.Avalonia.ViewModels
 						: header.BaseFileOffset < 0
 							? $"{header.Count} entries (pointer unresolved: 0x{header.PointerRaw:X8})"
 							: $"{header.Count} entries @ file 0x{header.BaseFileOffset:X6}";
-					Rows.Add(row);
+					target.Add(row);
 
 					if (row.IsExpanded && def.ChildStart >= 0 && header.Count > 0 && header.BaseFileOffset >= 0)
 					{
 						long elemBase = header.BaseFileOffset + (long)row.ElementIndex * def.EntrySize;
-						Walk(r, def.ChildStart, def.ChildEnd, elemBase, depth + 1);
+						Walk(r, def.ChildStart, def.ChildEnd, elemBase, depth + 1, target);
 					}
 
 					i = def.ChildEnd >= 0 ? def.ChildEnd + 1 : i + 1;
@@ -324,10 +564,12 @@ namespace Assembly.Avalonia.ViewModels
 				try { row.DisplayValue = MetaValueReader.ReadValue(r, baseOffset, def, _session.Cache); }
 				catch (Exception ex) { row.DisplayValue = $"<read error: {ex.GetType().Name}>"; }
 
+				row.RefTarget = def.Kind == MetaFieldKind.TagReference ? TryResolveClassicTagRef(r, baseOffset, def) : null;
+
 				if (def.IsEditable)
 					SeedEditStateIfNeeded(row, r, baseOffset, def);
 
-				Rows.Add(row);
+				target.Add(row);
 				i++;
 			}
 		}
@@ -338,6 +580,148 @@ namespace Assembly.Avalonia.ViewModels
 			var row = new MetaRowViewModel(def, schemaIndex);
 			_rowCache[schemaIndex] = row;
 			return row;
+		}
+
+		/// <summary>
+		///     Resolves a classic tag-reference field's target straight off the field's own bytes,
+		///     independent of and in addition to <see cref="MetaValueReader.ReadValue" />'s display
+		///     string (both seek to the same offset, so calling this after is safe - see
+		///     <see cref="IReader.SeekTo" />). Mirrors the 16-byte "four-CC + two runtime words +
+		///     datum index" / 4-byte "datum index only" layouts <c>MetaValueReader</c>'s own
+		///     TagReference case reads, because the byte layout is the one thing here that isn't a
+		///     choice; what's added is preferring the *referenced tag's own* group over the inline
+		///     four-CC when the datum index resolves, since a stale inline four-CC (the runtime
+		///     patches it in, not the cache author) would otherwise send navigation looking in the
+		///     wrong tag group.
+		/// </summary>
+		private TagRefTarget? TryResolveClassicTagRef(IReader r, long baseOffset, MetaFieldDef def)
+		{
+			long at = baseOffset + def.Offset;
+			if (at < 0 || at >= r.Length) return null;
+			r.SeekTo(at);
+
+			int inlineGroupMagic = 0;
+			if (def.Size == 16)
+			{
+				inlineGroupMagic = r.ReadInt32();
+				r.Skip(8);
+			}
+
+			DatumIndex di = DatumIndex.ReadFrom(r);
+			if (!di.IsValid) return null; // an explicit null reference - nothing to follow, not a broken one
+
+			ICacheFile cache = _session.Cache;
+			string group = inlineGroupMagic != 0 ? CharConstant.ToString(inlineGroupMagic) : "";
+			string? name = null;
+
+			try
+			{
+				if (cache.Tags.IsValidIndex(di))
+				{
+					ITag target = cache.Tags[di];
+					if (target?.Group != null) group = CharConstant.ToString(target.Group.Magic);
+					if (cache.FileNames != null) name = cache.FileNames.GetTagName(di);
+				}
+			}
+			catch { /* damaged/partial cache - same as the read-only value column, leave it unresolved rather than throw */ }
+
+			// A classic datum index only ever resolves within the cache it came from.
+			return new TagRefTarget(string.IsNullOrEmpty(group) ? "????" : group, name, Tag.SourceName);
+		}
+
+		/// <summary>
+		///     Filtered counterpart to <see cref="Walk"/>: unlike the normal walk, this always
+		///     descends into a tag block's one representative element (see the "field search /
+		///     filter" remarks above for why that is an acceptable cost here) regardless of
+		///     <see cref="MetaRowViewModel.IsExpanded"/>, and only adds a row when it - or something
+		///     inside it - actually matches. Returns whether it added anything, so a block knows
+		///     whether to include itself purely as match context for a descendant.
+		/// </summary>
+		private bool WalkFiltered(IReader r, int start, int end, long baseOffset, int depth, string ql, List<MetaRowViewModel> target)
+		{
+			int i = start;
+			bool any = false;
+			while (i < end)
+			{
+				var def = _schema[i];
+				if (def.Kind == MetaFieldKind.TagBlockEnd) { i++; continue; }
+
+				if (def.Kind == MetaFieldKind.Comment)
+				{
+					if (Matches(ql, def.Name, def.KindLabel, def.Note))
+					{
+						var crow = GetOrCreateRow(i, def);
+						crow.Depth = depth;
+						crow.AbsoluteOffset = baseOffset + def.Offset;
+						crow.DisplayValue = def.Note ?? "";
+						target.Add(crow);
+						any = true;
+						_filterMatchAccumulator++;
+					}
+					i++;
+					continue;
+				}
+
+				if (def.Kind == MetaFieldKind.TagBlock)
+				{
+					var row = GetOrCreateRow(i, def);
+					row.Depth = depth;
+					row.AbsoluteOffset = baseOffset + def.Offset;
+
+					BlockHeader header = default;
+					try { header = MetaValueReader.ReadBlockHeader(r, row.AbsoluteOffset, _session.Cache); }
+					catch { /* leave default: Count 0 */ }
+
+					row.ElementCount = header.Count;
+					row.ElementsBaseFileOffset = header.BaseFileOffset;
+					if (row.ElementIndex >= header.Count) row.ElementIndex = Math.Max(0, header.Count - 1);
+					row.DisplayValue = header.Count == 0
+						? "empty"
+						: header.BaseFileOffset < 0
+							? $"{header.Count} entries (pointer unresolved: 0x{header.PointerRaw:X8})"
+							: $"{header.Count} entries @ file 0x{header.BaseFileOffset:X6}";
+
+					bool selfMatch = Matches(ql, row.Name, row.KindLabel, row.DisplayValue);
+					var childRows = new List<MetaRowViewModel>();
+					bool childMatch = false;
+					if (def.ChildStart >= 0 && header.Count > 0 && header.BaseFileOffset >= 0)
+					{
+						long elemBase = header.BaseFileOffset + (long)row.ElementIndex * def.EntrySize;
+						childMatch = WalkFiltered(r, def.ChildStart, def.ChildEnd, elemBase, depth + 1, ql, childRows);
+					}
+
+					if (selfMatch || childMatch)
+					{
+						target.Add(row);
+						target.AddRange(childRows);
+						any = true;
+						if (selfMatch) _filterMatchAccumulator++;
+					}
+
+					i = def.ChildEnd >= 0 ? def.ChildEnd + 1 : i + 1;
+					continue;
+				}
+
+				// scalar-ish field
+				{
+					var row = GetOrCreateRow(i, def);
+					row.Depth = depth;
+					row.AbsoluteOffset = baseOffset + def.Offset;
+					try { row.DisplayValue = MetaValueReader.ReadValue(r, baseOffset, def, _session.Cache); }
+					catch (Exception ex) { row.DisplayValue = $"<read error: {ex.GetType().Name}>"; }
+
+					if (Matches(ql, row.Name, row.KindLabel, row.DisplayValue))
+					{
+						row.RefTarget = def.Kind == MetaFieldKind.TagReference ? TryResolveClassicTagRef(r, baseOffset, def) : null;
+						if (def.IsEditable) SeedEditStateIfNeeded(row, r, baseOffset, def);
+						target.Add(row);
+						any = true;
+						_filterMatchAccumulator++;
+					}
+					i++;
+				}
+			}
+			return any;
 		}
 
 		// ================= fifth-generation (Campaign Evolved) walker =================
@@ -372,6 +756,8 @@ namespace Assembly.Avalonia.ViewModels
 
 		private void RebuildFifthGen()
 		{
+			if (IsFiltering) { RebuildFilteredNow(); return; }
+
 			string? selectedPath = SelectedRow?.FifthGenPath;
 			Rows.Clear();
 			if (_fifthGenFile == null) return;
@@ -379,12 +765,23 @@ namespace Assembly.Avalonia.ViewModels
 			FifthGenTagBlock root = _fifthGenFile.Data;
 			if (root.Elements.Count == 0) return;
 
-			WalkFifthGenStruct(root.Elements[0], 0, "");
+			WalkFifthGenStruct(root.Elements[0], 0, "", Rows);
 
 			if (selectedPath != null && _fifthGenRowCache.TryGetValue(selectedPath, out var reselect) && Rows.Contains(reselect))
 				SelectedRow = reselect;
 
 			RecomputeDirty();
+		}
+
+		private void ExpandFifthGenChildrenInPlace(MetaRowViewModel row, int pos)
+		{
+			IList<FifthGenTagStruct>? elements = row.FifthGenElements;
+			if (elements == null || elements.Count == 0 || row.FifthGenPath == null) return;
+
+			int idx = Math.Min(row.ElementIndex, elements.Count - 1);
+			var children = new List<MetaRowViewModel>();
+			WalkFifthGenStruct(elements[idx], row.Depth + 1, row.FifthGenPath, children);
+			InsertSubtreeAt(pos, children);
 		}
 
 		/// <summary>
@@ -393,7 +790,7 @@ namespace Assembly.Avalonia.ViewModels
 		///     field, recursing into whichever element <see cref="MetaRowViewModel.ElementIndex"/>
 		///     currently selects only when that row is expanded.
 		/// </summary>
-		private void WalkFifthGenStruct(FifthGenTagStruct instance, int depth, string pathPrefix)
+		private void WalkFifthGenStruct(FifthGenTagStruct instance, int depth, string pathPrefix, IList<MetaRowViewModel> target)
 		{
 			IList<FifthGenFieldDefinition> fields = instance.Definition.Fields;
 			IList<FifthGenTagValue> values = instance.Values;
@@ -423,14 +820,15 @@ namespace Assembly.Avalonia.ViewModels
 					row.AbsoluteOffset = fieldOffset;
 
 					IList<FifthGenTagStruct> elements = GetFifthGenElements(value);
+					row.FifthGenElements = elements;
 					row.ElementCount = elements.Count;
 					row.ElementsBaseFileOffset = -1; // no file-relative address space for this engine
 					if (row.ElementIndex >= elements.Count) row.ElementIndex = Math.Max(0, elements.Count - 1);
 					row.DisplayValue = DescribeFifthGenContainer(field, elements.Count, value);
-					Rows.Add(row);
+					target.Add(row);
 
 					if (row.IsExpanded && elements.Count > 0)
-						WalkFifthGenStruct(elements[row.ElementIndex], depth + 1, path);
+						WalkFifthGenStruct(elements[row.ElementIndex], depth + 1, path, target);
 
 					continue;
 				}
@@ -441,7 +839,8 @@ namespace Assembly.Avalonia.ViewModels
 				srow.AbsoluteOffset = fieldOffset;
 				try { srow.DisplayValue = FifthGenValueFormatter.Format(value); }
 				catch (Exception ex) { srow.DisplayValue = $"<format error: {ex.GetType().Name}>"; }
-				Rows.Add(srow);
+				srow.RefTarget = ResolveFifthGenTagRef(value);
+				target.Add(srow);
 			}
 
 			// A struct instance can carry more sections than its own field list accounts for -
@@ -454,8 +853,109 @@ namespace Assembly.Avalonia.ViewModels
 				trow.Depth = depth;
 				trow.AbsoluteOffset = offset;
 				trow.DisplayValue = $"{instance.TrailingSections.Count} undecoded trailing section(s) - see console";
-				Rows.Add(trow);
+				target.Add(trow);
 			}
+		}
+
+		/// <summary>A fifth-generation reference field's target travels with the field itself (see
+		/// <see cref="FifthGenTagReferenceValue"/>'s remarks) - no read, seek or cache lookup
+		/// needed, unlike the classic path.</summary>
+		private static TagRefTarget? ResolveFifthGenTagRef(FifthGenTagValue value) =>
+			value is FifthGenTagReferenceValue tr && !tr.IsNull ? new TagRefTarget(tr.GroupTag, tr.Path, null) : null;
+
+		/// <summary>
+		///     Filtered counterpart to <see cref="WalkFifthGenStruct"/>: always descends into every
+		///     block/array/struct field's currently-selected representative element - there is no
+		///     I/O cost to doing so here, the whole tree is already in memory - and only adds a row
+		///     when it, or something inside it, matches. Returns whether it added anything, exactly
+		///     like <see cref="WalkFiltered"/> does for the classic path.
+		/// </summary>
+		private bool WalkFifthGenFiltered(FifthGenTagStruct instance, int depth, string pathPrefix, string ql, List<MetaRowViewModel> target)
+		{
+			IList<FifthGenFieldDefinition> fields = instance.Definition.Fields;
+			IList<FifthGenTagValue> values = instance.Values;
+			int structIndex = instance.Definition.Index;
+			uint offset = 0;
+			bool any = false;
+
+			for (var i = 0; i < fields.Count; i++)
+			{
+				FifthGenFieldDefinition field = fields[i];
+				FifthGenTagValue value = values[i];
+				uint fieldOffset = offset;
+				offset += (uint)Math.Max(0, field.InlineSize);
+
+				if (field.Type == FifthGenFieldType.Pad)
+					continue;
+
+				string path = $"{pathPrefix}.{i}";
+
+				if (field.Type == FifthGenFieldType.Block || field.Type == FifthGenFieldType.Array ||
+				    field.Type == FifthGenFieldType.Struct)
+				{
+					MetaFieldDef cdef = GetFifthGenContainerDef(structIndex, i, field, fieldOffset);
+					bool selfMatch = Matches(ql, field.Name, cdef.KindLabelOverride);
+
+					IList<FifthGenTagStruct> elements = GetFifthGenElements(value);
+					var childRows = new List<MetaRowViewModel>();
+					bool childMatch = false;
+					if (elements.Count > 0)
+					{
+						MetaRowViewModel probe = GetOrCreateFifthGenRow(path, cdef);
+						int idx = Math.Min(probe.ElementIndex, elements.Count - 1);
+						childMatch = WalkFifthGenFiltered(elements[idx], depth + 1, path, ql, childRows);
+					}
+
+					if (selfMatch || childMatch)
+					{
+						MetaRowViewModel row = GetOrCreateFifthGenRow(path, cdef);
+						row.Depth = depth;
+						row.AbsoluteOffset = fieldOffset;
+						row.FifthGenElements = elements;
+						row.ElementCount = elements.Count;
+						row.ElementsBaseFileOffset = -1;
+						if (row.ElementIndex >= elements.Count) row.ElementIndex = Math.Max(0, elements.Count - 1);
+						row.DisplayValue = DescribeFifthGenContainer(field, elements.Count, value);
+						target.Add(row);
+						target.AddRange(childRows);
+						any = true;
+						if (selfMatch) _filterMatchAccumulator++;
+					}
+
+					continue;
+				}
+
+				MetaFieldDef sdef = GetFifthGenScalarDef(structIndex, i, field, fieldOffset);
+				string display;
+				try { display = FifthGenValueFormatter.Format(value); }
+				catch (Exception ex) { display = $"<format error: {ex.GetType().Name}>"; }
+
+				if (Matches(ql, field.Name, sdef.KindLabelOverride, display))
+				{
+					MetaRowViewModel srow = GetOrCreateFifthGenRow(path, sdef);
+					srow.Depth = depth;
+					srow.AbsoluteOffset = fieldOffset;
+					srow.DisplayValue = display;
+					srow.RefTarget = ResolveFifthGenTagRef(value);
+					target.Add(srow);
+					any = true;
+					_filterMatchAccumulator++;
+				}
+			}
+
+			if (instance.TrailingSections.Count > 0 && Matches(ql, "(undecoded)"))
+			{
+				MetaFieldDef tdef = GetFifthGenTrailingDef(structIndex);
+				MetaRowViewModel trow = GetOrCreateFifthGenRow(pathPrefix + ".$trailing", tdef);
+				trow.Depth = depth;
+				trow.AbsoluteOffset = offset;
+				trow.DisplayValue = $"{instance.TrailingSections.Count} undecoded trailing section(s) - see console";
+				target.Add(trow);
+				any = true;
+				_filterMatchAccumulator++;
+			}
+
+			return any;
 		}
 
 		private static IList<FifthGenTagStruct> GetFifthGenElements(FifthGenTagValue value) => value switch
