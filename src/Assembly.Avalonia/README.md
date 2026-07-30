@@ -70,11 +70,24 @@ The app detects these files (via their internal name) and shows a red
 
 ## Theming
 
-`Theme/MetroDark.axaml` carries the WPF Metro palette across verbatim — the greys from
-`src/Assembly/Metro/Themes/Dark.xaml` and the `#0079cb` accent from `Blue.xaml`.
+`Theme/MetroDark.axaml` carries the WPF Metro palette across — the greys originally from
+`src/Assembly/Metro/Themes/Dark.xaml` and the `#0079cb` accent from `Blue.xaml` are still there
+unchanged, now as the "Dark" half of an Avalonia `ResourceDictionary.ThemeDictionaries`, sitting
+alongside a "Light" half derived from it (deepened state colours where the original values don't
+clear WCAG contrast on a white surface; see that file's header for the specifics). The app
+follows the OS light/dark setting by default (`RequestedThemeVariant="Default"` in App.axaml,
+overridable for testing with `ASM_THEME=Light|Dark`).
+
+`Theme/MetroTypography.axaml` holds the type scale (`FontSizeMicro` … `FontSizeDisplay`) and an
+8px-based spacing scale (`Space1` … `Space6`), and `Theme/Icons.axaml` holds hand-authored
+`StreamGeometry` path data for the chrome icons that used to be bare Unicode glyphs. Both are
+theme-invariant, which is why they're separate files from the colour palette rather than folded
+into it.
 
 `Theme/MetroStyles.axaml` ports the control styling. The one systematic difference from
 WPF: `<ControlTemplate.Triggers>` / `<Trigger Property="IsMouseOver">` have no Avalonia
 equivalent and become pseudo-class selectors (`Button:pointerover`, `:pressed`,
 `:selected`). That rewrite is mechanical but it is per-template, and it is the bulk of
-the work in porting the remaining Metro control templates.
+the work in porting the remaining Metro control templates. It also carries the field
+table's type badges, indent guides and tag-tree four-CC badges — see that file's header for how
+those reach into the `TreeView`/`ListBox` row templates without owning them.

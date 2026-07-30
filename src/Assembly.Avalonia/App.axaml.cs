@@ -2,6 +2,7 @@ using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Styling;
 using Assembly.Avalonia.ViewModels;
 using Assembly.Avalonia.Views;
 
@@ -13,6 +14,19 @@ namespace Assembly.Avalonia
 
 		public override void OnFrameworkInitializationCompleted()
 		{
+			// Dev/QA override: RequestedThemeVariant is "Default" (App.axaml) so the app follows
+			// the OS light/dark setting, which is the correct default but makes the *other*
+			// variant awkward to actually look at without changing macOS System Settings and
+			// restarting. ASM_THEME=Light|Dark forces one, for screenshotting both without that
+			// round-trip; anything else (including unset) leaves the system-follow default alone.
+			var themeOverride = Environment.GetEnvironmentVariable("ASM_THEME");
+			RequestedThemeVariant = themeOverride switch
+			{
+				"Light" => ThemeVariant.Light,
+				"Dark" => ThemeVariant.Dark,
+				_ => RequestedThemeVariant
+			};
+
 			if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 			{
 				var vm = new MainViewModel();

@@ -1,0 +1,53 @@
+<!--
+  Hand-authored vector icons for chrome that previously rendered as bare Unicode glyphs
+  (hamburger U+2630, white-square-with-vertical-bisecting-line U+25A3, ">_", multiplication-X
+  U+2715 - see the brief: "Everything else is a Unicode character ... Replace these with proper
+  vector Path geometry defined as resources. Draw them yourself as path data; do not pull in an
+  icon font or an external asset.").
+
+  Every geometry here is StreamGeometry path data authored by hand on a 20x20 unit grid (12x12
+  for the small tab-close glyph, to match its ~10px render size) - the same technique already
+  used for the tree/block expander chevrons in MetroStyles.axaml and the AsmLogo path in
+  MainWindow.axaml. None of these are traced from, or copied out of, any other icon set.
+
+  Two drawing styles are used, chosen per-icon for legibility at small sizes:
+   - stroke icons (panel toggles, close) - open line art, consumed with Stroke/StrokeThickness
+     at the call site, matching the thin hairline weight used throughout the Metro chrome;
+   - fill icons (funnel, copy) - solid silhouettes, consumed with Fill, for shapes that read
+     better solid than outlined at ~14px.
+  Compound shapes that need a "hole" (the panel-toggle frames) use the mini-language's leading
+  "F1" token to select the EvenOdd fill rule, so an outer rect minus an inner rect renders as a
+  frame instead of two overlapping solids.
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- Tag-tree (left) sidebar toggle: a window frame with its left column filled in, i.e. "the
+       panel on the left is on". Stroke icon - open rect + one divider line. -->
+  <StreamGeometry x:Key="IconSidebarLeft">M3,4 L17,4 L17,16 L3,16 Z M7,4 L7,16</StreamGeometry>
+
+  <!-- Properties (right) sidebar toggle: mirror of IconSidebarLeft with the divider near the
+       right edge, so the two toolbar buttons read as "which side is the panel on" at a glance. -->
+  <StreamGeometry x:Key="IconSidebarRight">M3,4 L17,4 L17,16 L3,16 Z M13,4 L13,16</StreamGeometry>
+
+  <!-- Console toggle: a terminal window - frame, a ">" prompt chevron, and a cursor underscore.
+       Replaces the literal ">_" text glyph with the same idea drawn as line art. -->
+  <StreamGeometry x:Key="IconConsole">M3,4 L17,4 L17,16 L3,16 Z M6.5,8 L9.5,10 L6.5,12 M11,12.5 L14,12.5</StreamGeometry>
+
+  <!-- Tab close: a plain X, 12x12 grid (this one renders small, ~10px, inside the tab strip). -->
+  <StreamGeometry x:Key="IconClose">M3,3 L9,9 M9,3 L3,9</StreamGeometry>
+
+  <!-- Console filter: a funnel silhouette. Fill icon. -->
+  <StreamGeometry x:Key="IconFilter">M3,4 L17,4 L11,11 L11,16 L9,15 L9,11 Z</StreamGeometry>
+
+  <!-- Console copy: two overlapping sheets. Stroke icon (open outlines read better than a solid
+       silhouette for a "duplicate document" pictogram at this size). -->
+  <StreamGeometry x:Key="IconCopy">M4,7 L11,7 L11,15 L4,15 Z M7,4 L14,4 L14,12 L11,12</StreamGeometry>
+
+  <!-- Open-folder empty-state CTA: a simple folder silhouette. Fill icon. -->
+  <StreamGeometry x:Key="IconFolder">M2,5 L8,5 L10,7 L18,7 L18,16 L2,16 Z</StreamGeometry>
+
+  <!-- Open-file empty-state CTA: a dog-eared page. Stroke icon. -->
+  <StreamGeometry x:Key="IconFile">M5,2 L13,2 L17,6 L17,18 L5,18 Z M13,2 L13,6 L17,6</StreamGeometry>
+
+</ResourceDictionary>

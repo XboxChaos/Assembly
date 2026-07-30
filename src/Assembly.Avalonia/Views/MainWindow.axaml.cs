@@ -1,4 +1,6 @@
 using System;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,11 +11,13 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace Assembly.Avalonia.Views
@@ -31,6 +35,14 @@ namespace Assembly.Avalonia.Views
 		private ItemsControl? _tabStrip;
 		private StackPanel? _editorHost;
 
+		// ---- console filter/copy/auto-scroll state (see the console block's comment in
+		// MainWindow.axaml for why this is a code-behind-managed list rather than a direct
+		// binding to Log.Entries) ----
+		private readonly ObservableCollection<LogEntry> _consoleFiltered = new();
+		private ListBox? _consoleList;
+		private TextBox? _consoleFilterBox;
+		private ComboBox? _consoleLevelBox;
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -38,11 +50,19 @@ namespace Assembly.Avalonia.Views
 			_bodyGrid = this.FindControl<Grid>("BodyGrid");
 			_rootGrid = this.FindControl<Grid>("RootGrid");
 			_editorHost = this.FindControl<StackPanel>("EditorHost");
+			_consoleList = this.FindControl<ListBox>("ConsoleList");
+			_consoleFilterBox = this.FindControl<TextBox>("ConsoleFilterBox");
+			_consoleLevelBox = this.FindControl<ComboBox>("ConsoleLevelBox");
+			if (_consoleList != null) _consoleList.ItemsSource = _consoleFiltered;
 
 			DataContextChanged += (_, _) =>
 			{
 				if (Vm != null)
+				{
 					Vm.PropertyChanged += OnVmPropertyChanged;
+					Vm.Log.Entries.CollectionChanged += OnConsoleEntriesChanged;
+					RefreshConsoleFilter(pinToTail: true);
+				}
 			};
 
 			BuildEditor(null);
@@ -132,6 +152,79 @@ namespace Assembly.Avalonia.Views
 
 		private void OnConsoleClearClick(object? sender, RoutedEventArgs e) => Vm?.Log.Clear();
 
+		// ---- console filter / copy / auto-scroll ----
+
+		private void OnConsoleEntriesChanged(object? sender, NotifyCollectionChangedEventArgs e)
+		{
+			// LogService.Add (ViewModels/) is reached from background work (e.g.
+			// TagNamespace.MountFolder runs off the UI thread), so this event can fire from any
+			// thread; RefreshConsoleFilter touches DataContext and Avalonia controls, both of
+			// which assert UI-thread affinity, so it has to be marshalled rather than called
+			// directly.
+			if (Dispatcher.UIThread.CheckAccess()) RefreshConsoleFilter();
+			else Dispatcher.UIThread.Post(() => RefreshConsoleFilter());
+		}
+
+		private void OnConsoleFilterChanged(object? sender, TextChangedEventArgs e) => RefreshConsoleFilter();
+		private void OnConsoleFilterChanged(object? sender, SelectionChangedEventArgs e) => RefreshConsoleFilter();
+
+		/// <summary>
+		///     Rebuilds <see cref="_consoleFiltered" /> from <c>Log.Entries</c> against the current
+		///     text/level filters, then decides whether to scroll to the new last line. "Sensibly"
+		///     auto-scrolling (per the brief) means not yanking the view away from a line a reader
+		///     is deliberately looking at further up in the history - so this only follows the tail
+		///     when the viewport was already within a couple of lines of the bottom before the
+		///     refresh, or when <paramref name="pinToTail" /> forces it (initial load).
+		/// </summary>
+		private void RefreshConsoleFilter(bool pinToTail = false)
+		{
+			if (_consoleList == null || Vm == null) return;
+
+			var minLevel = _consoleLevelBox?.SelectedIndex switch
+			{
+				1 => LogLevel.Warn,
+				2 => LogLevel.Error,
+				_ => LogLevel.Info
+			};
+			var needle = _consoleFilterBox?.Text;
+
+			bool wasNearBottom = pinToTail || IsConsoleScrolledNearBottom();
+
+			_consoleFiltered.Clear();
+			// Snapshot rather than enumerate Log.Entries directly: LogService.Add (ViewModels/,
+			// not owned by this pass) is reached from background work with no synchronization,
+			// so a concurrent Add during this foreach is a real possibility, not a hypothetical.
+			foreach (var entry in Vm.Log.Entries.ToList())
+			{
+				if (entry.Level < minLevel) continue;
+				if (!string.IsNullOrWhiteSpace(needle) &&
+				    entry.Message.IndexOf(needle, StringComparison.OrdinalIgnoreCase) < 0) continue;
+				_consoleFiltered.Add(entry);
+			}
+
+			if (wasNearBottom && _consoleFiltered.Count > 0)
+				_consoleList.ScrollIntoView(_consoleFiltered[^1]);
+		}
+
+		private bool IsConsoleScrolledNearBottom()
+		{
+			var sv = _consoleList?.GetVisualDescendants().OfType<ScrollViewer>().FirstOrDefault();
+			// No realized ScrollViewer yet (first layout, or the console is hidden) - default to
+			// "yes", so the very first entries land visible rather than requiring a manual scroll.
+			if (sv == null) return true;
+			const double bottomSlack = 24; // px - "close enough to the bottom" to still count as pinned
+			return sv.Offset.Y + sv.Viewport.Height >= sv.Extent.Height - bottomSlack;
+		}
+
+		private async void OnConsoleCopyClick(object? sender, RoutedEventArgs e)
+		{
+			var text = string.Join(Environment.NewLine,
+				_consoleFiltered.Select(entry => $"[{entry.TimeLabel}] {entry.LevelLabel,-5} {entry.Message}"));
+			var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
+			if (clipboard != null && text.Length > 0)
+				await clipboard.SetTextAsync(text);
+		}
+
 		private async Task OpenFileViaPickerAsync()
 		{
 			var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
@@ -194,6 +287,28 @@ namespace Assembly.Avalonia.Views
 			e.Handled = true; // don't let the click bubble to the parent tab button
 			if (Vm != null && (sender as Button)?.Tag is TagDocumentViewModel doc)
 				Vm.CloseDocument(doc);
+		}
+
+		/// <summary>Middle-click-to-close: <see cref="Button.Click" /> only ever fires for the
+		/// primary button, so a tab needs its own pointer handler to notice the middle button.</summary>
+		private void OnTabPointerPressed(object? sender, PointerPressedEventArgs e)
+		{
+			if (Vm == null || sender is not Button { Tag: TagDocumentViewModel doc } button) return;
+			if (!e.GetCurrentPoint(button).Properties.IsMiddleButtonPressed) return;
+			e.Handled = true;
+			Vm.CloseDocument(doc);
+		}
+
+		/// <summary>Redirects vertical wheel/trackpad delta to horizontal scroll on the tab strip,
+		/// so "many tags open" overflows to something a plain mouse wheel can actually reach - a
+		/// horizontal-only ScrollViewer otherwise ignores vertical wheel input entirely.</summary>
+		private void OnTabStripWheel(object? sender, PointerWheelEventArgs e)
+		{
+			if (sender is not ScrollViewer sv) return;
+			double delta = Math.Abs(e.Delta.Y) >= Math.Abs(e.Delta.X) ? e.Delta.Y : e.Delta.X;
+			if (delta == 0) return;
+			sv.Offset = new Vector(Math.Max(0, sv.Offset.X - delta * 48), sv.Offset.Y);
+			e.Handled = true;
 		}
 
 		private void RefreshTabStyles()

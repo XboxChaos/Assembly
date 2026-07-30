@@ -5,8 +5,7 @@
         Title="{Binding WindowTitle}"
         Width="1400" Height="880"
         MinWidth="900" MinHeight="560"
-        Background="{StaticResource MainBackgroundBrush}"
-        RequestedThemeVariant="Dark">
+        Background="{DynamicResource MainBackgroundBrush}">
 
   <!--
     Chrome decision: real Assembly is a borderless custom window (AllowsTransparency, custom
@@ -18,6 +17,12 @@
     itself uses native chrome on macOS and only re-skins the *content* below it. Everything
     below the native titlebar - the branded header band, the toolbar, the tag tree, the tabs,
     the field table and the value/console panes - is a faithful port of Assembly's interior.
+
+    Theme decision: this Window no longer pins RequestedThemeVariant="Dark" - it inherits
+    Application's RequestedThemeVariant="Default" (see App.axaml), which follows the OS light/
+    dark setting through Avalonia.Controls.PlatformSettings, and every brush below is a
+    DynamicResource into Theme/MetroDark.axaml's <ResourceDictionary.ThemeDictionaries> so it
+    repaints correctly for whichever variant that resolves to.
   -->
 
   <NativeMenu.Menu>
@@ -60,12 +65,12 @@
     </Grid.RowDefinitions>
 
     <!-- ================= header band (Home.xaml's homeHeader, 60px) ================= -->
-    <Border Grid.Row="0" Background="{StaticResource SidebarHeaderBrush}"
-            BorderBrush="{StaticResource ExtryzeAccentBrush}" BorderThickness="0,0,0,2">
+    <Border Grid.Row="0" Background="{DynamicResource SidebarHeaderBrush}"
+            BorderBrush="{DynamicResource ExtryzeAccentBrush}" BorderThickness="0,0,0,2">
       <Grid ColumnDefinitions="Auto,*,Auto" Margin="16,0">
-        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="{StaticResource Space3}" VerticalAlignment="Center">
           <!-- exact AsmLogo path data ported from src/Assembly/App.xaml -->
-          <Path Width="26" Height="26" Stretch="Uniform" Fill="{StaticResource ExtryzeAccentBrush}"
+          <Path Width="26" Height="26" Stretch="Uniform" Fill="{DynamicResource ExtryzeAccentBrush}"
                 Data="M1122.8,589.7c0,0-32.2,6.1-46.3-37.3c-14.1-43.4-80.5-145.9-328.8-203c-248.3-57.1-467.7,0-467.7,0
                 l-29.9,32.8c0,0-172.6,32.3-242.1,141.8l40.3,29.9c0,0,54.9-112.1,319.8-138.8c52.4-5.3,100.4-8,144.5-8.2l-54.8,61.3l-7.5-4.5
                 l-54.9,61.2h53.4l25.4-26.9l77.7,85.1H384.6l-19.4,28.4h-47.4L179.8,765.2H135v34.3h119.5v21.6c0,0,51.4,13.9,161.4,28.4
@@ -73,27 +78,30 @@
                 M679,765.2v20.4c-95.3,21.3-226.4,29.2-399.7-3l0.7-1h133v-17.9h-89.7l107.6-126.9h173.3l112.1,128.4H679z M886.7,689.8
                 c-3,2.5-20.8,19.4-56.1,39.4L528.9,406.9c169.7,1.4,279.6,40.2,356.3,106.7C983.8,599.2,896.7,681.3,886.7,689.8z" />
           <StackPanel VerticalAlignment="Center" Spacing="1">
-            <TextBlock Text="ASSEMBLY" FontFamily="{StaticResource MetroFontLight}" FontSize="18" />
-            <TextBlock Text="{Binding WindowTitle}" Classes="label mono" FontSize="10" MaxWidth="520" TextTrimming="CharacterEllipsis" />
+            <TextBlock Text="ASSEMBLY" FontFamily="{StaticResource MetroFontLight}"
+                       FontSize="{StaticResource FontSizeTitle}" LetterSpacing="1.4" />
+            <TextBlock Text="{Binding WindowTitle}" Classes="label mono"
+                       FontSize="{StaticResource FontSizeMicro}" MaxWidth="520" TextTrimming="CharacterEllipsis" />
           </StackPanel>
         </StackPanel>
 
-        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
-          <TextBlock Text="{Binding EngineStatus}" Classes="mono" FontSize="11"
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="{StaticResource Space3}" VerticalAlignment="Center">
+          <TextBlock Text="{Binding EngineStatus}" Classes="mono" FontSize="{StaticResource FontSizeSmall}"
                      Foreground="{Binding EngineStatusOk, Converter={StaticResource OkBrush}}" />
-          <TextBlock Text="{Binding RuntimeStatus}" Classes="mono dim" FontSize="11" />
+          <Border Width="1" Height="14" Background="{DynamicResource SidebarHeaderSeperatorBrush}" />
+          <TextBlock Text="{Binding RuntimeStatus}" Classes="mono dim" FontSize="{StaticResource FontSizeSmall}" />
         </StackPanel>
       </Grid>
     </Border>
 
     <!-- ================= toolbar ================= -->
-    <Border Grid.Row="1" Background="{StaticResource SidebarBackgroundBrush}"
-            BorderBrush="{StaticResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
+    <Border Grid.Row="1" Background="{DynamicResource SidebarBackgroundBrush}"
+            BorderBrush="{DynamicResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
       <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto,Auto,Auto,Auto" Margin="8,0">
         <Button Grid.Column="0" Content="Open File..." Click="OnOpenFileClick" Margin="2" />
         <Button Grid.Column="1" Content="Open Folder..." Click="OnOpenFolderClick" Margin="2" />
         <Button Grid.Column="2" Content="Open Zip..." Click="OnOpenZipClick" Margin="2" />
-        <Border Grid.Column="3" Width="1" Margin="6,6" Background="{StaticResource SidebarHeaderSeperatorBrush}" />
+        <Border Grid.Column="3" Width="1" Margin="6,6" Background="{DynamicResource SidebarHeaderSeperatorBrush}" />
         <Button Grid.Column="4" Content="Save" Classes="accent" Click="OnSaveClick" Margin="2"
                 IsEnabled="{Binding ActiveDocument.IsDirty, FallbackValue=False, TargetNullValue=False}" />
 
@@ -102,12 +110,28 @@
           <TextBlock Text="{Binding Sources.Count, StringFormat='{}{0} source(s)'}" Classes="label" VerticalAlignment="Center" />
         </StackPanel>
 
+        <!-- Chrome toggles: hand-drawn vector pictograms (Theme/Icons.axaml) replacing the old
+             "&#9776;" / "&#9635;" / "&gt;_" Unicode-glyph Content - see the brief's icon
+             requirement. Each icon's shape mirrors what it does (a panel filled on the side it
+             docks to; a terminal frame with a prompt) rather than being an arbitrary symbol. -->
         <ToggleButton Grid.Column="7" Classes="chrome" IsChecked="{Binding ShowTagTree}"
-                      ToolTip.Tip="Toggle tag tree (sidebar)" Content="&#9776;" Margin="2" />
+                      ToolTip.Tip="Toggle tag tree (sidebar)" Margin="2">
+          <Path Width="15" Height="15" Stretch="Uniform" Data="{StaticResource IconSidebarLeft}"
+                Fill="Transparent" Stroke="{DynamicResource VectorBrush}" StrokeThickness="1.6"
+                StrokeLineCap="Round" StrokeJoin="Round" />
+        </ToggleButton>
         <ToggleButton Grid.Column="8" Classes="chrome" IsChecked="{Binding ShowValueSidebar}"
-                      ToolTip.Tip="Toggle properties sidebar" Content="&#9635;" Margin="2" />
+                      ToolTip.Tip="Toggle properties sidebar" Margin="2">
+          <Path Width="15" Height="15" Stretch="Uniform" Data="{StaticResource IconSidebarRight}"
+                Fill="Transparent" Stroke="{DynamicResource VectorBrush}" StrokeThickness="1.6"
+                StrokeLineCap="Round" StrokeJoin="Round" />
+        </ToggleButton>
         <ToggleButton Grid.Column="9" Classes="chrome" IsChecked="{Binding ShowConsole}"
-                      ToolTip.Tip="Toggle console" Content="&gt;_" Margin="2" />
+                      ToolTip.Tip="Toggle console" Margin="2">
+          <Path Width="15" Height="15" Stretch="Uniform" Data="{StaticResource IconConsole}"
+                Fill="Transparent" Stroke="{DynamicResource VectorBrush}" StrokeThickness="1.6"
+                StrokeLineCap="Round" StrokeJoin="Round" />
+        </ToggleButton>
       </Grid>
     </Border>
 
@@ -122,27 +146,27 @@
       </Grid.ColumnDefinitions>
 
       <!-- == tag tree sidebar == -->
-      <Border Grid.Column="0" Name="TagTreePane" Background="{StaticResource SidebarBackgroundBrush}"
+      <Border Grid.Column="0" Name="TagTreePane" Background="{DynamicResource SidebarBackgroundBrush}"
               IsVisible="{Binding ShowTagTree}">
         <Grid RowDefinitions="Auto,Auto,Auto,*">
-          <Border Grid.Row="0" Background="{StaticResource SidebarHeaderBrush}"
-                  BorderBrush="{StaticResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
+          <Border Grid.Row="0" Background="{DynamicResource SidebarHeaderBrush}"
+                  BorderBrush="{DynamicResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
             <TextBlock Text="TAG NAMESPACE" Classes="sectionHeader" Margin="12,8" />
           </Border>
 
           <!-- mounted sources: a "cache" is a mount of N containers, not one file -->
           <Border Grid.Row="1" IsVisible="{Binding HasAnySource}"
-                  BorderBrush="{StaticResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
+                  BorderBrush="{DynamicResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
             <ItemsControl ItemsSource="{Binding Sources}" Margin="8,6">
               <ItemsControl.ItemTemplate>
                 <DataTemplate>
                   <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,2">
-                    <Border Grid.Column="0" Background="{StaticResource SidebarBlockBrush}" Padding="4,1" Margin="0,0,6,0">
+                    <Border Grid.Column="0" Background="{DynamicResource SidebarBlockBrush}" Padding="4,1" Margin="0,0,6,0">
                       <TextBlock Text="{Binding Kind}" FontSize="9" Classes="mono" />
                     </Border>
-                    <TextBlock Grid.Column="1" Text="{Binding DisplayName}" Classes="mono" FontSize="11"
+                    <TextBlock Grid.Column="1" Text="{Binding DisplayName}" Classes="mono" FontSize="{StaticResource FontSizeSmall}"
                                TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Path}" />
-                    <TextBlock Grid.Column="2" Text="{Binding SummaryLabel}" Classes="label" FontSize="10" Margin="6,0,0,0" />
+                    <TextBlock Grid.Column="2" Text="{Binding SummaryLabel}" Classes="label" FontSize="{StaticResource FontSizeMicro}" Margin="6,0,0,0" />
                   </Grid>
                 </DataTemplate>
               </ItemsControl.ItemTemplate>
@@ -203,16 +227,26 @@
         </Grid>
       </Border>
 
-      <GridSplitter Grid.Column="1" Width="1" Background="{StaticResource SidebarHeaderSeperatorBrush}"
+      <GridSplitter Grid.Column="1" Width="1" Background="{DynamicResource SidebarHeaderSeperatorBrush}"
                     ResizeDirection="Columns" IsVisible="{Binding ShowTagTree}" />
 
       <!-- == document area: tab strip + field table == -->
-      <Grid Grid.Column="2" RowDefinitions="30,*" Background="{StaticResource MainBackgroundBrush}">
+      <Grid Grid.Column="2" RowDefinitions="30,*" Background="{DynamicResource MainBackgroundBrush}">
 
-        <!-- tab strip -->
-        <Border Grid.Row="0" Background="{StaticResource SidebarHeaderBrush}"
-                BorderBrush="{StaticResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
-          <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+        <!--
+          Tab strip - VS/VS Code ergonomics: the active tab owns the content below it (matching
+          background + a heavier accent underline, set by RefreshTabStyles in code-behind), a
+          dirty dot that swaps for the close glyph on hover (pure :pointerover Style selectors in
+          MetroStyles.axaml - see "tabDirtyDot"/"tabClose" there), and middle-click-to-close
+          (OnTabPointerPressed below; Button.Click only fires for the primary button, hence the
+          extra handler). PointerWheelChanged on the ScrollViewer redirects vertical wheel/
+          trackpad delta to horizontal scroll, since a horizontal strip of many tabs is otherwise
+          unreachable by wheel at all on most pointing devices - see OnTabStripWheel.
+        -->
+        <Border Grid.Row="0" Background="{DynamicResource SidebarHeaderBrush}"
+                BorderBrush="{DynamicResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
+          <ScrollViewer Name="TabScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled"
+                        PointerWheelChanged="OnTabStripWheel">
             <ItemsControl ItemsSource="{Binding Documents}">
               <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate><StackPanel Orientation="Horizontal" /></ItemsPanelTemplate>
@@ -220,10 +254,18 @@
               <ItemsControl.ItemTemplate>
                 <DataTemplate>
                   <!-- "active" class toggled in code-behind (RefreshTabStyles) whenever ActiveDocument changes -->
-                  <Button Classes="tabHeader" Click="OnTabClick" Tag="{Binding}">
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                      <TextBlock Text="{Binding TabTitle}" VerticalAlignment="Center" FontSize="12" />
-                      <Button Classes="tabClose" Content="&#10005;" Click="OnTabCloseClick" Tag="{Binding}" />
+                  <Button Classes="tabHeader" Click="OnTabClick" PointerPressed="OnTabPointerPressed" Tag="{Binding}"
+                          ToolTip.Tip="{Binding HeaderTitle}">
+                    <StackPanel Orientation="Horizontal" Spacing="{StaticResource Space2}">
+                      <TextBlock Text="{Binding TabTitle, Converter={StaticResource StripDirtyMarker}}"
+                                 Classes="tabTitle" VerticalAlignment="Center" />
+                      <Ellipse Classes="tabDirtyDot" Width="6" Height="6" IsVisible="{Binding IsDirty}"
+                               Fill="{DynamicResource DirtyStateBrush}" ToolTip.Tip="Unsaved changes" />
+                      <Button Classes="tabClose" Click="OnTabCloseClick" Tag="{Binding}" ToolTip.Tip="Close (middle-click also works)">
+                        <Path Width="8" Height="8" Stretch="Uniform" Data="{StaticResource IconClose}"
+                              Fill="Transparent" Stroke="{DynamicResource TextBrushSecondary}" StrokeThickness="1.7"
+                              StrokeLineCap="Round" Classes="tabCloseIcon" />
+                      </Button>
                     </StackPanel>
                   </Button>
                 </DataTemplate>
@@ -232,18 +274,68 @@
           </ScrollViewer>
         </Border>
 
-        <!-- empty state -->
-        <StackPanel Grid.Row="1" IsVisible="{Binding !HasDocuments}" VerticalAlignment="Center"
-                    HorizontalAlignment="Center" Spacing="10" MaxWidth="440">
-          <TextBlock Text="No tag open" Classes="h1" HorizontalAlignment="Center" />
-          <TextBlock Text="{Binding MessageTitle}" Classes="sectionHeader" HorizontalAlignment="Center"
-                     IsVisible="{Binding !HasAnySource}" />
-          <TextBlock Text="{Binding Message}" Classes="label" TextWrapping="Wrap" TextAlignment="Center"
-                     IsVisible="{Binding !HasAnySource}" />
-          <TextBlock Text="A namespace is mounted - select a tag in the tree to open it."
-                     Classes="label" TextWrapping="Wrap" TextAlignment="Center"
-                     IsVisible="{Binding HasAnySource}" />
-        </StackPanel>
+        <!--
+          Empty state. "No tag open" alone gave a reader nothing to act on - now it's two states:
+          no source mounted at all (big CTAs mirroring the toolbar's Open actions, with their
+          keyboard shortcuts spelled out, since a first-run user has no reason to know them yet)
+          vs a source mounted but nothing selected (a reminder of what's already mounted - the
+          nearest thing this app has to "recent sources", see MainViewModel.Sources - plus the
+          search shortcut). MessageIsError/HasMessage (MainViewModel) surface a mount failure
+          inline instead of just silently staying on the CTA screen.
+        -->
+        <Grid Grid.Row="1" IsVisible="{Binding !HasDocuments}">
+          <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="{StaticResource Space3}" MaxWidth="480">
+            <TextBlock Text="No tag open" Classes="h1" HorizontalAlignment="Center" />
+
+            <StackPanel IsVisible="{Binding !HasAnySource}" Spacing="{StaticResource Space3}">
+              <TextBlock Text="Mount a cache, a folder of cache files, or a Campaign Evolved container set to get started."
+                         Classes="label" TextWrapping="Wrap" TextAlignment="Center" />
+              <StackPanel Orientation="Horizontal" Spacing="{StaticResource Space2}" HorizontalAlignment="Center">
+                <Button Click="OnOpenFileClick" Padding="14,6">
+                  <StackPanel Orientation="Horizontal" Spacing="{StaticResource Space2}">
+                    <Path Width="13" Height="13" Stretch="Uniform" Data="{StaticResource IconFile}"
+                          Fill="Transparent" Stroke="{DynamicResource ButtonForegroundBrush}" StrokeThickness="1.5"
+                          StrokeLineCap="Round" StrokeJoin="Round" VerticalAlignment="Center" />
+                    <TextBlock Text="Open Cache File..." VerticalAlignment="Center" />
+                    <TextBlock Text="⌘O" Classes="label mono dim" VerticalAlignment="Center" />
+                  </StackPanel>
+                </Button>
+                <Button Click="OnOpenFolderClick" Padding="14,6">
+                  <StackPanel Orientation="Horizontal" Spacing="{StaticResource Space2}">
+                    <Path Width="13" Height="13" Stretch="Uniform" Data="{StaticResource IconFolder}"
+                          Fill="{DynamicResource ButtonForegroundBrush}" VerticalAlignment="Center" />
+                    <TextBlock Text="Open Folder..." VerticalAlignment="Center" />
+                    <TextBlock Text="⇧⌘O" Classes="label mono dim" VerticalAlignment="Center" />
+                  </StackPanel>
+                </Button>
+              </StackPanel>
+              <!--
+                Two TextBlocks, not one Foreground-swapping binding: MessageIsError=false is the
+                default "nothing has happened yet" state (see MainViewModel's constructor, which
+                sets it alongside the neutral "Nothing mounted" guidance text below), not a
+                success confirmation - colouring it via OkBrushConverter's true/false pair would
+                paint that neutral first-run guidance green, which reads as "it worked" before
+                the user has done anything. Only an actual mount failure gets a colour. Both are
+                also gated on the outer StackPanel's IsVisible="{Binding !HasAnySource}" (this is
+                the "no source mounted" branch), under which HasMessage is always true anyway
+                (MainViewModel sets HasMessage = !HasAnySource) - so MessageIsError alone is
+                enough to pick between them.
+              -->
+              <TextBlock Text="{Binding Message}" Classes="label" TextWrapping="Wrap" TextAlignment="Center"
+                         IsVisible="{Binding !MessageIsError}" />
+              <TextBlock Text="{Binding Message}" Classes="label" TextWrapping="Wrap" TextAlignment="Center"
+                         Foreground="{DynamicResource ErrorBrush}" FontFamily="{DynamicResource MetroFontSemiBold}"
+                         IsVisible="{Binding MessageIsError}" />
+            </StackPanel>
+
+            <StackPanel IsVisible="{Binding HasAnySource}" Spacing="{StaticResource Space2}">
+              <TextBlock Text="A namespace is mounted - select a tag in the tree to open it."
+                         Classes="label" TextWrapping="Wrap" TextAlignment="Center" />
+              <TextBlock Text="{Binding Sources.Count, StringFormat='{}{0} mounted source(s) - press ⌘F to filter the tree'}"
+                         Classes="label mono dim" TextWrapping="Wrap" TextAlignment="Center" FontSize="{StaticResource FontSizeMicro}" />
+            </StackPanel>
+          </StackPanel>
+        </Grid>
 
         <!-- field table -->
         <Grid Grid.Row="1" IsVisible="{Binding HasDocuments}" RowDefinitions="Auto,Auto,*">
@@ -300,17 +392,20 @@
         </Grid>
       </Grid>
 
-      <GridSplitter Grid.Column="3" Width="1" Background="{StaticResource SidebarHeaderSeperatorBrush}"
+      <GridSplitter Grid.Column="3" Width="1" Background="{DynamicResource SidebarHeaderSeperatorBrush}"
                     ResizeDirection="Columns" IsVisible="{Binding ShowValueSidebar}" />
 
       <!-- == value / properties sidebar == -->
-      <Border Grid.Column="4" Background="{StaticResource SidebarBackgroundBrush}"
+      <Border Grid.Column="4" Background="{DynamicResource SidebarBackgroundBrush}"
               IsVisible="{Binding ShowValueSidebar}">
         <Grid RowDefinitions="Auto,*">
-          <Border Grid.Row="0" Background="{StaticResource SidebarHeaderBrush}"
-                  BorderBrush="{StaticResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
+          <Border Grid.Row="0" Background="{DynamicResource SidebarHeaderBrush}"
+                  BorderBrush="{DynamicResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
             <TextBlock Text="PROPERTIES" Classes="sectionHeader" Margin="12,8" />
           </Border>
+          <!-- EditorHost's own children are owned by the properties-panel pass (see its header
+               comment in MainWindow.axaml.cs); this ScrollViewer/StackPanel shell around it is
+               chrome and is this pass's to style. -->
           <ScrollViewer Grid.Row="1">
             <StackPanel Name="EditorHost" Margin="14,12" Spacing="10" />
           </ScrollViewer>
@@ -319,27 +414,55 @@
     </Grid>
 
     <!-- ================= console splitter + console ================= -->
-    <GridSplitter Grid.Row="3" Height="1" Background="{StaticResource SidebarHeaderSeperatorBrush}"
+    <GridSplitter Grid.Row="3" Height="1" Background="{DynamicResource SidebarHeaderSeperatorBrush}"
                   ResizeDirection="Rows" IsVisible="{Binding ShowConsole}" />
 
-    <Border Grid.Row="4" Background="#FF1e1e20" IsVisible="{Binding ShowConsole}" Height="170">
+    <!--
+      Console: level-coloured badge chips (not just tinted text - see ".consoleLevel*" classes in
+      MetroStyles.axaml), a text filter, a min-level filter, copy-visible-to-clipboard, and actual
+      auto-scroll-to-tail. The old version never scrolled at all - Log.Entries had no listener
+      anywhere - so new output silently accumulated below the fold unless you happened to already
+      be scrolled to the bottom and dragged the splitter. ConsoleList's ItemsSource is populated
+      and kept in sync from code-behind (see RefreshConsoleFilter in MainWindow.axaml.cs) rather
+      than bound directly to Log.Entries, since the filter needs to see every append to decide
+      whether to scroll - LogService (ViewModels/) isn't a file this pass owns, so filtering has
+      to live on this side of the binding rather than as a live CollectionView on that one.
+    -->
+    <Border Grid.Row="4" Background="{DynamicResource InputBackgroundBrush}" IsVisible="{Binding ShowConsole}" Height="170">
       <Grid RowDefinitions="Auto,*">
-        <Border Grid.Row="0" Background="{StaticResource SidebarHeaderBrush}"
-                BorderBrush="{StaticResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
-          <Grid ColumnDefinitions="*,Auto">
-            <TextBlock Grid.Column="0" Text="CONSOLE" Classes="sectionHeader" Margin="12,6" />
-            <Button Grid.Column="1" Content="Clear" Click="OnConsoleClearClick" Margin="4" />
+        <Border Grid.Row="0" Background="{DynamicResource SidebarHeaderBrush}"
+                BorderBrush="{DynamicResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
+          <Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto" Margin="0,4">
+            <TextBlock Grid.Column="0" Text="CONSOLE" Classes="sectionHeader" Margin="12,0" VerticalAlignment="Center" />
+            <Path Grid.Column="1" Width="11" Height="11" Stretch="Uniform" Data="{StaticResource IconFilter}"
+                  Fill="{DynamicResource TextBrushSecondary}" VerticalAlignment="Center" Margin="0,0,4,0" />
+            <TextBox Grid.Column="2" Name="ConsoleFilterBox" Watermark="Filter console output..."
+                      TextChanged="OnConsoleFilterChanged" MinHeight="20" Margin="0,0,6,0" VerticalAlignment="Center" />
+            <ComboBox Grid.Column="3" Name="ConsoleLevelBox" Width="96" MinHeight="20" Margin="0,0,6,0"
+                      SelectedIndex="0" SelectionChanged="OnConsoleFilterChanged" VerticalAlignment="Center"
+                      ToolTip.Tip="Minimum level to show">
+              <ComboBoxItem>All levels</ComboBoxItem>
+              <ComboBoxItem>Warn+</ComboBoxItem>
+              <ComboBoxItem>Errors</ComboBoxItem>
+            </ComboBox>
+            <Button Grid.Column="4" Classes="chrome" Click="OnConsoleCopyClick" ToolTip.Tip="Copy visible lines" Margin="2">
+              <Path Width="13" Height="13" Stretch="Uniform" Data="{StaticResource IconCopy}"
+                    Fill="Transparent" Stroke="{DynamicResource VectorBrush}" StrokeThickness="1.4" StrokeLineCap="Round" StrokeJoin="Round" />
+            </Button>
+            <Button Grid.Column="5" Content="Clear" Click="OnConsoleClearClick" Margin="4,0,10,0" />
           </Grid>
         </Border>
-        <ListBox Grid.Row="1" Name="ConsoleList" ItemsSource="{Binding Log.Entries}"
+        <ListBox Grid.Row="1" Name="ConsoleList"
                   Background="Transparent" BorderThickness="0">
           <ListBox.ItemTemplate>
             <DataTemplate DataType="vm:LogEntry">
-              <StackPanel Orientation="Horizontal" Spacing="8">
-                <TextBlock Text="{Binding TimeLabel}" Classes="mono dim" FontSize="10.5" Width="56" />
-                <TextBlock Text="{Binding LevelLabel}" Classes="mono" FontSize="10.5" Width="42"
-                           Foreground="{Binding Level, Converter={StaticResource LogLevelBrush}}" />
-                <TextBlock Text="{Binding Message}" Classes="mono" FontSize="11" TextWrapping="Wrap" />
+              <StackPanel Orientation="Horizontal" Spacing="{StaticResource Space2}">
+                <TextBlock Text="{Binding TimeLabel}" Classes="mono dim" FontSize="{StaticResource FontSizeMicro}" Width="56" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding LevelLabel}" Classes="mono consoleLevel" FontSize="{StaticResource FontSizeMicro}" Width="40"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           Foreground="{Binding Level, Converter={StaticResource LogLevelBrush}}"
+                           Background="{Binding Level, Converter={StaticResource LogLevelBackgroundBrush}}" />
+                <TextBlock Text="{Binding Message}" Classes="mono" FontSize="{StaticResource FontSizeSmall}" TextWrapping="Wrap" VerticalAlignment="Center" />
               </StackPanel>
             </DataTemplate>
           </ListBox.ItemTemplate>
@@ -349,11 +472,16 @@
 
     <!-- ================= status bar ================= -->
     <Border Grid.Row="5" Background="{Binding ActiveDocument.IsDirty, Converter={StaticResource FooterBrush}}">
-      <Grid ColumnDefinitions="*,Auto">
-        <TextBlock Grid.Column="0" Text="{Binding StatusText}" Classes="mono" FontSize="11"
+      <Grid ColumnDefinitions="*,Auto,Auto">
+        <TextBlock Grid.Column="0" Text="{Binding StatusText}" Classes="mono" FontSize="{StaticResource FontSizeSmall}"
                    VerticalAlignment="Center" Margin="12,0" Foreground="White" />
-        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" Margin="0,0,12,0">
-          <TextBlock Text="{Binding ActiveDocument.SelectedRow.OffsetLabel}" Classes="mono" FontSize="11"
+        <!-- Colour alone (the footer's gold dirty tint) isn't a safe-enough signal on its own -
+             this spells "unsaved" out as text too. -->
+        <TextBlock Grid.Column="1" Text="● unsaved changes" Classes="mono" FontSize="{StaticResource FontSizeSmall}"
+                   VerticalAlignment="Center" Foreground="White" Margin="0,0,14,0"
+                   IsVisible="{Binding ActiveDocument.IsDirty, FallbackValue=False, TargetNullValue=False}" />
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" Margin="0,0,12,0">
+          <TextBlock Text="{Binding ActiveDocument.SelectedRow.OffsetLabel}" Classes="mono" FontSize="{StaticResource FontSizeSmall}"
                      Foreground="White" IsVisible="{Binding ActiveDocument.SelectedRow, Converter={x:Static ObjectConverters.IsNotNull}}" />
         </StackPanel>
       </Grid>
