@@ -350,10 +350,11 @@ namespace Assembly.MultiPlatform.ViewModels
 			HasMessage = !_namespace.HasAnySource;
 
 			WindowTitle = _namespace.HasAnySource
-				? $"{_namespace.Sources.Count} source{(_namespace.Sources.Count == 1 ? "" : "s")}, {_namespace.TotalTags:N0} tags - Assembly"
+				? $"{Plural.Of(_namespace.Sources.Count, "source")}, {Plural.Of(_namespace.TotalTags, "tag")} - Assembly"
 				: "Assembly";
 
-			StatusText = $"{_allTags.Count:N0} tags across {_namespace.Sources.Count} source(s) in {_groupInfo.Count} groups";
+			StatusText = $"{Plural.Of(_allTags.Count, "tag")} across {Plural.Of(_namespace.Sources.Count, "source")} " +
+			             $"in {Plural.Of(_groupInfo.Count, "group")}";
 			if (!PluginsAvailable)
 				StatusText += "   (tag definitions not found - meta view unavailable)";
 		}

@@ -218,7 +218,8 @@
 
         <StackPanel Grid.Column="9" Orientation="Horizontal" Spacing="{DynamicResource Space1}" IsVisible="{Binding HasAnySource}"
                     VerticalAlignment="Center" Margin="0,0,10,0">
-          <TextBlock Text="{Binding Sources.Count, StringFormat='{}{0} source(s)'}" Classes="label" VerticalAlignment="Center" />
+          <TextBlock Text="{Binding Sources.Count, Converter={StaticResource Plural}, ConverterParameter=source}"
+                     Classes="label" VerticalAlignment="Center" />
         </StackPanel>
 
         <!--
@@ -487,8 +488,9 @@
             <StackPanel IsVisible="{Binding HasAnySource}" Spacing="{StaticResource Space2}">
               <TextBlock Text="A namespace is mounted - select a tag in the tree to open it."
                          Classes="label" TextWrapping="Wrap" TextAlignment="Center" />
-              <TextBlock Text="{Binding Sources.Count, StringFormat='{}{0} mounted source(s) - press ⌘F to filter the tree'}"
-                         Classes="label mono dim" TextWrapping="Wrap" TextAlignment="Center" FontSize="{StaticResource FontSizeMicro}" />
+              <TextBlock Classes="label mono dim" TextWrapping="Wrap" TextAlignment="Center" FontSize="{StaticResource FontSizeMicro}">
+                <Run Text="{Binding Sources.Count, Converter={StaticResource Plural}, ConverterParameter='mounted source', Mode=OneWay}" /><Run Text=" - press ⌘F to filter the tree" />
+              </TextBlock>
             </StackPanel>
           </StackPanel>
         </Grid>

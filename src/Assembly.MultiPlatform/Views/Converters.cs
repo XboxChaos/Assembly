@@ -28,6 +28,28 @@ namespace Assembly.MultiPlatform.Views
 		}
 	}
 
+	/// <summary>
+	///     Formats a count with a noun that agrees with it - see <see cref="Services.Plural" />.
+	///     ConverterParameter is the singular noun, optionally with an irregular plural after a
+	///     pipe: <c>ConverterParameter='entry'</c>, <c>ConverterParameter='index|indices'</c>.
+	/// </summary>
+	public sealed class PluralConverter : IValueConverter
+	{
+		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+		{
+			if (value is not int count || parameter is not string noun || noun.Length == 0)
+				return value?.ToString() ?? "";
+
+			int pipe = noun.IndexOf('|');
+			return pipe < 0
+				? Services.Plural.Of(count, noun)
+				: Services.Plural.Of(count, noun.Substring(0, pipe), noun.Substring(pipe + 1));
+		}
+
+		public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+			=> throw new NotSupportedException();
+	}
+
 	/// <summary>Green when true, red when false. For a one-off result someone is waiting on.</summary>
 	public sealed class OkBrushConverter : IValueConverter
 	{
