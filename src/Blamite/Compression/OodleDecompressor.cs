@@ -1,5 +1,6 @@
 using System;
 using Blamite.Compression.Oodle;
+using Blamite.IO.IoStore;
 
 namespace Blamite.Compression
 {
@@ -24,7 +25,7 @@ namespace Blamite.Compression
 	/// decompression will fail with an explicit "sub-codec ... not implemented" error rather
 	/// than producing corrupt output.
 	/// </summary>
-	public class OodleDecompressor
+	public class OodleDecompressor : IOodleDecompressor
 	{
 		/// <summary>
 		/// Returns true if this decompressor can handle the named compression method. Matches
