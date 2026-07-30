@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Assembly.Avalonia.Services;
 using Assembly.Avalonia.ViewModels;
 using Avalonia;
 using Avalonia.Controls;
@@ -131,6 +132,48 @@ namespace Assembly.Avalonia.Views
 		}
 
 		private void OnMenuCloseAll(object? sender, EventArgs e) => Vm?.CloseAll();
+
+		// ---- Campaign Evolved unpack / repack ----
+		// Public and parameterless-at-the-call-site by design (see the remarks on each) so the
+		// command-palette pass can register them as commands without this window needing to know
+		// anything about how a command is invoked.
+		private void OnMenuUnpack(object? sender, EventArgs e) => ShowCEUnpackDialog();
+		private void OnUnpackClick(object? sender, RoutedEventArgs e) => ShowCEUnpackDialog();
+		private void OnMenuRepack(object? sender, EventArgs e) => ShowCERepackDialog();
+		private void OnRepackClick(object? sender, RoutedEventArgs e) => ShowCERepackDialog();
+
+		/// <summary>
+		///     Opens the Campaign Evolved unpack dialog (<see cref="CEPackagingDialog" />, <see cref="CEPackagingMode.Unpack" />).
+		/// </summary>
+		/// <remarks>
+		///     Does not require a Campaign Evolved source to already be mounted in the tag tree - the dialog has its
+		///     own folder picker - but pre-fills it with the mount directory of the first fifth-generation source
+		///     already open, if there is one, as a convenience.
+		/// </remarks>
+		public void ShowCEUnpackDialog() => ShowCEPackagingDialog(CEPackagingMode.Unpack);
+
+		/// <summary>Opens the Campaign Evolved repack dialog (<see cref="CEPackagingDialog" />, <see cref="CEPackagingMode.Repack" />).</summary>
+		public void ShowCERepackDialog() => ShowCEPackagingDialog(CEPackagingMode.Repack);
+
+		private void ShowCEPackagingDialog(CEPackagingMode mode)
+		{
+			var db = EngineDatabaseService.Database;
+			if (db == null)
+			{
+				Vm?.Log.Error("Cannot open the Campaign Evolved packaging dialog: the engine database failed to load.");
+				return;
+			}
+
+			string? initialSource = Vm?.Sources
+				.SelectMany(s => s.Sessions)
+				.FirstOrDefault(s => s.Cache is Blamite.Blam.FifthGen.FifthGenCacheFile)
+				?.Cache is Blamite.Blam.FifthGen.FifthGenCacheFile fifthGen
+				? fifthGen.MountDirectory
+				: null;
+
+			var dialog = new CEPackagingDialog(mode, db, initialSource);
+			dialog.ShowDialog(this);
+		}
 
 		private void OnMenuFocusSearch(object? sender, EventArgs e)
 			=> this.FindControl<TextBox>("SearchBox")?.Focus();

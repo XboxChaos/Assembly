@@ -37,6 +37,12 @@
             <NativeMenuItemSeparator />
             <NativeMenuItem Header="Save" Gesture="Cmd+S" Click="OnMenuSave" />
             <NativeMenuItemSeparator />
+            <!-- Campaign Evolved's tags live in a folder of IoStore containers rather than one
+                 cache file (see ce-packaging's own remarks in CEPackagingService.cs), so getting
+                 them onto disk and back is its own workflow rather than another Open/Save pair. -->
+            <NativeMenuItem Header="Unpack Campaign Evolved Tags..." Click="OnMenuUnpack" />
+            <NativeMenuItem Header="Repack Campaign Evolved Tags..." Click="OnMenuRepack" />
+            <NativeMenuItemSeparator />
             <NativeMenuItem Header="Close All" Click="OnMenuCloseAll" />
           </NativeMenu>
         </NativeMenuItem.Menu>
@@ -98,7 +104,7 @@
     <!-- ================= toolbar ================= -->
     <Border Grid.Row="1" Background="{DynamicResource SidebarBackgroundBrush}"
             BorderBrush="{DynamicResource SidebarHeaderSeperatorBrush}" BorderThickness="0,0,0,1">
-      <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto,Auto,Auto,Auto" Margin="8,0">
+      <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto,Auto,Auto,Auto,Auto,Auto,Auto" Margin="8,0">
         <Button Grid.Column="0" Content="Open File..." Click="OnOpenFileClick" Margin="2" />
         <Button Grid.Column="1" Content="Open Folder..." Click="OnOpenFolderClick" Margin="2" />
         <Button Grid.Column="2" Content="Open Zip..." Click="OnOpenZipClick" Margin="2" />
@@ -133,6 +139,12 @@
                 Fill="Transparent" Stroke="{DynamicResource VectorBrush}" StrokeThickness="1.6"
                 StrokeLineCap="Round" StrokeJoin="Round" />
         </ToggleButton>
+
+        <Border Grid.Column="10" Width="1" Margin="6,6" Background="{DynamicResource SidebarHeaderSeperatorBrush}" />
+        <Button Grid.Column="11" Content="Unpack..." Click="OnUnpackClick" Margin="2"
+                ToolTip.Tip="Extract a Campaign Evolved container set's tags to a folder" />
+        <Button Grid.Column="12" Content="Repack..." Click="OnRepackClick" Margin="2"
+                ToolTip.Tip="Build a Campaign Evolved container set from a folder of tags" />
       </Grid>
     </Border>
 
