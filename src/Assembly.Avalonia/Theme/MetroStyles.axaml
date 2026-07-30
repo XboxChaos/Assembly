@@ -100,7 +100,9 @@
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="CornerRadius" Value="0" />
     <Setter Property="Padding" Value="10,0" />
-    <Setter Property="Height" Value="22" />
+    <!-- 22px at the Default density tier - see MetroTypography.axaml's "Density-driven control
+         geometry" section and Services/DisplayDensity.cs for how this key moves with it. -->
+    <Setter Property="Height" Value="{DynamicResource ControlHeight}" />
     <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
     <Setter Property="FontSize" Value="{DynamicResource FontSizeBase}" />
     <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -168,7 +170,7 @@
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="CornerRadius" Value="0" />
     <Setter Property="Padding" Value="10,0" />
-    <Setter Property="Height" Value="22" />
+    <Setter Property="Height" Value="{DynamicResource ControlHeight}" />
     <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
     <Setter Property="FontSize" Value="{DynamicResource FontSizeBase}" />
     <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -209,7 +211,7 @@
   <Style Selector="ToggleButton.chrome">
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="BorderThickness" Value="0" />
-    <Setter Property="Width" Value="26" />
+    <Setter Property="Width" Value="{DynamicResource ChromeToggleWidth}" />
     <Setter Property="Padding" Value="0" />
   </Style>
   <Style Selector="ToggleButton.chrome:pointerover /template/ Border#PART_Border">
@@ -238,6 +240,11 @@
        otherwise - via plain :pointerover selectors below rather than any code-behind toggling.
        Assembly's own MetroTabControlTop uses the same "flat header, accent fill/underline on
        selection" idea (see that file for the WPF ControlTemplate this take is adapted from). -->
+  <!-- Height is NOT density-driven: MainWindow.axaml's tab strip sits in a fixed-pixel Grid row
+       ("30,*", the "document area" region outside this pass's ownership - see this pass's final
+       report), so a taller tab button at Comfortable would just clip against that row instead of
+       growing it, and a shorter one at Compact would float in unused space - worse than leaving
+       it alone. -->
   <Style Selector="Button.tabHeader">
     <Setter Property="Background" Value="{DynamicResource SidebarHeaderBrush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource SidebarHeaderSeperatorBrush}" />
@@ -320,7 +327,7 @@
     <Setter Property="BorderBrush" Value="{DynamicResource InputBorderBrush}" />
     <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
     <Setter Property="FontSize" Value="{DynamicResource FontSizeBase}" />
-    <Setter Property="MinHeight" Value="22" />
+    <Setter Property="MinHeight" Value="{DynamicResource ControlHeight}" />
     <Setter Property="Padding" Value="6,2" />
     <Setter Property="SelectionBrush" Value="{DynamicResource ExtryzeAccentBrush}" />
   </Style>
@@ -372,6 +379,14 @@
       <views:TypeBadgeForegroundConverter x:Key="TypeBadgeForeground" />
       <views:TypeBadgeBackgroundConverter x:Key="TypeBadgeBackground" />
 
+      <!-- TreeViewItemIndent is fidelity to the original WPF measurement (see this file's own
+           header) and stays fixed across density on purpose. TreeViewItemMinHeight and
+           TreeViewItemExpandCollapseChevronSize are the tag tree's row-height density lever -
+           Services/DisplayDensity.cs overwrites both of these exact key names (by name, at the
+           Application.Resources level, which shadows the Default-tier values declared here - see
+           that file's header for why a plain resource mutation reaches even a FluentTheme-
+           internal DynamicResource like this one) on every density change, the same as
+           MetroTypography.axaml's own "Density-driven control geometry" section. -->
       <x:Double x:Key="TreeViewItemIndent">14</x:Double>
       <x:Double x:Key="TreeViewItemMinHeight">21</x:Double>
       <Thickness x:Key="TreeViewItemBorderThemeThickness">0</Thickness>
@@ -492,7 +507,7 @@
   </Style>
   <Style Selector="ListBoxItem">
     <Setter Property="CornerRadius" Value="0" />
-    <Setter Property="Padding" Value="8,3" />
+    <Setter Property="Padding" Value="{DynamicResource ListBoxItemPadding}" />
     <Setter Property="MinHeight" Value="0" />
   </Style>
   <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
@@ -518,9 +533,19 @@
        to the existing 1px bottom hairline - "obvious without being loud" per the brief, i.e. a
        thin bar rather than a full-row colour change (the ContentPresenter fill is a near-black/
        soft-tint wash on top of that, kept deliberately quiet - see MetroDark.axaml's
-       MetaSelectedRowBrush remarks). -->
+       MetaSelectedRowBrush remarks).
+
+       Density: Padding is this row's whole density lever, and the only one available to it - the
+       row's own font sizes (offset/type/name/value, MainWindow.axaml's DataTemplate) are literal
+       values set directly on those TextBlocks, which in Avalonia outrank any Style Setter
+       unconditionally (see Services/DisplayDensity.cs's header for how this was actually
+       verified, not assumed), so no selector here can rescale them, triggered or not. That still
+       leaves a real range: at Compact this converges toward the row's fixed-size content (the
+       16px block-expander icon, itself density-driven below); at Comfortable it opens the row out
+       well past it. See this pass's final report for the measured row-height/rows-on-screen
+       numbers at each tier. -->
   <Style Selector="ListBox#FieldList ListBoxItem">
-    <Setter Property="Padding" Value="0,3,8,3" />
+    <Setter Property="Padding" Value="{DynamicResource FieldRowPadding}" />
     <Setter Property="BorderThickness" Value="0,0,0,1" />
     <Setter Property="BorderBrush" Value="{DynamicResource FieldRowDividerBrush}" />
     <Setter Property="Background" Value="{Binding Depth, Converter={StaticResource IndentGuideBrush}}" />
@@ -543,11 +568,19 @@
        struct/enum/flags/string-ish - see TypeBadgeCategory's remarks for why substring
        matching is the only thing that works across both classic and Campaign Evolved kind
        vocabularies) and leaves everything else (numeric, vector, colour, ...) as plain
-       secondary text, so the badges stay meaningful instead of colouring every row. -->
+       secondary text, so the badges stay meaningful instead of colouring every row.
+
+       FontSize below is a pre-existing dead setter, not something this pass introduced or can
+       fix: that TextBlock also carries a literal FontSize="11" in MainWindow.axaml's DataTemplate
+       (outside this pass's ownership), and a local value always wins over a Style Setter in
+       Avalonia (see Services/DisplayDensity.cs's header) - so the badge text renders at that
+       literal 11 regardless of FontSizeMicro or density. Left in place rather than deleted, since
+       it is at worst inert and becomes correct again the moment that literal is removed. Padding
+       is not shadowed the same way (nothing sets it locally) and is density-driven below. -->
   <Style Selector="ListBox#FieldList ListBoxItem TextBlock.label">
     <Setter Property="FontFamily" Value="{DynamicResource MetroFontMono}" />
     <Setter Property="FontSize" Value="{DynamicResource FontSizeMicro}" />
-    <Setter Property="Padding" Value="4,1" />
+    <Setter Property="Padding" Value="{DynamicResource TypeBadgePadding}" />
     <Setter Property="HorizontalAlignment" Value="Left" />
     <Setter Property="Foreground" Value="{Binding KindLabel, Converter={StaticResource TypeBadgeForeground}}" />
     <Setter Property="Background" Value="{Binding KindLabel, Converter={StaticResource TypeBadgeBackground}}" />
@@ -564,7 +597,7 @@
     <Setter Property="CornerRadius" Value="0" />
     <Setter Property="Background" Value="{DynamicResource InputBackgroundBrush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource InputBorderBrush}" />
-    <Setter Property="MinHeight" Value="22" />
+    <Setter Property="MinHeight" Value="{DynamicResource ControlHeight}" />
     <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
     <Setter Property="FontSize" Value="{DynamicResource FontSizeBase}" />
     <Setter Property="Padding" Value="6,2" />
@@ -606,10 +639,13 @@
     <Setter Property="Background" Value="Transparent" />
   </Style>
 
-  <!-- ============================== Expander (used for tag block rows) ============================== -->
+  <!-- ============================== Expander (used for tag block rows) ==============================
+       Width/Height are this row's tallest fixed-size content (see the Field table section's
+       Density remark above) - the field row can never get shorter than this regardless of
+       FieldRowPadding, so it is density-driven too rather than left at a Default-only 16. -->
   <Style Selector="ToggleButton.blockExpander">
-    <Setter Property="Width" Value="16" />
-    <Setter Property="Height" Value="16" />
+    <Setter Property="Width" Value="{DynamicResource BlockExpanderSize}" />
+    <Setter Property="Height" Value="{DynamicResource BlockExpanderSize}" />
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="BorderThickness" Value="0" />
     <Setter Property="Padding" Value="0" />

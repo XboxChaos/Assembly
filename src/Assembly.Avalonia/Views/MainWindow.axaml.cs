@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Assembly.Avalonia.Services;
 using Assembly.Avalonia.ViewModels;
 using Avalonia;
 using Avalonia.Controls;
@@ -39,6 +40,10 @@ namespace Assembly.Avalonia.Views
 		private ListBox? _consoleList;
 		private TextBox? _consoleFilterBox;
 		private ComboBox? _consoleLevelBox;
+
+		// ---- display density (toolbar picker + View menu radio group) ----
+		private ComboBox? _densityBox;
+		private bool _syncingDensityUi; // re-entrancy guard: SyncDensityUi below sets DensityBox.SelectedItem itself, which would otherwise fire OnDensityChanged and write the same value back through AppSettings.Instance.Density a second time
 
 		public MainWindow()
 		{
@@ -138,6 +143,95 @@ namespace Assembly.Avalonia.Views
 		private void OnMenuToggleTagTree(object? sender, EventArgs e) { if (Vm != null) Vm.ShowTagTree = !Vm.ShowTagTree; }
 		private void OnMenuToggleValueSidebar(object? sender, EventArgs e) { if (Vm != null) Vm.ShowValueSidebar = !Vm.ShowValueSidebar; }
 		private void OnMenuToggleConsole(object? sender, EventArgs e) { if (Vm != null) Vm.ShowConsole = !Vm.ShowConsole; }
+
+		// ---- display density ----
+		//
+		// AppSettings.Instance.Density (Services/AppSettings.cs) is the single source of truth;
+		// both the toolbar ComboBox and the View menu's radio group only ever read it (via
+		// SyncDensityUi, driven by DisplayDensity.Changed so either surface picks up a change
+		// made through the other - or, eventually, through a command-palette entry) and write to
+		// it (OnDensityChanged / OnDensityMenuClick below) - neither owns state of its own.
+		private void OnDensityBoxLoaded(object? sender, RoutedEventArgs e)
+		{
+			_densityBox = sender as ComboBox;
+			DisplayDensity.Changed -= OnDisplayDensityChanged; // guard against double subscription if this control is ever reloaded
+			DisplayDensity.Changed += OnDisplayDensityChanged;
+			SyncDensityUi(AppSettings.Instance.Density);
+		}
+
+		private void OnDisplayDensityChanged(object? sender, EventArgs e) => SyncDensityUi(DisplayDensity.Current);
+
+		private void OnDensityChanged(object? sender, SelectionChangedEventArgs e)
+		{
+			if (_syncingDensityUi) return;
+			if ((sender as ComboBox)?.SelectedItem is ComboBoxItem { Tag: string tag } &&
+			    Enum.TryParse<DensityLevel>(tag, out var level))
+				AppSettings.Instance.Density = level;
+		}
+
+		/// <summary>
+		///     Shared handler for all three "Density: ..." <c>NativeMenuItem</c>s (see
+		///     MainWindow.axaml's View menu for why they cannot be looked up by name instead - a
+		///     macOS-native menu item has no NameScope registration in this Avalonia build).
+		///     Reads which level was clicked off the item's own <c>Header</c> text.
+		/// </summary>
+		private void OnDensityMenuClick(object? sender, EventArgs e)
+		{
+			if (sender is not NativeMenuItem item) return;
+			var level = item.Header switch
+			{
+				"Density: Compact" => DensityLevel.Compact,
+				"Density: Comfortable" => DensityLevel.Comfortable,
+				_ => DensityLevel.Default
+			};
+			AppSettings.Instance.Density = level;
+		}
+
+		/// <summary>
+		///     Pushes <paramref name="level" /> onto the toolbar ComboBox's selection and the View
+		///     menu's three radio items' <c>IsChecked</c>, without writing back to
+		///     <see cref="AppSettings" /> (that direction is already how <paramref name="level" />
+		///     got here). The View menu items are found by walking <c>NativeMenu.GetMenu(this)</c>
+		///     rather than a name lookup, for the same reason <see cref="OnDensityMenuClick" />
+		///     reads <c>Header</c> off <c>sender</c> instead of a captured reference.
+		/// </summary>
+		private void SyncDensityUi(DensityLevel level)
+		{
+			_syncingDensityUi = true;
+			try
+			{
+				if (_densityBox != null)
+				{
+					foreach (var entry in _densityBox.Items)
+						if (entry is ComboBoxItem { Tag: string tag } item && string.Equals(tag, level.ToString(), StringComparison.Ordinal))
+						{
+							_densityBox.SelectedItem = item;
+							break;
+						}
+				}
+
+				var viewMenu = NativeMenu.GetMenu(this)?.Items.OfType<NativeMenuItem>()
+					.FirstOrDefault(i => i.Header == "View")?.Menu;
+				if (viewMenu != null)
+				{
+					foreach (var item in viewMenu.Items.OfType<NativeMenuItem>())
+					{
+						DensityLevel? itemLevel = item.Header switch
+						{
+							"Density: Compact" => DensityLevel.Compact,
+							"Density: Default" => DensityLevel.Default,
+							"Density: Comfortable" => DensityLevel.Comfortable,
+							_ => null
+						};
+						if (itemLevel.HasValue) item.IsChecked = itemLevel.Value == level;
+					}
+				}
+			}
+			finally
+			{
+				_syncingDensityUi = false;
+			}
+		}
 
 		private void OnRevertAllClick(object? sender, RoutedEventArgs e) => Vm?.ActiveDocument?.RevertAll();
 
