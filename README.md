@@ -16,7 +16,9 @@ Assembly was designed with three goals in mind:
 
 ## Halo: Campaign Evolved ##
 
-Support for Campaign Evolved is __partial__. Its tags can be mounted, parsed and viewed, and an edited tag can be written back into its container. Editing them through the user interface is still being wired up.
+Support for Campaign Evolved is __partial__. Its tags can be mounted, parsed, edited and saved, and the edited bytes land back inside the container they came from. Writing is byte-exact: an untouched tag is rewritten as an exact copy of what was read, and an edited one replays verbatim every chunk that did not change. That matters because a couple of details in the original bytes cannot be recovered from the decoded tag, so anything less would quietly damage tags that had only been opened.
+
+Real-time editing (poking) is __not__ supported for Campaign Evolved, and neither is patch creation.
 
 Campaign Evolved does not ship cache files. It ships its tags inside Unreal Engine 5.5 IoStore containers (`.utoc`/`.ucas`), and the tag inside each one is self-describing - it carries its own field names, types, enumeration options and block definitions. That means it needs no plugins, and none should be written for it: a hand-maintained copy of what the tag already states would only drift on every game patch.
 
@@ -24,7 +26,9 @@ Handing Assembly any one `.utoc` mounts every container beside it and resolves o
 
 ## macOS and Linux ##
 
-The Windows client is Windows Presentation Foundation and stays that way. There is also an [Avalonia front-end](src/Assembly.MultiPlatform/README.md) which runs on macOS, Linux and Windows, and which consumes the same Blamite library in-process. It opens cache files and edits tag meta; it is not at parity with the Windows client, and real-time editing, patch creation and the specialised editors remain Windows-only.
+The Windows client is Windows Presentation Foundation and stays that way. There is also an [Avalonia front-end](src/Assembly.MultiPlatform/README.md) which runs on macOS, Linux and Windows, and which consumes the same Blamite library in-process — no separate copy of the format code, and no process boundary between the two.
+
+It opens cache files, edits tag meta, and unpacks and repacks Campaign Evolved containers. It is not at parity with the Windows client: real-time editing, patch creation, the script editor, the bitmap and model viewers and the plugin editor all remain Windows-only.
 
 ## Downloading ##
 

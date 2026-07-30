@@ -11,7 +11,7 @@ Run from this directory:
 $ dotnet test
 ```
 
-## The three parts
+## The four parts
 
 **`IoStorePrimitiveTests`** builds its buffers by hand and needs no game files, so it runs
 anywhere — including on a machine that has never seen the game. It pins the byte-level rules
@@ -30,6 +30,13 @@ section was NUL-terminated on disk, and whether a struct field's wrapper was eli
 bytes), and the writer sidesteps both by replaying anything undirtied verbatim. A regression means
 it has begun inventing bytes, which no round-trip of its own output would reveal.
 
+**`CampaignEvolvedCompositeTests`** checks the composite field types — vectors, bounds, colours,
+rectangles — for *symmetry* rather than against expected bytes: setting a field to the value it
+already holds must move no bytes. Writing down what a `real plane 3d` ought to encode to would
+only re-assert the encoder's own opinion, whereas a decoder and encoder that disagree cannot both
+survive a round-trip. The walker that finds a field of a given type is depth-capped at 8, because
+a block's element struct can legitimately be the struct that contains the block.
+
 Container repack is deliberately not covered here. It writes files, and the only real container
 set available is a third-party mod these tests must not touch.
 
@@ -40,7 +47,7 @@ is not ours to redistribute, and it is four megabytes. Tests that need it skip b
 explanation, rather than passing vacuously:
 
 ```
-Passed!  - Failed: 0, Passed: 13, Skipped: 35, Total: 48
+Passed!  - Failed: 0, Passed: 13, Skipped: 45, Total: 58
 ```
 
 Point `ASM_CE_TEST_DATA` at any directory containing a `.utoc`/`.ucas` pair to run them. The
