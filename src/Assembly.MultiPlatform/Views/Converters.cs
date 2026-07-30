@@ -28,11 +28,31 @@ namespace Assembly.MultiPlatform.Views
 		}
 	}
 
-	/// <summary>Green when true, red when false. Used for the engine-database indicator.</summary>
+	/// <summary>Green when true, red when false. For a one-off result someone is waiting on.</summary>
 	public sealed class OkBrushConverter : IValueConverter
 	{
 		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 			=> value is true ? ThemeBrush.Resolve("SuccessBrush", "#FF6FCF6F") : ThemeBrush.Resolve("ErrorBrush", "#FFE05252");
+
+		public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+			=> throw new NotSupportedException();
+	}
+
+	/// <summary>
+	///     Muted when true, red when false. For a persistent indicator rather than a result.
+	/// </summary>
+	/// <remarks>
+	///     The distinction from <see cref="OkBrushConverter" /> is how long the thing is on screen.
+	///     Green is a signal, and a signal that is present in every frame of the app's life is not
+	///     a signal - the header's "engine database: 266 engines" was lit green permanently, which
+	///     bought nothing and spent a second saturated colour next to an interface built around one
+	///     accent. Success here is the unremarkable case and should look it; only the failure is
+	///     worth a colour, and it keeps the same red so the two converters stay legible together.
+	/// </remarks>
+	public sealed class QuietOkBrushConverter : IValueConverter
+	{
+		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+			=> value is true ? ThemeBrush.Resolve("TextBrushSecondary", "#FF8B8B8B") : ThemeBrush.Resolve("ErrorBrush", "#FFE05252");
 
 		public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
 			=> throw new NotSupportedException();
