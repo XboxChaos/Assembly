@@ -153,7 +153,7 @@ namespace Assembly.Avalonia
 			return 0;
 		}
 
-		private static Blamite.Blam.FifthGen.Structures.FifthGenIntegerValue FindIntegerField(
+		private static Blamite.Blam.FifthGen.Structures.FifthGenIntegerValue? FindIntegerField(
 			Blamite.Blam.FifthGen.Structures.FifthGenTagBlock block, string fieldName)
 		{
 			foreach (var element in block.Elements)
@@ -164,7 +164,7 @@ namespace Assembly.Avalonia
 			return null;
 		}
 
-		private static Blamite.Blam.FifthGen.Structures.FifthGenIntegerValue FindIntegerField(
+		private static Blamite.Blam.FifthGen.Structures.FifthGenIntegerValue? FindIntegerField(
 			Blamite.Blam.FifthGen.Structures.FifthGenTagStruct instance, string fieldName)
 		{
 			foreach (var value in instance.Values)
@@ -173,7 +173,7 @@ namespace Assembly.Avalonia
 				    string.Equals(i.Name, fieldName, StringComparison.OrdinalIgnoreCase))
 					return i;
 
-				Blamite.Blam.FifthGen.Structures.FifthGenIntegerValue nested = value switch
+				Blamite.Blam.FifthGen.Structures.FifthGenIntegerValue? nested = value switch
 				{
 					Blamite.Blam.FifthGen.Structures.FifthGenStructValue sv => FindIntegerField(sv.Value, fieldName),
 					Blamite.Blam.FifthGen.Structures.FifthGenArrayValue av => av.Elements

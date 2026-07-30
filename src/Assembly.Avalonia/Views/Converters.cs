@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Linq;
 using Assembly.Avalonia.ViewModels;
 using Avalonia;
 using Avalonia.Controls;
@@ -37,25 +38,36 @@ namespace Assembly.Avalonia.Views
 			=> throw new NotSupportedException();
 	}
 
-	/// <summary>Accent footer normally; the shared dirty colour when the active document has unsaved edits.</summary>
+	/// <summary>
+	///     The status bar's own background: quiet chrome (the same neutral surface every other
+	///     panel header in this shell uses) normally, the shared dirty colour only when the active
+	///     document actually has something to report. An earlier version filled this bar with the
+	///     solid accent blue at all times - "a coloured strip bolted on" rather than chrome the
+	///     accent could ever stand out against, since by the time a reader reaches the bottom of
+	///     the window they have already seen that exact blue on the header's top edge, the active
+	///     tab underline and every accent button. Reserving it for the one state that is actually
+	///     worth a signal (unsaved changes) is the same "one vivid accent, used sparingly" principle
+	///     the rest of this pass follows - see <see cref="FooterForegroundBrushConverter"/> for the
+	///     matching text-colour swap this needs (white reads on the dirty gold in both themes; the
+	///     neutral surface needs the ordinary primary text colour instead, not a fixed white).
+	/// </summary>
 	public sealed class FooterBrushConverter : IValueConverter
 	{
 		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-			=> value is true ? ThemeBrush.Resolve("DirtyStateBrush", "#FFCE8B3C") : ThemeBrush.Resolve("ExtryzeAccentBrush", "#FF0079cb");
+			=> value is true ? ThemeBrush.Resolve("DirtyStateBrush", "#FFCE8B3C") : ThemeBrush.Resolve("SidebarHeaderBrush", "#FF2d2d30");
 
 		public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
 			=> throw new NotSupportedException();
 	}
 
-	/// <summary>Indents a field-table row's name label by its tag-block nesting depth.</summary>
-	public sealed class DepthIndentConverter : IValueConverter
+	/// <summary>Text colour to match <see cref="FooterBrushConverter"/>'s background: white on the
+	/// dirty-gold fill (dark enough in both themes for white to clear contrast), the ordinary
+	/// primary text colour on the neutral surface (where a hardcoded white would fail outright in
+	/// Light).</summary>
+	public sealed class FooterForegroundBrushConverter : IValueConverter
 	{
-		/// <summary>Pixels per nesting level. Shared with <see cref="IndentGuideBrushConverter"/>, which
-		/// draws its guide lines at the same 16px cadence so the lines land under the text they indent.</summary>
-		public const double UnitWidth = 16;
-
 		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-			=> new Thickness((value as int? ?? 0) * UnitWidth, 0, 0, 0);
+			=> value is true ? Brushes.White : ThemeBrush.Resolve("TextBrushPrimary", "#FFFFFFFF");
 
 		public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
 			=> throw new NotSupportedException();
@@ -147,18 +159,26 @@ namespace Assembly.Avalonia.Views
 			=> haystack.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0;
 	}
 
-	/// <summary>Foreground for the field-table TYPE column badge; see <see cref="TypeBadgeCategory"/>.
+	/// <summary>Foreground for the field-table TYPE column label; see <see cref="TypeBadgeCategory"/>.
 	/// Transparent (inherits the ambient secondary text colour) for uncategorised kinds, so numeric
-	/// fields keep reading as plain text rather than getting a not-quite-badge tint.</summary>
+	/// fields keep reading as plain text rather than getting a not-quite-badge tint.
+	///
+	/// Deliberately text-only, with no background chip: an earlier version painted a tinted
+	/// rectangle behind this text too (see git history), which against a few hundred rows read as
+	/// a wall of candy-coloured pills rather than a scannable type column - exactly what a reader
+	/// does not want from a "structurally significant kinds only" signal. Colour alone, at a
+	/// slightly deeper/less pastel step than the original chip-era palette (MetroDark.axaml's
+	/// Badge*Foreground keys), keeps the categories distinguishable while reading as quiet syntax-
+	/// style colouring instead of a chip.</summary>
 	public sealed class TypeBadgeForegroundConverter : IValueConverter
 	{
 		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 			=> TypeBadgeCategory.Categorize(value as string) switch
 			{
-				"Container" => ThemeBrush.Resolve("BadgeContainerForeground", "#FFDDD6FE"),
-				"Enum" => ThemeBrush.Resolve("BadgeEnumForeground", "#FFA5F3FC"),
-				"Flags" => ThemeBrush.Resolve("BadgeFlagsForeground", "#FFF5D0FE"),
-				"String" => ThemeBrush.Resolve("BadgeStringForeground", "#FFA7F3D0"),
+				"Container" => ThemeBrush.Resolve("BadgeContainerForeground", "#FFA78BFA"),
+				"Enum" => ThemeBrush.Resolve("BadgeEnumForeground", "#FF22D3EE"),
+				"Flags" => ThemeBrush.Resolve("BadgeFlagsForeground", "#FFE879F9"),
+				"String" => ThemeBrush.Resolve("BadgeStringForeground", "#FF34D399"),
 				_ => ThemeBrush.Resolve("TextBrushSecondary", "#FF989898")
 			};
 
@@ -166,75 +186,29 @@ namespace Assembly.Avalonia.Views
 			=> throw new NotSupportedException();
 	}
 
-	/// <summary>Background chip for the field-table TYPE column badge; see <see cref="TypeBadgeCategory"/>.</summary>
-	public sealed class TypeBadgeBackgroundConverter : IValueConverter
-	{
-		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-			=> TypeBadgeCategory.Categorize(value as string) switch
-			{
-				"Container" => ThemeBrush.Resolve("BadgeContainerBackground", "#33A78BFA"),
-				"Enum" => ThemeBrush.Resolve("BadgeEnumBackground", "#3322D3EE"),
-				"Flags" => ThemeBrush.Resolve("BadgeFlagsBackground", "#33E879F9"),
-				"String" => ThemeBrush.Resolve("BadgeStringBackground", "#3334D399"),
-				_ => Brushes.Transparent
-			};
-
-		public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
-			=> throw new NotSupportedException();
-	}
-
 	/// <summary>
-	///     Draws the field table's nesting indent guides as the row's own background: thin
-	///     vertical hairlines at each 16px indent level (see <see cref="DepthIndentConverter"/>),
-	///     starting past the row's fixed-width offset/type columns. This is a background brush
-	///     rather than extra visual elements deliberately - the field-table row template lives in
-	///     the row layout owned by the virtualization pass (see Theme/MetroStyles.axaml's header),
-	///     so a container-level Background (set via a ListBoxItem Style selector, not the
-	///     DataTemplate) is the only lever available here that doesn't touch that template. It is
-	///     drawn tall enough (200px) to cover any realistic row height and clipped to the actual
-	///     row bounds by the ListBoxItem's own render bounds, and it is overridden outright by the
-	///     hover/selected background setters in MetroStyles.axaml, so guides only show in the
-	///     resting state - exactly where they're useful (selection/hover already communicate depth
-	///     well enough via their own highlight).
+	///     Turns a field-table row's nesting depth into <c>depth</c> placeholder items, so the
+	///     row's DataTemplate can lay out one real indent-guide element per ancestor level with an
+	///     <c>ItemsControl</c> (see MainWindow.axaml's FieldList row template) instead of painting
+	///     lines into the row's own Background.
 	///
-	///     <see cref="ColumnStartX"/> hardcodes the field-table's current fixed column widths
-	///     (dirty strip 4 + expander 26 + offset 90 + kind 120 = 240px before the name column
-	///     begins). If the virtualization pass changes those widths this will drift out of
-	///     alignment with the indent margin - it is cosmetic drift, not a functional break, but
-	///     worth a look if the guide lines stop lining up under the indented text.
+	///     This replaces an earlier approach (paint the guides as a <c>DrawingBrush</c> Background
+	///     with hand-computed pixel offsets) that turned out not to render at all in practice: a
+	///     ListBoxItem's Background is sized and clipped to that one row's own bounds, so even a
+	///     geometry that draws correctly in isolation only ever contributes a few pixels per row,
+	///     with nothing to guarantee neighbouring rows' copies land on the same physical pixel
+	///     column once anti-aliasing and per-row subpixel snapping are in play - confirmed by
+	///     rendering a real expanded block and finding no visible line at any zoom level, not even
+	///     a misaligned or flickering one. Real elements in the template, each simply as tall as
+	///     its own row, do not have this problem: there is nothing to keep aligned across rows
+	///     because each guide is drawn by the same fixed-width column in every row.
 	/// </summary>
-	public sealed class IndentGuideBrushConverter : IValueConverter
+	public sealed class DepthRangeConverter : IValueConverter
 	{
-		private const double ColumnStartX = 240;
-		private const double UnitWidth = DepthIndentConverter.UnitWidth;
-		private const double GuideHeight = 200;
-
 		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
 			int depth = value as int? ?? 0;
-			if (depth <= 0) return Brushes.Transparent;
-
-			var pen = ThemeBrush.Resolve("SidebarHeaderSeperatorBrush", "#FF46464a");
-			var group = new GeometryGroup { FillRule = FillRule.NonZero };
-			for (int i = 0; i < depth; i++)
-			{
-				double x = ColumnStartX + UnitWidth * i + UnitWidth / 2.0;
-				group.Children.Add(new RectangleGeometry(new Rect(x, 0, 1, GuideHeight)));
-			}
-
-			// DestinationRect is left at its default (relative 0,0,1,1 = "cover the whole
-			// element"); with Stretch=None the drawing still renders at its own natural
-			// (absolute-pixel) size anchored top-left within that region, rather than being
-			// scaled to fill it - which is what makes the line x-coordinates above behave as
-			// real pixel offsets instead of fractions of the row's width.
-			return new DrawingBrush
-			{
-				Drawing = new GeometryDrawing { Brush = pen, Geometry = group },
-				Stretch = Stretch.None,
-				TileMode = TileMode.None,
-				AlignmentX = AlignmentX.Left,
-				AlignmentY = AlignmentY.Top
-			};
+			return depth <= 0 ? Array.Empty<int>() : Enumerable.Range(0, depth).ToArray();
 		}
 
 		public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
@@ -253,6 +227,32 @@ namespace Assembly.Avalonia.Views
 		{
 			var s = value as string ?? "";
 			return s.StartsWith("* ", StringComparison.Ordinal) ? s[2..] : s;
+		}
+
+		public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+			=> throw new NotSupportedException();
+	}
+
+	/// <summary>
+	///     Trims the trailing " - Assembly" that <c>MainViewModel.WindowTitle</c> (ViewModels/, not
+	///     this pass) appends, for the header band's small session-summary line underneath the big
+	///     "ASSEMBLY" wordmark (MainWindow.axaml). WindowTitle also drives the native window's own
+	///     title bar, where "N sources, N tags - Assembly" repeating the app name at the end is
+	///     normal and expected (every macOS window title does this); reusing that exact string a
+	///     second time 40px below a wordmark that already says "ASSEMBLY" is what the brief calls
+	///     out by name - two readings of the same word in the same glance. When WindowTitle is bare
+	///     "Assembly" (nothing mounted yet, see MainViewModel.CloseAll), there is no summary left
+	///     to show once the suffix is gone, so this returns "" rather than leaving the un-trimmed
+	///     word behind - a blank second line costs nothing next to a wordmark this large.
+	/// </summary>
+	public sealed class HeaderSubtitleConverter : IValueConverter
+	{
+		private const string Suffix = " - Assembly";
+
+		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+		{
+			var s = value as string ?? "";
+			return s.EndsWith(Suffix, StringComparison.Ordinal) ? s[..^Suffix.Length] : "";
 		}
 
 		public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

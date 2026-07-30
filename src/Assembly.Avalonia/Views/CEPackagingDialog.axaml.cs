@@ -40,7 +40,9 @@ namespace Assembly.Avalonia.Views
 		{
 			// Parameterless constructor required by AvaloniaXamlLoader; never used to actually show a
 			// dialog (see the real constructor below), so the engine database argument is allowed to
-			// be missing here.
+			// be missing here - the null-forgiving assignment documents that gap explicitly rather
+			// than leaving _db definitely-unassigned (CS8618).
+			_db = null!;
 			InitializeComponent();
 		}
 
