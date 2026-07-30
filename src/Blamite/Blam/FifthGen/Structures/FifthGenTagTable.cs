@@ -273,8 +273,17 @@ namespace Blamite.Blam.FifthGen.Structures
 
 				var replacement = new FifthGenTag(_tags[existingIndex].Index, group, packageId, found.Payload, mounted);
 				_tags[existingIndex] = replacement;
-				_names[existingIndex] = name;
-				_nameOrigins[existingIndex] = origin;
+
+				// The overriding container always wins on data, but not necessarily on the name. A
+				// container holding several tags cannot attribute its filename to any one of them and
+				// so falls back to a package ID, and that must not discard a real name an earlier
+				// single-tag container supplied for the same package. Keep whichever name came from
+				// the better source.
+				if (NameQuality(origin) >= NameQuality(_nameOrigins[existingIndex]))
+				{
+					_names[existingIndex] = name;
+					_nameOrigins[existingIndex] = origin;
+				}
 			}
 			else
 			{
@@ -284,6 +293,33 @@ namespace Blamite.Blam.FifthGen.Structures
 				_names.Add(name);
 				_nameOrigins.Add(origin);
 				_tagIndicesByPackageId.Add(found.PackageId, index);
+			}
+		}
+
+		/// <summary>
+		///     Ranks a name source so that overrides can keep the best name available for a package.
+		/// </summary>
+		/// <param name="origin">The source a name was derived from.</param>
+		/// <returns>A rank where a higher value is a more trustworthy source.</returns>
+		/// <remarks>
+		///     This deliberately does not use the enum's own ordering, which reads best-to-worst and
+		///     would invert the comparison, and which places <see cref="FifthGenNameOrigin.None" />
+		///     first even though it is the least useful outcome of all.
+		/// </remarks>
+		private static int NameQuality(FifthGenNameOrigin origin)
+		{
+			switch (origin)
+			{
+				case FifthGenNameOrigin.DirectoryIndex:
+					return 3;
+				case FifthGenNameOrigin.ContainerHeader:
+					return 2;
+				case FifthGenNameOrigin.ContainerFilename:
+					return 1;
+				case FifthGenNameOrigin.PackageIdHex:
+					return 0;
+				default:
+					return -1;
 			}
 		}
 
